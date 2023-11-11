@@ -1,21 +1,16 @@
-'{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static i18n %}
+{% block title %}{% trans 'Opportunity Config' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary btn-animated btn-xs btn-save-config"
-            form="frm-detail-opportunity-config"
-            data-bs-original-title="Save Opportunity Config">
-                <span class="icon">
-                    <span class="feather-icon">
-                        <i
-                                data-feather="save">
-                        </i>
-                    </span>
-                    <span class="font-3 ml-1">
-                        {% trans 'Save' %}
-                    </span>
-                </span>
+    <button class="btn btn-outline-primary btn-save-config" type="submit" form="frm-detail-opportunity-config">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
     </button>
 {% endblock %}
 
@@ -46,7 +41,7 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_general">
                 <div class="form-check mb-2">
-                    <input type="checkbox" class="form-check-input" id="is-AM-create">
+                    <input type="checkbox" class="form-check-input" name="is_account_manager_create" id="is-AM-create">
                     <label
                             class="form-check-label disabled-label" for="is-AM-create"
                     >{% trans 'Only the Account Manager of a Customer is allowed to create an Opportunity for that Customer' %}</label>
@@ -338,5 +333,6 @@
 
 
 {% block jsFooter %}
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_config.js' %}"></script>
 {% endblock %}'

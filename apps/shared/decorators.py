@@ -1,4 +1,6 @@
 """needed module import"""
+import datetime
+
 from functools import wraps
 
 from django.conf import settings
@@ -7,23 +9,47 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.apps import apps
 
 from rest_framework import status
 from rest_framework.response import Response
 
+from .apis import RespData, PermCheck
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
 from .menus import SpaceItem, SpaceGroup
 from .caches import CacheController, CacheKeyCollect
 from .constant import WORKFLOW_ACTION
+from .utils import RandomGenerate
 
 __all__ = [
     'mask_view',
+    'OutLayoutRender',
 ]
+
+HEADERS_KEY_CACHED_ENABLE = 'HTTP_ENABLEXCACHECONTROL'
 
 
 class ArgumentDecorator:
     """argument decorator"""
+
+    @classmethod
+    def get_headers_cached_enable(cls, request):
+        if (
+                request.method == 'GET' and
+                hasattr(request, 'META') and
+                isinstance(request.META, dict) and
+                request.META.get(HEADERS_KEY_CACHED_ENABLE, None) == 'true'
+        ):
+            expires_string = (
+                    datetime.datetime.now() + datetime.timedelta(minutes=1)
+            ).strftime('%a, %d %b %Y %H:%M:%S GMT')
+            return {
+                'Cache-Control': 'public, max-age=60',  # 1 minutes
+                'Expires': expires_string,
+                'ETag': RandomGenerate.get_string(length=32),
+            }
+        return {}
 
     def __init__(self, login_require, auth_require, **kwargs):
         self.login_require = login_require
@@ -87,7 +113,9 @@ class ArgumentDecorator:
                 'space_list': space_list,
                 'space_current_detail': space_current_detail,
                 'menus': space_menus,
-                'avatar': user.avatar_url
+                'avatar': user.avatar_url,
+                'domain_cloud': f'{settings.MEDIA_PUBLIC_DOMAIN}',
+                'avatar_prefix': 'p/f/avatar/',
             }
         return {}
 
@@ -103,6 +131,17 @@ class ArgumentDecorator:
         return result
 
 
+class OutLayoutRender:
+    def __init__(self, request):
+        self.request = request
+
+    def render_404(self):
+        return render(self.request, 'extends/systems/out-layout/404.html', {})
+
+    def render_503(self):
+        return render(self.request, 'extends/systems/out-layout/503.html', {})
+
+
 def mask_view(**parent_kwargs):
     """mask func before api method call form client to UI"""
     # is_api: default False
@@ -114,6 +153,26 @@ def mask_view(**parent_kwargs):
 
         # pylint: disable=R0911
         def wrapper(self, request, *args, **kwargs):
+            if settings.IS_SERVER_MAINTAINING is True:
+                return OutLayoutRender(request=request).render_503()
+
+            if settings.UI_ALLOW_AUTO_TENANT:
+                url_skip_check = ['/404', '/503', '/introduce', '/terms', '/help-and-support']
+                if request.path not in url_skip_check:
+                    meta_hosts = request.META['HTTP_HOST']
+                    if meta_hosts and settings.UI_DOMAIN in meta_hosts:
+                        sub_code = meta_hosts.split(settings.UI_DOMAIN)[0]
+                        if sub_code.endswith("."):
+                            sub_code = sub_code[:-1]
+
+                        if "*" not in settings.UI_SUB_ALLOWED and sub_code not in settings.UI_SUB_ALLOWED:
+                            return OutLayoutRender(request=request).render_404()
+
+                        if sub_code in settings.UI_SUB_DENIED:
+                            return OutLayoutRender(request=request).render_404()
+                    else:
+                        return OutLayoutRender(request=request).render_404()
+
             ctx = {}
             pk = kwargs.get('pk', None)
 
@@ -122,7 +181,7 @@ def mask_view(**parent_kwargs):
             auth_require = parent_kwargs.get('auth_require', False)
             if auth_require:
                 login_require = True
-            is_notify_key = parent_kwargs.get('is_notify_key', settings.DEBUG_NOTIFY_KEY)  # default: True
+            # is_notify_key = parent_kwargs.get('is_notify_key', settings.DEBUG_NOTIFY_KEY)  # default: True
             is_api = parent_kwargs.get('is_api', False)
             template_path = parent_kwargs.get('template', None)
             breadcrumb_name = parent_kwargs.get('breadcrumb', None)
@@ -136,15 +195,7 @@ def mask_view(**parent_kwargs):
             )
             url_pattern_keys = parent_kwargs.get('url_pattern_keys', [])
 
-            # is_ajax in request._meta
-            # check is_ajax vs view config
-            #   if is_ajax = True
-            #       if is_api = True ==> pass
-            #       else return Response 403 (http status 200, msg = 'View dont support call ajax)
-            #   else
-            #       if is_api = False ==> pass
-            #       else return Response 403 (http status 200, msg = 'View dont support call render)
-
+            # check login with request.user | auto redirect login page when expired
             if login_require:
                 if not request.user or isinstance(request.user, AnonymousUser):
                     if is_api:
@@ -160,14 +211,36 @@ def mask_view(**parent_kwargs):
                     request.user = AnonymousUser
                     return redirect(path_redirect)
 
+            # fake call check permission to post, put, delete
+            # fake call to URL then handle resp
+            # call don't change or new data, API will return resp after check perm
+            check_perm_state, check_perm_return = True, (None, 200)
+            perm_check_cls: PermCheck = parent_kwargs.get('perm_check', None)
+            if perm_check_cls and is_api is False:
+                check_perm_state, check_perm_return = perm_check_cls.valid(
+                    request=request,
+                    view_kwargs=kwargs,
+                )
+                if check_perm_state is False:
+                    if isinstance(check_perm_return, Response):
+                        return check_perm_return
+                    elif not (
+                            check_perm_return and isinstance(check_perm_return, tuple) and len(check_perm_return) == 2
+                    ):
+                        check_perm_return = RespData.resp_403()
+
             # redirect or next step with is_auth
             # must be return ({Data|Dict}, {Http Status|Number}) or HttpResponse
-            view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
+            if check_perm_state:
+                view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
+            else:
+                view_return = check_perm_return
+
             if isinstance(view_return, HttpResponse):  # pylint: disable=R1705
                 return view_return
             else:
-                # parse data
                 data, http_status = None, 200
+                # parse data
                 if isinstance(view_return, (list, tuple)) and len(view_return) == 2:
                     data, http_status = view_return
                 else:
@@ -210,7 +283,9 @@ def mask_view(**parent_kwargs):
                                 {
                                     'data': data,
                                     'status': http_status
-                                }, status=http_status
+                                },
+                                headers=cls_check.get_headers_cached_enable(request=request),
+                                status=http_status
                             )
                 elif cls_check.template_path:
                     if request.user and not isinstance(request.user, AnonymousUser) and request.user.is_authenticated:
@@ -225,7 +300,7 @@ def mask_view(**parent_kwargs):
                                 ctx['pk'] = pk
                                 ctx['is_ga_enabled'] = settings.GA_COLLECTION_ENABLED
                                 ctx['is_debug'] = settings.DEBUG_JS
-                                ctx['is_notify_key'] = 1 if is_notify_key is True else 0
+                                # ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user)
                                 ctx['base_workflow'] = WORKFLOW_ACTION if pk else {}
                                 ctx['domain'] = {'media': settings.MEDIA_DOMAIN}
@@ -237,7 +312,9 @@ def mask_view(**parent_kwargs):
                                     'space_code_current': 1,
                                 }
                                 return render(request, cls_check.template_path, ctx)
-                    return redirect(reverse('AuthLogin'))
+                    if login_require is True:
+                        return redirect(reverse('AuthLogin'))
+                    return render(request, cls_check.template_path, ctx)
             raise ValueError(
                 f'Return not map happy case. Over with: is_api={cls_check.is_api},'
                 f'template={cls_check.template_path}'

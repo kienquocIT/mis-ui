@@ -4,57 +4,51 @@
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button type="submit" form="form-create-user" style="background: none; border: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <button class="btn btn-outline-primary" type="submit" form="form-create-user">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
     </button>
-
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Refresh"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
-    </a>
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <form class="needs-validation" id="form-create-user" data-url="{% url 'UserListAPI' %}" data-url-redirect="{% url 'UserList' %}"
-              data-method="POST" novalidate>
+        <form
+                class="needs-validation" id="form-create-user" data-url="{% url 'UserListAPI' %}"
+                data-url-redirect="{% url 'UserList' %}"
+                data-method="POST" novalidate
+        >
             {% csrf_token %}
             <div class="row">
                 <div class="col-6 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label">{% trans 'First Name' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
-                        <input type="text" class="form-control" placeholder="A" name="first_name"
-                               id="inp-firstname" required>
+                        <label class="form-label required">{% trans 'First Name' %}</label>
+                        <input
+                                type="text" class="form-control" placeholder="A" name="first_name"
+                                id="inp-firstname" required minlength="2"
+                        >
                         <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
                     </div>
                 </div>
                 <div class="col-6 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label">{% trans "Last Name" %}<span
-                                        class="field-required"
-                                >(*)</span></label>
-                        <input class="form-control" type="text" placeholder="Nguyen Van" name="last_name"
-                                id="inp-lastname" required>
+                        <label class="form-label required">{% trans "Last Name" %}</label>
+                        <input
+                                class="form-control" type="text" placeholder="Nguyen Van" name="last_name"
+                                id="inp-lastname" required minlength="2"
+                        >
                         <span class="form-text text-muted">{% trans 'Surname and Middle Names' %}</span>
                     </div>
                 </div>
                 <div class="col-6 col-lg-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Full Name" %}</label>
-                        <input class="form-control-plaintext" type="text" placeholder="Nguyen Van A" name="full_name"
-                               id="inp-fullname" readonly>
+                        <input
+                                class="form-control-plaintext" type="text" placeholder="Nguyen Van A" name="full_name"
+                                id="inp-fullname" readonly
+                        >
                         <span class="form-text text-muted">{% trans 'Full Name of Person' %}</span>
                     </div>
                 </div>
@@ -63,9 +57,7 @@
             <div class="row">
                 <div class="col-6 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label">{% trans 'Email' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                        <label class="form-label required">{% trans 'Email' %}</label>
                         <input
                                 type="email" class="form-control"
                                 placeholder="customer@mtsolution.com.vn"
@@ -77,40 +69,37 @@
                 </div>
                 <div class="col-6 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label">{% trans "Select Company" %}</label>
+                        <label class="form-label required">{% trans "Select Company" %}</label>
                         <select
                                 class="form-select"
                                 name="company_current"
                                 id="select-box-company"
                                 data-method="GET"
                                 data-url="{% url "CompanyListAPI" %}"
-                                required>
+                                data-keyResp="company_list"
+                                required
+                        >
                         </select>
                         <span class="form-text text-muted">{% trans 'Select your company' %}</span>
                     </div>
                 </div>
                 <div class="col-6 col-lg-4">
                     <div class="form-group">
-                                <label class="form-label">{% trans 'Phone' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
-                                <input
-                                        type="text" placeholder="(+84) 987-654-321"
-{#                                        data-mask="(999) 999-999-999"#}
-                                        class="form-control"
-                                        name="phone"
-                                        required
-                                >
-                                <span class="form-text text-muted">{% trans 'Contact to phone number' %}</span>
-                            </div>
+                        <label class="form-label required">{% trans 'Phone' %}</label>
+                        <input
+                                type="text" placeholder="(+84) 987-654-321"
+                                class="form-control"
+                                name="phone"
+                                required
+                        >
+                        <span class="form-text text-muted">{% trans 'Contact to phone number' %}</span>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-6 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label">{% trans "User Name" %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                        <label class="form-label required">{% trans "User Name" %}</label>
                         <input class="form-control" type="text" placeholder="Username" name="username" required>
                         <span class="form-text text-muted">{% trans 'Username to login ' %}</span>
                     </div>
@@ -124,34 +113,42 @@
             <div class="row">
                 <div class="col-6 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label">{% trans "Password" %}<span
-                                        class="field-required"
-                                >(*)</span></label>
-                        <input class="form-control" type="password" placeholder="*****" name="password"
-                               id="password" required>
+                        <label class="form-label required">{% trans "Password" %}</label>
+                        <input
+                                class="form-control" type="password" name="mypassword"
+                                id="mypassword" required
+                        >
                         <span class="form-text text-muted">{% trans 'Password to login ' %}</span>
                     </div>
                 </div>
                 <div class="col-6 col-lg-4">
                     <div class="form-group confirm-password">
-                        <label class="form-label">{% trans "Confirm Password" %}<span
-                                        class="field-required"
-                                >(*)</span></label>
-                        <input class="form-control" type="password" placeholder="*****"
-                               id="confirm-password" name="confirm_password" required>
+                        <label class="form-label required">{% trans "Confirm Password" %}</label>
+                        <input
+                                class="form-control" type="password"
+                                id="confirm-password" name="confirm_password" required
+                        >
                         <span class="form-text text-muted">{% trans 'Password to login ' %}</span>
                     </div>
                 </div>
             </div>
             <div class="form-check">
                 <input type="checkbox" id="require-change-pw" class="form-check-input" disabled>
-                <label for="auto-create-pw"
-                       class="form-check-label">{% trans 'require change password when first sign in' %}</label>
+                <label
+                        for="auto-create-pw"
+                        class="form-check-label"
+                >{% trans 'require change password when first sign in' %}</label>
             </div>
         </form>
-
     </div>
-    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <span
+            class="hidden"
+            id="trans-factory"
+            data-trans-confirm-password="{% trans 'Passwords does not match' %}"
+            data-msg-password-not-match="{% trans 'Re-Password not match Password' %}"
+    ></span>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/core/account/user_create.js' %}"></script>

@@ -50,19 +50,19 @@ class lineDetailUtil {
         $(`#product_row_${rowIdx}`, row).off().on('select2:select', function (e) {
             e.stopPropagation()
             let currentList = _this.getDatalist;
-            const data = e.params.data
-            currentList[rowIdx]['product'] = {id: data.id, 'title': data.title}
-            if (data?.sale_information?.default_uom){
+            const prod = e.params.data
+            currentList[rowIdx]['product'] = {id: prod.id, 'title': prod.title}
+            if (prod?.data?.sale_information?.default_uom){
                 currentList[rowIdx]['uom'] = {
-                    'id': data.sale_information.default_uom.id,
-                    'title': data.sale_information.default_uom.title,
-                    'uom_group': data?.general_information?.uom_group?.id
+                    'id': prod.data.sale_information.default_uom.id,
+                    'title': prod.data.sale_information.default_uom.title,
+                    'uom_group': prod.data?.general_information?.uom_group?.id
                 }
             }
-            if (data?.sale_information?.tax_code) currentList[rowIdx]['tax'] = {
-                'id': data.sale_information.tax_code.id,
-                'title': data.sale_information.tax_code.title,
-                'rate': data?.sale_information?.tax_code?.rate ?? 0
+            if (prod?.data?.sale_information?.tax_code) currentList[rowIdx]['tax'] = {
+                'id': prod.data.sale_information.tax_code.id,
+                'title': prod.data.sale_information.tax_code.title,
+                'rate': prod.data.sale_information?.tax_code?.rate ?? 0
             }
             _this.setDatalist = currentList
             $prodTable.DataTable().cell(rowIdx, 3).data(currentList[rowIdx]['uom']).draw(false);
@@ -75,7 +75,7 @@ class lineDetailUtil {
             const data = e.params.data
             currentList[rowIdx]['warehouse'] = {
                 'id': data.id,
-                'title': data.title
+                'title': data.title || data.text
             }
             _this.setDatalist = currentList
             $prodTable.DataTable().cell(rowIdx, 2).data(currentList[rowIdx]['warehouse']).draw(false);
@@ -87,7 +87,7 @@ class lineDetailUtil {
             const data = e.params.data
             currentList[rowIdx]['uom'] = {
                 'id': data.id,
-                'title': data.title
+                'title': data.title || data.text
             }
             _this.setDatalist = currentList
             $prodTable.DataTable().cell(rowIdx, 3).data(currentList[rowIdx]['uom']).draw(false);
@@ -112,7 +112,7 @@ class lineDetailUtil {
             const data = e.params.data
             currentList[rowIdx]['tax'] = {
                 'id': data.id,
-                'title': data.title,
+                'title': data.title || data.text,
                 'rate': data.rate
             }
             _this.setDatalist = currentList
@@ -124,8 +124,7 @@ class lineDetailUtil {
     initTable() {
         const $tableElm = $('#line_detail_table');
         let _this = this
-        $tableElm.DataTable({
-            scrollX: true,
+        $tableElm.DataTableDefault({
             data: _this.getDatalist,
             searching: false,
             ordering: false,
@@ -156,14 +155,14 @@ class lineDetailUtil {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
                                         <div class="input-prefix dropdown">
-                                            <i class="fas fa-info-circle" data-bs-toggle="dropdown" 
+                                            <i class="fas fa-info-circle text-blue" data-bs-toggle="dropdown" 
                                             data-dropdown-animation aria-haspopup="true" aria-expanded="false" disabled
                                             >
                                             </i>
                                             <div class="dropdown-menu w-210p mt-4"></div>
                                         </div>
                                         <select class="form-select dropdown-select_two" id="product_row_${idx}"
-                                        data-prefix="product_list" data-select2-closeOnSelect="false"
+                                        data-keyResp="product_list" data-select2-closeOnSelect="false"
                                         data-url="${urlSelect}"
                                         data-link-detail="${urlSelectDetail}"
                                         data-onload="${product ? product : ''}"
@@ -189,11 +188,11 @@ class lineDetailUtil {
                             });
                             warehouse = temp.replaceAll('"', "'")
                         }
-                        return `<select class="form-select dropdown-select_two" id="warehouse_row_${idx}"` +
-                            `data-prefix="warehouse_list" data-select2-closeOnSelect="false" ` +
+                        return `<div class="input-group"><select class="form-select dropdown-select_two" id="warehouse_row_${idx}"` +
+                            `data-keyResp="warehouse_list" data-select2-closeOnSelect="false" ` +
                             `data-url="${urlSelect}" ` +
                             `data-onload="${warehouse ? warehouse : ''}"` +
-                            `></select>`;
+                            `></select></div>`;
                     }
                 },
                 {
@@ -218,7 +217,7 @@ class lineDetailUtil {
                             params = gTemp.replace(/"/g, "'")
                         }
                         return `<select class="form-select dropdown-select_two" id="uom_row_${idx}"
-                                    data-prefix="unit_of_measure" data-select2-closeOnSelect="false"
+                                    data-keyResp="unit_of_measure" data-select2-closeOnSelect="false"
                                     data-url="${urlSelect}"
                                     data-params="${params}"
                                     data-onload="${uom ? uom : ''}"></select>`;
@@ -261,7 +260,7 @@ class lineDetailUtil {
                             tax = temp.replaceAll('"', "'")
                         }
                         return `<select class="form-select dropdown-select_two w-10" id="tax_row_${idx}" 
-                                    data-prefix="tax_list" data-select2-closeOnSelect="false"
+                                    data-keyResp="tax_list" data-select2-closeOnSelect="false"
                                     data-url="${urlSelect}" 
                                     data-onload="${tax ? tax : ''}"></select>`;
                     }
@@ -301,9 +300,6 @@ class lineDetailUtil {
                 // init currency
                 $.fn.initMaskMoney2()
 
-                // init select 2
-                initSelectBox($('.dropdown-select_two', row))
-
                 // init event on change
                 _this.columnFuncUtil(index, row)
 
@@ -314,6 +310,11 @@ class lineDetailUtil {
                     changeData.splice(index, 1)
                     _this.setDatalist = changeData
                     _this.handleTotal()
+                })
+            },
+            drawCallback: function(settings){
+                $(`.dropdown-select_two`, $(settings.nTable)).each(function(){
+                    $(this).initSelect2()
                 })
             }
         })
@@ -363,7 +364,7 @@ class lineDetailUtil {
 
 function loadDetail(line) {
     const $form = $('#good_receipt_form')
-    if ($form.attr('data-method') === 'put') {
+    if ($form.attr('data-method') !== 'POST') {
         $.fn.callAjax($form.attr('data-url'), 'get')
             .then(
                 (resp) => {
@@ -480,14 +481,14 @@ $(function () {
         const $tableElm = $('#line_detail_table')
         let lineDetail = $tableElm.DataTable().data().toArray()
         if (!lineDetail) {
-            $.fn.notifyPopup({description: $transFactory.attr('data-product')}, 'failure')
+            $.fn.notifyB({description: $transFactory.attr('data-product')}, 'failure')
             return false
         }
         else {
             let temp = []
             for (let [idx, val] of lineDetail.entries()) {
                 if (!val?.quantity || !val?.unit_price || !val?.product?.id || !val?.warehouse?.id)
-                    $.fn.notifyPopup({description: $transFactory.attr('data-row-error').replace('{}', idx)}, 'failure')
+                    $.fn.notifyB({description: $transFactory.attr('data-row-error').replace('{}', idx)}, 'failure')
                 temp[idx] = {
                     product: val.product.id,
                     warehouse: val.warehouse.id,
@@ -520,7 +521,7 @@ $(function () {
 
         if ($form.hasClass('.detail-form')){
             if (!getAttach){
-                $.fn.notifyPopup({description: $transFactory.attr('data-valid_attachment')}, 'success')
+                $.fn.notifyB({description: $transFactory.attr('data-valid_attachment')}, 'success')
                 return false
             }
             dataSubmit = {'attachments': attach}
@@ -533,7 +534,7 @@ $(function () {
                     const data = $.fn.switcherResp(resp);
                     const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
                     if (data) {
-                        $.fn.notifyPopup({description: description}, 'success')
+                        $.fn.notifyB({description: description}, 'success')
                         $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                     }
                 },

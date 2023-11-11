@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Leave request create' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .spec-date-layout {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .spec-date-layout > div {
+            flex: 1 1 0;
+        }
+
+        .select2-results__option > span > b {
+            min-width: 45px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        @media screen and (min-width: 1024px) {
+            .child-mt > * {
+                margin-top: 10px;
+            }
+        }
+        .sl_temp_cont > b {
+            text-align: center;
+            width: 45px;
+        }
+        .sl_temp_cont > *:last-child {
+            text-align: center;
+            width: 30px;
+        }
+        .one-row-txt{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: calc(100% - 75px);
+            white-space: nowrap;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="leave_edit">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
+            </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form class="container-fluid mt-4" id="leave_edit" method="post" data-method="PUT" autocomplete="off"
+    data-url-redirect="{% url 'LeaveRequestList' %}" data-url="{% url 'LeaveRequestEditAPI' data.pk %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4 col-xs-12 form-group">
+                <label for="inputTitle" class="form-label required">{% trans 'Title' %}</label>
+                <input type="text" name="title" id="inputTitle" class="form-control"/>
+            </div>
+            <div class="col-md-4 col-xs-12 form-group">
+                <label for="inputRequestDate" class="form-label required">{% trans 'Date' %}</label>
+                <div class="input-affix-wrapper">
+                    <input type="text" name="request_date" id="inputRequestDate"
+                           class="form-control date-picker" autocomplete="off">
+                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12 form-group"></div>
+            <div class="col-xs-12 col-md-4 form-group">
+                <label for="selectEmployeeInherit" class="form-label required">{% trans 'Beneficiary' %}</label>
+                <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
+                        data-url="{% url 'EmployeeListAPI' %}"
+                        data-keyResp="employee_list"
+                        data-keyText="full_name" data-keyId="id"
+                        data-params="{'list_from_app':'{{data.list_from_app|escape}}', 'list_from_leave':'1'}">
+                </select>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="row form-group mb-0 mt-md-4 align-items-center">
+                    <div class="col-xs-12 col-md-4">
+                        <label for="inputSystemStatus" class="form-label mb-0 ">{% trans 'Status' %}</label>
+                    </div>
+                    <div class="col-xs-12 col-md-8">
+                        <input type="text" name="system_status" id="inputSystemStatus" class="form-control" disabled
+                               value="{% trans 'Draft' %}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <br>
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <ul class="nav nav-line nav-light nav-tabs">
+                <li class="nav-item">
+                    <a href="#leave_detail" class="nav-link active" data-bs-toggle="tab">
+                        <span class="nav-link-text">{% trans 'Detail' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#leave_available" class="nav-link" data-bs-toggle="tab">
+                        <span class="nav-link-text">
+                            {% trans 'Available' %}
+                        </span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="leave_detail">
+                    <table id="leave_detail_tbl" class="table nowrap w-100 mb-5">
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Leave type' %}</th>
+                            <th>{% trans 'Date from' %}</th>
+                            <th>{% trans 'Date to' %}</th>
+                            <th>{% trans 'Sub total' %}</th>
+                            <th>{% trans 'note' %}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th colspan="3"><p style="text-align:right">{% trans 'Total' %}:</p></th>
+                            <th colspan="3"><p class="pl-3 font-3"><b><i>0</i></b></p></th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <br>
+                    <button class="btn btn-outline-primary" type="button" id="add_new_line" disabled>
+                        <span>
+                            <span>{% trans 'Add date' %}</span>
+                            <span class="icon">
+                                <i class="fa-regular fa-plus"></i>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+                <div class="tab-pane fade" id="leave_available">
+                    <table id="leave_available_tbl" class="table nowrap w-100 mb-5">
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Name' %}</th>
+                            <th>{% trans 'Opening year' %}</th>
+                            <th>{% trans 'Total' %}</th>
+                            <th>{% trans 'Used' %}</th>
+                            <th>{% trans 'Available' %}</th>
+                            <th>{% trans 'Expiration date' %}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    {{ data.employee|json_script:'employee_current' }}
+    {{ data.sys_status|json_script:'sys_stt' }}
+    <input type="text" id="url-factory"
+           data-leave-available="{% url 'LeaveAvailableListAPI' %}"
+           data-leave-detail="{% url 'LeaveRequestDetailAPI' data.pk %}"
+    >
+    <input type="text" id="trans-factory"
+           data-detail-tab="{% trans 'Total day off is 0 please verify again' %}"
+           data-err-date="{% trans 'Date To need large then Date From' %}"
+           data-dayoff-error="{% trans 'Please choose an available day off' %}"
+    >
+    <div class="wrap-template">
+        <div class="delete_btn">
+            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row">
+                    <span class="btn-icon-wrap">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </span>
+            </a>
+        </div>
+        <div class="date_from">
+            <div class="date_from_wrap">
+                <div class="form-check form-check-sm form-check-inline">
+                    <input type="radio" id="example01" name="customRadio" class="form-check-input f_mor" value="true">
+                    <label class="form-check-label" for="example01">{% trans 'Morning' %}</label>
+                </div>
+                <div class="form-check form-check-sm form-check-inline">
+                    <input type="radio" id="example02" name="customRadio" class="form-check-input f_aft" value="false">
+                    <label class="form-check-label" for="example02">{% trans 'Afternoon' %}</label>
+                </div>
+                <div class="form-group spec-date-layout">
+                    <div class="input-affix-wrapper">
+                        <input type="text" name="" id="" class="form-control date-picker" autocomplete="off">
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+                    <span>{% trans 'to' %}</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/e-offices/leave/js/leave_request_common.js' %}"></script>
+    <script src="{% static 'assets/e-offices/leave/js/leave_request_edit.js' %}"></script>
+{% endblock %}

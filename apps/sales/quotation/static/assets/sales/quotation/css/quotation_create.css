@@ -1,7 +1,3 @@
-.quotation-horizon {
-    background-color: #3c3f43;
-}
-
 .fa-file-alt {
     font-size: x-large;
 }
@@ -30,40 +26,17 @@
 
 .fa-angle-double-up {
     color: #007D88;
-    text-align: center;
-    font-size: x-large;
+    text-align: right;
 }
 
 .fa-angle-double-down {
     color: #007D88;
-    text-align: center;
-    font-size: x-large;
-}
-
-ul.quotation-tabs {
-  display: flex;
-  justify-content: center;
-}
-
-ul.quotation-tabs li.quotation-tab-item {
-  margin-right: 10px;
+    text-align: right;
 }
 
 a.dropdown-item.table-row-price-option:hover {
     background-color: blue;
     color: white;
-}
-
-.fa-info-circle {
-    color: #298dff;
-}
-
-.fa-gift {
-    color: #e92990;
-}
-
-.fa-shipping-fast {
-    color: #c39749;
 }
 
 .modal-body-invalid-promotion {

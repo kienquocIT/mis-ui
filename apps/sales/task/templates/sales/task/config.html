@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Opportunity Task config' %}{% endblock %}
+{% block title %}{% trans 'Opportunity task config' %}{% endblock %}
 {% block cssHeader %}
     <style>
         .status-item p {
@@ -143,7 +143,7 @@
                         <input type="radio" id="customRadioc2" name="in_assign_opt" class="form-check-input"
                                value="2" disabled>
                         <label class="form-check-label" for="customRadioc2">
-                            {% trans '(2) Can just assign task to his/her staffs in his/her department' %}</label>
+                            (2) {% trans 'Can just assign task to his/her staffs in his/her department' %}</label>
                     </div>
                     <div class="col-xs-12 col-md-2 form-check">
                         <input type="radio" id="customRadioc3" name="in_assign_opt" class="form-check-input"
@@ -230,6 +230,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+
     <script src="{% static 'assets/sales/task/js/config.js' %}"></script>
 {% endblock %}

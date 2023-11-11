@@ -3,7 +3,8 @@ from django.urls import path
 from apps.sales.saleorder.views import (
     SaleOrderCreate, SaleOrderList, SaleOrderListAPI, SaleOrderDetail,
     SaleOrderDetailAPI, SaleOrderExpenseListAPI, SaleOrderDetailDeliveryAPI, SaleOrderConfigDetail,
-    SaleOrderConfigDetailAPI, SaleOrderIndicatorListAPI, SaleOrderIndicatorDetailAPI, SaleOrderIndicatorRestoreAPI
+    SaleOrderConfigDetailAPI, SaleOrderIndicatorListAPI, SaleOrderIndicatorDetailAPI, SaleOrderIndicatorRestoreAPI,
+    ProductListSaleOrderAPI, SaleOrderUpdate, SaleOrderPurchasingStaffListAPI
 )
 
 urlpatterns = [
@@ -18,6 +19,11 @@ urlpatterns = [
     path('create', SaleOrderCreate.as_view(), name='SaleOrderCreate'),
     path('detail/<str:pk>', SaleOrderDetail.as_view(), name='SaleOrderDetail'),
     path('detail-api/<str:pk>', SaleOrderDetailAPI.as_view(), name='SaleOrderDetailAPI'),
+    path('update/<str:pk>', SaleOrderUpdate.as_view(), name='SaleOrderUpdate'),
     path('sale-order-expense-list', SaleOrderExpenseListAPI.as_view(), name='SaleOrderExpenseListAPI'),
     path('detail-api/<str:pk>/delivery', SaleOrderDetailDeliveryAPI.as_view(), name='SaleOrderDetailDeliveryAPI'),
+    path('product/list/api/<str:pk>', ProductListSaleOrderAPI.as_view(), name='ProductListSaleOrderAPI'),
+    path(
+        'purchasing-staff/list/api', SaleOrderPurchasingStaffListAPI.as_view(), name='SaleOrderPurchasingStaffListAPI'
+    ),
 ]

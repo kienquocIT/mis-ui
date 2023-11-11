@@ -1,6 +1,23 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block cssHeader %}{% endblock %}
+{% block cssHeader %}
+    <!-- bootstrap -->
+    <link
+            rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+            integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous"
+    >
+    <!-- select2 -->
+    <link
+            rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"
+            integrity="sha256-FdatTf20PQr/rWg+cAKfl6j4/IY3oohFAJ7gVC3M34E=" crossorigin="anonymous"
+    >
+
+    <!-- select2-bootstrap4-theme -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css"
+    > <!-- for live demo page -->
+{% endblock %}
 
 {% block pageContent %}
     <!-- Files Upload -->
@@ -8,19 +25,34 @@
         <form id="frmTest" data-url="xxxx" data-method="POST">
             {% csrf_token %}
             <div class="row">
-                <div class="col-4">
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="inputTest1" class="form-label">Upload File 0</label>
+                        <button
+                                id="inputTest1"
+                                type="button"
+                                class="form-control btn btn-dark btn-file-upload text-white"
+                                data-f-input-name="inputTest1"
+                                data-f-input-required="true"
+                                data-f-accept="image/*"
+                        >Click me 0!
+                        </button>
+                        <small>Đang cho phép: "image/*"</small>
+                    </div>
+                </div>
+                <div class="col-3">
                     <div class="form-group">
                         <label for="inputTest1" class="form-label">Upload File 1</label>
                         <button
                                 type="button"
-                                class="form-control btn btn-success btn-file-upload"
+                                class="form-control btn btn-success btn-file-upload text-white"
                                 data-f-input-name="inputTest1"
                                 data-f-input-required="true"
                         >Click me 1!
                         </button>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <div class="form-group">
                         <label for="inputTest2" class="form-label">Upload File 2</label>
                         <button
@@ -34,7 +66,7 @@
                         <p id="fileNameTestDisplay"></p>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <div class="form-group">
                         <label for="inputTest3" class="form-label">Upload File 3</label>
                         <button
@@ -153,9 +185,158 @@
         </div>
     </div>
     <!-- // Utils -->
+
+    <div class="row mt-5 p-3">
+        <div class="col-6">
+            <select
+                    id="selectX"
+                    data-allowClear="true"
+                    multiple
+                    data-url="{% url 'EmployeeListAPI' %}"
+                    data-keyResp="employee_list"
+                    data-keyId="id"
+                    data-keyText="full_name"
+            >
+                <option value="1" selected>1111</option>
+                <option value="2" selected>2222</option>
+                <option value="3" selected>3333</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <select
+                    id="selectY"
+                    data-allowClear="true"
+                    data-url="{% url 'EmployeeListAPI' %}"
+                    data-keyResp="employee_list"
+                    data-keyId="id"
+                    data-keyText="full_name"
+            >
+                <option value="1" selected>1111</option>
+            </select>
+        </div>
+    </div>
+    <div class="row p-3">
+        <div class="col-3">
+            <div class="form-group">
+                <label for="selectGroupIcon">Select Employee</label>
+                <div class="input-affix-wrapper">
+                    <div class="dropdown input-prefix">
+                        <i
+                                class="fa-solid fa-circle-info" data-bs-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false"
+                        ></i>
+                        <div class="dropdown-menu w-210p mt-2">
+                            <label for="">{% trans 'Full name' %}</label>
+                            <input type="text" name="dd-full-name" class="form-control-plaintext" disabled readonly>
+                            <a href="#" data-url="{% url 'EmployeeDetail' pk='__pk__' %}" id="dd-btn-detail">
+                                <button class="btn btn-primary" disabled>{% trans 'Detail' %}</button>
+                            </a>
+                        </div>
+                    </div>
+                    <select
+                            id="selectGroupIcon"
+                            class="input-affix-main"
+                            data-allowClear="true"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyResp="employee_list"
+                            data-keyId="id"
+                            data-keyText="full_name"
+                    >
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group">
+                <label for="">XXXX</label>
+                <select class="select-x form-control" disabled>
+                    <option value="1">111</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label for="">XXXX</label>
+                <select class="select-x form-control">
+                    <option value="1">111</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="select-box-user">{% trans 'User' %}</label>
+                                    <select
+                                            class="form-select"
+                                            name="title" id="select-box-user"
+                                            readonly
+                                            disabled
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-50"></div>
 {% endblock %}
 
 {% block jsFooter %}
+    <!-- bootstrap -->
+    {#    <script#}
+    {#            src="https://code.jquery.com/jquery-3.5.1.slim.min.js"#}
+    {#            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"#}
+    {#    ></script>#}
+    <script
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+            integrity="sha256-7dA7lq5P94hkBsWdff7qobYkp9ope/L5LQy2t/ljPLo=" crossorigin="anonymous"
+    ></script>
+    <!-- select2 -->
+    <script
+            src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"
+            integrity="sha256-AFAYEOkzB6iIKnTYZOdUf9FFje6lOTYdwRJKwTN5mks=" crossorigin="anonymous"
+    ></script>
+    <script>
+        $(function () {
+            $('.select-x').each(function () {
+                $(this).initSelect2({
+                    {#theme: 'bootstrap4',#}
+                    {#width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',#}
+                    {#placeholder: $(this).data('placeholder'),#}
+                    {#allowClear: Boolean($(this).data('allow-clear')),#}
+                    {#closeOnSelect: !$(this).attr('multiple'),#}
+                });
+            });
+            $('#select-box-user').initSelect2({
+                allowClear: true,
+                keyId: 'user--id',
+                keyText: 'user--full_name',
+                data: {'user': {
+                    "id": "735828d4-0af7-4702-b3e1-68cce968322a",
+                    "full_name": "AD Admin",
+                    "first_name": "Admin",
+                    "last_name": "AD",
+                    "email": "thangnv@gmail.com",
+                    "phone": "0903602848"
+                }},
+            });
+        });
+    </script>
+
     <script>
         function generateUUID(ver = 4, str_or_hex = 'str') {
             let uid = null;
@@ -293,6 +474,55 @@
             };
             let ele = $('.btn-file-upload[data-f-input-name=inputTest3]')[0];
             if (ele) FileUtils.init($(ele), dataDetail);
+
+            let btn = $('#inputTest1');
+            WindowControl.showLoadingButton(btn);
+            setTimeout(
+                () => {
+                    WindowControl.hideLoadingButton(btn);
+                },
+                1000
+            );
+
+
+            let pc100 = 10;
+            let intervalPc = setInterval(
+                () => {
+                    if (pc100 >= 100) {
+                        clearInterval(intervalPc);
+                    }
+                    $('#progresBarID').alterClass('w-*', 'w-' + pc100.toString());
+                    pc100 += 10;
+                },
+                1000
+            )
+        })
+    </script>
+    <script>
+        function renderDetailInfoEmployee(DDMenuEle, dataBackupOfSelected, selectedVal, selectEle) {
+            // dataBackupOfSelected: object or list[object] by multiple
+            // append HTML or find class/id replace value
+            //      DDMenuEle.html(``);
+            //      [Recommendation] DDMenuEle.find('.dd-full-name').val(dataBackupOfSelected?.['full_name'] || '');
+
+            DDMenuEle.find('input[name="dd-full-name"]').val(dataBackupOfSelected?.['full_name'] || '');
+            let btnDetail = $('#dd-btn-detail');
+            if (dataBackupOfSelected?.['id']) {
+                btnDetail.href = btnDetail.attr('data-url').replace('__pk__', dataBackupOfSelected?.['id']);
+                btnDetail.find('button').prop('disabled', false);
+            } else {
+                btnDetail.href = '#';
+                btnDetail.find('button').prop('disabled', true);
+            }
+        }
+
+        $(document).ready(function () {
+            $('#selectX').initSelect2({cache: true});
+            $('#selectY').initSelect2({});
+
+            $('#selectGroupIcon').initSelect2({
+                'callbackInfoDetail': renderDetailInfoEmployee
+            });
         })
     </script>
 {% endblock %}

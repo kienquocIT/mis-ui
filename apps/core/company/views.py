@@ -1,13 +1,11 @@
+from django.conf import settings
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg, TypeCheck
+from apps.shared import mask_view, ApiURL, ServerAPI, TypeCheck
 
 
 class CompanyList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='core/company/company_list.html',
@@ -15,81 +13,66 @@ class CompanyList(View):
         menu_active='menu_company_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        ctx = {
+            'ui_domain': settings.UI_DOMAIN
+        }
+        return ctx, status.HTTP_200_OK
 
 
 class CompanyListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).get()
-        if resp.state:
-            return {'company_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        elif resp.status == 403:
-            return {}, status.HTTP_403_FORBIDDEN
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_LIST).get()
+        return resp.auto_return(key_success='company_list')
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        return response.errors, response.status
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class CompanyDetail(View):
+    @classmethod
+    def callback_success(cls, result):
+        return {'company': result, 'icon': result["title"][0]}
+
     @mask_view(
         auth_require=True,
         template='core/company/company_detail.html',
-        breadcrumb='COMPANY_LIST_PAGE',
+        breadcrumb='COMPANY_DETAIL_PAGE',
         menu_active='menu_company_list'
     )
     def get(self, request, pk, *args, **kwargs):
-        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
-        if response.state:
-            return {'company': response.result, 'icon': response.result["title"][0]}, status.HTTP_200_OK
-        return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
-
-
-class CompanyUpdate(View):
-    @mask_view(
-        auth_require=True,
-        template='core/company/company_update.html',
-        breadcrumb='COMPANY_LIST_PAGE',
-        menu_active='menu_company_list',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
+        return resp.auto_return(callback_success=self.callback_success)
 
 
 class CompanyUpdateAPI(APIView):
-    @mask_view(auth_require=True, template='core/company/company_update.html', breadcrumb='COMPANY_LIST_PAGE')
+    @classmethod
+    def callback_success(cls, result):
+        return {'company': result, 'icon': result["title"][0]}
+
+    @mask_view(
+        login_require=True,
+        template='core/company/company_update.html',
+        breadcrumb='COMPANY_UPDATE_PAGE',
+        menu_active='menu_company_list'
+    )
     def get(self, request, pk, *args, **kwargs):
-        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
-        if response.state:
-            return {'company': response.result, 'icon': response.result["title"][0]}, status.HTTP_200_OK
-        return {'detail': response.errors}, status.HTTP_401_UNAUTHORIZED
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
+        return resp.auto_return(callback_success=self.callback_success)
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).put(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).put(request.data)
+        return resp.auto_return()
 
 
 class CompanyDeleteAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
-        response = ServerAPI(user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).delete(request.data)
-        if response.state:
-            return {}, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).delete(request.data)
+        return resp.auto_return()
 
 
 class CompanyListOverviewList(View):
@@ -100,42 +83,27 @@ class CompanyListOverviewList(View):
         menu_active='menu_company_overview_list',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_LIST).get()
-        if resp.state:
-            return {'company_list': resp.result}, status.HTTP_200_OK
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_LIST).get()
+        return resp.auto_return(key_success='company_list')
 
 
 class CompanyListOverviewListAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_OVERVIEW).get()
-        if resp.state:
-            return {'company_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_OVERVIEW).get()
+        return resp.auto_return(key_success='company_list')
 
 
 class EmployeeUserByCompanyListOverviewDetailAPI(APIView):
     @classmethod
     def get_data_list(cls, user, url):
         resp = ServerAPI(user=user, url=url).get()
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
     @classmethod
     def get_data_list_with_post(cls, user, url, data):
         resp = ServerAPI(user=user, url=url).post(data)
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
     @classmethod
     def parse_data(cls, emp_data, user_data):
@@ -148,75 +116,52 @@ class EmployeeUserByCompanyListOverviewDetailAPI(APIView):
     def get(self, request, *args, **kwargs):
         company_id = kwargs.get('pk', None)
         if company_id and TypeCheck.check_uuid(company_id):
-
-            resp = ServerAPI(
-                user=request.user,
-                url=ApiURL.COMPANY_OVERVIEW.push_id(company_id) + '/0'
-            ).get()
-            if resp.state:
-                return {'data_list': resp.result}, status.HTTP_200_OK
-            elif resp.status == 401:
-                return {}, status.HTTP_401_UNAUTHORIZED
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+            url = ApiURL.COMPANY_OVERVIEW.push_id(company_id) + '/0'
+            resp = ServerAPI(request=request, user=request.user, url=url).get()
+            return resp.auto_return(key_success='data_list')
         return {}, status.HTTP_404_NOT_FOUND
 
     @mask_view(auth_require=True, is_api=True)
-    def put(self, request, *args, **kwargs):
-        data = request.data
-        user_id = kwargs.get('pk', None)
-        response = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_USER_COMPANY.push_id(user_id)).put(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        return response.errors, response.status
+    def put(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            url = ApiURL.ACCOUNT_USER_COMPANY.push_id(pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).put(request.data)
+            return resp.auto_return()
+        return {}, status.HTTP_404_NOT_FOUND
 
 
 class CompanyUserNotMapEmployeeListAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_USER_NOT_MAP_EMPLOYEE).get()
-        if resp.state:
-            return {'company_user_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_USER_NOT_MAP_EMPLOYEE).get()
+        return resp.auto_return(key_success='company_user_list')
 
 
 class EmployeeOfTenantListAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        query_params = request.query_params
+        query_params = request.query_params.dict()
         company_id = query_params.get('company_id', None)
         user_is_null = query_params.get('user_is_null', None)
         if company_id:
             filter_data = {'company_id': company_id}
-            if user_is_null is not None:
+            if user_is_null and user_is_null is not None and user_is_null not in ['null', 'None']:
                 user_is_null = TypeCheck.get_bool(user_is_null)
                 filter_data['user__isnull'] = user_is_null
-            print('filter_data: ', filter_data)
-            resp = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_TENANT, is_minimal=False).get(
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.EMPLOYEE_TENANT, is_minimal=False).get(
                 data=filter_data
             )
-            if resp.state:
-                return {'employee_list': resp.result}, status.HTTP_200_OK
-            elif resp.status == 401:
-                return {}, status.HTTP_401_UNAUTHORIZED
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+            return resp.auto_return(key_success='employee_list')
         return {'employee_list': []}, status.HTTP_200_OK
 
 
 class CompanyConfigDetailAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
-        if resp.state:
-            return {'config': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {}, status.HTTP_403_FORBIDDEN
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_CONFIG).get()
+        return resp.auto_return(key_success='config')
 
     @mask_view(login_require=True, is_api=True)
     def put(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).put(data=request.data)
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        return resp.errors, resp.status
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_CONFIG).put(data=request.data)
+        return resp.auto_return()

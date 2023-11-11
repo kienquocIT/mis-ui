@@ -2,43 +2,13 @@ $(document).ready(function () {
     let letStateChoices = JSON.parse($('#dataStateChoices').text());
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
-    tbl.DataTable({
-        searching: false,
-        ordering: false,
-        paginate: true,
+    tbl.DataTableDefault({
+        useDataServer: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data && resp.data.hasOwnProperty('delivery_list')) {
-                    return resp.data['delivery_list'] ? resp.data['delivery_list'] : []
-                }
-                throw Error('Call data raise errors.')
-            },
+            dataSrc: "data.delivery_list"
         },
-        rowIdx: false,
-        columnDefs: [
-            {
-                "width": "30%",
-                "targets": 0
-            }, {
-                "width": "30%",
-                "targets": 1
-            }, {
-                "width": "10%",
-                "targets": 2
-            }, {
-                "width": "10%",
-                "targets": 3
-            }, {
-                "width": "10%",
-                "targets": 4
-            }, {
-                "width": "10%",
-                "targets": 5,
-            }
-        ],
         columns: [
             {
                 data: 'code',
@@ -58,8 +28,8 @@ $(document).ready(function () {
                                 tbl.attr('data-url-sale-order-detail'),
                                 data['id']
                             ),
-                            $.fn.getValueOrEmpty(data, 'title'),
-                            $.fn.getValueOrEmpty(data, 'code'),
+                            UtilControl.getValueOrEmpty(data, 'title'),
+                            UtilControl.getValueOrEmpty(data, 'code'),
                         );
                     }
                     return '';
@@ -67,24 +37,35 @@ $(document).ready(function () {
             }, {
                 data: 'date_created',
                 render: (data, type, row) => {
-                    data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    return data;
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY',
+                    })
                 },
             }, {
                 data: 'estimated_delivery_date',
                 render: (data, type, row) => {
-                    if (data)
-                        data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
-                    return data ? data : "--";
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY hh:mm A',
+                    })
                 },
-            }, {
+            },
+            {
                 data: 'actual_delivery_date',
                 render: (data, type, row) => {
-                    if (data)
-                        data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
-                    return data ? data : "--";
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY hh:mm A',
+                    });
                 },
-            }, {
+            },
+            {
+                data: 'employee_inherit',
+                render: (row, type, data) => {
+                    let time = '--';
+                    if (Object.keys(row).length > 0) time = `${row.full_name}`
+                    return time
+                },
+            },
+            {
                 data: 'state',
                 class: 'text-center',
                 render: (data, type, row, meta) => {
@@ -98,6 +79,7 @@ $(document).ready(function () {
             },
             {
                 class: 'text-center',
+                orderable: false,
                 render: (data, type, row, meta) => {
                     const isTxt = $('#trans-factory').attr('data-return')
                     return `<div class="dropdown pointer mr-2">
@@ -111,15 +93,17 @@ $(document).ready(function () {
                             </div>`;
                 }
             }
-        ]
-    }, false)
+        ],
+        visibleSearchField: false,
+        rowIdx: false,
+    })
 
     const $Table = $('#sale_order_approved');
     $('#sale_order_select').on('shown.bs.modal', function (e) {
         e.stopPropagation();
         if ($Table.hasClass('dataTable')) $Table.DataTable().ajax.reload();
         else
-            $Table.not('.dataTable').DataTable({
+            $Table.not('.dataTable').DataTableDefault({
             searching: false,
             ordering: false,
             paginate: true,
@@ -129,23 +113,10 @@ $(document).ready(function () {
                 dataSrc: 'data.sale_order_list',
                 data: function (params) {
                     params['delivery_call'] = true;
-                    params['is_approved'] = true
-                    return params
+                    params['system_status__in'] = [2, 3].join(',');
                 },
             },
             rowIdx: true,
-            columnDefs: [
-                {
-                    "width": "10%",
-                    "targets": 0
-                }, {
-                    "width": "70%",
-                    "targets": 1
-                }, {
-                    "width": "20%",
-                    "targets": 2
-                }
-            ],
             columns: [
                 {
                     defaultContent: '',
@@ -158,7 +129,8 @@ $(document).ready(function () {
                             + `</div>`
                         return title;
                     },
-                }, {
+                },
+                {
                     data: 'code',
                     render: (row, type, data) => {
                         return row;
@@ -166,7 +138,6 @@ $(document).ready(function () {
                 }
             ],
             rowCallback(row, data, index) {
-                $('td:eq(0)', row).html(index + 1);
                 $('input[type="checkbox"]', row).on('change', function(){
                     $('input[type="checkbox"]', $('#sale_order_approved')).not(this).prop('checked', false);
                 });
@@ -180,12 +151,12 @@ $(document).ready(function () {
         const row = $('input[type="checkbox"]:checked', $('#sale_order_approved'))
         const isData = $Table.DataTable().row(row.closest('tr')).data();
         if (isData && isData.hasOwnProperty('id')){
-            $.fn.showLoading();
+            WindowControl.showLoading();
             const url = $('#url-factory').attr('data-create-delivery').replace('1', isData.id);
-            $.fn.callAjax(
-                url,
-                'POST', {}, true
-            ).then(
+            $.fn.callAjax2({
+                "url": url,
+                "method": "POST"
+            }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data?.['status'] === 200) {
@@ -196,13 +167,14 @@ $(document).ready(function () {
                             }, 1000);
                         }
                         else{
-                            $.fn.hideLoading();
+                            WindowControl.hideLoading();
                             $('#dtbDeliveryList').DataTable().ajax.reload();
                         }
                     }
                 },
                 (errs) => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
+                    $.fn.notifyB({"description": errs?.data?.errors, "timeout": 3500}, 'failure')
                 }
             )
         }

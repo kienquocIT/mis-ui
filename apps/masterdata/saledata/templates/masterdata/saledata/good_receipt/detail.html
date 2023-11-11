@@ -7,39 +7,26 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="good_receipt_form"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <a href="{% url 'GoodReceiptEdit' data.doc_id %}">
+    <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
         </span>
-    </button>
-    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
-            data-bs-placement="top" title="Back" data-bs-original-title="Back"
-            onclick="window.history.go(-1); return false;">
-        <span class="icon">
-            <span class="feather-icon">
-                <i class="fas fa-step-backward"></i>
-            </span>
-        </span>
-    </button>
+    </button></a>
 {% endblock %}
 {% block pageContent %}
     <!-- Form Create-->
-    <form id="good_receipt_form" data-url="{% url 'GoodReceiptDetailAPI' data.doc_id %}" data-method="put"
-          class="detail-form" method="post"
-          data-url-redirect="{% url 'GoodReceiptList' %}" autocomplete="off" novalidate readonly>
+    <form id="good_receipt_form" data-url="{% url 'GoodReceiptDetailAPI' data.doc_id %}"
+          class="detail-form" method="post" autocomplete="off" novalidate>
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6 col-xs-12">
                 <div class="form-group">
                     <label class="form-label required" for="title">{% trans 'Name' %}</label>
-                    <div class="readonly">
-                        <input class="form-control" type="text" name="title" id="title" required readonly>
-                        <span></span>
-                    </div>
+                    <input class="form-control" type="text" name="title" id="title" required readonly>
                 </div>
             </div>
             <div class="col-md-6 col-xs-12">
@@ -49,7 +36,7 @@
         <div class="row">
             <div class="col-md-6 col-xs-12">
                 <label class="form-label w-100" for="supplier">{% trans 'Supplier' %}</label>
-                <div class="input-group readonly">
+                <div class="input-group">
                     <div class="input-affix-wrapper">
                         <div class="dropdown input-prefix">
                             <i class="fas fa-info-circle"
@@ -66,7 +53,7 @@
                                 name="supplier"
                                 id="supplier"
                                 data-multiple="false"
-                                data-prefix="account_list"
+                                data-keyResp="account_list"
                                 data-url="{% url 'AccountListAPI' %}"
                                 data-link-detail="{% url 'AccountDetail' 1 %}"
                                 data-params="{'account_types_mapped__account_type_order': 1}"
@@ -74,7 +61,6 @@
                                 data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
                         ></select>
                     </div>
-                    <span></span>
                 </div>
             </div>
             <div class="col-md-6 col-xs-12">
@@ -111,12 +97,9 @@
             <div class="col-md-6 col-xs-12">
                 <div class="form-group">
                     <label class="form-label required" for="posting_date">{% trans 'Posting date' %}</label>
-                    <div class="readonly">
-                        <input class="form-control" type="text" name="posting_date" id="posting_date"
-                               placeholder="{% trans 'DD/MM/YYYY' %}" autocomplete="off"
-                               required disabled>
-                        <span></span>
-                    </div>
+                    <input class="form-control" type="text" name="posting_date" id="posting_date"
+                           placeholder="{% trans 'DD/MM/YYYY' %}" autocomplete="off"
+                           required disabled>
                 </div>
             </div>
         </div>
@@ -148,22 +131,19 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab_block_1">
-                        <div class="readonly table-readonly">
-                            <table id="line_detail_table" class="table nowrap w-100 mb-5">
-                                <thead>
-                                <th class="w-5">#</th>
-                                <th class="w-20">{% trans 'Product' %}</th>
-                                <th class="w-10">{% trans "Warehouse" %}</th>
-                                <th class="w-10">{% trans "UoM" %}</th>
-                                <th class="w-10">{% trans 'Quantity' %}</th>
-                                <th class="w-15">{% trans "Unit price" %}</th>
-                                <th class="w-5">{% trans "Tax" %}</th>
-                                <th class="w-20">{% trans "Subtotal price" %}</th>
-                                <th class="w-5"></th>
-                                </thead>
-                            </table>
-                            <span></span>
-                        </div>
+                        <table id="line_detail_table" class="table nowrap w-100 mb-5">
+                            <thead>
+                            <th class="w-5">#</th>
+                            <th class="w-20">{% trans 'Product' %}</th>
+                            <th class="w-10">{% trans "Warehouse" %}</th>
+                            <th class="w-10">{% trans "UoM" %}</th>
+                            <th class="w-10">{% trans 'Quantity' %}</th>
+                            <th class="w-15">{% trans "Unit price" %}</th>
+                            <th class="w-5">{% trans "Tax" %}</th>
+                            <th class="w-20">{% trans "Subtotal price" %}</th>
+                            <th class="w-5"></th>
+                            </thead>
+                        </table>
                         <div class="row">
                             <div class="col-xs-12 col-md-12">
                                 <div class="col-2">
@@ -229,7 +209,6 @@
 {% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <!-- Select2 -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

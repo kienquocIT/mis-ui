@@ -8,13 +8,13 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: resp.detail}, 'success')
+                        $.fn.notifyB({description: resp.detail}, 'success')
                         setTimeout(location.reload.bind(location), 1000);
                         window.location = '/company/list';
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: errs.detail}, 'failure')
+                    $.fn.notifyB({description: errs.detail}, 'failure')
                 }
             )
     });
@@ -28,4 +28,8 @@ $(document).ready(function () {
     if ($("input[name=representative_fullname]").val() === '') {
         $("input[name=representative_fullname]").val($("input[name=default_representative_name]").val())
     }
+
+    $x.fn.renderCodeBreadcrumb({
+        'code': $('#form-code').val(),
+    })
 });

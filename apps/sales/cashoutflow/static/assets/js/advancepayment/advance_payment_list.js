@@ -4,6 +4,8 @@ $(document).ready(function () {
             let dtb = $('#datatable_advance_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
                 reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -18,29 +20,34 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
                         data: 'code',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span class="text-secondary">` + row.code + `</span>`
+                        render: (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<a class="link-primary underline_hover" target="_blank" href="` + $('#datatable_advance_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
+                        render: (data, type, row) => {
+                            return `<span><b>` + row.title + `</b></span>`
                         }
                     },
                     {
                         data: 'advance_payment_type',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            let to_employee_trans = $('#datatable_advance_list').attr('data-type-translate-employee')
-                            let to_supplier_trans = $('#datatable_advance_list').attr('data-type-translate-supplier')
+                        render: (data, type, row) => {
+                            let to_employee_trans = dtb.attr('data-type-translate-employee')
+                            let to_supplier_trans = dtb.attr('data-type-translate-supplier')
                             if (row.advance_payment_type === 'To Employee') {
                                 return `<span class="badge badge-soft-danger">` + to_employee_trans + `</span>`
-                            }
-                            else if (row.advance_payment_type === 'To Supplier') {
+                            } else if (row.advance_payment_type === 'To Supplier') {
                                 return `<span class="badge badge-soft-blue">` + to_supplier_trans + `</span>`
                             }
                         }
@@ -48,50 +55,54 @@ $(document).ready(function () {
                     {
                         data: 'date_created',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span>` + row.date_created.split(' ')[0] + `</span>`
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                     {
                         data: 'return_date',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span>` + row.return_date.split(' ')[0] + `</span>`
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                     {
                         data: 'advance_value',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.advance_value + `"></span>`
+                        render: (data, type, row) => {
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['advance_value']}"></span>`
                         }
                     },
                     {
                         data: 'to_payment',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
+                        render: (data, type, row) => {
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['to_payment']}"></span>`
                         }
                     },
                     {
                         data: 'return_value',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.return_value + `"></span>`
+                        render: (data, type, row) => {
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['return_value']}"></span>`
                         }
                     },
                     {
                         data: 'remain_value',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.remain_value + `"></span>`
+                        render: (data, type, row) => {
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['remain_value']}"></span>`
                         }
                     },
                     {
                         data: 'status',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            let approved_trans = $('#datatable_advance_list').attr('data-type-translate-approved')
+                        render: (data, type, row) => {
+                            let approved_trans = dtb.attr('data-type-translate-approved')
                             if (row.money_gave) {
                                 return `<span class="text-success">` + approved_trans + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
                             }
@@ -101,35 +112,39 @@ $(document).ready(function () {
                     {
                         data: '',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            let sale_code_id = '';
+                        render: (data, type, row) => {
+                            let sale_code_id = null;
+                            let sale_code_title = null;
+                            let sale_code_CODE = null;
                             let is_close = false;
-                            if (row.sale_order_mapped) {
-                                sale_code_id = row.sale_order_mapped.id;
-                                is_close = row.sale_order_mapped.is_close;
+                            let flag = null;
+                            if (Object.keys(row?.['opportunity_mapped']).length !== 0) {
+                                sale_code_id = row?.['opportunity_mapped'].id;
+                                sale_code_title = row?.['opportunity_mapped'].title;
+                                sale_code_CODE = row?.['opportunity_mapped'].code;
+                                is_close = row?.['opportunity_mapped']['is_close'];
+                                flag = 0;
                             }
-                            if (row.quotation_mapped) {
-                                sale_code_id = row.quotation_mapped.id;
-                                is_close = row.quotation_mapped.is_close;
+                            else if (Object.keys(row?.['quotation_mapped']).length !== 0) {
+                                sale_code_id = row?.['quotation_mapped'].id;
+                                sale_code_title = row?.['quotation_mapped'].title;
+                                sale_code_CODE = row?.['quotation_mapped'].code;
+                                is_close = row?.['quotation_mapped']['is_close'];
+                                flag = 1;
                             }
-                            if (row.opportunity_mapped) {
-                                sale_code_id = row.opportunity_mapped.id;
-                                is_close = row.opportunity_mapped.is_close;
+                            else if (Object.keys(row?.['sale_order_mapped']).length !== 0) {
+                                sale_code_id = row?.['sale_order_mapped'].id;
+                                sale_code_title = row?.['sale_order_mapped'].title;
+                                sale_code_CODE = row?.['sale_order_mapped'].code;
+                                is_close = row?.['sale_order_mapped']['is_close'];
+                                flag = 2;
                             }
-                            let disabled = ''
-                            if (is_close) {
-                                disabled = 'disabled';
-                            }
-                            return `<div class="dropdown">
+
+
+                            return `<div class="dropdown ap-shortcut" data-ap-id="${row.id}" data-sale-code-id="${sale_code_id}" data-sale-code-title="${sale_code_title}" data-sale-code-CODE="${sale_code_CODE}" data-flag="${flag}">
                                         <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
-                                        <div class="dropdown-menu">
-                                             <a class="dropdown-item ` + disabled + `" href="{0}">Return</a>
-                                             <a class="dropdown-item" href="{1}">To Payment</a>
-                                        </div>
-                                    </div>`.format_by_idx(
-                                        $('#datatable_advance_list').data('return-advance') + `?advance_payment_id={0}`.format_by_idx(row.id),
-                                $('#datatable_advance_list').attr('data-payment') + `?sale_code_mapped={0}`.format_by_idx(sale_code_id)
-                            );
+                                        <div class="dropdown-menu"></div>
+                                    </div>`;
                         }
                     }
                 ],
@@ -139,3 +154,133 @@ $(document).ready(function () {
 
     loadAdvancePaymentList();
 })
+
+$(document).on("click", '.ap-shortcut', function() {
+    let html_to_payment = '';
+    if ($(this).attr('data-sale-code-id') !== null && $(this).attr('data-sale-code-title') !== null && $(this).attr('data-sale-code-CODE') !== null && $(this).attr('data-flag') !== null) {
+        let sale_code_mapped_obj = JSON.stringify({'id': $(this).attr('data-sale-code-id'), 'title': $(this).attr('data-sale-code-title'), 'code': $(this).attr('data-sale-code-CODE')});
+        if ($(this).attr('data-flag') === '0') {
+            let dataInitSaleCode = JSON.parse(sale_code_mapped_obj);
+            let list_from_app = 'cashoutflow.payment.create';
+
+            let dataParam = {'list_from_app': list_from_app}
+            let opp_list_ajax= $.fn.callAjax2({
+                url: $('#script-url').attr('data-url-opp-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                            return data?.['opportunity_list'];
+                        }
+                    }
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([opp_list_ajax]).then(
+                (results) => {
+                    let opp_list = results[0];
+                    for (let opp of opp_list) {
+                        if (opp?.['id'] === dataInitSaleCode?.['id']) {
+                            let sale_code_mapped= encodeURIComponent(sale_code_mapped_obj);
+                            let quotation= encodeURIComponent(JSON.stringify(opp?.['quotation']));
+                            let sale_order= encodeURIComponent(JSON.stringify(opp?.['sale_order']));
+                            let ap_mapped_id= encodeURIComponent(JSON.stringify({'id': $(this).attr('data-ap-id')}));
+                            html_to_payment = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-payment')}?ap_mapped_id=${ap_mapped_id}&sale_code_mapped=${sale_code_mapped}&type=${$(this).attr('data-flag')}&quotation_object=${quotation}&sale_order_object=${sale_order}">To Payment</a>`;
+                            $(this).find('.dropdown-menu').html(html_to_payment)
+                            break;
+                        }
+                    }
+                })
+        }
+        else if ($(this).attr('data-flag') === '1') {
+            let dataInitSaleCode = JSON.parse(sale_code_mapped_obj);
+
+            let quo_list_ajax= $.fn.callAjax2({
+                url: $('#script-url').attr('data-url-quo-list'),
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data= $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
+                            let result = [];
+                            for (let i = 0; i < data?.['quotation_list'].length; i++) {
+                                if (Object.keys(data?.['quotation_list'][i]?.['opportunity']).length === 0) {
+                                    result.push(data?.['quotation_list'][i])
+                                }
+                            }
+                            return result;
+                        }
+                    }
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([quo_list_ajax]).then(
+                (results) => {
+                    let quo_list= results[0];
+                    for (let quo of quo_list) {
+                        if (quo?.['id'] === dataInitSaleCode?.['id']) {
+                            let sale_code_mapped= encodeURIComponent(sale_code_mapped_obj);
+                            let quotation= encodeURIComponent(JSON.stringify(quo?.['quotation']));
+                            let sale_order= encodeURIComponent(JSON.stringify(quo?.['sale_order']));
+                            let ap_mapped_id= encodeURIComponent(JSON.stringify({'id': $(this).attr('data-ap-id')}));
+                            html_to_payment = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-payment')}?ap_mapped_id=${ap_mapped_id}&sale_code_mapped=${sale_code_mapped}&type=${$(this).attr('data-flag')}&quotation_object=${quotation}&sale_order_object=${sale_order}">To Payment</a>`;
+                            $(this).find('.dropdown-menu').html(html_to_payment)
+                            break;
+                        }
+                    }
+                })
+        }
+        else if ($(this).attr('data-flag') === '2') {
+            let dataInitSaleCode = JSON.parse(sale_code_mapped_obj);
+
+            let so_list_ajax= $.fn.callAjax2({
+                url: $('#script-url').attr('data-url-so-list'),
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data= $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('sale_order_list') && Array.isArray(data.sale_order_list)) {
+                            let result = [];
+                            for (let i = 0; i < data?.['sale_order_list'].length; i++) {
+                                if (Object.keys(data?.['sale_order_list'][i]?.['opportunity']).length === 0) {
+                                    result.push(data?.['sale_order_list'][i])
+                                }
+                            }
+                            return result;
+                        }
+                    }
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([so_list_ajax]).then(
+                (results) => {
+                    let so_list= results[0];
+                    for (let so of so_list) {
+                        if (so?.['id'] === dataInitSaleCode?.['id']) {
+                            let sale_code_mapped= encodeURIComponent(sale_code_mapped_obj);
+                            let quotation= encodeURIComponent(JSON.stringify(so?.['quotation']));
+                            let sale_order= encodeURIComponent(JSON.stringify(so?.['sale_order']));
+                            let ap_mapped_id= encodeURIComponent(JSON.stringify({'id': $(this).attr('data-ap-id')}));
+                            html_to_payment = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-payment')}?ap_mapped_id=${ap_mapped_id}&sale_code_mapped=${sale_code_mapped}&type=${$(this).attr('data-flag')}&quotation_object=${quotation}&sale_order_object=${sale_order}">To Payment</a>`;
+                            $(this).find('.dropdown-menu').html(html_to_payment)
+                            break;
+                        }
+                    }
+                })
+        }
+    }
+});

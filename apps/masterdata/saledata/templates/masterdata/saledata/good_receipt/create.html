@@ -48,7 +48,7 @@
                     <label class="form-label w-100" for="supplier">{% trans 'Supplier' %}</label>
                     <div class="input-affix-wrapper">
                         <div class="dropdown input-prefix">
-                            <i class="fas fa-info-circle"
+                            <i class="fas fa-info-circle text-blue"
                                data-bs-toggle="dropdown"
                                data-dropdown-animation
                                aria-haspopup="true"
@@ -58,15 +58,15 @@
                             <div class="dropdown-menu w-210p mt-2">
                             </div>
                         </div>
-                        <select class="form-control dropdown-select_two"
+                        <select class="form-control select2"
                                 name="supplier"
                                 id="supplier"
                                 data-multiple="false"
-                                data-prefix="account_list"
+                                data-keyResp="account_list"
                                 data-url="{% url 'AccountListAPI' %}"
                                 data-link-detail="{% url 'AccountDetail' 1 %}"
                                 data-params="{'account_types_mapped__account_type_order': 1}"
-                                data-format="name"
+                                data-keyText="name"
                                 data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
                         ></select>
                     </div>
@@ -220,11 +220,9 @@
 {% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <!-- Select2 -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/goodreceipt/good-receipt.js' %}"></script>
 {% endblock %}
 

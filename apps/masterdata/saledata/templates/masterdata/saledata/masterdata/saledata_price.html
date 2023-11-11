@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Master Data Price' %}{% endblock %}
 {% block cssHeader %}
     <!-- Select2 -->
     <link
@@ -14,44 +15,38 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="btn-show-modal-create" type="button" data-bs-toggle="modal" data-bs-target="#modal-section-currency"
-            style="background: none; border: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a href="#" id="btn-show-modal-create" data-bs-toggle="modal" data-bs-target="#modal-section-currency">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
             </span>
         </span>
-    </button>
-
-    <button id="btn-save-payment" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Save"
-            style="background: none; border: none; display: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
-            </span>
-        </span>
-    </button>
-
-    <button id="btn-back-payment" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Back"
-            style="background: none; border: none; display: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="arrow-left"></i>
-            </span>
-        </span>
-    </button>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
+        </button>
     </a>
+
+
+    <button class="btn btn-outline-primary" type="button" id="btn-save-payment" style="display: none">
+    <span>
+        <span>{% trans 'Save' %}</span>
+        <span class="icon">
+            <i class="fa-regular fa-floppy-disk"></i>
+        </span>
+    </span>
+    </button>
+
+    <a href="#" id="btn-back-payment" style="display: none">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+
 {% endblock %}
 {% block pageContent %}
     <div class="row">
@@ -227,8 +222,10 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label required">{% trans "Name" %}</label>
-                                <select class="form-control" id="currency_name" name="currency"
-                                        data-url="{% url "BaseCurrencyListAPI" %}" data-method="GET">
+                                <select class="form-select" id="currency_name" name="currency"
+                                        data-url="{% url "BaseCurrencyListAPI" %}" data-method="GET"
+                                        data-keyResp="base_currencies"
+                                >
                                 </select>
                             </div>
                             <div class="form-group">
@@ -254,8 +251,9 @@
                             {#                            </div>#}
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -280,20 +278,17 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}<span
-                                        class="field-required">*</span></label>
+                                <label class="form-label required">{% trans "Name" %}</label>
                                 <input class="form-control" type="text" name="title"
                                        placeholder="Input name">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans "Code" %}<span
-                                        class="field-required">*</span></label>
+                                <label class="form-label required">{% trans "Code" %}</label>
                                 <input class="form-control" type="text" name="code"
                                        placeholder="VAT-10" oninput="this.value=this.value.toUpperCase()">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans "Rate" %}<span
-                                        class="field-required">*</span></label>
+                                <label class="form-label required">{% trans "Rate" %}</label>
                                 <span class="input-affix-wrapper affix-wth-text">
                                     <input class="form-control" type="number" name="rate" placeholder="10"
                                            min="0" step="0.1">
@@ -301,27 +296,28 @@
                                 </span>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans "Category" %}<span
-                                        class="field-required">*</span></label>
-                                <select class="form-select select-box-category" name="category"></select>
+                                <label class="form-label required">{% trans "Category" %}</label>
+                                <select class="form-select" id="select-box-category-create" name="category"
+                                        data-method="GET"
+                                        data-url="{% url 'TaxCategoryListAPI' %}"
+                                        data-keyResp="tax_category_list"></select>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans "Type" %}<span
-                                        class="field-required">*</span></label>
+                                <label class="form-label required">{% trans "Type" %}</label>
                                 <select
                                         class="form-control select2 select2-multiple"
                                         multiple
                                         data-placeholder="{% trans 'Choose' %}"
                                         id="select-box-type"
+                                        name="tax_type"
                                 >
-                                    <option value="0">{% trans 'Sale' %}</option>
-                                    <option value="1">{% trans 'Purchase' %}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -358,8 +354,9 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -433,8 +430,9 @@
                         <input type="hidden" id="is_edited">
                     </form>
                     <div class="modal-footer">
-                        <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="reset" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
@@ -456,62 +454,50 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="form-group inp-can-edit">
-                                <label class="form-label">{% trans "Name" %}<span
-                                        class="field-required">*</span></label>
-                                <div class="readonly">
-                                    <input class="form-control" type="text" name="title"
-                                           placeholder="Input name" id="tax-title" readonly>
-                                    <span></span>
-                                </div>
-
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Name" %}</label>
+                                <input class="form-control" type="text" name="title"
+                                       placeholder="Input name" id="tax-title">
                             </div>
-                            <div class="form-group inp-can-edit">
-                                <label class="form-label">{% trans "Code" %}<span
-                                        class="field-required">*</span></label>
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Code" %}</label>
                                 <input class="form-control" type="text" name="code"
                                        placeholder="VAT-10" oninput="this.value=this.value.toUpperCase()" id="tax-code"
                                        readonly>
                             </div>
-                            <div class="form-group inp-can-edit">
-                                <label class="form-label">{% trans "Rate" %}<span
-                                        class="field-required">*</span></label>
-                                <div class="readonly">
-                                    <input class="form-control" type="number" name="rate" placeholder="10"
-                                           min="0" step="0.1" id="tax-rate" readonly>
-                                    <span></span>
-                                </div>
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Rate" %}</label>
+                                <input class="form-control" type="number" name="rate" placeholder="10"
+                                       min="0" step="0.1" id="tax-rate">
                             </div>
-                            <div class="form-group inp-can-edit">
-                                <label class="form-label">{% trans "Category" %}<span
-                                        class="field-required">*</span></label>
-                                <div class="readonly">
-                                    <select class="form-select select-box-category" name="category" id="tax-category"
-                                            disabled></select>
-                                    <span></span>
-                                </div>
-                            </div>
-                            <div class="form-group inp-can-edit">
-                                <label class="form-label">{% trans "Type" %}<span
-                                        class="field-required">*</span></label>
-                                <div class="readonly">
-                                    <select
-                                            class="form-control select2 select2-multiple"
-                                            multiple
-                                            data-placeholder="{% trans 'Choose' %}"
-                                            id="tax-type" disabled>
-                                        <option value="0">{% trans 'Sale' %}</option>
-                                        <option value="1">{% trans 'Purchase' %}</option>
-                                    </select>
-                                    <span></span>
-                                </div>
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Category" %}</label>
 
+                                <select
+                                        class="form-select"
+                                        id="select-box-category-update"
+                                        name="category"
+                                        data-method="GET"
+                                        data-url="{% url 'TaxCategoryListAPI' %}"
+                                        data-keyResp="tax_category_list"
+                                ></select>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Type" %}</label>
+                                <select
+                                        class="form-select"
+                                        multiple
+                                        id="tax-type"
+                                        name="tax_type">
+                                </select>
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -537,26 +523,20 @@
                         <div class="row">
                             <div class="form-group inp-can-edit">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <div class="readonly">
-                                    <input class="form-control" type="text" name="title"
-                                       placeholder="Input name" id="tax-category-title" readonly>
-                                    <span></span>
-                                </div>
-
+                                <input class="form-control" type="text" name="title"
+                                       placeholder="Input name" id="tax-category-title">
                             </div>
                             <div class="form-group inp-can-edit">
                                 <label class="form-label">{% trans "Description" %}</label>
-                                <div class="readonly">
-                                    <textarea class="form-control" name="description" id="tax-category-description"
-                                          readonly></textarea>
-                                    <span></span>
-                                </div>
+                                <textarea class="form-control" name="description"
+                                          id="tax-category-description"></textarea>
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -577,6 +557,8 @@
            data-terms-mess-2="{% trans 'Amount do not math with before setup' %}"
            data-terms-mess-3="{% trans 'Balance only selected one time per setup' %}"
            data-valid-percent="{% trans 'Total Percent setup is large than 100% please verify again!' %}"
+           data-trans-sale="{% trans 'Sale' %}"
+           data-trans-purchase="{% trans 'Purchase' %}"
     >
     <input type="hidden" id="url-factory"
            data-detail="{% url 'PaymentsTermsDetailAPI' 1 %}">

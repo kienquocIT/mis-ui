@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <!--CONDITIONS--- css file for component conditions -->
+    <link href="{% static 'assets/css/plugins/conditions/conditions.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/plugins/form-layout.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block pageContent %}
+    <div class="hidden">
+        {% include 'plugins/condition/condition_component.html' %}
+        <div class="row mb-5">
+            <h6>Enter currency number with "." is decimal fraction</h6>
+            <span class="mask-money" data-init-money=4156.789></span>
+            <label for="enterCurrency" class="form-label">Enter number then "Focus Out"</label>
+            <input
+                    type="text" class="mb-2 form-control mask-money" value=123456.789 id="enterCurrency"
+            />
+            <button class="btn btn-soft-primary mb-2" id="btnReloadMaskMoney">Reload Mask Money</button>
+            <button class="btn btn-soft-primary mb-2" id="btnChangeMaskMoney">Change Mask Money</button>
+        </div>
+
+        <hr>
+        <h3>Drag and Drop sample</h3>
+        <div class="row mb-5">
+            <div class="col-6">
+                {% include 'extends/form-layouts/design-dnd.html' %}
+            </div>
+            <div class="col-6">
+                {% include 'extends/form-layouts/design-preview.html' %}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <h1>Diagram</h1>
+            <div></div>
+            <p id="doc-data"></p>
+            <p id="doc-app"></p>
+            <p id="doc-state-current"></p>
+            <p id="doc-flow"></p>
+            <table
+                    id="tbl-load-data-nek"
+                    class="table nowrap w-100 mb-5"
+                    data-method="GET"
+            >
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'Overview' %}</th>
+                    <th>{% trans 'Connection' %}</th>
+                    <th>{% trans 'Assignee & Zone' %}</th>
+                    <th>{% trans 'Log' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <h1 class="h1">DataTable</h1>
+        <hr>
+        <table
+                id="table_districts_list"
+                class="table nowrap w-100"
+                data-url="{% url 'CityListAPI' %}"
+                data-url-city="{% url 'CityListAPI' %}"
+        >
+            <thead>
+            <tr class="row-custom-filter">
+                <td colspan="3">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label for="CustomSelect2" class="form-label">{% trans 'Country' %}</label>
+                                <select
+                                        id="CustomSelect2"
+                                        class="select-custom-filter"
+                                        data-url="{% url 'CountryListAPI' %}"
+                                        data-keyResp="countries"
+                                        data-keyParam="country_id__in" multiple
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label for="CustomSelect1" class="form-label">{% trans 'City' %}</label>
+                                <select
+                                        id="CustomSelect1"
+                                        class="select-custom-filter"
+                                        data-url="{% url 'CityListAPI' %}"
+                                        data-keyResp="cities"
+                                        data-keyParam="id__in" multiple
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Zip Code' %}</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    {% csrf_token %}
+
+    <div class="mt-15">
+        <div class="separator-full"></div>
+        <div id="timeline-container-force-position"></div>
+    </div>
+
+    <h2 class="h2 mt-15 mb-6" >Button add group cho page</h2>
+    <section class="wrap_btn-add-group pb-30" id="btn_add_group">
+        {% url 'CityListAPI' as s_url %}
+        {% url 'CityListAPI' as s_draft_url %}
+        {%  include 'extends/utility/save_btn.html' with s_class='add_cl_custom' s_frm_txt='form_btn_name' s_btn_name='Add new btn text here' %}
+    </section>
+{% endblock %}
+
+{% block jsFooter %}
+    <!-- Customize JS -->
+    <script>
+        $('#btnReloadMaskMoney').click(function (event) {
+            event.preventDefault();
+            $.fn.initMaskMoney2();
+        });
+        $('#btnChangeMaskMoney').click(function (event) {
+            event.preventDefault();
+            $('#enterCurrency').attr('value', 1234.56);
+            $.fn.initMaskMoney2();
+        });
+
+        // setup datatable
+        $(document).ready(function () {
+            let tbl = $('#table_districts_list');
+            let url_list = tbl.attr('data-url');
+            let urlCities = tbl.attr('data-url-city');
+            tbl.DataTableDefault({
+                useDataServer: true,
+                ajax: {
+                    url: url_list,
+                    type: 'GET',
+                    dataSrc: "data.cities"
+                },
+                columns: [
+                    {
+                        "orderable": false,
+                        "width": "10%",
+                        'render': (data, type, row, meta) => {
+                            let currentId = "chk_sel_" + String(meta.row + 1)
+                            return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${
+                                currentId}" data-id=` + row.id + `><label class="form-check-label" for="${
+                                currentId}"></label></span>`;
+                        }
+                    },
+                    {
+                        "width": "60%",
+                        'data': 'title',
+                        render: (data, type, row, meta) => {
+                            return `${data}`
+                        },
+                        'colFilter': {
+                            keyText: "title",
+                            keyId: "id",
+                            keyResp: "cities",
+                            dataUrl: urlCities,
+                            keyParam: "id__in",
+                        },
+                    },
+                    {
+                        "width": "30%",
+                        'data': 'zip_code',
+                        render: (data, type, row, meta) => {
+                            return `<span><b>${data}</b></span>`
+                        }
+                    }
+                ],
+            });
+        });
+    </script>
+
+    <!--CONDITIONS--- required js file for component conditions -->
+    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
+    <!--END CONDITIONS -->
+
+    <script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/form-layout.js' %}"></script>
+
+
+    <script>
+
+        let htmlTramSo1 = `
+            <div>Noi dung so 11111</div>
+            <div>Noi dung so 22222</div>
+            <div>Noi dung so 33333</div>
+            <div>Noi dung so 44444</div>
+        `;
+
+        let mainEle = $('#timeline-container-force-position');
+        mainEle.on('timelineMe.done', function(){
+            $(this).find('.timeline-me-label').each(function(){
+                if ($(this).text().length === 0){
+                    $(this).closest('.timeline-me-label-wrapper').fadeOut();
+                }
+            })
+        })
+        mainEle.timelineMe({
+            items: [
+                {
+                    type: 'bigItem',
+                    shortContent: `<div class="p-3"><div class="text-center">2023/09/19 10:00 AM</div><div style="text-align: center;">Kết Thúc</div></div>`,
+                },
+                {
+                    type: 'bigItem',
+                    shortContent: `<div class="p-3"><div class="text-center">2023/09/19 10:00 AM</div><div style="text-align: center;">Phê Duyệt</div></div>`,
+                },
+                {
+                    type: 'smallItem',
+                    label: '2023/09/19 15:00',
+                    shortContent: 'short description 2',
+                    fullContent: htmlTramSo1,
+                    forcePosition: 'right',
+                    showMore: '<a class="custom-show-btn">+</a>',
+                    showLess: '<a class="custom-show-btn">-</a>'
+                },
+                {
+                    type: 'smallItem',
+                    label: '2023/09/19 10:00',
+                    labelClsName: 'station-system',
+                    shortContent: 'short description 1',
+                    fullContent: '<span style="color: red;">big description 1</span>: Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                    forcePosition: 'right',
+                    showMore: '<a class="custom-show-btn">+</a>',
+                    showLess: '<a class="custom-show-btn">-</a>'
+                },
+                {
+                    type: 'bigItem',
+                    shortContent: `<div class="p-3"><div class="text-center">2023/09/19 10:00 AM</div><div style="text-align: center;">Trạm Số 1</div></div>`,
+                },
+                {
+                    type: 'bigItem',
+                    shortContent: `<div class="p-3"><div class="text-center">2023/09/19 10:00 AM</div><div style="text-align: center;">Khởi Tạo</div></div>`,
+                },
+            ]
+        });
+    </script>
+{% endblock %}

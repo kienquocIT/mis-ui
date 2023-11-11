@@ -1,0 +1,648 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm_good_receipt_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'GoodsReceiptListAPI' %}"
+            data-url-redirect="{% url 'GoodsReceiptList' %}"
+            data-method="POST"
+            id="frm_good_receipt_create"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="container-fluid">
+            <div class="collapse multi-collapse show" id="collapseExample">
+                <div class="row" id="common-information-area">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
+                                <div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="input-prefix">
+                                            <i class="fas fa-file-import text-orange"></i>
+                                        </div>
+                                        <select
+                                            class="form-select"
+                                            id="box-good-receipt-type"
+                                            data-url=""
+                                            data-method="GET"
+                                            data-link-detail=""
+                                            name="good_receipt_type"
+                                            data-keyResp=""
+                                            required
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_received" id="good-receipt-date-received"
+                                           class="form-control date-picker" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="bi bi-calendar-week"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="good-receipt-title">{% trans 'Title' %}</label>
+                                <div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <input
+                                            type="text" class="form-control"
+                                            name="title"
+                                            id="good-receipt-title"
+                                            required
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
+                                <div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <input
+                                            type="text" class="form-control"
+                                            name="remarks"
+                                            id="good-receipt-note"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row custom-area" id="custom-area-1">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans 'Purchase order' %}</label>
+                                <div class="input-group more-information-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="dropstart input-prefix">
+                                            <i
+                                                    class="fas fa-info-circle more-information"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                        <select
+                                                class="form-select"
+                                                id="box-good-receipt-purchase-order"
+                                                data-url="{% url "PurchaseOrderSaleListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "PurchaseOrderDetail" 1 %}"
+                                                name="purchase_order"
+                                                data-keyResp="purchase_order_sale_list"
+                                                required
+                                        ></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Purchase Request' %}</label>
+                                <div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
+                                        <input type="hidden" id="purchase_requests_data">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-good-receipt-supplier">{% trans 'Supplier' %}</label>
+                                <div class="input-group more-information-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="dropstart input-prefix">
+                                            <i
+                                                    class="fas fa-info-circle more-information"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                        <select
+                                                class="form-select"
+                                                id="box-good-receipt-supplier"
+                                                data-url="{% url "AccountForSaleListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "AccountDetail" 1 %}"
+                                                name="supplier"
+                                                data-keyResp="account_sale_list"
+                                                required
+                                        ></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row custom-area" id="custom-area-2" hidden>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-good-receipt-inventory-adjustment"
+                                        data-url="{% url 'InventoryAdjustmentOtherListAPI' %}"
+                                        data-method="GET"
+                                        data-link-detail=""
+                                        name="inventory_adjustment"
+                                        data-keyResp="inventory_adjustment_other_list"
+                                        required
+                                >
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row custom-area" id="custom-area-3" hidden>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="box-good-receipt-product-order">{% trans 'Product order' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-good-receipt-product-order"
+                                        data-url=""
+                                        data-method="GET"
+                                        data-link-detail=""
+                                        name="product_order"
+                                        data-keyResp=""
+                                        required
+                                >
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Production report' %}</label>
+                                <div class="input-group more-information-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="dropstart input-prefix">
+                                            <i
+                                                    class="fas fa-info-circle more-information"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                        <select
+                                                class="form-select"
+                                                id=""
+                                                data-url="{% url "ProductForSaleListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "ProductDetail" 1 %}"
+                                                name="production_report"
+                                                data-keyResp=""
+                                                required
+                                        ></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row collapse-arrow mt-2 mb-2">
+                <i
+                    class="fas fa-angle-double-up"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseExample"
+                    data-bs-placement="top"
+                    aria-expanded="false"
+                    aria-controls="collapseExample"
+                    id="info-collapse"
+                ></i>
+            </div>
+            <div class="row">
+                <div class="row">
+                    <ul class="nav nav-light nav-tabs" id="quotation-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                                <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                                <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="tab-content-quotation-product">
+                    <div class="tab-pane fade show active" id="tab_line_detail">
+                        <div class="row custom-line-detail" id="custom-line-detail-1">
+                            <div class="row">
+                                <table
+                                    id="datable-good-receipt-line-detail-po"
+                                    class="table nowrap w-100 mb-5"
+                                    data-url=""
+                                    data-method="get"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th class="w-5">#</th>
+                                        <th class="w-15 required">{% trans 'Product' %}</th>
+                                        <th class="w-20">{% trans 'Description' %}</th>
+                                        <th class="w-5 required">UoM</th>
+                                        <th class="w-5 required">{% trans 'Quantity' %}</th>
+                                        <th class="w-20 required">{% trans 'Unit Price' %}</th>
+                                        <th class="w-5">{% trans 'Tax' %}</th>
+                                        <th class="w-20">{% trans 'Subtotal Price' %}</th>
+                                        <th class="w-5">{% trans 'Actions' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="2" class="align-text-top">
+                                            <div class="row">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-outline-primary"
+                                                    id="btn-edit-product-good-receipt"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#productModalCenter"
+                                                >
+                                                    <span><span>{% trans 'Edit' %} {% trans 'Product' %}</span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span></span>
+                                                </button>
+                                            </div>
+                                        </th>
+                                        <th colspan="2"></th>
+                                        <th colspan="5">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="good-receipt-product-pretax-amount"></span></h6>
+                                                    <input id="good-receipt-product-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                    <input type="hidden" id="good-receipt-final-revenue-before-tax">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="good-receipt-product-taxes"></span></h6>
+                                                    <input id="good-receipt-product-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="good-receipt-product-total"></span></h6>
+                                                    <input id="good-receipt-product-total-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row custom-line-detail" id="custom-line-detail-2" hidden>
+                            <div class="row">
+                                <table
+                                    id="datable-good-receipt-line-detail-ia"
+                                    class="table nowrap w-100 mb-5"
+                                    data-url=""
+                                    data-method="get"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th class="w-5">#</th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th class="w-10">{% trans 'Description' %}</th>
+                                        <th>UoM</th>
+                                        <th>{% trans 'Quantity' %}</th>
+                                        <th>{% trans 'Warehouse' %}</th>
+                                        <th class="w-20 required">{% trans 'Unit Cost' %}</th>
+                                        <th class="w-20">{% trans 'Subtotal Price' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row custom-line-detail" id="custom-line-detail-3" hidden></div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_attachment">
+                        <div class="form-group">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <button
+                                            type="button"
+                                            class="form-control btn btn-info btn-file-upload text-white"
+                                            data-f-input-name="attachments"
+                                            data-f-input-required="false"
+                                            data-f-input-disabled="false"
+                                            data-f-name-ele-id="#fileNameTestDisplay"
+                                    >{% trans 'Click here to upload image' %}</button>
+                                    <p id="fileNameTestDisplay"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input
+            type="hidden"
+            id="app-trans-factory"
+            data-view-detail-info="{% trans 'View detail' %}"
+            data-more-information="{% trans 'More information' %}"
+            data-validate-import="{% trans 'Quantity import must be less than equal remain quantity' %}"
+            data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
+            data-select="{% trans 'Select' %}"
+            data-lot-exist="{% trans 'Lot number is exist' %}"
+            data-serial-exist="{% trans 'Serial number is exist' %}"
+            data-lot-different="{% trans 'Lot number must be different' %}"
+            data-serial-different="{% trans 'Serial number must be different' %}"
+        >
+        <input
+            type="hidden"
+            id="data-init-product"
+            data-url="{% url "ProductForSaleListAPI" %}"
+            data-link-detail="{% url "ProductDetail" 1 %}"
+            data-method="GET"
+        >
+        <input
+            type="hidden"
+            id="data-init-uom"
+            data-url="{% url "UnitOfMeasureListAPI" %}"
+            data-method="GET"
+        >
+        <input
+            type="hidden"
+            id="data-init-tax"
+            data-url="{% url "TaxListAPI" %}"
+            data-method="GET"
+        >
+        <input
+            type="hidden"
+            id="data-init-warehouse"
+            data-url="{% url "WareHouseListAPI" %}"
+            data-method="GET"
+        >
+        <input
+            type="hidden"
+            id="data-init-purchase-order-products"
+        >
+        <input
+            type="hidden"
+            id="data-submit-pr-warehouse"
+        >
+        <input type="hidden" id="url-factory"
+           data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
+           data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
+        >
+
+
+        <div class="modal fade mt-5" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row ml-2"><h6>{% trans 'Product list' %}</h6></div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="row mb-2">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
+                                        <table
+                                            id="datable-good-receipt-po-product"
+                                            class="table nowrap w-100"
+                                            data-url="{% url "PurchaseOrderProductListAPI" %}"
+                                            data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>{% trans 'Product' %}</th>
+                                                <th>{% trans 'UOM' %} (PO)</th>
+                                                <th>{% trans 'Quantity' %} (PO)</th>
+                                                <th>{% trans 'Received' %}</th>
+                                                <th>{% trans 'Remain' %}</th>
+                                                <th>{% trans 'This time' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-pr" hidden>
+                                        <table
+                                            id="datable-good-receipt-purchase-request"
+                                            class="table nowrap w-100"
+                                            data-url="{% url "PurchaseRequestListAPI" %}"
+                                            data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>PR</th>
+                                                <th>{% trans 'UOM' %}</th>
+                                                <th>{% trans 'Quantity' %}</th>
+                                                <th>{% trans 'Received' %}</th>
+                                                <th>{% trans 'Remain' %}</th>
+                                                <th>{% trans 'This time' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row mb-2">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
+                                        <table
+                                            id="datable-good-receipt-warehouse"
+                                            class="table nowrap w-100"
+                                            data-url="{% url 'WareHouseListAPI' %}"
+                                            data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>{% trans 'Code' %} WH</th>
+                                                <th>{% trans 'Name' %} WH</th>
+                                                <th>{% trans 'Note' %}</th>
+                                                <th>{% trans 'Quantity' %}</th>
+                                                <th>{% trans 'UOM' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row" id="btn-lot-serial-area">
+                                        <div class="row mb-1">
+                                            <button
+                                                type="button"
+                                                class="btn btn-success btn-animated bg-green-light-5 w-40"
+                                                id="btn-manage-by-lot"
+                                                hidden
+                                            >
+                                                <span class="text-teal">
+                                                    <span>{% trans 'Manage by lot' %}</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="row">
+                                            <button
+                                                type="button"
+                                                class="btn btn-success btn-animated bg-green-light-5 w-40"
+                                                id="btn-manage-by-serial"
+                                                hidden
+                                            >
+                                                <span class="text-teal">
+                                                    <span>{% trans 'Manage by serial' %}</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-lot-serial" hidden>
+                                        <button
+                                            type="button"
+                                            class="btn btn-success bg-green-light-5 w-40"
+                                            id="btn-no-manage-by-lot-serial"
+                                            hidden
+                                        >
+                                            <span class="text-teal">
+                                                <span>{% trans 'No manage by lot/serial' %}</span>
+                                            </span>
+                                        </button>
+                                        <div id="table-good-receipt-manage-lot-area" hidden>
+                                            <table
+                                                id="datable-good-receipt-manage-lot"
+                                                class="table nowrap w-100"
+                                                data-url=""
+                                                data-method="GET"
+                                            >
+                                                <thead>
+                                                <tr>
+                                                    <th class="required w-40">{% trans 'Lot number' %}</th>
+                                                    <th class="required w-10">{% trans 'Quantity' %}</th>
+                                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                                    <th class="w-20">{% trans 'Expiration date' %}</th>
+                                                    <th class="w-20">{% trans 'Manufacturing date' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-lot">
+                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            </button>
+                                        </div>
+
+                                        <div id="table-good-receipt-manage-serial-area" hidden>
+                                            <table
+                                                id="datable-good-receipt-manage-serial"
+                                                class="table nowrap w-100"
+                                                data-url=""
+                                                data-method="GET"
+                                            >
+                                                <thead>
+                                                <tr>
+                                                    <th class="required">{% trans 'Vendor serial no.' %}</th>
+                                                    <th class="required">{% trans 'Serial no.' %}</th>
+                                                    <th>{% trans 'UOM' %}</th>
+                                                    <th>{% trans 'Expiration date' %}</th>
+                                                    <th>{% trans 'Mfr date' %}</th>
+                                                    <th>{% trans 'Warranty start' %}</th>
+                                                    <th>{% trans 'Warranty end' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-serial">
+                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="modal">{% trans 'Next' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+{% endblock %}
+
+
+{% block jsFooter %}
+
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_common.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_create.js' %}"></script>
+{% endblock %}

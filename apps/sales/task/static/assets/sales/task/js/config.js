@@ -3,8 +3,11 @@ $(function(){
     const $form = $('#formOpportunityTaskConfig')
 
     // get config detail
-    $.fn.showLoading();
-    $.fn.callAjax($form.attr('data-url'),'GET',).then(
+    WindowControl.showLoading();
+    $.fn.callAjax2({
+        url: $form.attr('data-url'),
+        'method': 'GET'
+    }).then(
         (resp) => {
             const $todoElm = $('#todo_list')
             let data = $.fn.switcherResp(resp);
@@ -22,6 +25,7 @@ $(function(){
                 for (let item of itemSystem){
                     let elm = $($('#item_config').html())
                     elm.addClass('ui-state-system')
+                    elm.attr('data-id', item.id)
                     elm.find('.hand-drag, .icon-close').addClass('blur-35')
                     elm.find('.status_name, .status_translate_name').attr('contenteditable', false)
                     elm.find('.status_name').html(item.name)
@@ -65,11 +69,11 @@ $(function(){
                     placeholder: 'ui-state-highlight',
                     cancel: '.icon-close,[contenteditable]'
                 });
-                $.fn.hideLoading();
+                WindowControl.hideLoading();
             }
         },
         (errs) => {
-            $.fn.hideLoading();
+            WindowControl.hideLoading();
         }
     );
 
@@ -93,32 +97,32 @@ $(function(){
     $('#in_assign_any').on('change', function(){
         if (!this.checked){
             $('[name="in_assign_opt"]').prop('disabled', false)
+            $('[name="in_assign_opt"][value="1"]').prop('checked', true)
         }else $('[name="in_assign_opt"]').prop('disabled', true).prop('checked', false)
     })
     // block assign over Opp
     $('#out_assign_any').on('change', function(){
         if (!this.checked){
             $('[name="out_assign_opt"]').prop('disabled', false)
+            $('[name="out_assign_opt"][value="1"]').prop('checked', true)
         }else $('[name="out_assign_opt"]').prop('disabled', true).prop('checked', false)
     })
 
     $form.on('submit', function(e){
         const $todoElm = $('#todo_list')
-        $.fn.showLoading();
+        WindowControl.showLoading();
         e.preventDefault();
         let list_status = []
         let order = 1
         $('li', $todoElm).each(function(){
             let $this = $(this)
-            if (!$this.hasClass('ui-state-system')){
-                list_status.push({
-                    'id': $this.attr('data-id') ? $this.attr('data-id') : '',
-                    'name': $('.status_name', $this).text(),
-                    'translate_name': $('.status_translate_name', $this).text(),
-                    'order': order,
-                    'task_color': $('.picker_color', $this).val(),
-                })
-            }
+            list_status.push({
+                'id': $this.attr('data-id') ? $this.attr('data-id') : '',
+                'order': order,
+                'task_color': $('.picker_color', $this).val(),
+                'name': $('.status_name', $this).text(),
+                'translate_name': $('.status_translate_name', $this).text(),
+            })
             order += 1
         })
         let inOpt = 0, $inOpt = $('[name="in_assign_opt"]:checked');
@@ -134,19 +138,23 @@ $(function(){
             'is_out_assign': $('#out_assign_any').prop('checked'),
             'out_assign_opt': parseInt(outOpt),
         }
-        $.fn.callAjax($form.attr('data-url'), 'PUT', putData, true)
+        $.fn.callAjax2({
+            'url': $form.attr('data-url'),
+            'method': 'PUT',
+            'data': putData
+        })
             .then(
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.hideLoading();
-                        $.fn.notifyPopup({description: data.message}, 'success');
+                        WindowControl.hideLoading();
+                        $.fn.notifyB({description: data.message}, 'success');
                     }
                 }
             )
             .catch((err) => {
                 console.log(err)
-                $.fn.hideLoading();
+                WindowControl.hideLoading();
             })
     })
 }, jQuery);

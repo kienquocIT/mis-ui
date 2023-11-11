@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <style>
+        .row-error-disabled {
+            position: relative;
+        }
+
+        .row-error-disabled::after {
+            content: "{% trans 'This application has been disabled for you or cannot be found!' %}";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-role">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
+            </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            id="form-role"
+            data-method="PUT"
+            data-url="{% url "RoleUpdateAPI" pk=pk %}"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-xs-6 col-md-4 form-group">
+                <label class="form-label required" for="title">{% trans 'Role name' %}</label>
+                <input class="form-control" name="title" id="title">
+            </div>
+            <div class="col-12 col-xs-6 col-md-4 form-group">
+                <label class="form-label required" for="abbreviation">{% trans 'Abbreviation' %}</label>
+                <input class="form-control" name="abbreviation" id="abbreviation">
+            </div>
+            <div class="col-12 col-xs-6 col-md-4 form-group">
+                <label class="form-label" for="selectMembers">{% trans 'Member' %}</label>
+                <select
+                        id="selectMembers"
+                        data-url="{% url 'EmployeeListAPI' %}"
+                        data-method="GET"
+                        data-keyResp="employee_list"
+                        data-keyText="full_name"
+                        multiple
+                ></select>
+            </div>
+        </div>
+        {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with range_allowed="1,2,3,4" get_from='role' active_tab='tab-app' actions_enabled=True plan_app_enabled=True permit_enabled=True %}
+    </form>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        let urlDetail = "{% url 'RoleDetailAPI' pk=pk %}";
+    </script>
+    <script src="{% static 'assets/js/core/hr/role/roles_common.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/role/role_update.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
+{% endblock %}

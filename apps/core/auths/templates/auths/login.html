@@ -38,7 +38,13 @@
                 <div class="row">
                     <div class="col-sm-10 position-relative mx-auto">
                         <div class="auth-content py-8">
-                            <form class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST">
+                            <form
+                                    class="w-100"
+                                    id="form-login"
+                                    data-url="{% url 'AuthLogin' %}" data-url-redirect="" data-method="POST"
+                                    autocomplete="off"
+                                    data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
+                            >
                                 <div class="row">
                                     <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
                                         <div class="text-center mb-7">
@@ -54,7 +60,7 @@
                                             <div class="card-body">
                                                 <h4 class="mb-4 text-center">{% trans 'Sign in to your account' %}</h4>
                                                 <div class="row gx-3">
-                                                    <div class="form-group col-lg-12">
+                                                    <div class="form-group col-lg-12 d-none">
                                                         <div class="form-label-group">
                                                             <label>Tenant</label>
                                                         </div>
@@ -127,6 +133,7 @@
                                                         >{% trans 'Keep me logged in' %}</label>
                                                     </div>
                                                 </div>
+                                                <div id="recapcha" class="mt-1 mb-1"></div>
                                                 <input
                                                         type="submit" class="btn btn-primary btn-uppercase btn-block"
                                                         value="{% trans 'Login' %}" tabindex="4"
@@ -181,14 +188,34 @@
     <!-- /spinner loading -->
     <div class="hidden">
         <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
-        <span id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"></span>
+        <span
+                id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"
+                data-captcha-require="{% trans 'Please solve the captcha.' %}"
+        ></span>
     </div>
 </div>
 <!-- /Wrapper -->
 
+<script type="text/javascript">
+    let ggCaptChaEnabled = "{{ captcha_enabled }}";
+    var onloadCallback = function () {
+        if (ggCaptChaEnabled === 'True') {
+            grecaptcha.render('recapcha', {
+                'sitekey': '{{ secret_key_gg }}'
+            });
+        }
+    };
+</script>
+<script
+        src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer
+>
+</script>
+
 {% compress js %}
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
 
     <!-- Bootstrap Core JS -->
     <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
@@ -247,26 +274,11 @@
                 }
             }
 
-            getCtxAjax() {
-                return {
-                    url: this.dataUrl,
-                    method: this.dataMethod,
-                    data: this.dataForm,
-                    redirect: this.dataUrlRedirect,
-                    redirectTimeout: this.dataRedirectTimeout
-                }
-            }
-
             getUrlDetail(pk) {
                 if (this.dataUrlDetail && pk) {
                     return this.dataUrlDetail + pk.toString();
                 }
                 return null;
-            }
-
-            getUrlDetailWithDataUrl(attrName, pk) {
-                let data_url = this.convertUrlDetail(this.formSelected.attr('data-url-' + attrName));
-                return data_url + pk.toString()
             }
 
             static getUrlDetailWithID(url, pk) {
@@ -275,21 +287,6 @@
                     return url + pk.toString();
                 }
                 return null;
-            }
-
-            convertUrlDetail(url) {
-                return url.split("/").slice(0, -1).join("/") + "/";
-            }
-
-            appendFilter(url, filter) {
-                let params = '';
-                Object.keys(filter).map((key) => {
-                    params += `{0}={1}`.format_by_idx(key, encodeURIComponent(filter[key]))
-                })
-                if (params) {
-                    return '{0}?{1}'.format_by_idx(url, params);
-                }
-                return url;
             }
         }
 
@@ -403,75 +400,152 @@
     <!-- Custom JS -->
     <script>
         $(document).ready(function () {
-            $('#form-login').submit(function (event) {
+            let hasAppendSubCode = false;
+            let allowAutoTenant = '{{allow_auto_tenant}}';
+            let mainDomain = '{{ui_domain}}';
+            let hostData = window.location.hostname;
+            let autoTenant = '{{allow_auto_tenant}}';
+            let tenantSelEle = $('#tenant-select');
+            let frmLoginEle = $('#form-login');
+
+            frmLoginEle.submit(function (event) {
                 event.preventDefault();
-                $.fn.showLoadingLogin();
-                let frm = new SetupFormSubmitLogin($(this));
-                if (frm.dataUrl && frm.dataMethod) {
-                    $.fn.callAjaxLogin(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
-                        (resp) => {
-                            let data = resp.data;
-                            if (data.status === 200) {
-                                localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
-                                $.fn.notifyBLogin({description: data.detail}, 'success');
-                                let path_redirect = "/";
-                                const params = Object.fromEntries(new URLSearchParams(location.search));
-                                if (params.next) {
-                                    path_redirect = params.next;
-                                }
-                                $.fn.redirectUrlLogin(path_redirect, 800);
-                            }
+
+                let state = false;
+                if (ggCaptChaEnabled === 'True') {
+                    let response = grecaptcha.getResponse();
+                    if (!response) {
+                        $.fn.notifyBLogin({
+                            'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                        }, 'failure');
+                        return false;
+                    } else {
+                        state = true;
+                    }
+                } else {
+                    state = true;
+                }
+
+                if (state) {
+                    $.fn.showLoadingLogin();
+                    let frm = new SetupFormSubmitLogin($(this));
+                    if (frm.dataUrl && frm.dataMethod) {
+                        if (ggCaptChaEnabled === 'True' && !frm.dataForm['g-recaptcha-response']) {
+                            $.fn.notifyBLogin({
+                                'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                            }, 'failure');
                             setTimeout(
                                 () => {
                                     $.fn.hideLoadingLogin();
                                 }, 2000
                             )
-                        },
-                        (err) => {
-                            $.fn.notifyBLogin({
-                                'description': $('#errLoginIncorrect').attr('data-value')
-                            }, 'failure')
-                            $.fn.hideLoadingLogin();
+                            return false;
                         }
-                    )
-                } else throw 'Setup call raise exception with URL or method is incorrect.!';
-            });
-
-            function loadTenantList() {
-                let tenant_element = $('#tenant-select');
-                if (tenant_element.attr('data-loaded') !== true) {
-                    $.fn.callAjaxLogin(tenant_element.attr('data-url'), tenant_element.attr('data-method')).then(
-                        (resp) => {
-                            let beforeTenantCode = localStorage.getItem('tenant_code');
-                            let code_list = [];
-                            tenant_element.attr('data-loaded', true);
-                            tenant_element.children().remove();
-                            resp.result.map((element) => {
-                                if (beforeTenantCode && element.code === beforeTenantCode) {
-                                    tenant_element.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
-                                } else {
-                                    tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
-                                }
-                                code_list.push(element.code);
-                            });
-
-                            let tenant_code = window.location.hostname.split(".");
-                            if (tenant_code) {
-                                let code_selected = tenant_code[0].toUpperCase();
-                                if (code_list.indexOf(code_selected) !== -1) {
-                                    tenant_element.find('option[value=' + code_selected + ']').attr('selected', 'selected');
-                                }
+                        $.fn.callAjaxLogin(
+                            frm.dataUrl,
+                            frm.dataMethod,
+                            {
+                                ...frm.dataForm,
+                                'g_recaptcha_response': frm.dataForm?.['g-recaptcha-response'] || ''
                             }
-                            {#tenant_element.children().last().attr('selected', 'selected');#}
-                        },
-                        (err) => {
-                            tenant_element.attr('data-loaded', false);
+                        ).then(
+                            (resp) => {
+                                let data = resp.data;
+                                if (data.status === 200) {
+                                    localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
+                                    $.fn.notifyBLogin({description: data.detail}, 'success');
+                                    let path_redirect = "/";
+                                    const params = Object.fromEntries(new URLSearchParams(location.search));
+                                    if (params.next) {
+                                        path_redirect = params.next;
+                                    }
+                                    $.fn.redirectUrlLogin(
+                                        path_redirect, 800
+                                    );
+                                }
+                                setTimeout(
+                                    () => {
+                                        $.fn.hideLoadingLogin();
+                                    }, 2000
+                                )
+                            },
+                            (err) => {
+                                $.fn.notifyBLogin({
+                                    'description': $('#errLoginIncorrect').attr('data-value')
+                                }, 'failure')
+                                $.fn.hideLoadingLogin();
+                            }
+                        )
+                    } else throw 'Setup call raise exception with URL or method is incorrect.!';
+                }
+            })
+
+            function loadTenantList(is_show_group = true) {
+                if (is_show_group === true) tenantSelEle.closest('.form-group').removeClass('d-none');
+                return $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
+                    (resp) => {
+                        let beforeTenantCode = localStorage.getItem('tenant_code');
+                        let code_list = [];
+                        tenantSelEle.attr('data-loaded', true);
+                        tenantSelEle.children().remove();
+                        resp.result.map((element) => {
+                            if (beforeTenantCode && element.code === beforeTenantCode) {
+                                tenantSelEle.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                            } else {
+                                tenantSelEle.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                            }
+                            code_list.push(element.code);
+                        });
+
+                        let tenant_code = window.location.hostname.split(".");
+                        if (tenant_code) {
+                            let code_selected = tenant_code[0].toUpperCase();
+                            if (code_list.indexOf(code_selected) !== -1) {
+                                tenantSelEle.find('option[value=' + code_selected + ']').attr('selected', 'selected');
+                            }
                         }
-                    )
+                    },
+                    (err) => {
+                        tenantSelEle.attr('data-loaded', false);
+                    }
+                )
+            }
+
+            function redirectToSelectTenant() {
+                if (allowAutoTenant !== 'True' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')) {
+                    let tenant_code = prompt('Tenant Code:');
+                    tenantSelEle.append(`<option value="${tenant_code}" selected></option>`);
+                } else {
+                    window.location.href = frmLoginEle.attr('data-url-select-tenant');
                 }
             }
 
-            loadTenantList();
+            if (autoTenant === 'True' && hostData.endsWith(mainDomain)) {
+                if (hostData.indexOf(mainDomain)) {
+                    loadTenantList(false).then(
+                        () => {
+                            let tenantCode = hostData.split(mainDomain)[0];
+                            if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
+
+                            let optOfCode = tenantSelEle.find(`option[value="${tenantCode}"]`);
+                            if (optOfCode.length > 0) {
+                                hasAppendSubCode = false;
+                                tenantSelEle.val(tenantCode).trigger('change');
+                            } else {
+                                {#redirectToSelectTenant();#}
+                                $.fn.notifyBLogin({
+                                    'description': 'The tenant is not found or was disabled!',
+                                }, 'failure')
+                            }
+                        }
+                    )
+
+                } else {
+                    redirectToSelectTenant();
+                }
+            } else {
+                redirectToSelectTenant();
+            }
         });
     </script>
 {% endcompress %}

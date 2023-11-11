@@ -6,6 +6,7 @@ $(function () {
             let $table = $('#table_sale_order_list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -19,79 +20,102 @@ $(function () {
                 },
                 columnDefs: [
                     {
-                        "width": "5%",
+                        "width": "10%",
                         "targets": 0
                     }, {
-                        "width": "10%",
+                        "width": "20%",
                         "targets": 1
                     }, {
-                        "width": "25%",
+                        "width": "20%",
                         "targets": 2
                     }, {
-                        "width": "35%",
+                        "width": "15%",
                         "targets": 3
                     }, {
                         "width": "10%",
                         "targets": 4
                     }, {
-                        "width": "10%",
+                        "width": "15%",
                         "targets": 5,
+                    },
+                    {
+                        "width": "5%",
+                        "targets": 6,
+                    },
+                    {
+                        "width": "5%",
+                        "targets": 7,
                     }
                 ],
                 columns: [
                     {
                         targets: 0,
                         render: (data, type, row) => {
-                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.code}</a>`
+                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
-                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.title}</a>`
+                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
                         targets: 2,
                         render: (data, type, row) => {
-                            return `<p>${row.customer.title}</p>`
+                            let ele = `<p></p>`;
+                            if (Object.keys(row?.['customer']).length !== 0) {
+                                ele = `<p>${row?.['customer']?.['title']}</p>`;
+                            }
+                            return ele;
                         }
                     },
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            return `<p>${row.sale_person.full_name}</p>`
+                            let ele = `<p></p>`;
+                            if (Object.keys(row?.['sale_person']).length !== 0) {
+                                ele = `<p>${row?.['sale_person']?.['full_name']}</p>`;
+                            }
+                            return ele;
                         }
                     },
                     {
                         targets: 4,
+                        data: "date_created",
                         render: (data, type, row) => {
-                            let date_created = moment(row.date_created).format('YYYY-MM-DD');
-                            return `<p>${date_created}</p>`
+                            return $x.fn.displayRelativeTime(data);
                         }
                     },
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${parseFloat(row.total_product)}"></span>`
+                            return `<span class="mask-money" data-init-money="${parseFloat(row?.['total_product'])}"></span>`
                         }
                     },
                     {
                         targets: 6,
                         render: (data, type, row) => {
-                            return `<p>${row.system_status}</p>`
+                            let status_data = {
+                                "Draft": "badge badge-soft-light",
+                                "Created": "badge badge-soft-primary",
+                                "Added": "badge badge-soft-info",
+                                "Finish": "badge badge-soft-success",
+                                "Cancel": "badge badge-soft-danger",
+                            }
+                            return `<span class="${status_data[row?.['system_status']]}">${row?.['system_status']}</span>`;
                         }
                     },
                     {
                         targets: 7,
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row.id)
+                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             const $elmTrans = $('#trans-factory')
                             let isDelivery = ''
-                            if (!row.delivery_call)
+                            if (!row.delivery_call && ['Added', 'Finish'].includes(row?.['system_status']))
                                 isDelivery = '<div class="dropdown-divider"></div>' +
                                     `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`
                             return `<div class="dropdown">
@@ -108,7 +132,7 @@ $(function () {
                 ],
                 rowCallback: (row, data) => {
                     $('#create_delivery', row).off().on('click', function () {
-                        $.fn.showLoading();
+                        WindowControl.showLoading();
                         const url = $('#sale-order-link').attr('data-create-delivery').replace('1', data.id);
                         $.fn.callAjax(
                             url,
@@ -118,20 +142,22 @@ $(function () {
                                 let data = $.fn.switcherResp(resp);
                                 if (data?.['status'] === 200) {
                                     const config = data?.config
-                                    let url_redirect = config?.is_picking ? $('#sale-order-link').attr('data-picking') :
-                                        $('#sale-order-link').attr('data-delivery')
+                                    let url_redirect = $('#sale-order-link').attr('data-delivery')
+                                    if (config?.is_picking && !data?.['is_not_picking'])
+                                        url_redirect = $('#sale-order-link').attr('data-picking')
                                     setTimeout(() => {
                                         window.location.href = url_redirect
                                     }, 1000);
                                 }
                             },
-                            (errs) => {
-                                $.fn.hideLoading();
+                            (err) => {
+                                WindowControl.hideLoading();
+                                $.fn.notifyB({"description": err?.data?.errors, "timeout": 3500}, 'failure')
                             }
                         )
                     })
                 },
-                drawCallback: function (row, data) {
+                drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
                 },
@@ -139,12 +165,6 @@ $(function () {
         }
 
         loadDbl();
-
-        $('#search_input').on('keyup', function (evt) {
-            const keycode = evt.which;
-            if (keycode === 13) //enter to search
-                _dataTable.ajax.reload()
-        });
 
     });
 });

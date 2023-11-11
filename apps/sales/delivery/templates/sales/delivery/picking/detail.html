@@ -4,7 +4,6 @@
 {% block title %}{% trans 'Picking detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
@@ -17,24 +16,16 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="picking_form"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <a href="{% url 'OrderPickingEdit' data.pk %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
         </span>
-    </button>
-    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
-            data-bs-placement="top" title="Back" data-bs-original-title="Back"
-            onclick="window.history.go(-1); return false;">
-        <span class="icon">
-            <span class="feather-icon">
-                <i class="fas fa-step-backward"></i>
-            </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <form id="picking_form" data-url="{% url 'OrderPickingDetailAPI' data.pk %}" data-method="PUT" method="post"
@@ -56,10 +47,12 @@
                 <div class="form-group">
                     <label for="inputEstimateDeliveryDate"
                            class="form-label">{% trans 'Estimate Delivery Date' %}</label>
-                    <input
-                            type="text" name="estimated_delivery_date" id="inputEstimateDeliveryDate"
-                            class="form-control date-picker"
-                    />
+                    <div class="input-affix-wrapper">
+                        <input type="text" name="estimated_delivery_date" id="inputEstimateDeliveryDate"
+                                class="form-control date-picker" autocomplete="off" disabled/>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+
                 </div>
             </div>
             <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
@@ -77,10 +70,11 @@
                                 <div class="dropdown-menu w-210p mt-2"></div>
                             </div>
                             <select class="form-control dropdown-select_two" name="warehouse_id" id="inputWareHouse"
-                                    data-prefix="warehouse_list"
+                                    data-keyResp="warehouse_list"
                                     data-url="{% url 'WareHouseListAPI' %}"
                                     data-link-detail="{% url 'WareHouseList' %}?show_detail=1"
                                     data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+                                    disabled
                             >
                             </select>
                         </div>
@@ -96,13 +90,28 @@
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
                 <div class="form-group">
                     <label for="inputToLocation" class="form-label">{% trans 'To Location' %}</label>
-                    <textarea type="text" class="form-control" name="to_location" id="inputToLocation"></textarea>
+                    <textarea type="text" class="form-control" name="to_location" id="inputToLocation"
+                    readonly></textarea>
                 </div>
             </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
                 <div class="form-group">
                     <label for="inputRemarks" class="form-label">{% trans 'Notes' %}</label>
-                    <textarea class="form-control" name="remarks" id="inputRemarks"></textarea>
+                    <textarea class="form-control" name="remarks" id="inputRemarks" readonly></textarea>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputRemarks" class="form-label">{% trans 'Employee inherit' %}</label>
+                    <select class="form-select" name="employee_inherit" id="selectEmployeeInherit" disabled>
+                        <option value=""></option>
+                        {% if data.lead %}
+                            <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
+                        {% endif %}
+                        {% for item in data.person_list %}
+                            <option value="{{ item.id }}">{{ item.full_name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
         </div>
@@ -126,7 +135,7 @@
                     <tr>
                         <th>#</th>
                         <th>{% trans 'Product' %}
-                            <i class="fas fa-info-circle icon-info"
+                            <i class="fas fa-info-circle icon-info tit_visible_tb-head"
                                data-bs-toggle="tooltip"
                                data-bs-placement="bottom"
                                title="{% trans 'Press row here to open detail page.' %}"></i>
@@ -140,8 +149,10 @@
                                 <span class="mr-4">
                                     {% trans 'Done' %}
                                 </span>
-                                <span class="mr-2">{% trans 'All' %}</span>
-                                <input type="checkbox" id="idxDoneAll"/>
+                                <div class="tit_visible_tb-head">
+                                    <span class="mr-2">{% trans 'All' %}</span>
+                                    <input type="checkbox" id="idxDoneAll" disabled/>
+                                </div>
                             </div>
                         </th>
                     </tr>
@@ -163,19 +174,22 @@
            data-outstock="{% trans 'Product in Warehouse out of stock' %}"
            data-prod-outstock="{% trans 'Out of stock' %}"
            data-warehouse="{% trans 'Warehouse' %}"
-           data-stock="{% trans 'Available in Store place' %}"
+           data-stock="{% trans 'Stock' %}"
+           data-store="{% trans 'Store place' %}"
+           data-picking-area="{% trans 'Picking area' %}"
            data-view-detail="{% trans 'View detail' %}"
     >
-    <input type="hidden" id="url-factory"
-           data-warehouse-stock="{% url 'WarehouseProductAPI' %}"
-           data-product-detail="{% url 'ProductDetail' 1 %}">
+    <input
+            type="hidden" id="url-factory"
+            data-warehouse-stock="{% url 'WarehouseProductAPI' %}"
+            data-product-detail="{% url 'ProductDetail' 1 %}"
+            data-product-warehouse="{% url 'WarehouseGetProductsListAPI' %}"
+    >
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'sales/delivery/picking/detail.js' %}"></script>
 {% endblock %}
 

@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Purchase Quotation Request (Manual)' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .select2-container--default.select2-container--disabled .select2-selection--multiple {
+            background-color: white;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            border: 1px solid black;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-purchase-quotation-request">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="data-url-script"
+            data-pqr-type="1"
+            data-url-product="{% url 'ProductListAPI' %}"
+            data-url-tax="{% url 'TaxListAPI' %}"
+            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"></script>
+    <form id="form-create-purchase-quotation-request"
+          data-url="{% url 'PurchaseQuotationRequestListAPI' %}"
+          data-method="POST"
+          data-url-redirect="{% url "PurchaseQuotationRequestList" %}">
+        <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Name" %}</label>
+                        <input class="form-control" id="title">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Delivery date" %}</label>
+                        <input class="form-control" id="delivery_date">
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Status" %}</label>
+                                <input readonly class="form-control" id="status" value="Open">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Response status" %}</label>
+                                <input readonly class="form-control" id="response_status" value="Wait">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Note" %}</label>
+                        <textarea style="height: 38px" class="form-control" id="note"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+            <span class="icon">
+                <i class="fas fa-angle-double-up text-primary"></i>
+            </span>
+        </button>
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-icon nav-light">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_attachment">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_line_detail">
+                        <table class="table nowrap w-100" id="table-purchase-quotation-request-products-selected">
+                            <thead>
+                            <th></th>
+                            <th class="required">{% trans "Product" %}</th>
+                            <th>{% trans "Description" %}</th>
+                            <th class="required">{% trans "UoM" %}</th>
+                            <th class="required">{% trans "Quantity" %}</th>
+                            <th class="required">{% trans "PR Unit Price" %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{% trans 'If the products are merged, Default Unit Price will be got from the smallest UoM ratio product.' %}">
+                                </i>
+                            </th>
+                            <th>{% trans "Tax" %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{% trans 'If the products are merged, Default Tax will be got from the smallest UoM ratio product.' %}">
+                                </i>
+                            </th>
+                            <th class="required">{% trans "Subtotal Price" %}</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <button id="new-product-btn" class="btn btn-soft-primary mb-3" type="button">
+                            <span>
+                                <span>{% trans "New product" %}</span>
+                                <span class="icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </span>
+                            </span>
+                        </button>
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-8"></div>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card card-refresh">
+                                    <div class="refresh-container">
+                                        <div class="loader-pendulums"></div>
+                                    </div>
+                                    <div id="content-card" class="collapse show">
+                                        <div class="card-body text-primary">
+                                            <div class="row mb-3">
+                                                <div class="col-4">{% trans "Pretax price" %}</div>
+                                                <span class="col-8 text-right mask-money" id="pretax-value">0</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-4">{% trans "Taxes" %}</div>
+                                                <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                            </div>
+                                            <div class="dropdown-divider mb-3"></div>
+                                            <div class="row mb-3" style="font-weight: bold">
+                                                <div class="col-4">{% trans "Total" %}</div>
+                                                <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_block_attachment">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="file" id="input-file-now" class="dropify">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="modal fade mt-10" id="create_purchase_quotation_request_modal" tabindex="-1" role="dialog"
+             aria-labelledby="CreatePurchaseQuotationRequestModalModalForms" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Select items from Purchase Request' %}</h5>
+                        <button type="button" class="btn-close" id="close_modal_create_purchase_quotation_request" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-5"></div>
+                            <div class="col-7">
+                                <div class="form-check mt-2">
+                                    <input disabled type="checkbox" class="form-check-input" id="merge">
+                                    <label for="merge" class="text-primary">{% trans "merge same products in 1 line, convert to reference unit if there is more than 1 UoM" %}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="table-select-purchase-request-div">
+                            <div class="col-5" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
+                                <table id="table-select-purchase-request"
+                                       class="table nowrap w-100" data-method="GET"
+                                       data-url="{% url 'PurchaseRequestListAPI' %}"
+                                >
+                                    <thead>
+                                    <th>{% trans '#' %}</th>
+                                    <th>{% trans 'Code' %}</th>
+                                    <th>{% trans 'Name' %}</th>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="table-select-purchase-request-products-div" class="col-7" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
+                                <table id="table-select-purchase-request-products" class="table nowrap w-100" data-method="GET">
+                                    <thead>
+                                    <th>{% trans '#' %}</th>
+                                    <th>{% trans 'Product' %}</th>
+                                    <th>{% trans 'PR code' %}</th>
+                                    <th>{% trans 'UoM' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div id="table-select-purchase-request-products-for-merge-div" class="col-7" hidden style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
+                                <table id="table-select-purchase-request-products-for-merge" class="table nowrap w-100" data-method="GET">
+                                    <thead>
+                                    <th>{% trans '#' %}</th>
+                                    <th>{% trans 'Product' %}</th>
+                                    <th>{% trans 'PR code' %}</th>
+                                    <th>{% trans 'UoM' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary disabled" data-bs-dismiss="modal" aria-label="Close" id="btn_create_new_purchase_quotation_request">{% trans 'Next' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_common.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_create_manual.js' %}"></script>
+{% endblock %}

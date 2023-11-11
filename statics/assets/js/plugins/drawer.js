@@ -55,6 +55,11 @@ $(function () {
                 $('.ntt-drawer').css('top', heightNavHeader)
                     .css('height', "calc(100vh - " + (heightNavHeader + "px") + ")");
             }
+
+            // push first active tab to history | don't need to click to tab element
+            selectEle.find('.nav-tabs a[data-bs-toggle="tab"].active').each(function (){
+                $x.cls.window.pushHashUrl(this.hash);
+            })
         }
     }
 
@@ -64,6 +69,13 @@ $(function () {
     });
     $(document).on('click', '.ntt-drawer-close', function (event) {
         event.preventDefault();
+
+        // remove has URL when close
+        let hasStateInHere = $(this).closest('.ntt-drawer').find('.nav-tabs a[data-bs-toggle="tab"]').filter(function () {
+            return this.hash === $x.cls.window.getHashUrl();
+        }).length;
+        if (hasStateInHere > 0) $x.cls.window.removeHashUrl();
+
         $(this).closest('.ntt-drawer').toggleClass('open');
         $('.hk-wrapper').toggleClass('open');
     });

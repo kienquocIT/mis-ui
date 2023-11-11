@@ -72,7 +72,7 @@ $(document).ready(function () {
                 width: "25%",
                 render: (data, type, row) => {
                     if (data) {
-                        return $.fn.initElementInitSelect({
+                        return UtilControl.initElementInitSelect({
                             'onload': {
                                 'id': data.id,
                                 'title': data.title
@@ -106,9 +106,9 @@ $(document).ready(function () {
             $(this).prop("selectedIndex", -1);
             if (previousValue) $(this).val(previousValue);
         } else {
-            let rowData = $(this).getRowData();
+            let rowData = DTBControl.getRowData($(this));
             if (rowData.id) {
-                $.fn.showLoading();
+                WindowControl.showLoading();
                 let urlBase = $('#url-factory').attr('data-url-app-workflow-detail');
                 let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, rowData.id);
                 $.fn.callAjax(urlData, 'PUT', {'mode': valId}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
@@ -119,11 +119,11 @@ $(document).ready(function () {
                         }, 'success');
                     }
                     setTimeout(() => {
-                        $.fn.hideLoading();
+                        WindowControl.hideLoading();
                     }, 1000,)
                 }, (errs) => {
                     if (previousValue) $(this).val(previousValue);
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 })
 
             }
@@ -138,9 +138,9 @@ $(document).ready(function () {
             $(this).prop("selectedIndex", -1);
             if (previousValue) $(this).val(previousValue);
         } else {
-            let rowData = $(this).getRowData();
+            let rowData = DTBControl.getRowData($(this));
             if (rowData.id) {
-                $.fn.showLoading();
+                WindowControl.showLoading();
                 let urlBase = $('#url-factory').attr('data-url-app-workflow-detail');
                 let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, rowData.id);
                 $.fn.callAjax(urlData, 'PUT', {'workflow_currently': valId}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
@@ -151,10 +151,10 @@ $(document).ready(function () {
                         }, 'success');
                     }
                     setTimeout(() => {
-                        $.fn.hideLoading();
+                        WindowControl.hideLoading();
                     }, 1000,)
                 }, (errs) => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 })
 
             }
@@ -166,7 +166,7 @@ $(document).ready(function () {
     $(document).on('click', '.btn-collapse-app-wf', function (event) {
         event.preventDefault();
 
-        let idTbl = $.fn.generateRandomString(12);
+        let idTbl = UtilControl.generateRandomString(12);
         let trEle = $(this).closest('tr');
         let iconEle = $(this).find('.icon-collapse-app-wf');
 
@@ -192,7 +192,7 @@ $(document).ready(function () {
                     `<tr class="child-workflow-list"><td colspan="4"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div></td></tr>`
                 );
 
-                let rowData = $(this).getRowData();
+                let rowData = DTBControl.getRowData($(this));
                 let placeGetData = $('#url-factory');
                 let urlData = placeGetData.attr('data-url-workflow-list');
                 let urlWorkflowDetail = placeGetData.attr('data-url-workflow-detail');
@@ -256,12 +256,12 @@ $(document).ready(function () {
     // EVENT IN LINE WORKFLOW LIST
     $(document).on('click', '.btn-delete-wf', function (event) {
         event.preventDefault();
-        let rowData = $(this).getRowData();
+        let rowData = DTBControl.getRowData($(this));
         alert('Delete WF: ' + rowData?.['title']);
     });
     $(document).on('click', '.btn-change-wf-doc', function (event) {
         event.preventDefault();
-        let rowData = $(this).getRowData();
+        let rowData = DTBControl.getRowData($(this));
         alert('Change WF of doc: ' + rowData?.['title']);
     });
 
@@ -269,7 +269,7 @@ $(document).ready(function () {
     //      ACTION: INSERT RUNTIME OBJ LIST TO NEXT ROW (OF WORKFLOW LIST)
     $(document).on('click', '.btn-collapse-doc-wf', function (event) {
         event.preventDefault();
-        let idTbl = $.fn.generateRandomString(12);
+        let idTbl = UtilControl.generateRandomString(12);
         let trEle = $(this).closest('tr');
         let iconEle = $(this).find('.icon-collapse-doc-wf');
         iconEle.toggleClass('fa-caret-right').toggleClass('fa-caret-down');
@@ -294,7 +294,7 @@ $(document).ready(function () {
                     `<tr class="child-workflow-list"><td colspan="6"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div></td></tr>`
                 )
 
-                let rowData = $(this).getRowData();
+                let rowData = DTBControl.getRowData($(this));
                 let urlRuntimeList = $('#url-factory').attr('data-url-workflow-runtime-list');
                 $('#' + idTbl).DataTableDefault({
                     ajax: {
@@ -338,10 +338,7 @@ $(document).ready(function () {
                             data: "date_created",
                             title: "Posting date",
                             render: (data, type, row) => {
-                                if (data) {
-                                    return data;
-                                }
-                                return 'Ngày tạo nè';
+                                return $x.fn.displayRelativeTime(data);
                             }
                         },
                         {
@@ -395,7 +392,7 @@ $(document).ready(function () {
         //         let dtlSub = `<table id="${idTbl}" class="table nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
         //         $(this).closest('tr').after(`<tr class="child-workflow-list"><td colspan="6"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5">${dtlSub}</div></td></tr>`)
         //
-        //         let rowData = $(this).getRowData();
+        //         let rowData = DTBControl.getRowData($(this));
         //         let urlRuntimeList = $('#url-factory').attr('data-url-workflow-runtime-list');
         //         $('#' + idTbl).DataTableDefault({
         //             ajax: {

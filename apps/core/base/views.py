@@ -13,12 +13,8 @@ class PlanListAPI(APIView):
         is_api=True
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.PLAN_LIST, user=request.user).get()
-        if resp.state:
-            return {'plan_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.PLAN_LIST, user=request.user).get()
+        return resp.auto_return(key_success='plan_list')
 
 
 # Tenant application list
@@ -28,12 +24,18 @@ class TenantApplicationListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.TENANT_APPLICATION_LIST, user=request.user).get()
-        if resp.state:
-            return {'tenant_application_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.TENANT_APPLICATION_LIST, user=request.user).get()
+        return resp.auto_return(key_success='tenant_application_list')
+
+
+class ApplicationDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.APPLICATION_DETAIL.fill_key(pk=pk), user=request.user).get()
+        return resp.auto_return(key_success='application_detail')
 
 
 # Application properties list
@@ -43,13 +45,10 @@ class ApplicationPropertyListAPI(APIView):
         is_api=True
     )
     def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(url=ApiURL.APPLICATION_PROPERTY_LIST, user=request.user).get(data)
-        if resp.state:
-            return {'application_property_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.APPLICATION_PROPERTY_LIST, user=request.user).get(
+            request.query_params.dict()
+        )
+        return resp.auto_return(key_success='application_property_list')
 
 
 class ApplicationPropertyEmployeeListAPI(APIView):
@@ -58,12 +57,8 @@ class ApplicationPropertyEmployeeListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PROPERTY_EMPLOYEE_LIST).get()
-        if resp.state:
-            return {'property_employee_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.APPLICATION_PROPERTY_EMPLOYEE_LIST).get()
+        return resp.auto_return(key_success='property_employee_list')
 
 
 class ApplicationPermissionAPI(APIView):
@@ -73,12 +68,8 @@ class ApplicationPermissionAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PERMISSION).get(data)
-        if resp.state:
-            return {'perm_per_app': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.APPLICATION_PERMISSION).get(data)
+        return resp.auto_return(key_success='perm_per_app')
 
 
 class CountryListAPI(APIView):
@@ -87,12 +78,8 @@ class CountryListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.COUNTRIES, user=request.user).get()
-        if resp.state:
-            return {'countries': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.COUNTRIES, user=request.user).get()
+        return resp.auto_return(key_success='countries')
 
 
 class CityListAPI(APIView):
@@ -101,12 +88,8 @@ class CityListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.CITIES, user=request.user).get()
-        if resp.state:
-            return {'cities': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.CITIES, user=request.user).get()
+        return resp.auto_return(key_success='cities')
 
 
 class DistrictListAPI(APIView):
@@ -115,13 +98,18 @@ class DistrictListAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DISTRICTS + pk).get()  # noqa
-        if resp.state:
-            return {'districts': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        else:
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DISTRICTS).get(data={'city_id': pk})
+        return resp.auto_return(key_success='districts')
+
+
+class DistrictAllListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DISTRICTS).get()
+        return resp.auto_return(key_success='districts')
 
 
 class WardListAPI(APIView):
@@ -130,13 +118,18 @@ class WardListAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.WARDS + pk, user=request.user).get()
-        if resp.state:
-            return {'wards': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        else:
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.WARDS, user=request.user).get(data={'district_id': pk})
+        return resp.auto_return(key_success='wards')
+
+
+class WardAllListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.WARDS, user=request.user).get()
+        return resp.auto_return(key_success='wards')
 
 
 class BaseCurrencyListAPI(APIView):
@@ -145,41 +138,29 @@ class BaseCurrencyListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.BASE_CURRENCY, user=request.user).get()
-        if resp.state:
-            return {'base_currencies': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.BASE_CURRENCY, user=request.user).get()
+        return resp.auto_return(key_success='base_currencies')
 
 
 class BaseItemUnitListAPI(APIView):
-    @mask_view( # noqa
+    @mask_view(  # noqa
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        if resp.state:
-            return {'base_item_units': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        return resp.auto_return(key_success='base_item_units')
 
 
 class IndicatorParamListAPI(APIView):
-    @mask_view( # noqa
+    @mask_view(  # noqa
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(url=ApiURL.INDICATOR_PARAM, user=request.user).get(data)
-        if resp.state:
-            return {'indicator_param': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.INDICATOR_PARAM, user=request.user).get(data)
+        return resp.auto_return(key_success='indicator_param')
 
 
 class ApplicationPropertyOpportunityListAPI(APIView):
@@ -188,10 +169,15 @@ class ApplicationPropertyOpportunityListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PROPERTY_OPPORTUNITY_LIST).get()
-        if resp.state:
-            return {'property_opportunity_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.APPLICATION_PROPERTY_OPPORTUNITY_LIST).get()
+        return resp.auto_return(key_success='property_opportunity_list')
 
+
+class ApplicationForOpportunityPermitListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.APPLICATION_OPPORTUNITY_PERMISSION).get()
+        return resp.auto_return(key_success='applications')

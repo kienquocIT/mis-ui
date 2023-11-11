@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Delivery Detail' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'sales/delivery/delivery/css/delivery.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
@@ -28,31 +29,33 @@
         .text-gift{
             color:#e95144;
         }
+        .txt-cl-black{
+            color: #0c0c0c!important;
+        }
+        #modal_choise_logistics .modal-body{
+            min-height: 280px;
+        }
+        .left-0{
+            left:0;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5 fw" type="submit" form="delivery_form"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="Save" data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <a href="{% url 'OrderDeliveryEdit' data.pk %}">
+    <button class="btn btn-outline-primary" id="btn-enable-edit">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
         </span>
     </button>
-    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
-            data-bs-placement="top" title="Back" data-bs-original-title="Back"
-            onclick="window.history.go(-1); return false;">
-        <span class="icon">
-            <span class="feather-icon">
-                <i class="fas fa-step-backward"></i>
-            </span>
-        </span>
-    </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="delivery_form" data-url="{% url 'OrderDeliveryDetailAPI' data.pk %}" data-method="PUT" method="post"
+    <form id="delivery_form" data-url="{% url 'OrderDeliveryDetailAPI' data.pk %}" data-method="GET" method="post"
           novalidate data-url-redirect="{% url 'OrderDeliveryList' %}">
         <div class="row mb-3">
             <div class="col-xs-12 col-sm-3 offset-sm-6 offset-xs-0">
@@ -73,9 +76,9 @@
                            class="form-label">{% trans 'Estimated Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                               class="form-control date-picker" autocomplete="off">
+                               class="form-control date-picker" autocomplete="off" disabled>
                         <span class="input-suffix">
-                            <i class="bi bi-calendar-week"></i>
+                            <i class="fa-solid fa-calendar-days"></i>
                         </span>
                     </div>
                 </div>
@@ -85,7 +88,7 @@
                     <label for="customer_id" class="form-label">{% trans 'to Customer' %}</label>
                     <div class="input-group">
                         <div class="dropdown input-group-text pointer">
-                            <i class="fas fa-info-circle"
+                            <i class="fas fa-info-circle text-blue"
                                data-bs-toggle="dropdown"
                                data-dropdown-animation
                                aria-haspopup="true"
@@ -102,9 +105,9 @@
                     <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="actual_delivery_date" id="inputActualDate"
-                               class="form-control date-picker" autocomplete="off">
+                               class="form-control date-picker" autocomplete="off" disabled>
                         <span class="input-suffix">
-                            <i class="bi bi-calendar-week"></i>
+                            <i class="fa-solid fa-calendar-days"></i>
                         </span>
                     </div>
                 </div>
@@ -114,7 +117,7 @@
                     <label for="contact_id" class="form-label">{% trans 'Contact name' %}</label>
                     <div class="input-group">
                         <div class="dropdown input-group-text pointer">
-                            <i class="fas fa-info-circle"
+                            <i class="fas fa-info-circle text-blue"
                                data-bs-toggle="dropdown"
                                data-dropdown-animation
                                aria-haspopup="true"
@@ -131,14 +134,26 @@
                     <p id="state"></p>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6 offset-sm-6 offset-xs-0">
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee inherit' %}</label>
+                    <select class="form-control" name="employee_inherit" id="selectEmployeeInherit" disabled>
+                        {% if data.lead %}
+                            <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
+                        {% endif %}
+                        {% for item in data.person_list %}
+                            <option value="{{ item.id }}">{{ item.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="textareaRemarks" class="form-label">{% trans 'Notes' %}</label>
-                    <textarea class="form-control" name="remarks" id="textareaRemarks"></textarea>
+                    <textarea class="form-control" name="remarks" id="textareaRemarks" readonly></textarea>
                 </div>
             </div>
         </div>
-
     </form>
     <div class="row mb-3">
         <ul class="nav nav-light nav-tabs">
@@ -187,24 +202,33 @@
                 </table>
             </div>
             <div class="tab-pane fade" id="tab_logistics">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center mb-2">
                     <label class="form-label" for="textareaShippingAddress">{% trans 'Shipping Address' %}</label>
-                    <span><i class="bi bi-pencil-square mr-2"></i>{% trans 'Change' %}</span>
+                    <span class="pointer logistics-btn"
+                          data-is-address="true"
+                          data-bs-toggle="modal"
+                          data-bs-target="#modal_choise_logistics"
+                    ><i class="fa-regular fa-pen-to-square mr-2"></i>{% trans 'Change' %}</span>
                 </div>
-                <textarea class="form-control" name="shipping_address" id="textareaShippingAddress"></textarea>
-                <div class="d-flex justify-content-between align-items-center">
+                <textarea class="form-control mb-3 txt-cl-black" name="shipping_address" id="textareaShippingAddress"
+                          disabled></textarea>
+                <div class="d-flex justify-content-between align-items-center mb-2">
                     <label class="form-label" for="textareaBilling">
                         {% trans 'Billing/Invoice Address' %}
                     </label>
-                    <span><i class="bi bi-pencil-square mr-2"></i>{% trans 'Change' %}</span>
+                    <span class="pointer logistics-btn"
+                          data-is-invoice="true"
+                          data-bs-toggle="modal"
+                          data-bs-target="#modal_choise_logistics"
+                    ><i class="fa-regular fa-pen-to-square mr-2"></i>{% trans 'Change' %}</span>
                 </div>
-                <textarea class="form-control" name="billing_address" id="textareaBilling"></textarea>
+                <textarea class="form-control txt-cl-black" name="billing_address" id="textareaBilling"
+                          disabled></textarea>
             </div>
             <div class="tab-pane fade" id="tab_attachment">
                 <div class="form-group">
                     <div class="col-4">
                         <div class="form-group">
-{#                            <label for="attachments" class="form-label">{% trans 'Click button to upload image' %}</label>#}
                             <button
                                     type="button"
                                     class="form-control btn btn-info btn-file-upload text-white"
@@ -216,52 +240,113 @@
                             <p id="fileNameTestDisplay"></p>
                         </div>
                     </div>
-
-                    {#                    <div id="upload-area" class="form-control">#}
-{#                        {% trans "Click here to upload image" %}#}
-{#                    </div>#}
-{#                    <input id="input-attachment" type="file" class="hidden" name="attachments">#}
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="warehouseStockModal" tabindex="-1" role="dialog"
-         aria-labelledby="warehouseStockModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal fade mt-5" id="warehouseStockModal" tabindex="-1" role="dialog" aria-labelledby="warehouseStockModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Get Product' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
             <div class="modal-body">
+                <div class="row ml-2"><h5>{% trans 'Get Product' %}</h5></div>
                 <p><a class="text-primary text-decoration-underline title_prod" href="#"></a></p>
-                <table id="productStockDetail" class="table w-100">
-                    <thead>
-                    <tr>
-                        <th>{% trans 'Warehouse Code' %}</th>
-                        <th>{% trans 'Warehouse Name' %}</th>
-                        <th><p>{% trans 'Stock' %}</p></th>
-                        <th>{% trans 'Get' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="2"><p style="text-align:right">{% trans 'Total' %}:</p></th>
-                            <th><b><i>0</i></b></th>
-                            <th><b><i>0</i></b></th>
-                        </tr>
-                    </tfoot>
-                </table>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-wh">
+                            <table id="productStockDetail" class="table w-100">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{% trans 'Warehouse Code' %}</th>
+                                    <th>{% trans 'Warehouse Name' %}</th>
+                                    <th><p class="stock-picked-exchange">{% trans 'Stock' %}</p></th>
+                                    <th>{% trans 'Get' %}</th>
+                                    <th>{% trans 'UOM' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3"><p style="text-align:right">{% trans 'Total' %}:</p></th>
+                                        <th><b><i>0</i></b></th>
+                                        <th><b><i>0</i></b></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-lot" hidden>
+                            <table
+                                id="datable-delivery-wh-lot"
+                                class="table nowrap w-100"
+                                data-url="{% url "WarehouseLotListAPI" %}"
+                                data-method="GET"
+                            >
+                                <thead>
+                                <tr>
+                                    <th class="w-20">{% trans 'Lot number' %}</th>
+                                    <th class="w-10">{% trans 'Quantity' %}</th>
+                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                    <th class="w-20">{% trans 'Expiration date' %}</th>
+                                    <th class="w-20">{% trans 'Manufacturing date' %}</th>
+                                    <th class="w-20">{% trans 'Get' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-serial" hidden>
+                            <table
+                                id="datable-delivery-wh-serial"
+                                class="table nowrap w-100"
+                                data-url="{% url "WarehouseSerialListAPI" %}"
+                                data-method="GET"
+                            >
+                                <thead>
+                                <tr>
+                                    <th class="w-10"></th>
+                                    <th class="w-20">{% trans 'Vendor serial no.' %}</th>
+                                    <th class="w-20">{% trans 'Serial no.' %}</th>
+                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                    <th class="w-20">{% trans 'Warranty start' %}</th>
+                                    <th class="w-20">{% trans 'Warranty end' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer justify-content-between ">
+            <div class="modal-footer">
 				<button type="button" class="btn btn-primary" id="save-stock">{% trans 'Get' %}</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
 			</div>
         </div>
     </div>
+    </div>
+    <div class="modal fade" id="modal_choise_logistics">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Address delivery' %}</h5>
+                </div>
+                <div class="modal-body position-relative">
+                    <div class="position-absolute top-50 w-100 text-center opacity-50 translate-middle-y left-0">
+                        <div class="spinner-border " role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -275,12 +360,18 @@
            data-state-info="{% trans 'Ready' %}"
            data-state-success="{% trans 'Done' %}"
            data-outstock="{% trans 'Out of stock' %}"
+           data-select_address="{% trans 'Select this address' %}"
+           data-valid-delivery-amount="{% trans 'Delivery amount must less than equal stock' %}"
+           data-valid-delivery-picked="{% trans 'Quantity delivery must less than equal quantity picked' %}"
+           data-picked-ready="{% trans 'Picked' %}"
     >
     <input type="hidden" id="url-factory"
            data-prod-detail="{% url 'ProductDetail' 1 %}"
            data-customer="{% url 'AccountDetail' 1 %}"
+           data-customer-detail="{% url 'AccountDetailAPI' 1 %}"
            data-contact="{% url 'ContactDetail' 1 %}"
            data-warehouse-prod="{% url 'WarehouseProductAPI' %}"
+           data-product-warehouse="{% url 'WarehouseGetProductsListAPI' %}"
     >
     <script id="request-data" type="application/json"></script>
     <div class="html-table-title">
@@ -297,7 +388,6 @@
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>

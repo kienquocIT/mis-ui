@@ -5,22 +5,9 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       href="{% url 'SaleOrderCreate' %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Sale Order' %}"
-       id="create_sale_order_button"
-       data-bs-original-title="Add Sale Order">
-            <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="plus"></i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
-                </span>
-            </span>
-    </a>
+    {% url 'SaleOrderCreate' as create_link %}
+    {% trans 'Create Sale Order' as create_title %}
+    {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_sale_order_button" create_title=create_title %}
 {% endblock %}
 
 {% block pageContent %}
@@ -60,7 +47,7 @@
     >
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+
 
     <script src="{% static 'assets/sales/saleorder/js/sale_order_list.js' %}"></script>
 {% endblock %}

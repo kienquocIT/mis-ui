@@ -11,14 +11,11 @@ function renderCollaborationHTML(data) {
         let iconHtml = dataPared[1];
         let employeeData = item?.['employee_data'];
         if (employeeData) {
-            $(`
-                            <div class="avatar avatar-xs avatar-primary avatar-rounded position-relative mr-1 mb-1">
-                                <span class="initial-wrap">${$.fn.shortName(employeeData['full_name'])}</span>
-                                <span class="badge ${bgColorStatus} badge-indicator badge-indicator-xl position-bottom-end-overflow-1">
-                                    ${iconHtml}
-                                </span>
-                            </div>
-                        `).appendTo(flexDiv);
+            $($x.fn.renderAvatar(
+                employeeData,
+                'avatar-xs avatar-primary avatar-rounded position-relative mr-1 mb-1',
+                `<span class="badge ${bgColorStatus} badge-indicator badge-indicator-xl position-bottom-end-overflow-1">${iconHtml}</span>`,
+            )).appendTo(flexDiv)
         }
     })
     return flexDiv.prop('outerHTML');
@@ -99,7 +96,7 @@ function selectStatusAvatar(performAction) {
 
 function loadBookmarkList() {
     let boxBMDisplayData = $('#boxBookmarkDisplayData');
-    boxBMDisplay.showLoadingWaitResponse();
+    WindowControl.showLoadingWaitResponse(boxBMDisplay);
     $.fn.callAjax(boxBMDisplay.attr('data-url'), 'GET',).then((resp) => {
         boxBMDisplayData.children(':not(#boxBtnAddNewBM)').remove();
         boxBMDisplayData.prop('data-loaded', true);
@@ -110,7 +107,7 @@ function loadBookmarkList() {
                 let scriptStorageItemData = jQuery(`<script>`);
                 scriptStorageItemData.addClass("bookmark-item-data hidden");
                 scriptStorageItemData.attr("type", "application/json");
-                scriptStorageItemData.text($.fn.dumpJsonDefault(item));
+                scriptStorageItemData.text($x.fn.dumpJson(item));
 
                 let btnActionHtml = $(`
                                         <div class="bookmark-item-action">
@@ -160,7 +157,7 @@ function loadBookmarkList() {
                 boxBMDisplayData.prepend(itemHTML);
             })
         }
-        boxBMDisplay.hideLoadingWaitResponse();
+        WindowControl.hideLoadingWaitResponse(boxBMDisplay);
     },)
 }
 
@@ -169,7 +166,7 @@ function loadTabTodo() {
     let dataLoaded = tbl.attr('data-loaded');
     if (!dataLoaded) {
         tbl.attr('data-loaded', true);
-        tbl.showLoadingWaitResponse();
+        WindowControl.showLoadingWaitResponse(tbl);
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
             pageLength: 5,
@@ -182,7 +179,7 @@ function loadTabTodo() {
                 },
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    tbl.hideLoadingWaitResponse();
+                    WindowControl.hideLoadingWaitResponse(tbl);
                     if (data && data.hasOwnProperty('task_list')) {
                         return resp.data['task_list'] ? resp.data['task_list'] : [];
                     }
@@ -193,7 +190,7 @@ function loadTabTodo() {
                 {
                     data: 'doc_title',
                     className: 'wrap-text',
-                    width: "25%",
+                    width: "20%",
                     render: (data, type, row) => {
                         let stage__runtime = row['stage__runtime'];
                         let urlData = UrlGatewayReverse.get_url(
@@ -205,14 +202,14 @@ function loadTabTodo() {
                     }
                 }, {
                     className: 'wrap-text',
-                    width: "15%",
+                    width: "10%",
                     data: 'app_code',
                     render: (data, type, row) => {
                         return data ? `<span class="badge badge-light">${data}</span>` : '';
                     }
                 }, {
                     className: 'wrap-text',
-                    width: "20%",
+                    width: "10%",
                     data: 'stage',
                     render: (data, type, row) => {
                         return data ? `<span class="badge badge-warning">${data['title']}</span>` : '';
@@ -222,15 +219,18 @@ function loadTabTodo() {
                     width: "25%",
                     data: 'employee',
                     render: (data, type, row) => {
-                        let avaHTML = `
-                                    <div class="avatar avatar-xs avatar-light avatar-rounded"><span class="initial-wrap">${$.fn.shortName(data['full_name'])}</span></div>
-                                    <span class="ml-1">${$.fn.parseDateTime(row['date_created'])}</span>
-                                `;
-                        return data ? avaHTML : '';
+                        return $x.fn.renderAvatar(data, 'avatar-xs');
                     }
                 }, {
                     className: 'wrap-text',
-                    width: "15%",
+                    with: "25%",
+                    data: "date_created",
+                    render: (data, type, row)=>{
+                        return $x.fn.displayRelativeTime(data);
+                    }
+                }, {
+                    className: 'wrap-text',
+                    width: "10%",
                     data: 'stage__runtime',
                     render: (data, type, row) => {
                         return renderActions(data?.['doc_pined_id'], data?.['id'], data?.['doc_id']);
@@ -250,7 +250,7 @@ function loadTabFollowing() {
     let dataLoaded = tbl.attr('data-loaded');
     if (!dataLoaded) {
         tbl.attr('data-loaded', true);
-        tbl.showLoadingWaitResponse();
+        WindowControl.showLoadingWaitResponse(tbl);
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
             pageLength: 5,
@@ -260,7 +260,7 @@ function loadTabFollowing() {
                 type: frm.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    tbl.hideLoadingWaitResponse();
+                    WindowControl.hideLoadingWaitResponse(tbl);
                     if (data && data.hasOwnProperty('runtime_list')) {
                         return resp.data['runtime_list'] ? resp.data['runtime_list'] : [];
                     }
@@ -270,7 +270,6 @@ function loadTabFollowing() {
             columns: [
                 {
                     data: 'doc_title',
-                    className: 'wrap-text',
                     width: "25%",
                     render: (data, type, row) => {
                         let urlData = UrlGatewayReverse.get_url(
@@ -280,36 +279,36 @@ function loadTabFollowing() {
                         );
                         return `<a href="${urlData}">${data ? data : "_"}</a>`;
                     }
-                }, {
+                },
+                {
                     data: 'app_code',
-                    className: 'wrap-text',
                     width: "10%",
                     render: (data, type, row) => {
-                        return data ? `<span class="badge badge-light">${data}</span>` : '';
+                        return data ? `<span class="badge badge-light">${data ? data : ''}</span>` : '';
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
                     width: "15%",
                     data: 'stage_currents',
                     render: (data, type, row) => {
-                        return data ? `<span class="badge badge-warning">${data['title']}</span>` : '';
+                        return data?.['title'] ? `<span class="badge badge-warning">${data?.['title']}</span>` : '';
                     }
-                }, {
+                },
+                {
                     data: 'assignees',
-                    className: 'wrap-text',
                     width: "20%",
                     render: (data, type, row) => {
                         return renderCollaborationHTML(data);
                     }
-                }, {
+                },
+                {
                     data: 'date_created',
-                    className: 'wrap-text',
                     width: "15%",
                     render: (data, type, row) => {
-                        return `<span class="ml-1">${$.fn.parseDateTime(data)}</span>`;
+                        return $x.fn.displayRelativeTime(data);
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
                     width: "15%",
                     data: 'doc_pined_id',
                     render: (data, type, row) => {
@@ -329,7 +328,7 @@ function loadTabPined() {
     let dataLoaded = tbl_pined.attr('data-loaded');
     if (!dataLoaded) {
         tbl_pined.attr('data-loaded', true);
-        tbl_pined.showLoadingWaitResponse();
+        WindowControl.showLoadingWaitResponse(tbl_pined);
         tbl_pined.DataTableDefault({
             pageLength: 5,
             rowIdx: false,
@@ -338,7 +337,7 @@ function loadTabPined() {
                 type: frm_pined.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    tbl_pined.hideLoadingWaitResponse();
+                    WindowControl.hideLoadingWaitResponse(tbl_pined);
                     if (data && data.hasOwnProperty('pin_doc_list')) {
                         return resp.data['pin_doc_list'] ? resp.data['pin_doc_list'] : [];
                     }
@@ -399,7 +398,7 @@ function loadTabPined() {
                     width: "15%",
                     data: 'date_created',
                     render: (data, type, row) => {
-                        return $.fn.parseDateTime(data);
+                        return $x.fn.displayRelativeTime(data);
                     }
                 }, {
                     className: 'wrap-text',
@@ -432,37 +431,13 @@ function loadTabDraft() {
 
 function initEventElement() {
     $('#modalAddBookMark').on('shown.bs.modal', function (event) {
-        let selectApp = $('#newBookMarkApplication');
-        if (!selectApp.attr('data-loaded')) {
-            selectApp.attr('data-loaded', true);
-            $.fn.callAjax(
-                $.fn.storageSystemData.attr('data-GatewayViewNameListView'),
-                'GET'
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && data.hasOwnProperty('views_name')) {
-                        selectApp.append(
-                            data['views_name'].map(
-                                (item) => {
-                                    return `<option value="${item['view_name']}">${item['title']}</option>`
-                                }
-                            ).join("")
-                        );
-                        selectApp.initSelect2();
-                    }
-                },
-                (errs) => {
-                }
-            )
-        }
-
+        $('#newBookMarkApplication').initSelect2();
     });
     $('#frmAddNewBookMark').submit(function (event) {
-        $.fn.showLoading();
+        WindowControl.showLoading();
         event.preventDefault();
         let frmSetup = new SetupFormSubmit($(this));
-        frmSetup.dataForm['box_style'] = $.fn.groupDataFromPrefix(frmSetup.dataForm, 'box_style__');
+        frmSetup.dataForm['box_style'] = SetupFormSubmit.groupDataFromPrefix(frmSetup.dataForm, 'box_style__');
         $.fn.callAjax(boxBMDisplay.attr('data-url'), 'POST', frmSetup.dataForm, true,).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
@@ -471,10 +446,10 @@ function initEventElement() {
                 }, 'success');
                 loadBookmarkList();
             }
-            $.fn.hideLoading();
+            WindowControl.hideLoading();
             $('#modalAddBookMark').hide();
         }, (errs) => {
-            $.fn.hideLoading();
+            WindowControl.hideLoading();
         })
     });
 
@@ -485,8 +460,8 @@ function initEventElement() {
         let viewName = bookmarkItem.attr('data-view_name');
         let customizeUrl = bookmarkItem.attr('data-customize_url');
         if (kind === '0' && viewName) {
-            let urlData = $.fn.storageSystemData.attr('data-GatewayViewNameParseView').replaceAll('_view_name_', viewName);
-            $.fn.eleHrefActive(urlData + "?redirect=true");
+            let urlData = globeGatewayViewNameParseView.replaceAll('_view_name_', viewName);
+            WindowControl.eleHrefActive(urlData + "?redirect=true");
         } else if (kind === '1' && customizeUrl) {
             window.location.href = customizeUrl;
         }
@@ -505,7 +480,7 @@ function initEventElement() {
             confirmButtonText: $.fn.transEle.attr('data-confirm'),
         }).then((result) => {
             if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                $.fn.showLoading();
+                WindowControl.showLoading();
                 let dataUrl = SetupFormSubmit.getUrlDetailWithID(boxBMDisplay.attr('data-url-delete'), dataId);
                 if (dataId && dataUrl) {
                     $.fn.callAjax(dataUrl, 'DELETE', {}, true,).then((resp) => {
@@ -513,9 +488,9 @@ function initEventElement() {
                         if (data && data['status'] === 204) {
                             loadBookmarkList();
                         }
-                        $.fn.hideLoading();
+                        WindowControl.hideLoading();
                     }, (errs) => {
-                        $.fn.hideLoading();
+                        WindowControl.hideLoading();
                     })
                 }
             }
@@ -588,7 +563,7 @@ function initEventElement() {
         let runtime_id = $(this).attr('data-runtime-id');
         let pined_id = $(this).attr('data-pin-id');
         if (runtime_id && !pined_id) {
-            $.fn.showLoading();
+            WindowControl.showLoading();
             $.fn.callAjax(frm_pined.dataUrl, 'POST', {'runtime_id': runtime_id}, true,).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -600,11 +575,11 @@ function initEventElement() {
                     }, 1000);
                 }
                 setTimeout(() => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }, 1000)
             }, (errs) => {
                 setTimeout(() => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }, 1000)
             })
         }
@@ -612,7 +587,7 @@ function initEventElement() {
     });
 
     $(document).on('click', '.btnDocUnPined', function (event) {
-        $.fn.showLoading();
+        WindowControl.showLoading();
         let id = $(this).attr('data-pin-id');
         let dataUrl = SetupFormSubmit.getUrlDetailWithID(tbl_pined.attr('data-url-detail'), id);
         if (id && dataUrl) {
@@ -624,11 +599,11 @@ function initEventElement() {
                     }, 1000)
                 }
                 setTimeout(() => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }, 1000)
             }, (errs) => {
                 setTimeout(() => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }, 1000)
             })
         }
@@ -662,6 +637,27 @@ function initEventElement() {
 }
 
 $(document).ready(function () {
+    try {
+        employeeCurrentData = JSON.parse(employeeCurrentData);
+        if (!employeeCurrentData || !employeeCurrentData?.['id']) {
+            Swal.fire({
+                title: msgTitleErrLinked,
+                html: `<p><b>${msgTextErrLinked}</b></p><br/><p>${msgTextErrLinked2}</p>`,
+                icon: 'warning',
+                showConfirmButton: true,
+                confirmButtonText: msgChangeCompany,
+                showDenyButton: true,
+                denyButtonText: $.fn.transEle.attr('data-cancel'),
+            }).then((result)=>{
+                if (result.isConfirmed) {
+                    $('#btnChangeCurrentCompany').trigger('click');
+                }
+            })
+        }
+    } catch (e) {
+    }
+
+
     initEventElement();
     loadTabTodo();
     loadBookmarkList();

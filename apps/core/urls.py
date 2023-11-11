@@ -9,4 +9,5 @@ urlpatterns = [
     path('tenant/', include('apps.core.tenant.urls')),
     path('workflow/', include('apps.core.workflow.urls')),
     path('attachment/', include('apps.core.attachment.urls')),
+    path('sale-process/', include('apps.core.process.urls')),
 ]

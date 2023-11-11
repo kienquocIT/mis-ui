@@ -1,4 +1,6 @@
 from django.utils.translation import gettext_lazy as _
+
+from .msg import LeaveMsg
 from .msg.workflow import WorkflowMsg
 
 __all__ = [
@@ -6,7 +8,11 @@ __all__ = [
     'CUSTOMER_REVENUE',
     'PICKING_STATE',
     'WORKFLOW_ACTION',
-    'DELIVERY_STATE'
+    'DELIVERY_STATE',
+    'TYPE_CUSTOMER',
+    'ROLE_CUSTOMER',
+    'PAID_BY',
+    'SYSTEM_STATUS'
 ]
 
 CUSTOMER_REVENUE = [
@@ -46,4 +52,36 @@ WORKFLOW_ACTION = {
     3: [WorkflowMsg.ACTION_RETURN, 'fas fa-fast-backward'],
     4: [WorkflowMsg.ACTION_RECEIVE, 'fas fa-check text-success'],
     5: [WorkflowMsg.ACTION_TODO, 'far fa-list-alt'],
+}
+
+SYSTEM_STATUS = (
+    (0, 'Draft'),
+    (1, 'Created'),
+    (2, 'Added'),
+    (3, 'Finish'),
+    (4, 'Cancel'),
+)
+
+# Opportunity
+
+TYPE_CUSTOMER = [
+    {"value": 0, "name": _('Direct Customer')},
+    {"value": 1, "name": _('End Customer')},
+]
+
+ROLE_CUSTOMER = [
+    {"value": 0, "name": _('Decision Maker')},
+    {"value": 1, "name": _('Influence')},
+    {"value": 2, "name": _('Contact Involved')},
+]
+
+PAID_BY = {
+    1: LeaveMsg.PAID_BY_ONE,
+    2: LeaveMsg.PAID_BY_TWO,
+    3: LeaveMsg.PAID_BY_THREE,
+}
+
+LEAVE_ACTION = {
+    1: LeaveMsg.LEAVE_ACTION_INS,
+    2: LeaveMsg.LEAVE_ACTION_DES,
 }

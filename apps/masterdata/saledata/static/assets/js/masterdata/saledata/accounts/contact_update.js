@@ -7,14 +7,18 @@ $(document).ready(function () {
         $("#workdistrict option:selected").prop("selected", false);
         $("#workcity option:selected").prop("selected", false);
         let ele = $('#workcity');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2(
+            {
+                'url': url,
+                'method': method
+            }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
+                    ele.append(`<option></option>`)
                     if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
                         data.cities.map(function (item) {
                             ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -24,19 +28,23 @@ $(document).ready(function () {
             }
         )
     }
+
     loadCitiesWork();
 
     // load Districts SelectBox
     function loadDistrictsWork() {
         let ele = $('#workdistrict');
-        let url = ele.attr('data-url').replace('pk', $('#workcity').val())
+        let url = ele.attr('data-select2-url').format_url_with_uuid($('#workcity').val());
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
+                    ele.append(`<option></option>`)
                     if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
                         data.districts.map(function (item) {
                             ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -50,9 +58,12 @@ $(document).ready(function () {
     // load Wards SelectBox
     function loadWardsWork() {
         let ele = $('#workward');
-        let url = ele.attr('data-url').replace('pk', $('#workdistrict').val())
+        let url = ele.attr('data-select2-url').format_url_with_uuid($('#workdistrict').val());
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -99,7 +110,7 @@ $(document).ready(function () {
                 $('#modal-work-address').modal('hide');
                 $('#detail-modal-work-address').val('');
             } else {
-                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                $.fn.notifyB({description: "Missing address information!"}, 'failure');
             }
 
             if (work_address !== '') {
@@ -113,7 +124,7 @@ $(document).ready(function () {
                 })
             }
         } catch (error) {
-            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+            $.fn.notifyB({description: "No address information!"}, 'failure');
         }
     })
 
@@ -122,14 +133,17 @@ $(document).ready(function () {
         $("#homedistrict option:selected").prop("selected", false);
         $("#homecity option:selected").prop("selected", false);
         let ele = $('#homecity');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
+                    ele.append(`<option></option>`)
                     if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
                         data.cities.map(function (item) {
                             ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -139,19 +153,23 @@ $(document).ready(function () {
             }
         )
     }
+
     loadCitiesHome();
 
     // load Districts SelectBox
     function loadDistrictsHome() {
         let ele = $('#homedistrict');
-        let url = ele.attr('data-url').replace('pk', $('#homecity').val())
+        let url = ele.attr('data-select2-url').format_url_with_uuid($('#homecity').val());
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
+                    ele.append(`<option></option>`)
                     if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
                         data.districts.map(function (item) {
                             ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -165,14 +183,17 @@ $(document).ready(function () {
     // load Wards SelectBox
     function loadWardsHome() {
         let ele = $('#homeward');
-        let url = ele.attr('data-url').replace('pk', $('#homedistrict').val())
+        let url = ele.attr('data-select2-url').format_url_with_uuid($('#homedistrict').val());
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
+                    ele.append(`<option></option>`)
                     if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
                         data.wards.map(function (item) {
                             ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -185,7 +206,7 @@ $(document).ready(function () {
 
     $('#homecity').on('change', function () {
         loadDistrictsHome();
-        $('#homeward').html('<option value="" selected>---</option>');
+        $('#homeward').html('<option></option>');
     })
 
     $('#homedistrict').on('change', function () {
@@ -214,7 +235,7 @@ $(document).ready(function () {
                 $('#modal-home-address').modal('hide');
                 $('#detail-modal-home-address').val('');
             } else {
-                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                $.fn.notifyB({description: "Missing address information!"}, 'failure');
             }
 
             if (home_address !== '') {
@@ -231,7 +252,7 @@ $(document).ready(function () {
                 }
             }
         } catch (error) {
-            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+            $.fn.notifyB({description: "No address information!"}, 'failure');
         }
     })
 
@@ -246,9 +267,12 @@ $(document).ready(function () {
 
     function loadSalutationList(id) {
         let ele = $('#select-box-salutation');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -270,9 +294,12 @@ $(document).ready(function () {
 
     function loadInterestList(list_id) {
         let ele = $('#select-box-interests');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -293,9 +320,13 @@ $(document).ready(function () {
 
     function loadEmployee(id) {
         let ele = $('#select-box-emp');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method
+            }
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -321,9 +352,12 @@ $(document).ready(function () {
 
     function loadAccountName(id, id_report_to) {
         let ele = $('#select-box-account_name');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -347,9 +381,12 @@ $(document).ready(function () {
     function loadReportTo(id, id_report_to) {
         let ele = $('#select-box-report-to');
         ele.attr('disabled', false);
-        let url = ele.attr('data-url').replace('0', id);
+        let url = ele.attr('data-select2-url').replace('0', id);
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -372,7 +409,6 @@ $(document).ready(function () {
         $('#input-avatar').on('change', function () {
             let upload_img = $('#upload-area');
             upload_img.text("");
-            tmp = URL.createObjectURL(this.files[0])
             upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
             $(this).val()
         });
@@ -380,12 +416,15 @@ $(document).ready(function () {
             $('#input-avatar').click();
         });
 
-        $('#select-box-interests').select2();
+        $('#select-box-interests').initSelect2();
 
         let pk = window.location.pathname.split('/').pop();
         let url_loaded = frmEle.attr('data-url-loaded').replace(0, pk);
 
-        $.fn.callAjax(url_loaded, 'GET').then(
+        $.fn.callAjax2({
+            'url': url_loaded,
+            'method': 'GET'
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -415,7 +454,7 @@ $(document).ready(function () {
                     } else {
                         loadInterestList([]);
                     }
-                    $.fn.setWFRuntimeID(data?.['contact_detail']?.['workflow_runtime_id']);
+                    WFRTControl.setWFRuntimeID(data?.['contact_detail']?.['workflow_runtime_id']);
                 }
             }
         )
@@ -507,9 +546,12 @@ $(document).ready(function () {
 
         let pk = window.location.pathname.split('/').pop();
 
-        $.fn.showLoading();
-        $.fn.callAjax(frm.dataUrl.replace('0', pk), frm.dataMethod, frm.dataForm, csr)
-            .then(
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+            'url': frm.dataUrl.format_url_with_uuid(pk),
+            'method': frm.dataMethod,
+            'data': frm.dataForm
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && data['status'] === 200) {
@@ -524,17 +566,16 @@ $(document).ready(function () {
                     }
                     setTimeout(
                         () => {
-                            $.fn.hideLoading();
+                            WindowControl.hideLoading();
                         },
                         1000
                     )
                 }, (err) => {
-                    $.fn.notifyPopup({description: err.detail}, 'failure');
+                    $.fn.notifyB({description: err.detail}, 'failure');
                 }
             )
     });
 });
-
 
 $("#first_name_id").on('change', function () {
     if ($(this).val() !== '' && $("#last_name_id").val() !== '') {

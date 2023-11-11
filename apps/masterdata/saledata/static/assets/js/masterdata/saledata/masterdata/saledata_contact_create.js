@@ -1,7 +1,4 @@
 $(document).ready(function () {
-
-    let ele_salutation = $('#section-salutation').html()
-    let ele_interest = $('#section-interests').html()
     // load Data
     function loadSalutation() {
         if (!$.fn.DataTable.isDataTable('#datatable_salutation_list')) {
@@ -9,6 +6,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -55,7 +53,8 @@ $(document).ready(function () {
                             }
                         }, {
                             render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="salutation" data-id="{0}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                                let url = $('#url-factory').data('salutation-detail').format_url_with_uuid(row.id)
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="salutation" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                     row.id
                                 )
                             }
@@ -72,6 +71,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -118,7 +118,8 @@ $(document).ready(function () {
                             }
                         }, {
                             render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="interest" data-id="{0}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                                let url = $('#url-factory').data('interest-detail').format_url_with_uuid(row.id)
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="interest" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                     row.id
                                 )
                             }
@@ -128,6 +129,7 @@ $(document).ready(function () {
             );
         }
     }
+
     loadSalutation();
 
 
@@ -138,10 +140,9 @@ $(document).ready(function () {
     //Switch view table
     $("#tab-select-table a").on("click", function () {
         let section = $(this).attr('data-collapse')
-        if(section === 'section-salutation'){
+        if (section === 'section-salutation') {
             loadSalutation();
-        }
-        else{
+        } else {
             loadInterest();
         }
         $(".lookup-data").hide()
@@ -155,75 +156,86 @@ $(document).ready(function () {
 
     // submit form create lookup data
     let frm = $('#form-create-lookup');
-    frm.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").last().val();
-        let frm = new SetupFormSubmit($(this));
-        let frm_data = frm.dataForm;
-        let lookup = $('#form-create-lookup').attr('data-lookup');
-        let data_url = ''
-        if (lookup === 'salutation') {
-            data_url = $('#form-create-lookup').attr('data-url-salutation');
-        } else if (lookup === 'interests') {
-            data_url = $('#form-create-lookup').attr('data-url-interests');
-        }
+    new SetupFormSubmit(frm).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            let lookup = $(form).attr('data-lookup');
+            let data_url = ''
+            if (lookup === 'salutation') {
+                data_url = $('#form-create-lookup').attr('data-url-salutation');
+            } else if (lookup === 'interests') {
+                data_url = $('#form-create-lookup').attr('data-url-interests');
+            }
 
-        if (frm_data['code'] === '') {
-            frm_data['code'] = null;
-        }
+            if (frm_data['code'] === '') {
+                frm_data['code'] = null;
+            }
 
-        if (frm_data['title'] === '') {
-            frm_data['title'] = null;
-        }
+            if (frm_data['title'] === '') {
+                frm_data['title'] = null;
+            }
 
-        $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
-            .then(
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': frm.dataMethod,
+                'data': frm_data
+            }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        $('#modal-lookup-data').hide();
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        if (lookup === 'salutation') {
+                            let table = $('#datatable_salutation_list').DataTable();
+                            setTimeout(function () {
+                                table.ajax.reload();
+                                $('#modal-lookup-data').modal('hide');
+                            })
+
+                        } else {
+                            let table = $('#datatable_interests_list').DataTable();
+                            setTimeout(function () {
+                                table.ajax.reload();
+                                $('#modal-lookup-data').modal('hide');
+                            })
+                        }
                     }
                 },
                 (errs) => {
-                }
-            ).then(
-            (rep) => {// reload dataTable after create
-                if (lookup === 'salutation') {
-                    $('#section-salutation').empty();
-                    $('#section-salutation').append(ele_salutation);
-                    loadSalutation();
-                } else {
-                    $('#section-interests').empty();
-                    $('#section-interests').append(ele_interest);
-                    loadInterest();
-                }
-            }
-        )
+                })
+        }
     })
 
-    //show modal edit
-    $(document).on('click', '#datatable_salutation_list .edit-button, #datatable_interests_list .edit-button', function () {
-        let frm_update = $('#form-update-masterdata')
-        let check_type = false;
-        let data_url;
+    $(document).on('click', '.edit-button', function () {
         if ($(this).attr('data-type') === 'salutation') {
             $('#modal-update-data h5').text('Edit Salutation');
-            data_url = frm_update.attr('data-url-salutation').replace(0, $(this).attr('data-id'))
-            check_type = true;
         } else {
             $('#modal-update-data h5').text('Edit Interest');
-            data_url = frm_update.attr('data-url-interests').replace(0, $(this).attr('data-id'))
         }
-        $.fn.callAjax(data_url, 'GET').then(
+        let data_url = $(this).data('url');
+        $('[name="url_detail"]').val(data_url);
+        $('#inp-type').val($(this).attr('data-type'));
+        $.fn.callAjax2(
+            {
+                'url': data_url,
+                'method': 'GET'
+            }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data')) {
                         if (resp.data.hasOwnProperty('salutation')) {
-                            $('#name-update').val(data.salutation.title);
-                            $('#code-update').val(data.salutation.code);
-                            $('#description-update').val(data.salutation.description);
+                            $('#name-update').val(data?.['salutation'].title);
+                            $('#code-update').val(data?.['salutation'].code);
+                            $('#description-update').val(data?.['salutation'].description);
                         } else if (resp.data.hasOwnProperty('interest')) {
                             $('#name-update').val(data.interest.title);
                             $('#code-update').val(data.interest.code);
@@ -233,10 +245,20 @@ $(document).ready(function () {
                 }
             }, (errs) => {
             },)
+    })
 
-        // save edit
-        $('#modal-update-data .edit-button').off().on('click', function () {
-            let csr = $("input[name=csrfmiddlewaretoken]").last().val();
+    const frm_update = $('#form-update-masterdata');
+    new SetupFormSubmit(frm_update).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
             let inp_name = $('#name-update');
             let inp_code = $('#code-update');
             let inp_des = $('#description-update');
@@ -250,30 +272,27 @@ $(document).ready(function () {
                 data_form['title'] = null;
             }
 
-            $.fn.callAjax(data_url, 'PUT', data_form, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $('#modal-update-data').hide();
+            $.fn.callAjax2({
+                'url': frm.dataForm['url_detail'],
+                'method': frm.dataMethod,
+                'data': data_form
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-data').modal('hide');
+                        if ($('#inp-type').val() === 'salutation') {
+                            $('#datatable_salutation_list').DataTable().ajax.reload();
+                        } else {
+                            $('#datatable_interests_list').DataTable().ajax.reload();
                         }
-                    },
-                    (errs) => {
-                    }
-                ).then(
-                (resp) => { // reload table after save edit
-                    if (check_type) {
-                        $('#section-salutation').empty();
-                        $('#section-salutation').append(ele_salutation);
-                        loadSalutation();
-                    } else {
-                        $('#section-interests').empty();
-                        $('#section-interests').append(ele_interest);
-                        loadInterest();
                     }
                 },
+                (errs) => {
+                }
             )
-        });
-    })
-});
+        }
+    });
+})
+;

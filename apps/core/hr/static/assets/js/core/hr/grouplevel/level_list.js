@@ -7,6 +7,7 @@ $(function () {
         function loadDbl() {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -18,6 +19,8 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
+                paging: false,
+                info: false,
                 columnDefs: [
                     {
                         "width": "5%",
@@ -122,7 +125,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
                         }
                     },
@@ -150,7 +153,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },

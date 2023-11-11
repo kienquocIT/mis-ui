@@ -6,100 +6,87 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="{% url "AccountCreate" %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Add">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a href="{% url "AccountCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-        </span>
-    </a>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}
+    {#    <div class="row row-custom-filter" data-dtb-id="#datatable_account_list">#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#            {% include 'extends/dtb/filter.html' %}#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#            <div class="form-group">#}
+    {#                <label for="searchAdvanceManager">{% trans 'Filter Manager By Group' %}</label>#}
+    {#                <select#}
+    {#                        class="select-custom-filter form-select"#}
+    {#                        id="searchAdvanceManager"#}
+    {#                        data-keyParam="has_manager_custom"#}
+    {#                >#}
+    {#                    <option value="all">{% trans 'All' %}</option>#}
+    {#                    <option value="me" selected>{% trans 'Of Me' %}</option>#}
+    {#                    <option value="same">{% trans 'Of Same Group' %}</option>#}
+    {#                    <option value="staff">{% trans 'Of My Staff' %}</option>#}
+    {#                </select>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#            <div class="form-group">#}
+    {#                <label for="searchManager">{% trans 'Account Manager' %}</label>#}
+    {#                <select#}
+    {#                        class="select-custom-filter form-select"#}
+    {#                        id="searchManager" data-url="{% url 'EmployeeListAPI' %}"#}
+    {#                        data-keyResp="employee_list" data-keyText="full_name"#}
+    {#                        data-keyParam="manager__contains"#}
+    {#                        multiple#}
+    {#                ></select>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#            {% include 'extends/dtb/toolbar.html' %}#}
+    {#        </div>#}
+    {#    </div>#}
 
-    <ul class="nav nav-light nav-tabs" id="tab-select-table">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-account-list">
-                <span class="nav-link-text">Main List</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" data-collapse="section-account-list-draft">
-                <span class="nav-link-text">Draft List</span>
-            </a>
-        </li>
-    </ul>
-
-
-    <div id="section-account-list" class="account-list mt-5">
-        <table id="datatable_account_list" class="table nowrap w-100 mb-5" data-url="{% url "AccountListAPI" %}"
-               data-method="GET">
-            <thead>
-            <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck0"
-                    >
-                    <label class="form-check-label" for="customCheck0"></label>
-                </span>
-            </th>
-            <th class="w-20">{% trans "Name" %}</th>
-            <th class="w-10" style="text-align: center">{% trans "Type" %}</th>
-            <th class="w-15" style="text-align: center">{% trans "Account Owner" %}</th>
-            <th class="w-15" style="text-align: center">{% trans "Phone number" %}</th>
-            <th class="w-15" style="text-align: center">{% trans "Website" %}</th>
-            <th class="w-20" style="text-align: center">{% trans "Account Manager" %}</th>
-            <th class="w-5" style="text-align: center"></th>
-            </thead>
-        </table>
-    </div>
-
-    <div id="section-account-list-draft" class="account-list mt-5" style="display: none">
-        <table id="datatable_account_list_draft" class="table nowrap w-100 mb-5" data-url=""
-               data-method="GET">
-            <thead class="align-center">
-            <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-            </th>
-            <th style="text-align: center">{% trans "Name" %}</th>
+    <table
+            id="datatable_account_list" class="table nowrap w-100"
+            data-url="{% url "AccountListAPI" %}" data-method="GET"
+            data-url-employee="{% url 'EmployeeListAPI' %}"
+    >
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>{% trans "Name" %}</th>
             <th>{% trans "Type" %}</th>
-            <th>{% trans "Industry" %}</th>
             <th>{% trans "Account Owner" %}</th>
             <th>{% trans "Phone number" %}</th>
             <th>{% trans "Website" %}</th>
             <th>{% trans "Account Manager" %}</th>
-            <th class="w-5 text-left">{% trans "Action" %}</th>
-            </thead>
-        </table>
-    </div>
+        </tr>
+        </thead>
+    </table>
 
-    <input
-        type="hidden"
-        id="account-update-page"
-        data-url="{% url 'AccountDetail' 1 %}"
+    <br
+            type="hidden"
+            id="account-update-page"
+            data-url="{% url 'AccountDetail' 1 %}"
+            data-msg-by-group="{% trans 'By Group' %}"
+            data-msg-of-me="{% trans 'Of Me' %}"
+            data-msg-of-group="{% trans 'Of Same Group' %}"
+            data-msg-of-staff="{% trans 'Of My Staff' %}"
+            data-msg-of-all="{% trans 'All' %}"
+            data-msg-filter-manager="{% trans 'Account Manager' %}"
     >
-
-
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/accounts/account_list.js' %}"></script>

@@ -1,4 +1,3 @@
-let submitClass = new submitHandle();
 let tableIndicator = $('#datable-quotation-create-indicator');
 
 function max(data_list) {
@@ -16,20 +15,13 @@ function sum() {
 }
 
 function dataTableQuotationIndicator(data) {
-    // init dataTable
-    let listData = data ? data : [];
-    tableIndicator.DataTable({
-        data: listData,
-        searching: false,
-        ordering: false,
-        paginate: false,
+    tableIndicator.DataTableDefault({
+        data: data ? data : [],
+        paging: false,
         info: false,
-        drawCallback: function (row, data) {
-            // render icon after table callback
-            feather.replace();
+        columnDefs: [],
+        drawCallback: function () {
             $.fn.initMaskMoney2();
-        },
-        rowCallback: function (row, data) {
         },
         columns: [
             {
@@ -41,19 +33,19 @@ function dataTableQuotationIndicator(data) {
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
+                    return `<span class="table-row-title" data-id="${row?.['indicator']?.['id']}">${row?.['indicator']?.['title']}</span>`
                 }
             },
             {
                 targets: 2,
                 render: (data, type, row) => {
-                    return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}"></span>`
+                    return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['indicator_value'])}" data-value="${row?.['indicator_value']}"></span>`
                 }
             },
             {
                 targets: 3,
                 render: (data, type, row) => {
-                    return `<span class="table-row-rate" data-value="${row.indicator_rate}">${row.indicator_rate} %</span>`
+                    return `<span class="table-row-rate" data-value="${row?.['indicator_rate']}">${row?.['indicator_rate']} %</span>`
                 }
             }
         ],
@@ -61,15 +53,12 @@ function dataTableQuotationIndicator(data) {
 }
 
 function dataTableSaleOrderIndicator(data) {
-    // init dataTable
-    let listData = data ? data : [];
-    tableIndicator.DataTable({
-        data: listData,
-        searching: false,
-        ordering: false,
-        paginate: false,
+    tableIndicator.DataTableDefault({
+        data: data ? data : [],
+        paging: false,
         info: false,
-        drawCallback: function (row, data) {
+        columnDefs: [],
+        drawCallback: function () {
             // render icon after table callback
             feather.replace();
             $.fn.initMaskMoney2();
@@ -118,30 +107,6 @@ function dataTableSaleOrderIndicator(data) {
     });
 }
 
-// function loadQuotationIndicator(indicator_id) {
-//     let jqueryId = '#' + indicator_id;
-//     let ele = $(jqueryId);
-//     if (!ele.val()) {
-//         let url = ele.attr('data-url');
-//         let method = ele.attr('data-method');
-//         $.fn.callAjax(url, method).then(
-//             (resp) => {
-//                 let data = $.fn.switcherResp(resp);
-//                 if (data) {
-//                     if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
-//                         ele.val(JSON.stringify(data.quotation_indicator_list));
-//                         calculateIndicator(data.quotation_indicator_list);
-//                     }
-//                 }
-//             }
-//         )
-//     } else {
-//         let data_list = JSON.parse(ele.val());
-//         calculateIndicator(data_list);
-//     }
-//
-// }
-
 function calculateIndicator(indicator_list) {
     let result_list = [];
     let result_json = {};
@@ -153,7 +118,7 @@ function calculateIndicator(indicator_list) {
     if (formSubmit[0].classList.contains('sale-order')) {
         is_sale_order = true;
     }
-    submitClass.setupDataSubmit(_form, is_sale_order);
+    QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
     let data_form = _form.dataForm;
     // Check special case
     functionClass.checkSpecialCaseIndicator(data_form);
@@ -202,7 +167,7 @@ function calculateIndicator(indicator_list) {
         }
         // quotation value
         let quotationValue = 0;
-        let differenceValue = 0;
+        let differenceValue = value;
         // check if sale order then get quotation value
         let eleDetailQuotation = $('#data-copy-quotation-detail');
         if (eleDetailQuotation.length) {
@@ -239,18 +204,14 @@ function calculateIndicator(indicator_list) {
         }
     }
     //
-    tableIndicator.DataTable().destroy();
-    if (!tableIndicator.hasClass('sale-order')) {
-        dataTableQuotationIndicator(result_list);
-    } else {
-        dataTableSaleOrderIndicator(result_list)
-    }
+    tableIndicator.DataTable().clear().draw();
+    tableIndicator.DataTable().rows.add(result_list).draw();
 }
 
 function evaluateFormula(formulaText) {
     try {
-        const evaluated = eval(formulaText);
-        return evaluated;
+        return eval(formulaText);
+        // return evaluated;
     } catch (error) {
         return null;
     }
@@ -297,22 +258,22 @@ class indicatorFunctionHandle {
         let rightValue = null;
         let operator_list = ['===', '!==', '<', '>', '<=', '>='];
         let condition_operator = operator_list.filter((element) => item.function_data.includes(element))[0];
-        const operatorIndex = item.function_data.indexOf(condition_operator);
+        let operatorIndex = item.function_data.indexOf(condition_operator);
         if (operatorIndex !== -1 && operatorIndex > 0 && operatorIndex < item.function_data.length - 1) {
             leftValueJSON = item.function_data[operatorIndex - 1];
             rightValue = item.function_data[operatorIndex + 1];
         }
         let lastElement = item.function_data[item.function_data.length - 1];
         // Tab Products
-        if (data_form.quotation_products_data) {}
+        if (data_form?.['quotation_products_data']) {}
         // Tab Expense
         if (is_sale_order === false) {
-            if (data_form.quotation_expenses_data) {
-                functionBody = self.extractDataToSum(data_form.quotation_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+            if (data_form?.['quotation_expenses_data']) {
+                functionBody = self.extractDataToSum(data_form?.['quotation_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
             }
         } else {
-            if (data_form.sale_order_expenses_data) {
-                functionBody = self.extractDataToSum(data_form.sale_order_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+            if (data_form?.['sale_order_expenses_data']) {
+                functionBody = self.extractDataToSum(data_form?.['sale_order_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
             }
         }
         if (functionBody[functionBody.length - 1] === ",") {
@@ -382,32 +343,30 @@ $(function () {
         }
         initDataTableIndicator();
 
-        $('#tab-indicator').on('click', function (e) {
-            let btnEdit = $('#btn-edit_quotation');
-            if (btnEdit.length) {
-                if (btnEdit.is(':hidden')) {
-                    indicatorClass.loadQuotationIndicator('quotation-indicator-data');
-                } else {
-                    if (tableIndicator[0].querySelector('.dataTables_empty')) {
-                        let detailData = JSON.parse($('#quotation-detail-data').val());
-                        tableIndicator.DataTable().destroy();
-                        if (!tableIndicator.hasClass('sale-order')) {
-                            dataTableQuotationIndicator(detailData.quotation_indicators_data);
-                        } else {
-                            dataTableSaleOrderIndicator(detailData.sale_order_indicators_data);
-                        }
+        $('#tab-indicator').on('click', function () {
+            let form = $('#frm_quotation_create');
+            if (form.attr('data-method') === 'GET') { // load indicators if DetailPage
+                let detailDataRaw = $('#quotation-detail-data').val();
+                if (detailDataRaw) {
+                    let detailData = JSON.parse(detailDataRaw);
+                    tableIndicator.DataTable().clear().draw();
+                    if (!tableIndicator.hasClass('sale-order')) {
+                        tableIndicator.DataTable().rows.add(detailData?.['quotation_indicators_data']).draw();
+                    } else {
+                        tableIndicator.DataTable().rows.add(detailData?.['sale_order_indicators_data']).draw();
                     }
                 }
-            } else {
+            } else { // calculate indicators if CreatePage & UpdatePage
                 indicatorClass.loadQuotationIndicator('quotation-indicator-data');
             }
         });
 
         // Clear data indicator store then call API to get new
-        $('#btn-refresh-quotation-indicator').on('click', function (e) {
+        $('#btn-refresh-quotation-indicator').on('click', function () {
+            let transEle = $('#app-trans-factory');
             document.getElementById('quotation-indicator-data').value = "";
             indicatorClass.loadQuotationIndicator('quotation-indicator-data');
-            $.fn.notifyPopup({description: $.fn.transEle.attr('data-refreshed')}, 'success');
+            $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
     });

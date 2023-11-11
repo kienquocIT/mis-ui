@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Picking edit' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0 !important;
+        }
+        .text-cursor{cursor: pointer}
+
+        .cus-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            background: #fff;
+            opacity: .5;
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="picking_form"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            data-bs-original-title="Save">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+        </span>
+    </button>
+    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
+            data-bs-placement="top" title="Back" data-bs-original-title="Back"
+            onclick="window.history.go(-1); return false;">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="fas fa-step-backward"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form id="picking_form" data-url="{% url 'OrderPickingDetailAPI' data.pk %}" data-method="PUT" method="post"
+          novalidate data-url-redirect="{% url 'OrderPickingList' %}">
+        {% csrf_token %}
+        <div class="row mb-3">
+            <div class="col-xs-12 col-sm-3 offset-sm-6 offset-xs-0">
+                <span class="title-code text-primary font-4">--</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+                <div class="form-group">
+                    <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
+                    <input type="text" name="sale_order" id="inputSaleOrder" class="form-control" readonly disabled/>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputEstimateDeliveryDate" class="form-label">
+                        {% trans 'Estimate Delivery Date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" name="estimated_delivery_date" id="inputEstimateDeliveryDate"
+                                class="form-control date-picker" autocomplete="off"/>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputWareHouse" class="form-label">{% trans 'WareHouse' %}</label>
+                    <div class="input-group">
+                        <div class="input-affix-wrapper">
+                            <div class="dropdown input-prefix">
+                                <i class="fas fa-info-circle text-blue"
+                                   data-bs-toggle="dropdown"
+                                   data-dropdown-animation
+                                   aria-haspopup="true"
+                                   aria-expanded="false"
+                                   disabled></i>
+                                <div class="dropdown-menu w-210p mt-2"></div>
+                            </div>
+                            <select class="form-control" name="warehouse_id" id="inputWareHouse"
+                                    data-keyResp="warehouse_list"
+                                    data-url="{% url 'WareHouseListAPI' %}"
+                                    data-link-detail="{% url 'WareHouseList' %}?show_detail=1"
+                                    data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+                            >
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputWareHouse" class="form-label">{% trans 'Status' %}</label>
+                    <p name="inputState" id="inputState" readonly disabled></p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputToLocation" class="form-label">{% trans 'To Location' %}</label>
+                    <textarea type="text" class="form-control" name="to_location" id="inputToLocation"></textarea>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputRemarks" class="form-label">{% trans 'Notes' %}</label>
+                    <textarea class="form-control" name="remarks" id="inputRemarks"></textarea>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputRemarks" class="form-label">{% trans 'Employee inherit' %}</label>
+                    <select class="form-select" name="employee_inherit"
+                            id="selectEmployeeInherit" {% if data.is_lead == False %}disabled{% endif %}>
+                        <option value=""></option>
+                        {% if data.lead %}
+                            <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
+                        {% endif %}
+                        {% for item in data.person_list %}
+                            <option value="{{ item.id }}">{{ item.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row mb-3">
+        <ul class="nav nav-light nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                    <span class="nav-link-text">{% trans 'Detail' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_detail">
+                <table id="dtbPickingProductList"
+                       class="table nowrap w-100 mb-5"
+                       data-method="GET"
+                       data-url="{% url "OrderPickingListAPI" %}"
+                       data-url-detail="{% url 'OrderPickingDetail' pk=1 %}">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Product' %}
+
+                            <i class="fas fa-info-circle icon-info tit_visible_tb-head"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               title="{% trans 'Press row here to open detail page.' %}"></i>
+                        </th>
+                        <th>{% trans 'UoM' %}</th>
+                        <th>{% trans 'Total' %}</th>
+                        <th>{% trans 'Picked Before' %}</th>
+                        <th>{% trans 'Remain' %}</th>
+                        <th>
+                            <div class="d-flex align-items-center justify-content-start">
+                                <span class="mr-4">
+                                    {% trans 'Done' %}
+                                </span>
+                                <div class="tit_visible_tb-head">
+                                    <span class="mr-2">{% trans 'All' %}</span>
+                                    <input type="checkbox" id="idxDoneAll"/>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <span id="idxUrlPickingDetail">{% url 'OrderPickingDetailAPI' pk=data.pk %}</span>
+    {{ data.state_choices|json_script:"dataStateChoices" }}
+    <input type="hidden" id="trans-factory"
+           data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
+           data-error-warehouse="{% trans 'Warehouse is required!' %}"
+           data-outstock="{% trans 'Product in Warehouse out of stock' %}"
+           data-warehouse="{% trans 'Warehouse' %}"
+           data-stock="{% trans 'Stock' %}"
+           data-store="{% trans 'Store place' %}"
+           data-picking-area="{% trans 'Picking area' %}"
+           data-view-detail="{% trans 'View detail' %}"
+    >
+    <input
+            type="hidden" id="url-factory"
+            data-warehouse-stock="{% url 'WarehouseProductAPI' %}"
+            data-product-detail="{% url 'ProductDetail' 1 %}"
+            data-product-warehouse="{% url 'WarehouseGetProductsListAPI' %}"
+    >
+{% endblock %}
+
+{% block jsFooter %}
+
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'sales/delivery/picking/detail.js' %}"></script>
+{% endblock %}
+

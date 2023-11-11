@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Leave config' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .btn-remove-row[disabled],
+        .btn-edit-row[disabled]{
+            opacity: .35;
+        }
+        .btn-remove-row,
+        .btn-edit-row{
+            color: #262a2e !important;
+        }
+
+        @media (min-width: 576px) {
+            .modal-dialog {
+                margin: 4.75rem auto;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block pageAction %}
+    <a href="#" class="open-modal-btn">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row vh-100">
+        <div class="col-md-3 col-xs-12">
+            <ul class="nav flex-column nav-light nav-pills nav-vertical">
+                <li class="nav-item">
+                    <a href="#leave_type_list" class="nav-link active" data-bs-toggle="tab">
+                        <span class="nav-link-text">{% trans 'Leave type' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#leave_year_senior" class="nav-link" data-bs-toggle="tab">
+                        <span class="nav-link-text">
+                            {% blocktranslate %}Year's Seniority{% endblocktranslate %}
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9 col-xs-12">
+            <div class="tab-content mt-0">
+                <div class="tab-pane fade show active" id="leave_type_list">
+                    <table id="leave_config_type_tb" class="table nowrap w-100 mb-5">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans 'Code' %}</th>
+                            <th>{% trans 'Name' %}</th>
+                            <th>{% trans 'Paid by' %}</th>
+                            <th>{% trans 'Balance management' %}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="leave_year_senior">
+                    <em>{% trans 'Unit: Year' %}</em>
+                    <table id="year_senior_tb" class="table nowrap w-100 mb-5">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans 'From' %}</th>
+                            <th>{% trans 'To' %}</th>
+                            <th>{% trans 'Added days' %}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal_leave_type">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Leave type' %}</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="container-fluid mt-4" id="formLeaveType" method="post" autocomplete="off" data-method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" id="type_id" name="id">
+                        <input type="hidden" id="leave_config" name="leave_config" value="{{ data.config_data.id }}">
+                        <div class="an-type hidden">
+                            <div class="form-group form-inline">
+                                <label for="inputNoP" class="form-label mr-5">
+                                    {% trans 'Number of paid annual leave days' %}
+                                </label>
+                                <input type="text" name="no_of_paid" id="inputNoP"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="prev-type hidden">
+                            <div class="form-group form-inline">
+                                <label for="inputNoM" class="form-label mr-5">
+                                    {% trans 'Number of months the balance will expire' %}
+                                </label>
+                                <div class="col-md-4">
+                                    <select type="text" name="prev_year" id="inputNoM" class="form-select beauty-scroll">
+                                        <option value=""></option>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="create-or-edit">
+                            <div class="form-group">
+                                <label for="inputTitle" class="form-label">{% trans 'Type name' %}</label>
+                                <input type="text" name="title" id="inputTitle" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputCode" class="form-label">{% trans 'Code' %}</label>
+                                <input type="text" name="code" id="inputCode" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="selectPaidBy" class="form-label">{% trans 'Paid by' %}</label>
+                                <select class="form-select" name="paid_by" id="selectPaidBy">
+                                    <option value=""></option>
+                                    {% for key, item in data.PAID_BY.items %}
+                                        <option value="{{ key }}">{{ item }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtAreaRemark" class="form-label">{% trans 'Description' %}</label>
+                                <textarea name="remark" id="txtAreaRemark" class="form-control"></textarea>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="inputBalanceControl"
+                                       name="balance_control">
+                                <label class="form-check-label"
+                                       for="inputBalanceControl">{% trans 'Balance management' %}</label>
+                            </div>
+                            <div class="form-check mt-2 hidden">
+                                <input type="checkbox" class="form-check-input" id="inputExpired"
+                                       name="is_check_expiration">
+                                <label class="form-check-label"
+                                       for="inputExpired">{% trans 'Expiration management' %}</label>
+                            </div>
+                        </div>
+                        <input type="hidden" name="is_lt_system" value="false">
+                        <input type="hidden" name="is_lt_edit" value="true">
+                        <input type="hidden" name="type_idx">
+                    </form>
+                </div>
+                <div class="modal-footer d-flex justify-content-start ">
+                    <button type="button" class="btn btn-primary" id="save-type">{% trans 'Save' %}</button>
+                    <button type="button" class="btn btn-secondary ml-auto" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-create="{% url 'LeaveTypeCreate' %}"
+           data-detail="{% url 'LeaveConfigDetail' pk=0 %}"
+    >
+    <input type="text" id="trans-factory"
+           data-control-yes="{% trans 'Yes' %}"
+           data-control-no="{% trans 'No' %}"
+           data-terms-config="{% trans 'Confirm' %}"
+           data-terms-cancel="{% trans 'Cancel' %}"
+           data-terms-mess_tit="{% trans 'Delete Item' %}"
+           data-terms-mess="{% trans 'Do you really want to delete this item' %}"
+           data-valid-an="{% trans 'Wrong number, min is 12 and number format is integer' %}"
+    >
+    {{ data.config_data|json_script:'data_config' }}
+    {{ data.PAID_BY|json_script:'paid_by' }}
+    <div class="hidden">
+        <div class="group-btn-tb">
+            <div class="wrap-action-btn">
+                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-edit-row">
+                    <span class="btn-icon-wrap">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </span>
+                </a>
+                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row">
+                    <span class="btn-icon-wrap">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/e-offices/leave/js/config.js' %}"></script>
+{% endblock %}

@@ -4,32 +4,18 @@
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            form="form-edit-user" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="{% trans "Save" %}"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <button class="btn btn-outline-primary" type="submit" form="form-edit-user">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
     </button>
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="{% trans 'Reset password' %}"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="lock"></i>
-            </span>
-        </span>
-    </a>
 {% endblock %}
 {% block pageContent %}
-    <input type="text" id="inp-company_current_id" hidden>
-    <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
+    <span id="pageDataHide" data-url="{% url 'UserDetailAPI' pk=pk %}"></span>
+    <form data-url="{% url 'UserDetailAPI' pk=0 %}" data-url-redirect="/" data-method="PUT" id="form-edit-user">
         {% csrf_token %}
         <div class="row">
             <div class="col-6 col-lg-4">
@@ -84,5 +70,6 @@
 
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'assets/js/core/account/user_common.js' %}"></script>
     <script src="{% static 'assets/js/core/account/user_edit.js' %}"></script>
 {% endblock %}

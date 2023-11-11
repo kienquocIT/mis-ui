@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Leave request create' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/e-offices/leave/css/available-style.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+
+{% endblock %}
+
+{% block pageContent %}
+    <div class="container-fluid">
+        <div class="row ">
+            <div class="col-xs-12 col-md-4 columns-employee">
+                <div class="employee-toolbar">
+                    <button class="btn btn-default btn-employee">
+                        <span>
+                            <span>{% trans 'Employee' %}</span>
+                            <span class="icon"><i class="fas fa-angle-down"></i></span>
+                        </span>
+                    </button>
+                </div>
+                <div class="employee-content">
+                    <table class="table w-100" id="employee_tbl">
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Code' %}</th>
+                            <th>{% trans 'Employee name' %}</th>
+                            <th>{% trans 'Group name' %}</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="col-xs-12 col-md-8 columns-available">
+                <ul class="nav nav-light nav-tabs nav-line">
+                    <li class="nav-item">
+                        <a href="#employee_available_detail" class="nav-link active" data-bs-toggle="tab">
+                            <span class="nav-link-text">{% trans 'Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#employee_adjust_history" class="nav-link" data-bs-toggle="tab">
+                        <span class="nav-link-text">
+                            {% trans 'Adjust history' %}
+                        </span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="employee_available_detail">
+                        <table id="employee_available_detail_tbl" class="table nowrap w-100 mb-5">
+                            <thead>
+                            <tr>
+                                <th>{% trans 'Name' %}</th>
+                                <th>{% trans 'Opening year' %}</th>
+                                <th>{% trans 'Total' %}</th>
+                                <th>{% trans 'Used' %}</th>
+                                <th>{% trans 'Available' %}</th>
+                                <th>{% trans 'Expiration date' %}</th>
+                                <th>{% trans 'Adjust' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="employee_adjust_history">
+                        <table id="employee_adjust_history_tb" class="table nowrap w-100 mb-5">
+                            <thead>
+                            <tr>
+                                <th>{% trans 'Name' %}</th>
+                                <th>{% trans 'Arises type' %}</th>
+                                <th>{% trans 'Opening year' %}</th>
+                                <th>{% trans 'Total' %}</th>
+                                <th>{% trans 'Adjust' %}</th>
+                                <th>{% trans 'Quantity' %}</th>
+                                <th>{% trans 'Adjust date' %}</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="edit-available" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">{% trans 'Adjust' %}</h6>
+                </div>
+                <div class="modal-body">
+                    <form id="edit_available_form" method="post" data-method="put" autocomplete="off"
+                    >
+                        {% csrf_token %}
+                        <input type="hidden" value="" name="employee_inherit">
+                        <input type="hidden" value="" name="id">
+                        <div class="container-fluid">
+                            <div class="row align-items-baseline">
+                                <div class="col-xs-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="inputTotal" class="form-label">{% trans 'Total' %}</label>
+                                        <input type="number" name="total" id="inputTotal" class="form-control"
+                                               readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="selectAction"
+                                               class="form-label">{% trans 'Action' %}</label>
+                                        <select class="form-select" name="action" id="selectAction">
+                                            <option value="1">{% trans 'Increase' %}</option>
+                                            <option value="2">{% trans 'Decrease' %}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="inputQuantity"
+                                               class="form-label required">{% trans 'Quantity' %}</label>
+                                        <input type="number" name="quantity" id="inputQuantity" class="form-control"
+                                        pattern="^\d+(\.\d+)?$" required/>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="inputAdjustedTotal" class="form-label">
+                                            {% trans 'Adjusted total' %}</label>
+                                        <input type="number" name="adjusted_total" id="inputAdjustedTotal"
+                                               class="form-control" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label for="inputRemark" class="form-label">
+                                            {% trans 'Note' %}</label>
+                                        <textarea type="text" name="remark" id="inputRemark"
+                                                  class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 form-group">
+                                    <label for="inputExpirationDate" class="form-label">
+                                            {% trans 'Expiration date' %}</label>
+                                    <input type="text" class="form-control date-picker" disabled
+                                           name=expiration_date" id="inputExpirationDate">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary float-left"
+                            form="edit_available_form">{% trans 'Save' %}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {% trans 'Cancel' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory" aria-label="url-factory"
+           data-employee-list="{% url 'EmployeeListAPI' %}"
+           data-available-list="{% url 'LeaveAvailableListAPI' %}"
+           data-available-history="{% url 'LeaveAvailableHistoryAPI' %}"
+    >
+    <input type="text" id="trans-factory" aria-label="trans-factory"
+           data-err-date="{% trans 'Date To need large then Date From' %}"
+    >
+    <div class="wrap-template">
+        <div class="adjust_btn">
+            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-adjust-row" data-bs-toggle="modal"
+               data-bs-target="#edit-available">
+                    <span class="btn-icon-wrap">
+                        <i class="fas fa-wrench"></i>
+                    </span>
+            </a>
+        </div>
+    </div>
+    {{ data.action|json_script:'leave_action' }}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/e-offices/leave/js/leave_available.js' %}"></script>
+{% endblock %}

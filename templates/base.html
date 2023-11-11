@@ -2,15 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ base.tenant_current_data.code|upper }}{% endblock %}
-        &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}</title>
-    <meta name="description" content="Management Information System"/>
-
-    <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
-    <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+    {% include 'extends/systems/meta_header.html' %}
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,6 +26,10 @@
                 rel="stylesheet" type="text/css"
         />
         <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+        <link
+                href="{% static 'vendors/select2/dist/css/select2-bootstrap4.min.css' %}" rel="stylesheet"
+                type="text/css"
+        >
         <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
 
         <!-- Tour -->
@@ -46,6 +42,12 @@
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
+        <link
+                href="{% static 'assets/css/plugins/datatable/dist/css/table-advance-1.css' %}" rel="stylesheet"
+                type="text/css"
+        >
+        <link href="{% static 'vendors/timeline-me/jquery.timelineMe.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'vendors/timeline-me/timelineMe.custom.css' %}" rel="stylesheet" type="text/css">
 
         <style>
             html, body {
@@ -162,87 +164,90 @@
     <!-- /Vertical Nav -->
 
     <!-- Main Content -->
-    <div class="hk-pg-wrapper pb-0">
-        <div class="hk-pg-body py-0">
-            <div class="blogapp-wrap blogapp-sidebar-toggle">
-                <div class="blogapp-content">
-                    <div class="blogapp-detail-wrap">
-                        <header class="blog-header">
-                            <div class="d-flex align-items-center">
-                                {% include 'extends/breadcrumb.html' %}
-                            </div>
-                            <div class="blog-options-wrap" id="idxPageAction">
-                                <div
-{#                                        class="{% if pk %}hidden{% endif %}" #}
-                                        id="idxRealAction"
-                                >
-                                    {% block pageAction %}{% endblock %}
+    {% block fullBody %}
+        <div class="hk-pg-wrapper pb-0">
+            <div class="hk-pg-body py-0">
+                <div class="blogapp-wrap blogapp-sidebar-toggle">
+                    <div class="blogapp-content">
+                        <div class="blogapp-detail-wrap">
+                            <header class="blog-header">
+                                <div class="d-flex align-items-center">
+                                    <button class="btn mr-1 hidden" id="btn-show-breadcrumb"><i
+                                            class="fa-solid fa-bars"
+                                    ></i></button>
+                                    <div id="breadcrumb-data">
+                                        {% include 'extends/breadcrumb.html' %}
+                                    </div>
                                 </div>
-                                <button
-                                        type="submit"
-                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                        form=""
-                                        data-value=""
-                                        id="idxSaveInZoneWF"
-                                >
+                                <div class="blog-options-wrap" id="idxPageAction">
+                                    <div class="{% if pk %}hidden{% endif %}" id="idxRealAction">
+                                        {% block pageAction %}{% endblock %}
+                                    </div>
+                                    <button
+                                            type="submit"
+                                            class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                            form=""
+                                            data-value=""
+                                            id="idxSaveInZoneWF"
+                                    >
                                     <span
                                             class="icon"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="bottom"
                                             data-bs-original-title="{% trans 'Save in Zone' %}"
                                     ><i class="fa-solid fa-floppy-disk"></i></span>
-                                </button>
+                                    </button>
 
-                                <button
-                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                        type="submit"
-                                        form=""
-                                        data-wf-action=""
-                                        id="idxSaveInZoneWFThenNext"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        data-bs-original-title="{% trans 'Save in zone then call next station' %}"
-                                >
-                                    {#                                    <i class="icon-action-wf fa-solid fa-floppy-disk"></i>#}
-                                    {#                                    <i class="icon-action-wf fa-solid fa-check"></i>#}
-                                    <span class="icon">
+                                    <button
+                                            class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                            type="submit"
+                                            form=""
+                                            data-wf-action=""
+                                            id="idxSaveInZoneWFThenNext"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Save in zone then call next station' %}"
+                                    >
+                                        {#                                    <i class="icon-action-wf fa-solid fa-floppy-disk"></i>#}
+                                        {#                                    <i class="icon-action-wf fa-solid fa-check"></i>#}
+                                        <span class="icon">
                                         <i class="fa-solid fa-check-double text-success"></i>
                                     </span>
-                                </button>
+                                    </button>
 
 
-                                <button
-                                        type="button"
-                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                        id="btn-active-edit-zone-wf"
-                                >
+                                    <button
+                                            type="button"
+                                            class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                            id="btn-active-edit-zone-wf"
+                                    >
                                     <span
                                             class="icon"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="bottom"
                                             data-bs-original-title="{% trans 'Open edit in Zones' %}"
                                     ><i class="fa-solid fa-unlock"></i></span>
-                                </button>
-                                <button
-                                        type="button"
-                                        class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                        data-value=""
-                                        id="btnMainAction"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        data-bs-original-title="{% trans 'Approval' %}"
-                                >
+                                    </button>
+                                    <button
+                                            type="button"
+                                            class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                            data-value=""
+                                            id="btnMainAction"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Approval' %}"
+                                    >
                                     <span
                                             class="icon"
                                     ></span>
-                                </button>
+                                    </button>
 
-                                <div class="dropdown hidden">
-                                    <button
-                                            aria-expanded="false" data-bs-toggle="dropdown"
-                                            class="btn btn-default btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            type="button"
-                                    >
+                                    <div class="dropdown hidden">
+                                        <button
+                                                aria-expanded="false" data-bs-toggle="dropdown"
+                                                class="btn btn-default btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                type="button"
+                                        >
                                         <span
                                                 class="icon"
                                                 data-bs-toggle="tooltip"
@@ -251,99 +256,96 @@
                                         >
                                             ...
                                         </span>
-                                    </button>
-                                    <div role="menu" class="dropdown-menu" id="idxGroupAction">
-                                        {% for key, value in base_workflow.items %}
-                                            <li class="hidden btn-action-wf" data-value="{{ key }}">
-                                                <div class="dropdown-item"><i
-                                                        class="icon-action-wf mr-1 {{ value.1 }}"
-                                                ></i> {{ value.0 }}</div>
-                                            </li>
-                                        {% endfor %}
+                                        </button>
+                                        <div role="menu" class="dropdown-menu" id="idxGroupAction">
+                                            {% for key, value in base_workflow.items %}
+                                                <li class="hidden btn-action-wf" data-value="{{ key }}">
+                                                    <div class="dropdown-item"><i
+                                                            class="icon-action-wf mr-1 {{ value.1 }}"
+                                                    ></i> {{ value.0 }}</div>
+                                                </li>
+                                            {% endfor %}
+                                        </div>
+                                        {% if base_workflow.length > 0 %}
+                                            {% csrf_token %}
+                                        {% endif %}
                                     </div>
-                                    {% if base_workflow.length > 0 %}
-                                        {% csrf_token %}
-                                    {% endif %}
-                                </div>
 
-                                <div class="v-separator  d-lg-inline-block d-none"></div>
+                                    <div class="v-separator  d-lg-inline-block d-none"></div>
 
-                                <button
-                                        id="btnLogShow"
-                                        class="hidden btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
-                                        data-drawer-target="#drawer_log_data"
-                                        data-drawer-active="false"
-                                        href="#"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        data-bs-original-title="{% trans 'Log' %}"
-                                        data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
-                                >
+                                    <button
+                                            id="btnLogShow"
+                                            class="hidden btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
+                                            data-drawer-target="#drawer_log_data"
+                                            data-drawer-active="false"
+                                            href="#"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Log' %}"
+                                            data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
+                                    >
                                     <span class="icon icon-xs">
                                         <i class="fas fa-history fa-sm"></i>
                                     </span>
-                                </button>
-                                <button
-                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1 hk-navbar-togglable"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        data-bs-original-title="{% trans 'Collapse' %}"
-                                >
+                                    </button>
+                                    <button
+                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1 hk-navbar-togglable"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Collapse' %}"
+                                    >
                                     <span class="icon">
                                         <i class="fa-solid fa-chevron-up fa-sm"></i>
                                         <i class="fa-solid fa-chevron-down fa-sm d-none"></i>
                                         <!-- <span class="feather-icon"><i data-feather="chevron-up"></i></span> -->
                                         <!-- <span class="feather-icon d-none"><i data-feather="chevron-down"></i></span> -->
                                     </span>
-                                </button>
+                                    </button>
+                                </div>
+                                <div class="hk-sidebar-togglable active"></div>
+                            </header>
+                            <div class="blog-body">
+                                <div data-simplebar class="nicescroll-bar" id="idxPageContent">
+                                    {% block pageContent %}
+                                    {% endblock %}
+                                </div>
                             </div>
-                            <div class="hk-sidebar-togglable active"></div>
-                        </header>
-                        <div class="blog-body">
-                            <div data-simplebar class="nicescroll-bar" id="idxPageContent">
-                                {% block pageContent %}
-                                {% endblock %}
+                            <div class="blog-utility">
+                                <!-- spinner loading -->
+                                {% include "extends/utility/loading.html" %}
+                                <!-- /spinner loading -->
+
+                                <!-- /Message translate base -->
+                                {% include 'trans.html' %}
+                                <!-- /Message translate base -->
+
+                                <!-- Some data in single page | please override block in feature template-->
+                                <div class="hidden">
+                                    <!-- Render Company Config and some json -->
+                                    {% if data.input_mapping_properties %}
+                                        {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
+                                    {% endif %}
+                                    {{ config|json_script:"idConfigValue" }}
+                                    <!-- // Render Company Config and some json -->
+
+                                    {% block dataHiddenGroup %}{% endblock %}
+                                </div>
+                                <!-- // Some data in single page | please override block in feature template-->
+
+                                <!-- Drawer Log and Activity -->
+                                {% include "extends/utility/drawer_log.html" %}
+                                <!-- // Drawer Log and Activity -->
+
+                                <!-- Raise a ticket -->
+                                {% include "extends/utility/raise_ticket.html" %}
+                                <!-- // Raise a ticket -->
                             </div>
-                        </div>
-                        <div class="blog-utility">
-                            <!-- spinner loading -->
-                            {% include "extends/utility/loading.html" %}
-                            <!-- /spinner loading -->
-
-                            <!-- Message translate usually -->
-                            {% include 'extends/utility/system_storage.html' %}
-                            <!-- /Message translate usually -->
-
-                            <!-- /Message translate base -->
-                            {% include 'trans.html' %}
-                            <!-- /Message translate base -->
-
-                            <!-- Some data in single page | please override block in feature template-->
-                            <div class="hidden">
-                                <!-- Render Company Config and some json -->
-                                {% if data.input_mapping_properties %}
-                                    {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
-                                {% endif %}
-                                {{ config|json_script:"idConfigValue" }}
-                                <!-- // Render Company Config and some json -->
-
-                                {% block dataHiddenGroup %}{% endblock %}
-                            </div>
-                            <!-- // Some data in single page | please override block in feature template-->
-
-                            <!-- Drawer Log and Activity -->
-                            {% include "extends/utility/drawer_log.html" %}
-                            <!-- // Drawer Log and Activity -->
-
-                            <!-- Raise a ticket -->
-                            {% include "extends/utility/raise_ticket.html" %}
-                            <!-- // Raise a ticket -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endblock %}
     <!-- /Main Content -->
 </div>
 <!-- /Wrapper -->
@@ -384,6 +386,11 @@
     <script src="{% static 'vendors/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
     <!-- // Data Table JS -->
 
+    <!-- Timeline ME -->
+    <script src="{% static 'vendors/timeline-me/jquery.timelineMe.js' %}"></script>
+    <script src="{% static 'vendors/timeline-me/timelineMe.custom.js' %}"></script>
+    <!-- // Timeline ME -->
+
     <!-- Select2 JS -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <!-- // Select2 JS -->
@@ -394,18 +401,104 @@
     <!-- Tour -->
     <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
 
-
-
     <!-- Init JS -->
     <script src="{% static 'assets/js/plugins/drawer.js' %}"></script>
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
+
+    <script type="application/javascript">
+        // all variable data global with CONST!! --> keep don't change value of variable
+        const globeLanguage = "{{ base.language }}";
+        const globeApiStatusOfRender = "{{ data.render_api_status }}";
+        const globeUrlNotDeny = ['/log/notify/me/count'];
+        const globePK = "{{ pk }}";
+        const globeMediaDomain = "{{ base.domain_cloud }}";
+        const globePrefixAvatar = "{{ base.avatar_prefix }}";
+        const globeIsDebug = "{{ is_debug }}";
+
+        // url
+        const globeUrlCompanyConfig = "{% url 'CompanyConfigDetailAPI' %}";
+
+        // DataTable
+        const globeDTBLanguageConfig = "{% if base.language == 'en' %}{% static 'assets/js/cdn-clone/datatable/i18n/en.json' %}{% else %}{% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}{% endif %}";
+        const globeGoToEndPage = "{% trans 'Current page automatically goes to end page after the new row was added' %}";
+
+        // gateway
+        const globeGatewayMiddleListView = "{% url 'GatewayMiddleListView' plan='_plan_' app='_app_' %}";
+        const globeGatewayMiddleDetailView = "{% url 'GatewayMiddleDetailView' plan='_plan_' app='_app_' pk='_pk_' %}";
+        const globeGatewayViewNameListView = "{% url 'GatewayViewNameListView' %}";
+        const globeGatewayViewNameParseView = "{% url 'GatewayViewNameParseView' view_name='_view_name_' %}";
+
+        // attachment
+        const globeUrlAttachmentUpload = "{% url 'AttachmentUpload' %}";
+        const globeUrlAvatarUpload = "{% url 'EmployeeUploadAvatarAPI' %}";
+        const globeMaxFileSize = "{% trans 'Maximum size {size}MiB' %}.";
+        const globeFileDeny = "{% trans 'File type not allowed for uploading' %}";
+        const globeFileAccept = "{% trans 'It must be one of the following file types:' %}";
+
+        // workflow
+        const globeTaskDetail = "{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}";
+        const globeFormMappedZone = "{% if data.form_id %}{{ data.form_id }}{% endif %}";
+
+        // msg
+        const globeResourceLoadFailed = "{% trans 'Failed to load resource' %}.";
+        const globeMsgAuthExpires = "{% trans 'The session login was expired' %}";
+        const globeLoginPage = "{% trans 'Login page' %}";
+        const globeHomePage = "{% trans 'Home Page' %}";
+        const globePreviousPage = "{% trans 'Previous page' %}";
+        const globeMsgUnlimited = "{% trans 'Unlimited' %}";
+
+        // http msg
+        const globeMsgHttp404 = "{% trans 'Not found' %}";
+        const globeMsgHttp403 = "{% trans 'Forbidden' %}";
+        const globeMsgHttp500 = "{% trans 'Internal Server Errors' %}";
+
+    </script>
+
+    <!-- Moment JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/moment-upgrade/moment-locales-upgrade-vi-en.js' %}"></script>
+    <script>
+        moment.locale(globeLanguage.trim());
+    </script>
+    <!-- // Moment JS -->
+
     <script src="{% static 'assets/js/init.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'assets/js/cdn-clone/select2/i18n/vi.js' %}"></script>
+        <script src="{% static 'assets/js/cdn-clone/jquery-validation/localization/message_vi.js' %}"></script>
+    {% else %}
+        <script src="{% static 'assets/js/cdn-clone/select2/i18n/en.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'assets/js/cdn-clone/select2/init-select2.js' %}"></script>
     <script src="{% static 'assets/js/chips-init.js' %}"></script>
+    <script src="{% static 'vendors/jquery-mockjax_2.6.0/jquery.mockjax.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/bastion_field.js' %}"></script>
+    <script src="{% static 'assets/js/init-setup.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/card-tools.js' %}"></script>
     <!-- // Init JS -->
 
     <script type="application/javascript">
+        let isDenied = false;
+        switch (globeApiStatusOfRender) {
+            case "1401":
+                isDenied = true;
+                WindowControl.showUnauthenticated();
+                break;
+            case "1403":
+                isDenied = true;
+                WindowControl.showForbidden();
+                break;
+            case "1404":
+                isDenied = true;
+                WindowControl.showNotFound();
+                break;
+            case "1500":
+                isDenied = true;
+                WindowControl.showSVErrors();
+                break;
+        }
         $(window).on("load", function () {
             if (!$('#menu-tenant').attr('data-space-selected')) {
                 hopscotch.startTour({
@@ -414,13 +507,102 @@
                         {
                             target: "menu-tenant",
                             placement: 'bottom',
-                            title: $.fn.storageSystemData.attr('data-msg-choose-space'),
-                            content: $.fn.storageSystemData.attr('data-msg-choose-space-instru'),
+                            title: "{% trans 'Choose a space menus' %}",
+                            content: "{% trans 'Each Space has different menus.' %}",
                         },
                     ],
                     showPrevButton: true,
                 });
             }
+        });
+
+        function checkSizeScreen() {
+            let wWidth = $(window).width();
+            if (wWidth < 768) {
+                let realActionEle = $('#idxRealAction');
+                realActionEle.find('.icon').parent('span').each(function () {
+                    let spanShowEle = $(this).children('span:not(.icon)');
+                    $(this).attr('data-bs-toggle', 'tooltip');
+                    $(this).attr('data-bs-placement', 'bottom');
+                    $(this).attr('title', spanShowEle.text());
+                    spanShowEle.remove();
+                });
+                $('#btn-show-breadcrumb').addClass('hidden');
+                $('#breadcrumb-data').addClass('hidden');
+            }
+            if (wWidth < 350) {
+                $('#menu-tenant-text').text("_");
+            }
+        }
+
+        checkSizeScreen();
+
+        $(window).on("resize", function () {
+            checkSizeScreen();
+        })
+
+        {# Auto init select2 #}
+        $(document).ready(function () {
+            $('.auto-init-select2').each(function () {
+                if ($(this).data('url')) {
+                    $(this).initSelect2();
+                }
+            });
+        })
+
+        function onLoadDropdownInfoInherit(eleInfo, eleInfoData, selectedData) {
+            eleInfoData.find('.emp-info-detail-first-name').val(selectedData['first_name']);
+            eleInfoData.find('.emp-info-detail-last-name').val(selectedData['last_name']);
+            eleInfoData.find('.emp-info-detail-email').val(selectedData['email']);
+            eleInfoData.find('.emp-info-detail-is-active').prop('checked', !!selectedData['is_active']);
+            return eleInfo;
+        }
+
+        function onLoadDropdownInfoOpp(eleInfo, eleInfoData, selectedData) {
+            eleInfoData.find('.opp-info-detail-title').val(selectedData['title']);
+            eleInfoData.find('.opp-info-detail-code').val(selectedData['code']);
+            return eleInfo;
+        }
+
+        {# Language #}
+        $('#link-language').on('click', function () {
+            let currentLanguage = $(this).attr('data-value');
+            let urlUpdateLanguage = $(this).attr('data-url');
+            let html = `
+                <div class="d-flex justify-content-center">
+                    <select class="form-select w-250p" id="sel-change-language-to">
+                        <option value="vi" ${ currentLanguage === 'vi' ? 'selected': ''}>Tiếng Việt</option>
+                        <option value="en" ${ currentLanguage === 'en' ? 'selected': ''}>English</option>
+                    </select>
+                </div>
+            `;
+            Swal.fire({
+                title: "{% trans 'Change language to' %}",
+                html: html,
+                showCancelButton: true,
+                confirmButtonText: "{% trans 'Yes, update it!' %}",
+                cancelButtonText: "{% trans 'Cancel' %}",
+                showLoaderOnConfirm: true,
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then(
+                (result) => {
+                     if (result.isConfirmed) {
+                         $.fn.callAjax2({
+                             url: urlUpdateLanguage,
+                             method: 'PUT',
+                             data: {
+                                 'language': $('#sel-change-language-to').val(),
+                             },
+                             isLoading: true,
+                         }).then(
+                             (resp) => {
+                                 let data = $.fn.switcherResp(resp);
+                                 window.location.reload();
+                             }
+                         )
+                     }
+                }
+            )
         })
     </script>
 

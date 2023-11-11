@@ -1,0 +1,442 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Woking calendar' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+    .btn-remove-year{
+        position: absolute;
+        visibility: hidden;
+        transition: all 0.2s ease-in;
+        top:5px;
+        right: 5px;
+    }
+    .year-item:hover .btn-remove-year{
+        visibility: visible;
+    }
+
+    .active + .btn-remove-year {
+        color: #fff;
+    }
+    .active + .btn-remove-year:hover {
+        text-shadow: 0 0 8px rgba(255,255,255,.7), 0 0 5px #ffff00;
+    }
+    </style>
+{% endblock %}
+
+{% block pageAction %}
+    <a href="#">
+        <button class="btn btn-outline-primary" type="submit" form="working_calendar">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <ul class="nav nav-tabs nav-light nav-line">
+                <li class="nav-item">
+                    <a href="#working_days" class="nav-link active" data-bs-toggle="tab">
+                        <span class="nav-link-text">{% trans 'Weekly working days' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#holidays" class="nav-link" data-bs-toggle="tab">
+                        <span class="nav-link-text">
+                            {% trans 'Holidays' %}
+                        </span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content mt-0">
+                <div class="tab-pane fade show active" id="working_days">
+                <form class="container-fluid mt-4" id="working_calendar" method="post" autocomplete="off"
+                          data-method="PUT">
+                        {% csrf_token %}
+                    <table class="table table-bordered nowrap w-100 mb-5 mt-4 text-center">
+                        <tbody>
+                        <tr>
+                            <td rowspan="2"></td>
+                            <td>{% trans 'Monday' %}</td>
+                            <td>{% trans 'Tuesday' %}</td>
+                            <td>{% trans 'Wednesday' %}</td>
+                            <td>{% trans 'Thursday' %}</td>
+                            <td>{% trans 'Friday' %}</td>
+                            <td>{% trans 'Saturday' %}</td>
+                            <td>{% trans 'Sunday' %}</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="form-check-input position-static" name="mon_work"
+                                       {% if data.wc_cfg.working_days.1.work %}checked{% endif %}></td>
+                            <td><input type="checkbox" class="form-check-input position-static" name="tue_work"
+                                       {% if data.wc_cfg.working_days.2.work %}checked{% endif %}></td>
+                            <td><input type="checkbox" class="form-check-input position-static" name="wed_work"
+                                       {% if data.wc_cfg.working_days.3.work %}checked{% endif %}></td>
+                            <td><input type="checkbox" class="form-check-input position-static" name="thu_work"
+                                       {% if data.wc_cfg.working_days.4.work %}checked{% endif %}></td>
+                            <td><input type="checkbox" class="form-check-input position-static" name="fri_work"
+                                       {% if data.wc_cfg.working_days.5.work %}checked{% endif %}></td>
+                            <td><input type="checkbox" class="form-check-input position-static" name="sat_work"
+                                       {% if data.wc_cfg.working_days.6.work %}checked{% endif %}></td>
+                            <td><input type="checkbox" class="form-check-input position-static" name="sun_work"
+                                       {% if data.wc_cfg.working_days.0.work %}checked{% endif %}></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">{% trans 'Morning' %}</td>
+                            <td>
+                                <div class="mon mor from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_mor_from' select_val=data.wc_cfg.working_days.1.mor.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tue mor from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_mor_from' select_val=data.wc_cfg.working_days.2.mor.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wed mor from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_mor_from' select_val=data.wc_cfg.working_days.3.mor.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="thu mor from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_mor_from' select_val=data.wc_cfg.working_days.4.mor.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fri mor from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_mor_from' select_val=data.wc_cfg.working_days.5.mor.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sat mor from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_mor_from' select_val=data.wc_cfg.working_days.6.mor.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sun mor from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_mor_from' select_val=data.wc_cfg.working_days.0.mor.from %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="mon mor to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_mor_to' select_val=data.wc_cfg.working_days.1.mor.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tue mor to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_mor_to' select_val=data.wc_cfg.working_days.2.mor.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wed mor to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_mor_to' select_val=data.wc_cfg.working_days.3.mor.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="thu mor to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_mor_to' select_val=data.wc_cfg.working_days.4.mor.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fri mor to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_mor_to' select_val=data.wc_cfg.working_days.5.mor.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sat mor to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_mor_to' select_val=data.wc_cfg.working_days.6.mor.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sun mor to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_mor_to' select_val=data.wc_cfg.working_days.0.mor.to %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">{% trans 'Afternoon' %}</td>
+                            <td>
+                                <div class="mon aft from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_aft_from' select_val=data.wc_cfg.working_days.1.aft.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tue aft from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_aft_from' select_val=data.wc_cfg.working_days.2.aft.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wed aft from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_aft_from' select_val=data.wc_cfg.working_days.3.aft.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="thu aft from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_aft_from' select_val=data.wc_cfg.working_days.4.aft.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fri aft from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_aft_from' select_val=data.wc_cfg.working_days.5.aft.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sat aft from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_aft_from' select_val=data.wc_cfg.working_days.6.aft.from %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sun aft from input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_aft_from' select_val=data.wc_cfg.working_days.0.aft.from %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="mon aft to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_aft_to' select_val=data.wc_cfg.working_days.1.aft.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tue aft to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_aft_to' select_val=data.wc_cfg.working_days.2.aft.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wed aft to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_aft_to' select_val=data.wc_cfg.working_days.3.aft.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="thu aft to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_aft_to' select_val=data.wc_cfg.working_days.4.aft.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fri aft to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_aft_to' select_val=data.wc_cfg.working_days.5.aft.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sat aft to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_aft_to' select_val=data.wc_cfg.working_days.6.aft.to %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sun aft to input-timepicker-ui">
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_aft_to' select_val=data.wc_cfg.working_days.0.aft.to %}
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+                </div>
+                <div class="tab-pane fade" id="holidays">
+                    <div class="row mt-4 border">
+                        <div class="col-xs-12 col-md-2 border-right">
+                            <div class="row">
+                                <h6 class="h6 bg-blue-light-5 pt-2 pb-2">{% trans 'Year' %}</h6>
+                            </div>
+                            <div class="wrap_years mt-3 mb-5">
+                                <ul class="nav flex-column nav-light nav-pills nav-vertical">
+                                    {% for item in data.wc_cfg.years %}
+                                        <li class="nav-item year-item position-relative" data-year-id="{{ item.id }}">
+                                            <a href="#years_{{ item.config_year }}"
+                                               class="nav-link {% if forloop.first %}active{% endif %}"
+                                               data-bs-toggle="tab">
+                                                <span class="nav-link-text">{{ item.config_year }}</span>
+                                            </a>
+                                            <button class="btn btn-icon btn-rounded flush-soft-hover btn-remove-year">
+                                                <span class="btn-icon-wrap"><i class="fa-solid fa-trash-can"></i></span>
+                                            </button>
+                                        </li>
+                                    {% empty %}
+                                        <li class="nav-item year-item-empty">{% trans 'Years is empty' %}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <a href="#">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modal_years">
+                                    <span>
+                                        <span>{% trans 'Add year' %}</span>
+                                        <span class="icon">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </span>
+                                    </span>
+                                </button>
+                            </a>
+                        </div>
+                        <div class="col-xs-12 col-md-10 mb-5">
+                            <div class="row">
+                                <h6 class="h6 bg-blue-light-5 pt-2 pb-2">{% trans 'Holidays' %}</h6>
+                            </div>
+                            <div class="wrap_holidays mt-3 mb-5">
+                                <div class="tab-content">
+                                    {% for item in data.wc_cfg.years %}
+                                        <div class="tab-pane fade {% if forloop.first %}active show{% endif %}"
+                                             data-year-id="{{ item.id }}" id="years_{{ item.config_year }}">
+                                            <table id="holidays_{{ item.config_year }}" class="table nowrap w-100 mb-5 text-center">
+                                                <thead>
+                                                <tr>
+                                                    <th>{% trans 'Date' %}</th>
+                                                    <th>{% trans 'Description' %}</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody><tr><td colspan="3">{% trans 'Data list is empty' %}</td></tr></tbody>
+                                            </table>
+                                            <script type="application/json">{{ item.list_holiday|safe }}</script>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+                            <a href="#">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modal_holidays">
+                                    <span>
+                                        <span>{% trans 'Add holiday' %}</span>
+                                        <span class="icon">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </span>
+                                    </span>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="template hidden">
+        <div class="li-year-item">
+            <li class="nav-item year-item">
+                <a class="nav-link" data-bs-toggle="tab">
+                    <span class="nav-link-text"></span>
+                </a>
+                <button class="btn btn-icon btn-rounded flush-soft-hover btn-remove-year">
+                    <span class="btn-icon-wrap"><i class="fa-solid fa-trash-can"></i></span>
+                </button>
+            </li>
+        </div>
+        <div class="group-btn-tb">
+            <div class="wrap-action-btn">
+                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-edit-row">
+                    <span class="btn-icon-wrap">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </span>
+                </a>
+                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row">
+                    <span class="btn-icon-wrap">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="holidays-tabs">
+            <div class="tab-pane fade" data-year-id="" id="">
+                <table id="" class="table nowrap w-100 mb-5 text-center">
+                    <thead>
+                    <tr>
+                        <th>{% trans 'Date' %}</th>
+                        <th>{% trans 'Description' %}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody><tr><td colspan="3">{% trans 'Data list is empty' %}</td></tr></tbody>
+                </table>
+                <script type="application/json"></script>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal_years">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Craete years' %}</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="container-fluid mt-4" id="formYear" method="post" autocomplete="off"
+                          data-method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="inputConfigYear" class="form-label">{% trans 'Number Year' %}</label>
+                            <input type="text" name="config_year" id="inputConfigYear" class="form-control"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer d-flex justify-content-start">
+                    <button type="submit" class="btn btn-primary" form="formYear">{% trans 'Save' %}</button>
+                    <button type="button" class="btn btn-secondary ml-auto" data-bs-dismiss="modal">
+                        {% trans 'Close' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal_holidays">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Holidays' %}</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="container-fluid mt-4" id="formHoliday" method="post" autocomplete="off"
+                          data-method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="inputHolidayDate" class="form-label">{% trans 'Date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="holiday_date_to" id="inputHolidayDate"
+                                       class="form-control date-picker" autocomplete="off">
+                                <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputRemark" class="form-label required">{% trans 'Description' %}</label>
+                            <textarea name="remark" id="inputRemark" class="form-control" cols="3" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer d-flex justify-content-start">
+                    <button type="submit" class="btn btn-primary" form="formHoliday">{% trans 'Save' %}</button>
+                    <button type="button" class="btn btn-secondary ml-auto" data-bs-dismiss="modal">
+                        {% trans 'Close' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="hidden" id="config_id" name="id" value="{{ data.wc_cfg.id }}">
+    <input type="text" id="url-factory"
+           data-update="{% url 'WorkingCalendarConfigAPI' %}"
+           data-year="{% url 'WorkingYearCreate' %}"
+           data-year-delete="{% url 'WorkingYearDetail' pk=0 %}"
+           data-holiday="{% url 'WorkingHolidayCreate' %}"
+           data-holiday-detail="{% url 'WorkingHolidayDetail' 0 %}"
+    >
+    <input type="text" id="trans-factory"
+           data-holidays-error="{% trans 'date of Holidays not match with year please verify again' %}"
+    >
+
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/e-offices/leave/js/working_calendar.js' %}"></script>
+{% endblock %}

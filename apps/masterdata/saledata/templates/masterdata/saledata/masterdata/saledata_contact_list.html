@@ -1,29 +1,21 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Master Data Contact' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn-show-modal" id="btn-show-modal-create" type="button" data-bs-toggle="modal"
-            data-bs-target="#modal-lookup-data"
-            style="background: none; border: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a id="btn-show-modal-create" href="#" data-bs-toggle="modal" data-bs-target="#modal-lookup-data">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-        </span>
-    </button>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}
@@ -75,22 +67,22 @@
         </div>
     </div>
     <!-- Modal Modal Create Lookup Data -->
-    <form id="form-create-lookup" data-method="POST" data-lookup="salutation"
-          data-url-salutation="{% url "SalutationCreateAPI" %} "
-          data-url-interests="{% url "InterestCreateAPI" %} "
-          data-url-redirect="{% url "ContactMasterDataList" %}">
-        {% csrf_token %}
-        <div class="modal fade" id="modal-lookup-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Salutation" %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
+    <div class="modal fade" id="modal-lookup-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Salutation" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-create-lookup" data-method="POST" data-lookup="salutation"
+                          data-url-salutation="{% url "SalutationCreateAPI" %} "
+                          data-url-interests="{% url "InterestCreateAPI" %} "
+                          data-url-redirect="{% url "ContactMasterDataList" %}">
+                        {% csrf_token %}
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Code" %}</label>
@@ -107,36 +99,39 @@
                                 <input class="form-control" type="text" name="description"
                                        placeholder="Input text">
                             </div>
-                        </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="submit" class="btn btn-primary"
+                                form="form-create-lookup">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+
     <!-- End Modal Create Lookup Data-->
 
     <!-- Modal Update Master Data>-->
-    <form id="form-update-masterdata" data-method="POST" data-lookup="salutation"
-          data-url-salutation="{% url "SalutationDetailAPI" pk=0 %} "
-          data-url-interests="{% url "InterestDetailAPI" pk=0 %} "
-    >
-        <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Edit Salutation" %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
+    <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Edit Salutation" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-masterdata" data-method="PUT" data-lookup="salutation"
+                    >
                         <div class="row">
+                            <input name="url_detail" class="hidden">
+                            <input id="inp-type" class="hidden">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Code" %}</label>
                                 <input id="code-update" class="form-control" type="text" name="code" readonly
@@ -144,33 +139,33 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <div class="readonly">
-                                    <input class="form-control" type="text" name="title" id="name-update"
-                                           placeholder="Input name" required readonly>
-                                    <span></span>
-                                </div>
+                                <input class="form-control" type="text" name="title" id="name-update"
+                                       placeholder="Input name" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Description" %}</label>
-                                <div class="readonly">
-                                    <input class="form-control" type="text" name="description"
-                                           id="description-update" placeholder="Input text" readonly>
-                                    <span></span>
-                                </div>
-
+                                <input class="form-control" type="text" name="description"
+                                       id="description-update" placeholder="Input text" readonly>
                             </div>
                         </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary edit-button">Save</button>
-                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="submit" form="form-update-masterdata"
+                                class="btn btn-primary">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
     <!-- Modal Update Master Data>-->
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-salutation-detail="{% url 'SalutationDetailAPI' pk=0 %}"
+           data-interest-detail="{% url 'InterestDetailAPI' pk=0 %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/saledata_contact_create.js' %}"></script>

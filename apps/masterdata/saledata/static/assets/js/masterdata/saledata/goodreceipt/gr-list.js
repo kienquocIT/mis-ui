@@ -6,9 +6,11 @@ $(function(){
             type: "GET",
             dataSrc: 'data.good_receipt_list',
         },
+        useDataServer: true,
         columns: [
             {
                 targets: 0,
+                orderable: false,
                 defaultContent: ''
             },
             {
@@ -26,7 +28,7 @@ $(function(){
                     let txt = '--'
                     if (Object.keys(row).length){
                         let url = $('#url-factory').attr('data-account-detail').format_url_with_uuid(row.id)
-                        txt = `<a href="${url}" target="_blank" className="text-decoration-underline">${
+                        txt = `<a href="${url}" target="_blank" class="text-decoration-underline">${
                             row.title}</a>`
                     }
                     return `<p>${txt}</p>`
@@ -34,9 +36,11 @@ $(function(){
             },
             {
                 targets: 3,
-                render: (row, type, data) => {
-                    let postingDate = moment(data.posting_date, 'YYYY-MM-DD').format('DD/MM/YYYY')
-                    return `<p>${postingDate}</p>`;
+                data: "posting_date",
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'YYYY-MM-DD',
+                    })
                 },
             },
             {
@@ -49,6 +53,7 @@ $(function(){
             },
             {
                 targets: 5,
+                orderable: false,
                 render: (row, type, data) => {
                     let html = `<div class="actions-btn text-center">
                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
@@ -57,7 +62,7 @@ $(function(){
                                    data-id="${data?.id ? data.id : ''}"
                                    data-action="delete">
                                     <span class="btn-icon-wrap">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="fa-regular fa-trash-can"></i>
                                     </span>
                                 </a>
                             </div>`;

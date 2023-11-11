@@ -1,16 +1,12 @@
 $(document).ready(function () {
-
-    let ele_account_type = $('#section-account-type').html()
-    let ele_account_group = $('#section-account-group').html()
-    let ele_industry = $('#section-industry').html()
     // load Data
-
     function loadAccountType() {
         if (!$.fn.DataTable.isDataTable('#datatable-account-type-list')) {
             let tbl = $('#datatable-account-type-list');
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -25,14 +21,14 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
-                            render: (data, type, row, meta) => {
+                            render: () => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
                                     data,
                                 )
@@ -41,7 +37,7 @@ $(document).ready(function () {
                         {
                             data: 'title',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data
                                 )
@@ -50,14 +46,15 @@ $(document).ready(function () {
                         {
                             data: 'description',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data
                                 )
                             }
                         }, {
-                            render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="{0}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                            render: (data, type, row) => {
+                                let url = $('#url-factory').data('url-account-type').format_url_with_uuid(row.id);
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                     row.id
                                 )
                             }
@@ -74,6 +71,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -88,14 +86,14 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
-                            render: (data, type, row, meta) => {
+                            render: () => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
                                     data,
                                 )
@@ -104,7 +102,7 @@ $(document).ready(function () {
                         {
                             data: 'title',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data
                                 )
@@ -113,14 +111,15 @@ $(document).ready(function () {
                         {
                             data: 'description',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data
                                 )
                             }
                         }, {
-                            render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_group" data-id="{0}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                            render: (data, type, row) => {
+                                let url = $('#url-factory').data('url-account-group').format_url_with_uuid(row.id);
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_group" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                     row.id
                                 )
                             }
@@ -137,6 +136,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -183,7 +183,8 @@ $(document).ready(function () {
                             }
                         }, {
                             render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="industry" data-id="{0}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                                let url = $('#url-factory').data('url-industry').format_url_with_uuid(row.id);
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="industry" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                     row.id
                                 )
                             }
@@ -223,120 +224,86 @@ $(document).ready(function () {
 
     // submit form create lookup data
     let frm = $('#form-create-lookup');
-    frm.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").last().val();
-        let frm = new SetupFormSubmit($(this));
-        let frm_data = frm.dataForm;
-        let lookup = $('#form-create-lookup').attr('data-lookup');
-        let data_url = ''
-        if (lookup === 'section-account-type') {
-            data_url = $('#form-create-lookup').attr('data-url-account-type');
-        }
-        if (lookup === 'section-account-group') {
-            data_url = $('#form-create-lookup').attr('data-url-account-group');
-        }
-        if (lookup === 'section-industry') {
-            data_url = $('#form-create-lookup').attr('data-url-industry');
-        }
 
-        if (frm_data['code'] === '') {
-            frm_data['code'] = null;
-        }
+    new SetupFormSubmit(frm).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            let lookup = $(form).attr('data-lookup');
+            let data_url = ''
+            if (lookup === 'section-account-type') {
+                data_url = $(form).attr('data-url-account-type');
+            }
+            if (lookup === 'section-account-group') {
+                data_url = $(form).attr('data-url-account-group');
+            }
+            if (lookup === 'section-industry') {
+                data_url = $(form).attr('data-url-industry');
+            }
 
-        if (frm_data['title'] === '') {
-            frm_data['title'] = null;
-        }
+            if (frm_data['code'] === '') {
+                frm_data['code'] = null;
+            }
 
-        $.fn.callAjax(data_url, frm.dataMethod, frm_data, csr)
-            .then(
+            if (frm_data['title'] === '') {
+                frm_data['title'] = null;
+            }
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': frm.dataMethod,
+                'data': frm_data,
+            }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
-                        $('#modal-lookup-data').hide();
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $('#modal-lookup-data').modal('hide');
+                        switch (lookup) {
+                            case 'section-account-type':
+                                $('#datatable-account-type-list').DataTable().ajax.reload();
+                                break;
+                            case 'section-account-group':
+                                $('#datatable-account-group-list').DataTable().ajax.reload();
+                                break;
+                            case 'section-industry':
+                                $('#datatable-industry-list').DataTable().ajax.reload();
+                                break;
+                        }
                     }
                 },
                 (errs) => {
                 }
-            ).then(
-            (rep) => { // reload dataTalbe after create
-                if (lookup === 'section-account-type') {
-                    $('#section-account-type').empty();
-                    $('#section-account-type').append(ele_account_type);
-                    loadAccountType();
-                }
-                if (lookup === 'section-account-group') {
-                    $('#section-account-group').empty();
-                    $('#section-account-group').append(ele_account_group);
-                    loadAccountGroup();
-                }
-                if (lookup === 'section-industry') {
-                    $('#section-industry').empty();
-                    $('#section-industry').append(ele_industry);
-                    loadIndustry();
-                }
-            }
-        )
+            )
+        }
     })
 
-    // Select checkbox in table
-    function selectAllCheckBox(id_table) {
-        $(document).on('click', id_table + ` .check-select`, function () {
-            if ($(this).is(":checked")) {
-                $(this).closest('tr').addClass('selected');
-            } else {
-                $(this).closest('tr').removeClass('selected');
-                $(id_table + ` .check-select-all`).prop('checked', false);
-            }
-        });
-        $(document).on('click', id_table + ` .check-select-all`, function () {
-            $(id_table + ` .check-select`).attr('checked', true);
-            let table = $(id_table).DataTable();
-            let indexList = table.rows().indexes();
-            if ($(this).is(":checked")) {
-                for (let idx = 0; idx < indexList.length; idx++) {
-                    let rowNode = table.rows(indexList[idx]).nodes()[0];
-                    rowNode.classList.add('selected');
-                    rowNode.firstElementChild.children[0].firstElementChild.checked = true;
-                }
-                $(id_table + ` .check-select`).prop('checked', true);
-            } else {
-                for (let idx = 0; idx < indexList.length; idx++) {
-                    let rowNode = table.rows(indexList[idx]).nodes()[0];
-                    rowNode.classList.remove("selected");
-                    rowNode.firstElementChild.children[0].firstElementChild.checked = false;
-                }
-                $(id_table + ` .check-select`).prop('checked', false);
-            }
-        });
-    }
-
-    selectAllCheckBox('#datatable-account-type-list');
-    selectAllCheckBox('#datatable-account-group-list');
-    selectAllCheckBox('#datatable-industry-list');
-
     // show modal edit
-    $(document).on('click', '#datatable-account-type-list .edit-button, #datatable-industry-list .edit-button, #datatable-account-group-list .edit-button', function () {
-        let frm_update = $('#form-update-masterdata')
-        let check_type = 0;
-        let data_url;
+    $(document).on('click', '.edit-button', function () {
         if ($(this).attr('data-type') === 'account_type') {
             $('#modal-update-data h5').text('Edit Account Type');
-            data_url = frm_update.attr('data-url-account-type').replace(0, $(this).attr('data-id'))
-            check_type = 1;
-        }
-        if ($(this).attr('data-type') === 'account_group') {
+            $('#master-data-type').val('account_type');
+        } else if ($(this).attr('data-type') === 'account_group') {
             $('#modal-update-data h5').text('Edit Account Group');
-            data_url = frm_update.attr('data-url-account-group').replace(0, $(this).attr('data-id'))
-            check_type = 2;
-        }
-        if ($(this).attr('data-type') === 'industry') {
+            $('#master-data-type').val('account_group');
+        } else if ($(this).attr('data-type') === 'industry') {
             $('#modal-update-data h5').text('Edit Industry');
-            data_url = frm_update.attr('data-url-industry').replace(0, $(this).attr('data-id'))
-            check_type = 3;
+            $('#master-data-type').val('industry');
         }
-        $.fn.callAjax(data_url, 'GET').then(
+
+        let data_url = $(this).data('url');
+        $('#master-data-url-detail').val(data_url);
+        $.fn.callAjax2({
+            'url': data_url,
+            'method': 'GET'
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -346,22 +313,33 @@ $(document).ready(function () {
                             $('#code-update').val(data.account_type.code);
                             $('#description-update').val(data.account_type.description);
                         } else if (resp.data.hasOwnProperty('account_group')) {
-                            $('#name-update').val(data.account_group.title);
-                            $('#code-update').val(data.account_group.code);
-                            $('#description-update').val(data.account_group.description);
+                            $('#name-update').val(data?.['account_group'].title);
+                            $('#code-update').val(data?.['account_group'].code);
+                            $('#description-update').val(data?.['account_group'].description);
                         } else if (resp.data.hasOwnProperty('industry')) {
-                            $('#name-update').val(data.industry.title);
-                            $('#code-update').val(data.industry.code);
-                            $('#description-update').val(data.industry.description);
+                            $('#name-update').val(data?.['industry'].title);
+                            $('#code-update').val(data?.['industry'].code);
+                            $('#description-update').val(data?.['industry'].description);
                         }
                     }
                 }
             }, (errs) => {
-                $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                //$.fn.notifyB({description: errs.data.errors}, 'failure');
             },)
-        // save edit
-        $('#modal-update-data .edit-button').off().on('click', function () {
-            let csr = $("input[name=csrfmiddlewaretoken]").last().val();
+
+    });
+    let frmUpdate = $('#form-update-masterdata');
+    new SetupFormSubmit(frmUpdate).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
             let inp_name = $('#name-update');
             let inp_code = $('#code-update');
             let inp_des = $('#description-update');
@@ -378,38 +356,34 @@ $(document).ready(function () {
             if (data_form['title'] === '') {
                 data_form['title'] = null;
             }
-
-            $.fn.callAjax(data_url, 'PUT', data_form, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $('#modal-update-data').hide();
+            let data_url = $('#master-data-url-detail').val();
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': frm.dataMethod,
+                'data': data_form
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $('#modal-update-data').modal('hide');
+                        switch ($('#master-data-type').val()) {
+                            case 'account_type':
+                                $('#datatable-account-type-list').DataTable().ajax.reload();
+                                break;
+                            case 'account_group':
+                                $('#datatable-account-group-list').DataTable().ajax.reload();
+                                break;
+                            case 'industry':
+                                $('#datatable-industry-list').DataTable().ajax.reload();
+                                break;
                         }
-                    },
-                    (errs) => {
-                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                     }
-                ).then(
-                (resp) => {// reload after save edit
-                    if (check_type === 1) {
-                        $('#section-account-type').empty();
-                        $('#section-account-type').append(ele_account_type);
-                        loadAccountType();
-                    }
-                    if (check_type === 2) {
-                        $('#section-account-group').empty();
-                        $('#section-account-group').append(ele_account_group);
-                        loadAccountGroup();
-                    }
-                    if (check_type === 3) {
-                        $('#section-industry').empty();
-                        $('#section-industry').append(ele_industry);
-                        loadIndustry();
-                    }
+                },
+                (errs) => {
+                    //$.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
-        });
+        }
     });
 });

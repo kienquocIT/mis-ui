@@ -48,15 +48,12 @@ class EmployeeListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.EMPLOYEE_LIST, user=request.user).get()
-        if resp.state:
-            return {'employee_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.EMPLOYEE_LIST, user=request.user).get()
+        return resp.auto_return(key_success='employee_list', callback_success=None, status_success=status.HTTP_200_OK)
 # DATA RETURN:
 # {}: dữ liệu trả về cho request.
 #   VD: {"user_list": [1]} => phần $.fn.callAjax resolve{} sẽ trả về data này để xử lý.
+# status.HTTP_200_OK: trạng thái trả về
 # status.HTTP_200_OK: trạng thái trả về
 #   Với trạng thái 401: trả tín hiệu về $.fn.callAjax reject{} tự chuyển hướng sang LoginPage.
 #   Với trạng thái 500: trả thông tin về $.fn.callAjax reject{} thông báo notify lên giao diện.
@@ -125,7 +122,7 @@ urlpatterns = [
 ### Notify:
 
 1. Sử dụng $.fn.notifyB({'title': '','description': ""|[""]) [recommend]
-2. Sử dụng $.fn.notifyPopup({'title': '','description': ""|[""])
+2. Sử dụng $.fn.notifyB({'title': '','description': ""|[""])
 
 ### Tham khảo các thiết kế UI tại template đã mua:
 
@@ -425,7 +422,7 @@ $.fn.callAjax(url_loaded, 'GET').then(
     (resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
-            $.fn.setWFRuntimeID(data['x_detail']?.['workflow_runtime_id']);
+            WFRTControl.setWFRuntimeID(data['x_detail']?.['workflow_runtime_id']);
         }
     }
 );
@@ -457,6 +454,7 @@ MEDIA_SECRET_TOKEN_UI={KEY_MAP_WITH_SETTING_MEDIA_CLOUD_SV}
             data-f-input-required="true"
             data-f-input-disabled="false"
             data-f-name-ele-id="#fileNameTestDisplay"
+            data-f-accept=".docx, image/*"
         >Click me!</button>
         <p id="fileNameTestDisplay"></p>
     </div>
@@ -466,6 +464,7 @@ MEDIA_SECRET_TOKEN_UI={KEY_MAP_WITH_SETTING_MEDIA_CLOUD_SV}
 # data-f-input-required: (true/false) attribute "required" của thẻ input text được khởi tạo
 # data-f-input-disabled: (true/false) attribute "disabled" của thẻ input text được khởi tạo
 # data-f-name-ele-id: ID name thẻ hiển thị tên file và dung lượng (không có sẽ tạo <small>)
+# data-f-accept: (default: "*": cho phép tất cả) các kiểu file được chấp thuận (hàm valid sẽ valid theo cấu hình), tham khảo tạo: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file
 ```
 
 ##### Default: auto init .btn-file-upload with attribute config
@@ -505,7 +504,7 @@ let data = {'first_name': '', 'last_name': '', 'avatar': ''}
 ```
 2. JS
 ```js
-$.fn.renderAvatar(data, clsName="some class name is size, color of avatar...")
+PersonControl.renderAvatar(data, clsName="some class name is size, color of avatar...")
 // result: <div class="avatar avatar-rounded {clsName if clsName else 'avatar-xs avatar-primary'}">...</div>
 ```
 
@@ -522,5 +521,335 @@ $.fn.reloadWithHashID('id_tab_need_active');
 // cách 2 đang trỏ đến 1 element nằm trong tab, ví thẻ dụ <span id="ss1"></span> nằm trong tag
 $('#ss1').reloadWithHashID();
 ```
+
+---
+
+## NEW version 2.0
+
+### JS General
+> - Thêm một thứ gì đó xử lý riêng biệt nên sử dụng class (thêm nếu chưa có)
+> - Thêm class vào $x.cls và $x.fn để sử dụng nhanh (giống $ của jquery)
+
+I. Cài đặt
+1. init-setup.js
+> - Nơi thiết lập các class xử lý mọi thứ cần thiết ở mọi page
+> - Thêm hàm xử lý vào class nếu hàm đó thuộc phạm vi các class có sẵn. Chưa có class thì thêm vào - nhưng hạn chế, tránh rác
+2. init-loader.js
+> - Nơi thêm các hàm xử lý vào jquery.fn và lắng nghe sự kiện document.ready
+> - Có thể thêm các hàm xử lý vào jquery.fn nếu nó sử dụng đối tượng jquery để xử lý. VD: $('#btnABC').loadFail() để thêm chính hiệu ứng vào nút này.
+> - Các xử lý khác nên thêm vào $x để sử dụng tránh jquery quá tải/tải lâu khi khởi tạo jquery cho 1 đối tượng.
+
+II. Sử dụng
+> - Sử dụng các hàm nào trong jquery.fn.extends bằng $.fn.xxx
+> - Sử dụng các hàm trong $x bằng $x.fn.xxx
+> - Sử dụng các class trong $x bằng $x.cls.XXX
+
+III. Lưu ý
+> Khi thêm 1 class vào init-setup thì nên thêm class đó vào $x.cls
+> Thêm các hàm sử dụng nhanh vào $x.fn để sử dụng nhanh không cần nhớ tên class
+> Khuyến nghị sử dụng $x để trỏ đến class và fn thay vì nhớ tên class (tận dụng tối đa suggestion của trình biên dịch)
+
+
+### Call API in VIEW
+
+I. Mô tả
+> - ServerAPI().get() hoặc post(),... đều trả về 1 đối tượng RespData
+> - RespData có hàm xử lý trả về tự động theo state và status ở RespData.auto_return()
+```text
+auto_return() có các tham số: 
+- key_success [is string, not required, default None]: sử dụng khi trả về với statue=true 
+- callback_success [is function, not required, default None]: một hàm xử lý tùy chỉnh nhận vào result và trả ra dữ liệu. (nên tận dụng viết thêm function trong view để sử dụng biến con trỏ của view để lấy ra các thông tin request)
+- status_success [is int, not required, default None]: mặc định HTTP_200_OK, thay đổi nếu trả về status khác ở trường hợp state=true
+- callback_errors [is function, not required, default None]: hàm xử lý trả về lỗi nếu cần thay đổi cấu trúc trả lỗi
+
+Không yêu cầu tham số nào thì sẽ trả ra mặc định (resp.result, status.HTTP_200_OK)
+
+** Đọc thêm hàm này để sử dụng nếu cần thiết nâng cao hơn.
+```
+
+II. Ví dụ mẫu
+```python
+class XXX(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DELIVERY_LIST).get()
+        return resp.auto_return(key_success='delivery_list') # return {'delivery_list': resp.result}, status.HTTP_200_OK
+
+    
+class YYY(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DELIVERY_LIST).get()
+        if resp.status:
+           # handle data
+            return {'delivery_list': resp.result}, status.HTTP_200_OK
+        return resp.auto_return() # auto handle state = false
+
+```
+
+III. Sử dụng cho các view sử dụng gọi API render context
+```python
+class ZZZ(View):
+    @mask_view(...)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url='').get()
+        return resp.auto_return(key_success='x')
+# Tự động thêm "render_api_status" vào body khi tải page
+# base.html sẽ dựa vào "render_api_status" để hiển thị các popup tương ứng với giá trị
+# đã xử lý với 401, 403, 404, 500
+```
+
+IV. Kiểm tra để truy cập vào các page không có tương tác với API để kiểm tra quyền
+```python
+class XXX:
+    def get(self,...):
+        resp = ServerAPI(..., is_check_perm=True).post() # post đến URL cần kiểm tra quyền
+        if resp.state:
+            ...
+            # tiếp tục render
+            return {}, status.HTTP_200_OK
+        return resp.auto_return() # để class tự động trả mã lỗi
+```
+
+V. Kiểm tra quyền trước khi cho render các page không tương tác với API (tạo mới, cập nhật,...)
+> Này là tính năng nâng cao. 
+> Sử dụng cho các page "cần thiết" kiểm tra quyền trước khi cho người dùng thao tác có giao tiếp với API, 
+> giống như vào được page tạo nhưng khi bấm tạo thì báo lỗi
+
+1. Tự động kiểm tra theo cấu hình mask_view:
+```python
+@mask_view(..., perm_check=PermCheck(url=ApiURL.XXX, method='post'),...)
+def get(...):
+    ...
+```
+2. Tự kiểm tra trong view:
+```python
+class X:
+   @mask_view()
+   def get(self, request, *args, **kwargs):
+        # state: bool : trạng thái kiểm tra quyền
+        # resp_data: nếu state = false thì resp_data sẽ được tự động triển khai
+        state, resp_data = PermCheck(url=AipURL.XXX, method='post').valid(request=request, view_kwargs=kwargs)
+        if state:
+            return ServerAPI.empty_200()
+        return resp_data
+```
+3. Các argument của hàm PermCheck khác:
+> - fill_key: list[str] : danh sách key sẽ được lấy từ kwargs từ view để đẩy vào URL kiểm tra quyền
+> - fixed_fill_key : dict[str, str] : các key và value mặc định cần đẩy vào URL kiểm tra quyền
+
+VI. Select2
+1. Tài liệu tại statics/assets/js/cdn-clone/select2/init-select2.js
+2. Mã HTML
+```html
+// Hướng dẫn xem thêm class SelectDDControl{}.init()
+<select
+        id="selEmployeeList"
+        class="form-control"
+        data-url="{% url 'EmployeeListApi' %}"  // url gọi lấy dữ liệu
+        data-keyResp="employee_list"    // key để lấy dữ liệu trừ response.data
+        data-keyText="full_name"    // key để lấy dữ liệu hiển thị ra option
+        data-keyId="id" // key để lấy dữ liệu làm ID cho option
+>
+   
+</select>
+```
+3. Khởi tạo Select2: https://select2.org/configuration/options-api
+```js
+// thường thứ tự lấy giá trị sẽ ưu tiên (bên trái ưu tiên hơn): opts --> attribute --> mặc định
+let config = {}
+
+// mặc định
+$('#selEmployeeList').initSelect2(config);
+
+// cài đặt các cấu hình
+config = {
+   'ajax': {
+       'url': '',
+      'method': '',
+      ...
+   },
+   'cache': true, // cache trong vòng 1 phút tránh việc spam khi click đi click lại
+   ...
+};
+
+// cài đặt có dữ liệu mặc định cho việc selected truớc các option có sẵn
+config = {
+   ...,
+   'data': [],
+   ...,
+};
+
+// khai báo lấy data-keyId và data-keyText với nhiều cấp (dict lồng nhau)
+// 1 data mẫu trả về: {"a": {"b": {"c": 1, "idx": 99}}}
+// - dữ liệu cần hiển thị text: a.b.c
+// - dữ liệu cần làm ID: a.b.idx
+config = {
+   ...,
+   'dataId': 'a--b--idx',
+   'dataText': 'a--b--c',
+   ...,
+};
+
+// manual việc lọc dữ liệu sau khi nhận phản hồi và hiển thị val|text của option --> trường hợp dữ liệu trả về phức tạp
+config = {
+   ...,
+   'callbackDataResp': function (resp, keyResp){
+        // resp: là response trả về từ API
+        // keyResp: là keyResp được khai báo
+        // return: trả về 1 danh sách (chứa 2 key của dataText và dataId)
+        return [];
+   },
+   'callbackValueId': function (item, key){
+        // item: là 1 item của danh sách trả về sau khi lấy từ data_keyResp
+        // key: là key tương tức của ID được lấy từ data_keyId|"id"
+        // return: trả ra một chuỗi hiển thị cho option.
+      return item?.[key] || '';
+   },
+   'callbackTextDisplay': function (item, key){
+        // item: là 1 item của danh sách trả về sau khi lấy từ data_keyResp
+        // key: là key tương tức của ID được lấy từ data_keyText|"title"
+        // return: trả ra một chuỗi để set value cho option.
+        return item?.[key] || '';
+   },
+   ...,
+};
+
+// tự động select các dữ liệu data từ config 
+config = {
+    data: [{...}],
+    selectedDataOnload: false, // default: true
+   // config.selectedDataOnload: false || data-selectedOnload="false"
+   // tự động selected tất cả các data trong "config.data" || attribute data-onload
+}
+
+```
+
+VII. DataTable
+1. Tài liệu tại statics/assets/js/init-setup.js
+2. Hướng dẫn
+```html
+<table
+                id="table_districts_list"
+                class="table nowrap w-100"
+                data-url="{% url 'CityListAPI' %}"
+                data-url-city="{% url 'CityListAPI' %}"
+>
+   <tr class="row-custom-filter">
+      <td colspan="3">
+         <div class="row">
+            <div class="col-3">
+               <div class="form-group">
+                  <label for="CustomSelect2" class="form-label">{% trans 'Country' %}</label>
+                  <select id="CustomSelect2"
+                          data-url="{% url 'CountryListAPI' %}"
+                          data-keyResp="countries"
+                          data-keyParam="country_id__in" multiple
+                  ></select>
+               </div>
+            </div>
+      </td>
+   </tr>
+   <tr>
+      <th>#</th>
+      <th>{% trans 'Name' %}</th>
+      <th>{% trans 'Zip Code' %}</th>
+   </tr>
+   </thead>
+</table>
+```
+```js
+$('#table_districts_list').DataTableDefault({
+   'useDataServer': true, // cho datable Ajax
+   'columns': [
+      {
+          ...,
+         'colFilter': { // cho lọc theo dòng dữ liệu
+            keyText: "title",   // key để lấy dữ liệu hiển thị
+            keyId: "id",    // key để lấy dữ liệu làm "value"
+            keyResp: "cities",  // key để lấy dữ liệu từ response.data
+            dataUrl: tbl.attr('data-url-city'), // url gọi ajax 
+            keyParam: "id__in", // key của params khi gọi lọc lên server
+         },
+      },
+   ]
+})
+```
+3. Thêm link detail có thuộc tính target="_blank" cho các row
+```html
+<table data-url-detail="{% url 'XXXX' pk='__pk__' %}" ></table>
+```
+```javascript
+// với url detail đã thêm vào attribute của table
+let urlDetail = $('#tbl').attr('data-url-detail');
+
+// Cách 1: Số thứ tự là link blank. 
+// ** KHUYẾN KHÍCH SỬ DỤNG **
+$('#tbl').DataTableDefault({
+   ...{}, // config
+   callbackGetLinkBlank: function (rowData){
+       // hàm này sẽ được sử dụng thêm link target blank vào rowIdx
+       return rowData.id ? urlDetail.replace('__pk__', rowData.id) : null;
+   },
+});
+// Cách 2: Thêm button vào ô nào mong muốn
+// Trong hàm render columns của ô nào mong muốn cộng thêm HTML sau vào:
+{
+   render: function (data, type, row, meta) {
+      return 'xử_lý_của_cột' + $x.fn.buttonLinkBlank(urlEmployeeDetail);
+   }
+}
+```
+#### Kết quả:
+![](README_IMG/DTB_link_blank.png)
+4. Sorting
+> Thêm "orderable: true," vào "columns" nào muốn thêm vào sort 
+5. Lọc tùy chỉnh
+```text
+Trường trong cấu hình DTB: 'cusFilter'
+- keyParam [str]: --> trường dùng để lọc
+- placeholder [str]: Label cho trường lọc này --> nên tạo thẻ span ẩn chứa các attribute text đã dịch
+- multiple [bool]: --> cho phép chọn nhiều không
+
+1. Lọc dữ liệu tĩnh
+- data: [{'id': '', 'text': '', 'selected': 'true'}] --> render ra các option value={id} text={text} selected={selected}
+2. Lọc dữ liệu động
+- dataUrl [str]: --> Đường dẫn API
+- keyResp [str]: --> Key lấy dữ liệu từ response
+- keyText [str]: default="title" --> Key lấy dữ liệu hiển thị cho option
+- keyId [str]: default="id" --> Key lấy dữ liệu làm value
+- keyParam [str]: trường thêm vào params khi gọi lọc kèm dữ liệu keyId lấy được
+```
+6. Tool nâng cao
+```text
+Trường trong cấu hình DTB: 'cusTool'
+- code [str]: Nhận biết tự động để tự thêm dữ liệu vào icon và text
+- icon [html][not required]: mã hiển thị icon
+- text [str][not required]: Tên hiển thị
+- url [str][not required]: Url được gán cho nút
+- className [str][not required]: Các class được bỏ vào dòng của button
+- eClick [function][not required]: hàm hứng sự kiện click của nút được tạo ra.
+```
+
+VIII. Validate form khi submit
+1. SetupFormSubmit.validate(formEle, opts)
+2. Tham khảo để cấu hình validate: https://jqueryvalidation.org/validate/
+3. Chú ý cấu hình rules: https://jqueryvalidation.org/validate/#rules
+
+
+IX. Thêm form các trường mặc định vào phiếu (Opp, Prj, Inherit)
+1. Nền tảng: Có thể bao bọc "include" bởi "div.row" - bắt buộc nó phải ở trong form để form.submit có thể lấy được dữ liệu
+```html
+{% include 'extends/the-documents/bastion.html' with has_opp=True has_prj=True has_inherit=True is_open=True inherit_required=True %}
+```
+2. Tạo
+3. Chi tiết
+4. Sửa
+
+
+---
+
+Tài liệu này sẽ được làm lại khi mọi thứ đã ổn định!
+Nên vui lòng không xóa những gì đang có và thêm những gì vừa được tạo ra vào đây để lưu trữ tránh thiếu tài liệu! 
 
 ---

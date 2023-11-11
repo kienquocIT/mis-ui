@@ -1,9 +1,11 @@
 $(document).ready(function () {
     function loadDefaultData() {
-
         let pk = window.location.pathname.split('/').pop();
         let url_loaded = $('#form-detail-contact').attr('data-url').replace(0, pk);
-        $.fn.callAjax(url_loaded, 'GET').then(
+        $.fn.callAjax2({
+            'url': url_loaded,
+            'method': 'GET'
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 let contactDetail = data?.['contact_detail']
@@ -38,10 +40,17 @@ $(document).ready(function () {
                         })
                         $('#input_tags').select2()
                     }
-                    $.fn.setWFRuntimeID(contactDetail?.['workflow_runtime_id']);
+                    WFRTControl.setWFRuntimeID(contactDetail?.['workflow_runtime_id']);
                 }
             }
         )
+
+        $(document).on('click', '#btn-edit', function () {
+            let url = $(this).data('url').format_url_with_uuid(pk)
+            setTimeout(function () {
+                window.location.href = url;
+            }, 1000);
+        })
 
     }
 

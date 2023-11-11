@@ -28,12 +28,18 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-p8r4sbt&9q*ig^3_$ao95)n3)vq5hu40k8d4jqep8zzpt49sx1'
 
+GG_RECAPTCHA_ENABLED = True if os.environ.get('GG_RECAPTCHA_ENABLED', '0') in [1, '1'] else False
+GG_RECAPTCHA_SERVER_KEY = os.environ.get('GG_RECAPTCHA_SERVER_KEY', '6LfNp8YnAAAAAH2nG-MQfa__3p71shh10CE8KfLX')
+GG_RECAPTCHA_CLIENT_KEY = os.environ.get('GG_RECAPTCHA_CLIENT_KEY', '6LfNp8YnAAAAAE9qAY7kCFcRFOigzLQjqlyQIcnM')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 DEBUG_JS = True
 DEBUG_NOTIFY_KEY = True
 GA_COLLECTION_ENABLED = True if os.environ.get('GA_COLLECTION_ENABLED', '0') in [1, '1'] else False
 ALLOWED_HOSTS = []
+
+IS_SERVER_MAINTAINING = True if os.environ.get('IS_SERVER_MAINTAINING', '0') in [1, '1'] else False
 
 RELEASE_VERSION = os.environ.get('RELEASE_VERSION', '0.0.1')
 
@@ -56,9 +62,11 @@ INSTALLED_APPS = \
         'apps.core.auths',
         'apps.core.home',
         'apps.core.hr',
+        'apps.core.tenant',
         'apps.core.company',
         'apps.core.base',
         'apps.core.workflow',
+        'apps.core.process'
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',
@@ -69,7 +77,15 @@ INSTALLED_APPS = \
         'apps.sales.cashoutflow',
         'apps.sales.delivery',
         'apps.sales.task',
+        'apps.sales.purchasing',
+        'apps.sales.inventory',
+        'apps.sales.report',
+    ] + [  # e-office Application
+        'apps.eoffice.leave',
+    ] + [  # external
+        'apps.web_builder',
     ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -204,6 +220,15 @@ protocol = "https" if API_USE_SSL else "http"
 domain = f'{API_IP_OR_ADDR}{f":{API_PORT}" if API_PORT else ""}'
 prefix = f"{API_URL_PREFIX}/" if API_URL_PREFIX else ""
 API_DOMAIN = f'{protocol}://{domain}/{prefix}'
+
+# main UI domain
+UI_PROTOCOL = os.environ.get('UI_PROTOCOL') if os.environ.get('UI_PROTOCOL', None) else 'http'
+UI_DOMAIN = os.environ.get('UI_DOMAIN') if os.environ.get('UI_DOMAIN', None) else '127.0.0.1'
+UI_URL = os.environ.get('UI_URL') if os.environ.get('UI_URL', None) else f'{UI_PROTOCOL}://{UI_DOMAIN}'
+UI_ALLOW_AUTO_TENANT = True if os.environ.get('UI_ALLOW_AUTO_TENANT', '0') in [1, '1'] else False
+UI_SUB_ALLOWED = json.loads(os.environ.get('UI_SUB_ALLOWED', '["*"]'))
+UI_SUB_DENIED = json.loads(os.environ.get('UI_SUB_DENIED', '[]'))
+UI_ALLOW_SHOW_SELECT_TENANT = True if os.environ.get('UI_ALLOW_SHOW_SELECT_TENANT', '1') in [1, '1'] else False
 
 # Media key and data private
 MEDIA_KEY_FLAG = os.environ.get('MEDIA_KEY_FLAG', 'MEDIA-APIRequest')

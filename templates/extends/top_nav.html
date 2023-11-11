@@ -18,6 +18,7 @@
                     data-space-selected="{{ base.space_current_detail.code }}"
             >
                 <button
+                        id="menu-tenant-text"
                         type="button" class="btn btn-outline-light dropdown-toggle"
                         data-bs-toggle="dropdown"
                         data-dropdown-animation aria-haspopup="true" aria-expanded="false"
@@ -148,7 +149,7 @@
                                 </span>
                             </span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end p-0">
+                        <div class="dropdown-menu dropdown-menu-end p-0 mw-275p">
                             <h6 class="dropdown-header px-4 fs-6">
                                 {% trans 'Notifications' %}
                                 <div>
@@ -264,7 +265,10 @@
                                     <div class="media-head me-2">
                                         <div class="position-relative avatar avatar-primary avatar-sm avatar-rounded my-avatar">
                                             {{ base|render_avatar_tag|safe }}
-                                            <div class="position-absolute rounded-circle btn bg-dark opacity-80 top-0 left-0 h-100 w-100 d-flex justify-content-center align-items-center my-upload-avatar d-none">
+                                            <div
+                                                    id="btnUploadMyAvatar"
+                                                    class="position-absolute rounded-circle btn bg-dark opacity-80 top-0 left-0 h-100 w-100 d-flex justify-content-center align-items-center my-upload-avatar d-none"
+                                            >
                                                 <i class="fa-solid fa-camera text-white"></i>
                                             </div>
                                         </div>
@@ -294,13 +298,11 @@
                                         data-id="{{ base.company_current_data.id }}"
                                         style="max-width: 20em;overflow: hidden;text-overflow: ellipsis;"
                                 >
-                                    <span
-                                            class="dropdown-icon feather-icon"
-                                            data-bs-toggle="modal" data-bs-target="#switchMyCompany"
-                                    >
+                                    <span id="btnChangeCurrentCompany" class="dropdown-icon" data-bs-toggle="modal" data-bs-target="#switchMyCompany">
                                         <i
-                                                data-feather="refresh-cw"
-                                                data-bs-toggle="tooltip" data-bs-placement="left"
+                                                class="fa-solid fa-retweet"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="left"
                                                 title="Click to switch company"
                                         ></i>
                                     </span>
@@ -325,6 +327,20 @@
                                     <a class="dropdown-item" href="/">{% trans 'Profile' %}</a>
                                 {% endif %}
                             {% endif %}
+
+                            <a
+                                    id="link-language" class="dropdown-item" href="#"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="{% trans 'Language' %}"
+                                    data-url="{% url 'MyLanguageAPI' %}"
+                                    data-value="{{base.language}}"
+                            >
+                                <span class="dropdown-icon feather-icon">
+                                    <i data-feather="globe"></i>
+                                </span>
+                                <span>{{ base.language|language_full_name }}</span>
+                            </a>
+
                             <a id="link-logout" class="dropdown-item" href="{% url 'AuthLogout' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="log-out"></i>

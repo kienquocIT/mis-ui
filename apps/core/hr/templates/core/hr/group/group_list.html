@@ -6,27 +6,25 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="{% url 'GroupLevelList' %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Setting"
-    >
-        <span class="icon">
-            <span class="feather-icon">
+    <a href="{% url 'GroupLevelList' %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Settings' %}</span>
+            <span class="icon">
                 <i class="fas fa-cog"></i>
             </span>
         </span>
+        </button>
     </a>
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="{% url 'GroupCreate' %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Add"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a href="{% url 'GroupCreate' %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-        </span>
+        </button>
     </a>
 {% endblock %}
 

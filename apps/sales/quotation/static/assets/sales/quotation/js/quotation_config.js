@@ -188,7 +188,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl($(this).attr('data-url-redirect'), 1000);
                         }
                     },
@@ -203,6 +203,10 @@ $(function () {
         function loadIndicatorDbl() {
             let $table = tableIndicator;
             let frm = new SetupFormSubmit($table);
+            let is_sale_order = false;
+            if ($form[0].classList.contains('sale-order')) {
+                is_sale_order = true;
+            }
             $table.DataTableDefault({
                 ajax: {
                     url: frm.dataUrl,
@@ -216,40 +220,30 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
-                columnDefs: [
-                    {
-                        "width": "5%",
-                        "targets": 0
-                    }, {
-                        "width": "40%",
-                        "targets": 1
-                    }, {
-                        "width": "5%",
-                        "targets": 2
-                    }, {
-                        "width": "45%",
-                        "targets": 3
-                    }, {
-                        "width": "5%",
-                        "targets": 4
-                    }
-                ],
+                paging: false,
+                info: false,
+                columnDefs: [],
                 columns: [
                     {
                         targets: 0,
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control table-row-order" value="${row.order}">`
+                            if (is_sale_order === false) {
+                                return `<input type="text" class="form-control table-row-order" value="${row.order}">`;
+                            } else {
+                                return `<span>${row.order}</span>`;
+                            }
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control table-row-title" value="${row.title}" hidden><span>${row.title}</span>`
+                            return `<input type="text" class="form-control table-row-title" value="${row.title}" hidden><span>${row.title}</span>`;
                         }
                     },
                     {
                         targets: 2,
                         render: (data, type, row) => {
+                            let transEle = $('#app-trans-factory');
                             let modalID = "indicatorEditModalCenter" + String(row.order);
                             let modalTarget = "#indicatorEditModalCenter" + String(row.order);
                             let tabIndicatorID = "tab_indicator_" + String(row.order);
@@ -260,7 +254,7 @@ $(function () {
                             let tabFunctionHref = "#tab_function_" + String(row.order);
                             let tabOperatorID = "tab_operator_" + String(row.order);
                             let tabOperatorHref = "#tab_operator_" + String(row.order);
-                            return `<button
+                            let ele = `<button
                                         type="button"
                                         class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover modal-edit-formula"
                                         data-bs-toggle="modal"
@@ -274,7 +268,7 @@ $(function () {
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">${$.fn.transEle.attr('data-edit-formula')}</h5>
+                                                    <h5 class="modal-title">${transEle.attr('data-edit-formula')}</h5>
                                                     <button
                                                             type="button" class="btn-close"
                                                             data-bs-dismiss="modal" aria-label="Close"
@@ -285,7 +279,7 @@ $(function () {
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="form-group">
-                                                            <label class="form-label">${$.fn.transEle.attr('data-editor')}</label>
+                                                            <label class="form-label">${transEle.attr('data-editor')}</label>
                                                             <textarea class="form-control indicator-editor" rows="4" cols="50" name=""></textarea>
                                                         </div>
                                                     </div>
@@ -293,22 +287,22 @@ $(function () {
                                                         <ul class="nav nav-light">
                                                             <li class="nav-item">
                                                                 <a class="nav-link active" data-bs-toggle="tab" href="${tabIndicatorHref}">
-                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-indicator')}</span>
+                                                                <span class="nav-link-text">${transEle.attr('data-indicator')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabPropertyHref}">
-                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-property')}</span>
+                                                                <span class="nav-link-text">${transEle.attr('data-property')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabFunctionHref}">
-                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-function')}</span>
+                                                                <span class="nav-link-text">${transEle.attr('data-function')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabOperatorHref}">
-                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-operator')}</span>
+                                                                <span class="nav-link-text">${transEle.attr('data-operator')}</span>
                                                                 </a>
                                                             </li>
                                                         </ul>
@@ -344,24 +338,33 @@ $(function () {
                                                         <span class="valid-indicator-formula ml-1"></span>
                                                     </div>
                                                     <div class="col-6 modal-edit-formula-action">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${transEle.attr('data-btn-close')}</button>
                                                         <button 
                                                             type="button" 
                                                             class="btn btn-primary btn-edit-indicator"
                                                             data-id="${row.id}"
                                                             data-bs-dismiss="modal"
-                                                        >${$.fn.transEle.attr('data-btn-save')}</button>
+                                                        >${transEle.attr('data-btn-save')}</button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>`
+                                    </div>`;
+                            if (is_sale_order === false) {
+                                return ele;
+                            } else {
+                                return ``;
+                            }
                         }
                     },
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control table-row-description" value="${row.remark}">`
+                            if (is_sale_order === false) {
+                                return `<input type="text" class="form-control table-row-description" value="${row.remark}">`;
+                            } else {
+                                return `<span>${row.remark}</span>`;
+                            }
                         }
                     },
                     {
@@ -369,7 +372,11 @@ $(function () {
                         render: (data, type, row) => {
                             let btn_edit = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
                             let btn_delete = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
-                            return btn_edit + btn_delete;
+                            if (is_sale_order === false) {
+                                return btn_edit + btn_delete;
+                            } else {
+                                return ``;
+                            }
                         }
                     }
                 ],
@@ -390,13 +397,13 @@ $(function () {
             document.getElementById('btn-edit_quotation_config').removeAttribute('hidden');
         });
 
-        tableIndicator.on('change', '.table-row-title, .table-row-description, .table-row-order', function(e) {
+        tableIndicator.on('change', '.table-row-title, .table-row-description, .table-row-order', function() {
             $(this)[0].closest('tr').querySelector('.table-row-save').removeAttribute('disabled');
             $(this)[0].closest('tr').querySelector('.table-row-save').classList.remove('flush-soft-hover');
             $(this)[0].closest('tr').querySelector('.table-row-save').classList.add('btn-soft-warning');
         });
 
-        tableIndicator.on('click', '.modal-edit-formula', function(e) {
+        tableIndicator.on('click', '.modal-edit-formula', function() {
             let eleIndicatorListShow = $(this)[0].closest('tr').querySelector('.indicator-list');
             let row = $(this)[0].closest('tr');
             loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), row);
@@ -410,7 +417,7 @@ $(function () {
             loadInitParamList('init-indicator-param-list', $(eleParamFunctionListShow));
         });
 
-        tableIndicator.on('click', '.param-item', function(e) {
+        tableIndicator.on('click', '.param-item', function() {
             let propertySelected = $(this)[0].querySelector('.data-show');
             if (propertySelected) {
                 let dataShow = JSON.parse(propertySelected.value);
@@ -422,7 +429,7 @@ $(function () {
             }
         });
 
-        tableIndicator.on('mouseenter', '.param-item', function(e) {
+        tableIndicator.on('mouseenter', '.param-item', function() {
             let propertySelected = $(this)[0].querySelector('.data-show');
             if (propertySelected) {
                 let dataShow = JSON.parse(propertySelected.value);
@@ -456,7 +463,7 @@ $(function () {
         });
 
 // Validate Indicator Formula Editor
-        tableIndicator.on('blur', '.indicator-editor', function (e) {
+        tableIndicator.on('blur', '.indicator-editor', function () {
             let editorValue = $(this).val();
             let isValid = true;
             let row = $(this)[0].closest('tr');
@@ -573,7 +580,7 @@ $(function () {
 
 // BEGIN setup formula
         let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
-        let body_simple_regex = /\((.*?)\)/;
+        // let body_simple_regex = /\((.*?)\)/;
         let body_nested_regex = /\((.*)\)/;
         let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|".*?"|==|!=|>=|<=|>|</g;
 
@@ -589,7 +596,7 @@ $(function () {
 
         function parseStringToArray(expression) {
             let data = expression.replace(/\s/g, "");
-            const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
+            // const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
             return data.match(main_regex)
         }
 
@@ -672,7 +679,7 @@ $(function () {
 
 // BEGIN SUBMIT
         // submit create indicator
-        btnCreateIndicator.on('click', function(e) {
+        btnCreateIndicator.on('click', function() {
             let url = $(this).attr('data-url');
             let url_redirect = $(this).attr('data-url-redirect');
             let method = $(this).attr('data-method');
@@ -700,7 +707,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
@@ -711,7 +718,7 @@ $(function () {
         });
 
         // submit edit title & description on row
-        tableIndicator.on('click', '.table-row-save', function(e) {
+        tableIndicator.on('click', '.table-row-save', function() {
             let url_update = btnCreateIndicator.attr('data-url-update');
             let url = url_update.format_url_with_uuid($(this).attr('data-id'));
             let url_redirect = btnCreateIndicator.attr('data-url-redirect');
@@ -727,7 +734,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
@@ -740,7 +747,7 @@ $(function () {
         });
 
         // submit update indicator formula
-        tableIndicator.on('click', '.btn-edit-indicator', function (e) {
+        tableIndicator.on('click', '.btn-edit-indicator', function () {
             let url_update = btnCreateIndicator.attr('data-url-update');
             let url = url_update.format_url_with_uuid($(this).attr('data-id'));
             let url_redirect = btnCreateIndicator.attr('data-url-redirect');
@@ -753,7 +760,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
@@ -764,7 +771,7 @@ $(function () {
         });
 
         // submit restore indicator
-        $('#btn-accept-restore-indicator').on('click', function (e) {
+        $('#btn-accept-restore-indicator').on('click', function () {
             if (!tableIndicator[0].querySelector('.dataTables_empty')) {
                 let dataID = null;
                 for (let i = 0; i < tableIndicator[0].tBodies[0].rows.length; i++) {
@@ -786,7 +793,7 @@ $(function () {
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
-                                    $.fn.notifyPopup({description: data.message}, 'success')
+                                    $.fn.notifyB({description: data.message}, 'success')
                                     $.fn.redirectUrl(url_redirect, 1000);
                                 }
                             },

@@ -15,800 +15,56 @@
             justify-content: center;
         }
 
-        .sub-stage .dropdown {
-            margin-top: auto;
+        .view_task_log {
+            cursor: pointer
         }
     </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary btn-animated btn-xs"
-            form="frm-detail"
-            data-bs-original-title="Save Opportunity">
-                <span class="icon">
-                    <span class="feather-icon">
-                        <i
-                                data-feather="save">
-                        </i>
-                    </span>
-                    <span class="font-3 ml-1">
-                        {% trans 'Save' %}
-                    </span>
-                </span>
-    </button>
+    <a href="#" id="btn-opp-edit">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </span>
+        </span>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
-    <div id="json-data">
-        <input id="emp-current-id" class="hidden" value="{{ data.employee_current_id }}">
-        <input id="data-sale-person" class="hidden">
-        <input id="group_id_emp_login" class="hidden">
-        <input id="data-product" class="hidden">
-        {{ data.config | json_script:"id-config-data" }}
-        {{ data.account_list | json_script:"account_list" }}
-        {{ data.contact_list | json_script:"contact_list" }}
-        {{ data.opportunity_list | json_script:"opportunity_list" }}
-        {{ data.employee_list | json_script:"employee_list" }}
-        {{ data.account_map_employees | json_script:"account_map_employees" }}
-    </div>
-    <div id="text-notify" hidden>
-        <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
-        <span id="limit-quantity">{% trans "quantity must not be less than zero" %}</span>
-        <span id="limit-money">{% trans "money must not be less than zero" %}</span>
-        <span id="limit-close-date">{% trans "The closing date must not be later than the opening date" %}</span>
-        <span id="not-select-stage">{% trans "Configuration does not allow selecting stage" %}</span>
-        <span id="deal-close-lost">{% trans "Can not select stage because this opportunity is close lost" %}</span>
-        <span id="deal-closed">{% trans "Can not select stage because this opportunity has been closed" %}</span>
-        <span id="opp-updated">{% trans "Stage has been updated, Please Save!" %}</span>
-    </div>
-    <div id="div-url" hidden>
-        <input id="url-member" value="{% url "EmployeeDetail" pk=0 %}">
-    </diV>
     <div class="page-content">
-        <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=0 %}"
+        <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
               data-url-redirect="{% url "OpportunityList" %}">
             {% csrf_token %}
             <div class="row">
-                <div class="col-3" style="height: 83vh; overflow: auto">
-                    <div class="col-12" style="padding-right: 6%">
-                        <div class="form-group mb-4">
-                            <span class="badge badge-primary w-100" style="font-size: large" id="span-code"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="rangeInput">{% trans "Win Rate" %}</label>
-                            <input type="range" class="form-control-range" id="rangeInput" min="0" max="100" step="1">
-                        </div>
-                        <div class="row ml-2">
-                            <div class="form-group col-6 mt-2">
-                                <input class="form-check-input" type="checkbox" value="0" id="check-input-rate"
-                                       name="is_input_rate" disabled>
-                                <label class="form-check-label"
-                                       for="check-input-rate">{% trans "Manually input rate" %}</label>
-                            </div>
-                            <div class="col-6">
-                                <span class="input-affix-wrapper affix-wth-text">
-                                    <input class="form-control" type="number" step="0.1" id="input-rate" name="win_rate"
-                                           readonly>
-                                    <span class="input-suffix">%</span>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="form-group mt-2">
-                            <div class="row">
-                                <label class="form-label col-7 required">{% trans "Customer" %}</label>
-                                <div class="form-group col-5 text-right pr-4">
-                                    <input class="form-check-input" type="checkbox" value="0" id="check-agency-role">
-                                    <label class="form-check-label"
-                                           for="check-agency-role">{% trans "agency role" %}</label>
-                                </div>
-                            </div>
-                            <select class="select2 form-control" id="select-box-customer"
-                                    data-url="{% url 'AccountListAPI' %}"
-                                    data-method="GET" data-close-on-select="true">
-                            </select>
-                        </div>
-                        <div class="form-group mt-2">
-                            <label class="form-label">{% trans "End Customer" %}</label>
-                            <select class="select2 form-control" id="select-box-end-customer"
-                                    data-close-on-select="true"
-                                    data-url="{% url 'AccountListAPI' %}" disabled
-                                    data-method="GET">
-                            </select>
-                        </div>
-                        <div class="form-group mt-2">
-                            <label class="form-label required">{% trans "Product Category" %}</label>
-                            <select class="select2 form-control" multiple id="select-box-product-category"
-                                    data-close-on-select="true" data-method="GET"
-                                    data-url="{% url 'ProductCategoryListAPI' %}">
-                            </select>
-                        </div>
-                        <div class="form-group mt-2">
-                            <label class="form-label required">{% trans "Sale Person" %}</label>
-                            <select class="select2 form-control" id="select-box-sale-person" data-method="GET"
-                                    data-close-on-select="true"
-                                    data-url="{% url 'EmployeeListAPI' %}" name="sale_person">
-                                <option></option>
-                            </select>
-                        </div>
-                        <div class="form-group mt-2">
-                            <label class="form-label">{% trans "Budget" %}</label>
-                            <input class="form-control mask-money" type="text" data-return-type="number"
-                                   id="input-budget"/>
-                        </div>
-                        <div class="form-group mt-2">
-                            <label class="form-label">{% trans "Open Date" %}</label>
-                            <input class="form-control" type="text" id="input-open-date" name="open_date"/>
-                        </div>
-                        <div class="form-group mt-2">
-                            <label class="form-label required">{% trans "Close Date" %}</label>
-                            <input class="form-control" type="text" id="input-close-date" name="close_date"/>
-                        </div>
-                        <div class="form-group mt-2 readonly">
-                            <label class="form-label">{% trans "Decision Maker" %}</label>
-                            <input class="form-control" type="text" id="input-decision-maker" readonly data-id=""/>
-                        </div>
+                <div class="col-md-12 col-lg-4 col-xl-3 border-right" id="group-general-info-opp">
+                    <div class="col-12">
+                        {% include 'sales/opportunity/extends/general-info.html' %}
                     </div>
                 </div>
-                <div class="col-9" style="height: 83vh; overflow: auto; overflow-x: hidden">
-                    <div class="col-12" style="padding-right: 2%">
-                        <div class="form-group text-center">
-                            <h4 id="header-title" class="text-primary" style="font-weight: bolder"></h4>
-                        </div>
-                        <div class="row text-right">
-                            <div class="col-6 text-left">
-                                <a class="btn"
-                                   id="btn-auto-update-stage"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="{% trans "Auto Update Stage" %}">
-                                    <i class="fa-solid fa-arrow-rotate-right"></i>
-                                </a>
-                            </div>
-                            <div class="col-6 text-right">
-                                <a href="#"><i class="bi bi-bar-chart-line-fill"></i></a>
-                            </div>
-                        </div>
-                        <!-- Status -->
-                        <div class="ml-1 d-flex" id="div-stage" data-method="GET"
-                             data-url="{% url "OpportunityConfigStageListAPI" %}">
-                        </div>
-                        <div id="stage-hidden" class="hidden">
-                            <div class="border rounded mt-1 pr-2 sub-stage w-100 text-center d-flex justify-content-center"
-                                 style="flex-direction: column;">
-                                <p class="stage-indicator" style="margin-bottom: auto;"></p>
-                                <div class="dropdown dropup" style="margin-top: auto;">
-                                    <a href="#" data-bs-toggle="dropdown">
-                                        <span class="text-right">
-                                            <i class="bi bi-chevron-bar-right"></i>
-                                        </span>
-                                    </a>
-                                    <div class="dropdown-menu position-absolute" style="z-index: 999;">
-                                        <a class="dropdown-item btn-go-to-stage"
-                                           href="#">{% trans "Go to Stage" %}</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-3 row">
-                        <div class="col-7 mb-2">
-                            <div class="row div-action">
-                                <div class="col-3">
-                                    <span class="text-primary">{% trans 'Current action' %}</span>
-                                </div>
-                                <div class="col-9">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="create-new-call-log-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New call log' %}">
-                                            <i class="bi bi-telephone-fill"></i>
-                                        </span>
-                                    </a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
-                                    <a href="#" class="current-create-task">
-                                        <span class="ml-2 ntt-drawer-toggle-link"
-                                              data-drawer-target="#drawer_task_create"
-                                              data-drawer-active="false">
-                                            <i class="bi bi-file-earmark-arrow-up"></i></span></a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'Send Email' %}">
-                                            <i class="bi bi-envelope-fill"></i>
-                                        </span>
-                                    </a>
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#create-meeting" class="new-meeting-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New Meeting' %}">
-                                            <i class="bi bi-person-workspace"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="row div-activity hidden">
-                                <div class="col-3">
-                                    <span class="text-primary">{% trans "Activity logs" %}</span>
-                                </div>
-                                <div class="col-9">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="create-new-call-log-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New call log' %}">
-                                            <i class="bi bi-telephone-fill"></i>
-                                        </span>
-                                    </a>
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'Send Email' %}">
-                                            <i class="bi bi-envelope-fill"></i>
-                                        </span>
-                                    </a>
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#create-meeting" class="new-meeting-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New Meeting' %}">
-                                            <i class="bi bi-person-workspace"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-5 text-right">
-                                <a href="#" id="btn-show-action">
-                                <span class="ml-2"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      data-bs-original-title="{% trans 'Show actions' %}">
-                                    <i class="bi bi-pip text-primary"></i>
-                                </span>
-                                </a>
-                                <a href="#" id="btn-show-activity">
-                                <span class="ml-2"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      data-bs-original-title="{% trans 'Show activity logs' %}">
-                                    <i class="bi bi-clock-history text-primary"></i>
-                                </span>
-                                </a>
-                            </div>
-                        <div class="mt-2 h-450p w-100 div-action">
-                            <div class="row">
-                                <div class="bg-light ml-2 h-150p">
-                                    <div class="bg-blue-light-4 mt-1 mb-1 h-90">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <span class="text-black ml-1">Presentation Document</span>
-                                            </div>
-                                            <div class="col-2 text-right mt-2">
-                                                <a href="#" class="mr-2">
-                                                    <span class="badge badge-primary w-50">{% trans 'Do' %}</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-10"></div>
-                                            <div class="col-2 text-right">
-                                                <a href="#" class="mr-2">
-                                                    <span class="badge badge-orange w-50">{% trans 'Skip' %}</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <span class="text-primary">{% trans 'Next Action' %}</span>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="ml-2">
-                                    <div class="row">
-                                        <div class="col-6 bg-light h-150p pr-2 pl-4">
-                                            <div class="bg-green-light-4 mt-1 mb-1 h-90 row">
-                                                <div class="col-10">
-                                                    <p class="text-black">Meetting with customer</p>
-                                                </div>
-                                                <div class="col-2 text-right mt-2">
-                                                    <a href="#">
-                                                        <span class="badge badge-grey w-50">{% trans 'Do' %}</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 bg-light h-150p pl-3">
-                                            <div class="bg-green-light-4 mt-1 mb-1 h-90">
-                                                <div class="row">
-                                                    <div class="col-10">
-                                                        <span class="text-black ml-1">Create Quotation and send customer</span>
-                                                    </div>
-                                                    <div class="col-2 text-right mt-2">
-                                                        <a href="#" class="mr-2">
-                                                            <span class="badge badge-grey w-50">{% trans 'Do' %}</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-2 h-450p w-100 hidden div-activity">
-                            <div class="row">
-                                <div class="col-12">
-                                    <table class="table nowrap w-100" id="table-timeline"
-                                           data-url-call-log="{% url 'OpportunityCallLogListAPI' %}"
-                                           data-url-email="{% url 'OpportunityEmailListAPI' %}"
-                                           data-url-meeting="{% url 'OpportunityMeetingListAPI' %}"
-                                           data-method="GET">
-                                        <thead>
-                                        <tr>
-                                            <th>{% trans "Activity" %}</th>
-                                            <th class="text-center">{% trans "Type" %}</th>
-                                            <th>{% trans 'Subject' %}</th>
-                                            <th>{% trans "Date" %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <ul class="nav nav-light nav-tabs col-9" id="tab-select">
-                                <li class="nav-item">
-                                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_product">
-                                        <span class="nav-link-text">{% trans 'Product' %}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_competitors">
-                                        <span class="nav-link-text">{% trans 'Competitors' %}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_contact_role">
-                                        <span class="nav-link-text">{% trans 'Contact Role' %}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_account_history">
-                                        <span class="nav-link-text">{% trans 'Account History' %}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_team">
-                                        <span class="nav-link-text">{% trans 'Team' %}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                            <div class="col-3 d-flex justify-content-end">
-                                <div class="form-check mt-3">
-                                    <input type="checkbox" class="form-check-input" id="check-lost-reason">
-                                    <label class="form-check-label"
-                                           for="check-lost-reason">{% trans "Lost by other reason" %}</label>
-                                </div>
-                            </div>
-                            <div class="tab-content ml-4 mr-4">
-                                <div class="tab-pane fade show active mb-25" id="tab_product">
-                                    <input data-method="GET" data-url="{% url 'TaxListAPI' %}" hidden
-                                           id="input-data-tax">
-                                    <input data-method="GET" data-url="{% url 'UnitOfMeasureListAPI' %}" hidden
-                                           id="input-data-uom">
-                                    <div class="table-responsive overflow-auto">
-                                        <table class="table nowrap" id="table-products">
-                                            <thead>
-                                            <tr>
-                                                <th class="">#</th>
-                                                <th class="wrap-text">{% trans "Product" %}</th>
-                                                <th class="wrap-text">{% trans 'Product Category' %}</th>
-                                                <th class="wrap-text">{% trans 'UoM' %}</th>
-                                                <th class="wrap-text">{% trans "Quantity" %}</th>
-                                                <th class="wrap-text">{% trans "Unit Price" %}</th>
-                                                <th class="wrap-text">{% trans "Tax" %}</th>
-                                                <th class="wrap-text">{% trans "Subtotal Price" %}</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr class="odd text-center col-table-empty">
-                                                <td colspan="10">{% trans 'No data available in table' %}</td>
-                                            </tr>
-                                            <tr class="col-select-product hidden">
-                                                <td class="wrap-text num-product">
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <select class="form-select select-box-product w-200p"
-                                                            data-method="GET"
-                                                            data-url="{% url 'ProductListAPI' %}">
-                                                    </select>
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <select class="form-select w-150p box-select-product-category">
-                                                    </select>
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <select class="form-select w-100p box-select-uom"></select>
-                                                </td>
-                                                <td>
-                                                    <input type="number" class="form-control w-100p input-quantity"/>
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <input type="text"
-                                                           class="form-control mask-money w-200p input-unit-price"
-                                                           data-return-type="number"/>
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <select class="form-select w-100p box-select-tax">
-                                                    </select>
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <div class="readonly">
-                                                        <input class="form-control mask-money w-200p input-subtotal"
-                                                               type="text"
-                                                               data-return-type="number" readonly>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <a class="btn btn-icon btn-del-item">
-                                                <span class="btn-icon-wrap">
-                                                    <span class="feather-icon"><i data-feather="trash-2"></i></span>
-                                                </span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-
-                                            <tr class="col-input-product hidden">
-                                                <td class="wrap-text num-product">
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <input class="form-control w-200p input-product-name" type="text"
-                                                           placeholder="Personal Computer">
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <select class="form-select w-150p box-select-product-category">
-                                                    </select>
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <select class="form-select w-100p box-select-uom"></select>
-                                                </td>
-                                                <td>
-                                                    <input type="number" class="form-control w-100p input-quantity"/>
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <input type="text"
-                                                           class="form-control mask-money w-200p input-unit-price"
-                                                           data-return-type="number"/>
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <select class="form-select w-100p box-select-tax">
-                                                    </select>
-                                                </td>
-                                                <td class="wrap-text">
-                                                    <div class="readonly">
-                                                        <input class="form-control mask-money w-200p input-subtotal"
-                                                               type="text"
-                                                               data-return-type="number" readonly>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <a class="btn btn-icon btn-del-item">
-                                                <span class="btn-icon-wrap">
-                                                    <span class="feather-icon"><i data-feather="trash-2"></i></span>
-                                                </span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-5 dropdown">
-                                            <button type="button" data-bs-toggle="dropdown"
-                                                    class="btn btn-link btn-animated"
-                                            >
-                                        <span><span class="icon"><span class="feather-icon"><i
-                                                data-feather="plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="#"
-                                                   id="btn-add-select-product">{% trans 'Select Product' %}</a>
-                                                <a class="dropdown-item" href="#"
-                                                   id="btn-add-input-product">{% trans 'Input Product' %}</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-7 mt-5">
-                                            <div class="row mb-2">
-                                                <div class="col-6"><p>{% trans 'Pretax Amount' %}</p></div>
-                                                <div class="col-6 readonly">
-                                                    <input
-                                                            id="input-product-pretax-amount"
-                                                            type="text"
-                                                            class="form-control mask-money"
-                                                            data-return-type="number"
-                                                            readonly
-                                                    >
-                                                </div>
-                                            </div>
-                                            <div class="row mb-2">
-                                                <div class="col-6"><p>{% trans 'Taxes' %}</p></div>
-                                                <div class="col-6 readonly">
-                                                    <input
-                                                            id="input-product-taxes"
-                                                            type="text"
-                                                            class="form-control mask-money"
-                                                            data-return-type="number"
-                                                            readonly
-                                                    >
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="row mb-2">
-                                                <div class="col-6"><b>{% trans 'Total' %}</b></div>
-                                                <div class="col-6 readonly">
-                                                    <input
-                                                            id="input-product-total"
-                                                            type="text"
-                                                            class="form-control mask-money"
-                                                            data-return-type="number"
-                                                            readonly
-                                                    >
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade mb-25" id="tab_competitors">
-                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-competitor">
-                                <span>
-                                    <span class="icon">
-                                        <span class="feather-icon">
-                                            <i data-feather="plus"></i>
-                                        </span>
-                                    </span>
-                                    <span>{% trans 'Add Competitor' %}</span>
-                                </span>
-                                    </button>
-
-                                    <div class="table-responsive">
-                                        <table class="table nowrap" id="table-competitors">
-                                            <thead>
-                                            <tr>
-                                                <th class="wrap-text w-30">{% trans "Name" %}</th>
-                                                <th class="wrap-text w-30">{% trans 'Strength' %}</th>
-                                                <th class="wrap-text w-30">{% trans 'Weakness' %}</th>
-                                                <th class="wrap-text w-10">{% trans "Win deal" %}</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr class="odd text-center col-table-empty">
-                                                <td colspan="10">{% trans 'No data available in table' %}</td>
-                                            </tr>
-                                            <tr class="col-competitor hidden">
-                                                <td class="wrap-text">
-                                                    <select class="form-select box-select-competitor">
-                                                        <option></option>
-                                                    </select>
-                                                </td>
-                                                <td class="wrap-text text-center">
-                                                    <input type="text" class="form-control input-strength"/>
-                                                </td>
-                                                <td class="wrap-text text-center">
-                                                    <input type="text" class="form-control input-weakness"/>
-                                                </td>
-                                                <td class="wrap-text text-center mb-5">
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input input-win-deal"/>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <a class="btn btn-icon btn-del-item">
-                                                <span class="btn-icon-wrap">
-                                                    <span class="feather-icon"><i data-feather="trash-2"></i></span>
-                                                </span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade mb-25" id="tab_contact_role">
-                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-contact">
-                                <span>
-                                    <span class="icon">
-                                        <span class="feather-icon">
-                                            <i data-feather="plus"></i>
-                                        </span>
-                                    </span>
-                                    <span>{% trans 'Add Contact' %}</span>
-                                </span>
-                                    </button>
-
-                                    <div class="table-responsive">
-                                        <input class="hidden" data-method="GET" data-url="{% url 'ContactListAPI' %}"
-                                               id="input-data-contact"/>
-                                        <table class="table nowrap" id="table-contact-role">
-                                            <thead>
-                                            <tr>
-                                                <th class="wrap-text w-25">{% trans "Which Customer" %}</th>
-                                                <th class="wrap-text w-25">{% trans 'Name' %}</th>
-                                                <th class="wrap-text w-25">{% trans 'Job title' %}</th>
-                                                <th class="wrap-text w-25">{% trans "Role" %}</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr class="odd text-center col-table-empty">
-                                                <td colspan="10">{% trans 'No data available in table' %}</td>
-                                            </tr>
-                                            <tr class="col-contact hidden">
-                                                <td class="wrap-text">
-                                                    <select class="form-select box-select-type-customer">
-                                                        <option value="0">{% trans "Direct Customer" %}</option>
-                                                        <option value="1" disabled>{% trans "End Customer" %}</option>
-                                                    </select>
-                                                </td>
-                                                <td class="wrap-text text-center">
-                                                    <select class="form-select box-select-contact">
-                                                        <option></option>
-                                                    </select>
-                                                </td>
-                                                <td class="wrap-text readonly">
-                                                    <input type="text" class="form-control input-job-title" readonly/>
-                                                </td>
-                                                <td class="wrap-text text-center">
-                                                    <select class="form-select box-select-role">
-                                                        <option></option>
-                                                        <option value="0">{% trans "Decision Maker" %}</option>
-                                                        <option value="1">{% trans "Influence" %}</option>
-                                                        <option value="2">{% trans "Contact Involved" %}</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <a class="btn btn-icon btn-del-item">
-                                                <span class="btn-icon-wrap">
-                                                    <span class="feather-icon"><i data-feather="trash-2"></i></span>
-                                                </span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans "Select Reason why customer buy your product" %}</label>
-                                        <select class="form-control select2" multiple id="box-select-factor"
-                                                data-method="GET"
-                                                data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}"></select>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade mb-25" id="tab_account_history">
-                                    <div class="d-flex overflow-auto">
-
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade mb-25" id="tab_team">
-                                    <button type="button" class="btn btn-link btn-animated" data-bs-toggle="modal"
-                                            data-bs-target="#modalAddMember" id="btn-show-modal-add-member">
-                                <span>
-                                    <span class="icon">
-                                        <span class="feather-icon">
-                                            <i data-feather="plus"></i>
-                                        </span>
-                                    </span>
-                                    <span>{% trans 'Add Member' %}</span>
-                                </span>
-                                    </button>
-                                    <div class="card-member-hidden hidden">
-                                        <div class="card col-6 col-xl-4">
-                                            <div class="card-header card-header-action">
-                                                <h6>{% trans "Member" %}</h6>
-                                                <div class="card-action-wrap">
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-outline-primary btn-animated btn-xs"
-                                                                data-bs-toggle="dropdown">
-                                                        <span class="icon">
-                                                            <span class="feather-icon">
-                                                                <i
-                                                                        data-feather="more-horizontal">
-                                                                </i>
-                                                            </span>
-                                                        </span>
-                                                        </button>
-                                                        <div role="menu" class="dropdown-menu">
-                                                            <a class="dropdown-item btn-detail-member" target="_blank"
-                                                               href="#">{% trans "View Detail" %}</a>
-                                                            <a class="dropdown-item btn-remove-card"
-                                                               href="#">{% trans "Remove" %}</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card-body row g-0">
-                                                <div class="col-3 avatar avatar-rounded mt-3">
-                                                    <img class="avatar-img"
-                                                         src="{% static "assets/images/avatar/avatar.jpg" %}"
-                                                         alt="Card image">
-                                                </div>
-                                                <div class="col-9">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title"></h5>
-                                                        <p class="card-text text-primary"></p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" id="card-member"></div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="col-md-12 col-lg-8 col-xl-9">
+                    <div class="col-12">
+                        {% include 'sales/opportunity/extends/relate-info.html' %}
                     </div>
                 </div>
-            </div>
             </div>
         </form>
-        <div class="modal fade" id="modalAddMember" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01"
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Add member to Sale team" %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="table-responsive">
-                            <table class="table nowrap w-lg-750p" id="dtbMember">
-                                <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>{% trans "Employee Code" %}</th>
-                                    <th>{% trans "Employee Name" %}</th>
-                                    <th class="hidden">{% trans "Email" %}</th>
-                                    <th>
-                                        <span class="form-check">
-                                            <input type="checkbox" class="form-check-input check-select-all">
-                                        </span>
-                                    </th>
-                                </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">{% trans "Close" %}</button>
-                        <button type="button" class="btn btn-primary" id="btn-add-member">{% trans "Add" %}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="modal fade mt-10" id="create-new-call-log" tabindex="-1" role="dialog"
-         aria-labelledby="createOpportunityModalForms" aria-hidden="true">
+         aria-labelledby="createOpportunityCallLogModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans 'Create New Call Log' %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body" style="overflow: auto; height: 58vh">
+                <div class="modal-body" style="overflow: auto; height: 62vh">
                     <form data-url="{% url 'OpportunityCallLogListAPI' %}"
                           data-url-redirect="{% url 'OpportunityCallLogList' %}"
                           data-method="POST"
@@ -825,56 +81,20 @@
                             <label class="form-label required">
                                 {% trans 'Sale Code' %}
                             </label>
-                            <select id="sale-code-select-box" class="form-select"
-                                    data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                            <select id="sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label required">
                                 {% trans 'Customer' %}
                             </label>
-                            <select id="account-select-box" class="form-select" data-url="{% url 'AccountListAPI' %}"
-                                    data-method="GET"></select>
+                            <select disabled id="account-select-box" class="select2 form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
                         </div>
                         <div class="row mb-3">
                             <div class="col-6">
                                 <label class="form-label required">
                                     {% trans 'Contact' %}
                                 </label>
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix" id="call-log-contact-detail-span" hidden>
-                                        <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                                        <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
-                                            <div class="row">
-                                                <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
-                                                <a id="btn-detail-call-log-contact-tab" class="col-5 text-right" data-url="{% url 'ContactDetail' '0' %}" target="_blank">
-                                                    <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
-                                                </a>
-                                            </div>
-                                            <div class="dropdown-divider"></div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Contact name" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-name"></span>
-                                            </div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Job title" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-job-title"></span>
-                                            </div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Mobile" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-mobile"></span>
-                                            </div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Email" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-email"></span>
-                                            </div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Report to" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-report-to"></span>
-                                            </div>
-                                        </span>
-                                    </span>
-                                    <select id="contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                                </span>
+                                <select id="contact-select-box" class="select2 form-select"></select>
                             </div>
                             <div class="col-6">
                                 <label class="form-label required">
@@ -889,11 +109,10 @@
                             </label>
                             <textarea id="result-text-area" class="form-control" style="min-height: 100px"></textarea>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" hidden>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="repeat-activity">
-                                <label class="form-check-label"
-                                       for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                                <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
                             </div>
                         </div>
                     </form>
@@ -905,10 +124,71 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade mt-10" id="detail-call-log" data-url="{% url 'OpportunityCallLogDetailAPI' '0' %}" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityCallLogModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Call Log' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Subject' %}
+                        </label>
+                        <input readonly id="detail-subject-input" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Sale Code' %}
+                        </label>
+                        <select disabled style="color: #6f6f6f" id="detail-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Customer' %}
+                        </label>
+                        <select disabled style="color: #6f6f6f" id="detail-account-select-box" class="select2 form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label required">
+                                {% trans 'Contact' %}
+                            </label>
+                            <select disabled id="detail-contact-select-box" class="select2 form-select"></select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label required">
+                                {% trans 'Date' %}
+                            </label>
+                            <input readonly id="detail-date-input" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Input Result' %}
+                        </label>
+                        <textarea readonly id="detail-result-text-area" class="form-control" style="min-height: 100px"></textarea>
+                    </div>
+                    <div class="mb-3" hidden>
+                        <div class="form-check">
+                            <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
+                            <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% include 'sales/task/extend/task-form.html' %}
 
     <div class="modal fade mt-10" id="send-email" tabindex="-1" role="dialog"
-         aria-labelledby="createOpportunityModalForms" aria-hidden="true">
+         aria-labelledby="createOpportunityEmailModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -924,51 +204,68 @@
                           id="form-new-email"
                           method="post">
                         {% csrf_token %}
-                        <div class="row form-group mb-3">
-                            <div class="col-2"></div>
-                            <div class="col-10">
-                                <span id="email-sale-code-span" class="badge badge-primary badge-outline" style="font-size: larger">OPP.CODE.XXX</span>
-                            </div>
+                        <div class="row mb-3">
+                            <label class="form-label required">{% trans 'Sale Code' %}</label>
+                            <select id="email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
                         </div>
-                        <div class="row form-group mb-3">
-                            <label class="col-2 col-form-label required">{% trans 'To' %}</label>
-                            <div class="col-10">
-                                <select id="email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                                <input class="form-control" hidden id="inputEmailTo" placeholder="Enter email">
-                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">to input</a>
-                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>to select</a>
-                            </div>
+                        <div class="row mb-3">
+                            <label class="form-label required">{% trans 'To' %}</label>
+                            <select id="email-to-select-box" class="select2 form-select" multiple="multiple" data-account-list-url="{% url 'AccountDetailAPI' '0' %}" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                         </div>
-                        <div class="row form-group mb-3">
-                            <label class="col-2 col-form-label">{% trans 'Cc' %}</label>
-                            <div class="col-10">
-                                <select id="email-cc-select-box" multiple class="select2 select-multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                                <input id="inputEmailCc" hidden class="mt-1 form-control" placeholder="Enter email">
-
-                                <a class="text-primary form-text text-muted text-right" href="#">
-                                    <span id="email-cc-add" hidden class="badge badge-primary">Add</span>
-                                    <span id="email-cc-remove" hidden class="icon"><i class="text-danger bi bi-x-circle-fill"></i></span>
-                                </a>
-                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">input email</a>
-                            </div>
+                        <div class="row mb-3">
+                            <label class="form-label">{% trans 'Cc' %}</label>
+                            <select id="email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                         </div>
-                        <div class="row form-group mb-3">
-                            <label class="col-2 col-form-label required">{% trans 'Subject' %}</label>
-                            <div class="col-10">
-                                <input id="email-subject-input" class="form-control">
-                            </div>
+                        <div class="row mb-3">
+                            <label class="form-label required">{% trans 'Subject' %}</label>
+                            <div><input id="email-subject-input" class="form-control"></div>
                         </div>
-                        <div class="row form-group mb-3">
-                            <label class="col-2 col-form-label">{% trans 'Content' %}</label>
-                            <div class="col-10">
-                                <textarea id="email-content-area" class="form-control" style="min-height: 200px"></textarea>
-                            </div>
+                        <div class="row mb-3">
+                            <label class="col-12 col-form-label">{% trans 'Content' %}</label>
+                            <div><textarea id="email-content-area"></textarea></div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" form="form-new-email"
                                 id="btn-send-email">{% trans 'Send' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="detail-send-email" data-url="{% url 'OpportunityEmailDetailAPI' '0' %}" tabindex="-1" role="dialog" aria-labelledby="detailOpportunityEmailModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Email' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="row mb-3">
+                        <label class="form-label required">{% trans 'Sale Code' %}</label>
+                        <select disabled id="detail-email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label required">{% trans 'To' %}</label>
+                        <select disabled id="detail-email-to-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label">{% trans 'Cc' %}</label>
+                        <select disabled id="detail-email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label required">{% trans 'Subject' %}</label>
+                        <div><input readonly id="detail-email-subject-input" class="form-control"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label">{% trans 'Content' %}</label>
+                        <div>
+                            <div class="row form-group mb-3" id="detail-email-content-area"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1000,13 +297,15 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Sale Code' %}</label>
-                                    <select id="meeting-sale-code-select-box" class="form-select"></select>
+                                    <select id="meeting-sale-code-select-box" data-url="{% url 'OpportunityListAPI' %}" data-method="GET" class="select2 form-select"></select>
                                 </div>
                             </div>
-                            <div class="col-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Date' %}</label>
                                     <input id="meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
@@ -1017,7 +316,14 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Meeting address' %}</label>
-                                    <select id="meeting-address-select-box" class="form-select"></select>
+                                    <div id="meeting-address-select-div">
+                                        <select id="meeting-address-select-box" class="select2"></select>
+                                        <a id="meeting-address-input-btn" class="text-primary form-text text-muted text-right" href="#">input address</a>
+                                    </div>
+                                    <div id="meeting-address-input-div" hidden>
+                                        <input id="meeting-address-input" placeholder="Input meeting address" class="form-control">
+                                        <a id="meeting-address-select-btn" class="text-primary form-text text-muted text-right" href="#">select address</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1033,7 +339,7 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Employee attended' %}</label>
-                                    <select id="meeting-employee-attended-select-box" multiple class="select2 select-multiple"></select>
+                                    <select id="meeting-employee-attended-select-box" data-url="{% url 'EmployeeListAPI' %}" multiple class="select2 select-multiple"></select>
                                 </div>
                             </div>
                         </div>
@@ -1041,7 +347,7 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Customer member' %}</label>
-                                    <select id="meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
+                                    <select disabled id="meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
                                 </div>
                             </div>
                         </div>
@@ -1055,7 +361,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" hidden>
                             <div class="col-12">
                                 <div class="mb-3">
                                     <div class="form-check">
@@ -1074,17 +380,128 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade mt-10" id="detail-meeting" data-url="{% url 'OpportunityMeetingDetailAPI' '0' %}" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityMeetingModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Meeting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Subject' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Sale Code' %}</label>
+                                <select disabled id="detail-meeting-sale-code-select-box" class="select2 form-select"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Date' %}</label>
+                                <input disabled style="color: black" id="detail-meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Meeting address' %}</label>
+                                <select disabled id="detail-meeting-address-select-box" class="select2 form-select"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">{% trans 'Room location' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Employee attended' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-employee-attended-select-box" multiple class="select2 select-multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Customer member' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">
+                                    {% trans 'Input Result' %}
+                                </label>
+                                <textarea disabled style="color: #6f6f6f" id="detail-meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" hidden>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
+                                    <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
+           data-task_list="{% url 'OpportunityTaskListAPI' %}"
+           data-url-edit="{% url 'OpportunityUpdate' pk=0 %}"
+           data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
+    >
+    <input type="text" id="trans-factory"
+           data-activity-type01="{% trans 'Call to customer' %}"
+           data-activity-type02="{% trans 'Send email' %}"
+           data-activity-type03="{% trans 'Meeting with customer' %}"
+           data-trans-customer="{% trans 'Direct Customer' %}"
+           data-trans-end-customer="{% trans 'End Customer' %}"
+           data-trans-decision-maker="{% trans "Decision Maker" %}"
+           data-trans-influence="{% trans "Influence" %}"
+           data-trans-contact-involved="{% trans "Contact Involved" %}"
+    >
 {% endblock %}
 {% block jsFooter %}
-
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
-    <script src="{% static 'vendors/ckeditor/cdn.ckeditor.5_38.1.0_classic_ckeditor.js' %}"></script>
+    <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
-    <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/permission_group_tabs.js' %}"></script>
+
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
 {% endblock %}

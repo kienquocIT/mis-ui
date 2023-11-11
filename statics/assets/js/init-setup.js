@@ -2636,7 +2636,13 @@ class DTBControl {
         //     "<'row mt-3'<'col-sm-12 col-md-6'i>>";
 
         // style 1
-        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt' + `<'row tbl-footer-toolbar' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+        let styleDom = opts?.['styleDom'] || 'full';
+        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt';
+        if (styleDom === 'small'){
+            domDTL += `<'row tbl-footer-toolbar' <'cus-page-info'<'col-12 d-flex justify-content-center py-1'l><'col-12  d-flex justify-content-center py-1'i><'col-12  d-flex justify-content-center py-1'p>>>`;
+        } else {
+            domDTL += `<'row tbl-footer-toolbar' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+        }
 
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
@@ -3606,6 +3612,31 @@ class DocumentControl {
     }
 }
 
+class ExcelToJSON {
+    parseFile(file, callback_render, callback_error = null) {
+        let reader = new FileReader();
+
+        reader.onload = function (e) {
+            let data = e.target.result;
+            let workbook = XLSX.read(data, {
+                type: 'binary'
+            });
+            workbook.SheetNames.forEach(function (sheetName) {
+                let XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                if (callback_render && typeof callback_render === 'function') callback_render(XL_row_object);
+                else console.log(XL_row_object);
+            })
+        };
+
+        reader.onerror = function (ex) {
+            if (callback_error && typeof callback_error === 'function') callback_error(ex);
+            else console.log('onerror: ', ex);
+        };
+
+        reader.readAsBinaryString(file);
+    }
+}
+
 let $x = {
     cls: {
         frm: SetupFormSubmit,
@@ -3617,6 +3648,7 @@ let $x = {
         person: PersonControl,
         doc: DocumentControl,
         bastionField: BastionFieldControl,
+        excelToJSON: ExcelToJSON,
     },
     fn: {
         fileInit: FileUtils.init,

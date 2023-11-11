@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Master Data Item' %}{% endblock %}
+
+{% block pageContent %}
+    <ul class="nav nav-line nav-tabs nav-light">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#uom-group">
+                <span class="nav-link-text">{% trans 'Unit Of Measure Group' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#uom">
+                <span class="nav-link-text">{% trans 'Unit Of Measure' %}</span>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="uom-group">
+            <div class="form-group">
+                <label class="form-label">{% trans "Name" %}</label>
+                <input
+                        class="form-control" type="text" name="title"
+                        placeholder="Input name"
+                >
+            </div>
+            <div class="form-group">
+                <label for="fileImportUOMGroupInput" class="form-label">{% trans 'File Data' %}</label>
+                <input type="file" id="fileImportUOMGroupInput">
+            </div>
+        </div>
+        <div class="tab-pane fade" id="uom">
+            <div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label required">{% trans "Select Group" %}
+                            </label>
+                            <select
+                                    id="select-box-unit-measure-group" class="form-select" data-method="GET"
+                                    data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"
+                                    data-keyResp="unit_of_measure_group"
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-check mt-5">
+                            <input
+                                    class="form-check-input mt-1" type="checkbox" id="check-referenced-unit"
+                                    name="is_referenced_unit" disabled
+                            >
+                            <label class="form-check-label" for="check-referenced-unit">
+                                {% trans "is referenced for ratio from other unit" %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label required">{% trans "Code" %}
+                            </label>
+                            <input
+                                    id="inp-code" class="form-control" type="text" name="code" readonly
+                                    placeholder="CODE01" oninput="this.value=this.value.toUpperCase()"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row" id="ratio-area">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label required">{% trans "Ratio" %}
+                                    </label>
+                                    <input
+                                            class="form-control" type="text" name="ratio" readonly
+                                            placeholder="Input ratio" id="ratio-unit"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group mt-5">
+                                    <label class="form-label mt-1" id="label-referenced-unit" hidden>* Reference
+                                        Unit</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Name" %}
+                                <span class="field-required">*</span>
+                            </label>
+                            <input
+                                    class="form-control" type="text" name="title" readonly
+                                    placeholder="Input name" id="name-unit"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label class="form-label required">{% trans "Rounding" %}
+                            </label>
+                            <input
+                                    class="form-control" type="number" name="rounding" id="inp-rounding"
+                                    placeholder="Input rounding" min="0" step="0.001" value="5" readonly
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="fileImportInput" class="form-label">{% trans 'File Data' %}</label>
+                <input type="file" id="fileImportInput">
+            </div>
+            <table class="table w-100" id="dataImportInput" data-url="{% url "UnitOfMeasureListAPI" %}">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'Data' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+    <script>
+        $(document).ready(function () {
+            let dtbData = $('#dataImportInput').DataTableDefault({
+                styleDom: 'small',
+                data: [],
+                rowIdx: true,
+                columns: [
+                    {
+                        render: (data, type, row) => {
+                            return row?.['__rowNum__'];
+                        }
+                    },
+                    {
+                        render: (data, type, row) => {
+                            return JSON.stringify(row)
+                        }
+                    },
+                    {
+                        className: "d-flex justify-content-end",
+                        render: (data, type, row) => {
+                            return `
+                                <button class="btn btn-soft-primary btn-rounded">${$.fn.transEle.attr('data-save')}</button>
+                            `;
+                        }
+                    }
+                ]
+            });
+            $('#fileImportInput').on('change', function (event) {
+                let callback_render = function (data) {
+                    dtbData.clear().draw();
+                    dtbData.rows.add(data).draw();
+                }
+                new $x.cls.excelToJSON().parseFile(event.target.files[0], callback_render);
+            })
+        })
+    </script>
+{% endblock %}

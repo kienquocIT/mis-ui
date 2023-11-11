@@ -3,6 +3,7 @@
 {% parse_bool is_create as c_is %}
 {% parse_link create_link as c_link %}
 {% parse_str create_idx as c_idx %}
+{% parse_str create_attr as c_attr %}
 {% if create_title %} {% parse_str create_title as c_title %} {% else %} {% trans 'Create' as c_title %} {% endif %}
 
 {% parse_bool is_save as s_is %}
@@ -16,10 +17,13 @@
 {% if c_is == '1' %}
     <a
             href="{{ c_link }}"
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="{{ c_title }}"
+            {% if 'data-bs-toggle' not in c_attr %}
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="{{ c_title }}"
+            {% endif %}
             id="{{ c_idx }}"
+            {{ c_attr|safe }}
     >
         <button class="btn btn-outline-primary">
                 <span>

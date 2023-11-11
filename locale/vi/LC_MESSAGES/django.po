@@ -4806,5 +4806,17 @@ msgid "Import"
 msgstr "Đưa vào"
 
 #
+msgid "Import Data"
+msgstr "Nhập dữ liệu"
+
+#
+msgid "File Data"
+msgstr "Tệp dữ liệu"
+
+#
+msgid "Click to upload"
+msgstr "Nhấn vào để tải lên"
+
+#
 msgid "Clear canvas"
 msgstr "Làm trống soạn thảo"

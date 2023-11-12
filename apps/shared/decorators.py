@@ -15,6 +15,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from .apis import RespData, PermCheck
+from .exceptions import handle_exception_all_view
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
 from .menus import SpaceItem, SpaceGroup
@@ -231,10 +232,14 @@ def mask_view(**parent_kwargs):
 
             # redirect or next step with is_auth
             # must be return ({Data|Dict}, {Http Status|Number}) or HttpResponse
-            if check_perm_state:
-                view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
-            else:
-                view_return = check_perm_return
+            try:
+                if check_perm_state:
+                    view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
+                else:
+                    view_return = check_perm_return
+            except Exception as err:
+                handle_exception_all_view(err, self)
+                raise err
 
             if isinstance(view_return, HttpResponse):  # pylint: disable=R1705
                 return view_return

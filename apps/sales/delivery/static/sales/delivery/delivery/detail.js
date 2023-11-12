@@ -560,6 +560,19 @@ $(async function () {
                                 + `<p id="prod_row-${meta.row}">${quantity}<p/>`
                                 + `<button type="button" class="btn btn-flush-primary btn-animated select-prod">`
                                 + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+
+                            let detailDataRaw = $('#request-data').text();
+                            if (detailDataRaw) {
+                                let detailData = JSON.parse(detailDataRaw);
+                                if (detailData?.['state'] === 0) {
+                                    html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
+                                            + `<p id="prod_row-${meta.row}">${quantity}<p/>`
+                                            + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" disabled>`
+                                            + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+                                }
+                            }
+
+
                             if (delivery_config.is_picking && !delivery_config.is_partial_ship)
                                 html = `<p class="text-center">${quantity}<p/>`
                             if (!data?.is_not_inventory){

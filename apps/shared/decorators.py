@@ -318,6 +318,7 @@ def mask_view(**parent_kwargs):
                                     'menu_id_current': parent_kwargs.get('menu_active', None),
                                     'space_code_current': 1,
                                 }
+                                print('render:', request, cls_check.template_path, ctx)
                                 return render(request, cls_check.template_path, ctx)
                     if login_require is True:
                         return redirect(reverse('AuthLogin'))

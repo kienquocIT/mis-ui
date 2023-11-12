@@ -237,8 +237,9 @@ def mask_view(**parent_kwargs):
                     view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
                 else:
                     view_return = check_perm_return
+                print('view_return:', self, view_return)
             except Exception as err:
-                print(self, err)
+                print('err: ', self, err)
                 handle_exception_all_view(err, self)
                 raise err
 

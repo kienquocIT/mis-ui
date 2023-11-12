@@ -27,13 +27,10 @@ class HomeView(View):
         menu_active='id_menu_home_page',
     )
     def get(self, request, *args, **kwargs):
-        print('request.user: ', request.user)
         if request.user:
             employee_current_data = getattr(request.user, 'employee_current_data', {})
-            print('employee_current_data: ', employee_current_data)
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
-                print('resp: ', resp)
                 return {'employee_current_data': employee_current_data}, status.HTTP_200_OK
         return redirect(reverse('LandingPageView'))
 

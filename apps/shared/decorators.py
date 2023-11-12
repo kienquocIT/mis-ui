@@ -238,6 +238,7 @@ def mask_view(**parent_kwargs):
                 else:
                     view_return = check_perm_return
             except Exception as err:
+                print(self, err)
                 handle_exception_all_view(err, self)
                 raise err
 

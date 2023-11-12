@@ -319,7 +319,10 @@ def mask_view(**parent_kwargs):
                                     'space_code_current': 1,
                                 }
                                 print('render:', request, cls_check.template_path, ctx)
-                                return render(request, cls_check.template_path, ctx)
+                                try:
+                                    return render(request, cls_check.template_path, ctx)
+                                except Exception as err:
+                                    print('err: render: ', err)
                     if login_require is True:
                         return redirect(reverse('AuthLogin'))
                     return render(request, cls_check.template_path, ctx)

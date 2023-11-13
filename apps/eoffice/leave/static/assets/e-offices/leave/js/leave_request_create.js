@@ -1,6 +1,8 @@
 const $FormElm = $('#leave_create')
 
 $(document).ready(function () {
+    const $EmpElm = $('#selectEmployeeInherit')
+
     // load datepicker for request date
     $('#inputRequestDate').daterangepicker({
         singleDatePicker: true,
@@ -20,7 +22,7 @@ $(document).ready(function () {
         'full_name': dataEmp.full_name,
         'first_name': dataEmp.first_name,
         'last_name': dataEmp.last_name
-    })).initSelect2().on('select2:select', function (e) {
+    })).initSelect2().on('select2:select', function () {
         $('#leave_detail_tbl').DataTable().clear().draw()
     });
 

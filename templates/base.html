@@ -10,7 +10,7 @@
             rel="stylesheet"
             href="//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap"
     >
-
+    <link href="{% static 'vendors/bootstrap@4.0.0/dist/css/bootstrap.min.css' %}"rel="stylesheet" type="text/css"/>
     {% compress css %}
         <!-- Data Table CSS -->
         <link
@@ -21,10 +21,7 @@
                 href="{% static 'vendors/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}"
                 rel="stylesheet" type="text/css"
         />
-        <link
-                href="{% static 'vendors/bootstrap@4.0.0/dist/css/bootstrap.min.css' %}"
-                rel="stylesheet" type="text/css"
-        />
+
         <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
         <link
                 href="{% static 'vendors/select2/dist/css/select2-bootstrap4.min.css' %}" rel="stylesheet"

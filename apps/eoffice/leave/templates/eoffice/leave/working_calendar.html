@@ -366,14 +366,14 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Craete years' %}</h5>
+                    <h5 class="modal-title">{% trans 'Create year' %}</h5>
                 </div>
                 <div class="modal-body">
                     <form class="container-fluid mt-4" id="formYear" method="post" autocomplete="off"
                           data-method="POST">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="inputConfigYear" class="form-label">{% trans 'Number Year' %}</label>
+                            <label for="inputConfigYear" class="form-label">{% trans 'Number year' %}</label>
                             <input type="text" name="config_year" id="inputConfigYear" class="form-control"/>
                         </div>
                     </form>

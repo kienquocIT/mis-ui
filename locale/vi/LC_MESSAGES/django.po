@@ -4748,3 +4748,23 @@ msgstr "Điều chỉnh"
 #
 msgid "Adjust date"
 msgstr "Ngày điều chỉnh"
+
+#
+msgid "Not enough leave or no leave available"
+msgstr "Không đủ ngày phép hoặc hết ngày phép"
+
+#
+msgid "Ordinal date in detail tab is in complex setup"
+msgstr "Thứ tự ngày tháng setup không đúng"
+
+#
+msgid "Leave available list"
+msgstr "Danh sách phép dư"
+
+#
+msgid "Create year"
+msgstr "Tạo năm"
+
+#
+msgid "Number year"
+msgstr "Số năm"

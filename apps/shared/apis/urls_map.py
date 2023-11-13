@@ -41,6 +41,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
     LANGUAGE_CHANGE = 'auth/language'
 
+    # web / page builder
+    BUILDER_PAGE_LIST = StringUrl('site/page-list')
+    BUILDER_PAGE_DETAIL = StringUrl('site/page/{pk}')
+    BUILDER_PAGE_VIEWER = StringUrl('site/page/{tenant_id}/{company_id}/{path_sub}/viewer')
+
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
     MEDIA_UPLOAD_FILE = StringUrl('f/files')
@@ -225,7 +230,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
-    OPPORTUNITY_LIST_FOR_CASH_OUTFLOW = StringUrl('opportunity/list-for-cash-outflow')
     OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
     OPPORTUNITY_CALL_LOG_DELETE = StringUrl('opportunity/delete-call-log/{pk}')
     OPPORTUNITY_EMAIL_LIST = StringUrl('opportunity/send-email/lists')
@@ -237,7 +241,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/list')
-    QUOTATION_LIST_FOR_CASH_OUTFLOW = StringUrl('quotation/list-for-cashoutflow')
     QUOTATION_DETAIL = StringUrl('quotation')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
@@ -264,7 +267,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/list')
-    SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cash-outflow')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
@@ -418,3 +420,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Report
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')
+    REPORT_PRODUCT_LIST = StringUrl('report/product/list')
+    REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')

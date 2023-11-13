@@ -23,7 +23,8 @@ $(document).ready(function () {
                         'render': () => {
                             return ``;
                         }
-                    }, {
+                    },
+                    {
                         data: 'code',
                         className: 'wrap-text',
                         render: (data, type, row) => {
@@ -112,41 +113,37 @@ $(document).ready(function () {
                         data: '',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            let sale_code_id = '';
+                            let sale_code_id = null;
+                            let sale_code_title = null;
+                            let sale_code_CODE = null;
                             let is_close = false;
-                            let flag = -1;
-                            if (Object.keys(row?.['sale_order_mapped']).length !== 0) {
-                                sale_code_id = row?.['sale_order_mapped'].id;
-                                is_close = row?.['sale_order_mapped']['is_close'];
+                            let flag = null;
+                            if (Object.keys(row?.['opportunity_mapped']).length !== 0) {
+                                sale_code_id = row?.['opportunity_mapped'].id;
+                                sale_code_title = row?.['opportunity_mapped'].title;
+                                sale_code_CODE = row?.['opportunity_mapped'].code;
+                                is_close = row?.['opportunity_mapped']['is_close'];
                                 flag = 0;
                             }
-                            if (Object.keys(row?.['quotation_mapped']).length !== 0) {
+                            else if (Object.keys(row?.['quotation_mapped']).length !== 0) {
                                 sale_code_id = row?.['quotation_mapped'].id;
+                                sale_code_title = row?.['quotation_mapped'].title;
+                                sale_code_CODE = row?.['quotation_mapped'].code;
                                 is_close = row?.['quotation_mapped']['is_close'];
                                 flag = 1;
                             }
-                            if (Object.keys(row?.['opportunity_mapped']).length !== 0) {
-                                sale_code_id = row?.['opportunity_mapped'].id;
-                                is_close = row?.['opportunity_mapped']['is_close'];
+                            else if (Object.keys(row?.['sale_order_mapped']).length !== 0) {
+                                sale_code_id = row?.['sale_order_mapped'].id;
+                                sale_code_title = row?.['sale_order_mapped'].title;
+                                sale_code_CODE = row?.['sale_order_mapped'].code;
+                                is_close = row?.['sale_order_mapped']['is_close'];
                                 flag = 2;
                             }
-                            let disabled = ''
-                            if (is_close) {
-                                disabled = 'disabled';
-                            }
-                            let return_href = dtb.data('return-advance') + `?advance_payment={0}`.format_by_idx(encodeURIComponent(JSON.stringify({'id': row.id, 'title': row.title})));
-                            let to_payment_href = '';
-                            let html_to_payment = ''
-                            if (sale_code_id !== '') {
-                                to_payment_href = dtb.attr('data-payment') + `?sale_code_mapped=${encodeURIComponent(JSON.stringify(sale_code_id))}&type=${flag}`;
-                                html_to_payment = `<a class="dropdown-item" href="${to_payment_href}">To Payment</a>`
-                            }
-                            return `<div class="dropdown">
+
+
+                            return `<div class="dropdown ap-shortcut" data-ap-id="${row.id}" data-sale-code-id="${sale_code_id}" data-sale-code-title="${sale_code_title}" data-sale-code-CODE="${sale_code_CODE}" data-flag="${flag}">
                                         <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
-                                        <div class="dropdown-menu">
-                                             <a class="dropdown-item ${disabled}" href="${return_href}">Return</a>
-                                             ${html_to_payment}
-                                        </div>
+                                        <div class="dropdown-menu"></div>
                                     </div>`;
                         }
                     }
@@ -157,3 +154,133 @@ $(document).ready(function () {
 
     loadAdvancePaymentList();
 })
+
+$(document).on("click", '.ap-shortcut', function() {
+    let html_to_payment = '';
+    if ($(this).attr('data-sale-code-id') !== null && $(this).attr('data-sale-code-title') !== null && $(this).attr('data-sale-code-CODE') !== null && $(this).attr('data-flag') !== null) {
+        let sale_code_mapped_obj = JSON.stringify({'id': $(this).attr('data-sale-code-id'), 'title': $(this).attr('data-sale-code-title'), 'code': $(this).attr('data-sale-code-CODE')});
+        if ($(this).attr('data-flag') === '0') {
+            let dataInitSaleCode = JSON.parse(sale_code_mapped_obj);
+            let list_from_app = 'cashoutflow.payment.create';
+
+            let dataParam = {'list_from_app': list_from_app}
+            let opp_list_ajax= $.fn.callAjax2({
+                url: $('#script-url').attr('data-url-opp-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                            return data?.['opportunity_list'];
+                        }
+                    }
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([opp_list_ajax]).then(
+                (results) => {
+                    let opp_list = results[0];
+                    for (let opp of opp_list) {
+                        if (opp?.['id'] === dataInitSaleCode?.['id']) {
+                            let sale_code_mapped= encodeURIComponent(sale_code_mapped_obj);
+                            let quotation= encodeURIComponent(JSON.stringify(opp?.['quotation']));
+                            let sale_order= encodeURIComponent(JSON.stringify(opp?.['sale_order']));
+                            let ap_mapped_id= encodeURIComponent(JSON.stringify({'id': $(this).attr('data-ap-id')}));
+                            html_to_payment = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-payment')}?ap_mapped_id=${ap_mapped_id}&sale_code_mapped=${sale_code_mapped}&type=${$(this).attr('data-flag')}&quotation_object=${quotation}&sale_order_object=${sale_order}">To Payment</a>`;
+                            $(this).find('.dropdown-menu').html(html_to_payment)
+                            break;
+                        }
+                    }
+                })
+        }
+        else if ($(this).attr('data-flag') === '1') {
+            let dataInitSaleCode = JSON.parse(sale_code_mapped_obj);
+
+            let quo_list_ajax= $.fn.callAjax2({
+                url: $('#script-url').attr('data-url-quo-list'),
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data= $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
+                            let result = [];
+                            for (let i = 0; i < data?.['quotation_list'].length; i++) {
+                                if (Object.keys(data?.['quotation_list'][i]?.['opportunity']).length === 0) {
+                                    result.push(data?.['quotation_list'][i])
+                                }
+                            }
+                            return result;
+                        }
+                    }
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([quo_list_ajax]).then(
+                (results) => {
+                    let quo_list= results[0];
+                    for (let quo of quo_list) {
+                        if (quo?.['id'] === dataInitSaleCode?.['id']) {
+                            let sale_code_mapped= encodeURIComponent(sale_code_mapped_obj);
+                            let quotation= encodeURIComponent(JSON.stringify(quo?.['quotation']));
+                            let sale_order= encodeURIComponent(JSON.stringify(quo?.['sale_order']));
+                            let ap_mapped_id= encodeURIComponent(JSON.stringify({'id': $(this).attr('data-ap-id')}));
+                            html_to_payment = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-payment')}?ap_mapped_id=${ap_mapped_id}&sale_code_mapped=${sale_code_mapped}&type=${$(this).attr('data-flag')}&quotation_object=${quotation}&sale_order_object=${sale_order}">To Payment</a>`;
+                            $(this).find('.dropdown-menu').html(html_to_payment)
+                            break;
+                        }
+                    }
+                })
+        }
+        else if ($(this).attr('data-flag') === '2') {
+            let dataInitSaleCode = JSON.parse(sale_code_mapped_obj);
+
+            let so_list_ajax= $.fn.callAjax2({
+                url: $('#script-url').attr('data-url-so-list'),
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data= $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('sale_order_list') && Array.isArray(data.sale_order_list)) {
+                            let result = [];
+                            for (let i = 0; i < data?.['sale_order_list'].length; i++) {
+                                if (Object.keys(data?.['sale_order_list'][i]?.['opportunity']).length === 0) {
+                                    result.push(data?.['sale_order_list'][i])
+                                }
+                            }
+                            return result;
+                        }
+                    }
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([so_list_ajax]).then(
+                (results) => {
+                    let so_list= results[0];
+                    for (let so of so_list) {
+                        if (so?.['id'] === dataInitSaleCode?.['id']) {
+                            let sale_code_mapped= encodeURIComponent(sale_code_mapped_obj);
+                            let quotation= encodeURIComponent(JSON.stringify(so?.['quotation']));
+                            let sale_order= encodeURIComponent(JSON.stringify(so?.['sale_order']));
+                            let ap_mapped_id= encodeURIComponent(JSON.stringify({'id': $(this).attr('data-ap-id')}));
+                            html_to_payment = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-payment')}?ap_mapped_id=${ap_mapped_id}&sale_code_mapped=${sale_code_mapped}&type=${$(this).attr('data-flag')}&quotation_object=${quotation}&sale_order_object=${sale_order}">To Payment</a>`;
+                            $(this).find('.dropdown-menu').html(html_to_payment)
+                            break;
+                        }
+                    }
+                })
+        }
+    }
+});

@@ -1,5 +1,3 @@
-const traitInputAttr = { placeholder: 'ví dụ: chữ ở đây' };
-
 const localeVi = {
   assetManager: {
     addButton: 'Thêm ảnh',
@@ -146,9 +144,9 @@ const localeVi = {
       },
       // In a simple trait, like text input, these are used on input attributes
       attributes: {
-        id: traitInputAttr,
-        alt: traitInputAttr,
-        title: traitInputAttr,
+        id: { placeholder: 'ví dụ: chữ ở đây' },
+        alt: { placeholder: 'ví dụ: chữ ở đây' },
+        title: { placeholder: 'ví dụ: chữ ở đây' },
         href: { placeholder: 'Ví dụ: https://google.com' },
       },
       // In a trait like select, these are used to translate option names

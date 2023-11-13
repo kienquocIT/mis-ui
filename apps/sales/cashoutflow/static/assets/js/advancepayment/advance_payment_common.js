@@ -448,6 +448,8 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                console.log(data_expense)
+                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -457,13 +459,22 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
                     let sum_real_value = 0;
+                    let number_record = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                            number_record += 1;
                         }
+                    }
+                    if (number_record > 0) {
+                        sum_real_value = sum_real_value / number_record;
+                    }
+                    let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
+                    if (sum_available < 0) {
+                        sum_available = 0;
                     }
 
                     $('#tab_plan_datatable tbody').append(`
@@ -475,7 +486,7 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
                             <td><span class="to_payment mask-money text-primary" data-init-money="${sum_converted_value}"></span></td>
                             <td><span class="other_payment mask-money text-primary" data-init-money="${sum_real_value}"></span></td>
-                            <td><span class="available mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value}"></span></td>
+                            <td><span class="available mask-money text-primary" data-init-money="${sum_available}"></span></td>
                         </tr>
                     `)
                 }
@@ -535,13 +546,22 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
                     let sum_real_value = 0;
+                    let number_record = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                            number_record += 1;
                         }
+                    }
+                    if (number_record > 0) {
+                        sum_real_value = sum_real_value / number_record;
+                    }
+                    let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
+                    if (sum_available < 0) {
+                        sum_available = 0;
                     }
 
                     $('#tab_plan_datatable tbody').append(`
@@ -553,7 +573,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
                             <td><span class="to_payment mask-money text-primary" data-init-money="${sum_converted_value}"></span></td>
                             <td><span class="other_payment mask-money text-primary" data-init-money="${sum_real_value}"></span></td>
-                            <td><span class="available mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value}"></span></td>
+                            <td><span class="available mask-money text-primary" data-init-money="${sum_available}"></span></td>
                         </tr>
                     `)
                 }
@@ -613,13 +633,22 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
                     let sum_real_value = 0;
+                    let number_record = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                            number_record += 1;
                         }
+                    }
+                    if (number_record > 0) {
+                        sum_real_value = sum_real_value / number_record;
+                    }
+                    let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
+                    if (sum_available < 0) {
+                        sum_available = 0;
                     }
 
                     $('#tab_plan_datatable tbody').append(`
@@ -631,7 +660,7 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
                             <td><span class="to_payment mask-money text-primary" data-init-money="${sum_converted_value}"></span></td>
                             <td><span class="other_payment mask-money text-primary" data-init-money="${sum_real_value}"></span></td>
-                            <td><span class="available mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value}"></span></td>
+                            <td><span class="available mask-money text-primary" data-init-money="${sum_available}"></span></td>
                         </tr>
                     `)
                 }
@@ -814,7 +843,7 @@ function LoadDetailAP(option) {
                         <td><input class="form-control expense-name-input"></td>
                         <td><select class="form-select expense-type-select-box"></select></td>
                         <td><input class="form-control expense-uom-input"></td>
-                        <td><input type="number" min="1" class="form-control expense_quantity" value="1" ></td>
+                        <td><input type="number" min="1" class="form-control expense_quantity" value="1"></td>
                         <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money"></td>
                         <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" disabled></td>
@@ -910,13 +939,13 @@ class AdvancePaymentHandle {
         let opportunity_mapped = opp_mapped_select.val();
         let quotation_mapped = quotation_mapped_select.val();
         let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped !== null) {
+        if (opportunity_mapped !== null && opportunity_mapped !== '') {
             frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
         }
-        else if (quotation_mapped !== null) {
+        else if (quotation_mapped !== null && quotation_mapped !== '') {
             frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
         }
-        else if (sale_order_mapped !== null) {
+        else if (sale_order_mapped !== null && sale_order_mapped !== '') {
             frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
         }
         else {

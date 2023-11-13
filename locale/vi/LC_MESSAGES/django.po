@@ -3550,6 +3550,26 @@ msgid "Returned"
 msgstr "Đã trả về"
 
 #
+msgid "Returned value"
+msgstr "Đã hoàn ứng"
+
+#
+msgid "Select Advance Payment"
+msgstr "Chọn phiếu tạm ứng"
+
+#
+msgid "Expense type"
+msgstr "Loại chi phí"
+
+#
+msgid "Expense name"
+msgstr "Tên chi phí"
+
+#
+msgid "Select Expense Item"
+msgstr "Chọn chi phí"
+
+#
 msgid "To employee"
 msgstr "Cho nhân viên"
 
@@ -4748,3 +4768,76 @@ msgstr "Điều chỉnh"
 #
 msgid "Adjust date"
 msgstr "Ngày điều chỉnh"
+
+#
+msgid "Are you sure to clean the canvas?"
+msgstr "Bạn chắc chắn muốn làm trống trình soạn thảo?"
+
+#
+msgid "Are you sure to save it?"
+msgstr "Bạn chắc chắn muốn lưu?"
+
+#
+msgid "Show Borders"
+msgstr "Hiển thị đường viền"
+
+#
+msgid "Preview"
+msgstr "Xem trước"
+
+#
+msgid "Fullscreen"
+msgstr "Toàn màn hình"
+
+#
+msgid "Export"
+msgstr "Xuất bản"
+
+#
+msgid "Undo"
+msgstr "Hoàn tác"
+
+#
+msgid "Redo"
+msgstr "Làm lại"
+
+#
+msgid "Import"
+msgstr "Đưa vào"
+
+#
+msgid "Import Data"
+msgstr "Nhập dữ liệu"
+
+#
+msgid "File Data"
+msgstr "Tệp dữ liệu"
+
+#
+msgid "Click to upload"
+msgstr "Nhấn vào để tải lên"
+
+#
+msgid "Clear canvas"
+msgstr "Làm trống soạn thảo"
+
+#
+msgid "Not enough leave or no leave available"
+msgstr "Không đủ ngày phép hoặc hết ngày phép"
+
+#
+msgid "Ordinal date in detail tab is in complex setup"
+msgstr "Thứ tự ngày tháng setup không đúng"
+
+#
+msgid "Leave available list"
+msgstr "Danh sách phép dư"
+
+#
+msgid "Number year"
+msgstr "Số năm"
+
+#
+msgid "Create year"
+msgstr "Tạo năm"
+

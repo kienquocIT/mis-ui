@@ -11,9 +11,8 @@ from apps.sales.opportunity.views import (
     OpportunityDocumentList, OpportunityDocumentCreate, OpportunityDocumentListAPI, OpportunityDocumentDetailAPI,
     OpportunityDocumentDetail, OpportunityForSaleListAPI, OpportunityUpdate, OpportunityMemberDetailAPI,
     OpportunityAddMemberAPI, OpportunityDeleteMemberAPI, OpportunityMemberPermissionUpdateAPI, OpportunityMemberListAPI,
-    OpportunityListForCashOutFlowAPI, MemberOfOpportunityDetail, MemberOfOpportunityDetailAddAPI,
-    OpportunityCallLogDetailAPI, OpportunityEmailDetailAPI, OpportunityMeetingDetailAPI,
-    OpportunityDetailGetByCreateFromOppAPI,
+    MemberOfOpportunityDetail, MemberOfOpportunityDetailAddAPI, OpportunityCallLogDetailAPI, OpportunityEmailDetailAPI,
+    OpportunityMeetingDetailAPI, OpportunityDetailGetByCreateFromOppAPI
 )
 
 urlpatterns = [
@@ -21,13 +20,7 @@ urlpatterns = [
                   path('config/api', OpportunityConfigAPI.as_view(), name='OpportunityConfigAPI'),
                   path('lists', OpportunityList.as_view(), name='OpportunityList'),
                   path('api/lists', OpportunityListAPI.as_view(), name='OpportunityListAPI'),
-                  path(
-                      'api/list-for-cash-outflow',
-                      OpportunityListForCashOutFlowAPI.as_view(),
-                      name='OpportunityListForCashOutFlowAPI'
-                  ),
                   path('api/lists-sale', OpportunityForSaleListAPI.as_view(), name='OpportunityForSaleListAPI'),
-
                   path('detail/<str:pk>', OpportunityDetail.as_view(), name='OpportunityDetail'),
                   path('update/<str:pk>', OpportunityUpdate.as_view(), name='OpportunityUpdate'),
                   path(

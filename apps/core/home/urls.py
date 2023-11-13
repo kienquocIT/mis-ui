@@ -6,10 +6,13 @@ from apps.core.home.views import (
     BookMarkListAPI, BookMarkDetailAPI,
     DocPinedListAPI, DocPinedDetailAPI,
     GatewayMiddleListView, GatewayMiddleDetailView, GatewayViewNameListView, GatewayViewNameParseView, DefaultDataView,
+    OutLayoutNotFoundView, OutLayoutServerOff,
 )
 
 urlpatterns = [
     path('', HomeView.as_view(), name='HomeView'),
+    path('p-404', OutLayoutNotFoundView.as_view(), name='OutLayoutNotFoundView'),
+    path('p-503', OutLayoutServerOff.as_view(), name='OutLayoutServerOff'),
     path('404', NotFoundView.as_view(), name='NotFoundView'),
     path('503', ServerMaintainView.as_view(), name='ServerMaintainView'),
     path('introduce', LandingPageView.as_view(), name='LandingPageView'),

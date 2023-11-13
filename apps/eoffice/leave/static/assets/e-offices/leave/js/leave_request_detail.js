@@ -1,6 +1,7 @@
 $(document).ready(function () {
     const $urlElm = $('#url-factory')
     const $EmpElm = $('#selectEmployeeInherit')
+    const $trans = $('#trans-factory')
 
     class detailTab {
         static $tableElm = $('#leave_detail_tbl')
@@ -123,21 +124,27 @@ $(document).ready(function () {
                 ordering: false,
                 paginate: false,
                 info: false,
+                responsive: true,
                 columns: [
                     {
                         data: 'leave_type',
+                        width: '40%',
+                        responsivePriority: 1,
                         render: (row, type, data, meta) => {
                             return row?.title ? row?.title : '--'
                         }
                     },
                     {
                         data: 'open_year',
+                        width: '10%',
+                        responsivePriority:2,
                         render: (row, type, data) => {
                             return row ? row : '--'
                         }
                     },
                     {
                         data: 'total',
+                        width: '10%',
                         class: 'text-center',
                         render: (row, type, data) => {
                             return row !== '' ? row : '--'
@@ -145,6 +152,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'used',
+                        width: '10%',
                         class: 'text-center',
                         render: (row, type, data) => {
                             return row !== '' ? row : '--'
@@ -152,6 +160,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'available',
+                        width: '10%',
                         class: 'text-center',
                         render: (row, type, data, meta) => {
                             return row !== '' ? row : '--'
@@ -159,6 +168,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'expiration_date',
+                        width: '20%',
                         render: (row, type, data, meta) => {
                             return row ? moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'
                         }
@@ -168,13 +178,34 @@ $(document).ready(function () {
         }
     }
 
+    function validApproved(dataList){
+        if (!dataList.length) return true
+        for (let item of dataList) {
+            const LType = item.leave_type
+            if (LType.check_balance && item.subtotal > LType.available){
+                let noti = $(`<span class="text-red">`)
+                noti.text($trans.attr('data-out-of-stock'))
+
+                let setITerval = setInterval(()=>{
+                    const $btn = $('.btnAddFilter')
+                    if ($btn.length){
+                        clearInterval(setITerval)
+                        $btn.append(noti)
+                    }
+                }, 200)
+                $('.btn-action-wf').addClass('disabled')
+                $('#idxGroupAction .btn-action-wf[data-value="1"] .dropdown-item').addClass('disabled')
+            }
+        }
+    }
+
     // get detail request info
     $.fn.callAjax2({
         'url': $urlElm.attr('data-leave-detail'),
         'method': 'GET',
     }).then(
         (resp) => {
-            let data = $.fn.switcherResp(resp).leave_request_detail
+            let data = $.fn.switcherResp(resp)?.['leave_request_detail']
             WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
             $x.fn.renderCodeBreadcrumb(data);
             $('#inputTitle').val(data.title)
@@ -186,6 +217,7 @@ $(document).ready(function () {
 
             // run table when page loaded
             detailTab.load_table(data.detail_data)
+            validApproved(data.detail_data)
 
             // after load employee inherit load table leave available
             TabAvailable.load_table()

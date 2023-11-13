@@ -184,13 +184,14 @@
                                                     <div class="dropdown-menu w-210p mt-4"></div>
                                                 </div>
                                                 <select
-                                                    class="form-select disabled-custom-show"
-                                                    id="select-box-quotation"
-                                                    data-url="{% url "QuotationListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "QuotationDetail" 1 %}"
-                                                    name="quotation"
-                                                    disabled
+                                                        class="form-select"
+                                                        id="select-box-quotation"
+                                                        data-url="{% url "QuotationListAPI" %}"
+                                                        data-method="GET"
+                                                        data-link-detail="{% url "QuotationDetail" 1 %}"
+                                                        name="quotation"
+                                                        data-keyResp="quotation_list"
+                                                        disabled
                                                 ></select>
                                             </div>
                                         </div>
@@ -819,10 +820,10 @@
                         <div class="col-2">
                             <button
                                     type="button"
-                                    class="btn btn-soft-primary"
+                                    class="btn btn-outline-primary"
                                     id="btn-refresh-quotation-indicator"
                             >
-                            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrows-rotate"></i></span></span><span>{% trans 'Refresh data' %}</span></span>
+                            <span><span>{% trans 'Refresh data' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
                             </button>
                         </div>
                         <div class="col-10"></div>

@@ -7,7 +7,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils import timezone
 
-from apps.shared import AuthMsg, RandomGenerate
+from apps.shared import AuthMsg, RandomGenerate, CacheController
 
 from .managers import AccountManager
 
@@ -168,3 +168,94 @@ class User(AuthUser):
             return user
         print(f'Required key in value API: {", ".join(key_require)}')
         return None
+
+    def save(self, *args, **kwargs):
+        if self.tenant_current_data and isinstance(self.tenant_current_data, dict):
+            tenant_id = self.tenant_current_data.get('id', '')
+            tenant_code = self.tenant_current_data.get('code', '').lower()
+            tenant_title = self.tenant_current_data.get('title', '')
+            if tenant_title and tenant_code:
+                tenant_obj, _created = Tenant.objects.get_or_create(
+                    code=tenant_code, defaults={
+                        'id': tenant_id, 'code': tenant_code, 'title': tenant_title,
+                    }
+                )
+
+                if self.company_current_data and isinstance(self.company_current_data, dict):
+                    sub_domain = self.company_current_data.get('sub_domain', '')
+                    company_id = self.company_current_data.get('id', '')
+                    company_code = self.company_current_data.get('code', '').lower()
+                    company_title = self.company_current_data.get('title', '')
+                    if sub_domain and company_code and company_title:
+                        Company.objects.get_or_create(
+                            sub_domain=sub_domain,
+                            defaults={
+                                'id': company_id,
+                                'tenant': tenant_obj,
+                                'code': company_code,
+                                'title': company_title,
+                            }
+                        )
+        super().save(*args, **kwargs)
+
+
+class Tenant(models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    title = models.CharField(max_length=200)
+    code = models.CharField(max_length=100, unique=True)
+    is_active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        self.code = self.code.lower()
+        super().save(*args, **kwargs)
+
+    key_cache__all_code = 'all_tenant_code'
+
+    @classmethod
+    def all_code(cls):
+        cache_data = CacheController.get(cls.key_cache__all_code)
+        if not cache_data:
+            cache_data = [str(item).lower() for item in cls.objects.values_list('code', flat=True)]
+            CacheController.set(cls.key_cache__all_code, cache_data)
+        return cache_data
+
+    class Meta:
+        verbose_name = 'Tenant'
+        verbose_name_plural = 'Tenant'
+        ordering = ('code',)
+        default_permissions = ()
+        permissions = ()
+        unique_together = ('code',)
+
+
+class Company(models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    code = models.CharField(max_length=100, unique=True)
+    is_active = models.BooleanField(default=True)
+
+    # web builder
+    sub_domain = models.CharField(max_length=35, unique=True)
+
+    def save(self, *args, **kwargs):
+        self.code = self.code.lower()
+        super().save(*args, **kwargs)
+
+    key_cache__all_sub_domain = 'all_sub_domain'
+
+    @classmethod
+    def all_sub_domain(cls):
+        cache_data = CacheController.get(cls.key_cache__all_sub_domain)
+        if not cache_data:
+            cache_data = [str(item).lower() for item in cls.objects.values_list('sub_domain', flat=True)]
+            CacheController.set(cls.key_cache__all_sub_domain, cache_data)
+        return cache_data
+
+    class Meta:
+        verbose_name = 'Company'
+        verbose_name_plural = 'Company'
+        ordering = ('code',)
+        default_permissions = ()
+        permissions = ()
+        unique_together = ('tenant_id', 'code',)

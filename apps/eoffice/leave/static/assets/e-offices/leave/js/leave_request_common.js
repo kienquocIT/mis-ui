@@ -3,19 +3,23 @@ const $transElm = $('#trans-factory')
 const $urlElm = $('#url-factory')
 const $EmpElm = $('#selectEmployeeInherit')
 
-// return template html for select2
+// return template html dropdown for select2
 function renderTemplateResult(state) {
-    if (!state.id) {
-        return state.text;
-    }
-    let $state = $(
+    if (!state.id) return state.text
+    return $(
         `<p class="d-flex justify-content-normal sl_temp_cont">`
         + `<b>${state?.data?.leave_type.code}</b>`
-        + `<span class="one-row-txt" title="${state?.data?.leave_type.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.leave_type.title}</span>`
+        + `<span class="one-row-txt" title="${state?.data?.leave_type.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.leave_type.title}&nbsp;${
+            state?.data?.leave_type.code === 'ANPY' ? `(${state?.data?.["open_year"]})` : ''}</span>`
         + `<span class="text-blue">${state?.data?.check_balance ? `(${state?.data.available})` : ''}</span></p>`
-    );
-    return $state
+    )
 }
+// return template selected for selects
+function renderTemplateSelected(state){
+    if (!state.id) return state.text
+    return $(`<span>${state.text} ${state?.data?.leave_type.code === 'ANPY' ? `(${state?.data?.["open_year"]})` : ''}</span>`)
+}
+
 function ConvertToTotal(data){
     let tempTotal
     const dFrom = new Date(data.date_from)// số giờ bắt đầu
@@ -52,8 +56,8 @@ function dateRangeToList(data){
 function yearList(){
     let lsYear = {}
     const ws = JSON.parse($('#ws_data').text()).years
-    for(let item of ws){
-        lsYear[item.config_year] = item.list_holiday
+    if (ws) for (let item of ws) {
+        lsYear[item["config_year"]] = item["list_holiday"]
     }
     return lsYear
 }
@@ -86,7 +90,7 @@ class detailTab {
         for (let item of dateList){
             // check range ngày nghỉ trong ngày làm việc
             const day = new Date(item).getDay()
-            let dayMapWs = wsLsConvert?.[day];
+            const dayMapWs = wsLsConvert?.[day];
             if (dayMapWs){
                 if (!dayMapWs?.work) tempTotal -= 1
                 else if (!dayMapWs?.aft?.to || !dayMapWs?.aft?.from || !dayMapWs?.mor?.to || !dayMapWs?.mor?.from)
@@ -96,12 +100,44 @@ class detailTab {
             const year = moment(item).year()
             if (wsLsyear[year]){
                 for (let holiday of wsLsyear[year]){
-                    if(item === holiday.holiday_date_to) tempTotal -= 1
+                    if (item === holiday.holiday_date_to) {
+                        const hDay = new Date(holiday.holiday_date_to).getDay()
+                        let dayMapWs = wsLsConvert?.[hDay];
+                        if (!dayMapWs) tempTotal -= 1
+                        else if (!dayMapWs?.aft?.to || !dayMapWs?.aft?.from || !dayMapWs?.mor?.to || !dayMapWs?.mor?.from)
+                            tempTotal -= 0.5
+                        break;
+                    }
                 }
             }
         }
 
         return tempTotal
+    }
+
+    static checkIsExp(data) {
+        // check available của phép đặc biệt FF, MC, MY
+        let code = data?.leave_type?.['leave_type']?.['code']
+        let IsExp = true
+        if (code && code === 'FF' || code === 'MC' || code === 'MY' || code === 'AN' || code === 'ANPY') {
+            // check in stock
+            IsExp = data.subtotal <= data?.leave_type.available
+            // check in exp
+            if (new Date().getTime() > new Date(data.leave_type.expiration_date).getTime()) IsExp = false
+        }
+        return IsExp
+    }
+    static validDate(data, row){
+        if (data.date_from && data.date_to && data.date_from !== 'Invalid date' &&
+            data.date_to !== 'Invalid date') {
+            const available = data.leave_type?.['available']
+            data.subtotal = detailTab.PrepareReturn(data)
+            if (data.subtotal > available && data.leave_type.check_balance || !detailTab.checkIsExp(data))
+                $.fn.notifyB({description: $transElm.attr('data-out-of-stock')}, 'failure')
+
+            $('[name*="subtotal_"]', row).val(data.subtotal)
+            $(document).trigger("footerCallback");
+        }
     }
 
     static load_table(datalist=[]) {
@@ -177,7 +213,7 @@ class detailTab {
                 {
                     targets: 6,
                     width: '5%',
-                    render: (row, type, data, meta) => {
+                    render: () => {
                         return $('.delete_btn').html()
                     }
                 }
@@ -209,11 +245,8 @@ class detailTab {
                         if (data.date_from && data.date_to && (new Date(data.date_to) < new Date(data.date_from))) {
                             $.fn.notifyB({description: $transElm.attr('data-err-date')}, 'failure')
                             return false
-                        } else if (data.date_from && data.date_to) {
-                            data.subtotal = detailTab.PrepareReturn(data)
-                            $('[name*="subtotal_"]', row).val(data.subtotal)
-                            $(document).trigger("footerCallback");
                         }
+                        detailTab.validDate(data, row)
                     })
                 if (!data.date_from || !data.date_to) $('.date-picker', row).val('').trigger('change')
 
@@ -223,33 +256,21 @@ class detailTab {
                         data.morning_shift_f = JSON.parse($('input[name*="morning_shift_f_"]:checked', row).val())
                     else
                         data.morning_shift_t = JSON.parse($('input[name*="morning_shift_t_"]:checked', row).val())
-                    if (data.date_from && data.date_to) {
-                        data.subtotal = detailTab.PrepareReturn(data)
-                        $('[name*="subtotal_"]', row).val(data.subtotal)
-                        $(document).trigger("footerCallback");
-                    }
+                    detailTab.validDate(data, row)
                 })
 
                 // load leave type with employee filter
                 $('.row_leave-type', row).attr('data-url', $urlElm.attr('data-leave-available'))
                     .attr('data-keyResp', "leave_available")
                     .attr('data-keyText', "leave_type.title")
-                    .attr('data-keyId', "leave_type.id")
+                    .attr('data-keyId', "id")
                     .initSelect2({
                         'dataParams': {employee: $EmpElm.val()},
                         'templateResult': renderTemplateResult,
+                        'templateSelection': renderTemplateSelected,
                         'cache': true,
                         callbackDataResp(resp, keyResp) {
-                            let list_result = []
-                            let temp = {}
-                            for (let item of resp.data[keyResp]) {
-                                // merge 2 ANPY lại thành 1 record, cộng 2 available lại
-                                if (item.leave_type.code === 'ANPY' && Object.keys(temp).length > 0)
-                                    temp.available += item.available
-                                else if (item.leave_type.code === 'ANPY') temp = item
-                                else list_result.push(item)
-                            }
-                            list_result.splice(1, 0, temp)
+                            let list_result = resp.data[keyResp]
                             list_result.sort((a, b) =>{
                                 let aT = a.leave_type.code;
                                 let bT = b.leave_type.code;
@@ -330,22 +351,27 @@ class TabAvailable {
                 dataSrc: 'data.leave_available',
                 data: function (a) {
                     a.employee = $('#selectEmployeeInherit').val()
-                    a.check_balance = true
+                    // a.check_balance = true
                     return a
                 }
             },
             ordering: false,
             paginate: false,
             info: false,
+            responsive: true,
             columns: [
                 {
                     data: 'leave_type',
+                    width: '40%',
+                    responsivePriority: 1,
                     render: (row) => {
                         return row?.title ? row?.title : '--'
                     }
                 },
                 {
                     data: 'open_year',
+                    width: '10%',
+                    responsivePriority: 2,
                     render: (row) => {
                         return row ? row : '--'
                     }
@@ -353,6 +379,7 @@ class TabAvailable {
                 {
                     data: 'total',
                     class: 'text-center',
+                    width: '10%',
                     render: (row) => {
                         return row !== '' ? row : '--'
                     }
@@ -360,6 +387,7 @@ class TabAvailable {
                 {
                     data: 'used',
                     class: 'text-center',
+                    width: '10%',
                     render: (row) => {
                         return row !== '' ? row : '--'
                     }
@@ -367,12 +395,14 @@ class TabAvailable {
                 {
                     data: 'available',
                     class: 'text-center',
+                    width: '10%',
                     render: (row) => {
                         return row !== '' ? row : '--'
                     }
                 },
                 {
                     data: 'expiration_date',
+                    width: '20%',
                     render: (row) => {
                         return row ? moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'
                     }
@@ -412,12 +442,41 @@ function submitHandleFunc() {
     formData.employee_inherit_id = $EmpElm.val()
     formData.detail_data = detailTab.get_data()
     formData.total = 0
-    $.map(formData.detail_data, (item) => {
-        if (!formData.start_day || new Date(item.date_from).getTime() < new Date(formData.start_day).getTime())
-            formData.start_day = item.date_from
-        formData.total += item.subtotal
-    })
-    formData.request_date = moment(formData.request_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
+    let isError = false
+    let errorRequest = false
+    for (let idx = 0; idx < formData.detail_data.length; idx++){
+        const value = formData.detail_data[idx]
+        if (value.subtotal > value.leave_type.available && value.leave_type.check_balance){
+            isError = true
+            break
+        }
+        if (!formData.start_day || new Date(value.date_from).getTime() < new Date(formData.start_day).getTime())
+            formData.start_day = value.date_from
+        formData.total += value.subtotal
+        let nextVal = formData.detail_data[idx + 1]
+        if (nextVal) {
+            if (new Date(nextVal.date_from).getTime() < new Date(value.date_to).getTime()
+                || (new Date(nextVal.date_from).getTime() === new Date(value.date_to).getTime()
+                    && !value.morning_shift_t && nextVal.morning_shift_f)) {
+                errorRequest = true
+                break
+            }
+        }
+
+    }
+
+    formData.request_date = moment($('#inputRequestDate').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+
+    if (isError || errorRequest){
+        let turnOffAlert = setInterval(() => {
+            WindowControl.hideLoading();
+            clearInterval(turnOffAlert);
+        }, 500);
+        if (isError)
+            $.fn.notifyB({description: $transElm.attr('data-out-of-stock')}, 'failure');
+        else $.fn.notifyB({description: $transElm.attr('data-err-date-setup')}, 'failure');
+        return false
+    }
     if (formData.total === 0){
         $.fn.notifyB({description: $transElm.attr('data-detail-tab')}, 'failure');
         return false

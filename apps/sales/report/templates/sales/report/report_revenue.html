@@ -9,12 +9,6 @@
 {% block pageAction %}{% endblock %}
 
 {% block pageContent %}
-    <input type="hidden" id="sale-order-link"
-           data-link-update="{% url 'SaleOrderDetail' 1 %}"
-           data-link-list="{% url 'SaleOrderList' %}"
-           data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
-           data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
-    >
     {% csrf_token %}
 
     <div class="row">
@@ -29,6 +23,7 @@
                         data-link-detail="{% url "GroupDetail" 1 %}"
                         name="group"
                         data-keyResp="group_list"
+                        multiple
                 ></select>
             </div>
         </div>
@@ -54,9 +49,10 @@
                         id="box-report-revenue-employee"
                         data-url="{% url "EmployeeListAPI" %}"
                         data-method="GET"
-                        data-link-detail="{% url "EmployeeDetail" 1 %}"
                         name="employee"
                         data-keyResp="employee_list"
+                        data-keyText="full_name"
+                        multiple
                 ></select>
             </div>
         </div>
@@ -68,7 +64,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-12 col-md-4 col-lg-4">
             <div class="row">
                 <div class="d-flex justify-content-center">

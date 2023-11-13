@@ -64,29 +64,42 @@ class EmployeeLoadPage {
     }
 
     static loadDob(dobData) {
+        let data = dobData ? moment(dobData).format('DD/MM/YYYY') : null;
         EmployeeLoadPage.dobEle.dateRangePickerDefault({
             singleDatePicker: true,
             timepicker: false,
             showDropdowns: true,
             minYear: 1901,
-            maxYear: parseInt(moment().format('YYYY'), 10)
-        }).val(dobData ? moment(dobData).format('MM/DD/YYYY') : null).on('hide.daterangepicker', function () {
-            $(this).val($(this).val().split(" ")[0])
-        });
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+        })
+            .val(data)
+            .on('hide.daterangepicker', function () {
+                $(this).val($(this).val().split(" ")[0])
+            });
     }
 
     static loadDateJoined(dateJoinedData, default_is_now = false) {
+        let dtPickerEle = EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: true,
+            minYear: 1901,
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+        });
+
         if (dateJoinedData || default_is_now === true){
-            let txtDateJoinedData = dateJoinedData ? moment(dateJoinedData).format('MM/DD/YYYY') : moment().format('MM/DD/YYYY');
-            EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
-                singleDatePicker: true,
-                timepicker: false,
-                showDropdowns: true,
-                minYear: 1901,
-                maxYear: parseInt(moment().format('YYYY'), 10)
-            }).val(txtDateJoinedData).on('hide.daterangepicker', function () {
+            let txtDateJoinedData = dateJoinedData ? moment(dateJoinedData).format('DD/MM/YYYY') : moment().format('DD/MM/YYYY');
+            dtPickerEle.val(txtDateJoinedData).on('hide.daterangepicker', function () {
                 $(this).val($(this).val().split(" ")[0])
             });
+        } else {
+            dtPickerEle.val("");
         }
     }
 

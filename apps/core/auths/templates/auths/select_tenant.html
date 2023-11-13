@@ -359,7 +359,7 @@
                 let portData = portSplit.length === 2 ? portSplit[1] : null;
 
                 let hrefExt = $('#form-login').attr('data-url-login');
-                window.location.href = `${location.protocol}//${url}${portData ? ":" + portData : ""}${hrefExt}`;
+                window.location = `${location.protocol}//${url}${portData ? ":" + portData : ""}${hrefExt}`;
             })
 
             function loadTenantList(is_show_group = true) {
@@ -372,7 +372,6 @@
                             tenantSelEle.attr('data-loaded', true);
                             tenantSelEle.children().remove();
                             resp.result.map((element) => {
-                                console.log(element);
                                 if (beforeTenantCode && element.code === beforeTenantCode) {
                                     tenantSelEle.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
                                 } else {

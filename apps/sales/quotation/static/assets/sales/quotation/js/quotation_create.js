@@ -16,6 +16,9 @@ $(function () {
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         QuotationLoadDataHandle.loadInitQuotationProduct();
+        if (formSubmit[0].classList.contains('sale-order')) {
+            QuotationLoadDataHandle.loadBoxSOQuotation();
+        }
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
         // init first time indicator

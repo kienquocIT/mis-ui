@@ -76,18 +76,37 @@ $(function () {
                 width: '15%',
                 className: 'action-center',
                 render: (data, type, row, meta) => {
+                    let btnOpenWebsite = `
+                        <a href="${generate_ui_url(row?.['sub_domain'] || '')}" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btnRedirectToWebsite">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon"><i data-feather="external-link"></i></span>
+                            </span>
+                        </a>
+                    `;
+
                     let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/update/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                     let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     let bt1 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-setting" data-bs-toggle="modal" data-bs-target="#modal-setting" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="settings"></i></span></span></a>`;
                     if (row.id === company_current_id) {
-                        return `<div>` + bt2 + bt3 + bt1 + `</div>`;
+                        return `<div>` + bt2 + bt3 + bt1 + btnOpenWebsite + `</div>`;
                     } else {
-                        return `<div>` + bt2 + bt3 + `</div>`;
+                        return `<div>` + bt2 + bt3 + btnOpenWebsite + `</div>`;
                     }
                 }
             },
         ]
     });
+
+    function generate_ui_url(sub_domain){
+        function getPortOfHost() {
+            if (window.location.host.indexOf(":") !== -1){
+                let arr = window.location.host.split(":");
+                return ":" + arr[arr.length - 1];
+            }
+            return "";
+        }
+        return window.location.protocol + '//' + sub_domain + '.' + dtb.attr('data-ui-domain') + getPortOfHost() + '/site/';
+    }
 
     // Load Data Config
     $('html').on('click', '.btn-setting', function (e) {

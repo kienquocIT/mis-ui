@@ -74,7 +74,7 @@ $.fn.extend({
             minYear: 1901,
             "cancelClass": "btn-secondary",
             locale: {
-                format: 'MM/DD/YYYY hh:mm A'
+                format: 'DD/MM/YYYY hh:mm A'
             }, ...(opts && typeof opts === 'object' ? opts : {})
         }, funcCallback ? funcCallback : function () {
         });

@@ -67,7 +67,7 @@
                 <label for="inputRequestDate" class="form-label required">{% trans 'Date' %}</label>
                 <div class="input-affix-wrapper">
                     <input type="text" name="request_date" id="inputRequestDate"
-                           class="form-control date-picker" autocomplete="off">
+                           class="form-control date-picker" autocomplete="off" disabled>
                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
             </div>
@@ -172,6 +172,8 @@
            data-detail-tab="{% trans 'Total day off is 0 please verify again' %}"
            data-err-date="{% trans 'Date To need large then Date From' %}"
            data-dayoff-error="{% trans 'Please choose an available day off' %}"
+           data-out-of-stock="{% trans 'Not enough leave or no leave available' %}"
+           data-err-date-setup="{% trans 'Ordinal date in detail tab is in complex setup' %}"
     >
     <div class="wrap-template">
         <div class="delete_btn">

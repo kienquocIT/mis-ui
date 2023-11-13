@@ -3311,6 +3311,8 @@ class WindowControl {
             showConfirmButton: true,
             confirmButtonText: globePreviousPage,
             denyButtonColor: '#21b48f',
+            showCancelButton: true,
+            cancelButtonText: globeCancelText,
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
             },

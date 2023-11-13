@@ -618,11 +618,12 @@ class GRLoadDataHandle {
             }
         }
         let valuePONew = 0;
-        if (valuePROrderRemain) {
+        if (valuePROrderRemain) { // If PO have PR
             for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {
                 let prProductCurrentID = null;
                 let prUOMCurrent = null;
                 let ratioUOMFinal = 1;
+                let is_inventory = true;
                 let dataRowPRRaw = eleImport?.closest('tr')?.querySelector('.table-row-checkbox')?.getAttribute('data-row');
                 if (dataRowPRRaw) {
                     let dataRowPR = JSON.parse(dataRowPRRaw);
@@ -642,10 +643,17 @@ class GRLoadDataHandle {
                     if (ratioUOMOrder && ratioUOMRequest) {
                         ratioUOMFinal = ratioUOMOrder / ratioUOMRequest
                     }
+                    if (!dataRowPO?.['product']?.['product_choice'].includes(1)) { // Check if PO doesn't have inventory choice then set is_inventory = false
+                        is_inventory = false;
+                    }
                 }
-                valuePONew += parseFloat(eleImport.innerHTML) / ratioUOMFinal;
+                if (is_inventory === true) { // If Product PO have inventory choice
+                    valuePONew += parseFloat(eleImport.innerHTML) / ratioUOMFinal;
+                } else { // If Product PO doesn't have inventory choice
+                    valuePONew += parseFloat(eleImport.value) / ratioUOMFinal;
+                }
             }
-        } else {
+        } else { // If PO doesn't have PR
             for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
                 valuePONew += parseFloat(eleImport.value);
             }
@@ -1040,6 +1048,15 @@ class GRDataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
+                        let dataPOCheckedRaw = GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+                        if (dataPOCheckedRaw) {
+                            let PODataChecked = JSON.parse(dataPOCheckedRaw);
+                            if (!PODataChecked?.['product']?.['product_choice'].includes(1)) { // If Product PO have inventory choice
+                                return `<div class="row">
+                                            <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
+                                        </div>`;
+                            }
+                        }
                         return `<span class="table-row-import">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
                     }
                 },
@@ -1698,6 +1715,13 @@ class GRStoreDataHandle {
             for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
                 let row = table[0].tBodies[0].rows[i];
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
+                let dataPOCheckedRaw = GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+                if (dataPOCheckedRaw) {
+                    let dataPOChecked = JSON.parse(dataPOCheckedRaw);
+                    if (!dataPOChecked?.['product']?.['product_choice'].includes(1)) { // If Product PO doesn't have inventory choice
+                        quantityImport = parseFloat(row.querySelector('.table-row-import').value);
+                    }
+                }
                 let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     // if (quantityImport > 0) {

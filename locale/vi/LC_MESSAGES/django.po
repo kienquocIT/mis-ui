@@ -4762,9 +4762,9 @@ msgid "Leave available list"
 msgstr "Danh sách phép dư"
 
 #
-msgid "Create year"
-msgstr "Tạo năm"
-
-#
 msgid "Number year"
 msgstr "Số năm"
+
+#
+msgid "Create year"
+msgstr "Tạo năm"

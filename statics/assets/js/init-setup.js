@@ -3767,6 +3767,7 @@ let $x = {
         displayRelativeTime: UtilControl.displayRelativeTime,
 
         reformatData: DateTimeControl.reformatData,
+        parseToMoment: DateTimeControl.parseToMoment,
         convertDatetime: DateTimeControl.convertData,
         convertEleDate: DateTimeControl.convertEleDate,
         convertEleDatetime: DateTimeControl.convertEleDatetime,

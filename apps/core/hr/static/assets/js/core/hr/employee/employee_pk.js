@@ -73,7 +73,7 @@ class EmployeeLoadPage {
             minYear: 1901,
             maxYear: parseInt(moment().format('YYYY'), 10),
             locale: {
-                format: 'DD/MM/YYYY hh:mm A'
+                format: 'DD/MM/YYYY'
             },
             timePicker: false,
         }).val(data).trigger('change');

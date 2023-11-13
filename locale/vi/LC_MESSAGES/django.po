@@ -4841,3 +4841,6 @@ msgstr "Số năm"
 msgid "Create year"
 msgstr "Tạo năm"
 
+#
+msgid "Custom Range"
+msgstr "Phạm vi tùy chỉnh"

@@ -3639,6 +3639,68 @@ class ExcelToJSON {
     }
 }
 
+class DateTimeControl {
+    static defaultFormatDatetime = 'YYYY-MM-DD hh:mm:ss';
+    static defaultFormatDate = 'YYYY-MM-DD';
+
+    static convertData(data, fromFormat, toFormat) {
+        return moment(data, fromFormat).format(toFormat);
+    }
+
+    static parseToMoment(data, format){
+        return moment(data, format);
+    }
+
+    static convertEleDate(ele$, opts = {}){
+        let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDate;
+        let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
+
+        let data = $(ele$).val();
+        if (data){
+            let fromFormat = $(ele$).attr('data-locale-format');
+            return DateTimeControl.convertData(data, fromFormat, toFormat);
+        }
+        return defaultIsEmpty;
+    }
+
+    static convertEleDatetime(ele$, opts = {}){
+        let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDatetime;
+        let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
+
+        let data = $(ele$).val();
+        if (data){
+            let fromFormat = $(ele$).attr('data-locale-format');
+            return DateTimeControl.convertData(data, fromFormat, toFormat);
+        }
+        return defaultIsEmpty;
+    }
+
+    static convertDateToMoment(data, opts = {}){
+        let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDate;
+        let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
+        if (data){
+            return moment(data, toFormat);
+        }
+        return defaultIsEmpty;
+    }
+
+    static convertDatetimeToMoment(data, opts = {}){
+        let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDatetime;
+        let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
+        if (data){
+            return moment(data, toFormat);
+        }
+        return defaultIsEmpty;
+    }
+
+    static reformatData(data, fromFormat, toFormat, defaultIsEmpty = ''){
+        if (data){
+            return moment(data, fromFormat).format(toFormat);
+        }
+        return defaultIsEmpty;
+    }
+}
+
 let $x = {
     cls: {
         frm: SetupFormSubmit,
@@ -3651,6 +3713,7 @@ let $x = {
         doc: DocumentControl,
         bastionField: BastionFieldControl,
         excelToJSON: ExcelToJSON,
+        datetime: DateTimeControl,
     },
     fn: {
         fileInit: FileUtils.init,
@@ -3702,6 +3765,13 @@ let $x = {
         hasOwnProperties: UtilControl.hasOwnProperties,
 
         displayRelativeTime: UtilControl.displayRelativeTime,
+
+        reformatData: DateTimeControl.reformatData,
+        convertDatetime: DateTimeControl.convertData,
+        convertEleDate: DateTimeControl.convertEleDate,
+        convertEleDatetime: DateTimeControl.convertEleDatetime,
+        convertDateToMoment: DateTimeControl.convertDateToMoment,
+        convertDatetimeToMoment: DateTimeControl.convertDatetimeToMoment,
     },
 }
 

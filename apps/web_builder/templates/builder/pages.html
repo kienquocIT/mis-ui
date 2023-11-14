@@ -18,7 +18,8 @@
                             </button>
                         </li>
                         <ul>
-                            {{ data.page_list|render_tree_page|safe }}
+                            {% render_tree_page data.page_list data.page_viewer_domain as html_page_tree %}
+                            {{ html_page_tree|safe }}
                         </ul>
                     </ul>
                 </div>

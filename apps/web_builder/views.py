@@ -10,6 +10,21 @@ from apps.web_builder.serializers import WebDesignUpdateSerializer
 
 
 class MyCompanyWebsiteList(View):
+    def callback_success(self, result):
+        try:
+            company_id = self.request.user.company_current_data.get('id', None)
+            company_obj = Company.objects.get(pk=company_id)
+            return {
+                'page_list': result,
+                'page_viewer_domain': settings.UI_FULL_DOMAIN.format(sub_domain=company_obj.sub_domain)
+            }
+        except Exception as err:
+            print(err)
+        return {
+            'page_list': result,
+            'page_viewer_domain': '#',
+        }
+
     @mask_view(
         auth_require=True,
         template='builder/pages.html',
@@ -18,7 +33,7 @@ class MyCompanyWebsiteList(View):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.BUILDER_PAGE_LIST).get()
-        return resp.auto_return(key_success='page_list')
+        return resp.auto_return(key_success='page_list', callback_success=self.callback_success)
 
 
 class AddNewCompanyWebsite(APIView):
@@ -119,14 +134,18 @@ class CompanyWebsitePathView(View):
                         return self.render_404(ctx=ctx)
 
                     tenant_data = resp.result['tenant']
-                    tenant_obj, _created = Tenant.objects.get_or_create(pk=tenant_data['id'], defaults={
-                        'id': tenant_data['id'], 'title': tenant_data['title'], 'code': tenant_data['code'],
-                    })
+                    tenant_obj, _created = Tenant.objects.get_or_create(
+                        pk=tenant_data['id'], defaults={
+                            'id': tenant_data['id'], 'title': tenant_data['title'], 'code': tenant_data['code'],
+                        }
+                    )
 
-                    company_obj, _created = Company.objects.get_or_create(pk=resp.result['id'], defaults={
-                        'id': resp.result['id'], 'title': resp.result['title'], 'code': resp.result['code'],
-                        'tenant': tenant_obj,
-                    })
+                    company_obj, _created = Company.objects.get_or_create(
+                        pk=resp.result['id'], defaults={
+                            'id': resp.result['id'], 'title': resp.result['title'], 'code': resp.result['code'],
+                            'tenant': tenant_obj,
+                        }
+                    )
 
                 if company_obj and hasattr(company_obj, 'id'):
                     url = ApiURL.BUILDER_PAGE_VIEWER.fill_key(

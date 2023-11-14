@@ -24,6 +24,7 @@ $(document).ready(function () {
         'last_name': dataEmp.last_name
     })).initSelect2().on('select2:select', function () {
         $('#leave_detail_tbl').DataTable().clear().draw()
+        TabAvailable.$tableElm.DataTable().ajax.reload()
     });
 
     // II. wait until dropdown employee inherit init loaded then trigger element

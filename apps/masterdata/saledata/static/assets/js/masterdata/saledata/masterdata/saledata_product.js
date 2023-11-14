@@ -287,6 +287,7 @@ $(document).ready(function () {
     }
 
     function loadSelectBoxUnitMeasureGroup(ele, data) {
+        ele.val('')
         ele.initSelect2({
             data: data
         })
@@ -396,6 +397,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -427,6 +429,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -472,6 +475,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -490,6 +494,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
+                        console.log(data.unit_of_measure)
                         $('#inp-code-uom').val(data.unit_of_measure.code);
                         $('#inp-edit-name-unit').val(data.unit_of_measure.title);
                         $('#inp-rounding-edit').val(data.unit_of_measure?.['rounding']);
@@ -526,6 +531,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })
@@ -624,6 +630,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -650,6 +657,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })
@@ -674,10 +682,10 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })
-
 
 // load detail UoM Group
     $(document).on('click', '#datatable-unit-measure-group-list .btn-detail', function () {
@@ -697,6 +705,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })
@@ -731,6 +740,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -761,11 +771,11 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
     })
-
 
     $('.btn-show-modal').on('click', function () {
         $('#modal-product-and-expense .form-control').val('');

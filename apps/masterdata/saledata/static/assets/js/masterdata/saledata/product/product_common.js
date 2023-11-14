@@ -414,49 +414,56 @@ function loadWareHouseListDetail(product_warehouse_detail) {
                 let $tableSerial = $('#datable-serial');
                 let idProduct = $.fn.getPkDetail();
                 let idWH = row?.querySelector('.table-row-code')?.getAttribute('data-id');
-                $.fn.callAjax2({
-                        'url': $tableLot.attr('data-url'),
-                        'method': $tableLot.attr('data-method'),
-                        'data': {
-                            'product_warehouse__product_id': idProduct,
-                            'product_warehouse__warehouse_id': idWH,
-                        },
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let dataLot = $.fn.switcherResp(resp);
-                        if (dataLot) {
-                            if (dataLot.hasOwnProperty('warehouse_lot_list') && Array.isArray(dataLot.warehouse_lot_list)) {
-                                $tableLot.DataTable().clear().draw();
-                                $tableLot.DataTable().rows.add(dataLot.warehouse_lot_list).draw();
+                let eleDetail = $('#data-detail-page');
+                if (eleDetail.val()) {
+                    let dataDetail = JSON.parse(eleDetail.val());
+                    if (dataDetail?.['general_information']?.['traceability_method'] === 1) {
+                        $('#table-lot-area')[0].removeAttribute('hidden');
+                        $.fn.callAjax2({
+                                'url': $tableLot.attr('data-url'),
+                                'method': $tableLot.attr('data-method'),
+                                'data': {
+                                    'product_warehouse__product_id': idProduct,
+                                    'product_warehouse__warehouse_id': idWH,
+                                },
+                                'isDropdown': true,
                             }
-                        }
-                    }
-                )
-
-
-                $.fn.callAjax2({
-                        'url': $tableSerial.attr('data-url'),
-                        'method': $tableSerial.attr('data-method'),
-                        'data': {
-                            'product_warehouse__product_id': idProduct,
-                            'product_warehouse__warehouse_id': idWH,
-                            'is_delete': false
-                        },
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let dataSerial = $.fn.switcherResp(resp);
-                        if (dataSerial) {
-                            if (dataSerial.hasOwnProperty('warehouse_serial_list') && Array.isArray(dataSerial.warehouse_serial_list)) {
-                                $tableSerial.DataTable().clear().draw();
-                                $tableSerial.DataTable().rows.add(dataSerial.warehouse_serial_list).draw();
+                        ).then(
+                            (resp) => {
+                                let dataLot = $.fn.switcherResp(resp);
+                                if (dataLot) {
+                                    if (dataLot.hasOwnProperty('warehouse_lot_list') && Array.isArray(dataLot.warehouse_lot_list)) {
+                                        $tableLot.DataTable().clear().draw();
+                                        $tableLot.DataTable().rows.add(dataLot.warehouse_lot_list).draw();
+                                    }
+                                }
                             }
-                        }
+                        )
+                    } else if (dataDetail?.['general_information']?.['traceability_method'] === 2) {
+                        $('#table-serial-area')[0].removeAttribute('hidden');
+                        $.fn.callAjax2({
+                                'url': $tableSerial.attr('data-url'),
+                                'method': $tableSerial.attr('data-method'),
+                                'data': {
+                                    'product_warehouse__product_id': idProduct,
+                                    'product_warehouse__warehouse_id': idWH,
+                                    'is_delete': false
+                                },
+                                'isDropdown': true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let dataSerial = $.fn.switcherResp(resp);
+                                if (dataSerial) {
+                                    if (dataSerial.hasOwnProperty('warehouse_serial_list') && Array.isArray(dataSerial.warehouse_serial_list)) {
+                                        $tableSerial.DataTable().clear().draw();
+                                        $tableSerial.DataTable().rows.add(dataSerial.warehouse_serial_list).draw();
+                                    }
+                                }
+                            }
+                        )
                     }
-                )
+                }
             });
         }
     });
@@ -652,7 +659,7 @@ function dataTableSerial(data) {
             {
                 targets: 6,
                 render: (data, type, row) => {
-                    return `<span>${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
+                    return `<span class="text-green"><i class="fas fa-circle"></i></span>`;
                 }
             },
         ],
@@ -901,6 +908,7 @@ function LoadDetailProduct(option) {
                      loadPurchaseTaxCode(purchase_information['tax']);
                  }
 
+                 $('#data-detail-page').val(JSON.stringify(product_detail));
                  $.fn.initMaskMoney2();
 
                  Disable(option);

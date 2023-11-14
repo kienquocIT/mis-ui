@@ -86,32 +86,50 @@ class CompanyWebsitePathView(View):
             ctx = {}
         return render(self.request, 'extends/systems/out-layout/company_page_not_found.html', ctx)
 
+    def get_hosts(self):
+        return self.request.META['HTTP_HOST'].split(":")[0]
+
     def get(self, request, *args, path_sub, **kwargs):
         ctx = {}
-        meta_hosts = request.META['HTTP_HOST']
-        if settings.UI_DOMAIN in meta_hosts:
-            tenant_company = meta_hosts.split(settings.UI_DOMAIN)[0]
-            if tenant_company and '.' in tenant_company:
-                tenant_company_arr = tenant_company.split(".")
-                tenant_code = tenant_company_arr[1]
-                company_code = tenant_company_arr[0]
-                try:
-                    tenant_obj = Tenant.objects.get(code=tenant_code)
-                except Tenant.DoesNotExist:
-                    return self.render_404(ctx=ctx)
+        meta_hosts = self.get_hosts()
+        if settings.UI_DOMAIN_SUB_DOMAIN in meta_hosts:
+            company_code_arr = meta_hosts.split(settings.UI_DOMAIN_SUB_DOMAIN)
 
-                ctx['tenant_title'] = tenant_obj.title
-
+            if len(company_code_arr) == 2 and company_code_arr[0] and company_code_arr[1] == '':
+                company_code = company_code_arr[0]
                 try:
-                    company_obj = Company.objects.get(tenant=tenant_obj, code=company_code)
+                    company_obj = Company.objects.get(sub_domain=company_code.lower())
                 except Company.DoesNotExist:
-                    return self.render_404(ctx=ctx)
+                    url = ApiURL.BUILDER_PAGE_TENANT_GETTER.fill_key(company_sub_domain=company_code)
+                    resp = ServerAPI(request=request, user=request.user, url=url).get()
+                    if not resp.state:
+                        return self.render_404(ctx=ctx)
 
-                ctx['company_title'] = company_obj.title
+                    if not (
+                            'tenant' in resp.result
+                            and isinstance(resp.result['tenant'], dict)
+                            and 'id' in resp.result['tenant']
+                            and 'title' in resp.result['tenant']
+                            and 'code' in resp.result['tenant']
 
-                if tenant_obj.is_active is True:
+                            and 'id' in resp.result
+                            and 'title' in resp.result
+                            and 'code' in resp.result
+                    ):
+                        return self.render_404(ctx=ctx)
+
+                    tenant_data = resp.result['tenant']
+                    tenant_obj, _created = Tenant.objects.get_or_create(pk=tenant_data['id'], defaults={
+                        'id': tenant_data['id'], 'title': tenant_data['title'], 'code': tenant_data['code'],
+                    })
+
+                    company_obj, _created = Company.objects.get_or_create(pk=resp.result['id'], defaults={
+                        'id': resp.result['id'], 'title': resp.result['title'], 'code': resp.result['code'],
+                        'tenant': tenant_obj,
+                    })
+
+                if company_obj and hasattr(company_obj, 'id'):
                     url = ApiURL.BUILDER_PAGE_VIEWER.fill_key(
-                        tenant_id=tenant_obj.id,
                         company_id=company_obj.id,
                         path_sub=path_sub if path_sub else '-',
                     )

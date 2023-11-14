@@ -8,11 +8,23 @@ register = template.Library()
 
 @register.filter(name='render_tree_page')
 def render_tree_page(value):
+    def resolve_page_path_reverse(_path):
+        if _path == "/":
+            return "-"
+
+        if _path.startswith("/"):
+            return _path[1:]
+
+        return _path
+
     result = []
     if isinstance(value, list):
         for item in value:
             state_of_page = "success" if item['is_publish'] is True else "danger"
             url = reverse('WebsiteDetailDesign', kwargs={'pk': item['id']})
+            url_view = reverse(
+                'CompanyWebsitePathView', kwargs={'path_sub': resolve_page_path_reverse(item['page_path'])}
+            )
             result.append(
                 f"""
                 <li>
@@ -22,6 +34,9 @@ def render_tree_page(value):
                     </span>
                     <span class="badge badge-{state_of_page} badge-indicator badge-indicator-lg"></span>
                     <a class="btn btn-xs btn-flush-primary open-page-design" href="{url}" target="_blank">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                    <a class="btn btn-xs btn-flush-primary open-page-design" href="{url_view}" target="_blank">
                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
                     </a>
                     <script type="application/json" class="hidden page-item-data">{json.dumps(item)}</script>

@@ -376,7 +376,7 @@ function loadWareHouseListDetail(product_warehouse_detail) {
                 data: 'code',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary" data-id="${row.id}">${row.code}</span>`;
+                    return `<span class="text-secondary table-row-code" data-id="${row.id}">${row.code}</span>`;
                 }
             },
             {
@@ -394,7 +394,13 @@ function loadWareHouseListDetail(product_warehouse_detail) {
                         return element.warehouse.id === row.id;
                     })
                     if (warehouse_data.length > 0) {
-                        return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
+                        // return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
+                        return `<div class="row">
+                                    <div class="d-flex justify-content-center">
+                                        <span class="mr-2 mt-2">${warehouse_data[0]?.['stock_amount']}</span>
+                                        <button type="button" class="btn btn-icon btn-link btn-detail" data-bs-toggle="modal" data-bs-target="#detailProductWH"><span class="icon"><i class="fas fa-info-circle"></i></span></button>
+                                    </div>
+                                </div>`;
                     }
                     else {
                         return `<span>0</span>`;
@@ -402,6 +408,57 @@ function loadWareHouseListDetail(product_warehouse_detail) {
                 }
             },
         ],
+        rowCallback(row, data, index) {
+            $(`button.btn-detail`, row).on('click', function (e) {
+                let $tableLot = $('#datable-lot');
+                let $tableSerial = $('#datable-serial');
+                let idProduct = $.fn.getPkDetail();
+                let idWH = row?.querySelector('.table-row-code')?.getAttribute('data-id');
+                $.fn.callAjax2({
+                        'url': $tableLot.attr('data-url'),
+                        'method': $tableLot.attr('data-method'),
+                        'data': {
+                            'product_warehouse__product_id': idProduct,
+                            'product_warehouse__warehouse_id': idWH,
+                        },
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let dataLot = $.fn.switcherResp(resp);
+                        if (dataLot) {
+                            if (dataLot.hasOwnProperty('warehouse_lot_list') && Array.isArray(dataLot.warehouse_lot_list)) {
+                                $tableLot.DataTable().clear().draw();
+                                $tableLot.DataTable().rows.add(dataLot.warehouse_lot_list).draw();
+                            }
+                        }
+                    }
+                )
+
+
+                $.fn.callAjax2({
+                        'url': $tableSerial.attr('data-url'),
+                        'method': $tableSerial.attr('data-method'),
+                        'data': {
+                            'product_warehouse__product_id': idProduct,
+                            'product_warehouse__warehouse_id': idWH,
+                            'is_delete': false
+                        },
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let dataSerial = $.fn.switcherResp(resp);
+                        if (dataSerial) {
+                            if (dataSerial.hasOwnProperty('warehouse_serial_list') && Array.isArray(dataSerial.warehouse_serial_list)) {
+                                $tableSerial.DataTable().clear().draw();
+                                $tableSerial.DataTable().rows.add(dataSerial.warehouse_serial_list).draw();
+                            }
+                        }
+                    }
+                )
+            });
+        }
     });
 }
 
@@ -500,6 +557,102 @@ function loadWareHouseOverViewDetail(data_overview) {
                     else {
                         return `<span style="font-weight: bolder" class="text-danger">${row.sum_available_value}</span>`
                     }
+                }
+            },
+        ],
+    });
+}
+
+function dataTableLot(data) {
+    $('#datable-lot').DataTableDefault({
+        data: data ? data : [],
+        paging: false,
+        info: false,
+        columnDefs: [],
+        columns: [
+            {
+                targets: 0,
+                render: (data, type, row) => {
+                    let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                    return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
+
+                }
+            },
+            {
+                targets: 1,
+                render: (data, type, row) => {
+                    return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
+                }
+            },
+            {
+                targets: 2,
+                render: (data, type, row) => {
+                    return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
+                }
+            },
+            {
+                targets: 3,
+                render: (data, type, row) => {
+                    return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
+                }
+            },
+        ],
+    });
+}
+
+function dataTableSerial(data) {
+    $('#datable-serial').DataTableDefault({
+        data: data ? data : [],
+        columns: [
+            {
+                targets: 0,
+                render: (data, type, row) => {
+                    let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                    return `<span class="badge badge-soft-primary">${row?.['vendor_serial_number'] ? row?.['vendor_serial_number'] : ''}</span>`;
+                }
+            },
+            {
+                targets: 1,
+                render: (data, type, row) => {
+                    return `<span class="badge badge-soft-success">${row?.['serial_number'] ? row?.['serial_number'] : ''}</span>`;
+                }
+            },
+            {
+                targets: 2,
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['expire_date'], {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
+                }
+            },
+            {
+                targets: 3,
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['manufacture_date'], {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
+                }
+            },
+            {
+                targets: 4,
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['warranty_start'], {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
+                }
+            },
+            {
+                targets: 5,
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['warranty_end'], {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
+                }
+            },
+            {
+                targets: 6,
+                render: (data, type, row) => {
+                    return `<span>${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
                 }
             },
         ],

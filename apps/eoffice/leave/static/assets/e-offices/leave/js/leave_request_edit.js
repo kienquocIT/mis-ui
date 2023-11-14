@@ -8,7 +8,7 @@ $(document).ready(function () {
         'method': 'GET',
     }).then(
         (resp) => {
-            let data = $.fn.switcherResp(resp).leave_request_detail
+            let data = $.fn.switcherResp(resp)['leave_request_detail']
             WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
             $x.fn.renderCodeBreadcrumb(data);
             $('#inputTitle').val(data.title)

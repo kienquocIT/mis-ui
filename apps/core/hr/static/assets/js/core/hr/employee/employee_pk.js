@@ -64,8 +64,9 @@ class EmployeeLoadPage {
     }
 
     static loadDob(dobData) {
-        let data = dobData ? moment(dobData).format('DD/MM/YYYY') : null;
+        let data = $x.fn.reformatData(dobData, $x.cls.datetime.defaultFormatDate, 'DD/MM/YYYY', '');
         EmployeeLoadPage.dobEle.dateRangePickerDefault({
+            defaultFormatUsing: 'date',
             singleDatePicker: true,
             timepicker: false,
             showDropdowns: true,
@@ -74,11 +75,8 @@ class EmployeeLoadPage {
             locale: {
                 format: 'DD/MM/YYYY'
             },
-        })
-            .val(data)
-            .on('hide.daterangepicker', function () {
-                $(this).val($(this).val().split(" ")[0])
-            });
+            timePicker: false,
+        }).val(data).trigger('change');
     }
 
     static loadDateJoined(dateJoinedData, default_is_now = false) {
@@ -89,18 +87,15 @@ class EmployeeLoadPage {
             minYear: 1901,
             maxYear: parseInt(moment().format('YYYY'), 10),
             locale: {
-                format: 'DD/MM/YYYY'
+                format: 'DD/MM/YYYY hh:mm A'
             },
         });
 
-        if (dateJoinedData || default_is_now === true){
-            let txtDateJoinedData = dateJoinedData ? moment(dateJoinedData).format('DD/MM/YYYY') : moment().format('DD/MM/YYYY');
-            dtPickerEle.val(txtDateJoinedData).on('hide.daterangepicker', function () {
-                $(this).val($(this).val().split(" ")[0])
-            });
-        } else {
-            dtPickerEle.val("");
+        let data = '';
+        if (dateJoinedData || default_is_now === true) {
+            data = $x.fn.reformatData(dateJoinedData, $x.cls.datetime.defaultFormatDate, 'DD/MM/YYYY hh:mm A', moment().format('DD/MM/YYYY hh:mm A'));
         }
+        dtPickerEle.val(data).trigger('change')
     }
 
     static combinesForm(frmIdx, hasPermit = true) {
@@ -109,10 +104,8 @@ class EmployeeLoadPage {
         frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
         frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
         // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
-        let dateJoinedTxt = $('#employee-date-joined').val();
-        frm.dataForm['date_joined'] = dateJoinedTxt ? moment(dateJoinedTxt).format('YYYY-MM-DD HH:mm:ss') : null;
-        let dateOfBirthday = $('#employee-dob').val();
-        frm.dataForm['dob'] = dateOfBirthday ? moment(dateOfBirthday).format('YYYY-MM-DD') : null;
+        frm.dataForm['date_joined'] = $x.fn.convertEleDatetime($('#employee-date-joined'), {'defaultIsEmpty': null});
+        frm.dataForm['dob'] = $x.fn.convertEleDate($('#employee-dob'), {'defaultIsEmpty': null});
         frm.dataForm['role'] = EmployeeLoadPage.roleSelectEle.val()
 
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;

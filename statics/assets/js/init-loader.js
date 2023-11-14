@@ -66,18 +66,36 @@ $.fn.extend({
         return null;
     },
     dateRangePickerDefault: function (opts, funcCallback) {
-        return $(this).daterangepicker({
+        let optsAfter = {
             singleDatePicker: true,
             timePicker: true,
             startDate: moment().startOf('hour'),
             showDropdowns: true,
             minYear: 1901,
-            "cancelClass": "btn-secondary",
+            cancelClass: "btn-secondary",
+            autoApply: false,
+            autoUpdateInput: false,
+            ...opts,
             locale: {
-                format: 'DD/MM/YYYY hh:mm A'
-            }, ...(opts && typeof opts === 'object' ? opts : {})
-        }, funcCallback ? funcCallback : function () {
-        });
+                "applyLabel": $.fn.transEle.attr('data-apply'),
+                "cancelLabel": $.fn.transEle.attr('data-cancel'),
+                "customRangeLabel": $.fn.transEle.attr('data-custom-range'),
+                "format": 'YYYY-MM-DD hh:mm:ss',
+                ...(opts?.['locale'] || {}),
+            },
+        }
+
+        let currentFormat = optsAfter.locale?.['format'] || 'YYYY-MM-DD hh:mm:ss';
+        $(this)
+            .attr('data-locale-format', currentFormat)
+            .on('apply.daterangepicker', function (ev, picker){
+                if (picker.startDate) $(this).val(picker.startDate.format(currentFormat));
+                else $(this).val("");
+            })
+            .on('cancel.daterangepicker', function (ev, picker){
+                $(this).val("");
+            })
+        return $(this).daterangepicker(optsAfter, funcCallback ? funcCallback: function (start, end, label){});
     },
     notifyB: function (option, typeAlert = null) {
         setTimeout(function () {

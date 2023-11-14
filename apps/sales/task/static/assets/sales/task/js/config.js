@@ -12,13 +12,13 @@ $(function(){
             const $todoElm = $('#todo_list')
             let data = $.fn.switcherResp(resp);
             if (data?.['status'] === 200) {
-                const config = data.task_config
+                const config = data?.['task_config']
                 $todoElm.html('')
                 const itemSystem = []
                 const itemEdit = []
                 // separate item system and normal item
                 for (let item of config.list_status){
-                    if (item.is_edit) itemEdit.push(item)
+                    if (item?.['is_edit']) itemEdit.push(item)
                     else itemSystem.push(item)
                 }
                 // loop item system and render

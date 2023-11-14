@@ -56,7 +56,7 @@ function dateRangeToList(data){
 function yearList(){
     let lsYear = {}
     const ws = JSON.parse($('#ws_data').text()).years
-    if (ws) for (let item of ws) {
+    if (Object.keys(ws).length > 0) for (let item of ws) {
         lsYear[item["config_year"]] = item["list_holiday"]
     }
     return lsYear
@@ -117,14 +117,14 @@ class detailTab {
 
     static checkIsExp(data) {
         // check available của phép đặc biệt FF, MC, MY
-        let code = data?.leave_type?.['leave_type']?.['code']
+        let code = data.leave_type?.['leave_type']?.['code']
         let IsExp = true
-        if (code && code === 'FF' || code === 'MC' || code === 'MY' || code === 'AN' || code === 'ANPY') {
-            // check in stock
-            IsExp = data.subtotal <= data?.leave_type.available
-            // check in exp
-            if (new Date().getTime() > new Date(data.leave_type.expiration_date).getTime()) IsExp = false
-        }
+        if (data.leave_type.check_balance && data.leave_type.expiration_date
+            && (new Date().getTime() > new Date(data.leave_type.expiration_date).getTime())
+
+        ) IsExp = false
+        if (($.inArray(code, ['FF', 'MY']) >= 0 && data.subtotal > 3) || (code === 'MC' && data.subtotal > 1))
+            IsExp = false
         return IsExp
     }
     static validDate(data, row){
@@ -134,7 +134,6 @@ class detailTab {
             data.subtotal = detailTab.PrepareReturn(data)
             if (data.subtotal > available && data.leave_type.check_balance || !detailTab.checkIsExp(data))
                 $.fn.notifyB({description: $transElm.attr('data-out-of-stock')}, 'failure')
-
             $('[name*="subtotal_"]', row).val(data.subtotal)
             $(document).trigger("footerCallback");
         }
@@ -408,6 +407,8 @@ class TabAvailable {
                     }
                 }
             ]
+        }).on('select:select2', function(e){
+
         })
     }
 }
@@ -446,7 +447,12 @@ function submitHandleFunc() {
     let errorRequest = false
     for (let idx = 0; idx < formData.detail_data.length; idx++){
         const value = formData.detail_data[idx]
-        if (value.subtotal > value.leave_type.available && value.leave_type.check_balance){
+        const valCode = value.leave_type.leave_type.code
+        if (
+            (value.subtotal > value.leave_type.available && value.leave_type.check_balance)
+            || (value.subtotal > 3 && $.inArray(valCode, ['FF', 'MY']) >= 0)
+            || (value.subtotal > 1 && valCode === 'MC')
+        ){
             isError = true
             break
         }
@@ -462,7 +468,6 @@ function submitHandleFunc() {
                 break
             }
         }
-
     }
 
     formData.request_date = moment($('#inputRequestDate').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')

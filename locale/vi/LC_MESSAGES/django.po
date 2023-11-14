@@ -4827,7 +4827,7 @@ msgstr "Không đủ ngày phép hoặc hết ngày phép"
 
 #
 msgid "Ordinal date in detail tab is in complex setup"
-msgstr "Thứ tự ngày tháng setup không đúng"
+msgstr "Thứ tự ngày tháng không đúng"
 
 #
 msgid "Leave available list"

@@ -114,14 +114,14 @@ $(function () {
         let rowData = DTBControl.getRowData($(this));
         let modalControl = $('#modal-setting');
         Promise.all([
-            $.ajax(
-                modalControl.attr('data-url-detail'),
-                'GET'
-            ),
-            $.ajax(
-                modalControl.attr('data-url-currency-list'),
-                'GET'
-            )
+            $.fn.callAjax2({
+                'url': modalControl.attr('data-url-detail'),
+                'method': 'GET',
+            }),
+            $.fn.callAjax2({
+                'url': modalControl.attr('data-url-currency-list'),
+                'method': 'GET',
+            })
         ]).then(([result1, result2]) => {
             let data1 = $.fn.switcherResp(result1);
             let data2 = $.fn.switcherResp(result2);
@@ -151,6 +151,7 @@ $(function () {
                 $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);
                 $('#idxCurrencyMaskDecimal').val(data1['config']['currency_rule'].decimal);
                 $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
+                $('#idxSubdomain').val(data1['config']['sub_domain']);
             }
         })
     })

@@ -347,7 +347,22 @@ class TabAvailable {
             ajax: {
                 url: $urlElm.attr('data-leave-available'),
                 type: "GET",
-                dataSrc: 'data.leave_available',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('leave_available')) {
+                        let dataList = resp.data['leave_available']
+                        dataList.sort(function(a, b) {
+                            let nameA = a.leave_type.code
+                            let nameB = b.leave_type.code
+                            let statement = 0
+                            if (nameA < nameB) statement = -1
+                            if (nameA > nameB) statement = 1
+                            return statement
+                        })
+                        return dataList
+                    }
+                    throw Error('Call data raise errors.')
+                },
                 data: function (a) {
                     a.employee = $('#selectEmployeeInherit').val()
                     // a.check_balance = true
@@ -407,8 +422,6 @@ class TabAvailable {
                     }
                 }
             ]
-        }).on('select:select2', function(e){
-
         })
     }
 }
@@ -506,4 +519,9 @@ function submitHandleFunc() {
             $.fn.notifyB({description: err.data.errors}, 'failure');
         }
     )
+}
+
+function employeeTemplate(state) {
+    if (!state.id) return state.text
+    return $(`<p><span>${state.text}</span> - (${state?.data?.group?.title || '--'})</p>`)
 }

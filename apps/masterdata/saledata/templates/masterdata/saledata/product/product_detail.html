@@ -305,6 +305,68 @@
                 </div>
             </div>
         </div>
+
+
+        <input type="hidden" id="data-detail-page">
+        <div class="modal fade" id="detailProductWH" tabindex="-1" role="dialog" aria-labelledby="detailProductWH" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Detail" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="table-lot-area" hidden>
+                            <table
+                                id="datable-lot"
+                                class="table nowrap w-100"
+                                data-url="{% url "WarehouseLotListAPI" %}"
+                                data-method="GET"
+                            >
+                                <thead>
+                                <tr>
+                                    <th class="w-30">{% trans 'Lot number' %}</th>
+                                    <th class="w-20">{% trans 'Quantity' %}</th>
+                                    <th class="w-20">{% trans 'Expiration date' %}</th>
+                                    <th class="w-20">{% trans 'Manufacturing date' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="table-serial-area" hidden>
+                            <table
+                                id="datable-serial"
+                                class="table nowrap w-100"
+                                data-url="{% url "WarehouseSerialListAPI" %}"
+                                data-method="GET"
+                            >
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'Vendor serial no.' %}</th>
+                                    <th>{% trans 'Serial no.' %}</th>
+                                    <th>{% trans 'Expiration date' %}</th>
+                                    <th>{% trans 'Mfr date' %}</th>
+                                    <th>{% trans 'Warranty start' %}</th>
+                                    <th>{% trans 'Warranty end' %}</th>
+                                    <th>{% trans 'Status' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
     {{ data.unit | json_script:"id-unit-list" }}
     {{ data.warehouse_list | json_script:"warehouse_list" }}

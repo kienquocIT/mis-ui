@@ -1647,8 +1647,6 @@ function autoLoadStage(
     }
 
     let id_stage_current = '';
-    console.log(list_stage_condition)
-    console.log(list_property_config)
     for (let i = 0; i < list_stage_condition.length; i++) {
         if (list_stage_condition[i].logical_operator === 0) {
             if (list_stage_condition[i].condition_datas.every(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
@@ -1668,7 +1666,6 @@ function autoLoadStage(
         let input_rate_ele = $('#check-input-rate');
         let ele_close_deal = $('#input-close-deal');
         let ele_stage = $(`.sub-stage`);
-        console.log(id_stage_current) // id_stage_current = ''
         if (id_stage_current === '') {
             id_stage_current = $('#div-stage').find('div:first-child').attr('data-id');
         }
@@ -1723,7 +1720,6 @@ function autoLoadStage(
         if (!input_rate_ele.is(':checked')) {
             if (is_load_rate) {
                 let obj_stage = dict_stage[ele_stage_current.data('id')]
-                console.log(ele_stage_current) // underfined
                 if (ele_stage_current.hasClass('stage-close'))
                     obj_stage = dict_stage[stage_selected_ele.not(ele_stage_current).last().data('id')];
                 $('#input-rate').val(obj_stage.win_rate);

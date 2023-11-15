@@ -18,7 +18,8 @@
                             </button>
                         </li>
                         <ul>
-                            {{ data.page_list|render_tree_page|safe }}
+                            {% render_tree_page data.page_list data.page_viewer_domain as html_page_tree %}
+                            {{ html_page_tree|safe }}
                         </ul>
                     </ul>
                 </div>
@@ -106,6 +107,12 @@
 
 {% block jsFooter %}
     <script>
+        function convertToSlug(txt) {
+            return txt.toLowerCase()
+                .replace(/(?!\/)[^-\w ]+/g, "")
+                .replace(/ +/g, "-");
+        }
+
         let frmAddPage = $("#frm-add-page");
         let frmEditPage = $("#frm-edit-page");
 
@@ -141,6 +148,9 @@
             openAdd();
         });
 
+        $.validator.addMethod("startWithSlash", function (value, element) {
+            return value.charAt(0) === "/" && !value.startsWith('/system') && !value.startsWith('/admin');
+        }, `{% trans "This field must start with a forward slash '/' and must not contain any misleading words such as system, admin, etc." %}`);
 
         SetupFormSubmit.validate(frmAddPage, {
             rules: {
@@ -157,6 +167,7 @@
                     required: true,
                     maxlength: 200,
                     minlength: 1,
+                    startWithSlash: true,
                 },
                 page_title: {
                     required: true,
@@ -187,12 +198,27 @@
                         }, 1000);
                     },
                     (errs) => {
+                        let errsData = errs?.['data']?.['errors'] || {};
+                        if (errsData && typeof errsData === 'object'){
+                            $(form).validate().showErrors(errsData)
+                            Object.keys(errsData).map(
+                                (key) => {
+                                    if ($(form).find(`input[name="${key}"]`).length === 0){
+                                        $.fn.notifyB({'description': errsData[key]}, 'failure')
+                                    }
+                                }
+                            )
+                        }
                         $x.fn.hideLoadingPage();
                     }
                 )
                 return false;
             }
         });
+
+        $('input[name="page_path"]').on('change', function (){
+            $(this).val(convertToSlug($(this).val()))
+        })
 
         SetupFormSubmit.validate(frmEditPage, {
             rules: {
@@ -239,6 +265,14 @@
                         }, 1000);
                     },
                     (errs) => {
+                        let errsData = errs?.['data']?.['errors'] || {};
+                        Object.keys(errsData).map(
+                            (key) => {
+                                if ($(form).find(`input[name="${key}"]`).length === 0){
+                                    $.fn.notifyB({'description': errsData[key]}, 'failure')
+                                }
+                            }
+                        )
                         $x.fn.hideLoadingPage();
                     }
                 )
@@ -280,10 +314,5 @@
                 }
             })
         })
-
-        $(".open-page-design").on('click', function (){
-            let data = JSON.parse($(this).siblings('.page-item-data').text());
-            console.log(data);
-        });
     </script>
 {% endblock %}

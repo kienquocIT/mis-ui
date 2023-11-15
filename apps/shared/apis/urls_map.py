@@ -44,7 +44,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # web / page builder
     BUILDER_PAGE_LIST = StringUrl('site/page-list')
     BUILDER_PAGE_DETAIL = StringUrl('site/page/{pk}')
-    BUILDER_PAGE_VIEWER = StringUrl('site/page/{tenant_id}/{company_id}/{path_sub}/viewer')
+    BUILDER_PAGE_VIEWER = StringUrl('site/page/{company_id}/{path_sub}/viewer')
+    BUILDER_PAGE_TENANT_GETTER = StringUrl('site/page/company-get/{company_sub_domain}')
 
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')

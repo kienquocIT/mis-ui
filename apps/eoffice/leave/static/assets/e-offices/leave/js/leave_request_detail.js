@@ -115,7 +115,22 @@ $(document).ready(function () {
                 ajax: {
                     url: $urlElm.attr('data-leave-available'),
                     type: "GET",
-                    dataSrc: 'data.leave_available',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('leave_available')) {
+                            let dataList = resp.data['leave_available']
+                            dataList.sort(function (a, b) {
+                                let nameA = a.leave_type.code
+                                let nameB = b.leave_type.code
+                                let statement = 0
+                                if (nameA < nameB) statement = -1
+                                if (nameA > nameB) statement = 1
+                                return statement
+                            })
+                            return dataList
+                        }
+                        throw Error('Call data raise errors.')
+                    },
                     data: function (a) {
                         a.employee = $EmpElm.val()
                         return a
@@ -221,7 +236,7 @@ $(document).ready(function () {
 
             // after load employee inherit load table leave available
             TabAvailable.load_table()
-
+            if (data.system_status >= 2) $('#idxRealAction').remove()
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )

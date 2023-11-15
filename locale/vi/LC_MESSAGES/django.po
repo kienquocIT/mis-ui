@@ -4844,3 +4844,11 @@ msgstr "Tạo năm"
 #
 msgid "Custom Range"
 msgstr "Phạm vi tùy chỉnh"
+
+#
+msgid "This field must start with a forward slash '/' and must not contain any misleading words such as system, admin, etc."
+msgstr "Trường này phải bắt đầu bằng dấu gạch chéo lên '/' và không được chứa bất kỳ từ gây hiểu lầm nào như hệ thống, quản trị viên, v.v."
+
+#
+msgid "Site Config"
+msgstr "Cấu hình site"

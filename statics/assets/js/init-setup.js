@@ -1992,6 +1992,12 @@ class UtilControl {
     static checkNumber(dataStr){
         return !isNaN(Number(dataStr))
     }
+
+    static convertToSlug(Text) {
+            return Text.toLowerCase()
+                .replace(/[^\w ]+/g, "")
+                .replace(/ +/g, "-");
+        }
 }
 
 class DTBControl {
@@ -3748,6 +3754,7 @@ let $x = {
         parseDate: UtilControl.parseDate,
         parseJson: UtilControl.parseJson,
         dumpJson: UtilControl.dumpJson,
+        convertToSlug: UtilControl.convertToSlug,
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,

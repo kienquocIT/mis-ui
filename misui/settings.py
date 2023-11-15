@@ -224,6 +224,8 @@ API_DOMAIN = f'{protocol}://{domain}/{prefix}'
 # main UI domain
 UI_PROTOCOL = os.environ.get('UI_PROTOCOL') if os.environ.get('UI_PROTOCOL', None) else 'http'
 UI_DOMAIN = os.environ.get('UI_DOMAIN') if os.environ.get('UI_DOMAIN', None) else '127.0.0.1'
+UI_DOMAIN_SUB_DOMAIN = '.' + UI_DOMAIN
+UI_FULL_DOMAIN = os.environ.get('UI_FULL_DOMAIN', 'http://{sub_domain}.local.test:8001')
 UI_URL = os.environ.get('UI_URL') if os.environ.get('UI_URL', None) else f'{UI_PROTOCOL}://{UI_DOMAIN}'
 UI_ALLOW_AUTO_TENANT = True if os.environ.get('UI_ALLOW_AUTO_TENANT', '0') in [1, '1'] else False
 UI_SUB_ALLOWED = json.loads(os.environ.get('UI_SUB_ALLOWED', '["*"]'))

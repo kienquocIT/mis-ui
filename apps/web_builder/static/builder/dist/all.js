@@ -235,6 +235,10 @@ $(function () {
                     buildProps: [
                         'transition', 'perspective', 'transform'
                     ],
+                    properties: [
+                      { extend: 'filter' },
+                      { extend: 'filter', property: 'backdrop-filter' },
+                    ],
                 }, {
                     name: 'Flex',
                     open: false,
@@ -406,7 +410,22 @@ $(function () {
             ],
         },
         plugins: [
-            'gjs-blocks-basic', 'grapesjs-plugin-forms', 'grapesjs-component-countdown', 'grapesjs-plugin-export', 'grapesjs-tabs', 'grapesjs-custom-code', 'grapesjs-touch', 'grapesjs-parser-postcss', 'grapesjs-tooltip', 'grapesjs-tui-image-editor', 'grapesjs-typed', 'grapesjs-style-bg', 'grapesjs-preset-webpage',
+            'gjs-blocks-basic',
+            'grapesjs-plugin-forms',
+            'grapesjs-component-countdown',
+            'grapesjs-plugin-export',
+            'grapesjs-tabs',
+            'grapesjs-custom-code',
+            'grapesjs-touch',
+            'grapesjs-parser-postcss',
+            'grapesjs-tooltip',
+            'grapesjs-tui-image-editor',
+            'grapesjs-typed',
+            'grapesjs-style-bg',
+            'grapesjs-preset-webpage',
+            'grapesjs-navbar',
+            'grapesjs-style-filter',
+            'grapesjs-style-bg',
         ],
         pluginsOpts: {
             'gjs-blocks-basic': {flexGrid: true},
@@ -422,6 +441,9 @@ $(function () {
             'grapesjs-tabs': {
                 tabsBlock: {category: 'Extra'}
             },
+            'grapesjs-navbar': {
+                tabsBlock: {category: 'Extra'}
+            },
             'grapesjs-typed': {
                 block: {
                     category: 'Extra',
@@ -434,6 +456,7 @@ $(function () {
                     }
                 }
             },
+            'grapesjs-style-bg': { /* options */ },
             'grapesjs-preset-webpage': {
                 modalImportTitle: 'Import Template',
                 modalImportLabel: '<div style="margin-bottom: 10px; font-size: 13px;">Paste here your HTML/CSS and click Import</div>',

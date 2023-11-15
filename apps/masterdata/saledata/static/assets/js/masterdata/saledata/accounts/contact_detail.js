@@ -8,9 +8,9 @@ $(document).ready(function () {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                let contactDetail = data?.['contact_detail']
-                $.fn.compareStatusShowPageAction(contactDetail);
                 if (data) {
+                    $.fn.compareStatusShowPageAction(data);
+                    let contactDetail = data?.['contact_detail']
                     // console.log(data)
                     $("#owner_id").val(contactDetail.owner.fullname);
                     $('#full_name_id').val(contactDetail.fullname.fullname);

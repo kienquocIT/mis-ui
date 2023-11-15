@@ -15,6 +15,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from .apis import RespData, PermCheck
+from .exceptions import handle_exception_all_view
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
 from .menus import SpaceItem, SpaceGroup
@@ -170,10 +171,6 @@ def mask_view(**parent_kwargs):
 
                         if sub_code in settings.UI_SUB_DENIED:
                             return OutLayoutRender(request=request).render_404()
-
-                        tenant_cls = apps.get_model('account.tenant')
-                        if sub_code not in tenant_cls.all_code():
-                            return OutLayoutRender(request=request).render_404()
                     else:
                         return OutLayoutRender(request=request).render_404()
 
@@ -235,10 +232,14 @@ def mask_view(**parent_kwargs):
 
             # redirect or next step with is_auth
             # must be return ({Data|Dict}, {Http Status|Number}) or HttpResponse
-            if check_perm_state:
-                view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
-            else:
-                view_return = check_perm_return
+            try:
+                if check_perm_state:
+                    view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
+                else:
+                    view_return = check_perm_return
+            except Exception as err:
+                handle_exception_all_view(err, self)
+                raise err
 
             if isinstance(view_return, HttpResponse):  # pylint: disable=R1705
                 return view_return
@@ -303,6 +304,7 @@ def mask_view(**parent_kwargs):
                             case _:
                                 ctx['pk'] = pk
                                 ctx['is_ga_enabled'] = settings.GA_COLLECTION_ENABLED
+                                ctx['is_debug_src'] = settings.DEBUG
                                 ctx['is_debug'] = settings.DEBUG_JS
                                 # ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user)
@@ -315,7 +317,10 @@ def mask_view(**parent_kwargs):
                                     'menu_id_current': parent_kwargs.get('menu_active', None),
                                     'space_code_current': 1,
                                 }
-                                return render(request, cls_check.template_path, ctx)
+                                try:
+                                    return render(request, cls_check.template_path, ctx)
+                                except Exception as err:
+                                    handle_exception_all_view(err, self)
                     if login_require is True:
                         return redirect(reverse('AuthLogin'))
                     return render(request, cls_check.template_path, ctx)

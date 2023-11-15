@@ -4806,5 +4806,49 @@ msgid "Import"
 msgstr "Đưa vào"
 
 #
+msgid "Import Data"
+msgstr "Nhập dữ liệu"
+
+#
+msgid "File Data"
+msgstr "Tệp dữ liệu"
+
+#
+msgid "Click to upload"
+msgstr "Nhấn vào để tải lên"
+
+#
 msgid "Clear canvas"
 msgstr "Làm trống soạn thảo"
+
+#
+msgid "Not enough leave or no leave available"
+msgstr "Không đủ ngày phép hoặc hết ngày phép"
+
+#
+msgid "Ordinal date in detail tab is in complex setup"
+msgstr "Thứ tự ngày tháng không đúng"
+
+#
+msgid "Leave available list"
+msgstr "Danh sách phép dư"
+
+#
+msgid "Number year"
+msgstr "Số năm"
+
+#
+msgid "Create year"
+msgstr "Tạo năm"
+
+#
+msgid "Custom Range"
+msgstr "Phạm vi tùy chỉnh"
+
+#
+msgid "This field must start with a forward slash '/' and must not contain any misleading words such as system, admin, etc."
+msgstr "Trường này phải bắt đầu bằng dấu gạch chéo lên '/' và không được chứa bất kỳ từ gây hiểu lầm nào như hệ thống, quản trị viên, v.v."
+
+#
+msgid "Site Config"
+msgstr "Cấu hình site"

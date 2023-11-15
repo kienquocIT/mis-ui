@@ -24,6 +24,10 @@ pipeline {
                         env.PROJECT_DIR = '/home/jenkins/sit/ui';
                         env.DEPLOY_SERVER_IP = '192.168.0.111';
                     }
+                    if (GIT_BRANCH_NAME == 'uat') {
+                        env.PROJECT_DIR = '/home/jenkins/uat/ui';
+                        env.DEPLOY_SERVER_IP = '192.168.0.111';
+                    }
                 }
             }
         }

@@ -8,6 +8,7 @@ $(document).ready(function () {
             dataSrc: 'data.leave_request',
         },
         rowIdx: true,
+        pageLength:50,
         columns: [
             {
                 targets: 0,

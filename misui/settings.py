@@ -39,7 +39,7 @@ DEBUG_NOTIFY_KEY = True
 GA_COLLECTION_ENABLED = True if os.environ.get('GA_COLLECTION_ENABLED', '0') in [1, '1'] else False
 ALLOWED_HOSTS = []
 
-IS_SERVER_MAINTAINING = False
+IS_SERVER_MAINTAINING = True if os.environ.get('IS_SERVER_MAINTAINING', '0') in [1, '1'] else False
 
 RELEASE_VERSION = os.environ.get('RELEASE_VERSION', '0.0.1')
 
@@ -224,6 +224,8 @@ API_DOMAIN = f'{protocol}://{domain}/{prefix}'
 # main UI domain
 UI_PROTOCOL = os.environ.get('UI_PROTOCOL') if os.environ.get('UI_PROTOCOL', None) else 'http'
 UI_DOMAIN = os.environ.get('UI_DOMAIN') if os.environ.get('UI_DOMAIN', None) else '127.0.0.1'
+UI_DOMAIN_SUB_DOMAIN = '.' + UI_DOMAIN
+UI_FULL_DOMAIN = os.environ.get('UI_FULL_DOMAIN', 'http://{sub_domain}.local.test:8001')
 UI_URL = os.environ.get('UI_URL') if os.environ.get('UI_URL', None) else f'{UI_PROTOCOL}://{UI_DOMAIN}'
 UI_ALLOW_AUTO_TENANT = True if os.environ.get('UI_ALLOW_AUTO_TENANT', '0') in [1, '1'] else False
 UI_SUB_ALLOWED = json.loads(os.environ.get('UI_SUB_ALLOWED', '["*"]'))
@@ -262,9 +264,6 @@ UI_RESP_KEY_PAGE_PREVIOUS = 'page_previous'
 
 # DEBUG CODE enable: allow raise errors if it is enabled else return default value (value is correct type)
 RAISE_EXCEPTION_DEBUG = True
-
-# server maintaining
-IS_SERVER_MAINTAINING = True if os.environ.get('IS_SERVER_MAINTAINING', '0') in [1, '1'] else False
 
 # memcache
 # CACHES = {
@@ -341,6 +340,10 @@ if os.environ.get('ENABLE_PROD', '0') in [1, '1']:
     # allow host
     OS_ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '[]')
     ALLOWED_HOSTS = json.loads(OS_ALLOWED_HOSTS)
+
+    # allow csrf for ssl
+    OS_CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', '[]')
+    CSRF_TRUSTED_ORIGINS = json.loads(OS_CSRF_TRUSTED_ORIGINS)
 
     # setup database default
     DATABASES.update(

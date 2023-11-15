@@ -93,6 +93,10 @@ class MenusCompanySystem:
         name='Tenant', code='menu_company_overview_list', view_name='CompanyListOverviewList',
         icon='<i class="fa-solid fa-city"></i>',
     )
+    COMPANY_SITE_BUILDER = MenuCommon(
+        name='Site Config', code='menu_site_config_builder', view_name='MyCompanyWebsiteList',
+        icon='<i class="fa-solid fa-globe"></i>',
+    )
 
 
 class MenusCoreConfigurations:
@@ -493,6 +497,7 @@ class SpaceItem:
                 MenusCompanySystem.WORKING_CALENDAR,
                 MenusCompanySystem.WORKFLOW_PROCESS,
                 MenusCompanySystem.TENANT_MANAGE,
+                MenusCompanySystem.COMPANY_SITE_BUILDER,
             ],
         ),
         'core-configurations': SpaceCommon(

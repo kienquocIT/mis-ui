@@ -97,31 +97,35 @@ $(function () {
         ]
     });
 
-    function generate_ui_url(sub_domain){
+    function generate_ui_url(sub_domain) {
         function getPortOfHost() {
-            if (window.location.host.indexOf(":") !== -1){
+            if (window.location.host.indexOf(":") !== -1) {
                 let arr = window.location.host.split(":");
                 return ":" + arr[arr.length - 1];
             }
             return "";
         }
+
         return window.location.protocol + '//' + sub_domain + '.' + dtb.attr('data-ui-domain') + getPortOfHost() + '/site/';
     }
 
     // Load Data Config
     $('html').on('click', '.btn-setting', function (e) {
         e.preventDefault();
+
+        $x.fn.showLoadingPage();
+
         let rowData = DTBControl.getRowData($(this));
         let modalControl = $('#modal-setting');
         Promise.all([
-            $.ajax(
-                modalControl.attr('data-url-detail'),
-                'GET'
-            ),
-            $.ajax(
-                modalControl.attr('data-url-currency-list'),
-                'GET'
-            )
+            $.fn.callAjax2({
+                'url': modalControl.attr('data-url-detail'),
+                'method': 'GET',
+            }),
+            $.fn.callAjax2({
+                'url': modalControl.attr('data-url-currency-list'),
+                'method': 'GET',
+            })
         ]).then(([result1, result2]) => {
             let data1 = $.fn.switcherResp(result1);
             let data2 = $.fn.switcherResp(result2);
@@ -151,17 +155,20 @@ $(function () {
                 $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);
                 $('#idxCurrencyMaskDecimal').val(data1['config']['currency_rule'].decimal);
                 $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
+                $('#idxSubdomain').val(data1['config']['sub_domain']);
             }
+
+            $x.fn.hideLoadingPage();
         })
     })
 
     $('#tblCompanySetting').on('submit', function (e) {
-        WindowControl.showLoading();
+        e.preventDefault();
 
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         let dataBody = frm.dataForm
         dataBody['currency_rule'] = SetupFormSubmit.groupDataFromPrefix(dataBody, 'currency_rule__');
+        dataBody['sub_domain'] = $(this).find('input[name="sub_domain"]').val();
 
         if (
             dataBody['currency_rule'] &&
@@ -171,26 +178,28 @@ $(function () {
                 dataBody['currency_rule']['thousands'] === dataBody['currency_rule']['decimal']
             )
         ) {
-            WindowControl.hideLoading();
             $.fn.notifyB({
                 'description': "Decimal values are not allowed to be the same as thousands"
             }, 'failure');
-            e.preventDefault();
         } else if (dataBody['currency_rule'] && dataBody['currency_rule']['thousands'] === '.' && !dataBody['currency_rule']['decimal']) {
-            WindowControl.hideLoading();
             $.fn.notifyB({
                 'description': "Decimal default values is dot(.), please select thousand value isn't dot(.)"
             }, 'failure');
-            e.preventDefault();
         } else {
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, dataBody, csr).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data['status'] === 200) {
-                    window.location.reload();
-                }
-            }, (errs) => {
-                WindowControl.hideLoading();
-            });
+            return $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': dataBody,
+                isLoading: true,
+            }).then(
+                (resp) => {
+                    debugger
+                    let data = $.fn.switcherResp(resp);
+                    if (data['status'] === 200) {
+                        window.location.reload();
+                    }
+                },
+            );
         }
     })
 

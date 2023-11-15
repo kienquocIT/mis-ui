@@ -10,6 +10,8 @@ let opp_mapped_select = $('#opportunity_id')
 let script_url = $('#script-url')
 let tab_plan_datatable = $('#tab_plan_datatable')
 let offcanvasRightLabel = $('#offcanvasRightLabel')
+let AP_filter = null
+
 $('#quo-so-row').prop('hidden', false);
 
 opp_mapped_select.on('change', function () {
@@ -24,7 +26,6 @@ opp_mapped_select.on('change', function () {
         let quo_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
         let so_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
         PaymentLoadQuotation(quo_mapped_opp)
-        LoadPlanQuotation(opp_mapped_select.val(), quo_mapped_opp?.['id'])
         PaymentLoadSaleOrder(so_mapped_opp);
     }
     else {
@@ -392,9 +393,19 @@ function loadAPList() {
                 if (data) {
                     if (resp.data['advance_payment_list']) {
                         let result = [];
-                        for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
-                            if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0 && resp.data['advance_payment_list'][i]?.['employee_inherit_id'] === initEmployee.id) {
-                                result.push(resp.data['advance_payment_list'][i])
+                        if (AP_filter === null) {
+                            for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
+                                if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0 && resp.data['advance_payment_list'][i]?.['employee_inherit_id'] === initEmployee.id) {
+                                    result.push(resp.data['advance_payment_list'][i])
+                                }
+                            }
+                        }
+                        else {
+                            for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
+                                if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0 && resp.data['advance_payment_list'][i]?.['employee_inherit_id'] === initEmployee.id && resp.data['advance_payment_list'][i]?.['id'] === AP_filter) {
+                                    result.push(resp.data['advance_payment_list'][i])
+                                    break
+                                }
                             }
                         }
                         return result;
@@ -444,7 +455,13 @@ function loadAPList() {
             },
             {
                 render: (data, type, row) => {
-                    return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
+                    let checked = '';
+                    let disabled = '';
+                    if (AP_filter !== null) {
+                        checked = 'checked';
+                        disabled = 'disabled';
+                    }
+                    return `<input ${checked} ${disabled} data-id="` + row.id + `" class="ap-selected" type="checkbox">`
                 }
             },
         ],
@@ -502,13 +519,18 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
                     let sum_real_value = 0;
+                    let number_record = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                            number_record += 1;
                         }
+                    }
+                    if (number_record > 0) {
+                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -584,13 +606,18 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
                     let sum_real_value = 0;
+                    let number_record = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                            number_record += 1;
                         }
+                    }
+                    if (number_record > 0) {
+                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -666,13 +693,18 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
                     let sum_real_value = 0;
+                    let number_record = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                            number_record += 1;
                         }
+                    }
+                    if (number_record > 0) {
+                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -1206,13 +1238,57 @@ function LoadDetailPayment() {
 }
 
 class PaymentHandle {
-    async load(sale_code_mapped, type) {
+    async load(sale_code_mapped, type, quotation_object, sale_order_object, ap_mapped_id) {
         PaymentLoadCreatedDate();
         PaymentLoadCreator(initEmployee);
         PaymentLoadSupplier();
         $('#btn-add-row-line-detail').removeClass('disabled');
         PaymentLoadQuotation();
         PaymentLoadSaleOrder();
+        if (sale_code_mapped !== null && type !== null) {
+            if (type === 0) {
+                await opp_mapped_select.initSelect2({
+                    data: sale_code_mapped,
+                    allowClear: true,
+                }).promise();
+                opp_mapped_select.val(sale_code_mapped.id).attr('disabled', true);
+                tableLineDetail.find('tbody').html('');
+                quotation_mapped_select.find('option').remove();
+                sale_order_mapped_select.find('option').remove();
+                quotation_mapped_select.prop('disabled', true);
+                sale_order_mapped_select.prop('disabled', true);
+
+                PaymentLoadQuotation(quotation_object)
+                PaymentLoadSaleOrder(sale_order_object)
+                AP_filter = ap_mapped_id?.['id'];
+            }
+            else if (type === 1) {
+                tableLineDetail.find('tbody').html('');
+                opp_mapped_select.find('option').remove();
+                quotation_mapped_select.find('option').remove();
+                sale_order_mapped_select.find('option').remove();
+                opp_mapped_select.prop('disabled', true);
+                quotation_mapped_select.prop('disabled', true);
+                sale_order_mapped_select.prop('disabled', true);
+
+                PaymentLoadQuotation(sale_code_mapped)
+                quotation_mapped_select.change()
+                AP_filter = ap_mapped_id?.['id'];
+            }
+            else if (type === 2) {
+                tableLineDetail.find('tbody').html('');
+                opp_mapped_select.find('option').remove();
+                quotation_mapped_select.find('option').remove();
+                sale_order_mapped_select.find('option').remove();
+                opp_mapped_select.prop('disabled', true);
+                quotation_mapped_select.prop('disabled', true);
+                sale_order_mapped_select.prop('disabled', true);
+
+                PaymentLoadSaleOrder(sale_code_mapped)
+                sale_order_mapped_select.change()
+                AP_filter = ap_mapped_id?.['id'];
+            }
+        }
     }
     combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
@@ -1226,13 +1302,13 @@ class PaymentHandle {
         let opportunity_mapped = opp_mapped_select.val();
         let quotation_mapped = quotation_mapped_select.val();
         let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped !== null) {
+        if (opportunity_mapped !== null && opportunity_mapped !== '') {
             frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
         }
-        else if (quotation_mapped !== null) {
+        else if (quotation_mapped !== null && quotation_mapped !== '') {
             frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
         }
-        else if (sale_order_mapped !== null) {
+        else if (sale_order_mapped !== null && sale_order_mapped !== '') {
             frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
         }
         else {

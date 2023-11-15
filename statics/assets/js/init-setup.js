@@ -1992,6 +1992,12 @@ class UtilControl {
     static checkNumber(dataStr){
         return !isNaN(Number(dataStr))
     }
+
+    static convertToSlug(Text) {
+            return Text.toLowerCase()
+                .replace(/[^\w ]+/g, "")
+                .replace(/ +/g, "-");
+        }
 }
 
 class DTBControl {
@@ -2636,7 +2642,13 @@ class DTBControl {
         //     "<'row mt-3'<'col-sm-12 col-md-6'i>>";
 
         // style 1
-        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt' + `<'row tbl-footer-toolbar' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+        let styleDom = opts?.['styleDom'] || 'full';
+        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt';
+        if (styleDom === 'small'){
+            domDTL += `<'row tbl-footer-toolbar' <'cus-page-info'<'col-12 d-flex justify-content-center py-1'l><'col-12  d-flex justify-content-center py-1'i><'col-12  d-flex justify-content-center py-1'p>>>`;
+        } else {
+            domDTL += `<'row tbl-footer-toolbar' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+        }
 
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
@@ -3305,6 +3317,8 @@ class WindowControl {
             showConfirmButton: true,
             confirmButtonText: globePreviousPage,
             denyButtonColor: '#21b48f',
+            showCancelButton: true,
+            cancelButtonText: globeCancelText,
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
             },
@@ -3606,6 +3620,93 @@ class DocumentControl {
     }
 }
 
+class ExcelToJSON {
+    parseFile(file, callback_render, callback_error = null) {
+        let reader = new FileReader();
+
+        reader.onload = function (e) {
+            let data = e.target.result;
+            let workbook = XLSX.read(data, {
+                type: 'binary'
+            });
+            workbook.SheetNames.forEach(function (sheetName) {
+                let XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                if (callback_render && typeof callback_render === 'function') callback_render(XL_row_object);
+                else console.log(XL_row_object);
+            })
+        };
+
+        reader.onerror = function (ex) {
+            if (callback_error && typeof callback_error === 'function') callback_error(ex);
+            else console.log('onerror: ', ex);
+        };
+
+        reader.readAsBinaryString(file);
+    }
+}
+
+class DateTimeControl {
+    static defaultFormatDatetime = 'YYYY-MM-DD hh:mm:ss';
+    static defaultFormatDate = 'YYYY-MM-DD';
+
+    static convertData(data, fromFormat, toFormat) {
+        return moment(data, fromFormat).format(toFormat);
+    }
+
+    static parseToMoment(data, format){
+        return moment(data, format);
+    }
+
+    static convertEleDate(ele$, opts = {}){
+        let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDate;
+        let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
+
+        let data = $(ele$).val();
+        if (data){
+            let fromFormat = $(ele$).attr('data-locale-format');
+            return DateTimeControl.convertData(data, fromFormat, toFormat);
+        }
+        return defaultIsEmpty;
+    }
+
+    static convertEleDatetime(ele$, opts = {}){
+        let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDatetime;
+        let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
+
+        let data = $(ele$).val();
+        if (data){
+            let fromFormat = $(ele$).attr('data-locale-format');
+            return DateTimeControl.convertData(data, fromFormat, toFormat);
+        }
+        return defaultIsEmpty;
+    }
+
+    static convertDateToMoment(data, opts = {}){
+        let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDate;
+        let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
+        if (data){
+            return moment(data, toFormat);
+        }
+        return defaultIsEmpty;
+    }
+
+    static convertDatetimeToMoment(data, opts = {}){
+        let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDatetime;
+        let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
+        if (data){
+            return moment(data, toFormat);
+        }
+        return defaultIsEmpty;
+    }
+
+    static reformatData(data, fromFormat, toFormat, defaultIsEmpty = ''){
+        if (data){
+            return moment(data, fromFormat).format(toFormat);
+        }
+        return defaultIsEmpty;
+    }
+}
+
 let $x = {
     cls: {
         frm: SetupFormSubmit,
@@ -3617,6 +3718,8 @@ let $x = {
         person: PersonControl,
         doc: DocumentControl,
         bastionField: BastionFieldControl,
+        excelToJSON: ExcelToJSON,
+        datetime: DateTimeControl,
     },
     fn: {
         fileInit: FileUtils.init,
@@ -3651,6 +3754,7 @@ let $x = {
         parseDate: UtilControl.parseDate,
         parseJson: UtilControl.parseJson,
         dumpJson: UtilControl.dumpJson,
+        convertToSlug: UtilControl.convertToSlug,
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,
@@ -3668,6 +3772,14 @@ let $x = {
         hasOwnProperties: UtilControl.hasOwnProperties,
 
         displayRelativeTime: UtilControl.displayRelativeTime,
+
+        reformatData: DateTimeControl.reformatData,
+        parseToMoment: DateTimeControl.parseToMoment,
+        convertDatetime: DateTimeControl.convertData,
+        convertEleDate: DateTimeControl.convertEleDate,
+        convertEleDatetime: DateTimeControl.convertEleDatetime,
+        convertDateToMoment: DateTimeControl.convertDateToMoment,
+        convertDatetimeToMoment: DateTimeControl.convertDatetimeToMoment,
     },
 }
 

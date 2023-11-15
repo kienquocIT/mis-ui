@@ -13,6 +13,8 @@ $(function () {
     ]
     const $createBtn = $('.create-task')
     const $formElm = $('#formOpportunityTask')
+    const $oppElm = $('#opportunity_id')
+    const $empElm = $('#employee_inherit_id')
 
     // lấy danh sách status và render
     function getSttAndRender() {
@@ -29,7 +31,8 @@ $(function () {
             stt_template.find('.btn-add-newtask').off().on('click', function () {
                 const currentData = {
                     'id': item.id,
-                    'title': item.name
+                    'title': item.name,
+                    'selected': true
                 }
                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
                 let createFormTask = setInterval(function () {
@@ -347,7 +350,6 @@ $(function () {
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
-                            const employee = JSON.parse($('#employee_info').text())
                             if (!$('#drawer_task_create').hasClass('open'))
                                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
@@ -364,22 +366,7 @@ $(function () {
                                 moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                             )
                             $('#inputTextEstimate').val(data.estimate)
-                            if (data?.opportunity_data && Object.keys(data.opportunity_data).length){
-                                const $oppsElm = $('#selectOpportunity')
-                                $oppsElm.prop('disabled', false)
-                                // nếu user login là user assign và ko phải là user tạo phiếu thì disable opps select
-                                if (employee.id && data.assign_to?.id.length
-                                    && employee.id === data.assign_to.id
-                                    && employee.id !== data.employee_created.id) $oppsElm.prop('disabled', true)
-                                $oppsElm.attr(
-                                    'data-onload',
-                                    JSON.stringify({
-                                            "id": data.opportunity_data.id,
-                                            "code": data.opportunity_data.code
-                                        }
-                                    )
-                                ).html('').initSelect2()
-                            }
+
                             $('#selectPriority').val(data.priority).trigger('change')
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
@@ -394,19 +381,10 @@ $(function () {
                                 .attr(
                                     'data-value-id', data.employee_created.id
                                 )
-                            if (data?.assign_to) {
-                                data.assign_to.full_name = `${data.assign_to.last_name}. ${data.assign_to.first_name}`
-                                const $assignElm = $('#selectAssignTo')
-                                const isConfig = JSON.parse($('#task_config').text())
-
-                                $assignElm.prop('disabled', false)
-                                if (employee.id === data.assign_to.id &&
-                                employee.id !== data.employee_created.id){
-                                    $assignElm.prop('disabled', true)
-                                    $('.btn-assign').addClass('disabled')
-                                }
-                                $assignElm.html('').attr('data-onload', JSON.stringify(data.assign_to))
-                                AssignToSetup.hasConfig(isConfig)
+                            if (data.employee_inherit){
+                                data.employee_inherit.selected = true
+                                $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
+                                    .attr('data-onload', JSON.stringify(data.employee_inherit))
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
@@ -478,10 +456,10 @@ $(function () {
                 childHTML.find('.card-priority').html(priorityHTML)
                 let date = moment(newData.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
                 childHTML.find('.task-deadline').text(date)
-                const assign_to = newData.assign_to
+                const assign_to = newData.employee_inherit
                 if (Object.keys(assign_to).length > 0) {
                     const randomResource = randomColor[Math.floor(Math.random() * randomColor.length)];
-                    if (assign_to.avatar) childHTML.find('img').attr('src', assign_to.avatar)
+                    if (assign_to?.['avatar']) childHTML.find('img').attr('src', assign_to?.['avatar'])
                     else {
                         childHTML.find('img').remove()
                         childHTML.find('.avatar').addClass('avatar-' + randomResource)
@@ -634,7 +612,6 @@ $(function () {
             $btnCreateSub.off().on('click', function () {
                 // call form create-task.js
                 const taskID = $(this).closest('form').find('[name="id"]').val()
-                const $oppElm = $('#selectOpportunity')
                 let oppData = {}
                 if ($oppElm.val())
                     oppData = {
@@ -803,8 +780,8 @@ $(function () {
                                 moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                             )
                             $('#inputTextEstimate', $form).val(data.estimate)
-                            if (data.opportunity_data?.id)
-                                $('#selectOpportunity', $form).attr('data-onload', JSON.stringify(data.opportunity_data))
+                            if (data?.['opportunity_data']?.id)
+                                $($oppElm, $form).attr('data-onload', JSON.stringify(data?.['opportunity_data']))
                             $('#selectPriority', $form).val(data.priority).trigger('change')
 
                             $('#inputAssigner', $form).val(
@@ -817,7 +794,7 @@ $(function () {
                                 ...data.assign_to
                             }
                             ))
-                            $('#selectStatus, #selectOpportunity, #selectAssignTo', $form).each(function(){
+                            $('#selectStatus, #opportunity_id, #selectAssignTo', $form).each(function(){
                                 $(this).html('')
                                 $(this).initSelect2()
                             })

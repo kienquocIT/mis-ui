@@ -3644,7 +3644,7 @@ class DateTimeControl {
     static defaultFormatDate = 'YYYY-MM-DD';
 
     static convertData(data, fromFormat, toFormat) {
-        return moment(data, fromFormat).format(toFormat);
+        return moment(data, fromFormat).format(toFormat ? toFormat : DateTimeControl.defaultFormatDate);
     }
 
     static parseToMoment(data, format){

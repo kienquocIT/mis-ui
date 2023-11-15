@@ -74,13 +74,14 @@
                                 <sup class="field-required">(*)</sup>
                             </label>
                         </div>
-                        <select class="form-control dropdown-select_two"
-                                data-placeholder="{% trans 'Nothing selected' %}"
-                                name="application"
+                        <select
+                                class="form-select"
                                 id="select-box-features"
-                                data-multiple="false"
-                                data-prefix="tenant_application_list"
-                                data-url="{% url 'TenantApplicationListAPI' %}"
+                                data-url="{% url "TenantApplicationListAPI" %}"
+                                data-method="GET"
+                                name="application"
+                                data-keyResp="tenant_application_list"
+                                required
                                 disabled
                         ></select>
                     </div>
@@ -97,20 +98,14 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <button class="btn btn-flush-success flush-soft-hover mb-2"
+                        <button
                                 type="button"
+                                class="btn btn-outline-primary"
                                 title="{% trans 'Add new zone' %}"
                                 data-bs-target="#add_zone"
                                 data-required-text="{% trans 'Please select Function Applied first' %}"
                         >
-                            <span class="icon">
-                                <span class="feather-icon">
-                                    <i data-feather="plus-square"></i>
-                                </span>
-                                <span class="font-3 ml-2 ">
-                                    {% trans 'Add new zone' %}
-                                </span>
-                            </span>
+                            <span><span>{% trans 'Add new zone' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                         </button>
                     </div>
                 </div>
@@ -169,19 +164,12 @@
                     <div class="col-12">
                         <button
                                 type="button"
-                                class="btn btn-flush-success flush-soft-hover open-modal-node wf-is-editable"
+                                class="btn btn-outline-primary open-modal-node wf-is-editable"
                                 data-bs-toggle="modal"
                                 data-bs-target="#nodeModalCreate"
                                 disabled
                         >
-                            <span class="icon">
-                                    <span class="feather-icon">
-                                        <i data-feather="plus-square"></i>
-                                    </span>
-                                    <span class="font-3 ml-1">
-                                        {% trans 'Add new node' %}
-                                    </span>
-                                </span>
+                            <span><span>{% trans 'Add new node' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                         </button>
 
                         <div class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"

@@ -289,7 +289,10 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 data: 'function',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    return `<span class="text-primary">${FunctionNumberTableData[row.function].function}</span>`;
+                    if (row.function === 0) {
+                        return `<span class="text-primary">${FunctionNumberTableData[row.function].function}</span>`;
+                    }
+                    return `<span class="text-secondary">${FunctionNumberTableData[row.function].function}</span>`;
                 }
             }, {
                 data: '',

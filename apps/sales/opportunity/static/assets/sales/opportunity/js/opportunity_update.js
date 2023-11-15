@@ -1875,8 +1875,16 @@ $(document).ready(function () {
 
             // event create related features
 
-            $(document).on('click', '.btn-create-related-feature', function () {
+            $(document).on('click', '#create-advance-payment-shortcut', function () {
                 let url = $(this).attr('data-url') + `?type=0&&sale_code_mapped=${$(this).attr('data-sale_code_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
+                window.open(url, '_blank');
+            })
+            $(document).on('click', '#create-payment-shortcut', function () {
+                let url = $(this).attr('data-url') + `?type=0&&sale_code_mapped=${$(this).attr('data-sale_code_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
+                window.open(url, '_blank');
+            })
+            $(document).on('click', '#create-return-advance-shortcut', function () {
+                let url = $(this).attr('data-url') + `?opportunity=${$(this).attr('data-opportunity_mapped')}`
                 window.open(url, '_blank');
             })
 
@@ -1963,6 +1971,8 @@ $(document).ready(function () {
                             }
                         }
                     })
+
+                $('#create-return-advance-shortcut').attr('data-opportunity_mapped', encodeURIComponent(JSON.stringify({'id': dataInitSaleCode?.['id'], 'code': dataInitSaleCode?.['code'], 'title': dataInitSaleCode?.['title']})))
             })
         }
     )

@@ -186,21 +186,21 @@ function APLoadCreator(data) {
 }
 
 function APLoadCreatedDate() {
-    $('#created_date_id').dateRangePickerDefault({
+    $('#created_date_id').daterangepicker({
         singleDatePicker: true,
         timePicker: true,
-        showDropdowns: true,
+        showDropdowns: false,
         minYear: 1901,
         locale: {
             format: 'YYYY-MM-DD'
         },
         "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'),10)
+        maxYear: parseInt(moment().format('YYYY'), 10)
     }).prop('disabled', true);
 }
 
 function APLoadReturnDate() {
-    $('#return_date_id').dateRangePickerDefault({
+    $('#return_date_id').daterangepicker({
         singleDatePicker: true,
         timePicker: false,
         showDropdowns: true,
@@ -884,13 +884,30 @@ function LoadDetailAP(option) {
 }
 
 class AdvancePaymentHandle {
-    load(opp_obj) {
+    async load(sale_code_mapped, type, quotation_object, sale_order_object, ap_mapped_id) {
         APLoadCreatedDate();
         APLoadReturnDate();
         APLoadCreator(initEmployee);
         APLoadSupplier();
         APLoadQuotation();
         APLoadSaleOrder();
+        if (sale_code_mapped !== null && type !== null) {
+            if (type === 0) {
+                await opp_mapped_select.initSelect2({
+                    data: sale_code_mapped,
+                    allowClear: true,
+                }).promise();
+                opp_mapped_select.val(sale_code_mapped.id).attr('disabled', true);
+                tableLineDetail.find('tbody').html('');
+                quotation_mapped_select.find('option').remove();
+                sale_order_mapped_select.find('option').remove();
+                quotation_mapped_select.prop('disabled', true);
+                sale_order_mapped_select.prop('disabled', true);
+
+                APLoadQuotation(quotation_object)
+                APLoadSaleOrder(sale_order_object)
+            }
+        }
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));

@@ -156,16 +156,16 @@ $('#input-file-now').dropify({
 });
 
 function PaymentLoadCreatedDate() {
-    $('#created_date_id').dateRangePickerDefault({
+    $('#created_date_id').daterangepicker({
         singleDatePicker: true,
         timePicker: true,
-        showDropdowns: true,
+        showDropdowns: false,
         minYear: 1901,
         locale: {
             format: 'YYYY-MM-DD'
         },
         "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'),10)
+        maxYear: parseInt(moment().format('YYYY'), 10)
     }).prop('disabled', true);
 }
 

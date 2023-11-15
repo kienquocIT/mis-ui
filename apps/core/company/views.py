@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg, TypeCheck
+
+from apps.core.account.models import Company
+from apps.shared import mask_view, ApiURL, ServerAPI, TypeCheck
 
 
 class CompanyList(View):
@@ -13,7 +15,10 @@ class CompanyList(View):
         menu_active='menu_company_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        ctx = {
+            'ui_domain': settings.UI_DOMAIN
+        }
+        return ctx, status.HTTP_200_OK
 
 
 class CompanyCreate(View):
@@ -195,4 +200,15 @@ class CompanyConfigDetailAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def put(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_CONFIG).put(data=request.data)
+        if resp.state:
+            sub_domain = request.data.get('sub_domain', None)
+            if sub_domain:
+                company_id = request.user.company_current_data.get('id', None)
+                if company_id:
+                    try:
+                        company_obj = Company.objects.get(pk=company_id)
+                        company_obj.sub_domain = sub_domain
+                        company_obj.save()
+                    except Company.DoesNotExist:
+                        pass
         return resp.auto_return()

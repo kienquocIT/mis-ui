@@ -59,39 +59,21 @@ $(function () {
                         targets: 6,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            let value = '0';
-                            for (let indicator of row?.['indicator']) {
-                                if (indicator?.['code'] === 'IN0001') {
-                                    value = indicator?.['indicator_value'];
-                                }
-                            }
-                            return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(value)}"></span>`;
+                            return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 7,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            let value = '0';
-                            for (let indicator of row?.['indicator']) {
-                                if (indicator?.['code'] === 'IN0003') {
-                                    value = indicator?.['indicator_value'];
-                                }
-                            }
-                            return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(value)}"></span>`;
+                            return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 8,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            let value = '0';
-                            for (let indicator of row?.['indicator']) {
-                                if (indicator?.['code'] === 'IN0005') {
-                                    value = indicator?.['indicator_value'];
-                                }
-                            }
-                            return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(value)}"></span>`;
+                            return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
                     },
                 ],
@@ -100,24 +82,6 @@ $(function () {
                     $.fn.initMaskMoney2();
                 },
             });
-        }
-
-        function loadBoxEmployee() {
-            if (boxGroup.val()) {
-                boxEmployee.initSelect2({
-                    'dataParams': {'group_id': boxGroup.val()},
-                    callbackTextDisplay: function (item) {
-                        return item?.['full_name'] || '';
-                    },
-                });
-            } else {
-                boxEmployee.initSelect2({
-                    'allowClear': true,
-                    callbackTextDisplay: function (item) {
-                        return item?.['full_name'] || '';
-                    },
-                });
-            }
         }
 
         function loadTotal() {
@@ -143,8 +107,21 @@ $(function () {
             eleGrossProfit.attr('data-init-money', String(newGrossProfit));
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
-
         loadDbl();
+
+        function loadBoxEmployee() {
+            boxEmployee.empty();
+            if (boxGroup.val()) {
+                boxEmployee.initSelect2({
+                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
+                    'allowClear': true,
+                });
+            } else {
+                boxEmployee.initSelect2({
+                    'allowClear': true,
+                });
+            }
+        }
 
         boxGroup.initSelect2({'allowClear': true,});
         loadBoxEmployee();
@@ -164,7 +141,6 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            boxEmployee.empty();
             loadBoxEmployee();
             $table.DataTable().clear().draw();
             loadTotal();
@@ -178,10 +154,10 @@ $(function () {
         btnView.on('click', function () {
             let dataParams = {};
             if (boxGroup.val()) {
-                dataParams['group_inherit_id'] = boxGroup.val();
+                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
-                dataParams['employee_inherit_id'] = boxEmployee.val();
+                dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
             let date = $('#report-revenue-date-approved').val();
             if (date) {

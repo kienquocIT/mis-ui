@@ -16,32 +16,38 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    {% include 'extends/systems/page_actions.html' with is_create=True create_link='#' create_attr='class="btn-show-modal" data-bs-toggle="modal" data-bs-target="#modal-product-and-expense"' %}
 
-    <a href="#" class="btn-show-modal" data-bs-toggle="modal" data-bs-target="#modal-product-and-expense">
-        <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Add' %}</span>
-                <span class="icon">
-                    <i class="fa-solid fa-plus"></i>
-                </span>
-            </span>
-        </button>
-    </a>
-
+{#    <a#}
+{#            href="{% url 'SaleDataImportDataList' %}"#}
+{#    >#}
+{#        <button class="btn btn-outline-primary">#}
+{#                <span>#}
+{#                    <span>{% trans 'Import Data' %}</span>#}
+{#                    <span class="icon">#}
+{#                        <i class="fa-solid fa-file-import"></i>#}
+{#                    </span>#}
+{#                </span>#}
+{#        </button>#}
+{#    </a>#}
 {% endblock %}
 {% block pageContent %}
     <div class="row">
         <div class="col-3">
             <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
                 <li class="nav-item">
-                    <a class="nav-link active product-and-expense" data-bs-toggle="tab"
-                       data-collapse="section-product-type">
+                    <a
+                            class="nav-link active product-and-expense" data-bs-toggle="tab"
+                            data-collapse="section-product-type"
+                    >
                         <span class="nav-link-text">{% trans 'Product Type' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link product-and-expense" data-bs-toggle="tab"
-                       data-collapse="section-product-category">
+                    <a
+                            class="nav-link product-and-expense" data-bs-toggle="tab"
+                            data-collapse="section-product-category"
+                    >
                         <span class="nav-link-text">{% trans 'Product Category' %}</span>
                     </a>
                 </li>
@@ -51,8 +57,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link unit-measure-group" data-bs-toggle="tab"
-                       data-collapse="section-unit-measure-group">
+                    <a
+                            class="nav-link unit-measure-group" data-bs-toggle="tab"
+                            data-collapse="section-unit-measure-group"
+                    >
                         <span class="nav-link-text">{% trans 'Unit Of Measure Group' %}</span>
                     </a>
                 </li>
@@ -63,10 +71,12 @@
 
             <!-- Section Product Type -->
             <div class="lookup-data" id="section-product-type" style="display: block">
-                <table id="datatable-product-type-list" class="table nowrap w-100 mb-5"
-                       data-url="{% url "ProductTypeListAPI" %}"
-                       data-url-detail="{% url "ProductTypeDetailAPI" pk=0 %}"
-                       data-method="GET">
+                <table
+                        id="datatable-product-type-list" class="table nowrap w-100 mb-5"
+                        data-url="{% url "ProductTypeListAPI" %}"
+                        data-url-detail="{% url "ProductTypeDetailAPI" pk=0 %}"
+                        data-method="GET"
+                >
                     <thead>
                     <th class="w-5">#</th>
                     <th class="w-30">{% trans "Name" %}</th>
@@ -78,10 +88,12 @@
 
             <!-- Section product category-->
             <div class="lookup-data" id="section-product-category" style="display: none">
-                <table id="datatable-product-category-list" class="table nowrap w-100 mb-5"
-                       data-url="{% url "ProductCategoryListAPI" %}"
-                       data-url-detail="{% url "ProductCategoryDetailAPI" pk=0 %}"
-                       data-method="GET">
+                <table
+                        id="datatable-product-category-list" class="table nowrap w-100 mb-5"
+                        data-url="{% url "ProductCategoryListAPI" %}"
+                        data-url-detail="{% url "ProductCategoryDetailAPI" pk=0 %}"
+                        data-method="GET"
+                >
                     <thead>
                     <th class="w-5">#</th>
                     <th class="w-30">{% trans "Name" %}</th>
@@ -93,10 +105,12 @@
 
             <!-- Section unit of measure-->
             <div class="lookup-data" id="section-unit-measure" style="display: none">
-                <table id="datatable-unit-measure-list" class="table nowrap w-100 mb-5"
-                       data-url="{% url "UnitOfMeasureListAPI" %}"
-                       data-url-detail="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
-                       data-method="GET">
+                <table
+                        id="datatable-unit-measure-list" class="table nowrap w-100 mb-5"
+                        data-url="{% url "UnitOfMeasureListAPI" %}"
+                        data-url-detail="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
+                        data-method="GET"
+                >
                     <thead>
                     <th class="w-5">#</th>
                     <th class="w-20">{% trans "Code" %}</th>
@@ -110,10 +124,12 @@
 
             <!-- Section unit of measure group-->
             <div class="lookup-data" id="section-unit-measure-group" style="display: none">
-                <table id="datatable-unit-measure-group-list" class="table nowrap w-100 mb-5"
-                       data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                       data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
-                       data-method="GET">
+                <table
+                        id="datatable-unit-measure-group-list" class="table nowrap w-100 mb-5"
+                        data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                        data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
+                        data-method="GET"
+                >
                     <thead>
                     <th class="w-5">#</th>
                     <th class="w-30">{% trans "Name" %}</th>
@@ -125,13 +141,17 @@
         </div>
     </div>
     <!-- Modal Create Product, Expense -->
-    <form id="form-create-product-and-expense" data-method="POST" data-lookup="section-product-type"
-          data-url-product-type="{% url "ProductTypeListAPI" %} "
-          data-url-product-category="{% url "ProductCategoryListAPI" %} ">
+    <form
+            id="form-create-product-and-expense" data-method="POST" data-lookup="section-product-type"
+            data-url-product-type="{% url "ProductTypeListAPI" %} "
+            data-url-product-category="{% url "ProductCategoryListAPI" %} "
+    >
         {% csrf_token %}
-        <div class="modal fade" id="modal-product-and-expense" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
+        <div
+                class="modal fade" id="modal-product-and-expense" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter"
+                aria-hidden="true"
+        >
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -144,8 +164,10 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control" type="text" name="title"
-                                       placeholder="Input name">
+                                <input
+                                        class="form-control" type="text" name="title"
+                                        placeholder="Input name"
+                                >
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Description" %}</label>
@@ -154,10 +176,14 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="submit" form="form-create-product-and-expense"
-                                    class="btn btn-primary">{% trans 'Save' %}</button>
+                            <button
+                                    type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                            >{% trans 'Close' %}</button>
+                            <button
+                                    type="submit" form="form-create-product-and-expense"
+                                    class="btn btn-primary"
+                            >{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -167,11 +193,16 @@
     <!-- End Modal Create Product, Expense-->
 
     <!-- Modal Create Unit Of Measure -->
-    <form id="form-create-unit-measure" data-method="POST"
-          data-url="{% url "UnitOfMeasureListAPI" %}">
+    <form
+            id="form-create-unit-measure" data-method="POST"
+            data-url="{% url "UnitOfMeasureListAPI" %}"
+    >
         {% csrf_token %}
-        <div class="modal fade" id="modal-unit-measure" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
+        <div
+                class="modal fade" id="modal-unit-measure" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter"
+                aria-hidden="true"
+        >
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -186,15 +217,19 @@
                                 <div class="form-group">
                                     <label class="form-label required">{% trans "Select Group" %}
                                     </label>
-                                    <select id="select-box-unit-measure-group" class="form-select" data-method="GET"
+                                    <select
+                                            id="select-box-unit-measure-group" class="form-select" data-method="GET"
                                             data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"
-                                            data-keyResp="unit_of_measure_group"></select>
+                                            data-keyResp="unit_of_measure_group"
+                                    ></select>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="check-referenced-unit"
-                                           name="is_referenced_unit" disabled>
+                                    <input
+                                            class="form-check-input mt-1" type="checkbox" id="check-referenced-unit"
+                                            name="is_referenced_unit" disabled
+                                    >
                                     <label class="form-check-label" for="check-referenced-unit">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
@@ -206,8 +241,10 @@
                                 <div class="form-group">
                                     <label class="form-label required">{% trans "Code" %}
                                     </label>
-                                    <input id="inp-code" class="form-control" type="text" name="code" readonly
-                                           placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
+                                    <input
+                                            id="inp-code" class="form-control" type="text" name="code" readonly
+                                            placeholder="CODE01" oninput="this.value=this.value.toUpperCase()"
+                                    >
                                 </div>
                             </div>
                             <div class="col-6">
@@ -216,8 +253,10 @@
                                         <div class="form-group">
                                             <label class="form-label required">{% trans "Ratio" %}
                                             </label>
-                                            <input class="form-control" type="text" name="ratio" readonly
-                                                   placeholder="Input ratio" id="ratio-unit">
+                                            <input
+                                                    class="form-control" type="text" name="ratio" readonly
+                                                    placeholder="Input ratio" id="ratio-unit"
+                                            >
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -235,32 +274,42 @@
                                     <label class="form-label">{% trans "Name" %}
                                         <span class="field-required">*</span>
                                     </label>
-                                    <input class="form-control" type="text" name="title" readonly
-                                           placeholder="Input name" id="name-unit">
+                                    <input
+                                            class="form-control" type="text" name="title" readonly
+                                            placeholder="Input name" id="name-unit"
+                                    >
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="form-group">
                                     <label class="form-label required">{% trans "Rounding" %}
                                     </label>
-                                    <input class="form-control" type="number" name="rounding" id="inp-rounding"
-                                           placeholder="Input rounding" min="0" step="0.001" value="5" readonly>
+                                    <input
+                                            class="form-control" type="number" name="rounding" id="inp-rounding"
+                                            placeholder="Input rounding" min="0" step="0.001" value="5" readonly
+                                    >
                                 </div>
                             </div>
                         </div>
                         <div class="row" id="notify-area" hidden>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label style="color: red; font-style: italic; font-size: small"
-                                           id="notify-area-label"></label>
+                                    <label
+                                            style="color: red; font-style: italic; font-size: small"
+                                            id="notify-area-label"
+                                    ></label>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="submit" form="form-create-unit-measure"
-                                    class="btn btn-primary">{% trans 'Save' %}</button>
+                            <button
+                                    type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                            >{% trans 'Close' %}</button>
+                            <button
+                                    type="submit" form="form-create-unit-measure"
+                                    class="btn btn-primary"
+                            >{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -270,12 +319,16 @@
     <!-- End Modal Create Unit Of Measure-->
 
     <!-- Modal Create Unit Of Measure Group -->
-    <form id="form-create-unit-measure-group" data-method="POST"
-          data-url="{% url "UnitOfMeasureGroupListAPI" %} ">
+    <form
+            id="form-create-unit-measure-group" data-method="POST"
+            data-url="{% url "UnitOfMeasureGroupListAPI" %} "
+    >
         {% csrf_token %}
-        <div class="modal fade" id="modal-unit-measure-group" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
+        <div
+                class="modal fade" id="modal-unit-measure-group" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter"
+                aria-hidden="true"
+        >
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -288,16 +341,22 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control" type="text" name="title"
-                                       placeholder="Input name">
+                                <input
+                                        class="form-control" type="text" name="title"
+                                        placeholder="Input name"
+                                >
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="submit" form="form-create-unit-measure-group"
-                                    class="btn btn-primary">{% trans 'Save' %}</button>
+                            <button
+                                    type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                            >{% trans 'Close' %}</button>
+                            <button
+                                    type="submit" form="form-create-unit-measure-group"
+                                    class="btn btn-primary"
+                            >{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -307,12 +366,16 @@
     <!-- End Modal Create Unit Of Measure Group -->
 
     <!-- Modal Edit Unit Of Measure -->
-    <form id="form-edit-unit-measure" data-method="PUT"
-          data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %}">
+    <form
+            id="form-edit-unit-measure" data-method="PUT"
+            data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
+    >
         {% csrf_token %}
-        <div class="modal fade" id="modal-detail-unit-measure" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
+        <div
+                class="modal fade" id="modal-detail-unit-measure" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter"
+                aria-hidden="true"
+        >
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -328,10 +391,12 @@
                                     <label class="form-label required">{% trans "Select Group" %}
                                     </label>
                                     <input id="group-id" disabled hidden>
-                                    <select class="form-select"
+                                    <select
+                                            class="form-select"
                                             data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
                                             id="select-box-edit-uom-group"
-                                            name="group" data-keyResp="unit_of_measure_group" disabled>
+                                            name="group" data-keyResp="unit_of_measure_group" disabled
+                                    >
                                     </select>
                                 </div>
                                 {#                                <div class="form-group" id="inp-edit-uom-group-div" hidden>#}
@@ -344,8 +409,10 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="check-edit-unit"
-                                           name="is_referenced_unit" disabled>
+                                    <input
+                                            class="form-check-input mt-1" type="checkbox" id="check-edit-unit"
+                                            name="is_referenced_unit" disabled
+                                    >
                                     <label class="form-check-label" for="check-edit-unit">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
@@ -357,8 +424,10 @@
                                 <div class="form-group">
                                     <label class="form-label required">{% trans "Code" %}
                                     </label>
-                                    <input class="form-control" type="text" name="code" id="inp-code-uom" readonly
-                                           style="border: None">
+                                    <input
+                                            class="form-control" type="text" name="code" id="inp-code-uom" readonly
+                                            style="border: None"
+                                    >
                                 </div>
                             </div>
                             <div class="col-6">
@@ -368,8 +437,10 @@
                                             <label class="form-label required">{% trans "Ratio" %}
                                             </label>
                                             <input id="group-referenced-unit-name" disabled hidden>
-                                            <input class="form-control" type="text" name="ratio"
-                                                   placeholder="Input ratio" id="inp-ratio-unit">
+                                            <input
+                                                    class="form-control" type="text" name="ratio"
+                                                    placeholder="Input ratio" id="inp-ratio-unit"
+                                            >
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -386,8 +457,10 @@
                                 <div class="form-group inp-can-edit">
                                     <label class="form-label required">{% trans "Name" %}
                                     </label>
-                                    <input class="form-control" type="text" name="title"
-                                           placeholder="Input name" id="inp-edit-name-unit" value="">
+                                    <input
+                                            class="form-control" type="text" name="title"
+                                            placeholder="Input name" id="inp-edit-name-unit" value=""
+                                    >
 
                                 </div>
                             </div>
@@ -395,8 +468,10 @@
                                 <div class="form-group inp-can-edit">
                                     <label class="form-label required">{% trans "Rounding" %}
                                     </label>
-                                    <input class="form-control" type="number" name="rounding"
-                                           placeholder="Input rounding" id="inp-rounding-edit" min="0" step="0.001">
+                                    <input
+                                            class="form-control" type="number" name="rounding"
+                                            placeholder="Input rounding" id="inp-rounding-edit" min="0" step="0.001"
+                                    >
 
                                 </div>
                             </div>
@@ -404,16 +479,22 @@
                         <div class="row" id="notify-area-edit" hidden>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label style="color: red; font-style: italic; font-size: small"
-                                           id="notify-area-edit-label"></label>
+                                    <label
+                                            style="color: red; font-style: italic; font-size: small"
+                                            id="notify-area-edit-label"
+                                    ></label>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="submit" form="form-edit-unit-measure"
-                                    class="btn btn-primary">{% trans 'Save' %}</button>
+                            <button
+                                    type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                            >{% trans 'Close' %}</button>
+                            <button
+                                    type="submit" form="form-edit-unit-measure"
+                                    class="btn btn-primary"
+                            >{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -423,13 +504,17 @@
     <!-- End Modal Edit Unit Of Measure-->
 
     <!-- Modal Edit Product, Expense -->
-    <form id="form-edit-product-and-expense" data-method="PUT"
-          data-url-product-type="{% url "ProductTypeDetailAPI" pk=0 %} "
-          data-url-product-category="{% url "ProductCategoryDetailAPI" pk=0 %} ">
+    <form
+            id="form-edit-product-and-expense" data-method="PUT"
+            data-url-product-type="{% url "ProductTypeDetailAPI" pk=0 %} "
+            data-url-product-category="{% url "ProductCategoryDetailAPI" pk=0 %} "
+    >
         {% csrf_token %}
-        <div class="modal fade" id="modal-detail-product-and-expense" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
+        <div
+                class="modal fade" id="modal-detail-product-and-expense" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter"
+                aria-hidden="true"
+        >
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -442,22 +527,30 @@
                         <div class="row">
                             <div class="form-group inp-can-edit" id="inp-edit-name-div">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control inp-can-edit" type="text" name="title"
-                                       placeholder="Input name" id="inp-edit-name">
+                                <input
+                                        class="form-control inp-can-edit" type="text" name="title"
+                                        placeholder="Input name" id="inp-edit-name"
+                                >
                                 <span></span>
                             </div>
                             <div class="form-group inp-can-edit" id="inp-edit-description-div">
                                 <label class="form-label">{% trans "Description" %}</label>
-                                <textarea class="form-control inp-can-edit" type="text" name="description"
-                                          id="inp-edit-description"></textarea>
+                                <textarea
+                                        class="form-control inp-can-edit" type="text" name="description"
+                                        id="inp-edit-description"
+                                ></textarea>
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="submit" form="form-edit-product-and-expense"
-                                    class="btn btn-primary">{% trans 'Save' %}</button>
+                            <button
+                                    type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                            >{% trans 'Close' %}</button>
+                            <button
+                                    type="submit" form="form-edit-product-and-expense"
+                                    class="btn btn-primary"
+                            >{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -467,12 +560,16 @@
     <!-- End Modal Edit Product, Expense-->
 
     <!-- Modal Edit Unit Of Measure Group -->
-    <form id="form-edit-unit-measure-group" data-method="PUT"
-          data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %} ">
+    <form
+            id="form-edit-unit-measure-group" data-method="PUT"
+            data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %} "
+    >
         {% csrf_token %}
-        <div class="modal fade" id="modal-detail-unit-measure-group" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
+        <div
+                class="modal fade" id="modal-detail-unit-measure-group" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter"
+                aria-hidden="true"
+        >
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -485,15 +582,21 @@
                         <div class="row">
                             <div class="form-group inp-can-edit" id="inp-edit-name-uom-group-div">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control inp-can-edit" type="text" name="title"
-                                       id="inp-edit-name-uom-group"
-                                       placeholder="Input name">
+                                <input
+                                        class="form-control inp-can-edit" type="text" name="title"
+                                        id="inp-edit-name-uom-group"
+                                        placeholder="Input name"
+                                >
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="submit" class="btn btn-primary" form="form-edit-unit-measure-group">{% trans 'Save' %}</button>
+                            <button
+                                    type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            >{% trans 'Close' %}</button>
+                            <button
+                                    type="submit" class="btn btn-primary" form="form-edit-unit-measure-group"
+                            >{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>

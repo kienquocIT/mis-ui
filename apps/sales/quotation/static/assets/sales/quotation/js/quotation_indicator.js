@@ -107,30 +107,6 @@ function dataTableSaleOrderIndicator(data) {
     });
 }
 
-// function loadQuotationIndicator(indicator_id) {
-//     let jqueryId = '#' + indicator_id;
-//     let ele = $(jqueryId);
-//     if (!ele.val()) {
-//         let url = ele.attr('data-url');
-//         let method = ele.attr('data-method');
-//         $.fn.callAjax(url, method).then(
-//             (resp) => {
-//                 let data = $.fn.switcherResp(resp);
-//                 if (data) {
-//                     if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
-//                         ele.val(JSON.stringify(data.quotation_indicator_list));
-//                         calculateIndicator(data.quotation_indicator_list);
-//                     }
-//                 }
-//             }
-//         )
-//     } else {
-//         let data_list = JSON.parse(ele.val());
-//         calculateIndicator(data_list);
-//     }
-//
-// }
-
 function calculateIndicator(indicator_list) {
     let result_list = [];
     let result_json = {};
@@ -368,22 +344,19 @@ $(function () {
         initDataTableIndicator();
 
         $('#tab-indicator').on('click', function () {
-            let btnEdit = $('#btn-edit_quotation');
-            if (btnEdit.length) {
-                if (btnEdit.is(':hidden')) {
-                    indicatorClass.loadQuotationIndicator('quotation-indicator-data');
-                } else {
-                    if (tableIndicator[0].querySelector('.dataTables_empty')) {
-                        let detailData = JSON.parse($('#quotation-detail-data').val());
-                        tableIndicator.DataTable().destroy();
-                        if (!tableIndicator.hasClass('sale-order')) {
-                            dataTableQuotationIndicator(detailData.quotation_indicators_data);
-                        } else {
-                            dataTableSaleOrderIndicator(detailData?.['sale_order_indicators_data']);
-                        }
+            let form = $('#frm_quotation_create');
+            if (form.attr('data-method') === 'GET') { // load indicators if DetailPage
+                let detailDataRaw = $('#quotation-detail-data').val();
+                if (detailDataRaw) {
+                    let detailData = JSON.parse(detailDataRaw);
+                    tableIndicator.DataTable().clear().draw();
+                    if (!tableIndicator.hasClass('sale-order')) {
+                        tableIndicator.DataTable().rows.add(detailData?.['quotation_indicators_data']).draw();
+                    } else {
+                        tableIndicator.DataTable().rows.add(detailData?.['sale_order_indicators_data']).draw();
                     }
                 }
-            } else {
+            } else { // calculate indicators if CreatePage & UpdatePage
                 indicatorClass.loadQuotationIndicator('quotation-indicator-data');
             }
         });

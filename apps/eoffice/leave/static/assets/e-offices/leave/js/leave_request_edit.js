@@ -8,7 +8,7 @@ $(document).ready(function () {
         'method': 'GET',
     }).then(
         (resp) => {
-            let data = $.fn.switcherResp(resp).leave_request_detail
+            let data = $.fn.switcherResp(resp)['leave_request_detail']
             WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
             $x.fn.renderCodeBreadcrumb(data);
             $('#inputTitle').val(data.title)
@@ -28,7 +28,7 @@ $(document).ready(function () {
 
             $EmpElm.attr('data-onload', JSON.stringify(data.employee_inherit)).append(
                 `<option selected value="${data.employee_inherit.id}">${
-                    data.employee_inherit.full_name}</option>`).initSelect2()
+                    data.employee_inherit.full_name}</option>`).initSelect2({ 'templateResult': employeeTemplate})
 
             // wait until dropdown employee inherit init loaded then trigger element
             const awEmp = setInterval(function () {
@@ -41,6 +41,7 @@ $(document).ready(function () {
                     $EmpElm.trigger('Employee.Loaded')
                 }
             }, 200)
+            if (data.system_status >= 2) $('#idxRealAction').remove()
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )

@@ -77,7 +77,6 @@ $(async function () {
                         if (prod_data?.['uom_data']) {
                             item['uom_so'] = prod_data?.['uom_data'];
                         }
-                        newData.push(item);
                     }
                     else if (!config.is_picking && config.is_partial_ship) { // TH: none_picking_many_delivery
                         let finalUOMRate = 1;
@@ -90,7 +89,6 @@ $(async function () {
                         if (prod_data?.['uom_data']) {
                             item['uom_so'] = prod_data?.['uom_data'];
                         }
-                        newData.push(item);
                     }
                     else if ((config.is_picking && !config.is_partial_ship) && delivery) { // TH: has_picking_one_delivery
                         // config 3
@@ -100,7 +98,10 @@ $(async function () {
                                 && val.uom === prod_data.uom_data.id
                             ) // Check if warehouse of product warehouse in list warehouse have picked
                             {
-                                item.stock_amount = prod_data.ready_quantity;
+                                item['stock_amount'] = item?.['picked_ready'];
+                                if (prod_data.picked_quantity) {
+                                    item['picked'] = prod_data?.['picked_quantity'];
+                                }
                                 if (prod_data?.['uom_data']) {
                                     item['uom_so'] = prod_data?.['uom_data'];
                                 }
@@ -110,10 +111,14 @@ $(async function () {
                                 if (val?.['serial_data']) {
                                     item['serial_data'] = val?.['serial_data'];
                                 }
-                                newData.push(item);
                             } else {
-                                item.stock_amount = 0;
-                                item.picked = 0;
+                                item['stock_amount'] = item?.['picked_ready'];
+                                if (prod_data.picked_quantity) {
+                                    item['picked'] = prod_data?.['picked_quantity'];
+                                }
+                                if (prod_data?.['uom_data']) {
+                                    item['uom_so'] = prod_data?.['uom_data'];
+                                }
                             }
                         }
                         // change column name stock -> picked
@@ -134,8 +139,11 @@ $(async function () {
                                     && val.uom === prod_data.uom_data.id
                                 ) // Check if warehouse of product warehouse in list warehouse have picked
                                 {
-                                    item.stock_amount = prod_data.ready_quantity
-                                    if (prod_data.picked_quantity) item.picked = prod_data.picked_quantity
+                                    // item['stock_amount'] = prod_data?.['ready_quantity'];
+                                    item['stock_amount'] = item?.['picked_ready'];
+                                    if (prod_data.picked_quantity) {
+                                        item['picked'] = prod_data?.['picked_quantity'];
+                                    }
                                     if (prod_data?.['uom_data']) {
                                         item['uom_so'] = prod_data?.['uom_data'];
                                     }
@@ -145,10 +153,14 @@ $(async function () {
                                     if (val?.['serial_data']) {
                                         item['serial_data'] = val?.['serial_data'];
                                     }
-                                    newData.push(item);
                                 } else {
-                                    item.stock_amount = 0;
-                                    item.picked = 0;
+                                    item['stock_amount'] = item?.['picked_ready'];
+                                    if (prod_data.picked_quantity) {
+                                        item['picked'] = prod_data?.['picked_quantity'];
+                                    }
+                                    if (prod_data?.['uom_data']) {
+                                        item['uom_so'] = prod_data?.['uom_data'];
+                                    }
                                 }
                             }
                         }
@@ -165,7 +177,7 @@ $(async function () {
                         item['lot_data'] = [];
                         item['serial_data'] = [];
                     }
-                    // newData.push(item)
+                    newData.push(item);
                 }
                 table.not('.dataTable').DataTableDefault({
                     data: newData,
@@ -319,10 +331,15 @@ $(async function () {
                                     }
                                     if (data?.['product']?.['general_traceability_method'] === 2) {
                                         let tableSerial = $('#datable-delivery-wh-serial');
+                                        let dataParam = {'product_warehouse_id': productWHID, 'is_delete': false};
+                                        if ($form.attr('data-method') === 'GET') {
+                                            dataParam = {'product_warehouse_id': productWHID};
+                                        }
+                                        let detailData = [];
                                         $.fn.callAjax2({
                                                 'url': tableSerial.attr('data-url'),
                                                 'method': tableSerial.attr('data-method'),
-                                                'data': {'product_warehouse_id': productWHID, 'is_delete': false},
+                                                'data': dataParam,
                                                 'isDropdown': true,
                                             }
                                         ).then(
@@ -335,13 +352,21 @@ $(async function () {
                                                                 for (let delivery_serial of data?.['serial_data']) {
                                                                     if (delivery_serial?.['product_warehouse_serial_id'] === serial?.['id']) {
                                                                         serial['is_checked'] = true;
+                                                                        if ($form.attr('data-method') === 'GET') {
+                                                                            serial['uom_so'] = data?.['uom_so'];
+                                                                            detailData.push(serial);
+                                                                        }
                                                                         break;
                                                                     }
                                                                 }
                                                             }
                                                             serial['uom_so'] = data?.['uom_so'];
                                                         }
-                                                        prodTable.dataTableTableSerial(dataSerial.warehouse_serial_list);
+                                                        if ($form.attr('data-method') === 'GET') {
+                                                            prodTable.dataTableTableSerial(detailData);
+                                                        } else {
+                                                            prodTable.dataTableTableSerial(dataSerial.warehouse_serial_list);
+                                                        }
                                                         this.checked = true;
                                                         $(row).css('background-color', '#ebfcf5');
                                                     }
@@ -535,6 +560,19 @@ $(async function () {
                                 + `<p id="prod_row-${meta.row}">${quantity}<p/>`
                                 + `<button type="button" class="btn btn-flush-primary btn-animated select-prod">`
                                 + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+
+                            let detailDataRaw = $('#request-data').text();
+                            if (detailDataRaw) {
+                                let detailData = JSON.parse(detailDataRaw);
+                                if (detailData?.['state'] === 0) {
+                                    html = `<div class="d-flex justify-content-evenly align-items-center flex-gap-3">`
+                                            + `<p id="prod_row-${meta.row}">${quantity}<p/>`
+                                            + `<button type="button" class="btn btn-flush-primary btn-animated select-prod" disabled>`
+                                            + `<i class="fa-solid fa-ellipsis"></i></button></div>`;
+                                }
+                            }
+
+
                             if (delivery_config.is_picking && !delivery_config.is_partial_ship)
                                 html = `<p class="text-center">${quantity}<p/>`
                             if (!data?.is_not_inventory){

@@ -2,10 +2,8 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-
 from apps.shared.apis import RespData
 from apps.shared.constant import TYPE_CUSTOMER, ROLE_CUSTOMER
-
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck, TypeCheck
 
 
@@ -50,18 +48,6 @@ class OpportunityListAPI(APIView):
             url=ApiURL.OPPORTUNITY_LIST,
             msg=SaleMsg.OPPORTUNITY_CREATE
         )
-
-
-class OpportunityListForCashOutFlowAPI(APIView):
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST_FOR_CASH_OUTFLOW).get(data)
-        return resp.auto_return(key_success='opportunity_list')
 
 
 class OpportunityDetail(View):

@@ -72,8 +72,31 @@ $(function () {
             GRLoadDataHandle.loadCheckPOProduct(this);
         });
 
+        GRDataTableHandle.tablePOProduct.on('change', '.table-row-import', function () {
+            let remain = parseFloat(this.closest('tr').querySelector('.table-row-gr-remain').innerHTML);
+            let valid_import = GRValidateHandle.validateImportProductNotInventory(this, remain);
+            let eleCheck = this?.closest('tr')?.querySelector('.table-row-checkbox');
+            if (eleCheck) {
+                eleCheck.checked = valid_import;
+            }
+        });
+
         GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
             GRLoadDataHandle.loadCheckPR(this);
+        });
+
+        GRDataTableHandle.tablePR.on('change', '.table-row-import', function () {
+            for (let eleCheck of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-checkbox')) {
+                eleCheck.checked = false;
+            }
+            let remain = parseFloat(this.closest('tr').querySelector('.table-row-gr-remain').innerHTML);
+            let valid_import = GRValidateHandle.validateImportProductNotInventory(this, remain);
+            let eleCheck = this?.closest('tr')?.querySelector('.table-row-checkbox');
+            if (eleCheck) {
+                eleCheck.checked = valid_import;
+            }
+            // Load quantity import
+            GRLoadDataHandle.loadQuantityImport();
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {

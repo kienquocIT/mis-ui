@@ -76,33 +76,56 @@ $(function () {
                 width: '15%',
                 className: 'action-center',
                 render: (data, type, row, meta) => {
+                    let btnOpenWebsite = `
+                        <a href="${generate_ui_url(row?.['sub_domain'] || '')}" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btnRedirectToWebsite">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon"><i data-feather="external-link"></i></span>
+                            </span>
+                        </a>
+                    `;
+
                     let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/update/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                     let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     let bt1 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-setting" data-bs-toggle="modal" data-bs-target="#modal-setting" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="settings"></i></span></span></a>`;
                     if (row.id === company_current_id) {
-                        return `<div>` + bt2 + bt3 + bt1 + `</div>`;
+                        return `<div>` + bt2 + bt3 + bt1 + btnOpenWebsite + `</div>`;
                     } else {
-                        return `<div>` + bt2 + bt3 + `</div>`;
+                        return `<div>` + bt2 + bt3 + btnOpenWebsite + `</div>`;
                     }
                 }
             },
         ]
     });
 
+    function generate_ui_url(sub_domain) {
+        function getPortOfHost() {
+            if (window.location.host.indexOf(":") !== -1) {
+                let arr = window.location.host.split(":");
+                return ":" + arr[arr.length - 1];
+            }
+            return "";
+        }
+
+        return window.location.protocol + '//' + sub_domain + '.' + dtb.attr('data-ui-domain') + getPortOfHost() + '/site/';
+    }
+
     // Load Data Config
     $('html').on('click', '.btn-setting', function (e) {
         e.preventDefault();
+
+        $x.fn.showLoadingPage();
+
         let rowData = DTBControl.getRowData($(this));
         let modalControl = $('#modal-setting');
         Promise.all([
-            $.ajax(
-                modalControl.attr('data-url-detail'),
-                'GET'
-            ),
-            $.ajax(
-                modalControl.attr('data-url-currency-list'),
-                'GET'
-            )
+            $.fn.callAjax2({
+                'url': modalControl.attr('data-url-detail'),
+                'method': 'GET',
+            }),
+            $.fn.callAjax2({
+                'url': modalControl.attr('data-url-currency-list'),
+                'method': 'GET',
+            })
         ]).then(([result1, result2]) => {
             let data1 = $.fn.switcherResp(result1);
             let data2 = $.fn.switcherResp(result2);
@@ -132,17 +155,20 @@ $(function () {
                 $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);
                 $('#idxCurrencyMaskDecimal').val(data1['config']['currency_rule'].decimal);
                 $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
+                $('#idxSubdomain').val(data1['config']['sub_domain']);
             }
+
+            $x.fn.hideLoadingPage();
         })
     })
 
     $('#tblCompanySetting').on('submit', function (e) {
-        WindowControl.showLoading();
+        e.preventDefault();
 
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         let dataBody = frm.dataForm
         dataBody['currency_rule'] = SetupFormSubmit.groupDataFromPrefix(dataBody, 'currency_rule__');
+        dataBody['sub_domain'] = $(this).find('input[name="sub_domain"]').val();
 
         if (
             dataBody['currency_rule'] &&
@@ -152,26 +178,28 @@ $(function () {
                 dataBody['currency_rule']['thousands'] === dataBody['currency_rule']['decimal']
             )
         ) {
-            WindowControl.hideLoading();
             $.fn.notifyB({
                 'description': "Decimal values are not allowed to be the same as thousands"
             }, 'failure');
-            e.preventDefault();
         } else if (dataBody['currency_rule'] && dataBody['currency_rule']['thousands'] === '.' && !dataBody['currency_rule']['decimal']) {
-            WindowControl.hideLoading();
             $.fn.notifyB({
                 'description': "Decimal default values is dot(.), please select thousand value isn't dot(.)"
             }, 'failure');
-            e.preventDefault();
         } else {
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, dataBody, csr).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data['status'] === 200) {
-                    window.location.reload();
-                }
-            }, (errs) => {
-                WindowControl.hideLoading();
-            });
+            return $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': dataBody,
+                isLoading: true,
+            }).then(
+                (resp) => {
+                    debugger
+                    let data = $.fn.switcherResp(resp);
+                    if (data['status'] === 200) {
+                        window.location.reload();
+                    }
+                },
+            );
         }
     })
 

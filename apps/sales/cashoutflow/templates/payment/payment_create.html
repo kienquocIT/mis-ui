@@ -163,31 +163,31 @@
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_plan">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-clipboard-list"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Plan' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_bank_info">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-credit-card"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Bank info' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-file-alt"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                    </a>
-                </li>
-            </ul>
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_plan">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-clipboard-list"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Plan' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_bank_info">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-credit-card"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Bank info' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-file-alt"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                        </a>
+                    </li>
+                </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <table id="tab_line_detail_datatable" class="table nowrap w-100"
@@ -196,7 +196,7 @@
                             <thead>
                             <tr>
                                 <th class="text-center"></th>
-                                <th class="required">{% trans 'Expense item' %}</th>
+                                <th class="required">{% trans 'Expense type' %}</th>
                                 <th>{% trans 'Description' %}</th>
                                 <th class="required">{% trans 'UoM' %}</th>
                                 <th class="required">{% trans 'Quantity' %}</th>
@@ -211,13 +211,13 @@
                             <tbody>
                             </tbody>
                             <tfoot>
-                                <td colspan="1">
-                                    <button id="btn-add-row-line-detail" class="btn btn-animated" type="button"
-                                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new row">
-                                        <i class="text-primary fas fa-plus-circle"></i>
+                                <td colspan="2">
+                                    <button type="button" id="btn-add-row-line-detail" class="btn btn-outline-primary btn-sm w-100">
+                                        <i class="fas fa-plus-circle"></i>
+                                        {% trans 'Add new row' %}
                                     </button>
                                 </td>
-                                <td colspan="10"></td>
+                                <td colspan="9"></td>
                             </tfoot>
                         </table>
                     </div>
@@ -230,10 +230,10 @@
                                 <thead>
                                 <tr>
                                     <th></th>
-                                    <th>{% trans 'Product items' %}</th>
+                                    <th>{% trans 'Expense type' %}</th>
                                     <th><i class="fas fa-clipboard-list"></i>&nbsp;{% trans 'Plan After Tax' %}</th>
                                     <th><i class="fas fa-clipboard-check"></i>&nbsp;{% trans 'AP Approved' %}</th>
-                                    <th><i class="fas fa-undo-alt"></i>&nbsp;{% trans 'Return' %}</th>
+                                    <th><i class="fas fa-undo-alt"></i>&nbsp;{% trans 'Returned value' %}</th>
                                     <th><i class="fas fa-exchange-alt"></i>&nbsp;{% trans 'To Payment' %}</th>
                                     <th><i class="fas fa-money-bill-wave"></i>&nbsp;{% trans 'Other Payment' %}</th>
                                     <th>
@@ -285,25 +285,24 @@
             </div>
         </div>
 
-        <div class="offcanvas offcanvas-end w-75" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas offcanvas-end w-85" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
             <div class="offcanvas-header mt-10">
-                <h5 id="offcanvasRightLabel" data-text-1="{% trans 'Select Advances Payment' %}" data-text-2="{% trans 'Select Expense Items' %}">{% trans 'Select Advances Payment' %}</h5>
+                <h5 id="offcanvasRightLabel" data-text-1="{% trans 'Select Advance Payment' %}" data-text-2="{% trans 'Select Expense Item' %}">{% trans 'Select Advance Payment' %}</h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
                 <div id="step1" style="overflow: auto; height: 70vh">
                     <table id="advance_payment_list_datatable" class="table nowrap w-100"
                            data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
-                           data-url-ap-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
-                    >
+                           data-url-ap-detail="{% url 'AdvancePaymentDetailAPI' '0' %}">
                         <thead>
                             <tr>
+                                <th class="w-10">{% trans 'Code' %}</th>
+                                <th class="w-25">{% trans 'Name' %}</th>
+                                <th class="w-20">{% trans 'To payment value' %}</th>
+                                <th class="w-20">{% trans 'Returned value' %}</th>
+                                <th class="w-20">{% trans 'Remain AP' %}</th>
                                 <th class="w-5"></th>
-                                <th class="w-15">{% trans 'Code' %}</th>
-                                <th class="w-20">{% trans 'Name' %}</th>
-                                <th class="w-15">{% trans 'To Payment' %}</th>
-                                <th class="w-15">{% trans 'Return' %}</th>
-                                <th class="w-15">{% trans 'Remain' %}</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

@@ -93,6 +93,10 @@ class MenusCompanySystem:
         name='Tenant', code='menu_company_overview_list', view_name='CompanyListOverviewList',
         icon='<i class="fa-solid fa-city"></i>',
     )
+    COMPANY_SITE_BUILDER = MenuCommon(
+        name='Site Config', code='menu_site_config_builder', view_name='MyCompanyWebsiteList',
+        icon='<i class="fa-solid fa-globe"></i>',
+    )
 
 
 class MenusCoreConfigurations:
@@ -369,10 +373,22 @@ class MenusReport:
         name='Sale reports', code='menu_sale_reports', view_name='', icon='<i class="fas fa-chart-line"></i>',
         child=[
             MenuCommon(
-                name='Report Revenue',
+                name='Revenue Report',
                 code='menu_report_revenue_list',
                 view_name='ReportRevenueList',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
+            ),
+            MenuCommon(
+                name='Product Report',
+                code='menu_report_product_list',
+                view_name='ReportProductList',
+                icon='<i class="fas fa-box-open"></i>',
+            ),
+            MenuCommon(
+                name='Customer Report',
+                code='menu_report_customer_list',
+                view_name='ReportCustomerList',
+                icon='<i class="fas fa-user-tie"></i>',
             ),
         ],
     )
@@ -481,6 +497,7 @@ class SpaceItem:
                 MenusCompanySystem.WORKING_CALENDAR,
                 MenusCompanySystem.WORKFLOW_PROCESS,
                 MenusCompanySystem.TENANT_MANAGE,
+                MenusCompanySystem.COMPANY_SITE_BUILDER,
             ],
         ),
         'core-configurations': SpaceCommon(

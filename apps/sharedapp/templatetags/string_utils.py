@@ -14,7 +14,7 @@ register = template.Library()
 def parsed_title_page(value):
     if value and isinstance(value, dict):
         return f'{value["title"]}'  # [{value["code"].upper()}] &#8901;
-    return 'MIS - Management Information System'
+    return 'BFlow - Management Information System'
 
 
 @register.filter

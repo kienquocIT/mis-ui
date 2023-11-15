@@ -22,6 +22,7 @@
             data-url="{% url "CompanyListAPI" %}"
             data-url-redirect="/"
             data-method="GET"
+            data-ui-domain="{{ data.ui_domain }}"
     >
         <thead>
         <tr>
@@ -65,6 +66,10 @@
                                     <option value="vi">Tiếng Việt</option>
                                     <option value="en" selected>English</option>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="idxSubdomain" class="form-label">{% trans 'Sub domain' %}</label>
+                                <input type="text" name="sub_domain" id="idxSubdomain" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label
@@ -111,8 +116,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </form>
                 </div>

@@ -9,11 +9,13 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.apps import apps
 
 from rest_framework import status
 from rest_framework.response import Response
 
 from .apis import RespData, PermCheck
+from .exceptions import handle_exception_all_view
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
 from .menus import SpaceItem, SpaceGroup
@@ -23,6 +25,7 @@ from .utils import RandomGenerate
 
 __all__ = [
     'mask_view',
+    'OutLayoutRender',
 ]
 
 HEADERS_KEY_CACHED_ENABLE = 'HTTP_ENABLEXCACHECONTROL'
@@ -129,6 +132,17 @@ class ArgumentDecorator:
         return result
 
 
+class OutLayoutRender:
+    def __init__(self, request):
+        self.request = request
+
+    def render_404(self):
+        return render(self.request, 'extends/systems/out-layout/404.html', {})
+
+    def render_503(self):
+        return render(self.request, 'extends/systems/out-layout/503.html', {})
+
+
 def mask_view(**parent_kwargs):
     """mask func before api method call form client to UI"""
     # is_api: default False
@@ -140,6 +154,9 @@ def mask_view(**parent_kwargs):
 
         # pylint: disable=R0911
         def wrapper(self, request, *args, **kwargs):
+            if settings.IS_SERVER_MAINTAINING is True:
+                return OutLayoutRender(request=request).render_503()
+
             if settings.UI_ALLOW_AUTO_TENANT:
                 url_skip_check = ['/404', '/503', '/introduce', '/terms', '/help-and-support']
                 if request.path not in url_skip_check:
@@ -150,12 +167,12 @@ def mask_view(**parent_kwargs):
                             sub_code = sub_code[:-1]
 
                         if "*" not in settings.UI_SUB_ALLOWED and sub_code not in settings.UI_SUB_ALLOWED:
-                            return redirect(reverse('NotFoundView'))
+                            return OutLayoutRender(request=request).render_404()
 
                         if sub_code in settings.UI_SUB_DENIED:
-                            return redirect(reverse('NotFoundView'))
+                            return OutLayoutRender(request=request).render_404()
                     else:
-                        return redirect(reverse('NotFoundView'))
+                        return OutLayoutRender(request=request).render_404()
 
             ctx = {}
             pk = kwargs.get('pk', None)
@@ -215,10 +232,14 @@ def mask_view(**parent_kwargs):
 
             # redirect or next step with is_auth
             # must be return ({Data|Dict}, {Http Status|Number}) or HttpResponse
-            if check_perm_state:
-                view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
-            else:
-                view_return = check_perm_return
+            try:
+                if check_perm_state:
+                    view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
+                else:
+                    view_return = check_perm_return
+            except Exception as err:
+                handle_exception_all_view(err, self)
+                raise err
 
             if isinstance(view_return, HttpResponse):  # pylint: disable=R1705
                 return view_return
@@ -283,6 +304,7 @@ def mask_view(**parent_kwargs):
                             case _:
                                 ctx['pk'] = pk
                                 ctx['is_ga_enabled'] = settings.GA_COLLECTION_ENABLED
+                                ctx['is_debug_src'] = settings.DEBUG
                                 ctx['is_debug'] = settings.DEBUG_JS
                                 # ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user)
@@ -295,7 +317,10 @@ def mask_view(**parent_kwargs):
                                     'menu_id_current': parent_kwargs.get('menu_active', None),
                                     'space_code_current': 1,
                                 }
-                                return render(request, cls_check.template_path, ctx)
+                                try:
+                                    return render(request, cls_check.template_path, ctx)
+                                except Exception as err:
+                                    handle_exception_all_view(err, self)
                     if login_require is True:
                         return redirect(reverse('AuthLogin'))
                     return render(request, cls_check.template_path, ctx)

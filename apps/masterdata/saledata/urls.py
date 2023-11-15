@@ -15,6 +15,7 @@ from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, 
 from apps.masterdata.saledata.views.expense_item import ExpenseItemList, ExpenseItemListAPI, ExpenseItemDetailAPI
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
+from apps.masterdata.saledata.views.import_data import SaleDataImportDataList
 from apps.masterdata.saledata.views.product import (
     ProductMasterDataList, ProductTypeListAPI, ProductCategoryListAPI, UnitOfMeasureListAPI,
     UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
@@ -90,6 +91,7 @@ urlpatterns = [
     path('accounts-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
     path('accounts-sale/api', AccountForSaleListAPI.as_view(), name='AccountForSaleListAPI'),
 ] + [
+    path('masterdata/import', SaleDataImportDataList.as_view(), name='SaleDataImportDataList'),
     path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),
     path('masterdata/product-type/list/api', ProductTypeListAPI.as_view(), name='ProductTypeListAPI'),
     path(

@@ -64,30 +64,38 @@ class EmployeeLoadPage {
     }
 
     static loadDob(dobData) {
+        let data = $x.fn.reformatData(dobData, $x.cls.datetime.defaultFormatDate, 'DD/MM/YYYY', '');
         EmployeeLoadPage.dobEle.dateRangePickerDefault({
+            defaultFormatUsing: 'date',
             singleDatePicker: true,
             timepicker: false,
             showDropdowns: true,
             minYear: 1901,
-            maxYear: parseInt(moment().format('YYYY'), 10)
-        }).val(dobData ? moment(dobData).format('MM/DD/YYYY') : null).on('hide.daterangepicker', function () {
-            $(this).val($(this).val().split(" ")[0])
-        });
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            timePicker: false,
+        }).val(data).trigger('change');
     }
 
     static loadDateJoined(dateJoinedData, default_is_now = false) {
-        if (dateJoinedData || default_is_now === true){
-            let txtDateJoinedData = dateJoinedData ? moment(dateJoinedData).format('MM/DD/YYYY') : moment().format('MM/DD/YYYY');
-            EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
-                singleDatePicker: true,
-                timepicker: false,
-                showDropdowns: true,
-                minYear: 1901,
-                maxYear: parseInt(moment().format('YYYY'), 10)
-            }).val(txtDateJoinedData).on('hide.daterangepicker', function () {
-                $(this).val($(this).val().split(" ")[0])
-            });
+        let dtPickerEle = EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: true,
+            minYear: 1901,
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            locale: {
+                format: 'DD/MM/YYYY hh:mm A'
+            },
+        });
+
+        let data = '';
+        if (dateJoinedData || default_is_now === true) {
+            data = $x.fn.reformatData(dateJoinedData, $x.cls.datetime.defaultFormatDate, 'DD/MM/YYYY hh:mm A', moment().format('DD/MM/YYYY hh:mm A'));
         }
+        dtPickerEle.val(data).trigger('change')
     }
 
     static combinesForm(frmIdx, hasPermit = true) {
@@ -96,10 +104,8 @@ class EmployeeLoadPage {
         frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
         frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
         // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
-        let dateJoinedTxt = $('#employee-date-joined').val();
-        frm.dataForm['date_joined'] = dateJoinedTxt ? moment(dateJoinedTxt).format('YYYY-MM-DD HH:mm:ss') : null;
-        let dateOfBirthday = $('#employee-dob').val();
-        frm.dataForm['dob'] = dateOfBirthday ? moment(dateOfBirthday).format('YYYY-MM-DD') : null;
+        frm.dataForm['date_joined'] = $x.fn.convertEleDatetime($('#employee-date-joined'), {'defaultIsEmpty': null});
+        frm.dataForm['dob'] = $x.fn.convertEleDate($('#employee-dob'), {'defaultIsEmpty': null});
         frm.dataForm['role'] = EmployeeLoadPage.roleSelectEle.val()
 
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;

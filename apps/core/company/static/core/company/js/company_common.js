@@ -289,7 +289,7 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 data: 'function',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    if ([0, 1, 2, 6, 7, 8].includes(row.function)) {
+                    if ([0, 6, 7, 8].includes(row.function)) {
                         return `<span class="text-primary"><b>${FunctionNumberTableData[row.function].function}</b></span>`;
                     }
                     return `<span class="text-secondary">${FunctionNumberTableData[row.function].function}</span>`;

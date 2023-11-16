@@ -289,8 +289,8 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 data: 'function',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    if (row.function === 0) {
-                        return `<span class="text-primary">${FunctionNumberTableData[row.function].function}</span>`;
+                    if ([0, 1, 2, 6, 7, 8].includes(row.function)) {
+                        return `<span class="text-primary"><b>${FunctionNumberTableData[row.function].function}</b></span>`;
                     }
                     return `<span class="text-secondary">${FunctionNumberTableData[row.function].function}</span>`;
                 }
@@ -330,20 +330,14 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 data: '',
                 className: 'wrap-text text-center w-10',
                 render: (data, type, row) => {
-                    if (option === 'detail') {
-                        if (row.schema !== null) {
-                            return `<span class="text-secondary schema-custom"><i class="far fa-edit"></i></span>`;
-                        } else {
-                            return `<span class="text-secondary schema-custom" hidden><i class="far fa-edit"></i></span>`;
-                        }
-                    }
-                    else {
+                    if (option !== 'detail') {
                         if (row.schema !== null) {
                             return `<span class="text-primary schema-custom" data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
                         } else {
                             return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
                         }
                     }
+                    return ``;
                 }
             }
         ],

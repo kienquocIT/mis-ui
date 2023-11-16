@@ -95,6 +95,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment'), 'AdvancePaymentList')
     ADVANCE_PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Advance Payment create'), 'AdvancePaymentCreate')
     ADVANCE_PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    ADVANCE_PAYMENT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     # Payment
     PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Payment'), 'PaymentList')
@@ -445,6 +446,7 @@ class BreadcrumbView:
     ]
     ADVANCE_PAYMENT_CREATE_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_CREATE_PAGE]
     ADVANCE_PAYMENT_DETAIL_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    ADVANCE_PAYMENT_UPDATE_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PAYMENT_LIST_PAGE = [
         BreadcrumbItem.PAYMENT_LIST_PAGE

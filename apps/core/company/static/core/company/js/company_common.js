@@ -353,6 +353,11 @@ class CompanyHandle {
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));
 
+        let definition_inventory_valuation = 1;
+        if ($('#perpetual-selection').is(':checked')) {
+            definition_inventory_valuation = 0;
+        }
+
         frm.dataForm['title'] = $('#title').val();
         frm.dataForm['code'] = $('#code').val();
         frm.dataForm['representative_fullname'] = $('#representative_fullname').val();
@@ -360,19 +365,11 @@ class CompanyHandle {
         frm.dataForm['email'] = $('#email').val();
         frm.dataForm['phone'] = $('#phone').val();
         frm.dataForm['fax'] = $('#fax').val();
-
-        let definition_inventory_valuation = 1;
-        if ($('#perpetual-selection').is(':checked')) {
-            definition_inventory_valuation = 0;
-        }
-
-        frm.dataForm['company_setting_data'] = {
-            'primary_currency_id': primary_currency.val(),
-            'definition_inventory_valuation': definition_inventory_valuation,
-            'default_inventory_value_method': $('#default-inventory-value-method').val(),
-            'cost_per_warehouse': $('#cost-per-warehouse').is(':checked'),
-            'cost_per_lot_batch': $('#cost-per-lot-batch').is(':checked')
-        }
+        frm.dataForm['primary_currency'] = primary_currency.val();
+        frm.dataForm['definition_inventory_valuation'] = definition_inventory_valuation;
+        frm.dataForm['default_inventory_value_method'] = $('#default-inventory-value-method').val();
+        frm.dataForm['cost_per_warehouse'] = $('#cost-per-warehouse').is(':checked');
+        frm.dataForm['cost_per_lot_batch'] = $('#cost-per-lot-batch').is(':checked');
 
         frm.dataForm['company_function_number_data'] = []
         $('#function_number_table tbody tr').each(function (index) {
@@ -412,7 +409,6 @@ class CompanyHandle {
                 urlRedirect: frm.dataUrlRedirect,
             };
         }
-
     }
 }
 

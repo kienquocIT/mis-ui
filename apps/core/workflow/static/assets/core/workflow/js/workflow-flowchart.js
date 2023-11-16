@@ -929,6 +929,17 @@ class NodeHandler {
                 msgFailed = "Create connection is failure";
                 break;
         }
+
+        // Check node collab
+        let dataNodeIn = FlowJsP.nodeData[node_input];
+        let dataNodeOut = FlowJsP.nodeData[node_output];
+        if (dataNodeOut?.['collaborators']?.['option'] === 1) {
+            if (dataNodeIn?.['collaborators']?.['total_in_runtime'] > 1) {
+                state = false;
+                msgFailed = "Node in put must have only one collaborator";
+            }
+        }
+
         if (state === true) {
             this.addInOut(node_input, node_output);
         } else if (enable_notify_failure === true) {

@@ -6,10 +6,10 @@ $(function () {
      */
     function prepareDataAndRenderHTML(res){
         if(res.title) $('[name="title"]').val(res.title);
-        if(res.application){
-            const elmApp = $('[name="application"]');
-            elmApp.attr('data-onload', JSON.stringify(res.application));
-            initSelectBox(elmApp)
+        if (res.application) {
+            $("#select-box-features").initSelect2({
+                data: res.application,
+            });
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone){

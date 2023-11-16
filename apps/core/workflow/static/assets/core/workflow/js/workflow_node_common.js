@@ -522,9 +522,8 @@ class NodeLoadDataHandle {
     };
 
     static loadDetailNodeActionAndCollab() {
-        let table = NodeDataTableHandle.tableNode;
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
+        NodeDataTableHandle.tableNode.DataTable().rows().every(function () {
+            let row = this.node();
             let dataRowRaw = row?.querySelector('.table-row-checkbox')?.getAttribute('data-row');
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
@@ -539,7 +538,7 @@ class NodeLoadDataHandle {
                 // Collab
                 NodeLoadDataHandle.loadDetailNodeCollab(row, dataRow);
             }
-        }
+        });
     };
 
     static loadDetailNodeCollab(row, dataRow) {
@@ -569,10 +568,12 @@ class NodeLoadDataHandle {
                 }
             }
         } else { // COLLAB NODES
+            NodeLoadDataHandle.loadInitDataRow(row);
             let boxListSource = modalCollab.querySelector('.box-list-source');
             $(boxListSource).empty();
             NodeLoadDataHandle.loadBoxListSource($(boxListSource), dataSource[dataRow?.['option_collaborator']]);
             NodeLoadDataHandle.loadAreaByListSource(boxListSource);
+            NodeLoadDataHandle.loadBoxListSource($(boxListSource));
             if (dataRow?.['option_collaborator'] === 0) { // In Form
                 let dataIF = dataRow?.['collab_in_form'];
                 let IFArea = modalCollab.querySelector('.collab-in-form-area');
@@ -666,11 +667,10 @@ class NodeLoadDataHandle {
                         inWF['position_choice'] = dataPosition[inWF['position_choice']];
                     }
                 }
-                NodeDataTableHandle.dataTableCollabInWFEmployee($(tableInWF));
                 $(tableInWF).DataTable().rows.add(dataInWF).draw();
             }
         }
-    }
+    };
 
     static loadDoneActionAndCollab(row) {
         row.querySelector('.check-done-action').removeAttribute('hidden');

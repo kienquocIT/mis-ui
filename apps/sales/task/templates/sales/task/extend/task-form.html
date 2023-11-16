@@ -59,7 +59,7 @@
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
-                            <label for="selectStatus" class="form-label">{% trans 'Select' %}</label>
+                            <label for="selectStatus" class="form-label">{% trans 'Select Status' %}</label>
                             <select class="form-select" name="task_status" id="selectStatus"
                                     data-keyResp="task_status"
                                     data-url="{% url 'OpportunityTaskStatusAPI' %}"
@@ -270,7 +270,9 @@
     {{ data.employee_info|json_script:"employee_info" }}
     <input type="hidden" id="form_valid"
            data-valid-datetime="{% trans 'End time was large than Start time' %}"
-           data-logtime-valid="{% trans 'Missing info to log time' %}">
+           data-logtime-valid="{% trans 'Missing info to log time' %}"
+           data-assign-txt="{% trans 'Assign to me' %}"
+    >
     <input type="hidden" id="task_url_sub"
            data-task-config="{% url 'OpportunityTaskConfigAPI' %}"
            data-opps-detail="{% url 'OpportunityDetailAPI' 0 %}"

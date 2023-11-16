@@ -3706,6 +3706,16 @@ class DateTimeControl {
         return defaultIsEmpty;
     }
 }
+class Beautiful {
+    static randomColorClass(){
+        const randomColor = [
+            "primary", "success", "warning", "danger", "info", "red", "green", "pink", "purple",
+            "violet", "indigo", "blue", "sky", "cyan", "teal", "neon", "lime", "sun", "yellow", "orange", "pumpkin",
+            "brown", "gold", "light", "dark"
+        ]
+        return randomColor[Math.floor(Math.random() * 25)]
+    }
+}
 
 let $x = {
     cls: {
@@ -3780,6 +3790,8 @@ let $x = {
         convertEleDatetime: DateTimeControl.convertEleDatetime,
         convertDateToMoment: DateTimeControl.convertDateToMoment,
         convertDatetimeToMoment: DateTimeControl.convertDatetimeToMoment,
+
+        randomColor: Beautiful.randomColorClass
     },
 }
 

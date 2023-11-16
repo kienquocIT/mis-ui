@@ -27,11 +27,9 @@ $(function(){
                     elm.addClass('ui-state-system')
                     elm.attr('data-id', item.id)
                     elm.find('.hand-drag, .icon-close').addClass('blur-35')
-                    elm.find('.status_name, .status_translate_name').attr('contenteditable', false)
                     elm.find('.status_name').html(item.name)
-                    // elm.find('.status_translate_name').html(item.translate_name)
                     if (item?.task_color && item.task_color.length === 7)
-                        elm.find('.picker_color').val(item.task_color).attr('disabled', true)
+                        elm.find('.picker_color').val(item.task_color)
                     $todoElm.append(elm)
                 }
                 // loop in normal item and render
@@ -50,20 +48,6 @@ $(function(){
                 }
 
                 // normal config
-                $('#assignee_edit_date').prop('checked', config.is_edit_date)
-                $('#assignee_edit_est').prop('checked', config.is_edit_est)
-                $('#in_assign_any').prop('checked', config.is_in_assign)
-                if (config.in_assign_opt !== 0){
-                    $(`[name="in_assign_opt"]`).prop('disabled', false)
-                    $(`[name="in_assign_opt"][value="${config.in_assign_opt}"]`).prop('checked', true)
-                }else{
-
-                }
-                $('#out_assign_any').prop('checked', config.is_out_assign)
-                if (config.out_assign_opt !== 0){
-                    $(`[name="out_assign_opt"]`).prop('disabled', false)
-                    $(`[name="out_assign_opt"][value="${config.out_assign_opt}"]`).prop('checked', true)
-                }
                 $todoElm.sortable({
                     items: "li.advance-list-item:not(.ui-state-system)",
                     placeholder: 'ui-state-highlight',
@@ -72,9 +56,7 @@ $(function(){
                 WindowControl.hideLoading();
             }
         },
-        (errs) => {
-            WindowControl.hideLoading();
-        }
+        (errs) => WindowControl.hideLoading()
     );
 
     // add new item status
@@ -93,21 +75,6 @@ $(function(){
         })
     });
 
-    // block assign in Opp
-    $('#in_assign_any').on('change', function(){
-        if (!this.checked){
-            $('[name="in_assign_opt"]').prop('disabled', false)
-            $('[name="in_assign_opt"][value="1"]').prop('checked', true)
-        }else $('[name="in_assign_opt"]').prop('disabled', true).prop('checked', false)
-    })
-    // block assign over Opp
-    $('#out_assign_any').on('change', function(){
-        if (!this.checked){
-            $('[name="out_assign_opt"]').prop('disabled', false)
-            $('[name="out_assign_opt"][value="1"]').prop('checked', true)
-        }else $('[name="out_assign_opt"]').prop('disabled', true).prop('checked', false)
-    })
-
     $form.on('submit', function(e){
         const $todoElm = $('#todo_list')
         WindowControl.showLoading();
@@ -125,18 +92,10 @@ $(function(){
             })
             order += 1
         })
-        let inOpt = 0, $inOpt = $('[name="in_assign_opt"]:checked');
-        if ($inOpt.length) inOpt = $inOpt.val()
-        let outOpt = 0, $outOpt = $('[name="out_assign_opt"]:checked');
-        if ($outOpt.length) outOpt = $outOpt.val()
         let putData = {
             'list_status': list_status,
             'is_edit_date': $('#assignee_edit_date').prop('checked'),
             'is_edit_est': $('#assignee_edit_est').prop('checked'),
-            'is_in_assign': $('#in_assign_any').prop('checked'),
-            'in_assign_opt': parseInt(inOpt),
-            'is_out_assign': $('#out_assign_any').prop('checked'),
-            'out_assign_opt': parseInt(outOpt),
         }
         $.fn.callAjax2({
             'url': $form.attr('data-url'),

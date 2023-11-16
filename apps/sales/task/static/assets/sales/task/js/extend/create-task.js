@@ -211,7 +211,7 @@ $(function () {
     $assignerElm.val($assignerElm.attr('data-name')).attr('value', $assignerElm.attr('data-value-id'))
 
     //--DROPDOWN ASSIGN TO-- assign to me btn
-    const $assignBtnElm = $(`<a href="#" class="form-text text-muted link-info btn-assign">Assign to me</a>`)
+    const $assignBtnElm = $(`<a href="#" class="form-text text-muted link-info btn-assign">${$('#form_valid').attr('data-assign-txt')}</a>`)
     $empElm.parents('.form-group').append($assignBtnElm)
     $assignBtnElm.off().on('click', function () {
         if ($(this).hasClass('disabled')) return false
@@ -297,8 +297,7 @@ $(function () {
                 let formData = _form.dataForm
                 const $assignerElm = $('#inputAssigner')
 
-                if (formData.log_time === "")
-                    delete formData.log_time
+                if (formData.log_time === "") delete formData.log_time
                 else {
                     let temp = formData.log_time.replaceAll("'", '"')
                     temp = JSON.parse(temp)

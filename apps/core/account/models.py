@@ -187,15 +187,21 @@ class User(AuthUser):
                     company_code = self.company_current_data.get('code', '').lower()
                     company_title = self.company_current_data.get('title', '')
                     if sub_domain and company_code and company_title:
-                        Company.objects.get_or_create(
-                            sub_domain=sub_domain,
+                        company_obj, _created = Company.objects.get_or_create(
+                            id=company_id,
                             defaults={
                                 'id': company_id,
                                 'tenant': tenant_obj,
                                 'code': company_code,
                                 'title': company_title,
+                                'sub_domain': sub_domain,
                             }
                         )
+                        if company_obj:
+                            company_obj.sub_domain = sub_domain
+                            company_obj.code = company_code
+                            company_obj.title = company_title
+                            company_obj.save()
         super().save(*args, **kwargs)
 
 

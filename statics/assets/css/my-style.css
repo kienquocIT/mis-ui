@@ -329,6 +329,10 @@ div.inline {
     justify-content: center;
     align-items: center;
 }
+a.disabled{
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
 
 .custom-visible-dtb .tit_visible_tb-head {
     display: none;

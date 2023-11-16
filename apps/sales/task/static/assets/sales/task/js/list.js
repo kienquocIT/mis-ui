@@ -6,13 +6,10 @@ $(function () {
         1: 'warning',
         2: 'danger'
     }
-    const randomColor = [
-        "primary", "success", "warning", "danger", "info", "red", "green", "pink", "purple",
-        "violet", "indigo", "blue", "sky", "cyan", "teal", "neon", "lime", "sun", "yellow", "orange", "pumpkin",
-        "brown", "gold", "light", "dark"
-    ]
     const $createBtn = $('.create-task')
     const $formElm = $('#formOpportunityTask')
+    const $oppElm = $('#opportunity_id')
+    const $empElm = $('#employee_inherit_id')
 
     // lấy danh sách status và render
     function getSttAndRender() {
@@ -29,10 +26,10 @@ $(function () {
             stt_template.find('.btn-add-newtask').off().on('click', function () {
                 const currentData = {
                     'id': item.id,
-                    'title': item.name
+                    'title': item.name,
+                    'selected': true
                 }
                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
-                // activeDrawer('#drawer_task_create', $('.btn-add-newtask', stt_template));
                 let createFormTask = setInterval(function () {
                     clearInterval(createFormTask)
                     const $sttElm = $('#selectStatus')
@@ -117,11 +114,10 @@ $(function () {
                         render: (data, type, row) => {
                             let avatar = ''
                             const full_name = data.last_name + ' ' + data.first_name
-                            if (data?.avatar)
-                                avatar = `<img src="${data.avatar}" alt="user" class="avatar-img">`
+                            if (data?.['avatar'])
+                                avatar = `<img src="${data?.['avatar']}" alt="user" class="avatar-img">`
                             else avatar = $.fn.shortName(full_name, '', 5)
-                            const randomResource = randomColor[Math.floor(Math.random() * randomColor.length)];
-                            return `<div class="avatar avatar-rounded avatar-xs avatar-${randomResource}">
+                            return `<div class="avatar avatar-rounded avatar-xs avatar-${$x.fn.randomColor()}">
                                         <span class="initial-wrap">${avatar}</span>
                                     </div>
                                     <span class="ml-2">${full_name}</span>`;
@@ -364,18 +360,7 @@ $(function () {
                                 moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                             )
                             $('#inputTextEstimate').val(data.estimate)
-                            if (data?.opportunity_data && Object.keys(data.opportunity_data).length)
-                                $('#selectOpportunity')
-                                    .attr(
-                                        'data-onload',
-                                        JSON.stringify({
-                                                "id": data.opportunity_data.id,
-                                                "code": data.opportunity_data.code
-                                            }
-                                        )
-                                    )
-                                    .html('')
-                                    .initSelect2()
+
                             $('#selectPriority').val(data.priority).trigger('change')
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
@@ -390,12 +375,16 @@ $(function () {
                                 .attr(
                                     'data-value-id', data.employee_created.id
                                 )
-                            if (data?.assign_to) {
-                                data.assign_to.full_name = `${data.assign_to.last_name}. ${data.assign_to.first_name}`
-                                $('#selectAssignTo').html('').attr('data-onload', JSON.stringify(data.assign_to))
-
-                                const isConfig = JSON.parse($('#task_config').text())
-                                AssignToSetup.hasConfig(isConfig)
+                            if (data.employee_inherit){
+                                data.employee_inherit.selected = true
+                                $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
+                                    .attr('data-onload', JSON.stringify(data.employee_inherit))
+                            }
+                            if (data['opportunity_data']){
+                                data['opportunity_data'] = {...data['opportunity_data'], selected: true}
+                                $oppElm.attr('disabled', true).attr('data-onload', JSON.stringify(data['opportunity_data']))
+                                if ($(`option[value="${data['opportunity_data'].id}"]`, $oppElm).length <= 0)
+                                    $oppElm.append(`<option value="${data['opportunity_data'].id}">${data['opportunity_data'].code}</option>`)
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
@@ -403,7 +392,7 @@ $(function () {
                             $formElm.addClass('task_edit')
                             if (Object.keys(data.parent_n).length <= 0) $('.create-subtask').removeClass('hidden')
                             else $('.create-subtask').addClass('hidden')
-                            if (data.task_log_work.length) initCommon.initTableLogWork(data.task_log_work)
+                            if (data?.['task_log_work'].length) initCommon.initTableLogWork(data?.['task_log_work'])
                             initCommon.renderSubtask(data.id, _this.getTaskList)
 
                             if (data.attach) {
@@ -467,16 +456,15 @@ $(function () {
                 childHTML.find('.card-priority').html(priorityHTML)
                 let date = moment(newData.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
                 childHTML.find('.task-deadline').text(date)
-                const assign_to = newData.assign_to
+                const assign_to = newData.employee_inherit
                 if (Object.keys(assign_to).length > 0) {
-                    const randomResource = randomColor[Math.floor(Math.random() * randomColor.length)];
-                    if (assign_to.avatar) childHTML.find('img').attr('src', assign_to.avatar)
+                    if (assign_to?.['avatar']) childHTML.find('img').attr('src', assign_to?.['avatar'])
                     else {
                         childHTML.find('img').remove()
-                        childHTML.find('.avatar').addClass('avatar-' + randomResource)
+                        childHTML.find('.avatar').addClass('avatar-' + $x.fn.randomColor())
                         let full_name = `${assign_to?.last_name} ${assign_to?.first_name}`
                         if (assign_to?.full_name && assign_to?.full_name !== '') full_name = assign_to.full_name
-                        const name = $.fn.shortName(full_name, '', 5)
+                        const name = $.fn.shortName(full_name)
                         childHTML.find('.avatar .initial-wrap').text(name)
                         childHTML.find('.avatar').attr('title', full_name)
                     }
@@ -577,12 +565,13 @@ $(function () {
             $elm.find('.card-title').text(data.title).attr('title', data.title)
             if (data.assign_to) {
                 const assign_to = data.assign_to
-                if (assign_to.avatar) $elm.find('img').attr('src', assign_to.avatar)
+                if (assign_to?.['avatar']) $elm.find('img').attr('src', assign_to?.['avatar'])
                 else {
                     $elm.find('img').remove()
-                    const name = $.fn.shortName(assign_to.last_name + ' ' + assign_to.first_name)
+                    let full_name = assign_to.full_name || assign_to.last_name + ' ' + assign_to.first_name
+                    const name = $.fn.shortName(full_name)
                     $elm.find('.avatar .initial-wrap').text(name)
-                    $elm.find('.avatar').attr('title', assign_to.last_name + ' ' + assign_to.first_name)
+                    $elm.find('.avatar').attr('data-bs-original-title', full_name)
                 }
             }
             if (data.checklist) {
@@ -595,9 +584,9 @@ $(function () {
             }
             const date = moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
             $elm.find('.task-deadline').text(date)
-            const hasSub = this.getCountParent
-            if (hasSub?.[data.id])
-                $elm.find('.sub_task_count').text(hasSub[data.id])
+            // const hasSub = this.getCountParent
+            // if (hasSub?.[data.id])
+            //     $elm.find('.sub_task_count').text(hasSub[data.id])
             $('.cancel-task').trigger('click')
             // reload sub count
             this.reloadCountParent()
@@ -622,22 +611,30 @@ $(function () {
             $btnCreateSub.off().on('click', function () {
                 // call form create-task.js
                 const taskID = $(this).closest('form').find('[name="id"]').val()
-                const $oppElm = $('#selectOpportunity')
                 let oppData = {}
-                if ($oppElm.val()) {
+                if ($oppElm.val())
                     oppData = {
                         "id": $oppElm.select2('data')[0].id,
                         "title": $oppElm.select2('data')[0].text,
                     }
-                }
                 if (taskID) {
                     resetFormTask()
+                    $('.btn-assign').removeClass('disabled')
                     // after reset
                     $formElm.append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
-                    if (Object.keys(oppData).length)
-                        $oppElm.attr('data-onload', JSON.stringify(oppData)).attr('disabled', true)
+                    if (Object.keys(oppData).length){
+                        $oppElm.append(`<option value="${oppData.id}" selected>${oppData.title}</option>`)
+                            .prop('disabled', true)
+                    }
                     else $oppElm.removeAttr('data-onload')
                     $oppElm.initSelect2()
+
+                    const employee = JSON.parse($('#employee_info').text())
+                    $('#inputAssigner').val(employee.full_name).attr({
+                        "value": employee.id,
+                        "data-name": employee.full_name,
+                        "data-value-id": employee.id,
+                    })
                 }
             })
         }
@@ -738,7 +735,7 @@ $(function () {
 
         set setConfig(data) {
             this.taskConfig = data
-        };
+        }
 
         set setTaskList(data) {
             this.taskList = data
@@ -782,8 +779,8 @@ $(function () {
                                 moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                             )
                             $('#inputTextEstimate', $form).val(data.estimate)
-                            if (data.opportunity_data?.id)
-                                $('#selectOpportunity', $form).attr('data-onload', JSON.stringify(data.opportunity_data))
+                            if (data?.['opportunity_data']?.id)
+                                $($oppElm, $form).attr('data-onload', JSON.stringify(data?.['opportunity_data']))
                             $('#selectPriority', $form).val(data.priority).trigger('change')
 
                             $('#inputAssigner', $form).val(
@@ -796,7 +793,7 @@ $(function () {
                                 ...data.assign_to
                             }
                             ))
-                            $('#selectStatus, #selectOpportunity, #selectAssignTo', $form).each(function(){
+                            $('#selectStatus, #opportunity_id, #selectAssignTo', $form).each(function(){
                                 $(this).html('')
                                 $(this).initSelect2()
                             })
@@ -809,7 +806,7 @@ $(function () {
                                 const fileDetail = data.attach[0]?.['files']
                                 FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
                             }
-                            initCommon.initTableLogWork(data.task_log_work)
+                            initCommon.initTableLogWork(data?.['task_log_work'])
                             initCommon.renderSubtask(data.id, cls.getTaskList)
                         }
 
@@ -964,7 +961,13 @@ $(function () {
 
         static addNewData(cls, newData){
             let currentList = cls.getTaskList
-            currentList.push(newData)
+            const hasData = false;
+            if (Object.keys(currentList).length > 0)
+                $.filter(currentList, (item)=>{
+                    if (item.id === newData.id)
+                        return true
+                }, false)
+            if (!hasData) currentList.push(newData)
             const $tblElm = $('#table_task_list')
             $tblElm.DataTable().row.add(newData).draw()
         }

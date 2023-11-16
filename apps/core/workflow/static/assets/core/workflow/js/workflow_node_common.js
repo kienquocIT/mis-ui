@@ -34,42 +34,18 @@ class NodeLoadDataHandle {
         }
     ];
     static dataSource = [
-        {
-            'id': 3,
-            'title': 'In workflow'
-        },
-        {
-            'id': 2,
-            'title': 'Out form'
-        },
-        {
-            'id': 1,
-            'title': 'In form'
-        },
+        {'id': 3, 'title': 'In workflow'},
+        {'id': 2, 'title': 'Out form'},
+        {'id': 1, 'title': 'In form'},
     ];
     static dataInWFOption = [
-        {
-            'id': 2,
-            'title': 'Employee'
-        },
-        {
-            'id': 1,
-            'title': 'Position title'
-        },
-        {
-            'id': 0,
-            'title': ''
-        },
+        {'id': 2, 'title': 'Employee'},
+        {'id': 1, 'title': 'Position title'},
+        {'id': 0, 'title': ''},
     ];
     static dataPosition = [
-        {
-            'id': 2,
-            'title': '2nd manager'
-        },
-        {
-            'id': 1,
-            'title': '1st manager'
-        },
+        {'id': 2, 'title': '2nd manager'},
+        {'id': 1, 'title': '1st manager'},
     ];
 
     static loadSystemNode() {

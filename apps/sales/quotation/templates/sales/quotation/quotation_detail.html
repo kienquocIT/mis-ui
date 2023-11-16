@@ -70,6 +70,36 @@
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
+                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
+                                    <div class="input-group">
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
+                                            <select
+                                                    class="form-select"
+                                                    id="select-box-quotation-create-payment-term"
+                                                    data-url="{% url "PaymentsTermsListAPI" %}"
+                                                    data-link-detail=""
+                                                    data-method="GET"
+                                                    name="payment_term"
+                                                    data-keyResp="payment_terms_list"
+                                                    disabled
+                                            ></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
@@ -100,6 +130,22 @@
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
+                                    <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
+                                    <div class="input-group">
+                                        <div class="input-affix-wrapper">
+                                            <input
+                                                type="text" class="form-control disabled-custom-show"
+                                                placeholder="dd/mm/yyyy"
+                                                name="date_created"
+                                                id="quotation-create-date-created"
+                                                disabled
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
@@ -123,52 +169,6 @@
                                                 name="contact"
                                                 data-keyResp="contact_list"
                                                 disabled
-                                            ></select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <input
-                                                type="text" class="form-control disabled-custom-show"
-                                                placeholder="dd/mm/yyyy"
-                                                name="date_created"
-                                                id="quotation-create-date-created"
-                                                disabled
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropstart input-prefix">
-                                                <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                ></i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-payment-term"
-                                                    data-url="{% url "PaymentsTermsListAPI" %}"
-                                                    data-link-detail=""
-                                                    data-method="GET"
-                                                    name="payment_term"
-                                                    data-keyResp="payment_terms_list"
-                                                    disabled
                                             ></select>
                                         </div>
                                     </div>

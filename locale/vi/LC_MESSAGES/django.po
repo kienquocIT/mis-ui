@@ -298,7 +298,7 @@ msgstr "Tiền tố"
 
 #: .\apps\core\company\templates\core\company\company_list.html:265
 msgid "Suffix"
-msgstr "Hậu tốt"
+msgstr "Hậu tố"
 
 #: .\apps\core\company\templates\core\company\company_list.html:271
 msgid "Thousand"

@@ -407,7 +407,7 @@ function LoadBankAccount(data) {
 }
 
 function LoadPlanQuotation(opportunity_id, quotation_id) {
-    if (opportunity_id !== null && opportunity_id !== undefined && quotation_id !== null && quotation_id !== undefined) {
+    if (opportunity_id !== undefined && quotation_id !== undefined && opportunity_id !== null && quotation_id !== null) {
         let dataParam1 = {'quotation_id': quotation_id}
         let expense_quotation = $.fn.callAjax2({
             url: script_url.attr('data-url-expense-quotation'),
@@ -458,19 +458,13 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = 0;
-                    let number_record = 0;
+                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
-                            sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
-                            number_record += 1;
                         }
-                    }
-                    if (number_record > 0) {
-                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -480,7 +474,7 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${i+1}</td>
-                            <td class="expense_item_title" data-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td class="expense_item_title" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
                             <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
                             <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
@@ -537,6 +531,8 @@ function LoadPlanQuotationNoOPP(quotation_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                console.log(data_expense)
+                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -545,19 +541,13 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = 0;
-                    let number_record = 0;
+                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
-                            sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
-                            number_record += 1;
                         }
-                    }
-                    if (number_record > 0) {
-                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -567,7 +557,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${i+1}</td>
-                            <td class="expense_item_title" data-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td class="expense_item_title" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
                             <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
                             <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
@@ -624,6 +614,8 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                console.log(data_expense)
+                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -632,19 +624,13 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = 0;
-                    let number_record = 0;
+                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
-                            sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
-                            number_record += 1;
                         }
-                    }
-                    if (number_record > 0) {
-                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -654,7 +640,7 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${i+1}</td>
-                            <td class="expense_item_title" data-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td class="expense_item_title" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
                             <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
                             <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>

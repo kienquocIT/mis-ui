@@ -32,13 +32,13 @@
     <!-- Navigation task list/kanban-->
     <ul class="nav nav-line nav-light nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab_kanban">
                 <i class="fa-solid fa-table-columns"></i>
                 <span class="nav-link-text">{% trans 'Kanban' %}</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_list">
                 <i class="fa-solid fa-list-ul"></i>
                 <span class="nav-link-text">{% trans 'List' %}</span>
             </a>
@@ -46,7 +46,7 @@
     </ul>
     <!-- task kanban -->
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="tab_block_1">
+        <div class="tab-pane fade show active" id="tab_kanban">
             <div id="kb_scroll" class="tasklist-scroll position-relative">
                 <div id="tasklist_wrap" class="tasklist-wrap">
                 </div>
@@ -57,7 +57,7 @@
             </div>
 
         </div>
-        <div class="tab-pane fade" id="tab_block_2">
+        <div class="tab-pane fade" id="tab_list">
             <div class="list_task_wrap">
                 <table id="table_task_list" class="table nowrap table-advance w-100">
                 </table>

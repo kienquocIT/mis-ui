@@ -138,6 +138,15 @@ class NodeLoadDataHandle {
         return true;
     };
 
+    static loadBoxRole(ele, dataRole = {}) {
+        ele.initSelect2({
+            data: dataRole,
+            disabled: !(ele.attr('data-url')),
+            'allowClear': true,
+        });
+        return true;
+    };
+
     static loadBoxInWFOption(ele, dataInWFOption = null) {
         if (!dataInWFOption) {
             dataInWFOption = NodeLoadDataHandle.dataInWFOption;
@@ -161,9 +170,10 @@ class NodeLoadDataHandle {
 
     static loadBoxEmployee(ele, dataEmployee = {}) {
         let companyVal = $(ele[0].closest('.collab-in-workflow-area').querySelector('.box-in-workflow-company')).val();
+        let roleVal = $(ele[0].closest('.collab-in-workflow-area').querySelector('.box-in-workflow-role')).val();
         ele.initSelect2({
             data: dataEmployee,
-            'dataParams': {'company_id': companyVal},
+            'dataParams': {'company_id': companyVal, 'role__id': roleVal},
             disabled: !(ele.attr('data-url')),
             callbackTextDisplay: function (item) {
                 return item?.['full_name'] || '';
@@ -236,6 +246,9 @@ class NodeLoadDataHandle {
         }
         if (row.querySelector('.box-in-workflow-company')) {
             NodeLoadDataHandle.loadBoxCompany($(row.querySelector('.box-in-workflow-company')));
+        }
+        if (row.querySelector('.box-in-workflow-role')) {
+            NodeLoadDataHandle.loadBoxRole($(row.querySelector('.box-in-workflow-role')));
         }
         if (row.querySelector('.box-in-workflow-option')) {
             NodeLoadDataHandle.loadBoxInWFOption($(row.querySelector('.box-in-workflow-option')));
@@ -667,6 +680,7 @@ class NodeDataTableHandle {
     static tableNode = $('#datable-workflow-node-create');
     static propEmployeeInitEle = $('#data-init-property-employee');
     static companyInitEle = $('#data-init-company');
+    static roleInitEle = $('#data-init-role');
     static employeeInitEle = $('#data-init-employee');
     static employeeCompanyInitEle = $('#data-init-employee-company');
 
@@ -965,7 +979,7 @@ class NodeDataTableHandle {
                                                                             >
                                                                             </select>
                                                                         </div>
-                                                                        <div class="form-group employee-area">
+                                                                        <div class="form-group employee-area" hidden>
                                                                             <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-company')}</label>
                                                                             <select 
                                                                                 class="form-control box-in-workflow-company"
@@ -976,7 +990,17 @@ class NodeDataTableHandle {
                                                                             </select>
                                                                         </div>
                                                                         <div class="form-group employee-area" hidden>
-                                                                            <label class="form-label">Select employee</label>
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-role')}</label>
+                                                                            <select 
+                                                                                class="form-control box-in-workflow-role"
+                                                                                data-url="${NodeDataTableHandle.roleInitEle.attr('data-url')}"
+                                                                                data-method="${NodeDataTableHandle.roleInitEle.attr('data-method')}"
+                                                                                data-keyResp="role_list"
+                                                                            >
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group employee-area" hidden>
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-employee')}</label>
                                                                             <select 
                                                                                 class="form-control box-in-workflow-employee"
                                                                                 data-url="${NodeDataTableHandle.employeeCompanyInitEle.attr('data-url')}"

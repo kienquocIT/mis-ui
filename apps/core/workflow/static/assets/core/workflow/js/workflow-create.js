@@ -161,6 +161,15 @@ $(function () {
         });
 
         NodeDataTableHandle.tableNode.on('change', '.box-in-workflow-company', function () {
+            let boxRole = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-role');
+            $(boxRole).empty();
+            NodeLoadDataHandle.loadBoxRole($(boxRole));
+            let boxEmployee = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-employee');
+            $(boxEmployee).empty();
+            NodeLoadDataHandle.loadBoxEmployee($(boxEmployee));
+        });
+
+        NodeDataTableHandle.tableNode.on('change', '.box-in-workflow-role', function () {
             let boxEmployee = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-employee');
             $(boxEmployee).empty();
             NodeLoadDataHandle.loadBoxEmployee($(boxEmployee));

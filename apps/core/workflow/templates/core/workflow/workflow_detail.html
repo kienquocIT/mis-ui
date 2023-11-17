@@ -334,8 +334,10 @@
         data-code="{% trans 'Code' %}"
         data-full-name="{% trans 'Full Name' %}"
         data-username="{% trans 'Username' %}"
-        data-select-company="{% trans 'Select Company' %}"
+        data-select-company="{% trans 'Company' %}"
         data-description="{% trans 'Description' %}"
+        data-select-role="{% trans 'Role' %}"
+        data-select-employee="{% trans 'Employee' %}"
     >
 
 
@@ -350,6 +352,12 @@
         type="hidden"
         id="data-init-company"
         data-url="{% url "CompanyListAPI" %}"
+        data-method="GET"
+    >
+    <input
+        type="hidden"
+        id="data-init-role"
+        data-url="{% url "RoleListAPI" %}"
         data-method="GET"
     >
     <input

@@ -300,11 +300,11 @@ $(function () {
                 // toggle Sub task layout
                 if ($(this).hasClass('opened')) {
                     $(this).removeClass('opened')
-                    $('#tab_block_1').removeClass('isOpened').css('min-height', 'auto')
+                    $('#tab_kanban').removeClass('isOpened').css('min-height', 'auto')
                     // restore default
                     $('.tasklist-wrap .tasklist-card').removeClass('hidden')
                 } else {
-                    const $tab1 = $('#tab_block_1'), $subTaskWrap = $('.sub-tasklist-wrap')
+                    const $tab1 = $('#tab_kanban'), $subTaskWrap = $('.sub-tasklist-wrap')
                     $(this).addClass('opened')
                     $tab1.addClass('isOpened')
                     let distanceBt = $(document).height() - $tab1.offset().top
@@ -759,6 +759,15 @@ $(function () {
             cls.setConfig = JSON.parse($('#task_config').text());
         }
 
+        static selfInitSelect2(elm, data, key='title'){
+            data = {...data, selected: true}
+            elm.attr('data-onload', JSON.stringify(data)).removeClass('is-valid')
+            elm.parents('.form-group').removeClass('has-error').find('small.is-invalid').remove()
+            if ($(`option[value="${data.id}"]`, elm).length <= 0)
+                elm.html('').append(`<option value="${data.id}">${data[key]}</option>`)
+            elm.initSelect2()
+        }
+
         static appendDataToForm(cls, $form, taskID){
             $.fn.callAjax2({
                 "url": $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
@@ -769,7 +778,7 @@ $(function () {
                         if (data.status === 200) {
                             $('#inputTextTitle', $form).val(data.title)
                             $('#inputTextCode', $form).val(data.code)
-                            $('#selectStatus', $form).attr('data-onload', JSON.stringify(data.task_status))
+                            listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                             $formElm.append(taskIDElm).addClass('task_edit')
                             $('#inputTextStartDate', $form).val(
@@ -779,24 +788,16 @@ $(function () {
                                 moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                             )
                             $('#inputTextEstimate', $form).val(data.estimate)
-                            if (data?.['opportunity_data']?.id)
-                                $($oppElm, $form).attr('data-onload', JSON.stringify(data?.['opportunity_data']))
+
                             $('#selectPriority', $form).val(data.priority).trigger('change')
 
                             $('#inputAssigner', $form).val(
                                 data.employee_created.last_name +'. '+ data.employee_created.first_name)
                                 .attr('data-value-id', data.employee_created.id)
                                 .attr('value', data.employee_created.id)
-
-                            $('#selectAssignTo', $form).attr('data-onload', JSON.stringify({
-                                "full_name": data.assign_to.last_name + '. ' + data.assign_to.first_name,
-                                ...data.assign_to
-                            }
-                            ))
-                            $('#selectStatus, #opportunity_id, #selectAssignTo', $form).each(function(){
-                                $(this).html('')
-                                $(this).initSelect2()
-                            })
+                            if (data?.['opportunity_data']?.id)
+                                listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity_data'], )
+                            listViewTask.selfInitSelect2($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
                             window.formLabel.renderLabel(data.label)
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
@@ -887,18 +888,20 @@ $(function () {
                         }
                     },
                     {
-                        "data": "assign_to",
+                        "data": "employee_inherit",
                         "class": "col-2 text-right",
                         render: (row, type, data) => {
                             let html = ''
                             if (!data.employee_created?.full_name)
                                 data.employee_created.full_name = data.employee_created.last_name +
                                     ' ' + data.employee_created.first_name
-                            const assigner = $x.fn.renderAvatar(data.employee_created)
+                            const assigner = $x.fn.renderAvatar(data.employee_created).replace(
+                                'avatar-primary', 'avatar-' + $x.fn.randomColor())
                             let assignee = ''
                             if (row){
                                 if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
-                                assignee = $x.fn.renderAvatar(row)
+                                assignee = $x.fn.renderAvatar(row).replace(
+                                'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
                             }
                             html += assigner + '<supper>»</supper>' + assignee
                             return html

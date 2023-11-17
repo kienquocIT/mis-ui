@@ -8,26 +8,25 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'ExpenseUpdate' pk=0 %}" id="btn-edit">
-        <button class="btn btn-outline-primary">
-        <span>
-            <span>{% trans 'Edit' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-pen-to-square"></i>
+    <a href="{% url 'ExpenseUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
         </button>
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmDetailExpense" data-method="PUT" data-url="{% url "ExpenseDetailAPI" pk=0 %}"
+    <form id="frmDetailExpense" data-method="GET" data-url="{% url "ExpenseDetailAPI" pk=pk %}"
           data-url-redirect="{% url "ExpenseList" %}">
         {% csrf_token %}
         <div class="row">
-            <div class="col-4">
+            <div class="col-12 col-md-4 col-lg-4">
                 <label class="form-label required">{% trans 'Name' %}</label>
-                <input class="form-control" type="text" placeholder="Input Name" name="title" id="expenseTitle"
-                       disabled>
+                <input class="form-control" type="text" placeholder="Input Name" name="title" id="expenseTitle" disabled>
             </div>
         </div>
 
@@ -43,33 +42,56 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_general">
                 <div class="row">
-                    <div class="form-group col-3">
-                        <label class="form-label required">{% trans "UoM Group" %}</label>
-                        <input id="chooseUoMGroup" data-method="GET" class="form-control" disabled
-                               data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                               name="uom_group" data-id=""/>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="box-expense-item">{% trans 'Expense item' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-expense-item"
+                                    data-url="{% url 'ExpenseItemListAPI' %}"
+                                    data-method="GET"
+                                    name="expense_item"
+                                    data-keyResp="expense_item_list"
+                                    disabled
+                            >
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group col-3">
-                        <label class="form-label required">{% trans "UoM" %}</label>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                        <label class="form-label required" for="chooseUom">{% trans "UoM" %}</label>
                         <select id="chooseUom" class="form-select" data-method="GET"
                                 data-url="{% url "UnitOfMeasureOfGroupLaborListAPI" %}"
                                 name="uom" disabled></select>
                     </div>
-                    <div class="col-6 form-group" id="choosePriceList" data-method="GET"
-                         data-url="{% url "PriceListAPI" %}">
-                        <label class="form-label">{% trans "Price List" %}</label>
-                        <input class="form-select dropdown-toggle" data-bs-toggle="dropdown" id="dropdown-price-list"
-                               oninput="this.value=''"
-                               data-bs-display="static" aria-expanded="false" placeholder="Select Price List">
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
-                        </ul>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group" id="choosePriceList" data-method="GET"
+                             data-url="{% url "PriceListAPI" %}">
+                            <label class="form-label">{% trans "Price List" %}</label>
+                            <input class="form-select dropdown-toggle" data-bs-toggle="dropdown" id="dropdown-price-list"
+                                   oninput="this.value=''"
+                                   data-bs-display="static" aria-expanded="false" placeholder="Select Price List">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3 form-group">
-                        <label class="form-label">{% trans "Role" %}</label>
-                        <select class="form-select" id="chooseRole" data-method="GET"
-                                data-url="{% url "RoleListAPI" %}" multiple name="role" disabled></select>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Role" %}</label>
+                            <select class="form-select" id="chooseRole" data-method="GET"
+                                    data-url="{% url "RoleListAPI" %}" multiple name="role" disabled></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="chooseUoMGroup">{% trans "UoM Group" %}</label>
+                            <input id="chooseUoMGroup" data-method="GET" class="form-control" disabled
+                                   data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                                   name="uom_group" data-id=""/>
+                        </div>
                     </div>
                 </div>
             </div>

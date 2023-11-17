@@ -24,12 +24,8 @@
            data-url-detail="{% url "ExpenseDetail" pk=0 %}">
         <thead>
         <tr>
-            <th>
-                #
-            </th>
-            <th class="wrap-text">
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                {% trans 'Code' %}
+            <th>#</th>
+            <th class="wrap-text">{% trans 'Code' %}
                 <i
                         class="fas fa-info-circle icon-info"
                         data-bs-toggle="tooltip"
@@ -38,6 +34,7 @@
                 ></i>
             </th>
             <th class="wrap-text">{% trans 'Name' %}</th>
+            <th class="wrap-text">{% trans 'Expense item' %}</th>
         </tr>
         </thead>
     </table>

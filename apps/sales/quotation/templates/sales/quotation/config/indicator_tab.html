@@ -3,24 +3,28 @@
 <!-- Config Indicator -->
 <br>
 <div class="row">
-    <div class="col-6">
+    <div class="col-12 col-md-6 col-lg-6">
         <div class="row float-left">
-            <button type="button" class="btn btn-link btn-animated" id="btn-add-indicator" data-bs-toggle="modal"
-                    data-bs-target="#indicatorCreateModalCenter">
-                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add indicator' %}</span></span>
+            <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    id="btn-add-indicator"
+                    data-bs-toggle="modal"
+                    data-bs-target="#indicatorCreateModalCenter"
+            >
+            <span><span>{% trans 'Add indicator' %}</span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-plus"></i></span></span></span>
             </button>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-12 col-md-6 col-lg-6">
         <div class="row float-right mr-2">
             <button
                     type="button"
-                    class="btn btn-soft-primary"
+                    class="btn btn-outline-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#restoreIndicatorModalCenter"
-                    id="btn-add-shipping"
             >
-            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrow-rotate-left"></i></span></span><span>{% trans 'Restore default' %}</span></span>
+            <span><span>{% trans 'Restore default' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
             </button>
         </div>
     </div>

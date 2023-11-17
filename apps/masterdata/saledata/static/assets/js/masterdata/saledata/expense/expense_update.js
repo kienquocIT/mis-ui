@@ -36,6 +36,12 @@ $(document).ready(function () {
     // auto checked checkbox for price list copy from source
     $(document).on('click', '.ul-price-list .form-check-input', function () {
         price_dict = obj_price.dict;
+        let is_checked = this.checked;
+        for (let eleCheck of this.closest('.ul-price-list').querySelectorAll('.form-check-input')) {
+            eleCheck.checked = false;
+            controlSelectPriceList($(eleCheck), price_dict);
+        }
+        this.checked = is_checked;
         controlSelectPriceList($(this), price_dict)
     })
 

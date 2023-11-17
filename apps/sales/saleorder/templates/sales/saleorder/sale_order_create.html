@@ -674,9 +674,14 @@
                                         <tfoot>
                                         <tr>
                                             <th colspan="2" class="align-text-top">
+                                                <div class="row mb-2">
+                                                    <button type="button" class="btn btn-outline-primary" id="btn-add-expense-quotation-create">
+                                                        <span><span>{% trans 'Add Expense' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                                    </button>
+                                                </div>
                                                 <div class="row">
-                                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-expense-quotation-create">
-                                                        <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Expense' %}</span></span>
+                                                    <button type="button" class="btn btn-outline-primary" id="btn-add-labor-quotation-create">
+                                                        <span><span>{% trans 'Add Internal Labor' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                                     </button>
                                                 </div>
                                             </th>
@@ -729,7 +734,7 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-tables-expense"
-                                data-url="{% url "ExpenseForSaleListAPI" %}"
+                                data-url="{% url "ExpenseListAPI" %}"
                                 data-link-detail="{% url "ExpenseDetail" 1 %}"
                                 data-method="GET"
                         >

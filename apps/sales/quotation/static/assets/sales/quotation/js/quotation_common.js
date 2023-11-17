@@ -372,85 +372,12 @@ class QuotationLoadDataHandle {
         });
     }
 
-    static loadBoxQuotationExpense(box_id, valueToSelect = null) {
-        let ele = $('#data-init-quotation-create-tables-expense');
-        let jqueryId = '#' + box_id;
-        let eleBox = $(jqueryId);
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let dataResp = $.fn.switcherResp(resp);
-                if (dataResp) {
-                    if (dataResp.hasOwnProperty('expense_sale_list') && Array.isArray(dataResp.expense_sale_list)) {
-                        ele.val(JSON.stringify(dataResp.expense_sale_list));
-                        let linkDetail = ele.attr('data-link-detail');
-                        eleBox.attr('data-link-detail', linkDetail);
-                        let data = dataResp.expense_sale_list;
-                        eleBox.empty();
-                        for (let i = 0; i < data.length; i++) {
-                            let uom_title = "";
-                            let expense_type_title = "";
-                            let expense_type = {};
-                            let default_uom = {};
-                            let uom_group = {};
-                            let tax_code = {};
-                            let price_list = [];
-                            if (Object.keys(data[i].uom).length !== 0) {
-                                uom_title = data[i].uom.title
-                            }
-                            if (Object.keys(data[i].expense_type).length !== 0) {
-                                expense_type = data[i].expense_type;
-                                expense_type_title = data[i].expense_type.title;
-                            }
-                            default_uom = data[i].uom;
-                            tax_code = data[i].tax_code;
-                            price_list = data[i].price_list;
-                            uom_group = data[i].uom_group;
-                            let dataStr = JSON.stringify({
-                                'id': data[i].id,
-                                'title': data[i].title,
-                                'code': data[i].code,
-                                'unit of measure': uom_title,
-                                'expense type': expense_type_title,
-                                'is_product': false,
-                            }).replace(/"/g, "&quot;");
-                            let expense_data = JSON.stringify({
-                                'id': data[i].id,
-                                'title': data[i].title,
-                                'code': data[i].code,
-                                'expense_type': expense_type,
-                                'unit_of_measure': default_uom,
-                                'uom_group': uom_group,
-                                'price_list': price_list,
-                                'tax': tax_code,
-                            }).replace(/"/g, "&quot;");
-                            let option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option" data-value="${data[i].id}">
-                                <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
-                                <input type="hidden" class="data-default" value="${expense_data}">
-                                <input type="hidden" class="data-info" value="${dataStr}">
-                            </button>`
-                            if (valueToSelect && valueToSelect === data[i].id) {
-                                option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option option-btn-checked" data-value="${data[i].id}">
-                                <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
-                                <input type="hidden" class="data-default" value="${expense_data}">
-                                <input type="hidden" class="data-info" value="${dataStr}">
-                            </button>`
-                            }
-                            eleBox.append(option);
-                        }
-                        // load data information
-                        QuotationLoadDataHandle.loadInformationSelectBox(eleBox, true);
-                    }
-                }
-            }
-        )
-    };
+    static loadBoxQuotationExpense(ele, dataExpense = {}) {
+        ele.initSelect2({
+            data: dataExpense,
+            disabled: !(ele.attr('data-url')),
+        });
+    }
 
     static loadBoxQuotationProductPurchasing(box_id, valueToSelect = null) {
         let ele = QuotationDataTableHandle.productInitEle;
@@ -1088,6 +1015,7 @@ class QuotationLoadDataHandle {
 class QuotationDataTableHandle {
     static productInitEle = $('#data-init-quotation-create-tables-product');
     static expenseItemInitEle = $('#data-init-quotation-create-tables-expense-item');
+    static expenseInitEle = $('#data-init-quotation-create-tables-expense');
     static uomInitEle = $('#data-init-quotation-create-tables-uom');
     static taxInitEle = $('#data-init-quotation-create-tables-tax');
 
@@ -1613,44 +1541,105 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-expense-title" value="${row.expense_title}" required>
-                                </div>`;
+                        if (row?.['is_labor'] === false) {
+                            return `<div class="row">
+                                        <input type="text" class="form-control table-row-expense-title" value="${row.expense_title}" required>
+                                    </div>`;
+                        } else {
+                            return `<div class="row">
+                                        <div class="input-group">
+                                            <span class="input-affix-wrapper">
+                                                <span class="input-prefix">
+                                                    <div class="btn-group dropstart">
+                                                        <i
+                                                            class="fas fa-info-circle text-blue"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                        >
+                                                        </i>
+                                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                                    </div>
+                                                </span>
+                                                <select 
+                                                class="form-select table-row-labor-item" 
+                                                data-url="${QuotationDataTableHandle.expenseInitEle.attr('data-url')}"
+                                                data-link-detail="${QuotationDataTableHandle.expenseInitEle.attr('data-link-detail')}"
+                                                data-method="${QuotationDataTableHandle.expenseInitEle.attr('data-method')}"
+                                                data-keyResp="expense_list"
+                                                required>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>`;
+                        }
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let selectExpenseItemID = 'quotation-create-expense-box-expense-item-' + String(row.order);
-                        return `<div class="row">
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                    >
-                                                    </i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
+                        if (row?.['is_labor'] === false) {
+                           return `<div class="row">
+                                        <div class="input-group">
+                                            <span class="input-affix-wrapper">
+                                                <span class="input-prefix">
+                                                    <div class="btn-group dropstart">
+                                                        <i
+                                                            class="fas fa-info-circle text-blue"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                        >
+                                                        </i>
+                                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                                    </div>
+                                                </span>
+                                                <select 
+                                                class="form-select table-row-item" 
+                                                data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
+                                                data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
+                                                data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
+                                                data-keyResp="expense_item_list"
+                                                required>
+                                                </select>
                                             </span>
-                                            <select 
-                                            class="form-select table-row-item" 
-                                            id="${selectExpenseItemID}"
-                                            data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
-                                            data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
-                                            data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
-                                            data-keyResp="expense_item_list"
-                                            required>
-                                            </select>
-                                        </span>
-                                    </div>
-                                </div>`;
+                                        </div>
+                                    </div>`;
+                        } else {
+                            return `<div class="row">
+                                        <div class="input-group">
+                                            <span class="input-affix-wrapper">
+                                                <span class="input-prefix">
+                                                    <div class="btn-group dropstart">
+                                                        <i
+                                                            class="fas fa-info-circle text-blue"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                        >
+                                                        </i>
+                                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                                    </div>
+                                                </span>
+                                                <select 
+                                                class="form-select table-row-item" 
+                                                data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
+                                                data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
+                                                data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
+                                                data-keyResp="expense_item_list"
+                                                disabled>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>`;
+                        }
+
                     }
                 },
                 {

@@ -11,7 +11,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'CompanyUpdateAPI' pk=pk %}">
+    <a href="{% url 'CompanyUpdate' pk=pk %}">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Edit' %}</span>
@@ -23,68 +23,201 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <input name="default_representative_name" value="{{ request.user.first_name }} {{ request.user.last_name }}" hidden/>
-    <div class="media align-items-center" style="padding-left: 20Px; padding-top: 20px; padding-right: 20px;">
-        <div class="media-head me-2">
-            <div class="avatar avatar-xs avatar-success avatar-rounded">
-                <span class="initial-wrap">{{ data.icon }}</span>
-            </div>
-        </div>
-        <div class="media-body">
-            <a href="">
-                <span class="d-block" style="font-size: xx-large">{{ data.company.title }}</span>
-            </a>
-        </div>
-    </div>
-    <div style="padding-left: 20Px; padding-top: 20px; padding-right: 20px;">
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label class="form-label"><b>{% trans 'Code' %}</b></label>
-                    <input class="form-control" type="text"
-                           name="code" value="{{ data.company.code }}"
-                           id="form-code" readonly>
+    <form id="frm-detail-company"
+          data-url-detail="{% url "CompanyDetailAPI" '0' %}"
+          data-url-redirect="{% url "CompanyList" %}"
+          data-method="GET">
+        {% csrf_token %}
+        <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="code">
+                                    {% trans 'Company code' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="code" oninput="this.value=this.value.toUpperCase()"
+                                       placeholder="MIS001" required/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8 col-lg-8">
+                            <div class="form-group">
+                                <label class="form-label required" for="title">
+                                    {% trans 'Company name' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="title" placeholder="MT Solution" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="fax">
+                            {% trans 'Company fax' %}
+                        </label>
+                        <input type="text" class="form-control"
+                               id="fax" placeholder="+84 (8) 1234 9876"/>
+                    </div>
+                    <div hidden class="form-group">
+                        <label class="form-label" for="parent_company">
+                            {% trans 'Parent Company' %}
+                        </label>
+                        <select class="form-control form-select" id="parent_company"
+                                disabled required>
+                            <option value="" selected>{% trans 'No selected' %}</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="address">{% trans 'Company address' %}</label>
+                        <input type="text" class="form-control" readonly id="address"
+                               placeholder="{% trans 'Click to add address' %}"
+                               required>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required" for="representative_fullname">
+                            {% trans 'Representator fullname' %}
+                        </label>
+                        <input type="text" class="form-control"
+                               id="representative_fullname"
+                               placeholder="Nguyen Van A" required/>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="email">
+                            {% trans 'Representator email' %}
+                        </label>
+                        <input type="text" class="form-control"
+                               id="email"
+                               placeholder="anv@mtsolution.com.vn"
+                               required/>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="phone">
+                            {% trans 'Representator phone number' %}
+                        </label>
+                        <input type="text" class="form-control"
+                               id="phone" placeholder="+84987654321" required/>
+                    </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label class="form-label"><b>{% trans 'Representative' %}</b></label>
-                    <input class="form-control" type="text"
-                           name="representative_fullname" value="{{ data.company.representative_fullname }}"
-                           id="form-representative_fullname" readonly>
-                </div>
-            </div>
         </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+            <span class="icon">
+                <i class="fas fa-angle-double-up text-primary"></i>
+            </span>
+        </button>
         <div class="row">
             <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label"><b>{% trans 'Address' %}</b></label>
-                    <input class="form-control" type="text"
-                           name="address" value="{{ data.company.address }}"
-                           id="form-address" readonly>
+                <ul class="nav nav-tabs nav-icon nav-light">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_setting">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-cogs"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Company setting' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_function_number">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-stopwatch-20"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Function number' %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_setting">
+                    <div class="row mt-3 mb-5">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <label class="col-12 col-md-4 col-lg-4 col-form-label required" for="primary-currency">
+                                        {% trans 'Primary currency' %}
+                                    </label>
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <select type="text" id="primary-currency" data-url="{% url 'BaseCurrencyListAPI' %}" class="select2 form-select" required></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="form-label" for="definition-inventory-valuation">
+                                {% trans 'Definition of inventory valuation' %}:
+                            </label>
+                                </div>
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <div class="form-check form-check-sm">
+                                                <input type="radio" id="perpetual-selection" name="definition-inventory-valuation" class="form-check-input" checked>
+                                                <label class="form-check-label" for="perpetual-selection">{% trans 'Perpetual inventory' %}</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <div class="form-check form-check-sm">
+                                                <input type="radio" id="periodic-selection" name="definition-inventory-valuation" class="form-check-input">
+                                                <label class="form-check-label" for="periodic-selection">{% trans 'Periodic inventory' %}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <label class="col-12 col-md-4 col-lg-4 col-form-label" for="default-inventory-value-method">
+                                    {% trans 'Default inventory value method' %}:
+                                </label>
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <select type="text" id="default-inventory-value-method" class="form-select" required>
+                                        <option value="0">{% trans 'FIFO' %}</option>
+                                        <option value="1">{% trans 'Cumulative weighted average' %}</option>
+                                        <option value="2">{% trans 'Weighted average' %}</option>
+                                        <option value="3">{% trans 'Specific identification method' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <div class="form-check">
+                                <input type="checkbox" id="cost-per-warehouse" class="form-check-input">
+                                <label class="form-check-label" for="cost-per-warehouse">{% trans 'Cost per warehouse management' %}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <div class="form-check">
+                                <input type="checkbox" id="cost-per-lot-batch" class="form-check-input">
+                                <label class="form-check-label" for="cost-per-lot-batch">{% trans 'Cost per lot/batch management' %}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tab_function_number">
+                    <table class="table nowrap w-100" id="function_number_table">
+                        <thead>
+                        <th></th>
+                        <th>{% trans 'Function' %}</th>
+                        <th>{% trans 'Numbering by' %}</th>
+                        <th>{% trans 'Schema' %}</th>
+                        <th>{% trans 'Schema custom' %}</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label class="form-label"><b>{% trans 'Phone' %}</b></label>
-                    <input class="form-control" type="text"
-                           name="phone" value="{{ data.company.phone }}"
-                           id="form-phone" readonly>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label class="form-label"><b>{% trans 'Email' %}</b></label>
-                    <input class="form-control" type="text"
-                           name="email" value="{{ data.company.email }}"
-                           id="form-email" readonly>
-                </div>
-            </div>
-        </div>
-    </div>
+    </form>
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'core/company/js/company_common.js' %}"></script>
     <script src="{% static 'core/company/js/company_detail.js' %}"></script>
 {% endblock %}

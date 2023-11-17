@@ -83,6 +83,26 @@ class AdvancePaymentDetail(View):
                }, status.HTTP_200_OK
 
 
+class AdvancePaymentUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='advancepayment/advance_payment_update.html',
+        breadcrumb='ADVANCE_PAYMENT_UPDATE_PAGE',
+        menu_active='menu_advance_payment_detail',
+        perm_check=PermCheck(url=ApiURL.ADVANCE_PAYMENT_DETAIL, method='PUT', fill_key=['pk']),
+    )
+    def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
+        return {
+                   'data': {'employee_current': resp1.result}
+               }, status.HTTP_200_OK
+
+
 class AdvancePaymentDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 

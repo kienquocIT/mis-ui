@@ -1665,6 +1665,9 @@ function autoLoadStage(
         let input_rate_ele = $('#check-input-rate');
         let ele_close_deal = $('#input-close-deal');
         let ele_stage = $(`.sub-stage`);
+        if (id_stage_current === '') {
+            id_stage_current = $('#div-stage').find('div:first-child').attr('data-id');
+        }
         let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
         let index = ele_stage_current.index();
         if (ele_stage_current.hasClass('stage-lost')) {

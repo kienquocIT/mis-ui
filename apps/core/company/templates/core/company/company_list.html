@@ -1,19 +1,18 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-
 {% block cssHeader %}{% endblock %}
-
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#AddCompanyForms">
-        <span>
-            <span>{% trans 'Add' %}</span>
-            <span class="icon">
-                <i class="fa-solid fa-plus"></i>
+    <a href="{% url "CompanyCreate" %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
-
 {% block pageContent %}
     <input
             name="default_representative_name" value="{{ request.user.first_name }} {{ request.user.last_name }}" hidden
@@ -39,177 +38,11 @@
         </thead>
         <tbody></tbody>
     </table>
-
-    <!-- Add Company -->
-    <div
-            class="modal fade"
-            id="AddCompanyForms"
-            tabindex="-1"
-            role="dialog"
-            aria-hidden="true"
-    >
-        <div class="modal-dialog modal-lg mt-15" role="document">
-            <div class="modal-content mb-7">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        {% trans 'Add Company' %}
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form
-                            id="frm-add-company"
-                            data-url="{% url "CompanyListAPI" %}"
-                            data-url-redirect="/"
-                            data-method="POST"
-                    >
-                        {% csrf_token %}
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="company_name_id">
-                                        {% trans 'Company Name' %}
-                                        <span class="required"></span>
-                                    </label>
-                                    <input
-                                            type="text" class="form-control"
-                                            id="company_name_id" name="title"
-                                            placeholder="MT Solution"
-                                            required
-                                    />
-                                    <span class="form-text text-muted">{% trans 'Name of new company' %}</span>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="parent_company_id">
-                                        {% trans 'Parent Company' %}
-                                    </label>
-                                    <select
-                                            class="form-control form-select" id="parent_company_id"
-                                            name="parent_company"
-                                            disabled
-                                            required
-                                    >
-                                        <option value="" selected>{% trans 'No selected' %}</option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
-                                    </select>
-                                    <span class="form-text text-muted">{% trans 'The new is subsidiary company or not' %}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="code_id">
-                                        {% trans 'Code' %}
-                                        <span class="required"></span>
-                                    </label>
-                                    <input
-                                            type="text" class="form-control"
-                                            id="code_id" name="code"
-                                            oninput="this.value=this.value.toUpperCase()"
-                                            placeholder="MIS001"
-                                            required
-                                    />
-                                    <span class="form-text text-muted">{% trans 'Code new company' %}</span>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="address_id">
-                                        {% trans 'Address' %}
-                                        <span class="required"></span>
-                                    </label>
-                                    <input
-                                            type="text" class="form-control"
-                                            id="address_id" name="address"
-                                            placeholder="{% trans 'No.20, 22 Street, Him Lam Quarter, Binh Hung Ward, Binh Chanh District, HCM city, VN country' %}"
-                                            required
-                                    >
-                                    <span class="form-text text-muted">{% trans 'Address new company' %}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label" for="representative_fullname_id">
-                                        {% trans 'Representative' %}
-                                        <span class="required"></span>
-                                    </label>
-                                    <input
-                                            type="text" class="form-control"
-                                            id="representative_fullname_id" name="representative_fullname"
-                                            placeholder="Nguyen Van A" required
-                                    />
-                                    <span class="form-text text-muted">{% trans 'Full name of Representative' %}</span>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label" for="email_id">
-                                        {% trans 'Email' %}
-                                        <span class="required"></span>
-                                    </label>
-                                    <input
-                                            type="text" class="form-control"
-                                            id="email_id" name="email"
-                                            placeholder="anv@mtsolution.com.vn"
-                                            required
-                                    />
-                                    <span class="form-text text-muted">{% trans 'Email of Representative' %}</span>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label" for="phone_id">
-                                        {% trans 'Phone Number' %}
-                                        <span class="required"></span>
-                                    </label>
-                                    <input
-                                            type="number" class="form-control"
-                                            id="phone_id" name="phone"
-                                            placeholder="+84987654321"
-                                            required
-                                    />
-                                    <span class="form-text text-muted">{% trans 'Phone number of Representative' %}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 pb-3">
-                            <div class="form-group">
-                                <input
-                                        type="submit" class="btn btn-success" id="add-company-submit"
-                                        value="{% trans 'Add' %}"
-                                />
-                                <input
-                                        type="button"
-                                        class="btn btn-outline-dark"
-                                        data-bs-dismiss="modal"
-                                        value="{% trans 'Cancel' %}"
-                                />
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- / Add Company -->
-
-    <!-- Modal Setting Company -->
-    <div
-            class="modal fade" id="modal-setting" tabindex="-1" role="dialog"
-            aria-labelledby="modal-setting"
-            aria-hidden="true"
-            data-url-detail="{% url 'CompanyConfigDetailAPI' %}"
-            data-url-currency-list="{% url 'CurrencyListAPI' %}"
-    >
+    <div class="modal fade" id="modal-setting" tabindex="-1" role="dialog"
+         aria-labelledby="modal-setting"
+         aria-hidden="true"
+         data-url-detail="{% url 'CompanyConfigDetailAPI' %}"
+         data-url-currency-list="{% url 'CurrencyListAPI' %}">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -292,10 +125,7 @@
         </div>
     </div>
 {% endblock %}
-
 {% block jsFooter %}
-    <script src="{% static 'core/company/js/load_company_DT.js' %}"></script>
-    <script src="{% static 'core/company/js/add_new_company.js' %}"></script>
-    <script src="{% static 'core/company/js/delete_company.js' %}"></script>
+    <script src="{% static 'core/company/js/company_list.js' %}"></script>
 {% endblock %}
 

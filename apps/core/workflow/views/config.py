@@ -172,6 +172,23 @@ class WorkflowDetail(View):
         return resp.auto_return()
 
 
+class WorkflowUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='core/workflow/workflow_update.html',
+        menu_active='menu_workflow_list',
+        breadcrumb='WORKFLOW_UPDATE_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        result = {
+            'data': {'doc_id': pk},
+            'wf_actions': WORKFLOW_ACTION,
+            'form': ConditionFormset(),
+            'wf_data_type': WORKFLOW_TYPE
+        }
+        return result, status.HTTP_200_OK
+
+
 class WorkflowDetailAPI(APIView):
     @mask_view(
         auth_require=True,

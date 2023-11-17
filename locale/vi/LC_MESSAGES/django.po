@@ -3916,30 +3916,6 @@ msgid "Assignee can edit Estimate"
 msgstr "có thể sửa dự tính hoàn thành"
 
 #
-msgid "Assign task in Opportunity/Project"
-msgstr "Giao việc trong cơ hội kinh doanh (CHKD)/dự án"
-
-#
-msgid "Assigner can assign task to everyone"
-msgstr "Người giao việc có thể giao cho tất cả mọi người"
-
-#
-msgid "(1) Can just assign task to Opp/Pro member"
-msgstr "(1) chỉ có thể giao việc cho người trong CHKD/dự án"
-
-#
-msgid "Can just assign task to his/her staffs in his/her department"
-msgstr "chỉ có thể giao việc cho nhân viên trong phòng ban"
-
-#
-msgid "Assign task not in Opportunity/Project"
-msgstr "Giao task không có CHKD/dự án"
-
-#
-msgid "Can just assign task to his/her department member"
-msgstr "Chỉ có thể giao việc cho người trong phòng ban"
-
-#
 msgid "Color"
 msgstr "Màu sắc"
 
@@ -3981,7 +3957,7 @@ msgstr "Dự tính hoàn thành"
 
 #
 msgid "An estimate of how much time you have spent working."
-msgstr "ước lượng khoảng thời gian bỏ ra để làm việc này"
+msgstr "Ước lượng khoảng thời gian bỏ ra để làm việc này"
 
 #
 msgid "Log time"
@@ -4852,3 +4828,19 @@ msgstr "Trường này phải bắt đầu bằng dấu gạch chéo lên '/' v�
 #
 msgid "Site Config"
 msgstr "Cấu hình site"
+
+#
+msgid "Select Status"
+msgstr "Trạng thái"
+
+#
+msgid "List"
+msgstr "Danh sách"
+
+#
+msgid "End time was large than Start time"
+msgstr "Ngày kết thúc lớn hơn ngày bắt đầu"
+
+#
+msgid "Missing info to log time"
+msgstr "Thiếu thông tin để ghi nhận"

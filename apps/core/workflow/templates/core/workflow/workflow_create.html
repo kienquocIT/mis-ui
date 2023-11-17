@@ -73,13 +73,14 @@
                                 <sup class="field-required">(*)</sup>
                             </label>
                         </div>
-                        <select class="form-control dropdown-select_two"
-                                data-placeholder="{% trans 'Nothing selected' %}"
-                                name="application"
+                        <select
+                                class="form-select"
                                 id="select-box-features"
-                                data-multiple="false"
-                                data-prefix="tenant_application_list"
-                                data-url="{% url 'TenantApplicationListAPI' %}"
+                                data-url="{% url "TenantApplicationListAPI" %}"
+                                data-method="GET"
+                                name="application"
+                                data-keyResp="tenant_application_list"
+                                required
                         ></select>
                     </div>
                 </div>
@@ -92,20 +93,14 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <button class="btn btn-flush-success flush-soft-hover"
+                        <button
                                 type="button"
+                                class="btn btn-outline-primary"
                                 title="{% trans 'Add new zone' %}"
                                 data-bs-target="#add_zone"
                                 data-required-text="{% trans 'Please select Function Applied first' %}"
                         >
-                            <span class="icon">
-                                <span class="feather-icon">
-                                    <i data-feather="plus"></i>
-                                </span>
-                                <span class="font-3 ml-1">
-                                    {% trans 'Add new zone' %}
-                                </span>
-                            </span>
+                            <span><span>{% trans 'Add new zone' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                         </button>
                     </div>
                 </div>
@@ -161,8 +156,13 @@
                 </div>
                 <div class="row" id="add-new-node-workflow-create">
                     <div class="col-12">
-                        <button type="button" class="btn btn-link btn-animated open-modal-node" data-bs-toggle="modal" data-bs-target="#nodeModalCreate">
-                            <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new node' %}</span></span>
+                        <button
+                                type="button"
+                                class="btn btn-outline-primary open-modal-node"
+                                data-bs-toggle="modal"
+                                data-bs-target="#nodeModalCreate"
+                        >
+                            <span><span>{% trans 'Add new node' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                         </button>
                         <div
                                 class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
@@ -181,9 +181,8 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
-                                            <label class="form-label">
+                                            <label class="form-label required" for="modal-node-name-create">
                                                 {% trans 'Node Name' %}
-                                                <span class="required"></span>
                                             </label>
                                             <input
                                                     type="text" class="form-control"

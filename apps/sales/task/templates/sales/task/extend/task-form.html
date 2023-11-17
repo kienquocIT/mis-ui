@@ -27,7 +27,6 @@
         data-drawer-width="500"
         data-drawer-push="true"
         id="drawer_task_create"
-        {#        data-url="{% url 'FlowRuntimeDiagramDetailAPI' pk=1 %}"#}
 >
     <div class="ntt-drawer-header">
         <div>
@@ -60,7 +59,7 @@
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
-                            <label for="selectStatus" class="form-label">{% trans 'Select' %}</label>
+                            <label for="selectStatus" class="form-label">{% trans 'Select Status' %}</label>
                             <select class="form-select" name="task_status" id="selectStatus"
                                     data-keyResp="task_status"
                                     data-url="{% url 'OpportunityTaskStatusAPI' %}"
@@ -94,21 +93,10 @@
                             <p class="form-text text-muted text-blue">
                                 {% trans 'An estimate of how much time you have spent working.' %}</p>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-xs-12">
                         <input type="text" class="hidden" name="log_time">
-                        <a href="#" class="text-bold mt-4 d-block btn-log_work">{% trans 'Log time' %}</a>
-                    </div>
-                    <div class="col-md-6 col-xs-12">
-                        <div class="form-group">
-                            <label for="selectOpportunity" class="form-label">{% trans 'Opp/Project code' %}</label>
-                            <select class="form-select" name="opportunity" id="selectOpportunity"
-                                    data-keyResp="opportunity_list"
-                                    data-url="{% url 'OpportunityListAPI' %}"
-                                    data-select2-closeOnSelect="true"
-                                    data-keyText="code">
-                            </select>
-                        </div>
+                        <a href="#" class="text-bold d-block btn-log_work text-decoration-underline mb-3">
+                            {% trans 'Log time' %}
+                        </a>
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
@@ -119,6 +107,20 @@
                                 <option value="2">{% trans 'High' %}</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="inputAssigner" class="form-label">{% trans 'Assigner' %}</label>
+                            <input class="form-control" name="employee_created" id="inputAssigner"
+                                   data-name="{{ request.user.employee_current_data.last_name }}. {{ request.user.employee_current_data.first_name }}"
+                                   data-value-id="{{ request.user.employee_current_data.id }}"
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 custom-layout">
+                        {% trans 'Assignee' as inherit_title %}
+                        {% trans 'Opp/Project code' as opp_title %}
+                        {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-prj-inherit' has_opp=True has_inherit=True is_open=True inherit_required=True %}
                     </div>
                     <div class="col-md-12 col-xs-12">
                         <div class="form-group">
@@ -141,30 +143,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xs-12">
-                        <div class="form-group">
-                            <label for="inputAssigner" class="form-label">{% trans 'Assigner' %}</label>
-                            <input class="form-control" name="employee_created" id="inputAssigner"
-                                   data-name="{{ request.user.employee_current_data.last_name }}. {{ request.user.employee_current_data.first_name }}"
-                                   data-value-id="{{ request.user.employee_current_data.id }}"
-                                   readonly>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xs-12">
-                        <div class="form-group position-relative is-lazy-loading">
-                            <span class="span_loading">
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            </span>
-                            <label for="selectAssignTo" class="form-label">{% trans 'Assignee' %}</label>
-                            <select class="form-control" name="assign_to" id="selectAssignTo"
-                                    data-keyResp="employee_list"
-                                    data-keyText="full_name"
-                                    data-url="{% url 'EmployeeListAPI' %}"
-                            >
-                            </select>
-                            <a href="#" class="form-text text-muted link-info btn-assign">{% trans 'Assign to me' %}</a>
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12">
@@ -289,9 +267,12 @@
     </div>
 </div>
 {% block dataHiddenGroup %}
+    {{ data.employee_info|json_script:"employee_info" }}
     <input type="hidden" id="form_valid"
            data-valid-datetime="{% trans 'End time was large than Start time' %}"
-           data-logtime-valid="{% trans 'Missing info to log time' %}">
+           data-logtime-valid="{% trans 'Missing info to log time' %}"
+           data-assign-txt="{% trans 'Assign to me' %}"
+    >
     <input type="hidden" id="task_url_sub"
            data-task-config="{% url 'OpportunityTaskConfigAPI' %}"
            data-opps-detail="{% url 'OpportunityDetailAPI' 0 %}"

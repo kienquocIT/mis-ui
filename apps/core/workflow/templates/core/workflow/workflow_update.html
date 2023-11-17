@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n workflowtags %}
-{% block title %}{% trans 'Workflow detail' %}{% endblock %}
+{% block title %}{% trans 'Workflow create' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/JSPlumb/css/jsplumbtoolkit-defaults.css' %}" rel="stylesheet" type="text/css"/>
@@ -9,29 +9,26 @@
     <link href="{% static 'assets/core/workflow/css/flowchart-workflow-init.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/core/workflow/css/workflow_node.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'assets/core/workflow/css/wf_detail.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'WorkflowUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
+    <button class="btn btn-outline-primary" type="submit" form="form-create_workflow">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
     <form
-            data-url="{% url 'WorkflowDetailAPI' data.data.doc_id %}"
+            data-url="{% url 'WorkflowDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'WorkflowList' %}"
             data-method="PUT"
             id="form-create_workflow"
+            style="padding: 10px"
             method="post"
-            readonly
     >
         {% csrf_token %}
         <input type="hidden" name="actions_rename">
@@ -42,7 +39,7 @@
                     <label class="form-label">{% trans 'Workflow name' %}</label>
                     <input class="form-control" type="text"
                            name="title"
-                           id="form-create-title" readonly value="">
+                           id="form-create-title">
                 </div>
             </div>
         </div>
@@ -84,7 +81,6 @@
                                 name="application"
                                 data-keyResp="tenant_application_list"
                                 required
-                                disabled
                         ></select>
                     </div>
                 </div>
@@ -92,11 +88,8 @@
                 <div class="row">
                     <div class="col-12 mb-1">
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input"
-                                   id="id-dhtmlefine_zone" name="define_zone"
-                                   disabled
-                            >
-                            <label class="form-check-label" for="id-dhtmlefine_zone">{% trans 'Define zone' %}</label>
+                            <input type="checkbox" class="form-check-input" id="id-define_zone" name="define_zone">
+                            <label class="form-check-label" for="id-define_zone">{% trans 'Define zone' %}</label>
                         </div>
                     </div>
                     <div class="col-12">
@@ -119,7 +112,7 @@
                             <tr>
                                 <th>
                                     <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" >
+                                        <input type="checkbox" class="form-check-input">
                                     </div>
                                 </th>
                                 <th>{% trans 'Zone name' %}</th>
@@ -133,23 +126,22 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab_node">
+            <div class="tab-pane fade " id="tab_node">
                 <div class="row">
                     <div class="col-9">
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="id-is_multi_company"
-                                   name="is_multi_company" disabled>
+                                   name="is_multi_company">
                             <label class="form-check-label" for="id-is_multi_company">
                                 {% trans 'Collaborators in multi company' %}</label>
                         </div>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-flush-success flush-soft-hover wf-is-editable"
+                        <button class="btn btn-flush-success flush-soft-hover"
                                 type="button"
                                 data-bs-toggle="modal"
                                 title="{% trans 'Button rename' %}"
                                 data-bs-target="#change_btn"
-                                disabled
                         >
                             <span class="icon">
                                 <span class="feather-icon">
@@ -166,21 +158,20 @@
                     <div class="col-12">
                         <button
                                 type="button"
-                                class="btn btn-outline-primary open-modal-node wf-is-editable"
+                                class="btn btn-outline-primary open-modal-node"
                                 data-bs-toggle="modal"
                                 data-bs-target="#nodeModalCreate"
-                                disabled
                         >
                             <span><span>{% trans 'Add new node' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                         </button>
-
-                        <div class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
+                        <div
+                                class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalCenter" aria-hidden="true"
                         >
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Add node</h5>
+                                        <h5 class="modal-title">{% trans 'Add node' %}</h5>
                                         <button
                                                 type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"
@@ -190,9 +181,8 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
-                                            <label class="form-label">
+                                            <label class="form-label required" for="modal-node-name-create">
                                                 {% trans 'Node Name' %}
-                                                <span class="field-required">(*)</span>
                                             </label>
                                             <input
                                                     type="text" class="form-control"
@@ -215,12 +205,12 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}
                                         </button>
                                         <button
                                                 type="button" class="btn btn-primary" data-bs-dismiss="modal"
                                                 id="btn-add-new-node-create"
-                                        >Save changes
+                                        >{% trans 'Save' %}
                                         </button>
                                     </div>
                                 </div>
@@ -234,6 +224,8 @@
                         <table
                                 id="datable-workflow-node-create"
                                 class="table nowrap w-100 mb-5"
+                                data-url=""
+                                data-method="get"
                         >
                             <thead>
                             <tr>
@@ -250,12 +242,12 @@
                         </table>
                     </div>
                 </div>
-                <select id="data-init-property-in-form-detail" hidden></select>
-                <select id="data-init-company-in-workflow-detail" hidden></select>
-                <select id="data-init-employee-in-workflow-detail" hidden></select>
-                <input type="hidden" id="wf-employee-out-form-detail">
+                <select id="data-init-property-in-form" hidden></select>
+                <select id="data-init-company-in-workflow" hidden></select>
+                <select id="data-init-employee-in-workflow" hidden></select>
+                <input type="hidden" id="wf-employee-out-form">
             </div>
-            <div class="tab-pane fade" id="tab_next_node">
+            <div class="tab-pane fade " id="tab_next_node">
                 <div class="wrap-flowchart">
                     <div id="node_dragbox">
                         <p class="text-center pt-3">{% trans 'No content available' %}</p>
@@ -293,37 +285,25 @@
                                         id="close-modal-association-error"
                                         class="btn btn-primary"
                                         data-bs-dismiss="modal"
-                                >OK
-                                </button>
+                                >OK</button>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
         <div class="w-100 d-flex justify-content-center mt-2" id="nav-next-prev-step">
-            <button class="btn btn btn-outline-light mr-1 prev-btn" type="button" data-nav-type="prev"
-                    disabled>{% trans 'Prev' %}</button>
-            <button class="btn btn btn-primary next-btn"
-                    type="button"
-                    data-nav-type="next">
-                {% trans 'Next' %}
-            </button>
+            <button class="btn btn btn-outline-light mr-1 prev-btn" type="button" data-nav-type="prev">{% trans 'Prev' %}</button>
+            <button class="btn btn btn-primary next-btn" type="button" data-nav-type="next">{% trans 'Next' %}</button>
         </div>
     </form>
     <input type="hidden" id="url-factory"
            data-employees="{% url 'EmployeeListAPI' %}"
            data-node="{% url 'NodeSystemListAPI' %}"
-           data-app-property="{% url 'ApplicationPropertyListAPI' %}"
     >
     <input type="hidden" id="translate-factory"
            data-context_delete="{% trans 'Delete connection' %}"
     >
-    <input type="hidden" name="associate" id="node-associate">
-    <input type="hidden" id="node-list">
-    <input type="hidden" id="zone-list">
     <input
         type="hidden"
         id="node-trans-factory"
@@ -333,7 +313,7 @@
         data-add-employee="{% trans 'Add Employee' %}"
         data-code="{% trans 'Code' %}"
         data-full-name="{% trans 'Full Name' %}"
-        data-username="{% trans 'Username' %}"
+        data-role="{% trans 'Role' %}"
         data-select-company="{% trans 'Select Company' %}"
         data-description="{% trans 'Description' %}"
     >
@@ -398,8 +378,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label"><b>{% trans 'Input description of zone' %}</b></label>
-                                    <textarea class="form-control" type="text" name="remark"
-                                              id="form-create-zone-remark"></textarea>
+                                    <textarea class="form-control" type="text" name="remark" id="form-create-zone-remark"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -411,6 +390,7 @@
                                 data-multiple="true"
                                 data-prefix="application_property_list"
                                 data-url="{% url 'ApplicationPropertyListAPI' %}"
+                                data-select2-closeOnSelect="true"
                         ></select>
                     </div>
                     <div class="modal-footer">
@@ -502,10 +482,8 @@
                     <div class="row">
                         <div class="col mb-1">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="id-restore_default"
-                                       name="restore_default">
-                                <label class="form-check-label"
-                                       for="id-restore_default">{% trans 'Restore default' %}</label>
+                                <input type="checkbox" class="form-check-input" id="id-restore_default" name="restore_default">
+                                <label class="form-check-label" for="id-restore_default">{% trans 'Restore default' %}</label>
                             </div>
                         </div>
                     </div>
@@ -532,16 +510,14 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
-    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
     <script src="{% static 'vendors/JSPlumb/js/jsplumb.js' %}"></script>
-
     <script src="{% static 'assets/core/workflow/js/workflow-flowchart.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_common.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/workflow_node_common.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/workflow-create.js' %}"></script>
+    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
     <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_detail.js' %}"></script>
-
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 {% endblock %}

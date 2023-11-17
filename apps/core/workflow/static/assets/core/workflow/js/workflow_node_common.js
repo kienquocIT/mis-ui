@@ -356,18 +356,22 @@ class NodeLoadDataHandle {
         if ($(ele).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
             let positionArea = ele.closest('.collab-in-workflow-area')?.querySelector('.position-area');
-            let employeeArea = ele.closest('.collab-in-workflow-area')?.querySelector('.employee-area');
-            if (positionArea && employeeArea) {
+            let employeeAreaList = ele.closest('.collab-in-workflow-area')?.querySelectorAll('.employee-area');
+            if (positionArea && employeeAreaList) {
                 positionArea.setAttribute('hidden', 'true');
-                employeeArea.setAttribute('hidden', 'true');
+                for (let employeeArea of employeeAreaList) {
+                    employeeArea.setAttribute('hidden', 'true');
+                }
                 if (dataSelected?.['id'] === 1) {
                     if (positionArea) {
                         positionArea.removeAttribute('hidden');
                     }
                 }
                 if (dataSelected?.['id'] === 2) {
-                    if (employeeArea) {
-                        employeeArea.removeAttribute('hidden');
+                    if (employeeAreaList) {
+                        for (let employeeArea of employeeAreaList) {
+                            employeeArea.removeAttribute('hidden');
+                        }
                     }
                 }
             }
@@ -942,16 +946,6 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                     <div class="offcanvas-body form-group">
                                                                         <div class="form-group">
-                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-company')}</label>
-                                                                            <select 
-                                                                                class="form-control box-in-workflow-company"
-                                                                                data-url="${NodeDataTableHandle.companyInitEle.attr('data-url')}"
-                                                                                data-method="${NodeDataTableHandle.companyInitEle.attr('data-method')}"
-                                                                                data-keyResp="company_list"
-                                                                            >
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group">
                                                                             <label class="form-label">Select option</label>
                                                                             <select
                                                                                 class="form-select box-in-workflow-option"
@@ -968,6 +962,16 @@ class NodeDataTableHandle {
                                                                                 data-url=""
                                                                                 data-method="GET"
                                                                                 data-keyResp=""
+                                                                            >
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group employee-area">
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-company')}</label>
+                                                                            <select 
+                                                                                class="form-control box-in-workflow-company"
+                                                                                data-url="${NodeDataTableHandle.companyInitEle.attr('data-url')}"
+                                                                                data-method="${NodeDataTableHandle.companyInitEle.attr('data-method')}"
+                                                                                data-keyResp="company_list"
                                                                             >
                                                                             </select>
                                                                         </div>
@@ -1369,8 +1373,8 @@ class NodeSubmitHandle {
             'coordinates',
         ];
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let total_collab = 1;
-            let total_collab_config = 1;
+            let total_in_runtime = 1;
+            let total_config = 1;
             let row = table[0].tBodies[0].rows[i];
             let eleTitle = row?.querySelector('.table-row-title');
             let eleCheckBox = row?.querySelector('.table-row-checkbox');
@@ -1423,7 +1427,7 @@ class NodeSubmitHandle {
                             }
                             dataRow['collab_out_form'] = dataOutForm;
                             if (is_flowchart === true) {
-                                total_collab = dataOutForm?.['employee_list'].length;
+                                total_config = dataOutForm?.['employee_list'].length;
                             }
                         } else if ($(boxListSource).val() === '3') { // In Workflow
                             dataRow['option_collaborator'] = 2;
@@ -1451,8 +1455,8 @@ class NodeSubmitHandle {
                             });
                             dataRow['collab_in_workflow'] = dataInWF;
                             if (is_flowchart === true) {
-                                total_collab = dataInWF.length;
-                                total_collab_config = dataInWF.length;
+                                total_in_runtime = dataInWF.length;
+                                total_config = dataInWF.length;
                             }
                         }
                     }
@@ -1460,8 +1464,8 @@ class NodeSubmitHandle {
                     if (is_flowchart === true) {
                         dataRow['collaborators'] = {
                             'option': dataRow?.['option_collaborator'],
-                            'total_in_process': total_collab,
-                            'total_config': total_collab_config,
+                            'total_in_runtime': total_in_runtime,
+                            'total_config': total_config,
                         }
                     }
                     result.push(dataRow);
@@ -1478,4 +1482,4 @@ function filterFieldList(field_list, data_json) {
         if (!field_list.includes(key)) delete data_json[key]
     }
     return data_json;
-};
+}

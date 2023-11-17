@@ -1,7 +1,7 @@
 $(document).ready(function () {
     // INIT DATA
 
-    ExpenseLoadPage.loadExpenseType();
+    ExpenseLoadPage.loadExpenseItem();
     ExpenseLoadPage.loadUoM();
     ExpenseLoadPage.loadRole();
 

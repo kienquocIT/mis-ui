@@ -8,18 +8,16 @@ function callData(url, method) {
 }
 
 class ExpenseLoadPage {
-    static etSelectEle = $('#chooseExpenseType');
+    static etSelectEle = $('#box-expense-item');
     static uomSelectEle = $('#chooseUom');
     static roleSelectEle = $('#chooseRole')
 
-    static loadExpenseType(data) {
+    static loadExpenseItem(data) {
         let ele = ExpenseLoadPage.etSelectEle;
         ele.initSelect2({
             data: data,
             'allowClear': true,
             disabled: !(ele.attr('data-url')),
-            keyResp: 'expense_type_list',
-            keyText: 'title',
         })
     }
 
@@ -197,7 +195,7 @@ function renderDetailData(resp) {
         $.fn.compareStatusShowPageAction(expense_detail);
         $('#expenseTitle').val(expense_detail.title);
         console.log(expense_detail.role)
-        ExpenseLoadPage.loadExpenseType(expense_detail.expense_type);
+        ExpenseLoadPage.loadExpenseItem(expense_detail?.['expense_item']);
         ExpenseLoadPage.loadRole(expense_detail.role);
         ExpenseLoadPage.loadUoM(expense_detail.uom);
 

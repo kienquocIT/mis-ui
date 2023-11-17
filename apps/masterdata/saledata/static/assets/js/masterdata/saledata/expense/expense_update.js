@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    const pk = window.location.pathname.split('/').pop();
     const frmUpdate = $('#frmUpdateExpense');
 
     let currency_primary = {}
@@ -21,7 +20,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(frmUpdate);
         obj_price = await loadDataPriceList();
         $.fn.callAjax2({
-            'url': frm.dataUrl.format_url_with_uuid(pk),
+            'url': frm.dataUrl,
             'method': 'GET',
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -53,7 +52,7 @@ $(document).ready(function () {
                 price_dict = obj_price.dict;
                 let combinesData = submitForm($(form), price_dict, currency_primary)
                 $.fn.callAjax2({
-                    'url': combinesData.url.format_url_with_uuid(pk),
+                    'url': combinesData.url,
                     'method': combinesData.method,
                     'data': combinesData.data
                 }).then(

@@ -953,6 +953,10 @@ class QuotationLoadDataHandle {
                 } else { // EXPENSE
                     $(row.querySelector('.table-row-item')).empty();
                     QuotationLoadDataHandle.loadBoxQuotationExpenseItem($(row.querySelector('.table-row-item')), dataRow?.['expense_item']);
+                    if (row?.querySelector('.table-row-labor-item') && dataRow?.['is_labor'] === true) {
+                        $(row.querySelector('.table-row-labor-item')).empty();
+                        QuotationLoadDataHandle.loadBoxQuotationExpense($(row.querySelector('.table-row-labor-item')), dataRow?.['expense']);
+                    }
                 }
                 $(row.querySelector('.table-row-uom')).empty();
                 QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow?.['unit_of_measure']);
@@ -965,6 +969,9 @@ class QuotationLoadDataHandle {
 
     static loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-labor-item')) {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-expense-title')) {
@@ -2865,6 +2872,11 @@ class QuotationSubmitHandle {
         for (let i = 0; i < tableBody.rows.length; i++) {
             let rowData = {};
             let row = tableBody.rows[i];
+            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                rowData['is_labor'] = dataRow?.['is_labor'];
+            }
             let eleExpenseItem = row.querySelector('.table-row-item');
             if ($(eleExpenseItem).val()) {
                 let dataExpenseItem = SelectDDControl.get_data_from_idx($(eleExpenseItem), $(eleExpenseItem).val());
@@ -2874,7 +2886,18 @@ class QuotationSubmitHandle {
                     rowData['expense_type_title'] = dataExpenseItem.title;
                 }
             }
-            rowData['expense_title'] = row.querySelector('.table-row-expense-title').value;
+            if (row?.querySelector('.table-row-expense-title')) {
+              rowData['expense_title'] = row.querySelector('.table-row-expense-title').value;
+            }
+            let eleLaborItem = row?.querySelector('.table-row-labor-item');
+            if (eleLaborItem) {
+                if ($(eleLaborItem).val()) {
+                    let dataLaborItem = SelectDDControl.get_data_from_idx($(eleLaborItem), $(eleLaborItem).val());
+                    if (dataLaborItem) {
+                        rowData['expense'] = dataLaborItem?.['id'];
+                    }
+                }
+            }
             let eleUOM = row.querySelector('.table-row-uom');
             if ($(eleUOM).val()) {
                 let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());

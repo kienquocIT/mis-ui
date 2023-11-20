@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.web_builder.views import (
+from apps.web_builder.views.config import (
     MyCompanyWebsiteList, MyCompanyWebsiteDetailAPI,
     AddNewCompanyWebsite, WebsiteDetailDesign, WebsiteDetailDesignSave,
 )

@@ -4844,3 +4844,7 @@ msgstr "Ngày kết thúc lớn hơn ngày bắt đầu"
 #
 msgid "Missing info to log time"
 msgstr "Thiếu thông tin để ghi nhận"
+
+#
+msgid "Add Labor"
+msgstr "Thêm nhân công"

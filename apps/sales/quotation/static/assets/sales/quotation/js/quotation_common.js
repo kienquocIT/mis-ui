@@ -1651,17 +1651,31 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    render: () => {
-                        return `<div class="row">
-                                <select 
-                                    class="form-select table-row-uom"
-                                    data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
-                                    data-keyResp="unit_of_measure"
-                                    required
-                                >
-                                </select>
-                            </div>`;
+                    render: (data, type, row) => {
+                        if (row?.['is_labor'] === false) {
+                           return `<div class="row">
+                                        <select 
+                                            class="form-select table-row-uom"
+                                            data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                            data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                            data-keyResp="unit_of_measure"
+                                            required
+                                        >
+                                        </select>
+                                    </div>`;
+                        } else {
+                            return `<div class="row">
+                                        <select 
+                                            class="form-select table-row-uom"
+                                            data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                            data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                            data-keyResp="unit_of_measure"
+                                            required
+                                            disabled
+                                        >
+                                        </select>
+                                    </div>`;
+                        }
                     },
                 },
                 {

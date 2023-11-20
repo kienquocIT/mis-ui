@@ -449,6 +449,7 @@ $(function () {
                 if ($(this).val()) {
                     let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
                     QuotationLoadDataHandle.loadBoxQuotationExpense($(row.querySelector('.table-row-item')), dataSelected?.['expense_item']);
+                    QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataSelected?.['uom']);
                     if (dataSelected?.['price_list'].length > 0) {
                        $(row.querySelector('.table-row-price')).attr('value', String(dataSelected?.['price_list'][0]?.['price_value']));
                     }

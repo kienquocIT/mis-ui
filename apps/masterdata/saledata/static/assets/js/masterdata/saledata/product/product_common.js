@@ -782,6 +782,8 @@ function getDataForm() {
         return false
     }
 
+    data['is_public_website'] = $('input[name="is_public_website"]').prop('checked');
+
     return data
 }
 

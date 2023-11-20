@@ -187,7 +187,7 @@ $(document).ready(function () {
         if (btn_href === '#tab_next_node') {
             FlowJsP.init()
         } else if (btn_href === '#tab_node') {
-            // loadZoneInitialNode()
+            NodeLoadDataHandle.loadZoneDDAllTable();
         }
     })
 

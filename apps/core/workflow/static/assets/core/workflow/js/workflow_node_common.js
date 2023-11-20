@@ -44,6 +44,7 @@ class NodeLoadDataHandle {
         {'id': 0, 'title': ''},
     ];
     static dataPosition = [
+        {'id': 3, 'title': 'Beneficiary'},
         {'id': 2, 'title': '2nd manager'},
         {'id': 1, 'title': '1st manager'},
     ];
@@ -208,6 +209,9 @@ class NodeLoadDataHandle {
         NodeLoadDataHandle.loadInitDataRow(newRow);
         let approvedRow = NodeDataTableHandle.tableNode[0].querySelector('.node-approved').closest('tr');
         $(newRow).detach().insertBefore(approvedRow);
+
+        //
+        NodeLoadDataHandle.loadZoneDD(newRow);
         return true;
     };
 
@@ -312,6 +316,13 @@ class NodeLoadDataHandle {
             }
         }
         return true;
+    };
+
+    static loadZoneDDAllTable() {
+        for (let i = 0; i < NodeDataTableHandle.tableNode[0].tBodies[0].rows.length; i++) {
+            let row = NodeDataTableHandle.tableNode[0].tBodies[0].rows[i];
+            NodeLoadDataHandle.loadZoneDD(row);
+        }
     };
 
     static loadZoneShow(ele) {
@@ -1116,8 +1127,8 @@ class NodeDataTableHandle {
                                                                     <thead>
                                                                     <tr>
                                                                         <th>Collaborator</th>
-                                                                        <th>Group</th>
-                                                                        <th>Role</th>
+<!--                                                                        <th>Group</th>-->
+<!--                                                                        <th>Role</th>-->
                                                                         <th>Editing Zone</th>
                                                                     </tr>
                                                                     </thead>
@@ -1225,36 +1236,29 @@ class NodeDataTableHandle {
                         return `<span class="table-row-title" data-row="${dataRow}">${row?.['title']}</span>`;
                     }
                 },
+                // {
+                //     targets: 1,
+                //     render: (data, type, row) => {
+                //         return `<span class="badge badge-soft-primary table-row-group">${row?.['group']?.['title']}</span>`;
+                //     }
+                // },
+                // {
+                //     targets: 2,
+                //     render: (data, type, row) => {
+                //         if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
+                //             let result = [];
+                //             row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
+                //             return result.join(" ");
+                //         }
+                //         return '';
+                //     }
+                // },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary table-row-group">${row?.['group']?.['title']}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
-                            let result = [];
-                            row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
-                            return result.join(" ");
-                        }
-                        return '';
-                    }
-                },
-                {
-                    targets: 3,
                     render: () => {
-                        return `<div class="dropdown dropdown-zone">
-                                    <button aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">Zone</button>
-                                    <div class="dropdown-menu w-250p">
-                                        <div class="h-250p">
-                                            <div data-simplebar class="nicescroll-bar">
-                                                <ul class="node-zone-list p-0"></ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>`
+                        return `<div class="dropdown-zone">
+                                    <ul class="node-zone-list p-0"></ul>
+                                </div>`;
                     }
                 },
             ],

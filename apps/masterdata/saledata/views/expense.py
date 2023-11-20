@@ -95,7 +95,6 @@ class ExpenseUpdate(View):
         template='masterdata/saledata/expense/expense_update.html',
         breadcrumb='EXPENSE_UPDATE_PAGE',
         menu_active='id_menu_expense_list',
-        perm_check=PermCheck(url=ApiURL.EXPENSE_LIST, method='post'),
     )
-    def get(self, request, *args, **kwargs):
+    def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK

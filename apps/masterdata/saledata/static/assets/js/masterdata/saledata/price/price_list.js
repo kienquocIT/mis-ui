@@ -39,7 +39,6 @@ $(document).ready(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
-
                 columns: [
                     {
                         render: () => {
@@ -176,6 +175,8 @@ $(document).ready(function () {
             frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
             frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
 
+            console.log(frm.dataForm)
+
             $.fn.callAjax2({
                 url: frm.dataUrl,
                 method: frm.dataMethod,
@@ -215,14 +216,15 @@ $(document).ready(function () {
     /* Date range picker with times*/
     $('#valid_time').daterangepicker({
         timePicker: true,
-        startDate: moment().startOf('millisecond').add(5, 'minutes'),
-        endDate: moment().startOf('millisecond').add(24, 'millisecond').add(5, 'minutes'),
+        startDate: moment().startOf('millisecond'),
+        endDate: moment().startOf('millisecond'),
         "cancelClass": "btn-secondary",
         locale: {
             format: 'YYYY-MM-DD HH:mm'
         },
         drops: 'up'
     });
+    $('#valid_time').val('')
 
     $(document).on("click", '.delete-price-list-btn', function () {
 

@@ -510,6 +510,8 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                console.log(data_expense)
+                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -518,19 +520,13 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = 0;
-                    let number_record = 0;
+                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
-                            sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
-                            number_record += 1;
                         }
-                    }
-                    if (number_record > 0) {
-                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -540,7 +536,7 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${i+1}</td>
-                            <td class="expense_item_title" data-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td class="expense_item_title" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
                             <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
                             <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
@@ -597,6 +593,8 @@ function LoadPlanQuotationNoOPP(quotation_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                console.log(data_expense)
+                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -605,19 +603,13 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = 0;
-                    let number_record = 0;
+                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
-                            sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
-                            number_record += 1;
                         }
-                    }
-                    if (number_record > 0) {
-                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -627,7 +619,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${i+1}</td>
-                            <td class="expense_item_title" data-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td class="expense_item_title" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
                             <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
                             <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
@@ -684,6 +676,8 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                console.log(data_expense)
+                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -692,19 +686,13 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = 0;
-                    let number_record = 0;
+                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
-                            sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
-                            number_record += 1;
                         }
-                    }
-                    if (number_record > 0) {
-                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -714,7 +702,7 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${i+1}</td>
-                            <td class="expense_item_title" data-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td class="expense_item_title" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
                             <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
                             <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
@@ -1299,23 +1287,6 @@ class PaymentHandle {
             return false;
         }
 
-        let opportunity_mapped = opp_mapped_select.val();
-        let quotation_mapped = quotation_mapped_select.val();
-        let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped !== null && opportunity_mapped !== '') {
-            frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
-        }
-        else if (quotation_mapped !== null && quotation_mapped !== '') {
-            frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
-        }
-        else if (sale_order_mapped !== null && sale_order_mapped !== '') {
-            frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
-        }
-        else {
-            $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
-            return false;
-        }
-
         frm.dataForm['sale_code_type'] = 0;
 
         frm.dataForm['supplier'] = supplierEle.val();
@@ -1339,6 +1310,7 @@ class PaymentHandle {
         }
 
         let payment_expense_valid_list = [];
+        let line_detail_expense_items = [];
         if (tableLineDetail.find('tr').length > 0) {
             let row_count = tableLineDetail.find('.row-number').length;
             for (let i = 1; i <= row_count; i++) {
@@ -1394,6 +1366,7 @@ class PaymentHandle {
                         'sum_value': sum_value,
                         'ap_cost_converted_list': expense_items_detail_list
                     })
+                    line_detail_expense_items.push(expense_type)
                 })
 
                 if (expense_after_tax_price !== expense_detail_value) {
@@ -1401,6 +1374,41 @@ class PaymentHandle {
                     return false;
                 }
             }
+        }
+
+        let opportunity_mapped = opp_mapped_select.val();
+        let quotation_mapped = quotation_mapped_select.val();
+        let sale_order_mapped = sale_order_mapped_select.val();
+        if (opportunity_mapped !== null && opportunity_mapped !== '') {
+            frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+            frm.dataForm['quotation_expense_plan'] = []
+            $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
+                if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
+                    frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
+                }
+            })
+        }
+        else if (quotation_mapped !== null && quotation_mapped !== '') {
+            frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
+            frm.dataForm['quotation_expense_plan'] = []
+            $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
+                if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
+                    frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
+                }
+            })
+        }
+        else if (sale_order_mapped !== null && sale_order_mapped !== '') {
+            frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
+            frm.dataForm['sale_order_expense_plan'] = []
+            $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
+                if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
+                    frm.dataForm['sale_order_expense_plan'].push($(this).attr('data-id'))
+                }
+            })
+        }
+        else {
+            $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
+            return false;
         }
 
         frm.dataForm['payment_expense_valid_list'] = payment_expense_valid_list;

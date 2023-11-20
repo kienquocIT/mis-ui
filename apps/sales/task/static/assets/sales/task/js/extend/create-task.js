@@ -1,9 +1,8 @@
 function resetFormTask() {
     // clean html select etc.
     $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-    $('#selectAssignTo').val(null).trigger('change').prop('disabled', false);
-    if ($('.current-create-task').length <= 0)
-        $('#opportunity_id').val(null).trigger('change').attr('disabled', false);
+    $('#employee_inherit_id').val('').trigger('change').prop('disabled', false);
+    $('#opportunity_id').val('').trigger('change').attr('disabled', false);
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
     $('[name="id"]').remove();

@@ -218,7 +218,7 @@
                                     <label class="form-label required">{% trans "Select Group" %}
                                     </label>
                                     <select
-                                            id="select-box-unit-measure-group" class="form-select" data-method="GET"
+                                            id="select-box-unit-measure-group" class="select2 form-select" data-method="GET"
                                             data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"
                                             data-keyResp="unit_of_measure_group"
                                     ></select>
@@ -392,20 +392,13 @@
                                     </label>
                                     <input id="group-id" disabled hidden>
                                     <select
-                                            class="form-select"
+                                            class="select2 form-select"
                                             data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
                                             id="select-box-edit-uom-group"
-                                            name="group" data-keyResp="unit_of_measure_group" disabled
+                                            name="group" data-keyResp="unit_of_measure_group"
                                     >
                                     </select>
                                 </div>
-                                {#                                <div class="form-group" id="inp-edit-uom-group-div" hidden>#}
-                                {#                                    <label class="form-label">{% trans "Select Group" %}#}
-                                {#                                        <span class="field-required">*</span>#}
-                                {#                                    </label>#}
-                                {#                                    <input class="form-control inp-can-not-edit" type="text" name="group" readonly#}
-                                {#                                           id="inp-edit-uom-group" style="border: None">#}
-                                {#                                </div>#}
                             </div>
                             <div class="col-6">
                                 <div class="form-check mt-5">
@@ -425,8 +418,7 @@
                                     <label class="form-label required">{% trans "Code" %}
                                     </label>
                                     <input
-                                            class="form-control" type="text" name="code" id="inp-code-uom" readonly
-                                            style="border: None"
+                                            class="form-control" type="text" name="code" id="inp-code-uom"
                                     >
                                 </div>
                             </div>

@@ -4,27 +4,10 @@ $(function () {
         let formSubmit = $('#form-create_workflow');
         // init select function applied
         let $select_box = $("#select-box-features");
-        let selectURL = $select_box.attr('data-url')
-        $select_box.select2({
-            ajax: {
-                url: selectURL,
-                processResults: function (res) {
-                    let data_original = res.data[$select_box.attr('data-prefix')];
-                    let data_convert = []
-                    if (data_original.length) {
-                        for (let item of data_original) {
-                            data_convert.push({...item, 'text': item.title})
-                        }
-                    }
-                    return {
-                        results: data_convert
-                    };
-                }
-            },
-            tags: true,
-            multiple: true,
-            tokenSeparators: [',', ' ']
-        })
+        $select_box.initSelect2({
+            'dataParams': {'is_workflow': true},
+            'allowClear': true,
+        });
 
         // init DataTable
         if (formSubmit.attr('data-method') === 'POST') {
@@ -178,9 +161,22 @@ $(function () {
         });
 
         NodeDataTableHandle.tableNode.on('change', '.box-in-workflow-company', function () {
+            let boxRole = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-role');
+            $(boxRole).empty();
+            NodeLoadDataHandle.loadBoxRole($(boxRole));
             let boxEmployee = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-employee');
             $(boxEmployee).empty();
             NodeLoadDataHandle.loadBoxEmployee($(boxEmployee));
+        });
+
+        NodeDataTableHandle.tableNode.on('change', '.box-in-workflow-role', function () {
+            let boxEmployee = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-employee');
+            $(boxEmployee).empty();
+            NodeLoadDataHandle.loadBoxEmployee($(boxEmployee));
+        });
+
+        NodeDataTableHandle.tableNode.on('change', '.box-in-workflow-option', function () {
+            NodeLoadDataHandle.loadInWFArea(this);
         });
 
         NodeDataTableHandle.tableNode.on('click', '.button-add-in-workflow-employee', function () {

@@ -16,17 +16,14 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret d-lg-inline-block d-none btn_support_submit"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-original-title="{% trans 'Save' %}"
-            data-form-id="formDeliveryConfig"
-    >
-        <span class="btn-icon-wrap">
-            <i class="far fa-save"></i>
+    <button class="btn btn-outline-primary" type="submit" form="formDeliveryConfig">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
         </span>
-    </a>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
@@ -56,17 +53,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="row pt-3">
-                    <div class="col-xs-12 col-md-12">
-                        <div class="form-check form-switch mb-1">
-                            <input type="checkbox" class="form-check-input" id="switchPartialShip"
-                                    {% if data.config_data.is_partial_ship %} checked {% endif %}>
-                            <label class="form-check-label" for="switchPartialShip">
-                                {% trans "Partial delivery is possible" %}
-                            </label>
-                        </div>
-                    </div>
-                </div>
+{#                <div class="row pt-3">#}
+{#                    <div class="col-xs-12 col-md-12">#}
+{#                        <div class="form-check form-switch mb-1">#}
+{#                            <input type="checkbox" class="form-check-input" id="switchPartialShip"#}
+{#                                    {% if data.config_data.is_partial_ship %} checked {% endif %}>#}
+{#                            <label class="form-check-label" for="switchPartialShip">#}
+{#                                {% trans "Partial delivery is possible" %}#}
+{#                            </label>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
                 <div class="row pt-3">
                     <div class="col-xs-12 col-md-6">
                         <label class="form-label">{% trans "Select coordinator for Picking activities" %}</label>
@@ -150,7 +147,13 @@
             const $trans = $('#trans-factory')
 
             $PleadElm.each(function(){
-                $(this).initSelect2()
+                $(this).initSelect2({
+                    templateResult: function (state) {
+                        let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
+                        let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success"></span>` : `<span class="badge badge-light"></span>`;
+                        return $(`<span>${state.text} ${activeHTML} ${groupHTML}</span>`);
+                    },
+                })
             })
 
             $frm.submit(function (event) {
@@ -158,7 +161,7 @@
 
                 let bodyData = {
                     'is_picking': eleInputPicking.prop('checked'),
-                    'is_partial_ship': eleInputPartial.prop('checked'),
+                    {#'is_partial_ship': eleInputPartial.prop('checked'),#}
                 }
                 // nếu có check chọn xử lý picking thì ràng buộc lead picking
                 const pickLead = $('#inputPickingLead').val()

@@ -95,6 +95,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment'), 'AdvancePaymentList')
     ADVANCE_PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Advance Payment create'), 'AdvancePaymentCreate')
     ADVANCE_PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    ADVANCE_PAYMENT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     # Payment
     PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Payment'), 'PaymentList')
@@ -371,6 +372,7 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_PAGE,
     ]
+    COMPANY_CREATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     COMPANY_DETAIL_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     COMPANY_UPDATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
     COMPANY_DIAGRAM = [
@@ -401,8 +403,9 @@ class BreadcrumbView:
     WORKFLOW_LIST_PAGE = [
         BreadcrumbItem.WORKFLOW_LIST_PAGE
     ]
-    WORKFLOW_CREATE_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_CREATE_PAGE]
-    WORKFLOW_DETAIL_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_DETAIL_PAGE]
+    WORKFLOW_CREATE_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    WORKFLOW_DETAIL_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    WORKFLOW_UPDATE_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     CONTACT_LIST_PAGE = [
         BreadcrumbItem.CONTACT_LIST_PAGE
@@ -444,6 +447,7 @@ class BreadcrumbView:
     ]
     ADVANCE_PAYMENT_CREATE_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_CREATE_PAGE]
     ADVANCE_PAYMENT_DETAIL_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    ADVANCE_PAYMENT_UPDATE_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PAYMENT_LIST_PAGE = [
         BreadcrumbItem.PAYMENT_LIST_PAGE

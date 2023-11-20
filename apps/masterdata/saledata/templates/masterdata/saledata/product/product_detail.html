@@ -32,7 +32,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-update-product" data-method="PUT" data-url="{% url "ProductDetailAPI" pk=0 %}"
+    <form id="form-update-product" data-method="GET" data-url="{% url "ProductDetailAPI" pk=0 %}"
           data-url-redirect="{% url "ProductList" %}">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
@@ -352,7 +352,6 @@
                                     <th>{% trans 'Mfr date' %}</th>
                                     <th>{% trans 'Warranty start' %}</th>
                                     <th>{% trans 'Warranty end' %}</th>
-                                    <th>{% trans 'Status' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>

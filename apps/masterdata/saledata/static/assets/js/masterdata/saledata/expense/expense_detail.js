@@ -1,11 +1,5 @@
 $(document).ready(function () {
-    const pk = window.location.pathname.split('/').pop();
-    const frmDetail = $('#frmDetailExpense');
-
-    let btnEdit = $('#btn-edit')
-    btnEdit.attr('href', btnEdit.attr('href').format_url_with_uuid(pk));
-
-
+    let frmDetail = $('#frmDetailExpense');
     let currency_primary = {}
 
     loadCurrencyPrimary().then(result => {
@@ -25,7 +19,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(frmDetail);
         obj_price = await loadDataPriceList();
         $.fn.callAjax2({
-            'url': frm.dataUrl.format_url_with_uuid(pk),
+            'url': frm.dataUrl,
             'method': 'GET',
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);

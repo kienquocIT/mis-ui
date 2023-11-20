@@ -3650,7 +3650,7 @@ class DateTimeControl {
     static defaultFormatDate = 'YYYY-MM-DD';
 
     static convertData(data, fromFormat, toFormat) {
-        return moment(data, fromFormat).format(toFormat);
+        return moment(data, fromFormat).format(toFormat ? toFormat : DateTimeControl.defaultFormatDate);
     }
 
     static parseToMoment(data, format){
@@ -3704,6 +3704,16 @@ class DateTimeControl {
             return moment(data, fromFormat).format(toFormat);
         }
         return defaultIsEmpty;
+    }
+}
+class Beautiful {
+    static randomColorClass(){
+        const randomColor = [
+            "primary", "success", "warning", "danger", "info", "red", "green", "pink", "purple",
+            "violet", "indigo", "blue", "sky", "cyan", "teal", "neon", "lime", "sun", "yellow", "orange", "pumpkin",
+            "brown", "gold", "light", "dark"
+        ]
+        return randomColor[Math.floor(Math.random() * 25)]
     }
 }
 
@@ -3780,6 +3790,8 @@ let $x = {
         convertEleDatetime: DateTimeControl.convertEleDatetime,
         convertDateToMoment: DateTimeControl.convertDateToMoment,
         convertDatetimeToMoment: DateTimeControl.convertDatetimeToMoment,
+
+        randomColor: Beautiful.randomColorClass
     },
 }
 

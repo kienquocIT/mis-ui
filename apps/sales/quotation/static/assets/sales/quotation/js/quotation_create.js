@@ -251,6 +251,7 @@ $(function () {
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
         });
 
+// EXPENSE
 // Action on click button add expense
         $('#btn-add-expense-quotation-create').on('click', function (e) {
             e.preventDefault();
@@ -294,9 +295,65 @@ $(function () {
                 "expense_tax_amount": 0,
                 "expense_subtotal_price": 0,
                 "is_product": false,
+                "is_labor": false,
             }
             let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
             // load data dropdown
+            QuotationLoadDataHandle.loadBoxQuotationExpenseItem($(newRow.querySelector('.table-row-item')));
+            QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
+            QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
+            // check disable
+            tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+        });
+
+// Action on click button add internal labor
+        $('#btn-add-labor-quotation-create').on('click', function (e) {
+            e.preventDefault();
+            let order = 1;
+            let tableEmpty = tableExpense[0].querySelector('.dataTables_empty');
+            let tableLen = tableExpense[0].tBodies[0].rows.length;
+            if (tableLen !== 0 && !tableEmpty) {
+                order = (tableLen + 1);
+            }
+            let dataAdd = {
+                "tax": {
+                    "id": "",
+                    "code": "",
+                    "title": "",
+                    "value": 0
+                },
+                "order": order,
+                "expense": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
+                "product": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
+                "expense_code": "",
+                "expense_price": 0,
+                "expense_title": "",
+                "unit_of_measure": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
+                "expense_quantity": 0,
+                "expense_uom_code": "",
+                "expense_tax_title": "",
+                "expense_tax_value": 0,
+                "expense_uom_title": "",
+                "expense_tax_amount": 0,
+                "expense_subtotal_price": 0,
+                "is_product": false,
+                "is_labor": true,
+            }
+            let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
+            // load data dropdown
+            QuotationLoadDataHandle.loadBoxQuotationExpense($(newRow.querySelector('.table-row-labor-item')));
             QuotationLoadDataHandle.loadBoxQuotationExpenseItem($(newRow.querySelector('.table-row-item')));
             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
@@ -386,8 +443,18 @@ $(function () {
         });
 
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
-        tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
+        tableExpense.on('change', '.table-row-item, .table-row-labor-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
+            if (this.classList.contains('table-row-labor-item')) {
+                if ($(this).val()) {
+                    let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
+                    QuotationLoadDataHandle.loadBoxQuotationExpense($(row.querySelector('.table-row-item')), dataSelected?.['expense_item']);
+                    QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataSelected?.['uom']);
+                    if (dataSelected?.['price_list'].length > 0) {
+                       $(row.querySelector('.table-row-price')).attr('value', String(dataSelected?.['price_list'][0]?.['price_value']));
+                    }
+                }
+            }
             QuotationCalculateCaseHandle.commonCalculate(tableExpense, row, false, false, true);
         });
 

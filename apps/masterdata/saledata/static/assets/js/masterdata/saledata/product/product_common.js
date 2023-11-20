@@ -395,12 +395,16 @@ function loadWareHouseListDetail(product_warehouse_detail) {
                     })
                     if (warehouse_data.length > 0) {
                         // return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
-                        return `<div class="row">
-                                    <div class="d-flex justify-content-center">
-                                        <span class="mr-2 mt-2">${warehouse_data[0]?.['stock_amount']}</span>
-                                        <button type="button" class="btn btn-icon btn-link btn-detail" data-bs-toggle="modal" data-bs-target="#detailProductWH"><span class="icon"><i class="fas fa-info-circle"></i></span></button>
-                                    </div>
-                                </div>`;
+                        if ($('#form-update-product').attr('data-method') === 'GET') {
+                            return `<div class="row">
+                                        <div class="d-flex justify-content-center">
+                                            <span class="mr-2 mt-2">${warehouse_data[0]?.['stock_amount']}</span>
+                                            <button type="button" class="btn btn-icon btn-link btn-detail" data-bs-toggle="modal" data-bs-target="#detailProductWH"><span class="icon"><i class="fas fa-info-circle"></i></span></button>
+                                        </div>
+                                    </div>`;
+                        } else {
+                            return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
+                        }
                     }
                     else {
                         return `<span>0</span>`;
@@ -656,12 +660,6 @@ function dataTableSerial(data) {
                             });
                 }
             },
-            {
-                targets: 6,
-                render: (data, type, row) => {
-                    return `<span class="text-green"><i class="fas fa-circle"></i></span>`;
-                }
-            },
         ],
     });
 }
@@ -783,6 +781,8 @@ function getDataForm() {
         $.fn.notifyB({description: 'Inventory level min can not greater than Inventory level max'}, 'failure');
         return false
     }
+
+    data['is_public_website'] = $('input[name="is_public_website"]').prop('checked');
 
     return data
 }

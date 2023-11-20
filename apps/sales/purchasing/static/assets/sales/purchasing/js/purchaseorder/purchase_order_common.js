@@ -69,6 +69,7 @@ class POLoadDataHandle {
         let ele = POLoadDataHandle.supplierSelectEle;
         ele.initSelect2({
             data: dataCustomer,
+            'dataParams': {'account_types_mapped__account_type_order': 1},
             disabled: !(ele.attr('data-url')),
             callbackTextDisplay: function (item) {
                 return item?.['name'] || '';

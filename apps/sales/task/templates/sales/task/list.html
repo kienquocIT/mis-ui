@@ -5,7 +5,6 @@
     <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/perfect-scrollbar.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/sales/task/css/task.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
@@ -33,13 +32,13 @@
     <!-- Navigation task list/kanban-->
     <ul class="nav nav-line nav-light nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab_kanban">
                 <i class="fa-solid fa-table-columns"></i>
                 <span class="nav-link-text">{% trans 'Kanban' %}</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_list">
                 <i class="fa-solid fa-list-ul"></i>
                 <span class="nav-link-text">{% trans 'List' %}</span>
             </a>
@@ -47,7 +46,7 @@
     </ul>
     <!-- task kanban -->
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="tab_block_1">
+        <div class="tab-pane fade show active" id="tab_kanban">
             <div id="kb_scroll" class="tasklist-scroll position-relative">
                 <div id="tasklist_wrap" class="tasklist-wrap">
                 </div>
@@ -58,7 +57,7 @@
             </div>
 
         </div>
-        <div class="tab-pane fade" id="tab_block_2">
+        <div class="tab-pane fade" id="tab_list">
             <div class="list_task_wrap">
                 <table id="table_task_list" class="table nowrap table-advance w-100">
                 </table>
@@ -157,11 +156,10 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
-
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
 {% endblock %}

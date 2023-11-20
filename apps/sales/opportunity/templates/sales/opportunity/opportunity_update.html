@@ -48,6 +48,11 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script id="script-url"
+            data-url-opp-list="{% url "OpportunityListAPI" %}"
+            data-url-quo-list="{% url "QuotationListAPI" %}"
+            data-url-so-list="{% url "SaleOrderListAPI" %}"
+    ></script>
     <div id="json-data">
         <input id="emp-current-id" class="hidden" value="{{ request.user.employee_current_data.id }}">
     </div>

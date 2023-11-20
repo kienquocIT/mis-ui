@@ -23,9 +23,9 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'WorkflowCreateAPI' %}"
+            data-url="{% url 'WorkflowDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'WorkflowList' %}"
-            data-method="POST"
+            data-method="PUT"
             id="form-create_workflow"
             style="padding: 10px"
             method="post"
@@ -188,7 +188,6 @@
                                                     type="text" class="form-control"
                                                     placeholder="Node A"
                                                     id="modal-node-name-create"
-                                                    required
                                             >
                                             <span class="form-text text-muted">{% trans 'Name of Node' %}</span>
                                         </div>
@@ -294,8 +293,8 @@
             </div>
         </div>
         <div class="w-100 d-flex justify-content-center mt-2" id="nav-next-prev-step">
-            <button class="btn btn btn-outline-light mr-1 prev-btn" type="button" data-nav-type="prev" disabled>{% trans 'Prev' %}</button>
-            <button class="btn btn btn-primary next-btn" type="button" data-nav-type="next" disabled>{% trans 'Next' %}</button>
+            <button class="btn btn btn-outline-light mr-1 prev-btn" type="button" data-nav-type="prev">{% trans 'Prev' %}</button>
+            <button class="btn btn btn-primary next-btn" type="button" data-nav-type="next">{% trans 'Next' %}</button>
         </div>
     </form>
     <input type="hidden" id="url-factory"
@@ -528,4 +527,5 @@
     <script src="{% static 'assets/core/workflow/js/workflow-create.js' %}"></script>
     <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
     <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/wf_detail.js' %}"></script>
 {% endblock %}

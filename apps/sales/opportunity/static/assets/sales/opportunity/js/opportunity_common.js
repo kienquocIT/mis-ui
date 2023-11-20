@@ -1661,17 +1661,20 @@ function autoLoadStage(
         }
     }
     if (!just_check) {
-
         let stage_selected_ele = $('.stage-selected');
         let input_rate_ele = $('#check-input-rate');
         let ele_close_deal = $('#input-close-deal');
         let ele_stage = $(`.sub-stage`);
+        if (id_stage_current === '') {
+            id_stage_current = $('#div-stage').find('div:first-child').attr('data-id');
+        }
         let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
         let index = ele_stage_current.index();
         if (ele_stage_current.hasClass('stage-lost')) {
             ele_stage_current.addClass('bg-red-light-5 stage-selected');
             ele_stage.removeClass('bg-primary-light-5 stage-selected');
-        } else {
+        }
+        else {
             for (let i = 0; i <= ele_stage.length; i++) {
                 if (i <= index) {
                     if (!ele_stage.eq(i).hasClass('stage-lost'))
@@ -1693,7 +1696,8 @@ function autoLoadStage(
                 input_rate_ele.prop('disabled', true);
                 $('#input-rate').prop('disabled', true);
             }
-        } else {
+        }
+        else {
             $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
             ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
             if (!config_is_input_rate) {
@@ -1714,14 +1718,12 @@ function autoLoadStage(
             }
         }
 
-        if (!input_rate_ele.is(':checked')) {
-            if (is_load_rate) {
-                let obj_stage = dict_stage[ele_stage_current.data('id')]
-                if (ele_stage_current.hasClass('stage-close'))
-                    obj_stage = dict_stage[stage_selected_ele.not(ele_stage_current).last().data('id')];
-                $('#input-rate').val(obj_stage.win_rate);
-                $('#rangeInput').val(obj_stage.win_rate);
-            }
+        if (!input_rate_ele.is(':checked') && is_load_rate) {
+            let obj_stage = dict_stage[ele_stage_current.data('id')]
+            if (ele_stage_current.hasClass('stage-close'))
+                obj_stage = dict_stage[stage_selected_ele.not(ele_stage_current).last().data('id')];
+            $('#input-rate').val(obj_stage?.win_rate);
+            $('#rangeInput').val(obj_stage?.win_rate);
         }
     }
     return id_stage_current

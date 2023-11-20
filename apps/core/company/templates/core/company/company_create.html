@@ -2,16 +2,11 @@
 {% load i18n %}
 {% load static %}
 {% block cssHeader %}
-    <style>
-        #offcanvasRight {
-            width: 50%;
-        }
-    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="save-account" class="btn btn-outline-primary" type="submit" form="frm-update-company">
+    <button class="btn btn-outline-primary" type="submit" form="frm-add-company">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -21,10 +16,11 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="frm-update-company"
-          data-url-detail="{% url "CompanyDetailAPI" pk=0 %}"
-          data-url-redirect="{% url "CompanyDetail" pk=0 %}"
-          data-method="PUT">
+    {{ data.data.VND_currency | json_script:"VND_currency" }}
+    <form id="frm-add-company"
+          data-url="{% url "CompanyListAPI" %}"
+          data-url-redirect="{% url "CompanyList" %}"
+          data-method="POST">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
@@ -357,5 +353,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'core/company/js/company_common.js' %}"></script>
-    <script src="{% static 'core/company/js/company_update.js' %}"></script>
+    <script src="{% static 'core/company/js/company_create.js' %}"></script>
 {% endblock %}

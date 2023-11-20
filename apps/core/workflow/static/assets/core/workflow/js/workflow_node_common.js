@@ -44,6 +44,7 @@ class NodeLoadDataHandle {
         {'id': 0, 'title': ''},
     ];
     static dataPosition = [
+        {'id': 3, 'title': 'Beneficiary'},
         {'id': 2, 'title': '2nd manager'},
         {'id': 1, 'title': '1st manager'},
     ];

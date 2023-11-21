@@ -4870,42 +4870,6 @@ msgid "Never"
 msgstr "Không bao giờ"
 
 #
-msgid "Short year"
-msgstr "Năm rút gọn"
-
-#
-msgid "Long year"
-msgstr "Năm đầy đủ"
-
-#
-msgid "Short month"
-msgstr "Tháng rút gọn"
-
-#
-msgid "Long month"
-msgstr "Tháng đầy đủ"
-
-#
-msgid "Month of year"
-msgstr "Tháng trong năm"
-
-#
-msgid "Week of year"
-msgstr "Tuần trong năm"
-
-#
-msgid "Day of year"
-msgstr "Ngày trong năm"
-
-#
-msgid "Day of month"
-msgstr "Ngày trong tháng"
-
-#
-msgid "Day of week"
-msgstr "Ngày trong tuần"
-
-#
 msgid "First number"
 msgstr "Số đầu tiên"
 

@@ -10,6 +10,8 @@ $(function () {
             $("#select-box-features").initSelect2({
                 data: res.application,
             });
+            // load data-params select property zone modal
+            $('#property_list_choices').attr('data-params', JSON.stringify({application: res.application.id}));
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone){

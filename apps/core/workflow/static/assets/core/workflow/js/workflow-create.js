@@ -125,9 +125,9 @@ $(function () {
 
 
         // NODE EVENTS
-        NodeDataTableHandle.tableNode.on('click', '.btn-node-collab', function () {
-            NodeLoadDataHandle.loadZoneDD(this.closest('tr'));
-        });
+        // NodeDataTableHandle.tableNode.on('click', '.btn-node-collab', function () {
+        //     NodeLoadDataHandle.loadZoneDD(this.closest('tr'));
+        // });
 
         NodeLoadDataHandle.btnAddNode.on('click', function () {
             NodeLoadDataHandle.loadAddRowTableNode();

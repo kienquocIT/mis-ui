@@ -35,6 +35,7 @@
             data-trans-numbering0="{% trans 'System' %}"
             data-trans-numbering1="{% trans 'User defined' %}"
     ></script>
+
     <form id="frm-update-company"
           data-url-detail="{% url "CompanyDetailAPI" pk=0 %}"
           data-url-redirect="{% url "CompanyDetail" pk=0 %}"
@@ -44,10 +45,16 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="row">
+                        <div class="col-12">
+                            <h4>{% trans 'Company' %}</h4>
+                            <div class="separator"></div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required" for="code">
-                                    {% trans 'Company code' %}
+                                    {% trans 'Code' %}
                                 </label>
                                 <input type="text" class="form-control"
                                        id="code" oninput="this.value=this.value.toUpperCase()"
@@ -66,7 +73,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="fax">
-                            {% trans 'Company fax' %}
+                            {% trans 'Fax' %}
                         </label>
                         <input type="text" class="form-control"
                                id="fax" placeholder="+84 (8) 1234 9876"/>
@@ -84,7 +91,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label required" for="address">{% trans 'Company address' %}</label>
+                        <label class="form-label required" for="address">{% trans 'Address' %}</label>
                         <input data-bs-toggle="modal" data-bs-target="#modal-company-address"
                                type="text" class="form-control" readonly id="address"
                                placeholder="{% trans 'Click to add address' %}"
@@ -92,9 +99,15 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>{% trans 'Representator' %}</h4>
+                            <div class="separator"></div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="form-label required" for="representative_fullname">
-                            {% trans 'Representator fullname' %}
+                            {% trans 'Fullname' %}
                         </label>
                         <input type="text" class="form-control"
                                id="representative_fullname"
@@ -102,7 +115,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label required" for="email">
-                            {% trans 'Representator email' %}
+                            {% trans 'Email' %}
                         </label>
                         <input type="text" class="form-control"
                                id="email"
@@ -111,7 +124,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label required" for="phone">
-                            {% trans 'Representator phone number' %}
+                            {% trans 'Phone number' %}
                         </label>
                         <input type="text" class="form-control"
                                id="phone" placeholder="+84987654321" required/>

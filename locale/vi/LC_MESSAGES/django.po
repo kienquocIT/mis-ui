@@ -4926,29 +4926,13 @@ msgid "Function number"
 msgstr "Cấu hình đánh số chức năng"
 
 #
-msgid "Company code"
-msgstr "Mã công ty"
-
-#
 msgid "Company name"
 msgstr "Tên công ty"
 
 #
-msgid "Company fax"
-msgstr "Fax công ty"
+msgid "Fullname"
+msgstr "Họ và tên"
 
 #
-msgid "Company address"
-msgstr "Địa chỉ công ty"
-
-#
-msgid "Representator fullname"
-msgstr "Họ tên người đại diện"
-
-#
-msgid "Representator email"
-msgstr "Email người đại diện"
-
-#
-msgid "Representator phone number"
-msgstr "Số điện thoại người đại diện"
+msgid "Representator"
+msgstr "Người đại diện"

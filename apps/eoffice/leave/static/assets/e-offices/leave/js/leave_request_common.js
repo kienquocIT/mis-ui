@@ -156,7 +156,7 @@ class detailTab {
                         if (row && Object.keys(row).length > 0) dataLoad.push(
                             {...row, selected: true}
                         )
-                        let html = $(`<select>`).addClass('form-select row_leave-type').attr('name', `leave_type_${meta.row}`)
+                        let html = $(`<select>`).addClass('form-select row_leave-type').attr('name', `leave_type_${meta.row}`).attr('data-zone', 'detail_data')
                         if (row && Object.keys(row).length > 0) html.attr('data-onload', JSON.stringify(dataLoad))
                         return html.prop('outerHTML')
                     }
@@ -169,11 +169,11 @@ class detailTab {
                         if (dateFrom !== '') dateFrom = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
                         let html = $(`${$('.date_from').html()}`)
                         html.find('.f_mor').attr('id', `f_mor_${meta.row}`).attr('name', `morning_shift_f_${
-                            meta.row}`).next('label').attr('for', `f_mor_${meta.row}`)
+                            meta.row}`).addClass('detail_data_field').next('label').attr('for', `f_mor_${meta.row}`)
                         html.find('.f_aft').attr('id', `f_aft_${meta.row}`).attr('name', `morning_shift_f_${
-                            meta.row}`).next('label').attr('for', `f_aft_${meta.row}`)
-                        html.find('.date-picker').attr('name', `date_from_${meta.row}`).attr('value', dateFrom).attr('id', `InputDateFrom_${meta.row}`)
-                        html.find(`[name="morning_shift_f_${meta.row}"][value="${data.morning_shift_f}"]`).attr('checked', true)
+                            meta.row}`).addClass('detail_data_field').next('label').attr('for', `f_aft_${meta.row}`)
+                        html.find('.date-picker').attr('name', `date_from_${meta.row}`).attr('value', dateFrom).attr('id', `InputDateFrom_${meta.row}`).addClass('detail_data_field')
+                        html.find(`[name="morning_shift_f_${meta.row}"][value="${data.morning_shift_f}"]`).attr('checked', true).addClass('detail_data_field')
                         return html.prop('outerHTML')
                     }
                 },
@@ -185,11 +185,11 @@ class detailTab {
                         if (dateTo !== '') dateTo = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
                         let html = $(`${$('.date_from').html()}`)
                         html.find('.f_mor').attr('id', `t_mor_${meta.row}`).attr('name', `morning_shift_t_${
-                            meta.row}`).next('label').attr('for', `t_mor_${meta.row}`)
-                        html.find('.f_aft').attr('id', `t_aft_${meta.row}`).attr('name', `morning_shift_t_${meta.row}`).next('label').attr('for', `t_aft_${meta.row}`)
-                        html.find('.date-picker').attr('name', `date_to_${meta.row}`).attr('id', `InputDateTo_${meta.row}`).attr('value', dateTo)
+                            meta.row}`).addClass('detail_data_field').next('label').attr('for', `t_mor_${meta.row}`)
+                        html.find('.f_aft').addClass('detail_data_field').attr('id', `t_aft_${meta.row}`).attr('name', `morning_shift_t_${meta.row}`).next('label').attr('for', `t_aft_${meta.row}`)
+                        html.find('.date-picker').attr('name', `date_to_${meta.row}`).attr('id', `InputDateTo_${meta.row}`).attr('value', dateTo).addClass('detail_data_field')
                         html.find('.spec-date-layout > span').remove()
-                        html.find(`[name="morning_shift_t_${meta.row}"][value="${data.morning_shift_t}"]`).attr('checked', true)
+                        html.find(`[name="morning_shift_t_${meta.row}"][value="${data.morning_shift_t}"]`).attr('checked', true).addClass('detail_data_field')
                         return html.prop('outerHTML')
                     }
                 },
@@ -198,7 +198,7 @@ class detailTab {
                     width: '5%',
                     class: 'child-mt',
                     render: (row, type, data, meta) => {
-                        return `<input type="text" class="form-control" name="subtotal_${meta.row}" readonly value="${
+                        return `<input type="text" class="form-control detail_data_field" name="subtotal_${meta.row}" readonly value="${
                             JSON.stringify(row)}">`
                     }
                 },
@@ -207,7 +207,7 @@ class detailTab {
                     width: '15%',
                     class: 'child-mt',
                     render: (row, type, data, meta) => {
-                        return `<input class="form-control" name="remark_${meta.row}" value="${row}">`
+                        return `<input class="form-control" name="remark_${meta.row}" value="${row}" data-zone="detail_data">`
                     }
                 },
                 {
@@ -454,6 +454,8 @@ function submitHandleFunc() {
     const frm = new SetupFormSubmit($FormElm);
     let formData = frm.dataForm;
     if (frm.dataMethod.toLowerCase() === 'post') formData.system_status = 1
+
+    // to do here add system status
     formData.employee_inherit_id = $EmpElm.val()
     formData.detail_data = detailTab.get_data()
     formData.total = 0

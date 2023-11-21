@@ -13,7 +13,7 @@ $(document).ready(function () {
             $x.fn.renderCodeBreadcrumb(data);
             $('#inputTitle').val(data.title)
             $('#inputSystemStatus').val(JSON.parse($('#sys_stt').text())[data.system_status][1])
-
+            if (data.system_status >= 1) $('.btn[form="leave_edit"]').addClass('hidden')
             // load datepicker for request date
             $('#inputRequestDate').val(moment(data.request_date, 'YYYY-MM-DD').format('DD/MM/YYYY')).daterangepicker({
                 singleDatePicker: true,

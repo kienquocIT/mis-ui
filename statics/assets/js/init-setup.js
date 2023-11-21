@@ -1479,10 +1479,13 @@ class WFRTControl {
             let pageEle = DocumentControl.getElePageContent();
             let input_mapping_properties = WFRTControl.getInputMappingProperties();
 
-            // disable + readonly field
+            // disable + readonly field (chỉ disabled các field trong form)
             pageEle.find('.required').removeClass('required');
             pageEle.find('input, select, textarea').each(function (event) {
+
                 let inputMapProperties = input_mapping_properties[$(this).attr('name')];
+                if (!inputMapProperties)
+                    inputMapProperties = input_mapping_properties[$(this).attr('data-zone')];
                 if (inputMapProperties && typeof inputMapProperties === 'object') {
                     let arrTmpFind = [];
                     inputMapProperties['name'].map((nameFind) => {
@@ -1506,7 +1509,8 @@ class WFRTControl {
                             });
                         });
                     })
-                } else {
+                }
+                else {
                     $(this).changePropertiesElementIsZone({
                         add_disable: true,
                         add_readonly: true,
@@ -1523,15 +1527,20 @@ class WFRTControl {
                         let inputMapProperties = input_mapping_properties[item.code];
                         if (inputMapProperties && typeof inputMapProperties === 'object') {
                             let arrTmpFind = {};
+                            let arrTmpOfDataListFind = {}
                             let readonly_not_disable = inputMapProperties['readonly_not_disable'];
                             inputMapProperties['name'].map((nameFind) => {
                                 arrTmpFind[nameFind] = "[name=" + nameFind + "]";
+                                // cho trường hợp field là table or list
+                                arrTmpOfDataListFind[nameFind] = "[data-zone="+ nameFind +"]"
                             })
                             inputMapProperties['id'].map((idFind) => {
                                 arrTmpFind[idFind] = "[id=" + idFind + "]";
                             })
                             Object.keys(arrTmpFind).map((key) => {
                                 let findText = arrTmpFind[key];
+                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
+                                    findText = arrTmpOfDataListFind[key]
                                 pageEle.find(findText).each(function () {
                                     if (readonly_not_disable.includes(key)) {
                                         $(this).changePropertiesElementIsZone({
@@ -1541,7 +1550,8 @@ class WFRTControl {
                                             'add_readonly': true,
                                             'add_border': true,
                                         });
-                                    } else {
+                                    }
+                                    else {
                                         $(this).changePropertiesElementIsZone({
                                             'add_require_label': true,
                                             'add_require': false,
@@ -1552,18 +1562,18 @@ class WFRTControl {
                                     }
                                 })
                             });
-                            inputMapProperties['id_border_zones'].map((item) => {
-                                pageEle.find('#' + item).changePropertiesElementIsZone({
-                                    add_border: true,
-                                    add_readonly: true,
-                                });
-                            })
-                            inputMapProperties['cls_border_zones'].map((item) => {
-                                pageEle.find('.' + item).changePropertiesElementIsZone({
-                                    add_border: true,
-                                    add_readonly: true,
-                                });
-                            })
+                            // inputMapProperties['id_border_zones'].map((item) => {
+                            //     pageEle.find('#' + item).changePropertiesElementIsZone({
+                            //         add_border: true,
+                            //         add_readonly: true,
+                            //     });
+                            // })
+                            // inputMapProperties['cls_border_zones'].map((item) => {
+                            //     pageEle.find('.' + item).changePropertiesElementIsZone({
+                            //         add_border: true,
+                            //         add_readonly: true,
+                            //     });
+                            // })
                         }
                     }
                 })

@@ -18,7 +18,7 @@ $(document).ready(function () {
                         width: '35%',
                         class: 'child-mt',
                         render: (row, type, data, meta) => {
-                            let html = $(`<select>`).addClass('form-select row_leave-type').attr('name',
+                            let html = $(`<select>`).addClass('form-select row_leave-type detail_data_field').attr('name',
                                 `leave_type_${meta.row}`).attr('disabled', true)
                             html.append($(`<option>`).val(row.leave_type.id).text(row.leave_type.title
                             ).attr('selected', true))
@@ -31,12 +31,14 @@ $(document).ready(function () {
                         render: (row, type, data, meta) => {
                             let html = $(`${$('.date_from').html()}`)
                             html.find('.f_mor').attr('id', `f_mor_${meta.row}`).attr('name', `morning_shift_f_${
-                                meta.row}`).next('label').attr('for', `f_mor_${meta.row}`)
+                                meta.row}`).addClass('detail_data_field').next('label').attr('for', `f_mor_${meta.row}`)
                             html.find('.f_aft').attr('id', `f_aft_${meta.row}`).attr('name', `morning_shift_f_${
-                                meta.row}`).next('label').attr('for', `f_aft_${meta.row}`)
+                                meta.row}`).addClass('detail_data_field').next('label').attr('for', `f_aft_${meta.row}`)
                             html.find('.date-picker').attr('name', `date_from_${meta.row
-                            }`).attr('value', moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')).attr('id', `InputDateFrom_${meta.row}`).attr('readonly', true)
-                            html.find(`[name="morning_shift_f_${meta.row}"][value="${data.morning_shift_f}"]`).attr('checked', true)
+                            }`).attr('value', moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')).attr('id', `InputDateFrom_${
+                                meta.row}`).attr('readonly', true).addClass('detail_data_field')
+                            html.find(`[name="morning_shift_f_${meta.row}"][value="${data.morning_shift_f
+                            }"]`).attr('checked', true).addClass('detail_data_field')
                             return html.prop('outerHTML')
                         }
                     },
@@ -47,13 +49,13 @@ $(document).ready(function () {
                             let html = $(`${$('.date_from').html()}`)
                             let _date_row = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
                             html.find('.f_mor').attr('id', `t_mor_${meta.row}`).attr('name', `morning_shift_t_${
-                                meta.row}`).next('label').attr('for', `t_mor_${meta.row}`)
+                                meta.row}`).addClass('detail_data_field').next('label').attr('for', `t_mor_${meta.row}`)
                             html.find('.f_aft').attr('id', `t_aft_${meta.row}`).attr('name', `morning_shift_t_${
-                                meta.row}`).next('label').attr('for', `t_aft_${meta.row}`)
+                                meta.row}`).addClass('detail_data_field').next('label').attr('for', `t_aft_${meta.row}`)
                             html.find('.date-picker').attr('name', `date_to_${meta.row}`).attr('id', `InputDateTo_${
-                                meta.row}`).attr('value', _date_row).attr('readonly', true)
+                                meta.row}`).attr('value', _date_row).attr('readonly', true).addClass('detail_data_field')
                             html.find('.spec-date-layout > span').remove()
-                            html.find(`[name="morning_shift_t_${meta.row}"][value="${data.morning_shift_t}"]`).attr('checked', true)
+                            html.find(`[name="morning_shift_t_${meta.row}"][value="${data.morning_shift_t}"]`).attr('checked', true).addClass('detail_data_field')
                             return html.prop('outerHTML')
                         }
                     },
@@ -62,7 +64,7 @@ $(document).ready(function () {
                         width: '5%',
                         class: 'child-mt',
                         render: (row, type, data, meta) => {
-                            return `<input class="form-control" name="subtotal_${meta.row}" readonly value="${row ? row : 0}">`
+                            return `<input class="form-control detail_data_field" name="subtotal_${meta.row}" readonly value="${row ? row : 0}">`
                         }
                     },
                     {
@@ -70,7 +72,7 @@ $(document).ready(function () {
                         width: '15%',
                         class: 'child-mt',
                         render: (row, type, data, meta) => {
-                            return `<input class="form-control" name="remark_${meta.row}" value="${row}" readonly>`
+                            return `<input class="form-control detail_data_field" name="remark_${meta.row}" value="${row}" readonly>`
                         }
                     },
                     {

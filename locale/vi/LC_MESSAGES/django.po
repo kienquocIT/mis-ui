@@ -4848,3 +4848,143 @@ msgstr "Thiếu thông tin để ghi nhận"
 #
 msgid "Add Labor"
 msgstr "Thêm nhân công"
+
+#
+msgid "Yearly"
+msgstr "Hằng năm"
+
+#
+msgid "Monthly"
+msgstr "Hằng tháng"
+
+#
+msgid "Weekly"
+msgstr "Hằng tuần"
+
+#
+msgid "Daily"
+msgstr "Hằng ngày"
+
+#
+msgid "Never"
+msgstr "Không bao giờ"
+
+#
+msgid "Short year"
+msgstr "Năm rút gọn"
+
+#
+msgid "Long year"
+msgstr "Năm đầy đủ"
+
+#
+msgid "Short month"
+msgstr "Tháng rút gọn"
+
+#
+msgid "Long month"
+msgstr "Tháng đầy đủ"
+
+#
+msgid "Month of year"
+msgstr "Tháng trong năm"
+
+#
+msgid "Week of year"
+msgstr "Tuần trong năm"
+
+#
+msgid "Day of year"
+msgstr "Ngày trong năm"
+
+#
+msgid "Day of month"
+msgstr "Ngày trong tháng"
+
+#
+msgid "Day of week"
+msgstr "Ngày trong tuần"
+
+#
+msgid "First number"
+msgstr "Số đầu tiên"
+
+#
+msgid "Next number"
+msgstr "Số tiếp theo"
+
+#
+msgid "Reset frequency"
+msgstr "Thời hạn đặt lại"
+
+#
+msgid "Minimum char number"
+msgstr "Số kí tự tối thiểu (STT)"
+
+#
+msgid "Schema"
+msgstr "Công thức"
+
+#
+msgid "Function"
+msgstr "Chức năng"
+
+#
+msgid "Numbering by"
+msgstr "Kiểu đánh số"
+
+#
+msgid "Add Schema"
+msgstr "Thêm công thức"
+
+#
+msgid "Next code is"
+msgstr "Mã tiếp theo"
+
+#
+msgid "Add schema item"
+msgstr "Thêm item"
+
+#
+msgid "System"
+msgstr "Hệ thống"
+
+#
+msgid "User defined"
+msgstr "Người dùng cấu hình"
+
+#
+msgid "Company setting"
+msgstr "Cấu hình công ty"
+
+#
+msgid "Function number"
+msgstr "Cấu hình đánh số chức năng"
+
+#
+msgid "Company code"
+msgstr "Mã công ty"
+
+#
+msgid "Company name"
+msgstr "Tên công ty"
+
+#
+msgid "Company fax"
+msgstr "Fax công ty"
+
+#
+msgid "Company address"
+msgstr "Địa chỉ công ty"
+
+#
+msgid "Representator fullname"
+msgstr "Họ tên người đại diện"
+
+#
+msgid "Representator email"
+msgstr "Email người đại diện"
+
+#
+msgid "Representator phone number"
+msgstr "Số điện thoại người đại diện"

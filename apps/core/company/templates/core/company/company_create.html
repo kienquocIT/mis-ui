@@ -17,6 +17,20 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.data.VND_currency | json_script:"VND_currency" }}
+    <script id="trans-script"
+            data-trans-opp="{% trans 'Opportunity' %}"
+            data-trans-quo="{% trans 'Quotation' %}"
+            data-trans-so="{% trans 'Sale Order' %}"
+            data-trans-picking="{% trans 'Picking' %}"
+            data-trans-delivery="{% trans 'Delivery' %}"
+            data-trans-task="{% trans 'Task' %}"
+            data-trans-ap="{% trans 'Advance Payment' %}"
+            data-trans-payment="{% trans 'Payment' %}"
+            data-trans-rp="{% trans 'Return Advance' %}"
+            data-trans-pr="{% trans 'Purchase Request' %}"
+            data-trans-numbering0="{% trans 'System' %}"
+            data-trans-numbering1="{% trans 'User defined' %}"
+    ></script>
     <form id="frm-add-company"
           data-url="{% url "CompanyListAPI" %}"
           data-url-redirect="{% url "CompanyList" %}"
@@ -327,11 +341,11 @@
                                 <label class="label-field form-label required" for="reset-frequency">{% trans "Reset frequency" %}</label>
                                 <select class="form-select" id="reset-frequency">
                                     <option selected></option>
-                                    <option value="0">Yearly</option>
-                                    <option value="1">Monthly</option>
-                                    <option value="2">Weekly</option>
-                                    <option value="3">Daily</option>
-                                    <option value="4">Never</option>
+                                    <option value="0">{% trans 'Yearly' %}</option>
+                                    <option value="1">{% trans 'Monthly' %}</option>
+                                    <option value="2">{% trans 'Weekly' %}</option>
+                                    <option value="3">{% trans 'Daily' %}</option>
+                                    <option value="4">{% trans 'Never' %}</option>
                                 </select>
                             </div>
                         </div>

@@ -286,36 +286,38 @@ function loadPrimaryCurrency(data) {
     })
 }
 
+let trans_script_ele = $('#trans-script')
+
 const FunctionNumberTableData = [
     {
-        'function': 'Opportunity'
+        'function': trans_script_ele.attr('data-trans-opp')
     },
     {
-        'function': 'Sale quotation'
+        'function': trans_script_ele.attr('data-trans-quo')
     },
     {
-        'function': 'Sale order'
+        'function': trans_script_ele.attr('data-trans-so')
     },
     {
-        'function': 'Picking'
+        'function': trans_script_ele.attr('data-trans-picking')
     },
     {
-        'function': 'Delivery'
+        'function': trans_script_ele.attr('data-trans-delivery')
     },
     {
-        'function': 'Task'
+        'function': trans_script_ele.attr('data-trans-task')
     },
     {
-        'function': 'Advance payment'
+        'function': trans_script_ele.attr('data-trans-ap')
     },
     {
-        'function': 'Payment'
+        'function': trans_script_ele.attr('data-trans-payment')
     },
     {
-        'function': 'Return payment'
+        'function': trans_script_ele.attr('data-trans-rp')
     },
     {
-        'function': 'Purchase request'
+        'function': trans_script_ele.attr('data-trans-pr')
     }
 ]
 
@@ -341,9 +343,11 @@ function loadFunctionNumberTable(table_data=[]) {
                 data: '',
                 className: 'wrap-text w-15',
                 render: () => {
+                    let system = trans_script_ele.attr('data-trans-numbering0');
+                    let user_defined = trans_script_ele.attr('data-trans-numbering1');
                     return `<select class="form-select numbering-by-selection">
-                        <option value="0" selected>System</option>
-                        <option value="1">User defined</option>
+                        <option value="0" selected>${system}</option>
+                        <option value="1">${user_defined}</option>
                     </select>`;
                 }
             }, {
@@ -395,16 +399,18 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                     if (option === 'detail' || ![0, 6, 7, 8].includes(row.function)) {
                         disabled = 'disabled';
                     }
+                    let system = trans_script_ele.attr('data-trans-numbering0');
+                    let user_defined = trans_script_ele.attr('data-trans-numbering1');
                     if (row?.['numbering_by']) {
                         return `<select ${disabled} class="form-select numbering-by-selection">
-                            <option value="0">System</option>
-                            <option value="1" selected>User defined</option>
+                            <option value="0">${system}</option>
+                            <option value="1" selected>${user_defined}</option>
                         </select>`;
                     }
                     else {
                         return `<select ${disabled} class="form-select numbering-by-selection">
-                            <option value="0" selected>System</option>
-                            <option value="1">User defined</option>
+                            <option value="0" selected>${system}</option>
+                            <option value="1">${user_defined}</option>
                         </select>`;
                     }
                 }

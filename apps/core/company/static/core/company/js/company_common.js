@@ -4,7 +4,7 @@ let companyWardEle = $('#company-address-ward')
 let primary_currency = $('#primary-currency')
 let VND_currency = {}
 const VND_currency_text = $('#VND_currency').text()
-if (VND_currency_text !== '') {
+if (VND_currency_text) {
     VND_currency = JSON.parse(VND_currency_text)
 }
 
@@ -45,7 +45,7 @@ $('#save-changes-modal-company-address').on('click', function () {
         let ward = companyWardEle.find(`option:selected`).text();
 
         let company_address = '';
-        if (city !== '' && district !== '' && detail_company_address !== '') {
+        if (city && district && detail_company_address) {
 
             if (ward === '') {
                 company_address = detail_company_address + ', ' + district + ', ' + city;
@@ -58,7 +58,7 @@ $('#save-changes-modal-company-address').on('click', function () {
             $.fn.notifyB({description: "Missing address information!"}, 'failure');
         }
 
-        if (company_address !== '') {
+        if (company_address) {
             $('#address').val(company_address);
         }
     } catch (error) {
@@ -142,7 +142,7 @@ last_number_ele.on('input', function () {
 
 function Preview() {
     let raw_schema = schema_item_list.val();
-    if (raw_schema !== '' && last_number_ele.val() !== '' && first_number_ele !== '') {
+    if (raw_schema && last_number_ele.val() && first_number_ele) {
         let raw_schema_item_list = raw_schema.match(/{([^}]+)}/g);
         let code_1 = raw_schema;
         let code_2 = raw_schema;
@@ -178,7 +178,7 @@ $('.schema-item').on('click', function () {
 $(document).on("click", '.schema-custom', function () {
     current_schema_row = $(this).closest('tr');
     let schema_show_ele = current_schema_row.find('.schema-show');
-    if (schema_show_ele.text() !== '') {
+    if (schema_show_ele.text()) {
         schema_item_list.val(schema_show_ele.text());
         first_number_ele.val(schema_show_ele.attr('data-first-number'));
         last_number_ele.val(schema_show_ele.attr('data-last-number'));
@@ -211,7 +211,7 @@ $(document).on("click", '.numbering-by-selection', function () {
 function formatInputSchema() {
     let schema_item_value_list = schema_item_list.val().match(/{([^}]+)}/g);
     for (let i = 0; i < schema_item_value_list.length; i++) {
-        if (schema_item_value_list[i] !== '') {
+        if (schema_item_value_list[i]) {
             if (!schema_item_list_value.includes(schema_item_value_list[i])) {
                 if (schema_item_value_list[i].includes('{') || schema_item_value_list[i].includes('}')) {
                     $.fn.notifyB({description: "Wrong schema format: " + schema_item_value_list[i]}, 'warning');
@@ -250,7 +250,7 @@ $('#save-changes-modal-function-number').on('click', function () {
             $.fn.notifyB({'description': 'Minimum char number must be > 2.'}, 'warning');
         }
         else {
-            if (schema !== '' && first_number !== '' && last_number !== '' && reset_frequency !== '') {
+            if (schema && first_number && last_number && reset_frequency) {
                 let schema_show_ele = current_schema_row.find('.schema-show');
                 schema_show_ele.text(schema);
                 schema_show_ele.attr('data-schema', formatSubmitSchema(schema));
@@ -418,7 +418,7 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 data: '',
                 className: 'wrap-text w-45',
                 render: (data, type, row) => {
-                    if (row.schema !== null) {
+                    if (row.schema) {
                         return `<span data-schema="${row.schema}" data-first-number="${row.first_number}" data-last-number="${row.last_number}" data-reset-frequency="${row.reset_frequency}" data-min-number-char="${row.min_number_char}" class="schema-show text-primary">${row.schema_text}</span>`;
                     }
                     else {
@@ -430,7 +430,7 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 className: 'wrap-text text-center w-10',
                 render: (data, type, row) => {
                     if (option !== 'detail') {
-                        if (row.schema !== null) {
+                        if (row.schema) {
                             return `<span class="text-primary schema-custom" data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
                         } else {
                             return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
@@ -479,7 +479,7 @@ class CompanyHandle {
             let reset_frequency = $(this).find('.schema-show').attr('data-reset-frequency');
             let min_number_char = $(this).find('.schema-show').attr('data-min-number-char');
 
-            if (schema_text !== '' && schema !== '' && first_number !== '' && last_number !== '' && reset_frequency !== '') {
+            if (schema_text && schema && first_number && last_number && reset_frequency) {
                 frm.dataForm['company_function_number_data'].push({
                     'function': index,
                     'numbering_by': $(this).find('.numbering-by-selection').val(),

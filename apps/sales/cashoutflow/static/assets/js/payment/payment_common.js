@@ -19,7 +19,7 @@ opp_mapped_select.on('change', function () {
     quotation_mapped_select.find('option').remove();
     sale_order_mapped_select.find('option').remove();
 
-    if (opp_mapped_select.val() !== null) {
+    if (opp_mapped_select.val()) {
         sale_order_mapped_select.prop('disabled', true);
         quotation_mapped_select.prop('disabled', true);
 
@@ -62,7 +62,7 @@ function PaymentLoadQuotation(data) {
         tableLineDetail.find('tbody').html('');
         opp_mapped_select.find('option').remove();
         sale_order_mapped_select.find('option').remove();
-        if (quotation_mapped_select.val() !== null) {
+        if (quotation_mapped_select.val()) {
             opp_mapped_select.prop('disabled', true);
             sale_order_mapped_select.prop('disabled', true);
 
@@ -128,7 +128,7 @@ function PaymentLoadSaleOrder(data) {
         tableLineDetail.find('tbody').html('');
         opp_mapped_select.find('option').remove();
         quotation_mapped_select.find('option').remove();
-        if (sale_order_mapped_select.val() !== null) {
+        if (sale_order_mapped_select.val()) {
             opp_mapped_select.prop('disabled', true);
             quotation_mapped_select.prop('disabled', true);
 
@@ -351,17 +351,26 @@ function changePriceCommon(tr) {
     }
 }
 
-function changePrice(row_id) {
-    $('#' + row_id + ' .expense-unit-price-input').on('change', function () {
-        changePriceCommon($(this).closest('tr'));
-    })
-    $('#' + row_id + ' .expense-tax-select-box').on('change', function () {
-        changePriceCommon($(this).closest('tr'));
-    })
-    $('#' + row_id + ' .expense_quantity').on('change', function () {
-        changePriceCommon($(this).closest('tr'));
-    })
-}
+$(document).on("change", '.expense-unit-price-input', function () {
+    changePriceCommon($(this).closest('tr'));
+})
+
+$(document).on("change", '.expense-tax-select-box', function () {
+    changePriceCommon($(this).closest('tr'));
+})
+
+$(document).on("change", '.expense_quantity', function () {
+    changePriceCommon($(this).closest('tr'));
+})
+
+$(document).on("change", '.value-inp', function () {
+            let value_converted_from_ap = parseFloat($(this).closest('tr').find('.value-converted-from-ap-inp').attr('value'));
+            let this_value = parseFloat($(this).attr('value'));
+            if (isNaN(value_converted_from_ap)) { value_converted_from_ap = 0; }
+            if (isNaN(this_value)) { this_value = 0; }
+            $(this).closest('tr').find('.total-value-salecode-item').attr('value', this_value + value_converted_from_ap);
+            $.fn.initMaskMoney2();
+        })
 
 function get_ap_product_items() {
     let ap_expense_items = [];
@@ -457,7 +466,7 @@ function loadAPList() {
                 render: (data, type, row) => {
                     let checked = '';
                     let disabled = '';
-                    if (AP_filter !== null) {
+                    if (AP_filter) {
                         checked = 'checked';
                         disabled = 'disabled';
                     }
@@ -469,7 +478,7 @@ function loadAPList() {
 }
 
 function LoadPlanQuotation(opportunity_id, quotation_id) {
-    if (opportunity_id !== undefined && quotation_id !== undefined && opportunity_id !== null && quotation_id !== null) {
+    if (opportunity_id && quotation_id) {
         let dataParam1 = {'quotation_id': quotation_id}
         let expense_quotation = $.fn.callAjax2({
             url: script_url.attr('data-url-expense-quotation'),
@@ -552,7 +561,7 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
 }
 
 function LoadPlanQuotationNoOPP(quotation_id) {
-    if (quotation_id !== null && quotation_id !== undefined) {
+    if (quotation_id) {
         let dataParam1 = {'quotation_id': quotation_id}
         let expense_quotation = $.fn.callAjax2({
             url: script_url.attr('data-url-expense-quotation'),
@@ -635,7 +644,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
 }
 
 function LoadPlanSaleOrderNoOPP(sale_order_id) {
-    if (sale_order_id !== null && sale_order_id !== undefined) {
+    if (sale_order_id) {
         let dataParam1 = {'sale_order_id': sale_order_id}
         let expense_sale_order = $.fn.callAjax2({
             url: script_url.attr('data-url-expense-sale-order'),
@@ -718,71 +727,29 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
 }
 
 $(document).on("click", '#btn-add-row-line-detail', function () {
-    let sale_code_ID = null;
-    let sale_code_CODE = null;
-    if (opp_mapped_select.val() !== null) {
-        sale_code_ID = opp_mapped_select.val();
-        let obj_selected = JSON.parse($('#' + opp_mapped_select.attr('data-idx-data-loaded')).text())[opp_mapped_select.val()];
-        sale_code_CODE = obj_selected.code;
-    }
-    else if (quotation_mapped_select.val() !== null) {
-        sale_code_ID =  quotation_mapped_select.val();
-        let obj_selected = JSON.parse($('#' + quotation_mapped_select.attr('data-idx-data-loaded')).text())[quotation_mapped_select.val()];
-        sale_code_CODE = obj_selected.code;
-    }
-    else if (sale_order_mapped_select.val() !== null) {
-        sale_code_ID = sale_order_mapped_select.val();
-        let obj_selected = JSON.parse($('#' + sale_order_mapped_select.attr('data-idx-data-loaded')).text())[sale_order_mapped_select.val()];
-        sale_code_CODE = obj_selected.code;
-    }
-
-    if (sale_code_ID !== null && sale_code_CODE !== null) {
+    if (opp_mapped_select.val() || quotation_mapped_select.val() || sale_order_mapped_select.val()) {
         tableLineDetail.append(`<tr id="" class="row-number">
-        <td class="number text-center"></td>
-        <td><select class="form-select expense-type-select-box"></select></td>
-        <td><input class="form-control expense-name-input"></td>
-        <td><input class="form-control expense-uom-input"></td>
-        <td><input type="number" min="1" class="form-control expense_quantity" value="1"></td>
-        <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money"></td>
-        <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
-        <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" style="color: black; background: none" disabled></td>
-        <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" style="color: black; background: none" disabled></td>
-        <td><input type="text" class="form-control expense-document-number"></td>
-        <td>
-        <button class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button>
-        <button class="btn-row-toggle btn text-primary btn-link btn-animated" type="button" title="Collapse row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></button>
-        </td>
-    </tr>`);
-        // tableLineDetail.append(`<tr class="" hidden>
-        //     <td colspan="1"></td>
-        //     <td colspan="1">
-        //         <label class="text-primary"><b>Sale code</b></label>
-        //     </td>
-        //     <td colspan="2">
-        //         <label class="text-primary"><b>Value</b></label>
-        //     </td>
-        //     <td colspan="1"></td>
-        //     <td colspan="2">
-        //         <label class="text-primary"><b>Value converted from advance payment</b></label>
-        //     </td>
-        //     <td colspan="1"></td>
-        //     <td colspan="1">
-        //         <label class="text-primary"><b>Sum</b></label>
-        //     </td>
-        //     <td colspan="1"></td>
-        // </tr>`)
+            <td class="number text-center"></td>
+            <td><select class="form-select expense-type-select-box"></select></td>
+            <td><input class="form-control expense-name-input"></td>
+            <td><input class="form-control expense-uom-input"></td>
+            <td><input type="number" min="1" class="form-control expense_quantity" value="1"></td>
+            <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money"></td>
+            <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
+            <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" style="color: black; background: none" disabled></td>
+            <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" style="color: black; background: none" disabled></td>
+            <td><input type="text" class="form-control expense-document-number"></td>
+            <td>
+            <button class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button>
+            <button class="btn-row-toggle btn text-primary btn-link btn-animated" type="button" title="Collapse row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></button>
+            </td>
+        </tr>`);
         tableLineDetail.append(`<tr class="" hidden>
             <td colspan="1" class="bg-primary text-dark bg-opacity-10"></td>
-<!--            <td colspan="1">-->
-<!--                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${sale_code_ID}"><b>${sale_code_CODE}</b></span>-->
-<!--            </td>-->
             <td colspan="2">
                 <span class="form-text text-muted">Payment value</span>
                 <input data-return-type="number" class="value-inp form-control mask-money">
             </td>
-<!--            <td colspan="1">-->
-<!--                <i class="fas fa-plus text-primary"></i>-->
-<!--            </td>-->
             <td colspan="3">
                 <span class="form-text text-muted">Converted value from advance payment</span>
                 <div class="input-group">
@@ -794,9 +761,6 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
                     </button>
                 </div>
             </td>
-<!--            <td colspan="1">-->
-<!--                <i class="fas fa-equals text-primary"></i>-->
-<!--            </td>-->
             <td colspan="2">
                 <span class="form-text text-muted">Sum</span>
                 <input readonly data-return-type="number" class="total-value-salecode-item form-control mask-money" value="0">
@@ -804,20 +768,8 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
             </td>
         </tr>`);
 
+        count_row(tableLineDetail, 1);
         $.fn.initMaskMoney2();
-
-        $('.value-inp').on('change', function () {
-            let value_converted_from_ap = parseFloat($(this).closest('tr').find('.value-converted-from-ap-inp').attr('value'));
-            let this_value = parseFloat($(this).attr('value'));
-            if (isNaN(value_converted_from_ap)) { value_converted_from_ap = 0; }
-            if (isNaN(this_value)) { this_value = 0; }
-            $(this).closest('tr').find('.total-value-salecode-item').attr('value', this_value + value_converted_from_ap);
-            $.fn.initMaskMoney2();
-        })
-
-        let row_count = count_row(tableLineDetail, 1);
-
-        changePrice('row-' + row_count);
     }
     else {
         $.fn.notifyB({description: 'Select Sale code first.'}, 'warning');
@@ -1160,40 +1112,16 @@ function LoadDetailPayment() {
                         <button class="btn-row-toggle btn text-primary btn-link btn-animated" type="button" title="Collapse row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></button>
                         </td>
                     </tr>`);
-                    // tableLineDetail.append(`<tr class="" hidden>
-                    //     <td colspan="1"></td>
-                    //     <td colspan="1">
-                    //         <label class="text-primary"><b>Sale code</b></label>
-                    //     </td>
-                    //     <td colspan="2">
-                    //         <label class="text-primary"><b>Value</b></label>
-                    //     </td>
-                    //     <td colspan="1"></td>
-                    //     <td colspan="2">
-                    //         <label class="text-primary"><b>Value converted from advance payment</b></label>
-                    //     </td>
-                    //     <td colspan="1"></td>
-                    //     <td colspan="1">
-                    //         <label class="text-primary"><b>Sum</b></label>
-                    //     </td>
-                    //     <td colspan="1"></td>
-                    // </tr>`)
                     let data_row_detail = [];
                     for (let j = 0; j < data_row?.['ap_cost_converted_list'].length; j++) {
                         data_row_detail.push(data_row?.['ap_cost_converted_list'][j]);
                     }
                     tableLineDetail.append(`<tr class="" hidden>
                         <td colspan="1" class="bg-primary text-dark bg-opacity-10"></td>
-<!--                        <td colspan="1">-->
-<!--                            <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${sale_code_ID}"><b>${sale_code_CODE}</b></span>-->
-<!--                        </td>-->
                         <td colspan="2">
                             <span class="form-text text-muted">Payment value</span>
                             <input data-return-type="number" class="value-inp form-control mask-money" value="${data_row?.['real_value']}">
                         </td>
-<!--                        <td colspan="1" class="text-center">-->
-<!--                            <i class="fas fa-plus text-primary"></i>-->
-<!--                        </td>-->
                         <td colspan="3">
                             <span class="form-text text-muted">Converted value from advance payment</span>
                             <div class="input-group">
@@ -1205,9 +1133,6 @@ function LoadDetailPayment() {
                                 </button>
                             </div>
                         </td>
-<!--                        <td colspan="1" class="text-center">-->
-<!--                            <i class="fas fa-equals text-primary"></i>-->
-<!--                        </td>-->
                         <td colspan="2">
                             <span class="form-text text-muted">Sum</span>
                             <input data-return-type="number" class="total-value-salecode-item form-control mask-money" value="${data_row?.['sum_value']}">
@@ -1233,7 +1158,7 @@ class PaymentHandle {
         $('#btn-add-row-line-detail').removeClass('disabled');
         PaymentLoadQuotation();
         PaymentLoadSaleOrder();
-        if (sale_code_mapped !== null && type !== null) {
+        if (sale_code_mapped && type) {
             if (type === 0) {
                 await opp_mapped_select.initSelect2({
                     data: sale_code_mapped,
@@ -1379,7 +1304,7 @@ class PaymentHandle {
         let opportunity_mapped = opp_mapped_select.val();
         let quotation_mapped = quotation_mapped_select.val();
         let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped !== null && opportunity_mapped !== '') {
+        if (opportunity_mapped) {
             frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
             frm.dataForm['quotation_expense_plan'] = []
             $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
@@ -1388,7 +1313,7 @@ class PaymentHandle {
                 }
             })
         }
-        else if (quotation_mapped !== null && quotation_mapped !== '') {
+        else if (quotation_mapped) {
             frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
             frm.dataForm['quotation_expense_plan'] = []
             $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
@@ -1397,7 +1322,7 @@ class PaymentHandle {
                 }
             })
         }
-        else if (sale_order_mapped !== null && sale_order_mapped !== '') {
+        else if (sale_order_mapped) {
             frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
             frm.dataForm['sale_order_expense_plan'] = []
             $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {

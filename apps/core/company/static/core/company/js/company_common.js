@@ -67,6 +67,11 @@ $('#save-changes-modal-company-address').on('click', function () {
 })
 
 let schema_item_list = $('#schema-item-list');
+let first_number_ele = $('#first-number');
+let last_number_ele = $('#last-number');
+let reset_frequency_ele = $('#reset-frequency');
+let min_num_char_ele = $('#min_num_char');
+let min_num_char_checkbox_ele = $('#min_num_char_checkbox');
 let current_schema_row = null;
 
 const schema_item_list_value = [
@@ -82,14 +87,92 @@ const schema_item_list_value = [
     '{Day of week}'
 ]
 
+// Create a new Date object
+const currentDate= new Date();
+const fullYear= currentDate.getFullYear();
+const shortYear= fullYear.toString().slice(-2);
+function getISOWeekNumber(date) {
+  const diff= date - new Date(date.getFullYear(), 0, 1) + 1;
+  return Math.ceil(diff / 604800000); // 604800000 is 7 days in milliseconds
+}
+const monthOfYear = currentDate.getMonth() + 1;
+const weekOfYear = getISOWeekNumber(currentDate);
+const dayOfYear = Math.floor((currentDate - new Date(fullYear, 0, 0)) / 86400000);
+const dayOfMonth = currentDate.getDate();
+const dayOfWeek = currentDate.getDay() || 7;
+
+const schema_item_preview = [
+    '#number',
+    shortYear.toString(),
+    fullYear.toString(),
+    currentDate.toLocaleString('default', { month: 'short' }),
+    currentDate.toLocaleString('default', { month: 'long' }),
+    monthOfYear.toString(),
+    weekOfYear.toString(),
+    dayOfYear.toString(),
+    dayOfMonth.toString(),
+    dayOfWeek.toString()
+]
+
+min_num_char_checkbox_ele.on('change', function () {
+    if ($(this).is(':checked')) {
+        min_num_char_ele.prop('disabled', false);
+    }
+    else {
+        min_num_char_ele.val('').prop('disabled', true);
+    }
+    Preview()
+})
+
+min_num_char_ele.on('change', function () {
+    Preview()
+})
+
+schema_item_list.on('input', function () {
+    Preview()
+})
+
+first_number_ele.on('input', function () {
+    Preview()
+})
+
+last_number_ele.on('input', function () {
+    Preview()
+})
+
+function Preview() {
+    let raw_schema = schema_item_list.val();
+    if (raw_schema !== '' && last_number_ele.val() !== '' && first_number_ele !== '') {
+        let raw_schema_item_list = raw_schema.match(/{([^}]+)}/g);
+        let code_1 = raw_schema;
+        let code_2 = raw_schema;
+        for (let i = 0; i < raw_schema_item_list.length; i++) {
+            if (schema_item_list_value.includes(raw_schema_item_list[i])) {
+                let format_value = schema_item_list_value.indexOf(raw_schema_item_list[i]);
+                if (format_value === 0) {
+                    let min_char_number = parseInt(min_num_char_ele.val()) ? min_num_char_ele.val() : 0;
+                    code_1 = code_1.replace(raw_schema_item_list[i], last_number_ele.val().padStart(min_char_number, '0'));
+                    code_2 = code_2.replace(raw_schema_item_list[i], (parseInt(last_number_ele.val()) + 1).toString().padStart(min_char_number, '0'));
+                }
+                else {
+                    code_1 = code_1.replace(raw_schema_item_list[i], schema_item_preview[format_value]);
+                    code_2 = code_2.replace(raw_schema_item_list[i], schema_item_preview[format_value]);
+                }
+            }
+        }
+        $('#preview').html(`<span class="badge badge-primary">${code_1}</span><i class="mr-1 ml-1 fas fa-caret-right"></i><span class="badge badge-primary">${code_2}</span><i class="mr-1 ml-1 fas fa-caret-right"></i>...`);
+    }
+}
+
 $('.schema-item').on('click', function () {
     let old_content = schema_item_list.val();
     if (old_content === '') {
         schema_item_list.val(schema_item_list_value[parseInt($(this).attr('data-value'))])
     }
     else {
-        schema_item_list.val(old_content + '-' + schema_item_list_value[parseInt($(this).attr('data-value'))])
+        schema_item_list.val(old_content + schema_item_list_value[parseInt($(this).attr('data-value'))])
     }
+    Preview()
 })
 
 $(document).on("click", '.schema-custom', function () {
@@ -97,16 +180,21 @@ $(document).on("click", '.schema-custom', function () {
     let schema_show_ele = current_schema_row.find('.schema-show');
     if (schema_show_ele.text() !== '') {
         schema_item_list.val(schema_show_ele.text());
-        $('#first-number').val(schema_show_ele.attr('data-first-number'));
-        $('#last-number').val(schema_show_ele.attr('data-last-number'));
-        $('#reset-frequency').val(schema_show_ele.attr('data-reset-frequency'));
+        first_number_ele.val(schema_show_ele.attr('data-first-number'));
+        last_number_ele.val(schema_show_ele.attr('data-last-number'));
+        reset_frequency_ele.val(schema_show_ele.attr('data-reset-frequency'));
+        min_num_char_ele.val(schema_show_ele.attr('data-min-number-char')).prop('disabled', false);
+        min_num_char_checkbox_ele.prop('checked', true);
     }
     else {
         schema_item_list.val('');
-        $('#first-number').val('');
-        $('#last-number').val('');
-        $('#reset-frequency').val('');
+        first_number_ele.val('');
+        last_number_ele.val('');
+        reset_frequency_ele.val('');
+        min_num_char_ele.val('').prop('disabled', true);
+        min_num_char_checkbox_ele.prop('checked', false);
     }
+    Preview()
 })
 
 $(document).on("click", '.numbering-by-selection', function () {
@@ -121,7 +209,7 @@ $(document).on("click", '.numbering-by-selection', function () {
 })
 
 function formatInputSchema() {
-    let schema_item_value_list = schema_item_list.val().split('-');
+    let schema_item_value_list = schema_item_list.val().match(/{([^}]+)}/g);
     for (let i = 0; i < schema_item_value_list.length; i++) {
         if (schema_item_value_list[i] !== '') {
             if (!schema_item_list_value.includes(schema_item_value_list[i])) {
@@ -140,36 +228,41 @@ function formatInputSchema() {
 }
 
 function formatSubmitSchema(raw_schema) {
-    let raw_schema_item_list = raw_schema.split('-');
-    let formatted_schema = '';
+    let raw_schema_item_list = raw_schema.match(/{([^}]+)}/g);
     for (let i = 0; i < raw_schema_item_list.length; i++) {
         if (schema_item_list_value.includes(raw_schema_item_list[i])) {
             let format_value = schema_item_list_value.indexOf(raw_schema_item_list[i]);
-            formatted_schema = formatted_schema + format_value.toString();
-        }
-        else {
-            formatted_schema = formatted_schema + '[' + raw_schema_item_list[i] + ']';
+            raw_schema = raw_schema.replace(raw_schema_item_list[i], '[' + format_value.toString() + ']');
         }
     }
-    return formatted_schema;
+    return raw_schema;
 }
 
 $('#save-changes-modal-function-number').on('click', function () {
     if (formatInputSchema()) {
         let schema = schema_item_list.val();
-        let first_number = $('#first-number').val();
-        let last_number = $('#last-number').val();
-        let reset_frequency = $('#reset-frequency').val();
-        if (schema !== '' && first_number !== '' && last_number !== '' && reset_frequency !== '') {
-            current_schema_row.find('.schema-show').text(schema);
-            current_schema_row.find('.schema-show').attr('data-schema', formatSubmitSchema(schema));
-            current_schema_row.find('.schema-show').attr('data-first-number', first_number);
-            current_schema_row.find('.schema-show').attr('data-last-number', last_number);
-            current_schema_row.find('.schema-show').attr('data-reset-frequency', reset_frequency);
-            $('#modal-function-number').hide();
+        let first_number = first_number_ele.val();
+        let last_number = last_number_ele.val();
+        let reset_frequency = reset_frequency_ele.val();
+        let min_number_char = min_num_char_ele.val();
+
+        if (min_number_char < 2) {
+            $.fn.notifyB({'description': 'Minimum char number must be > 2.'}, 'warning');
         }
         else {
-            $.fn.notifyB({description: "Missing information!"}, 'failure');
+            if (schema !== '' && first_number !== '' && last_number !== '' && reset_frequency !== '') {
+                let schema_show_ele = current_schema_row.find('.schema-show');
+                schema_show_ele.text(schema);
+                schema_show_ele.attr('data-schema', formatSubmitSchema(schema));
+                schema_show_ele.attr('data-first-number', first_number);
+                schema_show_ele.attr('data-last-number', last_number);
+                schema_show_ele.attr('data-reset-frequency', reset_frequency);
+                schema_show_ele.attr('data-min-number-char', min_number_char);
+                $('#modal-function-number').hide();
+            }
+            else {
+                $.fn.notifyB({description: "Missing information!"}, 'failure');
+            }
         }
     }
 })
@@ -299,7 +392,7 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
                     let disabled = '';
-                    if (option === 'detail') {
+                    if (option === 'detail' || ![0, 6, 7, 8].includes(row.function)) {
                         disabled = 'disabled';
                     }
                     if (row?.['numbering_by']) {
@@ -320,7 +413,7 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 className: 'wrap-text w-45',
                 render: (data, type, row) => {
                     if (row.schema !== null) {
-                        return `<span data-schema="${row.schema}" data-first-number="${row.first_number}" data-last-number="${row.last_number}" data-reset-frequency="${row.reset_frequency}" class="schema-show text-primary">${row.schema_text}</span>`;
+                        return `<span data-schema="${row.schema}" data-first-number="${row.first_number}" data-last-number="${row.last_number}" data-reset-frequency="${row.reset_frequency}" data-min-number-char="${row.min_number_char}" class="schema-show text-primary">${row.schema_text}</span>`;
                     }
                     else {
                         return `<span class="schema-show text-primary"></span>`;
@@ -378,6 +471,7 @@ class CompanyHandle {
             let first_number = $(this).find('.schema-show').attr('data-first-number');
             let last_number = $(this).find('.schema-show').attr('data-last-number');
             let reset_frequency = $(this).find('.schema-show').attr('data-reset-frequency');
+            let min_number_char = $(this).find('.schema-show').attr('data-min-number-char');
 
             if (schema_text !== '' && schema !== '' && first_number !== '' && last_number !== '' && reset_frequency !== '') {
                 frm.dataForm['company_function_number_data'].push({
@@ -387,7 +481,8 @@ class CompanyHandle {
                     'schema': schema,
                     'first_number': first_number,
                     'last_number': last_number,
-                    'reset_frequency': reset_frequency
+                    'reset_frequency': reset_frequency,
+                    'min_number_char': min_number_char
                 })
             }
         })

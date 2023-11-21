@@ -4883,7 +4883,7 @@ msgstr "Thời hạn đặt lại"
 
 #
 msgid "Minimum char number"
-msgstr "Số kí tự tối thiểu (STT)"
+msgstr "Số kí tự tối thiểu (Number)"
 
 #
 msgid "Schema"

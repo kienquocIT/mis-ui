@@ -4864,3 +4864,31 @@ msgstr "Đây là bản xem trước trang chưa được công bố!"
 #
 msgid "Clone"
 msgstr "Nhân bản"
+
+#
+msgid "Final Acceptance"
+msgstr "Nghiệm thu"
+
+#
+msgid "Group level"
+msgstr "Cấp phòng"
+
+#
+msgid "Group reference title"
+msgstr "Tên phòng tham chiếu"
+
+#
+msgid "Group display title"
+msgstr "Tên phòng hiển thị"
+
+#
+msgid "Group code"
+msgstr "Mã phòng"
+
+#
+msgid "Upper group"
+msgstr "Phòng cấp trên"
+
+#
+msgid "Manager"
+msgstr "Trưởng phòng"

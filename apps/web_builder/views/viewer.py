@@ -1,5 +1,7 @@
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render
+from django.utils import translation
 from django.views import View
 from rest_framework import status
 from rest_framework.response import Response
@@ -40,10 +42,31 @@ class CompanyWebsitePathView(View):
             ctx = {}
         return render(self.request, 'extends/systems/out-layout/company_page_not_found.html', ctx)
 
+    def active_language(self):
+        if self.request.user and hasattr(self.request.user, 'id') and not isinstance(self.request.user, AnonymousUser):
+            language = getattr(self.request.user, 'language', 'vi')
+            translation.activate(language)
+        return True
+
     def get_hosts(self):
         return self.request.META['HTTP_HOST'].split(":")[0]
 
+    def get_view_draft(self):
+        return self.request.GET.dict().get('view_draft', '0') == '1'
+
     def get(self, request, *args, path_sub, **kwargs):
+        # active primary language
+        self.active_language()
+
+        # filter page customize
+        api_filter = {}
+        is_view_draft = self.get_view_draft()
+        if is_view_draft is True:
+            if not (self.request.user and not isinstance(self.request.user, AnonymousUser)):
+                return self.render_404()
+            api_filter['view_draft'] = '1'
+
+        # handler
         ctx = {}
         meta_hosts = self.get_hosts()
         if settings.UI_DOMAIN_SUB_DOMAIN in meta_hosts:
@@ -91,7 +114,7 @@ class CompanyWebsitePathView(View):
                         company_id=company_obj.id,
                         path_sub=path_sub if path_sub else '-',
                     )
-                    resp = ServerAPI(request=request, user=request.user, url=url).get()
+                    resp = ServerAPI(request=request, user=request.user, url=url).get(data=api_filter)
                     if resp.state:
                         ctx_passed = {
                             'data': resp.result

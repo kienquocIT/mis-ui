@@ -3055,6 +3055,14 @@ msgid "Are you sure about this delete?"
 msgstr "Bạn chắc chắn xoá dữ liệu này?"
 
 #
+msgid "Are you sure about this clone?"
+msgstr "Bạn chắc chắn nhân bản dữ liệu này?"
+
+#
+msgid "Yes, clone it!"
+msgstr "Đồng ý, nhân bản nó!"
+
+#
 msgid "View all notifications"
 msgstr "Xem tất cả các thông báo"
 
@@ -4848,3 +4856,11 @@ msgstr "Thiếu thông tin để ghi nhận"
 #
 msgid "Add Labor"
 msgstr "Thêm nhân công"
+
+#
+msgid "This is preview demo of draft page!"
+msgstr "Đây là bản xem trước trang chưa được công bố!"
+
+#
+msgid "Clone"
+msgstr "Nhân bản"

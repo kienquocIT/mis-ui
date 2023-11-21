@@ -81,6 +81,15 @@ class WebsiteDetailDesign(View):
         return resp.auto_return(key_success='page_detail')
 
 
+class WebsiteDetailClone(APIView):
+    @mask_view(is_api=True, auth_require=True)
+    def post(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.BUILDER_PAGE_DETAIL_CLONE.fill_key(pk=pk)).post(
+            data={}
+        )
+        return resp.auto_return(key_success='page_detail')
+
+
 class WebsiteDetailDesignSave(APIView):
     @mask_view(
         is_api=True,

@@ -44,6 +44,7 @@ class NodeLoadDataHandle {
         {'id': 0, 'title': ''},
     ];
     static dataPosition = [
+        {'id': 3, 'title': 'Beneficiary'},
         {'id': 2, 'title': '2nd manager'},
         {'id': 1, 'title': '1st manager'},
     ];
@@ -208,6 +209,8 @@ class NodeLoadDataHandle {
         NodeLoadDataHandle.loadInitDataRow(newRow);
         let approvedRow = NodeDataTableHandle.tableNode[0].querySelector('.node-approved').closest('tr');
         $(newRow).detach().insertBefore(approvedRow);
+        // Load zone DD
+        NodeLoadDataHandle.loadZoneDD(newRow, true);
         return true;
     };
 
@@ -265,7 +268,7 @@ class NodeLoadDataHandle {
     static loadRowTableInitialNode(row) {
         let tableInitial = row.querySelector('.collab-initial-area')?.querySelector('.table-initial-node-collaborator');
         let dataInitial = {
-            'title': 'Creator',
+            'title': 'Document creator',
             'group': {},
             'role': [],
         }
@@ -273,57 +276,172 @@ class NodeLoadDataHandle {
         return true;
     };
 
-    static loadZoneDD(row) {
+    static loadZoneDD(row, is_created = false) {
         let result = ``;
-        result += `<li class="d-flex align-items-center justify-content-between mb-3">
+        if (is_created === false) { // Case Update Exist Nodes
+            let eleCheckBox = row?.querySelector('.table-row-checkbox');
+            if (eleCheckBox) {
+                let dataRowRaw = eleCheckBox.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    if (dataRow?.['is_system'] === true) { // SYSTEM NODES
+                        if (dataRow?.['code'] === 'initial') {
+                            result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="media d-flex align-items-center">
+                                            <div class="media-body">
+                                                <div>
+                                                    <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                                </div>
+                                            </div>  
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input checkbox-node-zone-all" checked>
+                                        </div>
+                                    </li>`;
+                            let table = document.getElementById('table_workflow_zone');
+                            if (!table.querySelector('.dataTables_empty')) {
+                                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                                    let row = table.tBodies[0].rows[i];
+                                    let title = row.children[1].children[0].innerHTML;
+                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                                    <div class="media d-flex align-items-center">
+                                                        <div class="media-body">
+                                                            <div>
+                                                                <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                            </div>
+                                                        </div>  
+                                                    </div>
+                                                    <div class="form-check form-check-theme ms-3">
+                                                        <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}" checked>
+                                                    </div>
+                                                </li>`;
+                                }
+                                for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
+                                    if ($(eleZoneList).empty()) {
+                                        $(eleZoneList).append(result);
+                                    }
+                                }
+                            }
+                            return true;
+                        }
+                    } else { // COLLAB NODES
+                        let zone_list = [];
+                        for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone:checked')) {
+                            zone_list.push(parseInt($(eleChecked).attr('data-id')));
+                        }
+                        result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="media-body">
+                                            <div>
+                                                <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                    <div class="form-check form-check-theme ms-3">
+                                        <input type="checkbox" class="form-check-input checkbox-node-zone-all">
+                                    </div>
+                                </li>`;
+                        let table = document.getElementById('table_workflow_zone');
+                        if (!table.querySelector('.dataTables_empty')) {
+                            for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                                let row = table.tBodies[0].rows[i];
+                                let title = row.children[1].children[0].innerHTML;
+                                if (zone_list.includes(i + 1)) {
+                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                                <div class="media d-flex align-items-center">
+                                                    <div class="media-body">
+                                                        <div>
+                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                                <div class="form-check form-check-theme ms-3">
+                                                    <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}" checked>
+                                                </div>
+                                            </li>`;
+                                } else {
+                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                                <div class="media d-flex align-items-center">
+                                                    <div class="media-body">
+                                                        <div>
+                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                                <div class="form-check form-check-theme ms-3">
+                                                    <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
+                                                </div>
+                                            </li>`;
+                                }
+                            }
+                            for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
+                                if ($(eleZoneList).empty()) {
+                                    $(eleZoneList).append(result);
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                }
+            }
+        } else { // Case Create New Node
+            result += `<li class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="media d-flex align-items-center">
                                     <div class="media-body">
                                         <div>
-                                            <div class="node-zone-title">All</div>
+                                            <span class="badge badge-soft-success node-zone-title">Check all</span>
                                         </div>
-                                    </div>  
+                                    </div>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="checkbox" class="form-check-input checkbox-node-zone-all">
                                 </div>
                             </li>`;
-        let table = document.getElementById('table_workflow_zone');
-        if (!table.querySelector('.dataTables_empty')) {
-            for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                let row = table.tBodies[0].rows[i];
-                let title = row.children[1].children[0].innerHTML;
-                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+            let table = document.getElementById('table_workflow_zone');
+            if (!table.querySelector('.dataTables_empty')) {
+                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                    let row = table.tBodies[0].rows[i];
+                    let title = row.children[1].children[0].innerHTML;
+                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="media d-flex align-items-center">
                                     <div class="media-body">
                                         <div>
-                                            <div class="node-zone-title">${title}</div>
+                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
                                         </div>
-                                    </div>  
+                                    </div>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
                                 </div>
                             </li>`;
-            }
-            for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
-                if ($(eleZoneList).empty()) {
-                    $(eleZoneList).append(result);
+                }
+                for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
+                    if ($(eleZoneList).empty()) {
+                        $(eleZoneList).append(result);
+                    }
                 }
             }
+            return true;
         }
-        return true;
+    };
+
+    static loadZoneDDAllTable() {
+        for (let i = 0; i < NodeDataTableHandle.tableNode[0].tBodies[0].rows.length; i++) {
+            let row = NodeDataTableHandle.tableNode[0].tBodies[0].rows[i];
+            NodeLoadDataHandle.loadZoneDD(row);
+        }
     };
 
     static loadZoneShow(ele) {
         let zone_list = [];
         let zone_json_list = [];
-        let eleZoneSubmit = ele?.closest('.input-group-zone')?.querySelector('.node-zone-submit');
-        let eleZoneJSonSubmit = ele?.closest('.input-group-zone')?.querySelector('.node-zone-json-submit');
+        let eleZoneSubmit = ele?.closest('.collab-area')?.querySelector('.node-zone-submit');
+        let eleZoneJSonSubmit = ele?.closest('.collab-area')?.querySelector('.node-zone-json-submit');
         let eleZoneDD = ele?.closest('.dropdown-zone');
-        let eleZoneShow = ele?.closest('.input-group-zone')?.querySelector('.node-zone-show');
-        $(eleZoneShow).empty();
+        // let eleZoneShow = ele?.closest('.collab-area')?.querySelector('.node-zone-show');
+        // $(eleZoneShow).empty();
         for (let eleChecked of eleZoneDD?.querySelectorAll('.checkbox-node-zone:checked')) {
-            $(eleZoneShow).append(`<span class="badge badge-soft-primary mr-1">${$(eleChecked).attr('data-title')}</span>`);
+            // $(eleZoneShow).append(`<span class="badge badge-soft-success mr-1">${$(eleChecked).attr('data-title')}</span>`);
             zone_list.push(parseInt($(eleChecked).attr('data-id')));
             zone_json_list.push({
                 'id': parseInt($(eleChecked).attr('data-id')),
@@ -616,7 +734,7 @@ class NodeLoadDataHandle {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
                                 if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                                    NodeDataTableHandle.dataTableCollabOutFormEmployee($(tableOutFormEmployee));
+                                    // NodeDataTableHandle.dataTableCollabOutFormEmployee($(tableOutFormEmployee));
                                     for (let item of data.employee_list) {
                                         if (employee_id_list.includes(item?.['id'])) {
                                             item['is_checked'] = true;
@@ -843,24 +961,12 @@ class NodeDataTableHandle {
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="form-label">Editing zone</label>
-                                                                    <div class="input-group input-group-zone mb-3">
-                                                                        <span class="input-affix-wrapper">
-                                                                            <div class="form-control div-input node-zone-show"></div>
-                                                                            <input type="hidden" class="node-zone-submit">
-                                                                            <input type="hidden" class="node-zone-json-submit">
-                                                                            <span class="input-suffix">
-                                                                                <div class="btn-group btn-link dropdown dropdown-zone">
-                                                                                    <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                                                                    <div class="dropdown-menu w-250p">
-                                                                                        <div class="h-250p">
-                                                                                            <div data-simplebar class="nicescroll-bar">
-                                                                                                <ul class="node-zone-list p-0"></ul>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                        </span>
-                                                                        </span>
+                                                                    <input type="hidden" class="node-zone-submit">
+                                                                    <input type="hidden" class="node-zone-json-submit">
+                                                                    <div class="dropdown-zone">
+                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                            <ul class="node-zone-list p-0"></ul>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -909,7 +1015,6 @@ class NodeDataTableHandle {
                                                                                         type="button" 
                                                                                         class="btn btn-primary button-add-out-form-employee" 
                                                                                         data-bs-dismiss="offcanvas"
-                                                                                        id=""
                                                                                 >${NodeLoadDataHandle.transEle.attr('data-btn-save')}
                                                                                 </button>
                                                                             </div>
@@ -918,24 +1023,12 @@ class NodeDataTableHandle {
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="form-label">Editing zone</label>
-                                                                    <div class="input-group input-group-zone mb-3">
-                                                                        <span class="input-affix-wrapper">
-                                                                            <div class="form-control div-input node-zone-show"></div>
-                                                                            <input type="hidden" class="node-zone-submit">
-                                                                            <input type="hidden" class="node-zone-json-submit">
-                                                                            <span class="input-suffix">
-                                                                                <div class="btn-group btn-link dropdown dropdown-zone">
-                                                                                    <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                                                                    <div class="dropdown-menu w-250p">
-                                                                                        <div class="h-250p">
-                                                                                            <div data-simplebar class="nicescroll-bar">
-                                                                                                <ul class="node-zone-list p-0"></ul>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                        </span>
-                                                                        </span>
+                                                                    <input type="hidden" class="node-zone-submit">
+                                                                    <input type="hidden" class="node-zone-json-submit">
+                                                                    <div class="dropdown-zone">
+                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                            <ul class="node-zone-list p-0"></ul>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1011,24 +1104,12 @@ class NodeDataTableHandle {
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="form-label">Editing zone</label>
-                                                                            <div class="input-group input-group-zone mb-3">
-                                                                                <span class="input-affix-wrapper">
-                                                                                    <div class="form-control div-input node-zone-show"></div>
-                                                                                    <input type="hidden" class="node-zone-submit">
-                                                                                    <input type="hidden" class="node-zone-json-submit">
-                                                                                    <span class="input-suffix">
-                                                                                        <div class="btn-group btn-link dropdown dropdown-zone">
-                                                                                            <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                                                                            <div class="dropdown-menu w-250p">
-                                                                                                <div class="h-250p">
-                                                                                                    <div data-simplebar class="nicescroll-bar">
-                                                                                                        <ul class="node-zone-list p-0"></ul>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                </span>
-                                                                                </span>
+                                                                            <input type="hidden" class="node-zone-submit">
+                                                                            <input type="hidden" class="node-zone-json-submit">
+                                                                            <div class="dropdown-zone">
+                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                    <ul class="node-zone-list p-0"></ul>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
@@ -1115,10 +1196,10 @@ class NodeDataTableHandle {
                                                                 >
                                                                     <thead>
                                                                     <tr>
-                                                                        <th>Collaborator</th>
-                                                                        <th>Group</th>
-                                                                        <th>Role</th>
-                                                                        <th>Editing Zone</th>
+                                                                        <th class="w-20">Collaborator</th>
+<!--                                                                        <th>Group</th>-->
+<!--                                                                        <th>Role</th>-->
+                                                                        <th class="w-80">Editing Zone</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody></tbody>
@@ -1222,39 +1303,44 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-title" data-row="${dataRow}">${row?.['title']}</span>`;
+                        return `<span class="badge badge-soft-primary table-row-title" data-row="${dataRow}">${row?.['title']}</span>`;
                     }
                 },
+                // {
+                //     targets: 1,
+                //     render: (data, type, row) => {
+                //         return `<span class="badge badge-soft-primary table-row-group">${row?.['group']?.['title']}</span>`;
+                //     }
+                // },
+                // {
+                //     targets: 2,
+                //     render: (data, type, row) => {
+                //         if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
+                //             let result = [];
+                //             row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
+                //             return result.join(" ");
+                //         }
+                //         return '';
+                //     }
+                // },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary table-row-group">${row?.['group']?.['title']}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
-                            let result = [];
-                            row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
-                            return result.join(" ");
-                        }
-                        return '';
-                    }
-                },
-                {
-                    targets: 3,
                     render: () => {
-                        return `<div class="dropdown dropdown-zone">
-                                    <button aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">Zone</button>
-                                    <div class="dropdown-menu w-250p">
-                                        <div class="h-250p">
-                                            <div data-simplebar class="nicescroll-bar">
-                                                <ul class="node-zone-list p-0"></ul>
-                                            </div>
-                                        </div>
+                        // return `<div class="dropdown dropdown-zone">
+                        //             <button aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">zone</button>
+                        //             <div class="dropdown-menu dropdown-menu-up w-250p">
+                        //                 <div class="h-250p">
+                        //                     <div data-simplebar class="nicescroll-bar">
+                        //                         <ul class="node-zone-list p-0"></ul>
+                        //                     </div>
+                        //                 </div>
+                        //             </div>
+                        //         </div>`
+                        return `<div class="dropdown-zone">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                        <ul class="node-zone-list p-0"></ul>
                                     </div>
-                                </div>`
+                                </div>`;
                     }
                 },
             ],

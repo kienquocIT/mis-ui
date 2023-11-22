@@ -426,3 +426,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')
+    FINAL_ACCEPTANCE_DETAIL = StringUrl('acceptance/final-acceptance')

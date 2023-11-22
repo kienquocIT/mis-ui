@@ -450,10 +450,10 @@ $(function () {
             'grapesjs-style-filter',
             'grapesjs-style-bg',
             'my-products',
-            'carousel',
+            'grapesjs-plugin-bootstrap-carousel',
         ],
         pluginsOpts: {
-            'carousel': {},
+            'grapesjs-plugin-bootstrap-carousel': {},
             'my-products': {
                 tabsBlock: {category: 'Extra'},
             },
@@ -506,14 +506,14 @@ $(function () {
         canvas: {
             scripts: [
                 'https://code.jquery.com/jquery-3.3.1.slim.min.js',
-                'https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js',
-                'https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js',
+                'https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js',
+                'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
 
                 // carousel
                 'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js',
             ],
             styles: [
-                'https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css',
+                'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css',
                 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css',
 
                 // carousel

@@ -1158,7 +1158,7 @@ class PaymentHandle {
         $('#btn-add-row-line-detail').removeClass('disabled');
         PaymentLoadQuotation();
         PaymentLoadSaleOrder();
-        if (sale_code_mapped && type) {
+        if (sale_code_mapped) {
             if (type === 0) {
                 await opp_mapped_select.initSelect2({
                     data: sale_code_mapped,

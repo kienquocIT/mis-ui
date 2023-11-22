@@ -211,8 +211,10 @@ async function loadPriceList() {
                     let checked = '';
                     let disabled = '';
                     let is_default = 'disabled';
+                    let required = '';
                     if (item.is_default) {
-                        is_default = ''
+                        is_default = '';
+                        required = 'required';
                     }
                     if (item.is_default || (item?.['price_list_mapped'] !== null && item.auto_update === true)) {
                         checked = 'checked';
@@ -222,7 +224,7 @@ async function loadPriceList() {
                         <div class="col-6">
                             <div class="form-check mt-2">
                                 <input class="form-check-input select_price_list" type="checkbox" data-id="${item.id}" ${checked} ${disabled}>
-                                <label>` + item.title + `</label>
+                                <label class="${required}">` + item.title + `</label>
                             </div>
                         </div>
                         <div class="col-6 form-group">

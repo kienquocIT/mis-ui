@@ -23,6 +23,21 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script id="trans-script"
+            data-trans-opp="{% trans 'Opportunity' %}"
+            data-trans-quo="{% trans 'Quotation' %}"
+            data-trans-so="{% trans 'Sale Order' %}"
+            data-trans-picking="{% trans 'Picking' %}"
+            data-trans-delivery="{% trans 'Delivery' %}"
+            data-trans-task="{% trans 'Task' %}"
+            data-trans-ap="{% trans 'Advance Payment' %}"
+            data-trans-payment="{% trans 'Payment' %}"
+            data-trans-rp="{% trans 'Return Advance' %}"
+            data-trans-pr="{% trans 'Purchase Request' %}"
+            data-trans-numbering0="{% trans 'System' %}"
+            data-trans-numbering1="{% trans 'User defined' %}"
+    ></script>
+    
     <form id="frm-detail-company"
           data-url-detail="{% url "CompanyDetailAPI" '0' %}"
           data-url-redirect="{% url "CompanyList" %}"
@@ -32,10 +47,16 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="row">
+                        <div class="col-12">
+                            <h4>{% trans 'Company' %}</h4>
+                            <div class="separator"></div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required" for="code">
-                                    {% trans 'Company code' %}
+                                    {% trans 'Code' %}
                                 </label>
                                 <input type="text" class="form-control"
                                        id="code" oninput="this.value=this.value.toUpperCase()"
@@ -52,12 +73,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="fax">
-                            {% trans 'Company fax' %}
-                        </label>
-                        <input type="text" class="form-control"
-                               id="fax" placeholder="+84 (8) 1234 9876"/>
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="fax">
+                                    {% trans 'Fax' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="fax" placeholder="+84 (8) 1234 9876"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8 col-lg-8">
+                            <div class="form-group">
+                                <label class="form-label required" for="address">{% trans 'Address' %}</label>
+                                <textarea style="height: 38px" data-bs-toggle="modal" data-bs-target="#modal-company-address"
+                                       type="text" class="form-control" readonly id="address"
+                                       placeholder="{% trans 'Click to add address' %}"
+                                       required></textarea>
+                            </div>
+                        </div>
                     </div>
                     <div hidden class="form-group">
                         <label class="form-label" for="parent_company">
@@ -71,37 +105,43 @@
                             <option value="3">Three</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label required" for="address">{% trans 'Company address' %}</label>
-                        <input type="text" class="form-control" readonly id="address"
-                               placeholder="{% trans 'Click to add address' %}"
-                               required>
-                    </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>{% trans 'Representator' %}</h4>
+                            <div class="separator"></div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="form-label required" for="representative_fullname">
-                            {% trans 'Representator fullname' %}
+                            {% trans 'Fullname' %}
                         </label>
                         <input type="text" class="form-control"
                                id="representative_fullname"
                                placeholder="Nguyen Van A" required/>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label required" for="email">
-                            {% trans 'Representator email' %}
-                        </label>
-                        <input type="text" class="form-control"
-                               id="email"
-                               placeholder="anv@mtsolution.com.vn"
-                               required/>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label required" for="phone">
-                            {% trans 'Representator phone number' %}
-                        </label>
-                        <input type="text" class="form-control"
-                               id="phone" placeholder="+84987654321" required/>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="email">
+                                    {% trans 'Email' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="email"
+                                       placeholder="anv@mtsolution.com.vn"
+                                       required/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="phone">
+                                    {% trans 'Phone number' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="phone" placeholder="+84987654321" required/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

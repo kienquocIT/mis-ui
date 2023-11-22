@@ -38,7 +38,7 @@ opp_mapped_select.on('change', function () {
     quotation_mapped_select.find('option').remove();
     sale_order_mapped_select.find('option').remove();
 
-    if (opp_mapped_select.val() !== null) {
+    if (opp_mapped_select.val()) {
         sale_order_mapped_select.prop('disabled', true);
         quotation_mapped_select.prop('disabled', true);
 
@@ -80,7 +80,7 @@ function APLoadQuotation(data) {
     }).on('change', function () {
         opp_mapped_select.find('option').remove();
         sale_order_mapped_select.find('option').remove();
-        if (quotation_mapped_select.val() !== null) {
+        if (quotation_mapped_select.val()) {
             opp_mapped_select.prop('disabled', true);
             sale_order_mapped_select.prop('disabled', true);
 
@@ -145,7 +145,7 @@ function APLoadSaleOrder(data) {
     }).on('change', function () {
         opp_mapped_select.find('option').remove();
         quotation_mapped_select.find('option').remove();
-        if (sale_order_mapped_select.val() !== null) {
+        if (sale_order_mapped_select.val()) {
             opp_mapped_select.prop('disabled', true);
             quotation_mapped_select.prop('disabled', true);
 
@@ -407,7 +407,7 @@ function LoadBankAccount(data) {
 }
 
 function LoadPlanQuotation(opportunity_id, quotation_id) {
-    if (opportunity_id !== undefined && quotation_id !== undefined && opportunity_id !== null && quotation_id !== null) {
+    if (opportunity_id && quotation_id) {
         let dataParam1 = {'quotation_id': quotation_id}
         let expense_quotation = $.fn.callAjax2({
             url: script_url.attr('data-url-expense-quotation'),
@@ -490,7 +490,7 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
 }
 
 function LoadPlanQuotationNoOPP(quotation_id) {
-    if (quotation_id !== null && quotation_id !== undefined) {
+    if (quotation_id) {
         let dataParam1 = {'quotation_id': quotation_id}
         let expense_quotation = $.fn.callAjax2({
             url: script_url.attr('data-url-expense-quotation'),
@@ -573,7 +573,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
 }
 
 function LoadPlanSaleOrderNoOPP(sale_order_id) {
-    if (sale_order_id !== null && sale_order_id !== undefined) {
+    if (sale_order_id) {
         let dataParam1 = {'sale_order_id': sale_order_id}
         let expense_sale_order = $.fn.callAjax2({
             url: script_url.attr('data-url-expense-sale-order'),
@@ -877,7 +877,7 @@ class AdvancePaymentHandle {
         APLoadSupplier();
         APLoadQuotation();
         APLoadSaleOrder();
-        if (sale_code_mapped !== null && type !== null) {
+        if (sale_code_mapped) {
             if (type === 0) {
                 await opp_mapped_select.initSelect2({
                     data: sale_code_mapped,
@@ -942,13 +942,13 @@ class AdvancePaymentHandle {
         let opportunity_mapped = opp_mapped_select.val();
         let quotation_mapped = quotation_mapped_select.val();
         let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped !== null && opportunity_mapped !== '') {
+        if (opportunity_mapped) {
             frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
         }
-        else if (quotation_mapped !== null && quotation_mapped !== '') {
+        else if (quotation_mapped) {
             frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
         }
-        else if (sale_order_mapped !== null && sale_order_mapped !== '') {
+        else if (sale_order_mapped) {
             frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
         }
         else {

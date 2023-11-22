@@ -1704,7 +1704,7 @@ class PODataTableHandle {
                                                 value="${row.product_unit_price}"
                                                 data-return-type="number"
                                             >
-                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></span>
                                         </span>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-460p">

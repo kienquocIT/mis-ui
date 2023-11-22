@@ -197,11 +197,19 @@ class LeaveRequestCreate(View):
     def get(self, request, *args, **kwargs):
         res_ws = []
         resp = ServerAPI(user=request.user, url=ApiURL.WORKING_CALENDAR_CONFIG).get()
+        reps_employee = ServerAPI(
+            user=request.user, url=ApiURL.EMPLOYEE_DETAIL_PK.fill_key(pk=request.user.employee_current_data['id'])
+        ).get({'list_from_app': 'leave.leaverequest.create', 'list_from_leave': '1'})
+        current_emp = {}
         if resp.state:
             res_ws = resp.result
+        if reps_employee.state:
+            current_emp = reps_employee.result
+        else:
+            return {}, status.HTTP_404_NOT_FOUND
         return {
                    'working_shift': res_ws,
-                   'employee': request.user.employee_current_data,
+                   'employee': current_emp,
                    'list_from_app': 'leave.leaverequest.create'
                }, status.HTTP_200_OK
 
@@ -259,12 +267,17 @@ class LeaveRequestEdit(View):
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.LEAVE_DATA_MAP
+        res_ws = []
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKING_CALENDAR_CONFIG).get()
+        if resp.state:
+            res_ws = resp.result
         return {
                    'input_mapping_properties': input_mapping_properties,
                    'form_id': 'leave_edit',
                    'pk': pk,
                    'sys_status': SYSTEM_STATUS,
-                   'list_from_app': 'leave.leaverequest.edit'
+                   'list_from_app': 'leave.leaverequest.edit',
+                   'working_shift': res_ws,
                }, status.HTTP_200_OK
 
 

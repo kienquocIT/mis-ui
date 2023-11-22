@@ -4173,7 +4173,7 @@ msgstr "Yêu cầu"
 
 #
 msgid "Note"
-msgstr "Chú ý"
+msgstr "Lưu ý"
 
 #
 msgid "Purchase Request"
@@ -4703,7 +4703,7 @@ msgstr "Đến ngày"
 
 #
 msgid "Sub total"
-msgstr "Tổng phụ"
+msgstr "Tổng"
 
 #
 msgid "Opening year"

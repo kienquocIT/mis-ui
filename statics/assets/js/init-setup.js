@@ -1412,6 +1412,8 @@ class WFRTControl {
             }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if ($.fn.hasOwnProperties(data, ['runtime_detail'])) {
+                    // khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
+                    if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').addClass('hidden')
                     if (data['runtime_detail']?.['state'] === 3) $('#idxDataRuntimeNotFound').removeClass('hidden');
 
                     let actionMySelf = data['runtime_detail']['action_myself'];
@@ -1490,6 +1492,8 @@ class WFRTControl {
                     let arrTmpFind = [];
                     inputMapProperties['name'].map((nameFind) => {
                         arrTmpFind.push("[name=" + nameFind + "]");
+                        // cho các field trong table or list
+                        if ($(this).attr('data-zone')) arrTmpFind.push("[data-zone=" + nameFind + "]");
                     })
                     inputMapProperties['id'].map((idFind) => {
                         arrTmpFind.push("[id=" + idFind + "]");
@@ -1562,18 +1566,18 @@ class WFRTControl {
                                     }
                                 })
                             });
-                            // inputMapProperties['id_border_zones'].map((item) => {
-                            //     pageEle.find('#' + item).changePropertiesElementIsZone({
-                            //         add_border: true,
-                            //         add_readonly: true,
-                            //     });
-                            // })
-                            // inputMapProperties['cls_border_zones'].map((item) => {
-                            //     pageEle.find('.' + item).changePropertiesElementIsZone({
-                            //         add_border: true,
-                            //         add_readonly: true,
-                            //     });
-                            // })
+                            inputMapProperties['id_border_zones'].map((item) => {
+                                pageEle.find('#' + item).changePropertiesElementIsZone({
+                                    add_border: true,
+                                    add_readonly: true,
+                                });
+                            })
+                            inputMapProperties['cls_border_zones'].map((item) => {
+                                pageEle.find('.' + item).changePropertiesElementIsZone({
+                                    add_border: true,
+                                    add_readonly: true,
+                                });
+                            })
                         }
                     }
                 })
@@ -1710,9 +1714,8 @@ class WFRTControl {
         }
 
         // active border for select2
-        if ($(ele$).is("select") && $(ele$).hasClass('select2')) {
+        if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible"))
             WFRTControl.changePropertiesElementIsZone($(ele$).next('.select2-container').find('.select2-selection'), config)
-        }
     }
 
 }
@@ -2933,6 +2936,12 @@ class DTBControl {
             }
         }
         return function (row, data, displayNum, displayIndex, dataIndex) {
+            // default callback of detail datatable
+            let editZElm = $('[data-zone]', row)
+            // if (editZElm.length){
+            //     editZElm.addClass('border-warning')
+            //     editZElm.next('.select2-container').find('.select2-selection').addClass('border-warning')
+            // }
         };
     }
 

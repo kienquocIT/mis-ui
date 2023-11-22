@@ -3,6 +3,7 @@ from django.urls import path
 from apps.web_builder.views.config import (
     MyCompanyWebsiteList, MyCompanyWebsiteDetailAPI,
     AddNewCompanyWebsite, WebsiteDetailDesign, WebsiteDetailDesignSave,
+    WebsiteDetailClone,
 )
 
 urlpatterns = [
@@ -10,5 +11,6 @@ urlpatterns = [
     path(route='config/add', view=AddNewCompanyWebsite.as_view(), name='AddNewCompanyWebsite'),
     path(route='config/<str:pk>', view=MyCompanyWebsiteDetailAPI.as_view(), name='MyCompanyWebsiteDetailAPI'),
     path(route='config/<str:pk>/design', view=WebsiteDetailDesign.as_view(), name='WebsiteDetailDesign'),
+    path(route='config/<str:pk>/clone', view=WebsiteDetailClone.as_view(), name='WebsiteDetailClone'),
     path('config/<str:pk>/design/update', view=WebsiteDetailDesignSave.as_view(), name='WebsiteDetailDesignSave'),
 ]

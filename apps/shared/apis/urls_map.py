@@ -44,6 +44,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # web / page builder
     BUILDER_PAGE_LIST = StringUrl('site/config/page-list')
     BUILDER_PAGE_DETAIL = StringUrl('site/config/page/{pk}')
+    BUILDER_PAGE_DETAIL_CLONE = StringUrl('site/config/page/{pk}/clone')
     BUILDER_PAGE_VIEWER = StringUrl('site/config/page/{company_id}/{path_sub}/viewer')
     BUILDER_PAGE_TENANT_GETTER = StringUrl('site/config/page/company-get/{company_sub_domain}')
 
@@ -423,3 +424,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')
     REPORT_PRODUCT_LIST = StringUrl('report/product/list')
     REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')
+
+    # Final Acceptance
+    FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')
+    FINAL_ACCEPTANCE_DETAIL = StringUrl('acceptance/final-acceptance')

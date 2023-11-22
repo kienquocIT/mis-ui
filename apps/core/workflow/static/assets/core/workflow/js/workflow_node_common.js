@@ -284,6 +284,10 @@ class NodeLoadDataHandle {
                 let dataRowRaw = eleCheckBox.getAttribute('data-row');
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
+                    let zone_list = [];
+                    for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone:checked')) {
+                        zone_list.push(parseInt($(eleChecked).attr('data-id')));
+                    }
                     if (dataRow?.['is_system'] === true) { // SYSTEM NODES
                         if (dataRow?.['code'] === 'initial') {
                             result += `<li class="d-flex align-items-center justify-content-between mb-3">
@@ -325,10 +329,6 @@ class NodeLoadDataHandle {
                             return true;
                         }
                     } else { // COLLAB NODES
-                        let zone_list = [];
-                        for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone:checked')) {
-                            zone_list.push(parseInt($(eleChecked).attr('data-id')));
-                        }
                         result += `<li class="d-flex align-items-center justify-content-between mb-3">
                                     <div class="media d-flex align-items-center">
                                         <div class="media-body">

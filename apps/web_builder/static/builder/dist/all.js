@@ -117,23 +117,42 @@ $(function () {
 
     function storeAndLoadEvents(editor) {
         editor.on('storage:load', function (e) {
-            console.log('Loaded ', e)
         });
         editor.on('storage:store', function (e) {
-            console.log('Stored ', e)
         });
+        editor.on('storage:start', function (e){
+            console.log('storage:start: ', e);
+        })
     }
 
     const languageAllowed = ['vi', 'en'];
     const transEle = $('#trans-ele');
     const globeLanguage = transEle.data('language');
+    const projectId = 'b-flow';
 
     let editor = grapesjs.init({
         height: '100%',
         container: '#gjs',
         fromElement: true,
         showOffsets: true,
-        storageManager: false,
+        // storageManager: false,
+        storageManager: {
+            type: 'local', // Storage type. Available: local | remote
+            autosave: true, // Store data automatically
+            autoload: true, // Autoload stored data on init
+            stepsBeforeSave: 1, // If autosave is enabled, indicates how many changes are necessary before the store method is triggered
+            // recovery: true,
+            recovery: (accept, cancel, editor) => {
+                console.log('recovery active!');
+                confirm('Recover data?') ? accept() : cancel();
+            },
+            options: {
+                local: {
+                    key: `gjsProject-${projectId}`,
+                    checkLocal: true,
+                }
+            },
+        },
         assetManager: {
             embedAsBase64: true,
             assets: []

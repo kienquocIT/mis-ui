@@ -195,6 +195,10 @@ class MenusCRM:
         name='Sale Order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
     )
+    FINAL_ACCEPTANCE = MenuCommon(
+        name='Final Acceptance', code='menu_final_acceptance_list', view_name='FinalAcceptanceList',
+        icon='<i class="fas fa-file-alt"></i>',
+    )
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
     )
@@ -445,6 +449,7 @@ class SpaceItem:
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
                 MenusCRM.SALE_ORDER,
+                MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.PRODUCT,
                 MenusCRM.INVENTORY,
                 MenusCRM.PRICING,

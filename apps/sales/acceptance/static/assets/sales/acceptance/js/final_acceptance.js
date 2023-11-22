@@ -6,6 +6,8 @@ $(function () {
         let boxSO = $('#box-final-acceptance-so');
         let btnRefresh = $('#btn-refresh-data');
         let $table = $('#table_final_acceptance_list');
+        let updateIndicatorData = {};
+        let $form = $('#frm_final_acceptance_update');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -22,9 +24,9 @@ $(function () {
                                 if (row?.['sale_order_indicator']?.['indicator']?.['formula_data_show']) {
                                     formula = row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].replace(/"/g, "'");
                                 }
-                                return `<p class="table-row-indicator" data-formula="${formula}">${row?.['sale_order_indicator']?.['indicator']?.['title'] ? row?.['sale_order_indicator']?.['indicator']?.['title'] : ''}</p>`;
+                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-formula="${formula}">${row?.['sale_order_indicator']?.['indicator']?.['title'] ? row?.['sale_order_indicator']?.['indicator']?.['title'] : ''}</p>`;
                             } else {
-                                return `<p class="table-row-indicator"></p>`;
+                                return `<p class="table-row-indicator" data-id="${row?.['id']}"></p>`;
                             }
                         }
                     },
@@ -118,6 +120,8 @@ $(function () {
                         if (data.hasOwnProperty('final_acceptance_list') && Array.isArray(data.final_acceptance_list)) {
                             $table.DataTable().clear().draw();
                             if (data.final_acceptance_list[0]?.['final_acceptance_indicator']) {
+                                let urlDetail = $form.attr('data-url').format_url_with_uuid(data.final_acceptance_list[0]?.['id']);
+                                $form[0].setAttribute('data-url', urlDetail);
                                 let so_row_data = {};
                                 let payment_row_data = {};
                                 let revenueRow = null;
@@ -178,6 +182,8 @@ $(function () {
                 let differVal = parseFloat(elePlanedVal) - parseFloat(newActualValue);
                 eleDifferent.setAttribute('data-init-money', String(differVal));
                 $.fn.initMaskMoney2();
+                let IDIndicator = row?.querySelector('.table-row-indicator')?.getAttribute('data-id');
+                updateIndicatorData[IDIndicator] = {'actual_value': newActualValue, 'different_value': differVal}
             }
         }
 
@@ -215,7 +221,29 @@ $(function () {
                 let differVal = parseFloat(elePlanedVal) - parseFloat(this.value);
                 eleDifferent.setAttribute('data-init-money', String(differVal));
                 $.fn.initMaskMoney2();
+                let IDIndicator = row?.querySelector('.table-row-indicator')?.getAttribute('data-id');
+                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(this.value), 'different_value': differVal}
             }
+        });
+
+        // SUBMIT FORM
+        $form.submit(function (e) {
+            e.preventDefault();
+            let _form = new SetupFormSubmit($form);
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(_form.dataUrl, _form.dataMethod, {'final_acceptance_indicator': updateIndicatorData}, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: data.message}, 'success')
+                            $.fn.redirectUrl($form.attr('data-url-redirect'), 1000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
         });
 
     });

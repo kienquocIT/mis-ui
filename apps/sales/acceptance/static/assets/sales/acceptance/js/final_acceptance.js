@@ -148,17 +148,19 @@ $(function () {
                                 // Payment rows
                                 for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
                                     let row = $table[0].tBodies[0].rows[i];
-                                    let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
-                                    if (dataFormula) {
-                                        for (let key in payment_row_data) {
-                                            if (dataFormula.includes(key)) {
-                                                let newActualValue = 0;
-                                                for (let payment_data of payment_row_data[key]) {
-                                                    let newPaymentRow = $table.DataTable().row.add(payment_data).node();
-                                                    $(newPaymentRow).detach().insertAfter(row);
-                                                    newActualValue += payment_data?.['actual_value'];
+                                    if (row?.querySelector('.table-row-indicator')) {
+                                        let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
+                                        if (dataFormula) {
+                                            for (let key in payment_row_data) {
+                                                if (dataFormula.includes(key)) {
+                                                    let newActualValue = 0;
+                                                    for (let payment_data of payment_row_data[key]) {
+                                                        let newPaymentRow = $table.DataTable().row.add(payment_data).node();
+                                                        $(newPaymentRow).detach().insertAfter(row);
+                                                        newActualValue += payment_data?.['actual_value'];
+                                                    }
+                                                    loadActualDifferentValue(row, newActualValue);
                                                 }
-                                                loadActualDifferentValue(row, newActualValue);
                                             }
                                         }
                                     }

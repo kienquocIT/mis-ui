@@ -449,9 +449,6 @@ class QuotationLoadDataHandle {
                                 }
                             }
                         }
-                        // load data information
-                        QuotationLoadDataHandle.loadInformationSelectBox(eleBox, true);
-
                     }
                 }
             }
@@ -503,8 +500,6 @@ class QuotationLoadDataHandle {
             } else {
                 self.loadBoxQuotationTax($(tax));
             }
-            // load modal more information
-            self.loadInformationSelectBox(ele, is_expense);
         }
         $.fn.initMaskMoney2();
     }

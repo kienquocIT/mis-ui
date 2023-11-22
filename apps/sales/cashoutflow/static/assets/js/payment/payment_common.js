@@ -1415,6 +1415,8 @@ class PaymentHandle {
 
         frm.dataForm['status'] = true;
 
+        frm.dataForm['system_status'] = 1;
+
         return {
             url: frm.dataUrl,
             method: frm.dataMethod,

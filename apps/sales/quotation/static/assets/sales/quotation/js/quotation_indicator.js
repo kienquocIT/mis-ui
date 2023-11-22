@@ -159,7 +159,7 @@ function calculateIndicator(indicator_list) {
             value = 0;
         }
         // rate value
-        if (indicator.title === "Revenue") {
+        if (indicator?.['code'] === "IN0001") {
             revenueValue = value
         }
         if (revenueValue !== 0) {

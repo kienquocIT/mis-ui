@@ -725,7 +725,7 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
         let obj_selected = JSON.parse($('#' + opp_mapped_select.attr('data-idx-data-loaded')).text())[opp_mapped_select.val()];
         sale_code_CODE = obj_selected.code;
     }
-    else if (quotation_mapped_select.val() !== null) {
+    else if (quotation_mapped_select.val()) {
         sale_code_ID =  quotation_mapped_select.val();
         let obj_selected = JSON.parse($('#' + quotation_mapped_select.attr('data-idx-data-loaded')).text())[quotation_mapped_select.val()];
         sale_code_CODE = obj_selected.code;

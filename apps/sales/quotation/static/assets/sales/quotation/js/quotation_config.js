@@ -156,6 +156,8 @@ $(function () {
                 }
             }
         )
+        // load indicators
+        loadIndicatorDbl();
 
         // enable edit
         $('#btn-edit_quotation_config').on('click', function () {
@@ -388,8 +390,8 @@ $(function () {
             document.getElementById('btn-edit_quotation_config').setAttribute('hidden', 'true');
             document.getElementById('btn-create_quotation_config').setAttribute('hidden', 'true');
             // load table indicator
-            $('#table_indicator_list').DataTable().destroy();
-            loadIndicatorDbl();
+            // $('#table_indicator_list').DataTable().destroy();
+            // loadIndicatorDbl();
         });
 
         $('#tab-config').on('click', function () {
@@ -707,8 +709,10 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 1000);
+                            $.fn.notifyB({description: data.message}, 'success');
+                            $('#table_indicator_list').DataTable().destroy();
+                            loadIndicatorDbl();
+                            // $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
                     (errs) => {
@@ -717,7 +721,7 @@ $(function () {
                 )
         });
 
-        // submit edit title & description on row
+        // submit edit order & title & description on row
         tableIndicator.on('click', '.table-row-save', function() {
             let url_update = btnCreateIndicator.attr('data-url-update');
             let url = url_update.format_url_with_uuid($(this).attr('data-id'));
@@ -734,8 +738,10 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 1000);
+                            $.fn.notifyB({description: data.message}, 'success');
+                            $('#table_indicator_list').DataTable().destroy();
+                            loadIndicatorDbl();
+                            // $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
                     (errs) => {
@@ -760,8 +766,10 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 1000);
+                            $.fn.notifyB({description: data.message}, 'success');
+                            $('#table_indicator_list').DataTable().destroy();
+                            loadIndicatorDbl();
+                            // $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
                     (errs) => {

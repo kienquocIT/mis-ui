@@ -451,9 +451,13 @@ $(function () {
             'grapesjs-style-bg',
             'my-products',
             'grapesjs-plugin-bootstrap-carousel',
+            'grapesjs-plugin-bootstrap-navbar',
         ],
         pluginsOpts: {
             'grapesjs-plugin-bootstrap-carousel': {},
+            'grapesjs-plugin-bootstrap-navbar': {
+                menus: JSON.parse($('#idx-menus-data').text()),
+            },
             'my-products': {
                 tabsBlock: {category: 'Extra'},
             },

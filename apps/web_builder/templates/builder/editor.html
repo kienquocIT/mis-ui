@@ -42,6 +42,8 @@
     {#  Carousel  #}
     <script src="{% static 'builder/dist/my_plugins/grapesjs-plugin-bootstrap-carousel/index.js' %}"></script>
 
+    {# Navbar #}
+    <script src="{% static 'builder/dist/my_plugins/grapesjs-plugin-bootstrap-navbar/index.js' %}"></script>
 
     <style>
         .icons-flex {
@@ -145,7 +147,7 @@
 </head>
 <body>
 
-<div id="gjs" style="height:0; overflow:hidden">
+<div id="gjs" style="height:0; overflow:hidden" class="container">
     {{ data.page_detail.page_html|safe }}
     <style>{{ data.page_detail.page_css|safe }}</style>
     <script>{{ data.page_detail.page_js|safe }}</script>
@@ -178,7 +180,7 @@
         data-static-tui-image-editor-css-1="{% static 'builder/dist/cdn_download/plugins/grapesjs-tui-image-editor/css/tui-color-picker.min.css' %}"
         data-static-tui-image-editor-css-2="{% static 'builder/dist/cdn_download/plugins/grapesjs-tui-image-editor/css/tui-image-editor.min.css' %}"
 >
-
+{{ data.page_detail.menus|json_script:"idx-menus-data" }}
 <script src="{% static 'builder/i18n/locale/vi.js' %}"></script>
 <script src="{% static 'builder/i18n/locale/en.js' %}"></script>
 <script src="{% static 'builder/dist/all.js' %}"></script>

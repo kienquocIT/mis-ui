@@ -1304,7 +1304,7 @@ class PaymentHandle {
         let opportunity_mapped = opp_mapped_select.val();
         let quotation_mapped = quotation_mapped_select.val();
         let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped) {
+        if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
             frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
             frm.dataForm['quotation_expense_plan'] = []
             $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
@@ -1313,7 +1313,7 @@ class PaymentHandle {
                 }
             })
         }
-        else if (quotation_mapped) {
+        else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
             frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
             frm.dataForm['quotation_expense_plan'] = []
             $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
@@ -1322,7 +1322,7 @@ class PaymentHandle {
                 }
             })
         }
-        else if (sale_order_mapped) {
+        else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
             frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
             frm.dataForm['sale_order_expense_plan'] = []
             $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {

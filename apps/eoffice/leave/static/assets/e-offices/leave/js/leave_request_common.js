@@ -3,18 +3,18 @@ const $transElm = $('#trans-factory')
 const $urlElm = $('#url-factory')
 const $EmpElm = $('#selectEmployeeInherit')
 
-// return template html dropdown for select2
+// return template html dropdown for select2 [FIELD LEAVE_TYPE]
 function renderTemplateResult(state) {
     if (!state.id) return state.text
     return $(
         `<p class="d-flex justify-content-normal sl_temp_cont">`
-        + `<b>${state?.data?.leave_type.code}</b>`
-        + `<span class="one-row-txt" title="${state?.data?.leave_type.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.leave_type.title}&nbsp;${
-            state?.data?.leave_type.code === 'ANPY' ? `(${state?.data?.["open_year"]})` : ''}</span>`
+        + `<b>${state?.data?.leave_type?.code}</b>`
+        + `<span class="one-row-txt" title="${state?.data?.leave_type?.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.leave_type?.title}&nbsp;${
+            state?.data?.leave_type?.code === 'ANPY' ? `(${state?.data?.["open_year"]})` : ''}</span>`
         + `<span class="text-blue">${state?.data?.check_balance ? `(${state?.data.available})` : ''}</span></p>`
     )
 }
-// return template selected for selects
+// return template selected for selects [FIELD LEAVE TYPE]
 function renderTemplateSelected(state){
     if (!state.id) return state.text
     return $(`<span>${state.text} ${state?.data?.leave_type.code === 'ANPY' ? `(${state?.data?.["open_year"]})` : ''}</span>`)
@@ -117,22 +117,23 @@ class detailTab {
 
     static checkIsExp(data) {
         // check available của phép đặc biệt FF, MC, MY
-        let code = data?.leave_type?.['leave_type']?.['code']
+        let code = data['leave_available']?.['leave_type']?.['code']
         let IsExp = true
-        if (code && code === 'FF' || code === 'MC' || code === 'MY' || code === 'AN' || code === 'ANPY') {
+        if (code && (code === 'AN' || code === 'ANPY')) {
             // check in stock
-            IsExp = data.subtotal <= data?.leave_type.available
+            IsExp = data.subtotal <= data['leave_available'].available
             // check in exp
-            if (new Date().getTime() > new Date(data.leave_type.expiration_date).getTime()) IsExp = false
+            if (new Date().getTime() > new Date(data['leave_available'].expiration_date).getTime()) IsExp = false
         }
         return IsExp
     }
     static validDate(data, row){
         if (data.date_from && data.date_to && data.date_from !== 'Invalid date' &&
             data.date_to !== 'Invalid date') {
-            const available = data.leave_type?.['available']
+            const leave_available = data['leave_available']
             data.subtotal = detailTab.PrepareReturn(data)
-            if (data.subtotal > available && data.leave_type.check_balance || !detailTab.checkIsExp(data))
+            if ((data.subtotal > leave_available.available && leave_available.check_balance) || !detailTab.checkIsExp(data)
+                || (['FF', 'MY', 'MC'].includes(leave_available.leave_type.code) && data.subtotal > data['leave_available'].total))
                 $.fn.notifyB({description: $transElm.attr('data-out-of-stock')}, 'failure')
 
             $('[name*="subtotal_"]', row).val(data.subtotal)
@@ -148,7 +149,7 @@ class detailTab {
             info: false,
             columns: [
                 {
-                    data: 'leave_type',
+                    data: 'leave_available',
                     width: '35%',
                     class: 'child-mt',
                     render: (row, type, data, meta) => {
@@ -156,7 +157,7 @@ class detailTab {
                         if (row && Object.keys(row).length > 0) dataLoad.push(
                             {...row, selected: true}
                         )
-                        let html = $(`<select>`).addClass('form-select row_leave-type').attr('name', `leave_type_${meta.row}`)
+                        let html = $(`<select>`).addClass('form-select row_leave-available').attr('name', `leave_available_${meta.row}`).attr('data-zone', 'detail_data')
                         if (row && Object.keys(row).length > 0) html.attr('data-onload', JSON.stringify(dataLoad))
                         return html.prop('outerHTML')
                     }
@@ -169,11 +170,11 @@ class detailTab {
                         if (dateFrom !== '') dateFrom = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
                         let html = $(`${$('.date_from').html()}`)
                         html.find('.f_mor').attr('id', `f_mor_${meta.row}`).attr('name', `morning_shift_f_${
-                            meta.row}`).next('label').attr('for', `f_mor_${meta.row}`)
+                            meta.row}`).attr('data-zone', 'detail_data').next('label').attr('for', `f_mor_${meta.row}`)
                         html.find('.f_aft').attr('id', `f_aft_${meta.row}`).attr('name', `morning_shift_f_${
-                            meta.row}`).next('label').attr('for', `f_aft_${meta.row}`)
-                        html.find('.date-picker').attr('name', `date_from_${meta.row}`).attr('value', dateFrom).attr('id', `InputDateFrom_${meta.row}`)
-                        html.find(`[name="morning_shift_f_${meta.row}"][value="${data.morning_shift_f}"]`).attr('checked', true)
+                            meta.row}`).attr('data-zone', 'detail_data').next('label').attr('for', `f_aft_${meta.row}`)
+                        html.find('.date-picker').attr('name', `date_from_${meta.row}`).attr('value', dateFrom).attr('id', `InputDateFrom_${meta.row}`).attr('data-zone', 'detail_data')
+                        html.find(`[name="morning_shift_f_${meta.row}"][value="${data.morning_shift_f}"]`).attr('checked', true).attr('data-zone', 'detail_data')
                         return html.prop('outerHTML')
                     }
                 },
@@ -185,11 +186,11 @@ class detailTab {
                         if (dateTo !== '') dateTo = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
                         let html = $(`${$('.date_from').html()}`)
                         html.find('.f_mor').attr('id', `t_mor_${meta.row}`).attr('name', `morning_shift_t_${
-                            meta.row}`).next('label').attr('for', `t_mor_${meta.row}`)
-                        html.find('.f_aft').attr('id', `t_aft_${meta.row}`).attr('name', `morning_shift_t_${meta.row}`).next('label').attr('for', `t_aft_${meta.row}`)
-                        html.find('.date-picker').attr('name', `date_to_${meta.row}`).attr('id', `InputDateTo_${meta.row}`).attr('value', dateTo)
+                            meta.row}`).attr('data-zone', 'detail_data').next('label').attr('for', `t_mor_${meta.row}`)
+                        html.find('.f_aft').attr('data-zone', 'detail_data').attr('id', `t_aft_${meta.row}`).attr('name', `morning_shift_t_${meta.row}`).next('label').attr('for', `t_aft_${meta.row}`)
+                        html.find('.date-picker').attr('name', `date_to_${meta.row}`).attr('id', `InputDateTo_${meta.row}`).attr('value', dateTo).attr('data-zone', 'detail_data')
                         html.find('.spec-date-layout > span').remove()
-                        html.find(`[name="morning_shift_t_${meta.row}"][value="${data.morning_shift_t}"]`).attr('checked', true)
+                        html.find(`[name="morning_shift_t_${meta.row}"][value="${data.morning_shift_t}"]`).attr('checked', true).attr('data-zone', 'detail_data')
                         return html.prop('outerHTML')
                     }
                 },
@@ -207,7 +208,7 @@ class detailTab {
                     width: '15%',
                     class: 'child-mt',
                     render: (row, type, data, meta) => {
-                        return `<input class="form-control" name="remark_${meta.row}" value="${row}">`
+                        return `<input class="form-control" name="remark_${meta.row}" value="${row}" data-zone="detail_data">`
                     }
                 },
                 {
@@ -260,7 +261,7 @@ class detailTab {
                 })
 
                 // load leave type with employee filter
-                $('.row_leave-type', row).attr('data-url', $urlElm.attr('data-leave-available'))
+                $('.row_leave-available', row).attr('data-url', $urlElm.attr('data-leave-available'))
                     .attr('data-keyResp', "leave_available")
                     .attr('data-keyText', "leave_type.title")
                     .attr('data-keyId', "id")
@@ -268,7 +269,6 @@ class detailTab {
                         'dataParams': {employee: $EmpElm.val()},
                         'templateResult': renderTemplateResult,
                         'templateSelection': renderTemplateSelected,
-                        'cache': true,
                         callbackDataResp(resp, keyResp) {
                             let list_result = resp.data[keyResp]
                             list_result.sort((a, b) =>{
@@ -280,7 +280,7 @@ class detailTab {
                         },
                     })
                     .on('select2:select', function (e) {
-                        data.leave_type = e.params.data.data
+                        data.leave_available = e.params.data.data
                     })
 
                 // remark trigger on change
@@ -459,12 +459,22 @@ function submitHandleFunc() {
     formData.total = 0
     let isError = false
     let errorRequest = false
+    let specialStock = {'FF':0, 'MY':0, 'MC':0}
     for (let idx = 0; idx < formData.detail_data.length; idx++){
         const value = formData.detail_data[idx]
-        if (value.subtotal > value.leave_type.available && value.leave_type.check_balance){
+        const _type = value.leave_available
+        if (value.subtotal > _type.available && _type.check_balance){
             isError = true
             break
         }
+        if (['FF', 'MY', 'MC'].includes(_type.leave_type.code)){
+            specialStock[_type.leave_type.code] += value.subtotal
+            if (specialStock[_type.leave_type.code] > _type.total){
+                isError = true
+                break
+            }
+        }
+
         if (!formData.start_day || new Date(value.date_from).getTime() < new Date(formData.start_day).getTime())
             formData.start_day = value.date_from
         formData.total += value.subtotal
@@ -477,9 +487,7 @@ function submitHandleFunc() {
                 break
             }
         }
-
     }
-
     formData.request_date = moment($('#inputRequestDate').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
 
     if (isError || errorRequest){
@@ -520,5 +528,5 @@ function submitHandleFunc() {
 
 function employeeTemplate(state) {
     if (!state.id) return state.text
-    return $(`<p><span>${state.text}</span> - (${state?.data?.group?.title || '--'})</p>`)
+    return $(`<p><span>${state.text}</span> <span class="badge badge-soft-success">${state?.data?.group?.title || '--'}</span></p>`)
 }

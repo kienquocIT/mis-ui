@@ -36,7 +36,7 @@ $(document).ready(function () {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span><b>` + row.title + `</b></span>`
+                            return `<span class="ap_info" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span>`
                         }
                     },
                     {
@@ -192,7 +192,7 @@ $(document).on("click", '.ap-shortcut', function() {
                             let sale_order= encodeURIComponent(JSON.stringify(opp?.['sale_order']));
                             let ap_mapped_id= encodeURIComponent(JSON.stringify({'id': $(this).attr('data-ap-id')}));
                             html_to_payment = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-payment')}?ap_mapped_id=${ap_mapped_id}&sale_code_mapped=${sale_code_mapped}&type=${$(this).attr('data-flag')}&quotation_object=${quotation}&sale_order_object=${sale_order}">To Payment</a>`;
-                            $(this).find('.dropdown-menu').html(html_to_payment)
+                            $(this).find('.dropdown-menu').append(html_to_payment)
                             break;
                         }
                     }
@@ -234,7 +234,7 @@ $(document).on("click", '.ap-shortcut', function() {
                             let sale_order= encodeURIComponent(JSON.stringify(quo?.['sale_order']));
                             let ap_mapped_id= encodeURIComponent(JSON.stringify({'id': $(this).attr('data-ap-id')}));
                             html_to_payment = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-payment')}?ap_mapped_id=${ap_mapped_id}&sale_code_mapped=${sale_code_mapped}&type=${$(this).attr('data-flag')}&quotation_object=${quotation}&sale_order_object=${sale_order}">To Payment</a>`;
-                            $(this).find('.dropdown-menu').html(html_to_payment)
+                            $(this).find('.dropdown-menu').append(html_to_payment)
                             break;
                         }
                     }
@@ -276,11 +276,25 @@ $(document).on("click", '.ap-shortcut', function() {
                             let sale_order= encodeURIComponent(JSON.stringify(so?.['sale_order']));
                             let ap_mapped_id= encodeURIComponent(JSON.stringify({'id': $(this).attr('data-ap-id')}));
                             html_to_payment = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-payment')}?ap_mapped_id=${ap_mapped_id}&sale_code_mapped=${sale_code_mapped}&type=${$(this).attr('data-flag')}&quotation_object=${quotation}&sale_order_object=${sale_order}">To Payment</a>`;
-                            $(this).find('.dropdown-menu').html(html_to_payment)
+                            $(this).find('.dropdown-menu').append(html_to_payment)
                             break;
                         }
                     }
                 })
         }
     }
+
+    let opp_mapped = {};
+    if ($(this).attr('data-flag') === '0') {
+        opp_mapped = JSON.stringify({'id': $(this).attr('data-sale-code-id'), 'title': $(this).attr('data-sale-code-title'), 'code': $(this).attr('data-sale-code-CODE')});
+    }
+    let opp_obj = encodeURIComponent(opp_mapped);
+
+
+    let ap_id = $(this).closest('tr').find('.ap_info').attr('data-id');
+    let ap_code = $(this).closest('tr').find('.ap_info').attr('data-code');
+    let ap_title = $(this).closest('tr').find('.ap_info').attr('data-title');
+    let advance_payment_obj= encodeURIComponent(JSON.stringify({'id': ap_id, 'title': ap_title, 'code': ap_code}));
+    let html_return = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-return')}?advance_payment=${advance_payment_obj}&opportunity=${opp_obj}">Return</a>`;
+    $(this).find('.dropdown-menu').append(html_return)
 });

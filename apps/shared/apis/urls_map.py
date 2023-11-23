@@ -42,10 +42,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LANGUAGE_CHANGE = 'auth/language'
 
     # web / page builder
-    BUILDER_PAGE_LIST = StringUrl('site/page-list')
-    BUILDER_PAGE_DETAIL = StringUrl('site/page/{pk}')
-    BUILDER_PAGE_VIEWER = StringUrl('site/page/{company_id}/{path_sub}/viewer')
-    BUILDER_PAGE_TENANT_GETTER = StringUrl('site/page/company-get/{company_sub_domain}')
+    BUILDER_PAGE_LIST = StringUrl('site/config/page-list')
+    BUILDER_PAGE_DETAIL = StringUrl('site/config/page/{pk}')
+    BUILDER_PAGE_DETAIL_CLONE = StringUrl('site/config/page/{pk}/clone')
+    BUILDER_PAGE_VIEWER = StringUrl('site/config/page/{company_id}/{path_sub}/viewer')
+    BUILDER_PAGE_TENANT_GETTER = StringUrl('site/config/page/company-get/{company_sub_domain}')
 
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')

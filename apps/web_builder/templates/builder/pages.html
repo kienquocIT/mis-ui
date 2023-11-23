@@ -2,7 +2,7 @@
 {% load static i18n page_list %}
 
 {% block cssHeader %}
-    <link rel="stylesheet" href="{% static 'builder/builder-style.css' %}">
+    <link rel="stylesheet" href="{% static 'builder/config/builder-style.css' %}">
 {% endblock %}
 
 {% block pageContent %}
@@ -98,6 +98,10 @@
                         <button
                                 type="button" class="btn btn-secondary" id="idx-btn-delete"
                         >{% trans 'Delete' %}</button>
+                        <button class="btn btn-light btn-clone-page" type="button" data-base-url="{% url 'WebsiteDetailClone' pk='__pk__' %}" data-url="">
+                            {% trans 'Clone' %}
+                            <i class="fa-regular fa-clone"></i>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -131,6 +135,12 @@
 
             let baseUrl = frmEditPage.attr('data-base-url-add');
             frmEditPage.attr('data-url', baseUrl.replaceAll('__pk__', data['id']));
+
+            let cloneBtn = frmEditPage.find('.btn-clone-page');
+            cloneBtn.attr(
+                'data-url',
+                cloneBtn.attr('data-base-url').replaceAll("__pk__", data['id'])
+            )
         }
 
         function openAdd() {
@@ -313,6 +323,50 @@
                     )
                 }
             })
+        })
+
+        $('.btn-clone-page').on('click', function (){
+            let page_title = $(this).closest('form').find('input[name="title"]').val();
+            let url = $(this).attr('data-url');
+            if (url){
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-sure-clone'),
+                    text: page_title,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: $.fn.transEle.attr('data-msg-yes-clone-it'),
+                    cancelButtonText: $.fn.transEle.data('cancel'),
+                }).then(
+                    (result) => {
+                        if (result.isConfirmed) {
+                            $.fn.callAjax2({
+                                url: url,
+                                method: 'POST',
+                                data: {},
+                                isLoading: true,
+                            }
+                            ).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    $.fn.notifyB({
+                                        'description': $.fn.transEle.attr('data-success'),
+                                    }, 'success');
+                                    if (data['status'] === 200) setTimeout(() => {
+                                        $x.fn.hideLoadingPage();
+                                        window.location.reload();
+                                    }, 1000);
+                                },
+                                (errs) => {
+                                    $x.fn.hideLoadingPage();
+                                }
+                            )
+                        }
+                    }
+                )
+
+            }
         })
     </script>
 {% endblock %}

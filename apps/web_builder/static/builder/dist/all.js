@@ -63,23 +63,23 @@ $(function () {
     function buttonAndCommandSave(cmdm, pn) {
         cmdm.add('save-to-api', function () {
             let frmEle = $('#frm-save');
-            frmEle.find('input[name="page_html"]').val(editor.getHtml());
+            frmEle.find('input[name="page_html"]').val(editor.getHtml({
+                'cleanId': true,
+            }));
             frmEle.find('input[name="page_css"]').val(editor.getCss());
             frmEle.find('input[name="page_js"]').val(editor.getJs());
             let data = frmEle.serializeArray().reduce((o, kv) => ({
                 ...o,
                 [kv.name]: kv.value
             }), {});
-            console.log(frmEle.attr('data-url'), typeof data, data);
 
             if (confirm(transEle.attr('data-msg-sure-save-it')) === true) {
-                console.log("You pressed OK!");
                 $.fn.updateDesignWeb({
                     url: frmEle.attr('data-url'),
                     type: 'PUT',
                     data: data,
                 }).then(
-                    (resp)=>{
+                    (resp) => {
                         console.log(resp);
                     },
                     (errs) => {
@@ -117,22 +117,42 @@ $(function () {
 
     function storeAndLoadEvents(editor) {
         editor.on('storage:load', function (e) {
-            console.log('Loaded ', e)
         });
         editor.on('storage:store', function (e) {
-            console.log('Stored ', e)
         });
+        editor.on('storage:start', function (e){
+            console.log('storage:start: ', e);
+        })
     }
 
     const languageAllowed = ['vi', 'en'];
     const transEle = $('#trans-ele');
     const globeLanguage = transEle.data('language');
+    const projectId = 'b-flow';
 
     let editor = grapesjs.init({
         height: '100%',
         container: '#gjs',
         fromElement: true,
         showOffsets: true,
+        // storageManager: false,
+        storageManager: {
+            type: 'local', // Storage type. Available: local | remote
+            autosave: true, // Store data automatically
+            autoload: true, // Autoload stored data on init
+            stepsBeforeSave: 1, // If autosave is enabled, indicates how many changes are necessary before the store method is triggered
+            // recovery: true,
+            recovery: (accept, cancel, editor) => {
+                console.log('recovery active!');
+                confirm('Recover data?') ? accept() : cancel();
+            },
+            options: {
+                local: {
+                    key: `gjsProject-${projectId}`,
+                    checkLocal: true,
+                }
+            },
+        },
         assetManager: {
             embedAsBase64: true,
             assets: []
@@ -236,8 +256,11 @@ $(function () {
                         'transition', 'perspective', 'transform'
                     ],
                     properties: [
-                      { extend: 'filter' },
-                      { extend: 'filter', property: 'backdrop-filter' },
+                        {extend: 'filter'},
+                        {
+                            extend: 'filter',
+                            property: 'backdrop-filter'
+                        },
                     ],
                 }, {
                     name: 'Flex',
@@ -426,8 +449,14 @@ $(function () {
             'grapesjs-navbar',
             'grapesjs-style-filter',
             'grapesjs-style-bg',
+            'my-products',
+            'grapesjs-plugin-bootstrap-carousel',
         ],
         pluginsOpts: {
+            'grapesjs-plugin-bootstrap-carousel': {},
+            'my-products': {
+                tabsBlock: {category: 'Extra'},
+            },
             'gjs-blocks-basic': {flexGrid: true},
             'grapesjs-tui-image-editor': {
                 script: [
@@ -456,7 +485,7 @@ $(function () {
                     }
                 }
             },
-            'grapesjs-style-bg': { /* options */ },
+            'grapesjs-style-bg': { /* options */},
             'grapesjs-preset-webpage': {
                 modalImportTitle: 'Import Template',
                 modalImportLabel: '<div style="margin-bottom: 10px; font-size: 13px;">Paste here your HTML/CSS and click Import</div>',
@@ -473,9 +502,23 @@ $(function () {
                 en: localeEn,
             }
         },
+        style: '.vote-star::before{color:#ffc107;display:inline-block;overflow:hidden;width:100%}.vote-10::before{width:10%}.vote-20::before{width:20%}.vote-30::before{width:30%}.vote-40::before{width:40%}.vote-50::before{width:50%}.vote-60::before{width:60%}.vote-70::before{width:70%}.vote-80::before{width:80%}.vote-90::before{width:90%}.vote-100::before{width:100%}',
         canvas: {
-            scripts: ['https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js'],
-            styles: ['https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css'],
+            scripts: [
+                'https://code.jquery.com/jquery-3.3.1.slim.min.js',
+                'https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js',
+                'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
+
+                // carousel
+                'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js',
+            ],
+            styles: [
+                'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css',
+
+                // carousel
+                'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css',
+            ],
         },
     });
 

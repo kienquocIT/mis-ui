@@ -43,7 +43,7 @@ def render_tree_page(context, page_list, page_viewer_domain):
                     <a class="btn btn-xs btn-flush-primary open-page-design" href="{url}" target="_blank">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </a>
-                    <a class="btn btn-xs btn-flush-primary open-page-design" href="{url_view}" target="_blank">
+                    <a class="btn btn-xs btn-flush-primary open-page-design" href="{url_view}?view_draft=1" target="_blank">
                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
                     </a>
                     <script type="application/json" class="hidden page-item-data">{json.dumps(item)}</script>

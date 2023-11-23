@@ -16,19 +16,13 @@ $(document).ready(function () {
     })
 
     // I. first of all load employee inherit dropdown, prepare for available list and detail tab list
-    const dataEmp = JSON.parse($('#employee_current').text())
-    $EmpElm.attr('data-onload', JSON.stringify({
-        'id': dataEmp.id,
-        'full_name': dataEmp.full_name,
-        'first_name': dataEmp.first_name,
-        'last_name': dataEmp.last_name
-    })).initSelect2({
-        'templateResult': employeeTemplate
-    }
-    ).on('select2:select', function () {
-        $('#leave_detail_tbl').DataTable().clear().draw()
-        TabAvailable.$tableElm.DataTable().ajax.reload()
-    });
+    $EmpElm
+        .attr('data-onload', $('#employee_current').text())
+        .initSelect2({'templateResult': employeeTemplate})
+        .on('select2:select', function () {
+            $('#leave_detail_tbl').DataTable().clear().draw()
+            TabAvailable.$tableElm.DataTable().ajax.reload()
+        })
 
     // II. wait until dropdown employee inherit init loaded then trigger element
     // after trigger employee loaded common func will be run next function

@@ -1580,44 +1580,6 @@ class PODataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [
-                {
-                    "width": "2%",
-                    "targets": 0
-                },
-                {
-                    "width": "15%",
-                    "targets": 1
-                },
-                {
-                    "width": "20%",
-                    "targets": 2
-                },
-                {
-                    "width": "5%",
-                    "targets": 3,
-                },
-                {
-                    "width": "5%",
-                    "targets": 4,
-                },
-                {
-                    "width": "25%",
-                    "targets": 5,
-                },
-                {
-                    "width": "5%",
-                    "targets": 6,
-                },
-                {
-                    "width": "20%",
-                    "targets": 7,
-                },
-                {
-                    "width": "3%",
-                    "targets": 8,
-                }
-            ],
             columns: [
                 {
                     targets: 0,

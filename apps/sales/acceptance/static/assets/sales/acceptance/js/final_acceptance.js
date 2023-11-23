@@ -5,6 +5,7 @@ $(function () {
         let boxEmployee = $('#box-final-acceptance-employee');
         let boxSO = $('#box-final-acceptance-so');
         let btnRefresh = $('#btn-refresh-data');
+        let eleTrans = $('#app-trans-factory');
         let $table = $('#table_final_acceptance_list');
         let updateIndicatorData = {};
         let $form = $('#frm_final_acceptance_update');
@@ -275,7 +276,7 @@ $(function () {
             if (boxSO.val()) {
                 loadFinalAcceptance();
             } else {
-                $.fn.notifyB({description: 'Please select sale order'}, 'failure');
+                $.fn.notifyB({description: eleTrans.attr('data-select-so')}, 'failure');
                 return false
             }
             return true;

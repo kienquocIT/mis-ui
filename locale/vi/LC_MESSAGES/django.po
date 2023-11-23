@@ -4981,3 +4981,27 @@ msgstr "Họ và tên"
 #
 msgid "Representator"
 msgstr "Người đại diện"
+
+#
+msgid "Items code"
+msgstr "Mã phiếu"
+
+#
+msgid "Items name"
+msgstr "Tên phiếu"
+
+#
+msgid "Planed value"
+msgstr "Giá trị ước tính"
+
+#
+msgid "Actual value"
+msgstr "Giá trị thực tế"
+
+#
+msgid "Different value"
+msgstr "Giá trị chênh lệch"
+
+#
+msgid "Please select sale order"
+msgstr "Vui lòng chọn đơn hàng"

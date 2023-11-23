@@ -74,7 +74,7 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            if (!row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].includes('Internal labor item') && row?.['is_delivery'] === false) {
+                            if (!row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].includes('Internal labor item') && row?.['is_delivery'] === false && row?.['sale_order_indicator']?.['indicator']?.['code'] !== 'IN0002') {
                                 if (row?.['is_indicator'] === true) {
                                     return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
                                 } else {
@@ -260,6 +260,18 @@ $(function () {
                     rateValue = ((parseFloat(eleInput.value) / parseFloat(revenuePlanedVal)) * 100).toFixed(1);
                     eleRate.innerHTML = String(rateValue) + ' %';
                 }
+                // reCalculate LNT
+                let netIncomeEle = $table[0].querySelector('.table-row-indicator[data-code="IN0006"]');
+                if (netIncomeEle) {
+                    let netIncomeRow = netIncomeEle.closest('tr');
+                    let netIncomePlanedVal = parseFloat(netIncomeRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
+                    let netIncomeActualVal = parseFloat(netIncomeRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
+                    let newActualValue = netIncomePlanedVal;
+                    if (differVal !== 0) {
+                        newActualValue = netIncomeActualVal + differVal;
+                    }
+                    loadActualDifferentRateValue(netIncomeRow, newActualValue);
+                }
                 $.fn.initMaskMoney2();
                 let IDIndicator = row?.querySelector('.table-row-indicator')?.getAttribute('data-id');
                 updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(eleInput.value), 'different_value': differVal, 'rate_value': rateValue}
@@ -267,7 +279,14 @@ $(function () {
         }
 
         boxOpp.initSelect2({'allowClear': true,});
-        boxEmployee.initSelect2({'allowClear': true,});
+
+        function loadEmployee(dataEmployee = {}) {
+            boxEmployee.initSelect2({
+                data: dataEmployee,
+            });
+        }
+
+        loadEmployee();
         boxSO.initSelect2({'allowClear': true,});
 
         // run datetimepicker
@@ -284,9 +303,14 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Events
-        // boxSO.on('change', function () {
-        //     loadFinalAcceptance();
-        // });
+        boxSO.on('change', function () {
+            if (boxSO.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxSO, boxSO.val());
+                if (dataSelected) {
+                    loadEmployee(dataSelected?.['sale_person']);
+                }
+            }
+        });
 
         btnRefresh.on('click', function () {
             if (boxSO.val()) {

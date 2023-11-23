@@ -109,7 +109,7 @@
                 <th class="w-20">{% trans 'Items name' %}</th>
                 <th class="w-15">{% trans 'Planed value' %}</th>
                 <th class="w-15">{% trans 'Actual value' %}</th>
-                <th class="w-15">{% trans 'Different' %}</th>
+                <th class="w-15">{% trans 'Different value' %}</th>
                 <th class="w-10">{% trans '%' %}</th>
                 <th class="w-10">{% trans 'Note' %}</th>
             </tr>
@@ -117,6 +117,12 @@
             <tbody>
             </tbody>
         </table>
+
+        <input
+            type="hidden"
+            id="app-trans-factory"
+            data-select-so="{% trans 'Please select sale order' %}"
+        >
     </form>
 {% endblock %}
 {% block jsFooter %}

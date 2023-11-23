@@ -449,9 +449,6 @@ class QuotationLoadDataHandle {
                                 }
                             }
                         }
-                        // load data information
-                        QuotationLoadDataHandle.loadInformationSelectBox(eleBox, true);
-
                     }
                 }
             }
@@ -503,8 +500,6 @@ class QuotationLoadDataHandle {
             } else {
                 self.loadBoxQuotationTax($(tax));
             }
-            // load modal more information
-            self.loadInformationSelectBox(ele, is_expense);
         }
         $.fn.initMaskMoney2();
     }
@@ -1033,48 +1028,6 @@ class QuotationDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [
-                {
-                    "width": "5%",
-                    "targets": 0
-                },
-                {
-                    "width": "10%",
-                    "targets": 1
-                },
-                {
-                    "width": "15%",
-                    "targets": 2
-                },
-                {
-                    "width": "5%",
-                    "targets": 3,
-                },
-                {
-                    "width": "5%",
-                    "targets": 4,
-                },
-                {
-                    "width": "25%",
-                    "targets": 5,
-                },
-                {
-                    "width": "10%",
-                    "targets": 6,
-                },
-                {
-                    "width": "5%",
-                    "targets": 7,
-                },
-                {
-                    "width": "15%",
-                    "targets": 8,
-                },
-                {
-                    "width": "5%",
-                    "targets": 9,
-                }
-            ],
             columns: [
                 {
                     targets: 0,
@@ -1088,31 +1041,17 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) { // PRODUCT
                             return `<div class="row">
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="dropstart input-prefix">
-                                            <i
-                                                class="fas fa-info-circle text-blue"
-                                                data-bs-toggle="dropdown"
-                                                data-dropdown-animation
-                                                aria-haspopup="true"
-                                                aria-expanded="false"
-                                                disabled
-                                            >
-                                            </i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        <div class="col-12">
+                                            <select 
+                                            class="form-select table-row-item" 
+                                            data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
+                                            data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                            data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
+                                            data-keyResp="product_sale_list"
+                                            required>
+                                            </select>
                                         </div>
-                                        <select 
-                                        class="form-select table-row-item" 
-                                        data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
-                                        data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                        data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
-                                        data-keyResp="product_sale_list"
-                                        required>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>`;
+                                    </div>`;
                         } else if (row?.['is_promotion'] === true && row?.['is_shipping'] === false) { // PROMOTION
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
@@ -1211,7 +1150,7 @@ class QuotationDataTableHandle {
                                                 value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
                                             >
-                                            <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></div>
+                                            <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
                                         </div>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-460p">
@@ -1228,7 +1167,7 @@ class QuotationDataTableHandle {
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
                                             <input type="text" class="form-control table-row-discount validated-number" value="${row?.['product_discount_value']}">
-                                            <div class="input-suffix">%</div>
+                                            <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                                         </div>
                                     </div>
                                     <input
@@ -1335,7 +1274,6 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: "5%",
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" data-row="${dataRow}">${row.order}</span>`
@@ -1343,7 +1281,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: "25%",
                     render: (data, type, row) => {
                         if (row.is_shipping === false) {
                             return `<div class="row">
@@ -1398,7 +1335,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: "5%",
                     render: () => {
                         return `<div class="row">
                                 <select 
@@ -1414,7 +1350,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: "10%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" disabled>
@@ -1423,7 +1358,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: "20%",
                     render: (data, type, row) => {
                         if (row.is_shipping === false) {
                             return `<div class="row">
@@ -1451,7 +1385,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: "10%",
                     render: (data, type, row) => {
                         if (row.is_shipping === false) {
                             return `<div class="row">
@@ -1505,7 +1438,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                 <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -1520,7 +1452,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: "5%",
                     render: () => {
                         let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
                         return `${bt3}`
@@ -1542,7 +1473,7 @@ class QuotationDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" data-row="${dataRow}">${row.order}</span>`
+                        return `<span class="table-row-order" data-row="${dataRow}">${row?.['order']}</span>`
                     }
                 },
                 {
@@ -1550,7 +1481,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         if (row?.['is_labor'] === false) {
                             return `<div class="row">
-                                        <input type="text" class="form-control table-row-expense-title" value="${row.expense_title}" required>
+                                        <input type="text" class="form-control table-row-expense-title" value="${row?.['expense_title']}" required>
                                     </div>`;
                         } else {
                             return `<div class="row">
@@ -1682,7 +1613,7 @@ class QuotationDataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity validated-number" value="${row.expense_quantity}" required>
+                                <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['expense_quantity']}" required>
                             </div>`;
                     }
                 },
@@ -1690,23 +1621,15 @@ class QuotationDataTableHandle {
                     targets: 5,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                <div class="dropdown">
-                                    <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
-                                    <span class="input-affix-wrapper">
+                                    <div class="col-12">
                                         <input 
                                             type="text" 
                                             class="form-control mask-money table-row-price" 
-                                            value="${row.expense_price}"
+                                            value="${row?.['expense_price']}"
                                             data-return-type="number"
                                         >
-                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
-                                    </span>
                                     </div>
-                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                    <a class="dropdown-item" data-value=""></a>
-                                    </div>
-                                </div>
-                            </div>`;
+                                </div>`;
                     }
                 },
                 {

@@ -1,4 +1,5 @@
 from .cashoutflow_advance import ADVANCE_DATA_MAP
+from .cashoutfow_payment import PAYMENT_DATA_MAP
 from .delivery_order_delivery import DELIVERY_DATA_MAP
 from .inventory_goods_receipt import GOODS_RECEIPT_DATA_MAP
 from .purchasing_purchase_order import PURCHASE_ORDER_DATA_MAP
@@ -25,3 +26,4 @@ class InputMappingProperties:
     PURCHASING_PURCHASE_REQUEST = PURCHASE_REQUEST_DATA_MAP
     LEAVE_DATA_MAP = LEAVE_DATA_MAP
     CASHOUTFLOW_ADVANCE = ADVANCE_DATA_MAP
+    CASHOUTFLOW_PAYMENT = PAYMENT_DATA_MAP

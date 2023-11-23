@@ -1580,44 +1580,6 @@ class PODataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [
-                {
-                    "width": "2%",
-                    "targets": 0
-                },
-                {
-                    "width": "15%",
-                    "targets": 1
-                },
-                {
-                    "width": "20%",
-                    "targets": 2
-                },
-                {
-                    "width": "5%",
-                    "targets": 3,
-                },
-                {
-                    "width": "5%",
-                    "targets": 4,
-                },
-                {
-                    "width": "25%",
-                    "targets": 5,
-                },
-                {
-                    "width": "5%",
-                    "targets": 6,
-                },
-                {
-                    "width": "20%",
-                    "targets": 7,
-                },
-                {
-                    "width": "3%",
-                    "targets": 8,
-                }
-            ],
             columns: [
                 {
                     targets: 0,
@@ -1704,7 +1666,7 @@ class PODataTableHandle {
                                                 value="${row.product_unit_price}"
                                                 data-return-type="number"
                                             >
-                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></span>
                                         </span>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-460p">

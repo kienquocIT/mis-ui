@@ -4892,3 +4892,116 @@ msgstr "Phòng cấp trên"
 #
 msgid "Manager"
 msgstr "Trưởng phòng"
+
+
+#
+msgid "Yearly"
+msgstr "Hằng năm"
+
+#
+msgid "Monthly"
+msgstr "Hằng tháng"
+
+#
+msgid "Weekly"
+msgstr "Hằng tuần"
+
+#
+msgid "Daily"
+msgstr "Hằng ngày"
+
+#
+msgid "Never"
+msgstr "Không bao giờ"
+
+#
+msgid "First number"
+msgstr "Số đầu tiên"
+
+#
+msgid "Next number"
+msgstr "Số tiếp theo"
+
+#
+msgid "Reset frequency"
+msgstr "Thời hạn đặt lại"
+
+#
+msgid "Minimum char number"
+msgstr "Số kí tự tối thiểu (Number)"
+
+#
+msgid "Schema"
+msgstr "Công thức"
+
+#
+msgid "Function"
+msgstr "Chức năng"
+
+#
+msgid "Numbering by"
+msgstr "Kiểu đánh số"
+
+#
+msgid "Add Schema"
+msgstr "Thêm công thức"
+
+#
+msgid "Next code is"
+msgstr "Mã tiếp theo"
+
+#
+msgid "Add schema item"
+msgstr "Thêm item"
+
+#
+msgid "System"
+msgstr "Hệ thống"
+
+#
+msgid "User defined"
+msgstr "Người dùng cấu hình"
+
+#
+msgid "Company setting"
+msgstr "Cấu hình công ty"
+
+#
+msgid "Function number"
+msgstr "Cấu hình đánh số chức năng"
+
+#
+msgid "Company name"
+msgstr "Tên công ty"
+
+#
+msgid "Fullname"
+msgstr "Họ và tên"
+
+#
+msgid "Representator"
+msgstr "Người đại diện"
+
+#
+msgid "Items code"
+msgstr "Mã phiếu"
+
+#
+msgid "Items name"
+msgstr "Tên phiếu"
+
+#
+msgid "Planed value"
+msgstr "Giá trị ước tính"
+
+#
+msgid "Actual value"
+msgstr "Giá trị thực tế"
+
+#
+msgid "Different value"
+msgstr "Giá trị chênh lệch"
+
+#
+msgid "Please select sale order"
+msgstr "Vui lòng chọn đơn hàng"

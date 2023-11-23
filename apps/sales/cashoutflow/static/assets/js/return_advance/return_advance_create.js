@@ -10,14 +10,17 @@ $(function () {
         loadDataTableCost([]);
         ReturnAdvanceLoadPage.loadMethodPayment();
 
-        if (advance_payment !== null) {
+        if (advance_payment) {
+            choose_AP_ele.prop('disabled', true)
             ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, {}, {'advance_payment': advance_payment});
             loadDetailAdvancePayment(advance_payment.id);
-        } else if (opportunity !== null) {
-            ReturnAdvanceLoadPage.saleCodeEle.val(opportunity.code)
-            ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, {}, {'opportunity': opportunity});
-        } else {
+        }
+        else {
             ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, {}, {});
+        }
+
+        if (opportunity) {
+            ReturnAdvanceLoadPage.saleCodeEle.val(opportunity?.['code'])
         }
 
         new ReturnAdvanceLoadPage().load();

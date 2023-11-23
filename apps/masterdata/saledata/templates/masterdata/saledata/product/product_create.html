@@ -32,7 +32,7 @@
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
-                <div class="col-12 col-md-4 col-lg-4">
+                <div class="col-12 col-md-3 col-lg-3">
                     <div class="form-group">
                         <input type="file" id="product-image" class="dropify">
                     </div>
@@ -51,13 +51,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-8 col-lg-8">
+                <div class="col-12 col-md-9 col-lg-9">
                     <div class="form-group">
-                        <label class="form-label required">{% trans "Product Name" %}</label>
+                        <label class="form-label required" for="id">{% trans "Product Name" %}</label>
                         <input type="text" id="title" placeholder="Input Product Name" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">{% trans "Description" %}</label>
+                        <label class="form-label" for="description">{% trans "Description" %}</label>
                         <textarea id="description" placeholder="Input Product Description" class="form-control"></textarea>
                     </div>
                 </div>

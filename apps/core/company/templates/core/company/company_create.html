@@ -17,6 +17,22 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.data.VND_currency | json_script:"VND_currency" }}
+
+    <script id="trans-script"
+            data-trans-opp="{% trans 'Opportunity' %}"
+            data-trans-quo="{% trans 'Quotation' %}"
+            data-trans-so="{% trans 'Sale Order' %}"
+            data-trans-picking="{% trans 'Picking' %}"
+            data-trans-delivery="{% trans 'Delivery' %}"
+            data-trans-task="{% trans 'Task' %}"
+            data-trans-ap="{% trans 'Advance Payment' %}"
+            data-trans-payment="{% trans 'Payment' %}"
+            data-trans-rp="{% trans 'Return Advance' %}"
+            data-trans-pr="{% trans 'Purchase Request' %}"
+            data-trans-numbering0="{% trans 'System' %}"
+            data-trans-numbering1="{% trans 'User defined' %}"
+    ></script>
+
     <form id="frm-add-company"
           data-url="{% url "CompanyListAPI" %}"
           data-url-redirect="{% url "CompanyList" %}"
@@ -26,10 +42,16 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="row">
+                        <div class="col-12">
+                            <h4>{% trans 'Company' %}</h4>
+                            <div class="separator"></div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required" for="code">
-                                    {% trans 'Company code' %}
+                                    {% trans 'Code' %}
                                 </label>
                                 <input type="text" class="form-control"
                                        id="code" oninput="this.value=this.value.toUpperCase()"
@@ -46,12 +68,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="fax">
-                            {% trans 'Company fax' %}
-                        </label>
-                        <input type="text" class="form-control"
-                               id="fax" placeholder="+84 (8) 1234 9876"/>
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="fax">
+                                    {% trans 'Fax' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="fax" placeholder="+84 (8) 1234 9876"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8 col-lg-8">
+                            <div class="form-group">
+                                <label class="form-label required" for="address">{% trans 'Address' %}</label>
+                                <textarea style="height: 38px" data-bs-toggle="modal" data-bs-target="#modal-company-address"
+                                       type="text" class="form-control" readonly id="address"
+                                       placeholder="{% trans 'Click to add address' %}"
+                                       required></textarea>
+                            </div>
+                        </div>
                     </div>
                     <div hidden class="form-group">
                         <label class="form-label" for="parent_company">
@@ -65,38 +100,43 @@
                             <option value="3">Three</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label required" for="address">{% trans 'Company address' %}</label>
-                        <input data-bs-toggle="modal" data-bs-target="#modal-company-address"
-                               type="text" class="form-control" readonly id="address"
-                               placeholder="{% trans 'Click to add address' %}"
-                               required>
-                    </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>{% trans 'Representator' %}</h4>
+                            <div class="separator"></div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="form-label required" for="representative_fullname">
-                            {% trans 'Representator fullname' %}
+                            {% trans 'Fullname' %}
                         </label>
                         <input type="text" class="form-control"
                                id="representative_fullname"
                                placeholder="Nguyen Van A" required/>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label required" for="email">
-                            {% trans 'Representator email' %}
-                        </label>
-                        <input type="text" class="form-control"
-                               id="email"
-                               placeholder="anv@mtsolution.com.vn"
-                               required/>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label required" for="phone">
-                            {% trans 'Representator phone number' %}
-                        </label>
-                        <input type="text" class="form-control"
-                               id="phone" placeholder="+84987654321" required/>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="email">
+                                    {% trans 'Email' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="email"
+                                       placeholder="anv@mtsolution.com.vn"
+                                       required/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="phone">
+                                    {% trans 'Phone number' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="phone" placeholder="+84987654321" required/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -277,68 +317,74 @@
                     <div class="row">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-6 col-md-6 col-lg-6">
-                                    <label class="label-field form-label required" for="schema">{% trans "Schema" %}</label>
-                                </div>
-                                <div class="col-6 col-md-6 col-lg-6 text-right">
-                                    <div class="btn-group dropdown">
-                                        <button type="button" class="btn btn-xs btn-soft-primary dropdown-toggle schema" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            {% trans 'Add schema item' %}
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <div style="max-height: 200px; overflow-y: auto;">
-                                                <a data-value="0" class="schema-item dropdown-item" href="#">Number</a>
-                                                <a data-value="1" class="schema-item dropdown-item" href="#">Short year (23)</a>
-                                                <a data-value="2" class="schema-item dropdown-item" href="#">Long year (2023)</a>
-                                                <a data-value="3" class="schema-item dropdown-item" href="#">Short month (Jan)</a>
-                                                <a data-value="4" class="schema-item dropdown-item" href="#">Long month (January)</a>
-                                                <a data-value="5" class="schema-item dropdown-item" href="#">Month of year (1-12)</a>
-                                                <a data-value="6" class="schema-item dropdown-item" href="#">Week of year (1-54)</a>
-                                                <a data-value="7" class="schema-item dropdown-item" href="#">Day of year (1-366)</a>
-                                                <a data-value="8" class="schema-item dropdown-item" href="#">Day of month (1-31)</a>
-                                                <a data-value="9" class="schema-item dropdown-item" href="#">Day of week (1-7)</a>
+                                <div class="col-12 col-md-12 col-lg-12">
+                                    <label class="label-field form-label required" for="schema-item-list">{% trans "Schema" %}</label>
+                                    <div class="row">
+                                        <div class="col-10 col-md-10 col-lg-10 text-right">
+                                            <input id="schema-item-list" class="form-control">
+                                        </div>
+                                        <div class="col-2 col-md-2 col-lg-2 text-right">
+                                            <div class="btn-group dropdown w-100 h-100">
+                                                <button type="button" class="btn btn-xs btn-soft-primary dropdown-toggle schema" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    {% trans 'Add schema item' %}
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <div style="max-height: 200px; overflow-y: auto;">
+                                                        <a data-value="0" class="schema-item dropdown-item" href="#">Number</a>
+                                                        <a data-value="1" class="schema-item dropdown-item" href="#">Short year (23)</a>
+                                                        <a data-value="2" class="schema-item dropdown-item" href="#">Long year (2023)</a>
+                                                        <a data-value="3" class="schema-item dropdown-item" href="#">Short month (Jan)</a>
+                                                        <a data-value="4" class="schema-item dropdown-item" href="#">Long month (January)</a>
+                                                        <a data-value="5" class="schema-item dropdown-item" href="#">Month of year (1-12)</a>
+                                                        <a data-value="6" class="schema-item dropdown-item" href="#">Week of year (1-54)</a>
+                                                        <a data-value="7" class="schema-item dropdown-item" href="#">Day of year (1-366)</a>
+                                                        <a data-value="8" class="schema-item dropdown-item" href="#">Day of month (1-31)</a>
+                                                        <a data-value="9" class="schema-item dropdown-item" href="#">Day of week (1-7)</a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-12 col-md-12 col-lg-12">
-                                    <input id="schema-item-list" class="form-control">
-                                    <span class="form-text text-muted">{% trans 'Schema format must be separated by the "-"' %}</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="form-group">
-                                        <label class="label-field form-label required" for="first-number">{% trans "First number" %}</label>
-                                        <input type="number" class="form-control" id="first-number">
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="form-group">
-                                        <label class="label-field form-label required" for="last-number">{% trans "Next number" %}</label>
-                                        <input type="number" class="form-control" id="last-number">
-                                    </div>
-                                </div>
+                        <div class="col-6 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="label-field form-label required" for="first-number">{% trans "First number" %}</label>
+                                <input type="number" class="form-control" id="first-number" min="1" step="1">
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="label-field form-label required" for="reset-frequency">{% trans "Reset frequency" %}</label>
-                            <select class="form-select" id="reset-frequency">
-                                <option selected></option>
-                                <option value="0">Yearly</option>
-                                <option value="1">Monthly</option>
-                                <option value="2">Weekly</option>
-                                <option value="3">Daily</option>
-                                <option value="4">Never</option>
-                            </select>
+                        <div class="col-6 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="label-field form-label required" for="last-number">{% trans "Next number" %}</label>
+                                <input type="number" class="form-control" id="last-number" min="1" step="1">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label class="label-field form-label required" for="reset-frequency">{% trans "Reset frequency" %}</label>
+                                <select class="form-select" id="reset-frequency">
+                                    <option selected></option>
+                                    <option value="0">{% trans 'Yearly' %}</option>
+                                    <option value="1">{% trans 'Monthly' %}</option>
+                                    <option value="2">{% trans 'Weekly' %}</option>
+                                    <option value="3">{% trans 'Daily' %}</option>
+                                    <option value="4">{% trans 'Never' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <input id="min_num_char_checkbox" type="checkbox">
+                                <label class="label-field form-label" for="min_num_char">{% trans "Minimum char number" %}</label>
+                                <input id="min_num_char" class="form-control" type="number" step="1" min="2" placeholder="{% trans 'Default' %}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-12 mt-5">
+                            <i class="fas fa-info-circle"></i>
+                            {% trans 'Next code is' %}: <span class="text-primary" id="preview"></span>
                         </div>
                     </div>
                 </div>

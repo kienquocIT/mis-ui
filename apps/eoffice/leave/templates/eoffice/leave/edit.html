@@ -113,14 +113,14 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="leave_detail">
-                    <table id="leave_detail_tbl" class="table nowrap w-100 mb-5">
+                    <table id="leave_detail_tbl" class="table nowrap w-100 mb-5 detail_data">
                         <thead>
                         <tr>
                             <th>{% trans 'Leave type' %}</th>
                             <th>{% trans 'Date from' %}</th>
                             <th>{% trans 'Date to' %}</th>
                             <th>{% trans 'Sub total' %}</th>
-                            <th>{% trans 'note' %}</th>
+                            <th>{% trans 'Note' %}</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -163,6 +163,7 @@
 {% block dataHiddenGroup %}
     {{ data.employee|json_script:'employee_current' }}
     {{ data.sys_status|json_script:'sys_stt' }}
+    {{ data.working_shift|json_script:'ws_data' }}
     <input type="text" id="url-factory"
            data-leave-available="{% url 'LeaveAvailableListAPI' %}"
            data-leave-detail="{% url 'LeaveRequestDetailAPI' data.pk %}"

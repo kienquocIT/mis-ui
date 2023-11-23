@@ -13,7 +13,7 @@ $(document).ready(function () {
             $x.fn.renderCodeBreadcrumb(data);
             $('#inputTitle').val(data.title)
             $('#inputSystemStatus').val(JSON.parse($('#sys_stt').text())[data.system_status][1])
-
+            if (data.system_status >= 3) $('#add_new_line').addClass('disabled')
             // load datepicker for request date
             $('#inputRequestDate').val(moment(data.request_date, 'YYYY-MM-DD').format('DD/MM/YYYY')).daterangepicker({
                 singleDatePicker: true,
@@ -25,10 +25,9 @@ $(document).ready(function () {
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10)
             })
-
-            $EmpElm.attr('data-onload', JSON.stringify(data.employee_inherit)).append(
-                `<option selected value="${data.employee_inherit.id}">${
-                    data.employee_inherit.full_name}</option>`).initSelect2({ 'templateResult': employeeTemplate})
+            data.employee_inherit = {...data.employee_inherit, ...{selected: true}}
+            $EmpElm.attr('data-onload', JSON.stringify(data.employee_inherit))
+                .initSelect2({ 'templateResult': employeeTemplate})
 
             // wait until dropdown employee inherit init loaded then trigger element
             const awEmp = setInterval(function () {

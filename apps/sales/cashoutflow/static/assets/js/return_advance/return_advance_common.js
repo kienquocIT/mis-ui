@@ -211,7 +211,7 @@ class ReturnAdvanceLoadPage {
                 sale_code_mapped = obj_selected?.['sale_order_mapped']
             }
             console.log(sale_code_mapped)
-            if (sale_code_mapped !== null) {
+            if (sale_code_mapped) {
                 $('#inp-sale-code').val(sale_code_mapped.code)
             }
             loadDetailAdvancePayment($(this).val())
@@ -267,7 +267,7 @@ function loadDetail(id, frmDetail) {
             if (Object.keys(return_advance_detail.advance_payment?.['sale_order_mapped']).length !== 0) {
                 sale_code_mapped = return_advance_detail.advance_payment?.['sale_order_mapped']
             }
-            if (sale_code_mapped !== null) {
+            if (sale_code_mapped) {
                 $('#inp-sale-code').val(sale_code_mapped.code)
             }
             loadDetailAdvancePayment(return_advance_detail.advance_payment.id, 'detail');

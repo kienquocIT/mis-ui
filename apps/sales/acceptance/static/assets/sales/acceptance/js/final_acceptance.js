@@ -262,7 +262,7 @@ $(function () {
                 }
                 $.fn.initMaskMoney2();
                 let IDIndicator = row?.querySelector('.table-row-indicator')?.getAttribute('data-id');
-                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(eleInput.value), 'different_value': differVal}
+                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(eleInput.value), 'different_value': differVal, 'rate_value': rateValue}
             }
         }
 

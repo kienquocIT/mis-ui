@@ -263,16 +263,47 @@ $(function () {
                     eleRate.innerHTML = String(rateValue) + ' %';
                 }
                 // reCalculate LNT
-                let netIncomeEle = $table[0].querySelector('.table-row-indicator[data-code="IN0006"]');
-                if (netIncomeEle) {
-                    let netIncomeRow = netIncomeEle.closest('tr');
-                    let netIncomePlanedVal = parseFloat(netIncomeRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
-                    let netIncomeActualVal = parseFloat(netIncomeRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
-                    let newActualValue = netIncomePlanedVal;
-                    if (differVal !== 0) {
-                        newActualValue = netIncomeActualVal + differVal;
+                if (!['IN0001', 'IN0002', 'IN0003', 'IN0004', 'IN0005', 'IN0006'].includes(row?.querySelector('.table-row-indicator').getAttribute('data-code'))) {
+                    let netIncomeEle = $table[0].querySelector('.table-row-indicator[data-code="IN0006"]');
+                    if (netIncomeEle) {
+                        let netIncomeRow = netIncomeEle.closest('tr');
+                        let netIncomePlanedVal = parseFloat(netIncomeRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
+                        let netIncomeActualVal = parseFloat(netIncomeRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
+                        let newActualValue = netIncomePlanedVal;
+                        if (differVal !== 0) {
+                            newActualValue = netIncomeActualVal + differVal;
+                        }
+                        loadActualDifferentRateValue(netIncomeRow, newActualValue);
                     }
-                    loadActualDifferentRateValue(netIncomeRow, newActualValue);
+                } else {
+                    if (row?.querySelector('.table-row-indicator').getAttribute('data-code') === 'IN0002') {
+                        let grossProfitEle = $table[0].querySelector('.table-row-indicator[data-code="IN0003"]');
+                        if (grossProfitEle) {
+                            let grossProfitRow = grossProfitEle.closest('tr');
+                            let grossProfitPlanedVal = parseFloat(grossProfitRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
+                            let grossProfitActualVal = parseFloat(grossProfitRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
+                            let newActualValue = grossProfitPlanedVal;
+                            if (differVal !== 0) {
+                                newActualValue = grossProfitActualVal + differVal;
+                            }
+                            loadActualDifferentRateValue(grossProfitRow, newActualValue);
+                        }
+                        let netIncomeEle = $table[0].querySelector('.table-row-indicator[data-code="IN0006"]');
+                        if (netIncomeEle) {
+                            let netIncomeRow = netIncomeEle.closest('tr');
+                            let netIncomePlanedVal = parseFloat(netIncomeRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
+                            let netIncomeActualVal = parseFloat(netIncomeRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
+                            let newActualValue = netIncomePlanedVal;
+                            if (grossProfitEle) {
+                                let grossProfitRow = grossProfitEle.closest('tr');
+                                let grossProfitDifferentVal = parseFloat(grossProfitRow?.querySelector('.table-row-different-value').getAttribute('data-init-money'));
+                                if (grossProfitDifferentVal !== 0) {
+                                    newActualValue = netIncomeActualVal + differVal;
+                                }
+                            }
+                            loadActualDifferentRateValue(netIncomeRow, newActualValue);
+                        }
+                    }
                 }
                 $.fn.initMaskMoney2();
                 let IDIndicator = row?.querySelector('.table-row-indicator')?.getAttribute('data-id');

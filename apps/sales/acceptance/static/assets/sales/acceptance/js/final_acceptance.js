@@ -175,17 +175,19 @@ $(function () {
                                 for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
                                     let row = $table[0].tBodies[0].rows[i];
                                     if (row?.querySelector('.table-row-indicator')) {
-                                        let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
-                                        if (dataFormula) {
-                                            for (let key in payment_row_data) {
-                                                if (dataFormula.includes(key)) {
-                                                    let newActualValue = 0;
-                                                    for (let payment_data of payment_row_data[key]) {
-                                                        let newPaymentRow = $table.DataTable().row.add(payment_data).node();
-                                                        $(newPaymentRow).detach().insertAfter(row);
-                                                        newActualValue += payment_data?.['actual_value'];
+                                        if (!['IN0001', 'IN0002', 'IN0005', 'IN0006'].includes(row?.querySelector('.table-row-indicator').getAttribute('data-code'))) {
+                                            let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
+                                            if (dataFormula) {
+                                                for (let key in payment_row_data) {
+                                                    if (dataFormula.includes(key)) {
+                                                        let newActualValue = 0;
+                                                        for (let payment_data of payment_row_data[key]) {
+                                                            let newPaymentRow = $table.DataTable().row.add(payment_data).node();
+                                                            $(newPaymentRow).detach().insertAfter(row);
+                                                            newActualValue += payment_data?.['actual_value'];
+                                                        }
+                                                        loadActualDifferentRateValue(row, newActualValue);
                                                     }
-                                                    loadActualDifferentRateValue(row, newActualValue);
                                                 }
                                             }
                                         }

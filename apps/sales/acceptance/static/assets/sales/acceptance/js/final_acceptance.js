@@ -67,14 +67,14 @@ $(function () {
                             if (row?.['is_indicator'] === true) {
                                 return `<b><span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span></b>`;
                             } else {
-                                return `<span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span>`;
+                                return `<p></p>`;
                             }
                         }
                     },
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            if (row?.['sale_order_indicator']?.['indicator']?.['title'] !== 'HR labor expense' && row?.['is_delivery'] === false) {
+                            if (!row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].includes('Internal labor item') && row?.['is_delivery'] === false) {
                                 if (row?.['is_indicator'] === true) {
                                     return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
                                 } else {
@@ -96,7 +96,11 @@ $(function () {
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
+                            if (row?.['is_indicator'] === true) {
+                                return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                     {
@@ -238,15 +242,27 @@ $(function () {
             }
         }
 
-        function changeActualValue(row) {
+        function changeActualValue(row, eleInput) {
             let elePlanedVal = row?.querySelector('.table-row-planed-value')?.getAttribute('data-init-money');
             let eleDifferent = row?.querySelector('.table-row-different-value');
-            if (elePlanedVal && eleDifferent) {
-                let differVal = parseFloat(elePlanedVal) - parseFloat(this.value);
+            let eleRate = row?.querySelector('.table-row-rate-value');
+            if (elePlanedVal && eleDifferent && eleRate) {
+                // set different value
+                let differVal = parseFloat(elePlanedVal) - parseFloat(eleInput.value);
                 eleDifferent.setAttribute('data-init-money', String(differVal));
+                // set rate value
+                let rateValue = parseFloat(eleRate.getAttribute('data-value'));
+                let revenueEle = $table[0].querySelector('.table-row-indicator[data-code="IN0001"]');
+                if (revenueEle) {
+                    let revenueRow = revenueEle.closest('tr');
+                    let revenuePlanedVal = revenueRow?.querySelector('.table-row-planed-value')?.getAttribute('data-init-money');
+                    eleRate.innerHTML = '';
+                    rateValue = ((parseFloat(eleInput.value) / parseFloat(revenuePlanedVal)) * 100).toFixed(1);
+                    eleRate.innerHTML = String(rateValue) + ' %';
+                }
                 $.fn.initMaskMoney2();
                 let IDIndicator = row?.querySelector('.table-row-indicator')?.getAttribute('data-id');
-                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(this.value), 'different_value': differVal}
+                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(eleInput.value), 'different_value': differVal}
             }
         }
 
@@ -296,7 +312,7 @@ $(function () {
                 }
             } else {
                 let row = this.closest('tr');
-                changeActualValue(row);
+                changeActualValue(row, this);
             }
         });
 

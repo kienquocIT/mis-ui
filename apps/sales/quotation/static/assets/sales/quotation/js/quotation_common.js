@@ -2832,6 +2832,7 @@ class QuotationSubmitHandle {
                     let dataLaborItem = SelectDDControl.get_data_from_idx($(eleLaborItem), $(eleLaborItem).val());
                     if (dataLaborItem) {
                         rowData['expense'] = dataLaborItem?.['id'];
+                        rowData['expense_title'] = dataLaborItem?.['title'];
                     }
                 }
             }

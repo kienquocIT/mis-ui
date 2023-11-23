@@ -290,7 +290,7 @@ $(function () {
                     let newActualValue = 0;
                     for (let eleIndicator of $table[0].querySelectorAll('.table-row-indicator[data-is-delivery="true"]')) {
                         let deliRow = eleIndicator.closest('tr');
-                        newActualValue += parseFloat(deliRow?.querySelector('.table-row-actual-value').value);
+                        newActualValue += parseFloat($(deliRow?.querySelector('.table-row-actual-value')).valCurrency());
                     }
                     loadActualDifferentRateValue(totalCostRow, newActualValue);
                 }

@@ -223,7 +223,11 @@ $(function () {
             let eleRate = row?.querySelector('.table-row-rate-value');
             if (elePlanedVal && eleActual && eleDifferent && eleRate) {
                 // set actual value
-                eleActual.setAttribute('data-init-money', String(newActualValue));
+                if (eleActual.hasAttribute('data-init-money')) {
+                    eleActual.setAttribute('data-init-money', String(newActualValue));
+                } else {
+                    $(eleActual).attr('value', String(newActualValue));
+                }
                 // set different value
                 let differVal = parseFloat(elePlanedVal) - parseFloat(newActualValue);
                 eleDifferent.setAttribute('data-init-money', String(differVal));

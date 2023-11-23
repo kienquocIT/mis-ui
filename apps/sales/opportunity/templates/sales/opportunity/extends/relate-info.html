@@ -75,9 +75,9 @@
                     <button type="button" id="btn-create-related-feature" class="btn btn-soft-primary btn-xs dropdown-toggle ml-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
                         <i class="fa-solid fa-arrows-spin"></i> {% trans 'Create Related Feature' %}
                     </button>
-                    <div class="dropdown-menu">
-                        <a id="create-quotation-shortcut" class="dropdown-item btn-create-related-feature" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
-                        <a id="create-sale-order-shortcut" class="dropdown-item btn-create-related-feature" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
+                    <div class="dropdown-menu" id="dropdown-menu-relate-app">
+                        <a id="create-quotation-shortcut" class="dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
+                        <a id="create-sale-order-shortcut" class="dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
                         <a id="create-advance-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'AdvancePaymentCreate' %}" href="#">{% trans 'Advance Payment' %}</a>
                         <a id="create-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'PaymentCreate' %}" href="#">{% trans 'Payment' %}</a>
                         <a id="create-return-advance-shortcut" class="dropdown-item btn-create-related-feature" data-url="{% url 'ReturnAdvanceCreate' %}" href="#">{% trans 'Return Advance' %}</a>

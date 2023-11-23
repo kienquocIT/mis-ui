@@ -1893,6 +1893,13 @@ $(document).ready(function () {
                 window.open(url, '_blank');
             })
 
+            // event on click to create relate apps from opportunity
+            $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
+                let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
+                window.open(url, '_blank');
+            })
+
+
 
 
 

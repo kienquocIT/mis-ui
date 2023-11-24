@@ -199,7 +199,6 @@ class ReturnAdvanceLoadPage {
             }
         }).on('change', function () {
             let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
-            console.log(obj_selected)
             let sale_code_mapped = null
             if (Object.keys(obj_selected?.['opportunity_mapped']).length !== 0) {
                 sale_code_mapped = obj_selected?.['opportunity_mapped']
@@ -210,7 +209,6 @@ class ReturnAdvanceLoadPage {
             if (Object.keys(obj_selected?.['sale_order_mapped']).length !== 0) {
                 sale_code_mapped = obj_selected?.['sale_order_mapped']
             }
-            console.log(sale_code_mapped)
             if (sale_code_mapped) {
                 $('#inp-sale-code').val(sale_code_mapped.code)
             }

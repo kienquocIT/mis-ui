@@ -519,8 +519,6 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
-                console.log(data_expense)
-                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -602,8 +600,6 @@ function LoadPlanQuotationNoOPP(quotation_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
-                console.log(data_expense)
-                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -685,8 +681,6 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
-                console.log(data_expense)
-                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);

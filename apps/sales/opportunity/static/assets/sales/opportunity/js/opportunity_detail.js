@@ -1136,7 +1136,7 @@ $(document).ready(function () {
                 }
 
                 let payment_mapped_opp = await $.fn.callAjax2({
-                    url: $('#script-url').attr('data-url-return-list') + `?advance_payment_id=${ap_id_list}`,
+                    url: $('#script-url').attr('data-url-return-list') + `?advance_payment_id_list=${ap_id_list}`,
                     method: 'GET'
                 }).then(
                     (resp) => {

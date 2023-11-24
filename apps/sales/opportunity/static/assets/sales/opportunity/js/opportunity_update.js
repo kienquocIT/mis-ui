@@ -1722,63 +1722,14 @@ $(document).ready(function () {
 
             function loadTimelineList(data_timeline_list) {
 
-        let ap_mapped_opp = $.fn.callAjax2({
-            url: $('#script-url').attr('data-url-ap-list') + `?opportunity_mapped_id=${pk}`,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_list')) {
-                    return data?.['advance_payment_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        let payment_mapped_opp = $.fn.callAjax2({
-            url: $('#script-url').attr('data-url-payment-list') + `?opportunity_mapped_id=${pk}`,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('payment_list')) {
-                    return data?.['payment_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([ap_mapped_opp, payment_mapped_opp]).then(
-            async (results) => {
-                let ap_id_list = []
-                for (let i = 0; i < results[0].length; i++) {
-                    let temp = results[0][i];
-                    ap_id_list.push(temp?.['id'])
-                    data_timeline_list.push(
-                        {
-                            "id": temp?.['id'],
-                            "type": "ap",
-                            "title": "Advance payment",
-                            "subject": temp?.['title'],
-                            "date": temp?.['date_created']
-                        }
-                    )
-                }
-
-                let payment_mapped_opp = await $.fn.callAjax2({
-                    url: $('#script-url').attr('data-url-return-list') + `?advance_payment_id=${ap_id_list}`,
+                let ap_mapped_opp = $.fn.callAjax2({
+                    url: $('#script-url').attr('data-url-ap-list') + `?opportunity_mapped_id=${pk}`,
                     method: 'GET'
                 }).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('return_advances')) {
-                            return data?.['return_advances'];
+                        if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_list')) {
+                            return data?.['advance_payment_list'];
                         }
                         return {};
                     },
@@ -1787,148 +1738,197 @@ $(document).ready(function () {
                     }
                 )
 
-                for (let i = 0; i < payment_mapped_opp.length; i++) {
-                    let temp = payment_mapped_opp[i];
-                    data_timeline_list.push(
-                        {
-                            "id": temp?.['id'],
-                            "type": "ra",
-                            "title": "Return advance",
-                            "subject": temp?.['title'],
-                            "date": temp?.['date_created']
+                let payment_mapped_opp = $.fn.callAjax2({
+                    url: $('#script-url').attr('data-url-payment-list') + `?opportunity_mapped_id=${pk}`,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('payment_list')) {
+                            return data?.['payment_list'];
                         }
-                    )
-                }
-
-                for (let i = 0; i < results[1].length; i++) {
-                    let temp = results[1][i];
-                    data_timeline_list.push(
-                        {
-                            "id": temp?.['id'],
-                            "type": "pm",
-                            "title": "Payment",
-                            "subject": temp?.['title'],
-                            "date": temp?.['date_created']
-                        }
-                    )
-                }
-                data_timeline_list.sort((a, b) => new Date(b.date) - new Date(a.date));
-                let dtb = $('#table-timeline');
-                dtb.DataTable().clear().destroy();
-                dtb.DataTableDefault({
-                    pageLength: 5,
-                    dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
-                    data: data_timeline_list,
-                    columns: [
-                        {
-                            data: 'activity',
-                            className: 'wrap-text w-25',
-                            render: (data, type, row, meta) => {
-                                let txt = '';
-                                if (row.type === 'task') {
-                                    txt = `<i class="fa-solid fa-list-check"></i>`
-                                } else if (row.type === 'call') {
-                                    txt = `<i class="bi bi-telephone-fill"></i>`
-                                } else if (row.type === 'email') {
-                                    txt = `<i class="bi bi-envelope-fill"></i>`
-                                } else if (row.type === 'meeting') {
-                                    txt = `<i class="bi bi-person-workspace"></i>`
-                                } else if (row.type === 'document') {
-                                    txt = `<i class="bi bi-file-earmark-fill"></i>`
-                                } else if (row.type === 'ap') {
-                                    txt = `<i class="bi bi-piggy-bank-fill"></i>`
-                                } else if (row.type === 'pm') {
-                                    txt = `<i class="bi bi-credit-card-fill"></i>`
-                                } else if (row.type === 'ra') {
-                                    txt = `<i class="bi bi-piggy-bank"></i>`
-                                }
-                                return `<span>${txt}&nbsp;&nbsp;${row.title}</span>`;
-                            }
-                        },
-                        {
-                            data: 'subject',
-                            className: 'wrap-text w-40',
-                            render: (data, type, row, meta) => {
-                                let modal_detail_target = '';
-                                let modal_detail_class = '';
-                                if (row.type === 'call') {
-                                    modal_detail_target = '#detail-call-log';
-                                    modal_detail_class = 'detail-call-log-button';
-                                } else if (row.type === 'email') {
-                                    modal_detail_target = '#detail-send-email';
-                                    modal_detail_class = 'detail-email-button';
-                                } else if (row.type === 'meeting') {
-                                    modal_detail_target = '#detail-meeting';
-                                    modal_detail_class = 'detail-meeting-button';
-                                }
-                                if (['call', 'email', 'meeting', 'task'].includes(row.type)) {
-                                    return `<a data-type="${row.type}" class="${modal_detail_class} text-primary link-primary underline_hover"
-                                       href="" data-bs-toggle="modal" data-id="${row.id}" data-bs-target="${modal_detail_target}">
-                                        <span><b>${row.subject}</b></span>
-                                    </a>`
-                                }
-                                else {
-                                    if (row.type === 'ap') {
-                                        const link = $('#script-url').attr('data-url-ap-detail').format_url_with_uuid(row.id)
-                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
-                                            <span><b>${row.subject}</b></span>
-                                        </a>`
-                                    }
-                                    if (row.type === 'pm') {
-                                        const link = $('#script-url').attr('data-url-payment-detail').format_url_with_uuid(row.id)
-                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
-                                            <span><b>${row.subject}</b></span>
-                                        </a>`
-                                    }
-                                    if (row.type === 'ra') {
-                                        const link = $('#script-url').attr('data-url-return-detail').format_url_with_uuid(row.id)
-                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
-                                            <span><b>${row.subject}</b></span>
-                                        </a>`
-                                    }
-                                    return ``
-                                }
-                            }
-                        },
-                        {
-                            data: 'date',
-                            className: 'wrap-text w-15',
-                            render: (data, type, row, meta) => {
-                                return row.date.split(' ')[0]
-                            }
-                        },
-                        {
-                            data: 'action',
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                let delete_btn_class = '';
-                                if (row.type === 'call') {
-                                    delete_btn_class = 'delete-call-log-button';
-                                } else if (row.type === 'email') {
-                                    delete_btn_class = 'delete-email-button';
-                                } else if (row.type === 'meeting') {
-                                    delete_btn_class = 'delete-meeting-button';
-                                }
-
-                                if (delete_btn_class) {
-                                    return `<button type="button" data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-danger btn-xs flush-soft-hover ${delete_btn_class}"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
-                                }
-                                else {
-                                    return `<button type="button" class="btn btn-icon btn-rounded btn-flush-secondary btn-xs flush-soft-hover disabled"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
-                                }
-                            }
-                        },
-                    ],
-                    rowCallback: function (row, data) {
-                        // click show task
-                        $('.view_task_log', row).off().on('click', function (e) {
-                            e.stopPropagation();
-                            displayTaskView(this.dataset.url)
-                        })
+                        return {};
                     },
-                });
-            })
-    }
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([ap_mapped_opp, payment_mapped_opp]).then(
+                    async (results) => {
+                        let ap_id_list = []
+                        for (let i = 0; i < results[0].length; i++) {
+                            let temp = results[0][i];
+                            ap_id_list.push(temp?.['id'])
+                            data_timeline_list.push(
+                                {
+                                    "id": temp?.['id'],
+                                    "type": "ap",
+                                    "title": "Advance payment",
+                                    "subject": temp?.['title'],
+                                    "date": temp?.['date_created']
+                                }
+                            )
+                        }
+
+                        let payment_mapped_opp = await $.fn.callAjax2({
+                            url: $('#script-url').attr('data-url-return-list') + `?advance_payment_id_list=${ap_id_list}`,
+                            method: 'GET'
+                        }).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data && typeof data === 'object' && data.hasOwnProperty('return_advances')) {
+                                    return data?.['return_advances'];
+                                }
+                                return {};
+                            },
+                            (errs) => {
+                                console.log(errs);
+                            }
+                        )
+
+                        for (let i = 0; i < payment_mapped_opp.length; i++) {
+                            let temp = payment_mapped_opp[i];
+                            data_timeline_list.push(
+                                {
+                                    "id": temp?.['id'],
+                                    "type": "ra",
+                                    "title": "Return advance",
+                                    "subject": temp?.['title'],
+                                    "date": temp?.['date_created']
+                                }
+                            )
+                        }
+
+                        for (let i = 0; i < results[1].length; i++) {
+                            let temp = results[1][i];
+                            data_timeline_list.push(
+                                {
+                                    "id": temp?.['id'],
+                                    "type": "pm",
+                                    "title": "Payment",
+                                    "subject": temp?.['title'],
+                                    "date": temp?.['date_created']
+                                }
+                            )
+                        }
+                        data_timeline_list.sort((a, b) => new Date(b.date) - new Date(a.date));
+                        let dtb = $('#table-timeline');
+                        dtb.DataTable().clear().destroy();
+                        dtb.DataTableDefault({
+                            pageLength: 5,
+                            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
+                            data: data_timeline_list,
+                            columns: [
+                                {
+                                    data: 'activity',
+                                    className: 'wrap-text w-25',
+                                    render: (data, type, row, meta) => {
+                                        let txt = '';
+                                        if (row.type === 'task') {
+                                            txt = `<i class="fa-solid fa-list-check"></i>`
+                                        } else if (row.type === 'call') {
+                                            txt = `<i class="bi bi-telephone-fill"></i>`
+                                        } else if (row.type === 'email') {
+                                            txt = `<i class="bi bi-envelope-fill"></i>`
+                                        } else if (row.type === 'meeting') {
+                                            txt = `<i class="bi bi-person-workspace"></i>`
+                                        } else if (row.type === 'document') {
+                                            txt = `<i class="bi bi-file-earmark-fill"></i>`
+                                        } else if (row.type === 'ap') {
+                                            txt = `<i class="bi bi-piggy-bank-fill"></i>`
+                                        } else if (row.type === 'pm') {
+                                            txt = `<i class="bi bi-credit-card-fill"></i>`
+                                        } else if (row.type === 'ra') {
+                                            txt = `<i class="bi bi-piggy-bank"></i>`
+                                        }
+                                        return `<span>${txt}&nbsp;&nbsp;${row.title}</span>`;
+                                    }
+                                },
+                                {
+                                    data: 'subject',
+                                    className: 'wrap-text w-40',
+                                    render: (data, type, row, meta) => {
+                                        let modal_detail_target = '';
+                                        let modal_detail_class = '';
+                                        if (row.type === 'call') {
+                                            modal_detail_target = '#detail-call-log';
+                                            modal_detail_class = 'detail-call-log-button';
+                                        } else if (row.type === 'email') {
+                                            modal_detail_target = '#detail-send-email';
+                                            modal_detail_class = 'detail-email-button';
+                                        } else if (row.type === 'meeting') {
+                                            modal_detail_target = '#detail-meeting';
+                                            modal_detail_class = 'detail-meeting-button';
+                                        }
+                                        if (['call', 'email', 'meeting', 'task'].includes(row.type)) {
+                                            return `<a data-type="${row.type}" class="${modal_detail_class} text-primary link-primary underline_hover"
+                                               href="" data-bs-toggle="modal" data-id="${row.id}" data-bs-target="${modal_detail_target}">
+                                                <span><b>${row.subject}</b></span>
+                                            </a>`
+                                        }
+                                        else {
+                                            if (row.type === 'ap') {
+                                                const link = $('#script-url').attr('data-url-ap-detail').format_url_with_uuid(row.id)
+                                                return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
+                                                    <span><b>${row.subject}</b></span>
+                                                </a>`
+                                            }
+                                            if (row.type === 'pm') {
+                                                const link = $('#script-url').attr('data-url-payment-detail').format_url_with_uuid(row.id)
+                                                return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
+                                                    <span><b>${row.subject}</b></span>
+                                                </a>`
+                                            }
+                                            if (row.type === 'ra') {
+                                                const link = $('#script-url').attr('data-url-return-detail').format_url_with_uuid(row.id)
+                                                return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
+                                                    <span><b>${row.subject}</b></span>
+                                                </a>`
+                                            }
+                                            return ``
+                                        }
+                                    }
+                                },
+                                {
+                                    data: 'date',
+                                    className: 'wrap-text w-15',
+                                    render: (data, type, row, meta) => {
+                                        return row.date.split(' ')[0]
+                                    }
+                                },
+                                {
+                                    data: 'action',
+                                    className: 'wrap-text w-10',
+                                    render: (data, type, row, meta) => {
+                                        let delete_btn_class = '';
+                                        if (row.type === 'call') {
+                                            delete_btn_class = 'delete-call-log-button';
+                                        } else if (row.type === 'email') {
+                                            delete_btn_class = 'delete-email-button';
+                                        } else if (row.type === 'meeting') {
+                                            delete_btn_class = 'delete-meeting-button';
+                                        }
+
+                                        if (delete_btn_class) {
+                                            return `<button type="button" data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-danger btn-xs flush-soft-hover ${delete_btn_class}"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
+                                        }
+                                        else {
+                                            return `<button type="button" class="btn btn-icon btn-rounded btn-flush-secondary btn-xs flush-soft-hover disabled"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
+                                        }
+                                    }
+                                },
+                            ],
+                            rowCallback: function (row, data) {
+                                // click show task
+                                $('.view_task_log', row).off().on('click', function (e) {
+                                    e.stopPropagation();
+                                    displayTaskView(this.dataset.url)
+                                })
+                            },
+                        });
+                    })
+            }
 
             function callAjaxToLoadTimeLineList() {
                 $.fn.callAjax($('#table-timeline').attr('data-url-logs_list'), 'GET', {'opportunity': pk})

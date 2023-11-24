@@ -25,9 +25,9 @@ $(function () {
                                 if (row?.['sale_order_indicator']?.['indicator']?.['formula_data_show']) {
                                     formula = row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].replace(/"/g, "'");
                                 }
-                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="${row?.['sale_order_indicator']?.['indicator']?.['code']}" data-is-delivery="${row?.['is_delivery']}" data-formula="${formula}">${row?.['sale_order_indicator']?.['indicator']?.['title'] ? row?.['sale_order_indicator']?.['indicator']?.['title'] : ''}</p>`;
+                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="${row?.['sale_order_indicator']?.['indicator']?.['code']}" data-is-delivery="${row?.['is_delivery']}" data-affect="${row?.['sale_order_indicator']?.['indicator']?.['acceptance_affect_by']}" data-editable="${row?.['sale_order_indicator']?.['indicator']?.['is_acceptance_editable']}" data-formula="${formula}">${row?.['sale_order_indicator']?.['indicator']?.['title'] ? row?.['sale_order_indicator']?.['indicator']?.['title'] : ''}</p>`;
                             } else {
-                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="${row?.['sale_order_indicator']?.['indicator']?.['code']}" data-is-delivery="${row?.['is_delivery']}"></p>`;
+                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="${row?.['sale_order_indicator']?.['indicator']?.['code']}" data-is-delivery="${row?.['is_delivery']}" data-affect="${row?.['sale_order_indicator']?.['indicator']?.['acceptance_affect_by']}" data-editable="${row?.['sale_order_indicator']?.['indicator']?.['is_acceptance_editable']}"></p>`;
                             }
                         }
                     },
@@ -74,14 +74,11 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            if (!row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].includes('Internal labor item') && row?.['is_delivery'] === false && row?.['is_sale_order'] === false) {
-                                if (row?.['is_indicator'] === true) {
-                                    return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
-                                } else {
-                                    return `<span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span>`;
-                                }
+                            if (row?.['is_indicator'] === true) {
+                                return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
                             } else {
-                                return `<div class="row">
+                                if (row?.['sale_order_indicator']?.['indicator']?.['is_acceptance_editable'] === true) {
+                                    return `<div class="row">
                                             <input 
                                                 type="text" 
                                                 class="form-control mask-money table-row-actual-value" 
@@ -90,6 +87,9 @@ $(function () {
                                                 data-is-delivery="${row?.['is_delivery']}"
                                             >
                                         </div>`;
+                                } else {
+                                    return `<span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span>`;
+                                }
                             }
                         }
                     },
@@ -144,15 +144,15 @@ $(function () {
                                 let payment_row_data = {};
                                 let delivery_row_data = [];
                                 let revenueRow = null;
-                                let totalCostRow = null;
+                                let deliveryAffectRow = null;
                                 for (let indicator of data.final_acceptance_list[0]?.['final_acceptance_indicator']) {
                                     if (indicator?.['is_indicator'] === true) {
                                         let newRow = $table.DataTable().row.add(indicator).draw().node();
                                         if (indicator?.['sale_order_indicator']?.['indicator']?.['code'] === 'IN0001') {
                                             revenueRow = newRow;
                                         }
-                                        if (indicator?.['sale_order_indicator']?.['indicator']?.['code'] === 'IN0002') {
-                                            totalCostRow = newRow;
+                                        if (indicator?.['sale_order_indicator']?.['indicator']?.['acceptance_affect_by'] === 3) {
+                                            deliveryAffectRow = newRow;
                                         }
                                     } else if (indicator?.['is_sale_order'] === true) {
                                         so_row_data = indicator;
@@ -175,13 +175,14 @@ $(function () {
                                 for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
                                     let row = $table[0].tBodies[0].rows[i];
                                     if (row?.querySelector('.table-row-indicator')) {
-                                        if (!['IN0001', 'IN0002', 'IN0005', 'IN0006'].includes(row?.querySelector('.table-row-indicator').getAttribute('data-code'))) {
+                                        if (row.getAttribute('data-affect') === '4') {
                                             let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
                                             if (dataFormula) {
                                                 for (let key in payment_row_data) {
                                                     if (dataFormula.includes(key)) {
                                                         let newActualValue = 0;
                                                         for (let payment_data of payment_row_data[key]) {
+                                                            payment_data['is_acceptance_editable'] = row?.['is_acceptance_editable'];
                                                             let newPaymentRow = $table.DataTable().row.add(payment_data).node();
                                                             $(newPaymentRow).detach().insertAfter(row);
                                                             newActualValue += payment_data?.['actual_value'];
@@ -197,24 +198,27 @@ $(function () {
                                 let newActualValue = 0;
                                 let deliveryExistRow = null;
                                 for (let delivery_data of delivery_row_data) {
+                                    if (deliveryAffectRow?.querySelector('.table-row-indicator').getAttribute('data-editable') === 'true') {
+                                        delivery_data['is_acceptance_editable'] = true;
+                                    } else {
+                                        delivery_data['is_acceptance_editable'] = false;
+                                    }
                                     let newDeliRow = $table.DataTable().row.add(delivery_data).node();
                                     if (!deliveryExistRow) {
-                                        deliveryExistRow = totalCostRow;
+                                        deliveryExistRow = deliveryAffectRow;
                                     }
                                     $(newDeliRow).detach().insertAfter(deliveryExistRow);
                                     deliveryExistRow = newDeliRow;
                                     newActualValue += delivery_data?.['actual_value'];
                                 }
-                                loadActualDifferentRateValue(totalCostRow, newActualValue);
+                                loadActualDifferentRateValue(deliveryAffectRow, newActualValue);
                             $.fn.initMaskMoney2();
                             }
-                            // $table.DataTable().rows.add(data.final_acceptance_list[0]?.['final_acceptance_indicator']).draw();
                         }
                     }
                 }
             )
         }
-        // loadFinalAcceptance();
 
         function loadActualDifferentRateValue(row, newActualValue) {
             let elePlanedVal = row?.querySelector('.table-row-planed-value')?.getAttribute('data-init-money');
@@ -340,6 +344,21 @@ $(function () {
             });
         }
         loadSO();
+
+        function calculateIndicator(indicator_title, changeValue) {
+            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
+                let row = $table[0].tBodies[0].rows[i];
+                if (row?.querySelector('.table-row-indicator')) {
+                    let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
+                    if (dataFormula) {
+                        if (dataFormula.includes(indicator_title)) {
+
+                        }
+                    }
+                }
+
+            }
+        }
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({

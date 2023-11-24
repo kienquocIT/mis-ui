@@ -74,7 +74,7 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            if (!row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].includes('Internal labor item') && row?.['is_delivery'] === false && row?.['sale_order_indicator']?.['indicator']?.['code'] !== 'IN0002') {
+                            if (!row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].includes('Internal labor item') && row?.['is_delivery'] === false && row?.['is_sale_order'] === false) {
                                 if (row?.['is_indicator'] === true) {
                                     return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
                                 } else {

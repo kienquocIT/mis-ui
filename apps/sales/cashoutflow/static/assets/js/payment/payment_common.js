@@ -1174,6 +1174,8 @@ class PaymentHandle {
                 PaymentLoadQuotation(quotation_object)
                 PaymentLoadSaleOrder(sale_order_object)
                 AP_filter = ap_mapped_id?.['id'];
+
+                LoadPlanQuotation(opp_mapped_select.val(), quotation_object?.['id'])
             }
             else if (type === 1) {
                 tableLineDetail.find('tbody').html('');

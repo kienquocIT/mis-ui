@@ -1,7 +1,8 @@
 function resetFormTask() {
     // clean html select etc.
     $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-    $('#employee_inherit_id').val('').trigger('change').prop('disabled', false);
+    $('#employee_inherit_id').val('').trigger('change').prop('disabled', false).removeClass('is-invalid');
+    $('#employee_inherit_id-error').remove()
     $('#opportunity_id').val('').trigger('change').attr('disabled', false);
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
@@ -182,8 +183,6 @@ $(function () {
         singleDatePicker: true,
         timePicker: false,
         showDropdowns: true,
-        // "cancelClass": "btn-secondary",
-        // maxYear: parseInt(moment().format('YYYY'), 10)
         locale: {
             format: 'DD/MM/YYYY'
         }
@@ -327,8 +326,10 @@ $(function () {
                     assign_toData = {
                         'id': assign_to.id,
                         'full_name': assign_to.text,
+                        'first_name': assign_to.first_name,
+                        'last_name': assign_to.last_name,
                     }
-                    // formData.employee_inherit_id = assign_to.id
+                    formData.employee_inherit_id = assign_to.id
                 }
 
                 formData.checklist = []
@@ -342,11 +343,8 @@ $(function () {
                 if (!formData.opportunity) delete formData.opportunity
                 if ($oppElm.val()) formData.opportunity = $oppElm.val()
 
-                if ($('[name="attach"]').val()) {
-                    let list = []
-                    list.push($('[name="attach"]').val())
-                    formData.attach = list
-                }
+                const $attElm = $('[name="attach"]').val()
+                if ($attElm) formData.attach = [...$attElm]
 
                 let method = 'POST'
                 let url = _form.dataUrl

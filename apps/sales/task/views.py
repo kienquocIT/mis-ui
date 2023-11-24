@@ -91,7 +91,7 @@ class OpportunityTaskListAPI(APIView):
         is_api=True
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_LIST).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_LIST).get(request.query_params.dict())
         return resp.auto_return(key_success='task_list')
 
     @mask_view(

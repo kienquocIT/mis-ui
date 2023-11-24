@@ -74,7 +74,7 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            if (!row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].includes('Internal labor item') && row?.['is_delivery'] === false && row?.['sale_order_indicator']?.['indicator']?.['code'] !== 'IN0002') {
+                            if (!row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].includes('Internal labor item') && row?.['is_delivery'] === false && row?.['is_sale_order'] === false) {
                                 if (row?.['is_indicator'] === true) {
                                     return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
                                 } else {
@@ -315,16 +315,31 @@ $(function () {
             }
         }
 
-        boxOpp.initSelect2({'allowClear': true,});
+        function loadOpp(dataOpp = {}) {
+            boxOpp.empty();
+            boxOpp.initSelect2({
+                data: dataOpp,
+                'allowClear': true,
+            });
+        }
+        loadOpp();
 
         function loadEmployee(dataEmployee = {}) {
+            boxEmployee.empty();
             boxEmployee.initSelect2({
                 data: dataEmployee,
             });
         }
-
         loadEmployee();
-        boxSO.initSelect2({'allowClear': true,});
+
+        function loadSO(dataSO = {}) {
+            boxSO.empty();
+            boxSO.initSelect2({
+                data: dataSO,
+                'allowClear': true,
+            });
+        }
+        loadSO();
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -340,10 +355,21 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Events
+        boxOpp.on('change', function () {
+            if (boxOpp.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxOpp, boxOpp.val());
+                if (dataSelected) {
+                    loadSO(dataSelected?.['sale_order']);
+                    loadEmployee(dataSelected?.['sale_person']);
+                }
+            }
+        });
+
         boxSO.on('change', function () {
             if (boxSO.val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(boxSO, boxSO.val());
                 if (dataSelected) {
+                    loadOpp(dataSelected?.['opportunity']);
                     loadEmployee(dataSelected?.['sale_person']);
                 }
             }

@@ -5007,6 +5007,46 @@ msgid "Please select sale order"
 msgstr "Vui lòng chọn đơn hàng"
 
 #
+msgid "Sale reports"
+msgstr "Báo cáo kinh doanh"
+
+#
+msgid "Revenue report"
+msgstr "Báo cáo doanh thu"
+
+#
+msgid "Product report"
+msgstr "Báo cáo sản phẩm"
+
+#
+msgid "Customer report"
+msgstr "Báo cáo khách hàng"
+
+#
+msgid "Sale order code"
+msgstr "Mã đơn hàng"
+
+#
+msgid "Sale order name"
+msgstr "Tên đơn hàng"
+
+#
+msgid "Gross profit"
+msgstr "Lợi nhuận gộp"
+
+#
+msgid "Net income"
+msgstr "Lợi nhuận thuần"
+
+#
+msgid "Customer code"
+msgstr "Mã khách hàng"
+
+#
+msgid "Industry name"
+msgstr "Ngành nghề"
+
+#
 msgid "Update permit"
 msgstr "Cập nhập quyền"
 
@@ -5057,3 +5097,4 @@ msgstr "Đối thủ"
 #
 msgid "Account History"
 msgstr "Lịnh sử khách hàng"
+

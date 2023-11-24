@@ -377,19 +377,19 @@ class MenusReport:
         name='Sale reports', code='menu_sale_reports', view_name='', icon='<i class="fas fa-chart-line"></i>',
         child=[
             MenuCommon(
-                name='Revenue Report',
+                name='Revenue report',
                 code='menu_report_revenue_list',
                 view_name='ReportRevenueList',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
             MenuCommon(
-                name='Product Report',
+                name='Product report',
                 code='menu_report_product_list',
                 view_name='ReportProductList',
                 icon='<i class="fas fa-box-open"></i>',
             ),
             MenuCommon(
-                name='Customer Report',
+                name='Customer report',
                 code='menu_report_customer_list',
                 view_name='ReportCustomerList',
                 icon='<i class="fas fa-user-tie"></i>',

@@ -55,7 +55,7 @@ $(function () {
         })
     }
 
-    function callDataTaskList(kanban, list){
+    function callDataTaskList(kanban, list, params={}){
         function callBackModalChange(mutations, observer){
             // function kiểm tra nếu form create/edit đang mở thì chỉnh sửa datalist của table show/hide icon
             // testcase: click view item 1 sau đó click view item 2
@@ -72,12 +72,12 @@ $(function () {
             }
         }
 
-        $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET'})
+        $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET', 'data': params})
             .then(
                 (req) => {
                     let data = $.fn.switcherResp(req);
                     if (data?.['status'] === 200) {
-                        const taskList = data.task_list
+                        const taskList = data?.['task_list']
                         kanban.init(taskList)
                         list.init(list, taskList)
                         // Function to wait form create on submit
@@ -92,6 +92,7 @@ $(function () {
                 }
             );
     }
+
 
     class initCommon{
         static initTableLogWork(dataList){
@@ -365,9 +366,9 @@ $(function () {
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
 
-                            $('#inputAssigner').val(data.employee_created.last_name + '. ' + data.employee_created.first_name)
+                            $('#inputAssigner').val(data.employee_created.last_name + ' ' + data.employee_created.first_name)
                                 .attr(
-                                    'data-name', data.employee_created.last_name + '. ' + data.employee_created.first_name
+                                    'data-name', data.employee_created.last_name + ' ' + data.employee_created.first_name
                                 )
                                 .attr(
                                     'value', data.employee_created.id
@@ -380,7 +381,7 @@ $(function () {
                                 $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
                                     .attr('data-onload', JSON.stringify(data.employee_inherit))
                             }
-                            if (data['opportunity_data']){
+                            if (data['opportunity_data'] && Object.keys(data["opportunity_data"]).length > 0){
                                 data['opportunity_data'] = {...data['opportunity_data'], selected: true}
                                 $oppElm.attr('disabled', true).attr('data-onload', JSON.stringify(data['opportunity_data']))
                                 if ($(`option[value="${data['opportunity_data'].id}"]`, $oppElm).length <= 0)
@@ -460,15 +461,12 @@ $(function () {
                 if (Object.keys(assign_to).length > 0) {
                     if (assign_to?.['avatar']) childHTML.find('img').attr('src', assign_to?.['avatar'])
                     else {
-                        childHTML.find('img').remove()
-                        childHTML.find('.avatar').addClass('avatar-' + $x.fn.randomColor())
-                        let full_name = `${assign_to?.last_name} ${assign_to?.first_name}`
-                        if (assign_to?.full_name && assign_to?.full_name !== '') full_name = assign_to.full_name
-                        const name = $.fn.shortName(full_name)
-                        childHTML.find('.avatar .initial-wrap').text(name)
-                        childHTML.find('.avatar').attr('title', full_name)
+                        let avClass = 'avatar-xs avatar-' + $x.fn.randomColor()
+                        const nameHTML = $x.fn.renderAvatar(assign_to, avClass)
+                        childHTML.find('.avatar').replaceWith(nameHTML)
                     }
-                } else childHTML.find('.avatar').addClass('visible-hidden')
+                }
+                else childHTML.find('.avatar').addClass('visible-hidden')
                 if (newData.checklist) {
                     let done = newData.checklist.reduce((acc, obj) => {
                         if (obj.done) return acc += 1
@@ -496,7 +494,7 @@ $(function () {
                         ) temp.removeClass('hidden')
                         else if ($(this).closest('#kb_sub_scroll').length > 0 && Object.keys(newData?.parent_n).length > 0)
                             temp.removeClass('hidden')
-                        temp.find('[data-toggle="tooltip"]').tooltip({placement: 'right'});
+                        temp.find('[data-bs-toggle="tooltip"]').tooltip({placement: 'right'});
                         $thisCrt.editTask(temp)
                         $thisCrt.deleteTask(temp)
                         $thisCrt.logTimeAct(temp)
@@ -546,7 +544,7 @@ $(function () {
                 this.showHideSubtask()
             })
             // run tooltip cho avatar
-            $('[data-toggle="tooltip"]').tooltip({placement: 'right'});
+            $('[data-bs-toggle="tooltip"]').tooltip({placement: 'right'});
 
             // show các task nào có sub
             for (let item in count_parent) {
@@ -652,7 +650,10 @@ $(function () {
             })
         }
 
+
         init(data) {
+            // clean when create new init
+            $('.wrap-child').html('')
             this.getAndRenderTask(data);
             this.createSubTask();
             countSTT()
@@ -841,125 +842,129 @@ $(function () {
                 if (typeof infoOld === 'number')  // case click task khác mà chưa đóng task cũ
                     tbl.DataTable().cell(infoOld, 6).data(false).draw(false)
                 tbl.DataTable().cell(index, 6).data(true).draw(false)
-                listViewTask.appendDataToForm(cls, $('#formOpportunityTask'), data.id)
+                listViewTask.appendDataToForm(cls, $formElm, data.id)
             }
         }
 
         static renderTable(cls) {
             const dataList = cls.getTaskList
             const $tblElm = $('#table_task_list')
-            $tblElm.DataTableDefault({
-                "data": dataList,
-                "columns": [
-                    {
-                        "data": 'title',
-                        "class": "col-3",
-                        render: (row, type, data) => {
-                            return `<span class="mr-2">${row ? row : "_"}</span>` +
-                                '<span class="badge badge-primary badge-indicator-processing badge-indicator" style="margin-top: -1px;"></span>'
-                                + `<span class="ml-2 font-weight-bold">${data.code}</span>`
-                        }
-                    },
-                    {
-                        "data": 'priority',
-                        "class": 'w-5',
-                        render: (row, type, data) => {
-                            let $badge = $($('.priority-badges').html());
-                            $badge.find('.badge-icon-wrap').text(
-                                row === 0 ? '!' : row === 1 ? '!!' : '!!!'
-                            )
-                            $badge.addClass(`text-${priority_list[row]}`)
-                            return $badge.prop('outerHTML')
-                        }
-                    },
-                    {
-                        "data": "task_status",
-                        "class": "w-15",
-                        render: (row, type, data)=> {
-                            const config = cls.getConfig
-                            let html = $('<span class="badge text-dark font-2">')
-                            for (let cf of config.list_status){
-                                if (cf.id === row.id){
-                                    html.css('background-color', cf.task_color).text(row.title)
-                                    break;
+            if ($tblElm.hasClass('dataTable'))
+                $tblElm.DataTable().clear().rows.add(dataList).draw();
+            else
+                $tblElm.DataTableDefault({
+                    "data": dataList,
+                    "columns": [
+                        {
+                            "data": 'title',
+                            "class": "col-3",
+                            render: (row, type, data) => {
+                                return `<span class="mr-2">${row ? row : "_"}</span>` +
+                                    '<span class="badge badge-primary badge-indicator-processing badge-indicator" style="margin-top: -1px;"></span>'
+                                    + `<span class="ml-2 font-weight-bold">${data.code}</span>`
+                            }
+                        },
+                        {
+                            "data": 'priority',
+                            "class": 'w-5',
+                            render: (row, type, data) => {
+                                let $badge = $($('.priority-badges').html());
+                                $badge.find('.badge-icon-wrap').text(
+                                    row === 0 ? '!' : row === 1 ? '!!' : '!!!'
+                                )
+                                $badge.addClass(`text-${priority_list[row]}`)
+                                return $badge.prop('outerHTML')
+                            }
+                        },
+                        {
+                            "data": "task_status",
+                            "class": "w-15",
+                            render: (row, type, data) => {
+                                const config = cls.getConfig
+                                let html = $('<span class="badge text-dark font-2">')
+                                for (let cf of config.list_status) {
+                                    if (cf.id === row.id) {
+                                        html.css('background-color', cf.task_color).text(row.title)
+                                        break;
+                                    }
                                 }
+                                return html.prop('outerHTML')
                             }
-                            return html.prop('outerHTML')
-                        }
-                    },
-                    {
-                        "data": "employee_inherit",
-                        "class": "col-2 text-right",
-                        render: (row, type, data) => {
-                            let html = ''
-                            if (!data.employee_created?.full_name)
-                                data.employee_created.full_name = data.employee_created.last_name +
-                                    ' ' + data.employee_created.first_name
-                            const assigner = $x.fn.renderAvatar(data.employee_created).replace(
-                                'avatar-primary', 'avatar-' + $x.fn.randomColor())
-                            let assignee = ''
-                            if (row){
-                                if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
-                                assignee = $x.fn.renderAvatar(row).replace(
-                                'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
+                        },
+                        {
+                            "data": "employee_inherit",
+                            "class": "col-2 text-right",
+                            render: (row, type, data) => {
+                                let html = ''
+                                if (!data.employee_created?.full_name)
+                                    data.employee_created.full_name = data.employee_created.last_name +
+                                        ' ' + data.employee_created.first_name
+                                const assigner = $x.fn.renderAvatar(data.employee_created).replace(
+                                    'avatar-primary', 'avatar-' + $x.fn.randomColor())
+                                let assignee = ''
+                                if (row) {
+                                    if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
+                                    assignee = $x.fn.renderAvatar(row).replace(
+                                        'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
+                                }
+                                html += assigner + '<supper>»</supper>' + assignee
+                                return html
                             }
-                            html += assigner + '<supper>»</supper>' + assignee
-                            return html
+                        },
+                        {
+                            "data": "date_created",
+                            "class": "col-1",
+                            render: (row, type, data) => {
+                                if (!row) row = new Date()
+                                return `<span>${$x.fn.parseDate(row)}<span>`
+                            }
+                        },
+                        {
+                            "data": "opportunity",
+                            "class": "col-1",
+                            render: (row, type, data) => {
+                                let html = '--';
+                                if (row?.code) html = `<span>${row.code}</span>`
+                                return html
+                            }
+                        },
+                        {
+                            "class": "col-1 text-center",
+                            render: (row, type, data) => {
+                                const isEdit = data?.edited ? data.edited : false;
+                                let $btn = $('<div><button class="btn btn_task-list-action btn-icon btn-rounded bg-dark-hover" type="button"></button></div>')
+                                $btn.find('button').html(`<span class="icon"><i class="fa-regular ${isEdit ? 'fa-eye' : 'fa-eye-slash'}"></i></span>`)
+                                $btn.append(`<div class="list_act-wrap">${
+                                    $('.card-child_template .card-action-wrap').html()}</div>`)
+                                return $btn.prop('outerHTML')
+                            }
                         }
-                    },
-                    {
-                        "data": "date_created",
-                        "class": "col-1",
-                        render: (row, type, data)=>{
-                            if (!row) row = new Date()
-                            return `<span>${$x.fn.parseDate(row)}<span>`
-                        }
-                    },
-                    {
-                        "data": "opportunity",
-                        "class": "col-1",
-                        render: (row, type, data) =>{
-                            let html = '--';
-                            if (row?.code) html = `<span>${row.code}</span>`
-                            return html
-                        }
-                    },
-                    {
-                        "class": "col-1 text-center",
-                        render: (row, type, data) =>{
-                            const isEdit = data?.edited ? data.edited : false;
-                            let $btn = $('<div><button class="btn btn_task-list-action btn-icon btn-rounded bg-dark-hover" type="button"></button></div>')
-                            $btn.find('button').html(`<span class="icon"><i class="fa-regular ${isEdit ? 'fa-eye' : 'fa-eye-slash'}"></i></span>`)
-                            $btn.append(`<div class="list_act-wrap">${
-                                $('.card-child_template .card-action-wrap').html()}</div>`)
-                            return $btn.prop('outerHTML')
-                        }
-                    }
-                ],
-                rowCallback: (row, data, index)=>{
-                    $('.avatar', row).tooltip({placement: 'top'})
+                    ],
+                    rowCallback: (row, data, index) => {
+                        $('.avatar', row).tooltip({placement: 'top'})
 
-                    // click view task list
-                    $('.btn_task-list-action', row).off().on('click', function(){
-                        listViewTask.actionClickBtn(cls, row, data, index)
-                    })
-                    // click delete
-                    $('.del-task-act', row).off().on('click', function(){
-                        listViewTask.deleteTask(cls, data, index)
-                    })
-                    // click logwork
-                    $('.log-task-act', row).off().on('click', function(){
-                        const elmTaskID = $('#logtime_task_id')
-                        $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
-                        $($(this).attr('href')).modal('show')
-                        elmTaskID.val(data.id)
-                    })
-                }
-            }).on('draw.dt', function () {
-                $tblElm.find('tbody').find('tr').each(function () {
-                    $(this).after('<tr class="table-row-gap"><td></td></tr>');
-                });
-            });
+                        // click view task list
+                        $('.btn_task-list-action', row).off().on('click', function () {
+                            listViewTask.actionClickBtn(cls, row, data, index)
+                        })
+                        // click delete
+                        $('.del-task-act', row).off().on('click', function () {
+                            listViewTask.deleteTask(cls, data, index)
+                        })
+                        // click logwork
+                        $('.log-task-act', row).off().on('click', function () {
+                            const elmTaskID = $('#logtime_task_id')
+                            $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
+                            $($(this).attr('href')).modal('show')
+                            elmTaskID.val(data.id)
+                        })
+                    }
+                })
+                    .on('draw.dt', function () {
+                        $tblElm.find('tbody').find('tr').each(function () {
+                            $(this).after('<tr class="table-row-gap"><td></td></tr>');
+                        });
+                    });
         }
 
         static addNewData(cls, newData){
@@ -1016,4 +1021,31 @@ $(function () {
     new PerfectScrollbar('#kb_scroll, #kb_sub_scroll', {
         suppressScrollY: true,
     });
+    const $fOppElm = $('#filter_opportunity_id')
+    const $fSttElm = $('#filter_task_status')
+    const $fEmpElm = $('#filter_employee_id')
+    const $clearElm = $('.clear-all-btn')
+    const listElm = [$fOppElm, $fSttElm, $fEmpElm]
+    listElm.forEach(function(elm){
+        $(elm).initSelect2().on('select2:select', function () {
+            let params = {}
+            if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
+            if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
+            if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
+            callDataTaskList(kanbanTask, listTask, params)
+            $clearElm.addClass('d-block')
+        })
+    })
+    $clearElm.off().on('click', ()=>{
+        listElm.forEach(function(elm) {
+            $(elm).val('').trigger('change')
+        })
+        callDataTaskList(kanbanTask, listTask)
+        $clearElm.removeClass('d-block')
+    })
+
+    // button filter on click show hide dropdown filter
+    $('.leave-filter-wrap button').off().on('click', function(){
+        $('.leave-filter-wrap .form-group-filter').slideToggle()
+    })
 }, jQuery);

@@ -29,6 +29,63 @@
 {% endblock %}
 
 {% block pageContent %}
+    <!-- filter task -->
+    <div class="leave-filter-wrap">
+
+        <button class="btn btn-primary mb-4">
+            <span>
+                <span class="icon">
+                    <i class="fa-solid fa-filter"></i>
+                </span>
+                <span>{% trans 'Filter' %}</span>
+            </span>
+        </button>
+        <div class="form-group-filter">
+            <span class="col text-decoration-underline text-uppercase"><span>{% trans 'Filter by' %}</span>:</span>
+            <span class="col clear-all-btn">
+                <span class="text-uppercase font-2 p-1">
+                {% trans 'Clear all' %} x</span></span>
+            <label class="filter-label" for="filter_opportunity_id">
+                {% trans 'Opp/Project list' %}
+            </label>
+            <div class="max-w-280">
+                <select
+                        id="filter_opportunity_id"
+                        class="form-select"
+                        data-url="{% url 'OpportunityListAPI' %}"
+                        data-method="GET"
+                        data-keyResp="opportunity_list"
+                        data-params='{"list_from_app": "{{ data.list_from_app }}"}'
+                        data-keyText="code"
+                        data-allowClear="true"
+                ></select>
+            </div>
+            <label for="filter_task_status" class="filter-label">{% trans 'Select Status' %}</label>
+            <div class="max-w-280">
+                <select class="form-select" id="filter_task_status"
+                        data-keyResp="task_status"
+                        data-url="{% url 'OpportunityTaskStatusAPI' %}"
+                        data-allowClear="true"
+                ></select>
+            </div>
+            <label class="filter-label" for="filter_employee_id">
+                {% trans 'Assignee' %}
+            </label>
+            <div class="max-w-280">
+                <select
+                        id="filter_employee_id"
+                        class="form-select"
+                        data-url="{% url 'EmployeeListAPI' %}"
+                        data-params='{"list_from_app": "{{ data.list_from_app }}"}'
+                        data-keyResp="employee_list"
+                        data-keyText="full_name"
+                        data-allowClear="true"
+                ></select>
+            </div>
+        </div>
+        <hr class="bg-black">
+    </div>
+
     <!-- Navigation task list/kanban-->
     <ul class="nav nav-line nav-light nav-tabs">
         <li class="nav-item">
@@ -111,8 +168,7 @@
                     </div>
                     <div class="avatar avatar-rounded avatar-xs" data-toggle="tooltip" title="">
                         <span class="initial-wrap">
-                            <img src="" alt="user"
-                             class="avatar-img">
+                            <img src="" alt="user" class="avatar-img">
                         </span>
                     </div>
                 </div>

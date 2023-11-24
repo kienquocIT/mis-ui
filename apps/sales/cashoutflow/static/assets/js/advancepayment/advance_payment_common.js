@@ -939,21 +939,27 @@ class AdvancePaymentHandle {
         }
 
         frm.dataForm['sale_code_type'] = 0;
-        let opportunity_mapped = opp_mapped_select.val();
-        let quotation_mapped = quotation_mapped_select.val();
-        let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
+        if (opp_mapped_select.prop('disabled') && quotation_mapped_select.prop('disabled') && sale_order_mapped_select.prop('disabled')) {
             frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
         }
-        else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
-            frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
-        }
-        else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
-            frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
-        }
         else {
-            frm.dataForm['sale_code_type'] = 2;
+            let opportunity_mapped = opp_mapped_select.val();
+            let quotation_mapped = quotation_mapped_select.val();
+            let sale_order_mapped = sale_order_mapped_select.val();
+            if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
+                frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+            }
+            else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
+                frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
+            }
+            else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
+                frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
+            }
+            else {
+                frm.dataForm['sale_code_type'] = 2;
+            }
         }
+
 
         frm.dataForm['employee_inherit'] = $('#employee_inherit_id').val();
         if (frm.dataForm['employee_inherit'] === '') {

@@ -16,7 +16,7 @@ $(function () {
             loadDetailAdvancePayment(advance_payment.id);
         }
         else {
-            ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, {}, {});
+            ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, {}, {'opportunity': opportunity});
         }
 
         if (opportunity) {

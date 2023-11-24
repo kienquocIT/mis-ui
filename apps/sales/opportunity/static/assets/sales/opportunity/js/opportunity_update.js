@@ -393,11 +393,11 @@ $(document).ready(function () {
 
             // tab add member for sale
 
-            $(document).on('click', '#btn-show-modal-add-member', function () {
+            $('#btn-show-modal-add-member').on('click', function () {
                 OpportunityLoadDetail.loadMemberForDtb().then();
             })
 
-            $(document).on('change', '.mask-money', function () {
+            $('.mask-money').on('change', function () {
                 if ($(this).valCurrency() < 0) {
                     $.fn.notifyB({description: transEle.data('trans-limit-money')}, 'failure');
                     $(this).attr('value', 0);
@@ -405,7 +405,7 @@ $(document).ready(function () {
                 }
             })
 
-            $(document).on('change', '#input-close-date', function () {
+            $('#input-close-date').on('change', function () {
                 let open_date = $('#input-open-date').val();
                 if ($(this).val() < open_date) {
                     $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure');
@@ -413,7 +413,7 @@ $(document).ready(function () {
                 }
             })
 
-            $(document).on('focus', '#input-rate', function () {
+            $('#input-rate').on('focus', function () {
                 if ($(this).val() === '0') {
                     $(this).val('');
                 }
@@ -456,7 +456,7 @@ $(document).ready(function () {
                 }
             }
 
-            $(document).on('change', '#check-lost-reason', function () {
+            $('#check-lost-reason').on('change', function () {
                 let ele_stage_lost = $('.stage-lost')
                 if (!$(this).is(':checked')) {
                     ele_stage_lost.removeClass('bg-red-light-5 stage-selected');
@@ -474,7 +474,7 @@ $(document).ready(function () {
             })
 
 
-            $(document).on('click', '#btn-auto-update-stage', function () {
+            $('#btn-auto-update-stage').on('click', function () {
                 autoLoadStage(
                     true,
                     false,
@@ -1721,21 +1721,100 @@ $(document).ready(function () {
             }
 
             function loadTimelineList(data_timeline_list) {
-                const $urlElm = $('#url-factory')
-                const $trans = $('#trans-factory')
-                $('#table-timeline').DataTable().clear().destroy();
+
+        let ap_mapped_opp = $.fn.callAjax2({
+            url: $('#script-url').attr('data-url-ap-list') + `?opportunity_mapped_id=${pk}`,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_list')) {
+                    return data?.['advance_payment_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        let payment_mapped_opp = $.fn.callAjax2({
+            url: $('#script-url').attr('data-url-payment-list') + `?opportunity_mapped_id=${pk}`,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('payment_list')) {
+                    return data?.['payment_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([ap_mapped_opp, payment_mapped_opp]).then(
+            async (results) => {
+                let ap_id_list = []
+                for (let i = 0; i < results[0].length; i++) {
+                    let temp = results[0][i];
+                    ap_id_list.push(temp?.['id'])
+                    data_timeline_list.push(
+                        {
+                            "id": temp?.['id'],
+                            "type": "ap",
+                            "title": "Advance payment",
+                            "subject": temp?.['title'],
+                            "date": temp?.['date_created']
+                        }
+                    )
+                }
+
+                let payment_mapped_opp = await $.fn.callAjax2({
+                    url: $('#script-url').attr('data-url-return-list') + `?advance_payment_id=${ap_id_list}`,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('return_advances')) {
+                            return data?.['return_advances'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                for (let i = 0; i < payment_mapped_opp.length; i++) {
+                    let temp = payment_mapped_opp[i];
+                    data_timeline_list.push(
+                        {
+                            "id": temp?.['id'],
+                            "type": "ra",
+                            "title": "Return advance",
+                            "subject": temp?.['title'],
+                            "date": temp?.['date_created']
+                        }
+                    )
+                }
+
+                for (let i = 0; i < results[1].length; i++) {
+                    let temp = results[1][i];
+                    data_timeline_list.push(
+                        {
+                            "id": temp?.['id'],
+                            "type": "pm",
+                            "title": "Payment",
+                            "subject": temp?.['title'],
+                            "date": temp?.['date_created']
+                        }
+                    )
+                }
+                data_timeline_list.sort((a, b) => new Date(b.date) - new Date(a.date));
                 let dtb = $('#table-timeline');
-                const type_trans = {
-                    0: $trans.attr('data-activity-type01'),
-                    1: $trans.attr('data-activity-type02'),
-                    2: $trans.attr('data-activity-type03'),
-                }
-                const type_icon = {
-                    0: `<i class="bi bi-telephone-fill"></i>`,
-                    1: `<i class="bi bi-envelope-fill"></i>`,
-                    2: `<i class="bi bi-person-workspace"></i>`,
-                    task: '<i class="fa-solid fa-file-arrow-up"></i>'
-                }
+                dtb.DataTable().clear().destroy();
                 dtb.DataTableDefault({
                     pageLength: 5,
                     dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
@@ -1756,6 +1835,12 @@ $(document).ready(function () {
                                     txt = `<i class="bi bi-person-workspace"></i>`
                                 } else if (row.type === 'document') {
                                     txt = `<i class="bi bi-file-earmark-fill"></i>`
+                                } else if (row.type === 'ap') {
+                                    txt = `<i class="bi bi-piggy-bank-fill"></i>`
+                                } else if (row.type === 'pm') {
+                                    txt = `<i class="bi bi-credit-card-fill"></i>`
+                                } else if (row.type === 'ra') {
+                                    txt = `<i class="bi bi-piggy-bank"></i>`
                                 }
                                 return `<span>${txt}&nbsp;&nbsp;${row.title}</span>`;
                             }
@@ -1776,17 +1861,40 @@ $(document).ready(function () {
                                     modal_detail_target = '#detail-meeting';
                                     modal_detail_class = 'detail-meeting-button';
                                 }
-                                return `<a data-type="${row.type}" class="${modal_detail_class} text-primary link-primary underline_hover"
-                                   href="" data-bs-toggle="modal" data-id="${row.id}" data-bs-target="${modal_detail_target}">
-                                    <span><b>${row.subject}</b></span>
-                                </a>`
+                                if (['call', 'email', 'meeting', 'task'].includes(row.type)) {
+                                    return `<a data-type="${row.type}" class="${modal_detail_class} text-primary link-primary underline_hover"
+                                       href="" data-bs-toggle="modal" data-id="${row.id}" data-bs-target="${modal_detail_target}">
+                                        <span><b>${row.subject}</b></span>
+                                    </a>`
+                                }
+                                else {
+                                    if (row.type === 'ap') {
+                                        const link = $('#script-url').attr('data-url-ap-detail').format_url_with_uuid(row.id)
+                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
+                                            <span><b>${row.subject}</b></span>
+                                        </a>`
+                                    }
+                                    if (row.type === 'pm') {
+                                        const link = $('#script-url').attr('data-url-payment-detail').format_url_with_uuid(row.id)
+                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
+                                            <span><b>${row.subject}</b></span>
+                                        </a>`
+                                    }
+                                    if (row.type === 'ra') {
+                                        const link = $('#script-url').attr('data-url-return-detail').format_url_with_uuid(row.id)
+                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
+                                            <span><b>${row.subject}</b></span>
+                                        </a>`
+                                    }
+                                    return ``
+                                }
                             }
                         },
                         {
                             data: 'date',
                             className: 'wrap-text w-15',
                             render: (data, type, row, meta) => {
-                                return row.date
+                                return row.date.split(' ')[0]
                             }
                         },
                         {
@@ -1801,7 +1909,13 @@ $(document).ready(function () {
                                 } else if (row.type === 'meeting') {
                                     delete_btn_class = 'delete-meeting-button';
                                 }
-                                return `<button type="button" data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-danger btn-xs flush-soft-hover ${delete_btn_class}"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
+
+                                if (delete_btn_class) {
+                                    return `<button type="button" data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-danger btn-xs flush-soft-hover ${delete_btn_class}"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
+                                }
+                                else {
+                                    return `<button type="button" class="btn btn-icon btn-rounded btn-flush-secondary btn-xs flush-soft-hover disabled"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
+                                }
                             }
                         },
                     ],
@@ -1813,7 +1927,8 @@ $(document).ready(function () {
                         })
                     },
                 });
-            }
+            })
+    }
 
             function callAjaxToLoadTimeLineList() {
                 $.fn.callAjax($('#table-timeline').attr('data-url-logs_list'), 'GET', {'opportunity': pk})
@@ -1874,16 +1989,15 @@ $(document).ready(function () {
             callAjaxToLoadTimeLineList();
 
             // event create related features
-
-            $(document).on('click', '#create-advance-payment-shortcut', function () {
+            $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {
                 let url = $(this).attr('data-url') + `?type=0&&sale_code_mapped=${$(this).attr('data-sale_code_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
                 window.open(url, '_blank');
             })
-            $(document).on('click', '#create-payment-shortcut', function () {
+            $('#dropdown-menu-relate-app #create-payment-shortcut').on('click', function () {
                 let url = $(this).attr('data-url') + `?type=0&&sale_code_mapped=${$(this).attr('data-sale_code_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
                 window.open(url, '_blank');
             })
-            $(document).on('click', '#create-return-advance-shortcut', function () {
+            $('#dropdown-menu-relate-app #create-return-advance-shortcut').on('click', function () {
                 let url = $(this).attr('data-url') + `?opportunity=${$(this).attr('data-opportunity_mapped')}`
                 window.open(url, '_blank');
             })
@@ -1898,11 +2012,6 @@ $(document).ready(function () {
                 let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
                 window.open(url, '_blank');
             })
-
-
-
-
-
 
             $('#btn-create-related-feature').on('click', function () {
                 let dataInitSaleCode = results[0];

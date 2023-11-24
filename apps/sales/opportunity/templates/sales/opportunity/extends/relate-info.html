@@ -1,40 +1,39 @@
 {% load i18n %}
 
-<div class="form-group text-center">
-    <h4 id="header-title" class="text-primary" style="font-weight: bolder"></h4>
-</div>
-
-<div class="row bg-light-5 border rounded pr-2 pl-2 pb-2 pt-2">
-    <div class="row text-right mb-3">
-        <div class="col-6 text-left">
-            <a href="#" id="btn-auto-update-stage" class="badge badge-primary">
-                <i class="fas fa-sync-alt"></i> {% trans "Auto Update Stage" %}
-            </a>
-        </div>
-        <div class="col-6 text-right">
-            <a href="#"><i class="bi bi-bar-chart-line-fill"></i></a>
-        </div>
-    </div>
-    <!-- Status -->
-    <div class="d-flex" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
-    <div id="stage-hidden" class="hidden">
-        <div class="border rounded pr-2 sub-stage w-100 text-center d-flex justify-content-center" style="flex-direction: column;">
-            <p class="stage-indicator" style="margin-bottom: auto;"></p>
-            <div class="dropdown dropup" style="margin-top: auto;">
-                <a href="#" data-bs-toggle="dropdown">
-                    <span class="text-right">
-                        <i class="bi bi-chevron-bar-right"></i>
-                    </span>
+<div class="row bg-light-5 border rounded py-2 px-2">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6 text-left mb-2">
+                <a href="#" id="btn-auto-update-stage" class="badge badge-primary">
+                    <i class="fas fa-sync-alt"></i> {% trans "Auto Update Stage" %}
                 </a>
-                <div class="dropdown-menu position-absolute" style="z-index: 999;">
-                    <a class="dropdown-item btn-go-to-stage" href="#">{% trans "Go to Stage" %}</a>
+            </div>
+            <div class="col-6 text-right">
+                <a href="#"><i class="bi bi-bar-chart-line-fill"></i></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="d-flex" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
+            <div id="stage-hidden" class="hidden">
+                <div class="border rounded pr-2 sub-stage w-100 text-center d-flex justify-content-center" style="flex-direction: column;">
+                    <p class="stage-indicator" style="margin-bottom: auto;"></p>
+                    <div class="dropdown dropup" style="margin-top: auto;">
+                        <a href="#" data-bs-toggle="dropdown">
+                            <span class="text-right">
+                                <i class="bi bi-chevron-bar-right"></i>
+                            </span>
+                        </a>
+                        <div class="dropdown-menu position-absolute" style="z-index: 999;">
+                            <a class="dropdown-item btn-go-to-stage" href="#">{% trans "Go to Stage" %}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row bg-light-5 pr-2 pl-2 pb-2 pt-2 mt-5">
+<div class="row bg-light-5 border rounded py-2 px-2 mt-3">
     <div class="col-12 w-100">
         <div class="row div-action">
             <div class="col-11">
@@ -49,19 +48,21 @@
             </div>
         </div>
         <div class="row div-activity">
-            <div class="col-11 d-flex">
+            <div class="col-12 col-md-12 col-lg-2">
                 <h4 class="text-primary">{% trans "Activity logs" %}</h4>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </div>
+            <div class="col-8 col-md-4 col-lg-3">
                 <div class="dropdown">
-                    <button type="button" class="btn btn-soft-primary btn-xs dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="bi bi-ui-checks-grid"></i> {% trans 'New Log' %}
+                    <button type="button" id="btn-create-related-feature" class="w-100 btn btn-gradient-primary btn-xs dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-arrows-spin"></i> {% trans 'Create Related Feature' %}
                     </button>
-                    <div class="dropdown-menu">
+                    <div class="dropdown-menu" id="dropdown-menu-relate-app">
+                        <h6 class="dropdown-header">{% trans 'Sale Activities' %}</h6>
                         <a data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="dropdown-item create-new-call-log-button" href="#">
                             {% trans 'Log a call' %}
                         </a>
                         <a data-bs-toggle="modal" data-bs-target="#send-email" class="dropdown-item send-email-button" href="#">
-                            {% trans 'Email' %}
+                            {% trans 'Send email' %}
                         </a>
                         <a data-bs-toggle="modal" data-bs-target="#create-meeting" class="dropdown-item new-meeting-button" href="#">
                             {% trans 'Meeting' %}
@@ -69,13 +70,9 @@
                         <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#">
                             {% trans 'Task' %}
                         </a>
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <button type="button" id="btn-create-related-feature" class="btn btn-soft-primary btn-xs dropdown-toggle ml-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
-                        <i class="fa-solid fa-arrows-spin"></i> {% trans 'Create Related Feature' %}
-                    </button>
-                    <div class="dropdown-menu" id="dropdown-menu-relate-app">
+                        <div class="dropdown-divider"></div>
+
+                        <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
                         <a id="create-quotation-shortcut" class="dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
                         <a id="create-sale-order-shortcut" class="dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
                         <a id="create-advance-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'AdvancePaymentCreate' %}" href="#">{% trans 'Advance Payment' %}</a>
@@ -83,8 +80,10 @@
                         <a id="create-return-advance-shortcut" class="dropdown-item btn-create-related-feature" data-url="{% url 'ReturnAdvanceCreate' %}" href="#">{% trans 'Return Advance' %}</a>
                     </div>
                 </div>
+            </div>
+            <div class="col-8 col-md-4 col-lg-3">
                 <div class="dropdown">
-                    <button type="button" class="btn btn-soft-secondary btn-xs dropdown-toggle ml-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
+                    <button type="button" class="w-100 btn btn-gradient-dark btn-xs dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
                         <i class="bi bi-box-arrow-up-right"></i> {% trans 'View Related Feature' %}
                     </button>
                     <div class="dropdown-menu">
@@ -93,7 +92,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-1 text-right">
+            <div class="col-4 col-md-4 col-lg-4 text-right">
                 <a href="#" id="btn-show-action">
                     <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="{% trans 'Show actions' %}">
                         <i class="bi bi-pip text-primary"></i>
@@ -124,7 +123,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12">
+    <div class="col-12 w-100">
         <div class="row div-action">
             <div class="col-6">
                 <h5 class="text-primary">{% trans 'Next action' %}</h5>
@@ -163,38 +162,40 @@
             </div>
         </div>
     </div>
-    <div class="col-12 w-100 hidden div-activity border rounded pr-2 pl-2 pb-2 pt-2">
-        <div class="row mb-2">
+    <div class="col-12 hidden div-activity">
+        <div class="row">
             <div class="col-12">
-                <table class="table nowrap w-100" id="table-timeline"
-                       data-url-logs_list="{% url 'OpportunityActivityLogListAPI' %}"
-                       data-url-delete-call-log="{% url 'OpportunityCallLogDeleteAPI' '0' %}"
-                       data-url-delete-email="{% url 'OpportunityEmailDeleteAPI' '0' %}"
-                       data-url-delete-meeting="{% url 'OpportunityMeetingDeleteAPI' '0' %}"
-                       data-method="GET">
-                    <thead>
-                    <tr>
-                        <th>{% trans "Activity" %}</th>
-                        <th>{% trans 'Subject' %}
-                            <i class="fas fa-info-circle icon-info"
-                               data-bs-toggle="tooltip"
-                               data-bs-placement="bottom"
-                               title="{% trans 'Press row here to see detail.' %}">
-                            </i>
-                        </th>
-                        <th>{% trans "Date" %}</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table nowrap w-100" id="table-timeline"
+                           data-url-logs_list="{% url 'OpportunityActivityLogListAPI' %}"
+                           data-url-delete-call-log="{% url 'OpportunityCallLogDeleteAPI' '0' %}"
+                           data-url-delete-email="{% url 'OpportunityEmailDeleteAPI' '0' %}"
+                           data-url-delete-meeting="{% url 'OpportunityMeetingDeleteAPI' '0' %}"
+                           data-method="GET">
+                        <thead>
+                        <tr>
+                            <th class="w-25">{% trans "Activity type" %}</th>
+                            <th class="w-45">{% trans 'Subject' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Press row here to see detail.' %}">
+                                </i>
+                            </th>
+                            <th class="w-20">{% trans "Date" %}</th>
+                            <th class="w-10">{% trans "Action" %}</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row bg-light-5 pr-2 pl-2 pb-2 pt-2 mt-5">
-    <div class="col-12 mt-2">
+<div class="row bg-light-5 border rounded py-2 px-2 mt-3">
+    <div class="col-12">
         <ul class="nav nav-light nav-tabs col-12" id="tab-select">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_product">
@@ -224,29 +225,13 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_product">
-                <div class="dropdown">
-                    <button type="button" data-bs-toggle="dropdown" class="btn btn-link btn-animated">
-                        <span>
-                            <span class="icon">
-                                <span class="feather-icon">
-                                    <i data-feather="plus"></i>
-                                </span>
-                            </span>
-                            <span>{% trans 'Add Product' %}</span>
-                        </span>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" id="btn-add-select-product">{% trans 'Select Product' %}</a>
-                        <a class="dropdown-item" href="#" id="btn-add-input-product">{% trans 'Input Product' %}</a>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-12">
                         <div class="table-responsive">
                             <table class="table w-100 nowrap" id="table-products">
                                 <thead>
                                 <tr>
-                                    <th class=""></th>
+                                    <th></th>
                                     <th>{% trans "Product" %}</th>
                                     <th>{% trans 'Product Category' %}</th>
                                     <th>{% trans 'UoM' %}</th>
@@ -257,130 +242,149 @@
                                     <th></th>
                                 </tr>
                                 </thead>
+                                <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td colspan="1">
+                                        <div class="dropdown">
+                                            <button type="button" id="btn-add-row-line-detail" data-bs-toggle="dropdown" class="btn btn-outline-primary btn-sm w-100">
+                                                <i class="fas fa-plus-circle"></i>
+                                                {% trans 'Add Product' %}
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="#" id="btn-add-select-product">{% trans 'Select Product' %}</a>
+                                                <a class="dropdown-item" href="#" id="btn-add-input-product">{% trans 'Input Product' %}</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="3"></td>
+                                    <td colspan="4">
+                                        <div class="row mt-3 mb-2">
+                                            <div class="col-6"><label for="input-product-pretax-amount" class="form-check-label">{% trans 'Pretax Amount' %}</label></div>
+                                            <div class="col-6 readonly">
+                                                <input id="input-product-pretax-amount" type="text" class="form-control mask-money" data-return-type="number" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6"><label for="input-product-taxes" class="form-check-label">{% trans 'Taxes' %}</label></div>
+                                            <div class="col-6 readonly">
+                                                <input id="input-product-taxes" type="text" class="form-control mask-money" data-return-type="number" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="row mb-2">
+                                            <div class="col-6"><label for="input-product-total" class="form-check-label">{% trans 'Total' %}</label></div>
+                                            <div class="col-6 readonly">
+                                                <input id="input-product-total" type="text" class="form-control mask-money" data-return-type="number" readonly>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="tab-pane fade" id="tab_competitors">
                 <div class="row">
-                    <div class="col-6 dropdown"></div>
-                    <div class="col-6 mt-5 border rounded pr-2 pl-2 pb-2 pt-2">
-                        <div class="row mb-2">
-                            <div class="col-6"><p>{% trans 'Pretax Amount' %}</p></div>
-                            <div class="col-6 readonly">
-                                <input id="input-product-pretax-amount" type="text" class="form-control mask-money" data-return-type="number" readonly>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-6"><p>{% trans 'Taxes' %}</p></div>
-                            <div class="col-6 readonly">
-                                <input id="input-product-taxes" type="text" class="form-control mask-money" data-return-type="number" readonly>
-                            </div>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="row mb-2">
-                            <div class="col-6"><b>{% trans 'Total' %}</b></div>
-                            <div class="col-6 readonly">
-                                <input id="input-product-total" type="text" class="form-control mask-money" data-return-type="number" readonly>
-                            </div>
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table nowrap w-100" id="table-competitors">
+                                <thead>
+                                <tr>
+                                    <th class="wrap-text w-30">
+                                        {% trans "Competitor" %}
+                                        <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Select competitor accounts."></i>
+                                    </th>
+                                    <th class="wrap-text w-25">{% trans 'Strength' %}</th>
+                                    <th class="wrap-text w-25">{% trans 'Weakness' %}</th>
+                                    <th class="wrap-text w-15">{% trans "Win deal" %}</th>
+                                    <th class="wrap-text w-5"></th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="1">
+                                        <button type="button" id="btn-add-competitor" data-bs-toggle="dropdown" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-plus-circle"></i>
+                                {% trans 'Add Competitor' %}
+                            </button>
+                                    </td>
+                                    <td colspan="4"></td>
+                                </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade mb-25" id="tab_competitors">
-                <button type="button" class="btn btn-link btn-animated" id="btn-add-competitor">
-                    <span>
-                        <span class="icon">
-                            <span class="feather-icon">
-                                <i data-feather="plus"></i>
-                            </span>
-                        </span>
-                        <span>{% trans 'Add Competitor' %}</span>
-                    </span>
-                </button>
-                <table class="table nowrap w-100" id="table-competitors">
-                    <thead>
-                    <tr>
-                        <th class="wrap-text w-30">{% trans "Name" %}</th>
-                        <th class="wrap-text w-30">{% trans 'Strength' %}</th>
-                        <th class="wrap-text w-30">{% trans 'Weakness' %}</th>
-                        <th class="wrap-text w-10">{% trans "Win deal" %}</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-            <div class="tab-pane fade mb-25" id="tab_contact_role">
-                <button type="button" class="btn btn-link btn-animated" id="btn-add-contact">
-                    <span>
-                        <span class="icon">
-                            <span class="feather-icon">
-                                <i data-feather="plus"></i>
-                            </span>
-                        </span>
-                        <span>{% trans 'Add Contact' %}</span>
-                    </span>
-                </button>
-                <table class="table nowrap w-100" id="table-contact-role">
-                    <thead>
-                    <tr>
-                        <th>{% trans "Which Customer" %}</th>
-                        <th>{% trans 'Name' %}</th>
-                        <th>{% trans 'Job title' %}</th>
-                        <th>{% trans "Role" %}</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                </table>
-                <div class="form-group mt-5">
-                    <label class="form-label" for="box-select-factor">{% trans "Select Reason why customer buy your product" %}</label>
-                    <select class="form-select" multiple id="box-select-factor" data-method="GET" data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}" data-keyResp="opportunity_decision_factor"></select>
+            <div class="tab-pane fade" id="tab_contact_role">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table nowrap w-100" id="table-contact-role">
+                                <thead>
+                                <tr>
+                                    <th>{% trans "Which Customer" %}</th>
+                                    <th>{% trans 'Name' %}</th>
+                                    <th>{% trans 'Job title' %}</th>
+                                    <th>{% trans "Role" %}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="1">
+                                        <button type="button" id="btn-add-contact" data-bs-toggle="dropdown" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-plus-circle"></i>
+                                {% trans 'Add Contact' %}
+                            </button>
+                                    </td>
+                                    <td colspan="3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="box-select-factor">{% trans "Select Reason why customer buy your product" %}</label>
+                                            <select class="form-select" multiple id="box-select-factor" data-method="GET" data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}" data-keyResp="opportunity_decision_factor"></select>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="tab-pane fade mb-25" id="tab_account_history">
-                <div class="d-flex overflow-auto">
 
-                </div>
             </div>
-            <div class="tab-pane fade mb-25" id="tab_team">
+            <div class="tab-pane fade" id="tab_account_history">
+                <div class="d-flex overflow-auto"></div>
+            </div>
+            <div class="tab-pane fade" id="tab_team">
                 <div class="row mb-3">
-                    <div class="col-12 shadow shadow-bottom shadow-left border rounded p-5">
+                    <div class="col-12">
                         <div class="row" id="member-item-list">
-                            <div class="member-item col-12 col-lg-4 col-md-6 text-center">
-                                <button data-id="new" type="button" class="btn btn-link btn-animated" data-bs-toggle="modal" data-bs-target="#modalAddMember" id="btn-show-modal-add-member">
-                                    <span>
-                                        <span class="icon">
-                                            <span class="feather-icon">
-                                                <i data-feather="plus"></i>
-                                            </span>
-                                        </span>
-                                        <span>{% trans 'Add Member' %}</span>
-                                    </span>
+                            <div class="member-item col-12 col-lg-4 col-md-4 text-center">
+                                <button type="button" data-id="new" type="button" data-bs-toggle="modal" data-bs-target="#modalAddMember" id="btn-show-modal-add-member" class="mt-4 btn btn-outline-primary btn-sm w-100">
+                                    <i class="fas fa-plus-circle"></i>
+                                    {% trans 'Add Member' %}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-12 shadow shadow-bottom shadow-left border rounded p-5 hidden" id="box-edit-permit"
+                    <div class="col-12 hidden" id="box-edit-permit"
                          data-url="{% url 'MemberOfOpportunityDetail' pk_opp=pk pk_member='__pk_member__' %}" data-id="">
                         <div class="row mb-2">
-                            <div class="col-12 col-md-6 col-lg-6 col-xl-6 mb-1">
+                            <div class="col-12 col-md-8 col-lg-8 col-xl-8 mb-1">
                                 <div class="form-group">
                                     <label for="member-current-edit" class="form-label">{% trans 'Member' %}</label>
                                     <select name="" id="member-current-edit" class="form-select">
                                         <option value="" selected></option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-6 col-xl-6 mb-1">
-                                <div class="form-group">
-                                    <div class="form-label">{% trans 'Actions' %}</div>
-                                    <button class="btn btn-primary text-white form-control" type="button" id="btnSavePermitMember">{% trans 'Save' %}</button>
-                                </div>
-                            </div>
-                            <div class="col-12 mb-1">
                                 <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-6 col-xl-3 mb-1">
+                                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 mb-1">
                                         <div class="form-check form-switch">
                                             <input type="checkbox" class="form-check-input" id="enable-view-opp-member">
                                             <label class="form-check-label" for="enable-view-opp-member">
@@ -388,7 +392,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-6 col-lg-6 col-xl-3 mb-1">
+                                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 mb-1">
                                         <div class="form-check form-switch">
                                             <input type="checkbox" class="form-check-input" id="enable-add-opp-member">
                                             <label class="form-check-label" for="enable-add-opp-member">
@@ -398,12 +402,18 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-12 col-md-4 col-lg-4 col-xl-4 mb-1">
+                                <div class="form-group">
+                                    <div class="form-label">{% trans 'Actions' %}</div>
+                                    <button type="button" id="btnSavePermitMember" class="btn btn-gradient-primary text-white btn-custom btn-wth-icon w-100"><span><span>{% trans 'Update permit' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-user-edit"></i></span></span></span></button>
+                                </div>
+                            </div>
                         </div>
+                        <div class="separator"></div>
                         <div class="row mb-2">
-                            <div class="separator separator-light m-0"></div>
-                        </div>
-                        <div class="row mb-2">
-                            {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with range_allowed="1,4" pk='__pk__' get_from='opportunity' active_tab='tab-permissions' actions_enabled=True permit_enabled=True %}
+                            <div class="col-12">
+                                {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with range_allowed="1,4" pk='__pk__' get_from='opportunity' active_tab='tab-permissions' actions_enabled=True permit_enabled=True %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -412,9 +422,9 @@
     </div>
 </div>
 
-<div class="row bg-light-5 pr-2 pl-2 pb-2 pt-2 mt-10 mb-20">
-    <div class="col-2 bg-danger-light-4 border rounded justify-content-end">
-        <div class="form-check">
+<div class="row bg-light-5 py-2 px-2 mt-3">
+    <div class="col-12 col-lg-4 col-md-4 bg-danger-light-4 border rounded justify-content-end">
+        <div class="form-check text-center">
             <input type="checkbox" class="form-check-input" id="check-lost-reason">
             <label class="form-check-label" for="check-lost-reason">{% trans "Lost by other reason" %}</label>
         </div>

@@ -1301,39 +1301,44 @@ class PaymentHandle {
             }
         }
 
-        let opportunity_mapped = opp_mapped_select.val();
-        let quotation_mapped = quotation_mapped_select.val();
-        let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
+        if (opp_mapped_select.prop('disabled') && quotation_mapped_select.prop('disabled') && sale_order_mapped_select.prop('disabled')) {
             frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
-            frm.dataForm['quotation_expense_plan'] = []
-            $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
-                if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
-                    frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
-                }
-            })
-        }
-        else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
-            frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
-            frm.dataForm['quotation_expense_plan'] = []
-            $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
-                if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
-                    frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
-                }
-            })
-        }
-        else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
-            frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
-            frm.dataForm['sale_order_expense_plan'] = []
-            $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
-                if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
-                    frm.dataForm['sale_order_expense_plan'].push($(this).attr('data-id'))
-                }
-            })
         }
         else {
-            $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
-            return false;
+            let opportunity_mapped = opp_mapped_select.val();
+            let quotation_mapped = quotation_mapped_select.val();
+            let sale_order_mapped = sale_order_mapped_select.val();
+            if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
+                frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+                frm.dataForm['quotation_expense_plan'] = []
+                $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
+                    if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
+                        frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
+                    }
+                })
+            }
+            else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
+                frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
+                frm.dataForm['quotation_expense_plan'] = []
+                $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
+                    if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
+                        frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
+                    }
+                })
+            }
+            else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
+                frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
+                frm.dataForm['sale_order_expense_plan'] = []
+                $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
+                    if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
+                        frm.dataForm['sale_order_expense_plan'].push($(this).attr('data-id'))
+                    }
+                })
+            }
+            else {
+                $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
+                return false;
+            }
         }
 
         frm.dataForm['payment_expense_valid_list'] = payment_expense_valid_list;

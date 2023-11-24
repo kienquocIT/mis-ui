@@ -180,15 +180,15 @@ class ReturnAdvanceLoadPage {
             'dataParams': params,
             callbackDataResp(resp, keyResp) {
                 let list_result = []
-                if ($.fn.hasOwnProperties(params, ['advance_payment'])) {
+                if (params?.['advance_payment']) {
                     resp.data[keyResp].map(function (item) {
-                        if (item.id === params.advance_payment.id) {
+                        if (item.id === params?.['advance_payment'].id) {
                             list_result.push(item)
                         }
                     })
-                } else if ($.fn.hasOwnProperties(params, ['opportunity'])) {
+                } else if (params?.['opportunity']) {
                     resp.data[keyResp].map(function (item) {
-                        if (item?.['opportunity_id'] === params.opportunity.id) {
+                        if (item?.['opportunity_id'] === params?.['opportunity'].id) {
                             list_result.push(item)
                         }
                     })

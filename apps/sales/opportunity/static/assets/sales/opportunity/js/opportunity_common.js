@@ -1732,12 +1732,12 @@ function autoLoadStage(
 
 //common
 function toggleShowActivity() {
-    $(document).on('click', '#btn-show-activity', function () {
+    $('#btn-show-activity').on('click', function () {
         $('.div-activity').removeClass('hidden');
         $('.div-action').addClass('hidden');
     })
 
-    $(document).on('click', '#btn-show-action', function () {
+    $('#btn-show-action').on('click', function () {
         $('.div-activity').addClass('hidden');
         $('.div-action').removeClass('hidden');
     })

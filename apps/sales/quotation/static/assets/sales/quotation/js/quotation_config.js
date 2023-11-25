@@ -5,6 +5,13 @@ let dataAcceptanceAffect = [
     {'id': 1, 'title': 'None'},
 ];
 
+let dataAcceptanceAffectJSON = {
+    1: {'id': 1, 'title': 'None'},
+    2: {'id': 2, 'title': 'Plan value'},
+    3: {'id': 3, 'title': 'Delivery'},
+    4: {'id': 4, 'title': 'Payment'},
+}
+
 function loadConfig(data) {
     if (data.short_sale_config) {
         $('#is-choose-price-list')[0].checked = data.short_sale_config.is_choose_price_list;
@@ -352,7 +359,7 @@ $(function () {
                                                     <h6 class="text-primary mt-1">Final acceptance setting</h6>
                                                     <div class="row">
                                                         <div class="col-12 col-md-6 col-lg-6">
-                                                            <div class="form-group">
+                                                            <div class="form-group form-group-data-source">
                                                                 <label class="form-label">Data source</label>
                                                                 <select
                                                                     class="form-select box-acceptance-affect"
@@ -419,7 +426,13 @@ $(function () {
                     }
                 ],
                 rowCallback(row, data, index) {
-                    loadBoxAcceptanceAffect($(row.querySelector('.box-acceptance-affect')), {'id': data?.['acceptance_affect_by'], 'title': dataAcceptanceAffect[data?.['acceptance_affect_by']]?.['title']})
+                    loadBoxAcceptanceAffect($(row.querySelector('.box-acceptance-affect')));
+                    $(row.querySelector('.box-acceptance-affect')).val(data?.['acceptance_affect_by']);
+                    let boxRender = row?.querySelector('.form-group-data-source')?.querySelector('.select2-selection__rendered');
+                    if (boxRender) {
+                        boxRender.innerHTML = dataAcceptanceAffectJSON[data?.['acceptance_affect_by']]?.['title'];
+                        boxRender.setAttribute('title', dataAcceptanceAffectJSON[data?.['acceptance_affect_by']]?.['title']);
+                    }
                     row.querySelector('.acceptance-editable').checked = data?.['is_acceptance_editable'];
                 },
             });
@@ -445,10 +458,6 @@ $(function () {
         tableIndicator.on('click', '.modal-edit-formula', function() {
             let row = this.closest('tr');
             let eleIndicatorListShow = row.querySelector('.indicator-list');
-            let boxAcceptanceAffect = row.querySelector('.box-acceptance-affect');
-            if (!$(boxAcceptanceAffect).val()) {
-                loadBoxAcceptanceAffect($(boxAcceptanceAffect));
-            }
             loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), row);
             let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
             if (!$form.hasClass('sale-order')) {

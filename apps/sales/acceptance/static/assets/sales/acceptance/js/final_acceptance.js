@@ -20,14 +20,15 @@ $(function () {
                     {
                         targets: 0,
                         render: (data, type, row) => {
+                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_indicator'] === true) {
                                 let formula = "";
-                                if (row?.['sale_order_indicator']?.['indicator']?.['formula_data_show']) {
-                                    formula = row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].replace(/"/g, "'");
+                                if (row?.['indicator']?.['formula_data_show']) {
+                                    formula = row?.['indicator']?.['formula_data_show'].replace(/"/g, "'");
                                 }
-                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="${row?.['sale_order_indicator']?.['indicator']?.['code']}" data-is-delivery="${row?.['is_delivery']}" data-affect="${row?.['sale_order_indicator']?.['indicator']?.['acceptance_affect_by']}" data-editable="${row?.['sale_order_indicator']?.['indicator']?.['is_acceptance_editable']}" data-formula="${formula}">${row?.['sale_order_indicator']?.['indicator']?.['title'] ? row?.['sale_order_indicator']?.['indicator']?.['title'] : ''}</p>`;
+                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-row="${dataRow}" data-formula="${formula}">${row?.['indicator']?.['title'] ? row?.['indicator']?.['title'] : ''}</p>`;
                             } else {
-                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="${row?.['sale_order_indicator']?.['indicator']?.['code']}" data-is-delivery="${row?.['is_delivery']}" data-affect="${row?.['sale_order_indicator']?.['indicator']?.['acceptance_affect_by']}" data-editable="${row?.['sale_order_indicator']?.['indicator']?.['is_acceptance_editable']}"></p>`;
+                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-row="${dataRow}"></p>`;
                             }
                         }
                     },
@@ -77,7 +78,7 @@ $(function () {
                             if (row?.['is_indicator'] === true) {
                                 return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
                             } else {
-                                if (row?.['sale_order_indicator']?.['indicator']?.['is_acceptance_editable'] === true) {
+                                if (row?.['indicator']?.['is_acceptance_editable'] === true) {
                                     return `<div class="row">
                                             <input 
                                                 type="text" 
@@ -140,22 +141,22 @@ $(function () {
                             if (data.final_acceptance_list[0]?.['final_acceptance_indicator']) {
                                 let urlDetail = $form.attr('data-url').format_url_with_uuid(data.final_acceptance_list[0]?.['id']);
                                 $form[0].setAttribute('data-url', urlDetail);
-                                let so_row_data = {};
+                                let plan_row_data = [];
                                 let payment_row_data = {};
                                 let delivery_row_data = [];
-                                let revenueRow = null;
+                                let planAffectRows = {};
                                 let deliveryAffectRow = null;
                                 for (let indicator of data.final_acceptance_list[0]?.['final_acceptance_indicator']) {
                                     if (indicator?.['is_indicator'] === true) {
                                         let newRow = $table.DataTable().row.add(indicator).draw().node();
-                                        if (indicator?.['sale_order_indicator']?.['indicator']?.['code'] === 'IN0001') {
-                                            revenueRow = newRow;
+                                        if (indicator?.['indicator']?.['acceptance_affect_by'] === 2) {
+                                            planAffectRows[indicator?.['indicator']?.['id']] = newRow;
                                         }
-                                        if (indicator?.['sale_order_indicator']?.['indicator']?.['acceptance_affect_by'] === 3) {
+                                        if (indicator?.['indicator']?.['acceptance_affect_by'] === 3) {
                                             deliveryAffectRow = newRow;
                                         }
-                                    } else if (indicator?.['is_sale_order'] === true) {
-                                        so_row_data = indicator;
+                                    } else if (indicator?.['is_plan'] === true) {
+                                        plan_row_data.push(indicator);
                                     } else if (indicator?.['is_payment'] === true) {
                                         if (payment_row_data.hasOwnProperty(indicator?.['expense_item']?.['title'])) {
                                             payment_row_data[indicator['expense_item']['title']].push(indicator);
@@ -166,28 +167,36 @@ $(function () {
                                         delivery_row_data.push(indicator);
                                     }
                                 }
-                                // Sale order row
-                                let newSORow = $table.DataTable().row.add(so_row_data).node();
-                                if (revenueRow) {
-                                    $(newSORow).detach().insertAfter(revenueRow);
+                                // Plan rows
+                                for (let plan_data of plan_row_data) {
+                                    if (planAffectRows.hasOwnProperty(plan_data?.['indicator']?.['id'])) {
+                                        let newPlanRow = $table.DataTable().row.add(plan_data).node();
+                                        $(newPlanRow).detach().insertAfter(planAffectRows[plan_data?.['indicator']?.['id']]);
+                                    }
                                 }
                                 // Payment rows
                                 for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
                                     let row = $table[0].tBodies[0].rows[i];
                                     if (row?.querySelector('.table-row-indicator')) {
-                                        if (row.getAttribute('data-affect') === '4') {
-                                            let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
-                                            if (dataFormula) {
-                                                for (let key in payment_row_data) {
-                                                    if (dataFormula.includes(key)) {
-                                                        let newActualValue = 0;
-                                                        for (let payment_data of payment_row_data[key]) {
-                                                            payment_data['is_acceptance_editable'] = row?.['is_acceptance_editable'];
-                                                            let newPaymentRow = $table.DataTable().row.add(payment_data).node();
-                                                            $(newPaymentRow).detach().insertAfter(row);
-                                                            newActualValue += payment_data?.['actual_value'];
+                                        let dataRowRaw = row.querySelector('.table-row-indicator')?.getAttribute('data-row');
+                                        if (dataRowRaw) {
+                                            let dataRow = JSON.parse(dataRowRaw);
+                                            if (dataRow?.['indicator']?.['acceptance_affect_by'] === 4) {
+                                                let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
+                                                if (dataFormula) {
+                                                    for (let key in payment_row_data) {
+                                                        if (dataFormula.includes(key)) {
+                                                            let newActualValue = 0;
+                                                            for (let payment_data of payment_row_data[key]) {
+                                                                payment_data['sale_order_indicator'] = {'indicator': {'is_acceptance_editable': dataRow?.['indicator']?.['is_acceptance_editable']}};
+                                                                let newPaymentRow = $table.DataTable().row.add(payment_data).node();
+                                                                $(newPaymentRow).detach().insertAfter(row);
+                                                                newActualValue += payment_data?.['actual_value'];
+                                                            }
+                                                            if (newActualValue !== 0) {
+                                                                loadActualDifferentRateValue(row, newActualValue);
+                                                            }
                                                         }
-                                                        loadActualDifferentRateValue(row, newActualValue);
                                                     }
                                                 }
                                             }
@@ -197,22 +206,26 @@ $(function () {
                                 // Delivery rows
                                 let newActualValue = 0;
                                 let deliveryExistRow = null;
-                                for (let delivery_data of delivery_row_data) {
-                                    if (deliveryAffectRow?.querySelector('.table-row-indicator').getAttribute('data-editable') === 'true') {
-                                        delivery_data['is_acceptance_editable'] = true;
-                                    } else {
-                                        delivery_data['is_acceptance_editable'] = false;
+                                if (deliveryAffectRow) {
+                                    let dataRowRaw = deliveryAffectRow.querySelector('.table-row-indicator').getAttribute('data-row');
+                                    if (dataRowRaw) {
+                                        let dataRow = JSON.parse(dataRowRaw);
+                                        for (let delivery_data of delivery_row_data) {
+                                            delivery_data['sale_order_indicator'] = {'indicator': {'is_acceptance_editable': dataRow?.['indicator']?.['is_acceptance_editable']}};
+                                            let newDeliRow = $table.DataTable().row.add(delivery_data).node();
+                                            if (!deliveryExistRow) {
+                                                deliveryExistRow = deliveryAffectRow;
+                                            }
+                                            $(newDeliRow).detach().insertAfter(deliveryExistRow);
+                                            deliveryExistRow = newDeliRow;
+                                            newActualValue += delivery_data?.['actual_value'];
+                                        }
                                     }
-                                    let newDeliRow = $table.DataTable().row.add(delivery_data).node();
-                                    if (!deliveryExistRow) {
-                                        deliveryExistRow = deliveryAffectRow;
-                                    }
-                                    $(newDeliRow).detach().insertAfter(deliveryExistRow);
-                                    deliveryExistRow = newDeliRow;
-                                    newActualValue += delivery_data?.['actual_value'];
                                 }
-                                loadActualDifferentRateValue(deliveryAffectRow, newActualValue);
-                            $.fn.initMaskMoney2();
+                                if (newActualValue !== 0) {
+                                    loadActualDifferentRateValue(deliveryAffectRow, newActualValue);
+                                }
+                                $.fn.initMaskMoney2();
                             }
                         }
                     }

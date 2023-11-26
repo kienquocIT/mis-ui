@@ -1135,33 +1135,35 @@ $(document).ready(function () {
                     )
                 }
 
-                let payment_mapped_opp = await $.fn.callAjax2({
-                    url: $('#script-url').attr('data-url-return-list') + `?advance_payment_id_list=${ap_id_list}`,
-                    method: 'GET'
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('return_advances')) {
-                            return data?.['return_advances'];
-                        }
-                        return {};
-                    },
-                    (errs) => {
-                        console.log(errs);
-                    }
-                )
-
-                for (let i = 0; i < payment_mapped_opp.length; i++) {
-                    let temp = payment_mapped_opp[i];
-                    data_timeline_list.push(
-                        {
-                            "id": temp?.['id'],
-                            "type": "ra",
-                            "title": "Return advance",
-                            "subject": temp?.['title'],
-                            "date": temp?.['date_created']
+                if (ap_id_list.length > 0) {
+                    let payment_mapped_opp = await $.fn.callAjax2({
+                        url: $('#script-url').attr('data-url-return-list') + `?advance_payment_id_list=${ap_id_list}`,
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && typeof data === 'object' && data.hasOwnProperty('return_advances')) {
+                                return data?.['return_advances'];
+                            }
+                            return {};
+                        },
+                        (errs) => {
+                            console.log(errs);
                         }
                     )
+
+                    for (let i = 0; i < payment_mapped_opp.length; i++) {
+                        let temp = payment_mapped_opp[i];
+                        data_timeline_list.push(
+                            {
+                                "id": temp?.['id'],
+                                "type": "ra",
+                                "title": "Return advance",
+                                "subject": temp?.['title'],
+                                "date": temp?.['date_created']
+                            }
+                        )
+                    }
                 }
 
                 for (let i = 0; i < results[1].length; i++) {

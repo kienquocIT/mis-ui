@@ -1,4 +1,16 @@
+let dataAcceptanceAffect = [
+    {'id': 4, 'title': 'Payment'},
+    {'id': 3, 'title': 'Delivery'},
+    {'id': 2, 'title': 'Plan value'},
+    {'id': 1, 'title': 'None'},
+];
 
+let dataAcceptanceAffectJSON = {
+    1: {'id': 1, 'title': 'None'},
+    2: {'id': 2, 'title': 'Plan value'},
+    3: {'id': 3, 'title': 'Delivery'},
+    4: {'id': 4, 'title': 'Payment'},
+}
 
 function loadConfig(data) {
     if (data.short_sale_config) {
@@ -138,6 +150,16 @@ function setupSubmit() {
         'is_not_discount_on_total': $('#is-not-discount-on-total')[0].checked,
     }
     return result
+}
+
+function loadBoxAcceptanceAffect(ele, data = null) {
+    if (!data) {
+        data = dataAcceptanceAffect;
+    }
+    ele.initSelect2({
+        data: data,
+    });
+    return true;
 }
 
 $(function () {
@@ -334,6 +356,27 @@ $(function () {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <h6 class="text-primary mt-1">Final acceptance setting</h6>
+                                                    <div class="row">
+                                                        <div class="col-12 col-md-6 col-lg-6">
+                                                            <div class="form-group form-group-data-source">
+                                                                <label class="form-label">Data source</label>
+                                                                <select
+                                                                    class="form-select box-acceptance-affect"
+                                                                    data-url=""
+                                                                    data-method="GET"
+                                                                    data-keyResp=""
+                                                                >
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-md-6 col-lg-6">
+                                                            <div class="form-check mt-5">
+                                                                <input type="checkbox" class="form-check-input acceptance-editable">
+                                                                <label class="form-check-label">Editable</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="row modal-footer-edit-formula">
                                                     <div class="col-6 modal-edit-formula-validate">
@@ -382,6 +425,16 @@ $(function () {
                         }
                     }
                 ],
+                rowCallback(row, data, index) {
+                    loadBoxAcceptanceAffect($(row.querySelector('.box-acceptance-affect')));
+                    $(row.querySelector('.box-acceptance-affect')).val(data?.['acceptance_affect_by']);
+                    let boxRender = row?.querySelector('.form-group-data-source')?.querySelector('.select2-selection__rendered');
+                    if (boxRender) {
+                        boxRender.innerHTML = dataAcceptanceAffectJSON[data?.['acceptance_affect_by']]?.['title'];
+                        boxRender.setAttribute('title', dataAcceptanceAffectJSON[data?.['acceptance_affect_by']]?.['title']);
+                    }
+                    row.querySelector('.acceptance-editable').checked = data?.['is_acceptance_editable'];
+                },
             });
         }
 
@@ -389,9 +442,6 @@ $(function () {
             // disable main edit & save btn
             document.getElementById('btn-edit_quotation_config').setAttribute('hidden', 'true');
             document.getElementById('btn-create_quotation_config').setAttribute('hidden', 'true');
-            // load table indicator
-            // $('#table_indicator_list').DataTable().destroy();
-            // loadIndicatorDbl();
         });
 
         $('#tab-config').on('click', function () {
@@ -406,8 +456,8 @@ $(function () {
         });
 
         tableIndicator.on('click', '.modal-edit-formula', function() {
-            let eleIndicatorListShow = $(this)[0].closest('tr').querySelector('.indicator-list');
-            let row = $(this)[0].closest('tr');
+            let row = this.closest('tr');
+            let eleIndicatorListShow = row.querySelector('.indicator-list');
             loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), row);
             let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
             if (!$form.hasClass('sale-order')) {
@@ -590,9 +640,13 @@ $(function () {
             let row = ele[0].closest('tr');
             let editor = row.querySelector('.indicator-editor');
             let formula_list_raw = parseStringToArray(editor.value);
+            let eleBoxAcceptance = row.querySelector('.box-acceptance-affect');
+            let eleAcceptanceEditable = row.querySelector('.acceptance-editable');
             formula_list_raw = validateItemInList(formula_list_raw);
             data_submit['formula_data'] = parseFormulaRaw(formula_list_raw, row);
             data_submit['formula_data_show'] = editor.value;
+            data_submit['acceptance_affect_by'] = parseFloat($(eleBoxAcceptance).val());
+            data_submit['is_acceptance_editable'] = eleAcceptanceEditable.checked;
             return true
         }
 
@@ -683,7 +737,6 @@ $(function () {
         // submit create indicator
         btnCreateIndicator.on('click', function() {
             let url = $(this).attr('data-url');
-            let url_redirect = $(this).attr('data-url-redirect');
             let method = $(this).attr('data-method');
             let data_submit = {};
             let eleTitle = $('#indicator-create-title');
@@ -725,7 +778,6 @@ $(function () {
         tableIndicator.on('click', '.table-row-save', function() {
             let url_update = btnCreateIndicator.attr('data-url-update');
             let url = url_update.format_url_with_uuid($(this).attr('data-id'));
-            let url_redirect = btnCreateIndicator.attr('data-url-redirect');
             let method = "put";
             let data_submit = {};
             data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
@@ -756,7 +808,6 @@ $(function () {
         tableIndicator.on('click', '.btn-edit-indicator', function () {
             let url_update = btnCreateIndicator.attr('data-url-update');
             let url = url_update.format_url_with_uuid($(this).attr('data-id'));
-            let url_redirect = btnCreateIndicator.attr('data-url-redirect');
             let method = "put";
             let data_submit = {};
             setupFormula(data_submit, $(this));

@@ -174,7 +174,7 @@ $(function () {
                                         if (parentRow) {
                                             let newPlanRow = $table.DataTable().row.add(plan_data).node();
                                             $(newPlanRow).detach().insertAfter(parentRow);
-                                            newPlanRow.setAttribute('data-parent-id', parentRow.querySelector('.table-row-indicator').getAttribute('data-id'));
+                                            newPlanRow.querySelector('.table-row-indicator').setAttribute('data-parent-id', parentRow.querySelector('.table-row-indicator').getAttribute('data-id'));
                                             let newActualValue = plan_data?.['actual_value'];
                                             if (newActualValue !== 0) {
                                                 loadActualDifferentRateValue(parentRow, newActualValue);
@@ -199,7 +199,7 @@ $(function () {
                                                                 payment_data['sale_order_indicator'] = {'indicator': {'is_acceptance_editable': dataRow?.['indicator']?.['is_acceptance_editable']}};
                                                                 let newPaymentRow = $table.DataTable().row.add(payment_data).node();
                                                                 $(newPaymentRow).detach().insertAfter(row);
-                                                                newPaymentRow.setAttribute('data-parent-id', row.getAttribute('data-id'));
+                                                                newPaymentRow.querySelector('.table-row-indicator').setAttribute('data-parent-id', row.getAttribute('data-id'));
                                                                 newActualValue += payment_data?.['actual_value'];
                                                             }
                                                             if (newActualValue !== 0) {
@@ -226,6 +226,7 @@ $(function () {
                                                 deliveryExistRow = deliveryAffectRow;
                                             }
                                             $(newDeliRow).detach().insertAfter(deliveryExistRow);
+                                            newDeliRow.querySelector('.table-row-indicator').setAttribute('data-parent-id', deliveryExistRow.getAttribute('data-id'));
                                             deliveryExistRow = newDeliRow;
                                             newActualValue += delivery_data?.['actual_value'];
                                         }
@@ -270,70 +271,63 @@ $(function () {
             }
         }
 
-        function changeActualValue(row, eleInput) {
-            let elePlanedVal = row?.querySelector('.table-row-planed-value')?.getAttribute('data-init-money');
-            let eleDifferent = row?.querySelector('.table-row-different-value');
-            let eleRate = row?.querySelector('.table-row-rate-value');
-            if (elePlanedVal && eleDifferent && eleRate) {
-                // set different value
-                let differVal = parseFloat(elePlanedVal) - parseFloat(eleInput.value);
-                eleDifferent.setAttribute('data-init-money', String(differVal));
-                // set rate value
-                let rateValue = parseFloat(eleRate.getAttribute('data-value'));
-                let revenueEle = $table[0].querySelector('.table-row-indicator[data-code="IN0001"]');
-                if (revenueEle) {
-                    let revenueRow = revenueEle.closest('tr');
-                    let revenuePlanedVal = revenueRow?.querySelector('.table-row-planed-value')?.getAttribute('data-init-money');
-                    eleRate.innerHTML = '';
-                    rateValue = ((parseFloat(eleInput.value) / parseFloat(revenuePlanedVal)) * 100).toFixed(1);
-                    eleRate.innerHTML = String(rateValue) + ' %';
-                }
-                // reCalculate LNT
-                if (!['IN0001', 'IN0002', 'IN0003', 'IN0004', 'IN0005', 'IN0006'].includes(row?.querySelector('.table-row-indicator').getAttribute('data-code'))) {
-                    let netIncomeEle = $table[0].querySelector('.table-row-indicator[data-code="IN0006"]');
-                    if (netIncomeEle) {
-                        let netIncomeRow = netIncomeEle.closest('tr');
-                        let netIncomePlanedVal = parseFloat(netIncomeRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
-                        let netIncomeActualVal = parseFloat(netIncomeRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
-                        let newActualValue = netIncomePlanedVal;
-                        if (differVal !== 0) {
-                            newActualValue = netIncomeActualVal + differVal;
-                        }
-                        loadActualDifferentRateValue(netIncomeRow, newActualValue);
+        function evaluateFormula(formulaText) {
+            try {
+                return eval(formulaText);
+                // return evaluated;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function calculateIndicatorFormula(changeRow) {
+            let changeRows = [];
+            let indicatorTitle = `indicator(${changeRow.querySelector('.table-row-indicator').innerHTML})`;
+            for (let eleIndicator of $table[0].querySelectorAll('.table-row-indicator')) {
+                if (eleIndicator.hasAttribute('data-formula')) {
+                    let formula = eleIndicator.getAttribute('data-formula')
+                    if (formula.includes(indicatorTitle)) {
+                        let modifiedFormula = formula.replace(indicatorTitle, changeRow.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
+                        let finalFormula = modifiedFormula.replace('%', '/100');
+                        let newVal = evaluateFormula(finalFormula);
+                        loadActualDifferentRateValue(eleIndicator.closest('tr'), newVal);
+                        changeRows.push(eleIndicator.closest('tr'));
                     }
-                } else {
-                    if (row?.querySelector('.table-row-indicator').getAttribute('data-code') === 'IN0002') {
-                        let grossProfitEle = $table[0].querySelector('.table-row-indicator[data-code="IN0003"]');
-                        if (grossProfitEle) {
-                            let grossProfitRow = grossProfitEle.closest('tr');
-                            let grossProfitPlanedVal = parseFloat(grossProfitRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
-                            let grossProfitActualVal = parseFloat(grossProfitRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
-                            let newActualValue = grossProfitPlanedVal;
-                            if (differVal !== 0) {
-                                newActualValue = grossProfitActualVal + differVal;
+                }
+            }
+            if (changeRows.length > 0) {
+                for (let row of changeRows) {
+                    calculateIndicatorFormula(row);
+                }
+            }
+            return true;
+        }
+
+        function changeActualValue(eleInput) {
+            let newActualValue = 0;
+            let eleIndicator = eleInput?.closest('tr')?.querySelector('.table-row-indicator');
+            if (eleIndicator) {
+                let parentID = eleIndicator.getAttribute('data-parent-id');
+                if (parentID) {
+                    let parentIndicator = $table[0].querySelector(`.table-row-indicator[data-id="${parentID}"]`);
+                    if (parentIndicator) {
+                        let parentRow = parentIndicator.closest('tr');
+                        for (let childIndicatorRow of $table[0].querySelectorAll(`.table-row-indicator[data-parent-id="${parentID}"]`)) {
+                            let childRow = childIndicatorRow.closest('tr');
+                            let eleActual = childRow.querySelector('.table-row-actual-value');
+                            if (eleActual.hasAttribute('data-init-money')) {
+                                newActualValue += parseFloat(eleActual.getAttribute('data-init-money'));
+                            } else {
+                                newActualValue += parseFloat($(eleActual).valCurrency());
                             }
-                            loadActualDifferentRateValue(grossProfitRow, newActualValue);
                         }
-                        let netIncomeEle = $table[0].querySelector('.table-row-indicator[data-code="IN0006"]');
-                        if (netIncomeEle) {
-                            let netIncomeRow = netIncomeEle.closest('tr');
-                            let netIncomePlanedVal = parseFloat(netIncomeRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
-                            let netIncomeActualVal = parseFloat(netIncomeRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
-                            let newActualValue = netIncomePlanedVal;
-                            if (grossProfitEle) {
-                                let grossProfitRow = grossProfitEle.closest('tr');
-                                let grossProfitDifferentVal = parseFloat(grossProfitRow?.querySelector('.table-row-different-value').getAttribute('data-init-money'));
-                                if (grossProfitDifferentVal !== 0) {
-                                    newActualValue = netIncomeActualVal + differVal;
-                                }
-                            }
-                            loadActualDifferentRateValue(netIncomeRow, newActualValue);
-                        }
+                        loadActualDifferentRateValue(parentRow, newActualValue);
+                        calculateIndicatorFormula(parentRow);
                     }
                 }
                 $.fn.initMaskMoney2();
-                let IDIndicator = row?.querySelector('.table-row-indicator')?.getAttribute('data-id');
-                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(eleInput.value), 'different_value': differVal, 'rate_value': rateValue}
+                let IDIndicator = eleIndicator?.getAttribute('data-id');
+                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(eleInput.value)}
             }
         }
 
@@ -436,7 +430,7 @@ $(function () {
                 }
             } else {
                 let row = this.closest('tr');
-                changeActualValue(row, this);
+                changeActualValue(this);
             }
         });
 

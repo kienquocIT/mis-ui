@@ -168,5 +168,14 @@ const localeVi = {
         pricesLowsToHights: "Giá: từ Thấp đến Cao",
         pricesHightsToLows: "Giá: từ Cao đến Thấp",
         sold: "đã bán"
+    },
+    'grapesjs-plugin-my-products': {
+        search: "Tìm kiếm",
+        relateSuitable: "Mức độ: Liên quan",
+        pricesLowsToHights: "Giá: từ Thấp đến Cao",
+        pricesHightsToLows: "Giá: từ Cao đến Thấp",
+        displayList: "Danh sách",
+        displayBlock: "Khối",
+        resultCount: "kết quả đã được tìm thấy",
     }
 };

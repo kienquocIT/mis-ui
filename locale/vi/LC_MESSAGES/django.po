@@ -5005,3 +5005,8 @@ msgstr "Giá trị chênh lệch"
 #
 msgid "Please select sale order"
 msgstr "Vui lòng chọn đơn hàng"
+
+#
+msgid "Load last storage local"
+msgstr "Tải lại bản lưu trữ cuối cùng ở máy tính này"
+

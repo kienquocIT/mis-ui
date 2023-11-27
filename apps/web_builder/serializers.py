@@ -5,3 +5,4 @@ class WebDesignUpdateSerializer(serializers.Serializer):  # noqa
     page_html = serializers.CharField()
     page_css = serializers.CharField()
     page_js = serializers.CharField(allow_blank=True)
+    project_data = serializers.JSONField(default=dict)

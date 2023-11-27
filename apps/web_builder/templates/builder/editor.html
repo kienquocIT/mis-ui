@@ -34,16 +34,14 @@
     <script src="{% static 'builder/dist/cdn_download/grapesjs-style-filter@1.0.2.js' %}"></script>
     <script src="{% static 'builder/dist/cdn_download/grapesjs-style-bg@2.0.2.js' %}"></script>
 
-    {# My Product   #}
-    <script src="{% static 'builder/dist/my_plugins/my-products/index.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'builder/dist/all.css' %}">
-    {# -- My Product   #}
-
     {#  Carousel  #}
     <script src="{% static 'builder/dist/my_plugins/grapesjs-plugin-bootstrap-carousel/index.js' %}"></script>
 
     {# Navbar #}
     <script src="{% static 'builder/dist/my_plugins/grapesjs-plugin-bootstrap-navbar/index.js' %}"></script>
+
+    {# My Products #}
+    <script src="{% static 'builder/dist/my_plugins/grapesjs-plugin-my-products/index.js' %}"></script>
 
     <style>
         .icons-flex {
@@ -147,17 +145,15 @@
 </head>
 <body>
 
-<div id="gjs" style="height:0; overflow:hidden" class="container">
-    {{ data.page_detail.page_html|safe }}
-    <style>{{ data.page_detail.page_css|safe }}</style>
-    <script>{{ data.page_detail.page_js|safe }}</script>
-</div>
+<div id="gjs" style="height:0; overflow:hidden" class="container"></div>
 <form class="d-none" id="frm-save" data-url="{% url 'WebsiteDetailDesignSave' pk=pk %}">
     {% csrf_token %}
     <input type="text" name="page_html">
     <input type="text" name="page_css">
     <input type="text" name="page_js">
+    <input type="text" name="project_data">
 </form>
+{{ data.page_detail.project_data|json_script:"idx-project_data" }}
 <hr
         id="trans-ele"
         class="d-none"
@@ -165,6 +161,7 @@
         data-msg-sure-clear-canvas="{% trans 'Are you sure to clean the canvas?' %}"
         data-msg-sure-save-it="{% trans 'Are you sure to save it?' %}"
         data-msg-save="{% trans 'Save' %}"
+        data-msg-load-last-store="{% trans 'Load last storage local' %}"
         data-msg-show-border="{% trans 'Show Borders' %}"
         data-msg-preview="{% trans 'Preview' %}"
         data-msg-fullscreen="{% trans 'Fullscreen' %}"

@@ -63,11 +63,10 @@ $(function () {
     function buttonAndCommandSave(cmdm, pn) {
         cmdm.add('save-to-api', function () {
             let frmEle = $('#frm-save');
-            frmEle.find('input[name="page_html"]').val(editor.getHtml({
-                'cleanId': true,
-            }));
+            frmEle.find('input[name="page_html"]').val(editor.getHtml({cleanId: false}));
             frmEle.find('input[name="page_css"]').val(editor.getCss());
             frmEle.find('input[name="page_js"]').val(editor.getJs());
+            frmEle.find('input[name="project_data"]').val(JSON.stringify(editor.getProjectData()));
             let data = frmEle.serializeArray().reduce((o, kv) => ({
                 ...o,
                 [kv.name]: kv.value
@@ -80,10 +79,10 @@ $(function () {
                     data: data,
                 }).then(
                     (resp) => {
-                        console.log(resp);
+                        localStorage.clear();
                     },
                     (errs) => {
-                        console.log(errs);
+                        console.log('Errors:', errs);
                     }
                 )
             } else {
@@ -93,12 +92,30 @@ $(function () {
 
         pn.addButton('options', {
             id: 'save-to-api',
-            className: 'fa-solid fa-floppy-disk',
+            label: '<i class="fa fa-floppy-o" aria-hidden="true"></i>',
             command: function () {
                 editor.runCommand('save-to-api')
             },
             attributes: {
                 'title': transEle.attr('data-msg-save'),
+                'data-tooltip-pos': 'bottom',
+            },
+        });
+    }
+
+    function buttonAndCommandLoadStoreDataWhenDropEditor(cmdm, pn) {
+        cmdm.add('load-last-store', function () {
+
+        })
+
+        pn.addButton('options', {
+            id: 'load-last-store',
+            label: '<i class="fa fa-hdd-o" aria-hidden="true"></i>',
+            command: function () {
+                editor.runCommand('load-last-store')
+            },
+            attributes: {
+                'title': transEle.attr('data-msg-load-last-store'),
                 'data-tooltip-pos': 'bottom',
             },
         });
@@ -121,7 +138,6 @@ $(function () {
         editor.on('storage:store', function (e) {
         });
         editor.on('storage:start', function (e){
-            console.log('storage:start: ', e);
         })
     }
 
@@ -139,7 +155,7 @@ $(function () {
         storageManager: {
             type: 'local', // Storage type. Available: local | remote
             autosave: true, // Store data automatically
-            autoload: true, // Autoload stored data on init
+            autoload: false, // Autoload stored data on init
             stepsBeforeSave: 1, // If autosave is enabled, indicates how many changes are necessary before the store method is triggered
             // recovery: true,
             recovery: (accept, cancel, editor) => {
@@ -449,17 +465,20 @@ $(function () {
             'grapesjs-navbar',
             'grapesjs-style-filter',
             'grapesjs-style-bg',
-            'my-products',
             'grapesjs-plugin-bootstrap-carousel',
             'grapesjs-plugin-bootstrap-navbar',
+            'grapesjs-plugin-my-products',
         ],
         pluginsOpts: {
+            'grapesjs-plugin-my-products': {
+                'productData': {
+                    url: '/site/api/products',
+                    method: 'GET',
+                }
+            },
             'grapesjs-plugin-bootstrap-carousel': {},
             'grapesjs-plugin-bootstrap-navbar': {
                 menus: JSON.parse($('#idx-menus-data').text()),
-            },
-            'my-products': {
-                tabsBlock: {category: 'Extra'},
             },
             'gjs-blocks-basic': {flexGrid: true},
             'grapesjs-tui-image-editor': {
@@ -509,7 +528,7 @@ $(function () {
         style: '.vote-star::before{color:#ffc107;display:inline-block;overflow:hidden;width:100%}.vote-10::before{width:10%}.vote-20::before{width:20%}.vote-30::before{width:30%}.vote-40::before{width:40%}.vote-50::before{width:50%}.vote-60::before{width:60%}.vote-70::before{width:70%}.vote-80::before{width:80%}.vote-90::before{width:90%}.vote-100::before{width:100%}',
         canvas: {
             scripts: [
-                'https://code.jquery.com/jquery-3.3.1.slim.min.js',
+                'https://code.jquery.com/jquery-3.3.1.min.js',
                 'https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js',
                 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
 
@@ -538,6 +557,9 @@ $(function () {
     // Add save to api command
     buttonAndCommandSave(cmdm, pn);
 
+    // Add load last store api command
+    buttonAndCommandLoadStoreDataWhenDropEditor(cmdm, pn);
+
     // Add and beautify tooltips
     addAndBeatifyTooltips(pn);
 
@@ -559,5 +581,8 @@ $(function () {
         // Open block manager
         let openBlocksBtn = editor.Panels.getButton('views', 'open-blocks');
         openBlocksBtn && openBlocksBtn.set('active', 1);
+
+        // load data
+        editor.loadProjectData(JSON.parse($('#idx-project_data').text()))
     });
 })

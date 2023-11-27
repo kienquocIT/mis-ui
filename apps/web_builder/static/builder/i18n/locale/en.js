@@ -169,4 +169,13 @@ const localeEn = {
         pricesHightsToLows: "Price: Hights to Lows (n-1)",
         sold: "sold"
     },
+    'grapesjs-plugin-my-products': {
+        search: "Search",
+        relateSuitable: "Relevancy: Suitable",
+        pricesLowsToHights: "Price: Lows to Hights (1-n)",
+        pricesHightsToLows: "Price: Hights to Lows (n-1)",
+        displayList: "List",
+        displayBlock: "Block",
+        resultCount: "result was count",
+    }
 };

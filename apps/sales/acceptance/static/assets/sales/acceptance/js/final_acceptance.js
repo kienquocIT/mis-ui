@@ -158,10 +158,17 @@ $(function () {
                                     } else if (indicator?.['is_plan'] === true) {
                                         plan_row_data.push(indicator);
                                     } else if (indicator?.['is_payment'] === true) {
+                                        // payment on expense item
                                         if (payment_row_data.hasOwnProperty(indicator?.['expense_item']?.['title'])) {
                                             payment_row_data[indicator['expense_item']['title']].push(indicator);
                                         } else {
                                             payment_row_data[indicator['expense_item']['title']] = [indicator];
+                                        }
+                                        // payment on labor item
+                                        if (payment_row_data.hasOwnProperty(indicator?.['labor_item']?.['title'])) {
+                                            payment_row_data[indicator['labor_item']['title']].push(indicator);
+                                        } else {
+                                            payment_row_data[indicator['labor_item']['title']] = [indicator];
                                         }
                                     } else if (indicator?.['is_delivery'] === true) {
                                         delivery_row_data.push(indicator);

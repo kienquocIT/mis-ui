@@ -93,7 +93,6 @@ $(document).ready(function () {
                             tableSelectedEmployees.find('tbody tr').each(function () {
                                 let item = $(this).find('.code');
                                 let employee_id = item.attr('data-id');
-                                console.log(employee_id === row.id)
                                 if (employee_id === row.id) {
                                     flag = 'checked'
                                 }

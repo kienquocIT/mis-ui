@@ -52,6 +52,12 @@
             data-url-opp-list="{% url "OpportunityListAPI" %}"
             data-url-quo-list="{% url "QuotationListAPI" %}"
             data-url-so-list="{% url "SaleOrderListAPI" %}"
+            data-url-ap-list="{% url "AdvancePaymentListAPI" %}"
+            data-url-payment-list="{% url "PaymentListAPI" %}"
+            data-url-return-list="{% url "ReturnAdvanceListAPI" %}"
+            data-url-ap-detail="{% url "AdvancePaymentDetail" '0' %}"
+            data-url-payment-detail="{% url "PaymentDetail" '0' %}"
+            data-url-return-detail="{% url "ReturnAdvanceDetail" '0' %}"
     ></script>
     <div id="json-data">
         <input id="emp-current-id" class="hidden" value="{{ request.user.employee_current_data.id }}">
@@ -67,17 +73,23 @@
     <div id="div-url" hidden>
         <input id="url-member" value="{% url "EmployeeDetail" pk=0 %}">
     </diV>
+
     <div class="page-content">
         <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
               data-url-redirect="{% url "OpportunityList" %}">
             {% csrf_token %}
             <div class="row">
-                <div class="col-md-12 col-lg-4 col-xl-3 border-right" id="group-general-info-opp">
+                <div class="col-12 col-md-12 col-lg-12 mb-3 text-center">
+                    <span id="header-title" class="text-primary" style="font-weight: bolder; font-size: xx-large"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-3" id="group-general-info-opp">
                     <div class="col-12">
                         {% include 'sales/opportunity/extends/general-info.html' %}
                     </div>
                 </div>
-                <div class="col-md-12 col-lg-8 col-xl-9">
+                <div class="col-12 col-md-12 col-lg-9">
                     <div class="col-12">
                         {% include 'sales/opportunity/extends/relate-info.html' %}
                     </div>

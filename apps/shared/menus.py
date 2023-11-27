@@ -265,7 +265,7 @@ class MenusCRM:
                 icon='<i class="bi bi-telephone-fill"></i>',
             ),
             MenuCommon(
-                name='Email', code='id_menu_email', view_name='OpportunityEmailList',
+                name='Send email', code='id_menu_email', view_name='OpportunityEmailList',
                 icon='<i class="bi bi-envelope-fill"></i>',
             ),
             MenuCommon(

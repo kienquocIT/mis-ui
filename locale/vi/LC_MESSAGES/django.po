@@ -5045,3 +5045,7 @@ msgstr "Mã khách hàng"
 #
 msgid "Industry name"
 msgstr "Ngành nghề"
+
+#
+msgid "Business trip"
+msgstr "Công tác"

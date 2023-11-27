@@ -367,6 +367,10 @@ class MenuEOffice:
             )
         ]
     )
+    BUSINESS_TRIP = MenuCommon(
+        name='Business trip', code='menu_business', view_name='HomeView',
+        icon='<i class="fa-solid fa-business-time"></i>',
+    )
 
 
 class MenusReport:
@@ -480,6 +484,7 @@ class SpaceItem:
             icon='<i class="fa-solid fa-laptop-file"></i>',
             menus=[
                 MenuEOffice.LEAVE,
+                MenuEOffice.BUSINESS_TRIP,
             ],
         ),
         'report': SpaceCommon(

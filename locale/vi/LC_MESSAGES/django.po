@@ -5101,3 +5101,23 @@ msgstr "Đối thủ"
 #
 msgid "Account History"
 msgstr "Lịnh sử khách hàng"
+
+#
+msgid "Final acceptance setting"
+msgstr "Cấu hình nghiệm thu"
+
+#
+msgid "Data source"
+msgstr "Dữ liệu nguồn"
+
+#
+msgid "Editable"
+msgstr "Được chỉnh sửa"
+
+#
+msgid "None"
+msgstr "Không có"
+
+#
+msgid "Plan value"
+msgstr "Giá trị phương án kinh doanh"

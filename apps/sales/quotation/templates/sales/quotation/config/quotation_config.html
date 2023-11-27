@@ -76,6 +76,17 @@
             data-url="{% url "IndicatorParamListAPI" %}"
             data-method="GET"
     >
+    <input
+        type="hidden"
+        id="app-trans-factory"
+        data-final-acceptance="{% trans 'Final acceptance setting' %}"
+        data-source="{% trans 'Data source' %}"
+        data-editable="{% trans 'Editable' %}"
+        data-none="{% trans 'None' %}"
+        data-plan="{% trans 'Plan value' %}"
+        data-delivery="{% trans 'Delivery' %}"
+        data-payment="{% trans 'Payment' %}"
+    >
 {% endblock %}
 
 

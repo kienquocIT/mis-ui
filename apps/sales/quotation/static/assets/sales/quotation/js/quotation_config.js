@@ -1,15 +1,17 @@
+let eleTrans = $('#app-trans-factory');
+
 let dataAcceptanceAffect = [
-    {'id': 4, 'title': 'Payment'},
-    {'id': 3, 'title': 'Delivery'},
-    {'id': 2, 'title': 'Plan value'},
-    {'id': 1, 'title': 'None'},
+    {'id': 4, 'title': eleTrans.attr('data-payment')},
+    {'id': 3, 'title': eleTrans.attr('data-delivery')},
+    {'id': 2, 'title': eleTrans.attr('data-plan')},
+    {'id': 1, 'title': eleTrans.attr('data-none')},
 ];
 
 let dataAcceptanceAffectJSON = {
-    1: {'id': 1, 'title': 'None'},
-    2: {'id': 2, 'title': 'Plan value'},
-    3: {'id': 3, 'title': 'Delivery'},
-    4: {'id': 4, 'title': 'Payment'},
+    1: {'id': 1, 'title': eleTrans.attr('data-none')},
+    2: {'id': 2, 'title': eleTrans.attr('data-plan')},
+    3: {'id': 3, 'title': eleTrans.attr('data-delivery')},
+    4: {'id': 4, 'title': eleTrans.attr('data-payment')},
 }
 
 function loadConfig(data) {
@@ -356,11 +358,11 @@ $(function () {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <h6 class="text-primary mt-1">Final acceptance setting</h6>
+                                                    <h6 class="text-primary mt-1">${eleTrans.attr('data-final-acceptance')}</h6>
                                                     <div class="row">
                                                         <div class="col-12 col-md-6 col-lg-6">
                                                             <div class="form-group form-group-data-source">
-                                                                <label class="form-label">Data source</label>
+                                                                <label class="form-label">${eleTrans.attr('data-source')}</label>
                                                                 <select
                                                                     class="form-select box-acceptance-affect"
                                                                     data-url=""
@@ -373,7 +375,7 @@ $(function () {
                                                         <div class="col-12 col-md-6 col-lg-6">
                                                             <div class="form-check mt-5">
                                                                 <input type="checkbox" class="form-check-input acceptance-editable">
-                                                                <label class="form-check-label">Editable</label>
+                                                                <label class="form-check-label">${eleTrans.attr('data-editable')}</label>
                                                             </div>
                                                         </div>
                                                     </div>

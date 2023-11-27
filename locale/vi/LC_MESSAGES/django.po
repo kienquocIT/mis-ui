@@ -5010,7 +5010,6 @@ msgstr "Vui lòng chọn đơn hàng"
 msgid "Load last storage local"
 msgstr "Tải lại bản lưu trữ cuối cùng ở máy tính này"
 
-
 #
 msgid "Sale reports"
 msgstr "Báo cáo kinh doanh"

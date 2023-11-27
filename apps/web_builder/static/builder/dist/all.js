@@ -103,9 +103,14 @@ $(function () {
         });
     }
 
-    function buttonAndCommandLoadStoreDataWhenDropEditor(cmdm, pn) {
-        cmdm.add('load-last-store', function () {
-
+    function buttonAndCommandLoadStoreDataWhenDropEditor(cmdm, pn, editor) {
+        cmdm.add('load-last-store', async function () {
+            let data = await editorTmp.Storage.load();
+            if (data){
+                if (confirm(transEle.attr('data-msg-load-last-store')) === true){
+                    editor.loadProjectData(data);
+                }
+            }
         })
 
         pn.addButton('options', {
@@ -211,7 +216,7 @@ $(function () {
                             units: ['px', '%'],
                             property: 'flex-basis',
                             toRequire: 1,
-                        }, 'height', 'max-width', 'min-height', 'margin', 'padding'
+                        }, 'height', 'max-width', 'min-width', 'max-height', 'min-height', 'margin', 'padding'
                     ],
                 }, {
                     name: 'Typography',
@@ -558,7 +563,7 @@ $(function () {
     buttonAndCommandSave(cmdm, pn);
 
     // Add load last store api command
-    buttonAndCommandLoadStoreDataWhenDropEditor(cmdm, pn);
+    buttonAndCommandLoadStoreDataWhenDropEditor(cmdm, pn, editor);
 
     // Add and beautify tooltips
     addAndBeatifyTooltips(pn);

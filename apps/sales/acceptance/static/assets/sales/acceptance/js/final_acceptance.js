@@ -281,15 +281,27 @@ $(function () {
         }
 
         function calculateIndicatorFormula(changeRow) {
+            // setup {} data indicator
+            let dataIndicatorJSON = {};
+            for (let eleIndicator of $table[0].querySelectorAll('.table-row-indicator')) {
+                if (eleIndicator.innerHTML) {
+                    let indicatorTitle = `indicator(${eleIndicator.innerHTML})`;
+                    dataIndicatorJSON[indicatorTitle] = eleIndicator.closest('tr').querySelector('.table-row-actual-value').getAttribute('data-init-money');
+                }
+            }
+            dataIndicatorJSON['%'] = '/100';
             let changeRows = [];
             let indicatorTitle = `indicator(${changeRow.querySelector('.table-row-indicator').innerHTML})`;
             for (let eleIndicator of $table[0].querySelectorAll('.table-row-indicator')) {
                 if (eleIndicator.hasAttribute('data-formula')) {
                     let formula = eleIndicator.getAttribute('data-formula')
                     if (formula.includes(indicatorTitle)) {
-                        let modifiedFormula = formula.replace(indicatorTitle, changeRow.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
-                        let finalFormula = modifiedFormula.replace('%', '/100');
-                        let newVal = evaluateFormula(finalFormula);
+                        for (let indiKey in dataIndicatorJSON) {
+                            if (formula.includes(indiKey)) {
+                                formula = formula.replace(indiKey, dataIndicatorJSON[indiKey]);
+                            }
+                        }
+                        let newVal = evaluateFormula(formula);
                         loadActualDifferentRateValue(eleIndicator.closest('tr'), newVal);
                         changeRows.push(eleIndicator.closest('tr'));
                     }

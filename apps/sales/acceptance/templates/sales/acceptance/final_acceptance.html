@@ -27,7 +27,7 @@
     >
     {% csrf_token %}
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="box-final-acceptance-opp">{% trans 'Opportunity' %}</label>
                     <select
@@ -40,7 +40,20 @@
                     ></select>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
+                    <select
+                            class="form-select"
+                            id="box-final-acceptance-so"
+                            data-url="{% url "SaleOrderListAPI" %}"
+                            data-method="GET"
+                            name="sale_order"
+                            data-keyResp="sale_order_list"
+                    ></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="box-final-acceptance-employee">{% trans 'Sale Person' %}</label>
                     <select
@@ -56,34 +69,19 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
-                    <select
-                            class="form-select"
-                            id="box-final-acceptance-so"
-                            data-url="{% url "SaleOrderListAPI" %}"
-                            data-method="GET"
-                            name="sale_order"
-                            data-keyResp="sale_order_list"
-                    ></select>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="report-revenue-date-approved">{% trans 'Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="date_approved" id="report-revenue-date-approved"
                                class="form-control date-picker" autocomplete="off">
                         <div class="input-suffix">
-                            <i class="bi bi-calendar-week"></i>
+                            <i class="fas fa-calendar-week"></i>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-12">
+            <div class="col-12 col-md-8 col-lg-8">
                 <div class="d-flex justify-content-end">
                     <button
                             type="button"

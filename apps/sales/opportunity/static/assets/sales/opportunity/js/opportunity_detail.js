@@ -60,10 +60,24 @@ $(document).ready(function () {
                 OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
                 $.fn.initMaskMoney2();
 
+                Disable();
+
                 $('#frm-detail').append(`<span class="hidden" id="opp_id" data-code="${opportunity_detail.code
                 }" data-txt="${opportunity_detail.title}"></span>`)
             }
         })
+    }
+
+    function Disable() {
+        $('.form-check-input').prop('disabled', true);
+        $('#group-general-info-opp .form-control').prop('disabled', true);
+        $('#group-general-info-opp .form-select').prop('disabled', true);
+        $('#btn-auto-update-stage').prop('hidden', true);
+        $('#tab_product .btn').prop('hidden', true);
+        $('#tab_competitors .btn').prop('hidden', true);
+        $('#tab_contact_role .btn').prop('hidden', true);
+        $('#member-item-list .btn').prop('hidden', true);
+        $('#box-select-factor').prop('disabled', true);
     }
 
     loadDetail();
@@ -1071,146 +1085,272 @@ $(document).ready(function () {
     }
 
     function loadTimelineList(data_timeline_list) {
-        const $trans = transEle
-        $('#table-timeline').DataTable().clear().destroy();
-        let dtb = $('#table-timeline');
-        const type_trans = {
-            0: $trans.attr('data-activity-type01'),
-            1: $trans.attr('data-activity-type02'),
-            2: $trans.attr('data-activity-type03'),
-        }
-        const type_icon = {
-            0: `<i class="bi bi-telephone-fill"></i>`,
-            1: `<i class="bi bi-envelope-fill"></i>`,
-            2: `<i class="bi bi-person-workspace"></i>`,
-            task: '<i class="fa-solid fa-file-arrow-up"></i>'
-        }
-        dtb.DataTableDefault({
-            pageLength: 5,
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
-            data: data_timeline_list,
-            columns: [
-                {
-                    data: 'activity',
-                    className: 'wrap-text w-25',
-                    render: (data, type, row, meta) => {
-                        return row.title;
-                    }
-                },
-                {
-                    data: 'type',
-                    className: 'wrap-text w-10 text-center',
-                    render: (data, type, row, meta) => {
-                        let txt = ''
-                        if (row.type === 'task') {
-                            txt = `<i class="fa-solid fa-list-check"></i>`
-                        } else if (row.type === 'call') {
-                            txt = `<i class="bi bi-telephone-fill"></i>`
-                        } else if (row.type === 'email') {
-                            txt = `<i class="bi bi-envelope-fill"></i>`
-                        } else if (row.type === 'meeting') {
-                            txt = `<i class="bi bi-person-workspace"></i>`
-                        } else if (row.type === 'document') {
-                            txt = `<i class="bi bi-file-earmark-fill"></i>`
+
+        let ap_mapped_opp = $.fn.callAjax2({
+            url: $('#script-url').attr('data-url-ap-list') + `?opportunity_mapped_id=${pk}`,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_list')) {
+                    return data?.['advance_payment_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        let payment_mapped_opp = $.fn.callAjax2({
+            url: $('#script-url').attr('data-url-payment-list') + `?opportunity_mapped_id=${pk}`,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('payment_list')) {
+                    return data?.['payment_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([ap_mapped_opp, payment_mapped_opp]).then(
+            async (results) => {
+                let ap_id_list = []
+                for (let i = 0; i < results[0].length; i++) {
+                    let temp = results[0][i];
+                    ap_id_list.push(temp?.['id'])
+                    data_timeline_list.push(
+                        {
+                            "id": temp?.['id'],
+                            "type": "ap",
+                            "title": "Advance payment",
+                            "subject": temp?.['title'],
+                            "date": temp?.['date_created']
                         }
-                        return txt
-                    }
-                },
-                {
-                    data: 'subject',
-                    className: 'wrap-text w-50',
-                    render: (data, type, row, meta) => {
-                        let modal_detail_target = '';
-                        let modal_detail_class = '';
-                        if (row.type === 'call') {
-                            modal_detail_target = '#detail-call-log';
-                            modal_detail_class = 'detail-call-log-button';
-                        } else if (row.type === 'email') {
-                            modal_detail_target = '#detail-send-email';
-                            modal_detail_class = 'detail-email-button';
-                        } else if (row.type === 'meeting') {
-                            modal_detail_target = '#detail-meeting';
-                            modal_detail_class = 'detail-meeting-button';
+                    )
+                }
+
+                if (ap_id_list.length > 0) {
+                    let payment_mapped_opp = await $.fn.callAjax2({
+                        url: $('#script-url').attr('data-url-return-list') + `?advance_payment_id_list=${ap_id_list}`,
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && typeof data === 'object' && data.hasOwnProperty('return_advances')) {
+                                return data?.['return_advances'];
+                            }
+                            return {};
+                        },
+                        (errs) => {
+                            console.log(errs);
                         }
-                        return `<a data-type="${row.type}" class="${modal_detail_class} text-primary link-primary underline_hover"
-                                       href="" data-bs-toggle="modal" data-id="${row.id}"data-bs-target="${modal_detail_target}">
+                    )
+
+                    for (let i = 0; i < payment_mapped_opp.length; i++) {
+                        let temp = payment_mapped_opp[i];
+                        data_timeline_list.push(
+                            {
+                                "id": temp?.['id'],
+                                "type": "ra",
+                                "title": "Return advance",
+                                "subject": temp?.['title'],
+                                "date": temp?.['date_created']
+                            }
+                        )
+                    }
+                }
+
+                for (let i = 0; i < results[1].length; i++) {
+                    let temp = results[1][i];
+                    data_timeline_list.push(
+                        {
+                            "id": temp?.['id'],
+                            "type": "pm",
+                            "title": "Payment",
+                            "subject": temp?.['title'],
+                            "date": temp?.['date_created']
+                        }
+                    )
+                }
+                data_timeline_list.sort((a, b) => new Date(b.date) - new Date(a.date));
+                let dtb = $('#table-timeline');
+                dtb.DataTable().clear().destroy();
+                dtb.DataTableDefault({
+                    pageLength: 5,
+                    dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
+                    data: data_timeline_list,
+                    columns: [
+                        {
+                            data: 'activity',
+                            className: 'wrap-text w-25',
+                            render: (data, type, row, meta) => {
+                                let txt = '';
+                                if (row.type === 'task') {
+                                    txt = `<i class="fa-solid fa-list-check"></i>`
+                                } else if (row.type === 'call') {
+                                    txt = `<i class="bi bi-telephone-fill"></i>`
+                                } else if (row.type === 'email') {
+                                    txt = `<i class="bi bi-envelope-fill"></i>`
+                                } else if (row.type === 'meeting') {
+                                    txt = `<i class="bi bi-person-workspace"></i>`
+                                } else if (row.type === 'document') {
+                                    txt = `<i class="bi bi-file-earmark-fill"></i>`
+                                } else if (row.type === 'ap') {
+                                    txt = `<i class="bi bi-piggy-bank-fill"></i>`
+                                } else if (row.type === 'pm') {
+                                    txt = `<i class="bi bi-credit-card-fill"></i>`
+                                } else if (row.type === 'ra') {
+                                    txt = `<i class="bi bi-piggy-bank"></i>`
+                                }
+                                return `<span>${txt}&nbsp;&nbsp;${row.title}</span>`;
+                            }
+                        },
+                        {
+                            data: 'subject',
+                            className: 'wrap-text w-40',
+                            render: (data, type, row, meta) => {
+                                let modal_detail_target = '';
+                                let modal_detail_class = '';
+                                if (row.type === 'call') {
+                                    modal_detail_target = '#detail-call-log';
+                                    modal_detail_class = 'detail-call-log-button';
+                                } else if (row.type === 'email') {
+                                    modal_detail_target = '#detail-send-email';
+                                    modal_detail_class = 'detail-email-button';
+                                } else if (row.type === 'meeting') {
+                                    modal_detail_target = '#detail-meeting';
+                                    modal_detail_class = 'detail-meeting-button';
+                                }
+                                if (['call', 'email', 'meeting', 'task'].includes(row.type)) {
+                                    return `<a data-type="${row.type}" class="${modal_detail_class} text-primary link-primary underline_hover"
+                                       href="" data-bs-toggle="modal" data-id="${row.id}" data-bs-target="${modal_detail_target}">
                                         <span><b>${row.subject}</b></span>
                                     </a>`
-                    }
-                },
-                {
-                    data: 'date',
-                    className: 'wrap-text w-15',
-                    render: (data, type, row, meta) => {
-                        return row.date
-                    }
-                },
-            ],
-            rowCallback: function (row, data) {
-                // click show task
-                $('.view_task_log', row).off().on('click', function (e) {
-                    e.stopPropagation();
-                    displayTaskView(this.dataset.url)
-                })
-            },
-        });
+                                }
+                                else {
+                                    if (row.type === 'ap') {
+                                        const link = $('#script-url').attr('data-url-ap-detail').format_url_with_uuid(row.id)
+                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
+                                            <span><b>${row.subject}</b></span>
+                                        </a>`
+                                    }
+                                    if (row.type === 'pm') {
+                                        const link = $('#script-url').attr('data-url-payment-detail').format_url_with_uuid(row.id)
+                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
+                                            <span><b>${row.subject}</b></span>
+                                        </a>`
+                                    }
+                                    if (row.type === 'ra') {
+                                        const link = $('#script-url').attr('data-url-return-detail').format_url_with_uuid(row.id)
+                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
+                                            <span><b>${row.subject}</b></span>
+                                        </a>`
+                                    }
+                                    return ``
+                                }
+                            }
+                        },
+                        {
+                            data: 'date',
+                            className: 'wrap-text w-15',
+                            render: (data, type, row, meta) => {
+                                return row.date.split(' ')[0]
+                            }
+                        },
+                        {
+                            data: 'action',
+                            className: 'wrap-text w-10',
+                            render: (data, type, row, meta) => {
+                                let delete_btn_class = '';
+                                if (row.type === 'call') {
+                                    delete_btn_class = 'delete-call-log-button';
+                                } else if (row.type === 'email') {
+                                    delete_btn_class = 'delete-email-button';
+                                } else if (row.type === 'meeting') {
+                                    delete_btn_class = 'delete-meeting-button';
+                                }
+
+                                if (delete_btn_class) {
+                                    return `<button type="button" data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-danger btn-xs flush-soft-hover ${delete_btn_class}"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
+                                }
+                                else {
+                                    return `<button type="button" class="btn btn-icon btn-rounded btn-flush-secondary btn-xs flush-soft-hover disabled"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
+                                }
+                            }
+                        },
+                    ],
+                    rowCallback: function (row, data) {
+                        // click show task
+                        $('.view_task_log', row).off().on('click', function (e) {
+                            e.stopPropagation();
+                            displayTaskView(this.dataset.url)
+                        })
+                    },
+                });
+            })
     }
 
     function callAjaxToLoadTimeLineList() {
-                $.fn.callAjax($('#table-timeline').attr('data-url-logs_list'), 'GET', {'opportunity': pk})
-                    .then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let activity_logs_list = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('activity_logs_list')) {
-                                data?.['activity_logs_list'].map(function (item) {
-                                    if (Object.keys(item?.['task']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['task']?.['id'],
-                                            'type': item?.['task']?.['activity_type'],
-                                            'title': item?.['task']?.['activity_name'],
-                                            'subject': item?.['task']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    } else if (Object.keys(item?.['call_log']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['call_log']?.['id'],
-                                            'type': item?.['call_log']?.['activity_type'],
-                                            'title': item?.['call_log']?.['activity_name'],
-                                            'subject': item?.['call_log']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    } else if (Object.keys(item?.['email']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['email']?.['id'],
-                                            'type': item?.['email']?.['activity_type'],
-                                            'title': item?.['email']?.['activity_name'],
-                                            'subject': item?.['email']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    } else if (Object.keys(item?.['meeting']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['meeting']?.['id'],
-                                            'type': item?.['meeting']?.['activity_type'],
-                                            'title': item?.['meeting']?.['activity_name'],
-                                            'subject': item?.['meeting']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    } else if (Object.keys(item?.['document']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['document']?.['id'],
-                                            'type': item?.['document']?.['activity_type'],
-                                            'title': item?.['document']?.['activity_name'],
-                                            'subject': item?.['document']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    }
-                                });
+        $.fn.callAjax($('#table-timeline').attr('data-url-logs_list'), 'GET', {'opportunity': pk})
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let activity_logs_list = [];
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('activity_logs_list')) {
+                        data?.['activity_logs_list'].map(function (item) {
+                            if (Object.keys(item?.['task']).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item?.['task']?.['id'],
+                                    'type': item?.['task']?.['activity_type'],
+                                    'title': item?.['task']?.['activity_name'],
+                                    'subject': item?.['task']?.['subject'],
+                                    'date': item?.['date_created'].split(' ')[0],
+                                })
+                            } else if (Object.keys(item?.['call_log']).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item?.['call_log']?.['id'],
+                                    'type': item?.['call_log']?.['activity_type'],
+                                    'title': item?.['call_log']?.['activity_name'],
+                                    'subject': item?.['call_log']?.['subject'],
+                                    'date': item?.['date_created'].split(' ')[0],
+                                })
+                            } else if (Object.keys(item?.['email']).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item?.['email']?.['id'],
+                                    'type': item?.['email']?.['activity_type'],
+                                    'title': item?.['email']?.['activity_name'],
+                                    'subject': item?.['email']?.['subject'],
+                                    'date': item?.['date_created'].split(' ')[0],
+                                })
+                            } else if (Object.keys(item?.['meeting']).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item?.['meeting']?.['id'],
+                                    'type': item?.['meeting']?.['activity_type'],
+                                    'title': item?.['meeting']?.['activity_name'],
+                                    'subject': item?.['meeting']?.['subject'],
+                                    'date': item?.['date_created'].split(' ')[0],
+                                })
+                            } else if (Object.keys(item?.['document']).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item?.['document']?.['id'],
+                                    'type': item?.['document']?.['activity_type'],
+                                    'title': item?.['document']?.['activity_name'],
+                                    'subject': item?.['document']?.['subject'],
+                                    'date': item?.['date_created'].split(' ')[0],
+                                })
                             }
-                            loadTimelineList(activity_logs_list)
-                        }
-                    })
-            }
+                        });
+                    }
+                    loadTimelineList(activity_logs_list)
+                }
+            })
+    }
 
     callAjaxToLoadTimeLineList();
 
@@ -1338,4 +1478,135 @@ $(document).ready(function () {
                 $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
             })
     })
+
+    let prm_detail = $.fn.callAjax2({
+        url: frmDetail.data('url'),
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('opportunity')) {
+                loadPermitEmpty();
+                return data?.['opportunity'];
+            }
+            return {};
+        },
+        (errs) => {
+        }
+    )
+
+    Promise.all([prm_detail]).then(
+        (results) => {
+            const opportunity_detail = results[0];
+            let paramString = {
+                'id': opportunity_detail.id,
+                'code': opportunity_detail.code,
+                'title': opportunity_detail.title,
+                'sale_person': opportunity_detail.sale_person,
+            }
+
+            // event create related features
+            $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {
+                let url = $(this).attr('data-url') + `?type=0&&sale_code_mapped=${$(this).attr('data-sale_code_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
+                window.open(url, '_blank');
+            })
+            $('#dropdown-menu-relate-app #create-payment-shortcut').on('click', function () {
+                let url = $(this).attr('data-url') + `?type=0&&sale_code_mapped=${$(this).attr('data-sale_code_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
+                window.open(url, '_blank');
+            })
+            $('#dropdown-menu-relate-app #create-return-advance-shortcut').on('click', function () {
+                let url = $(this).attr('data-url') + `?opportunity=${$(this).attr('data-opportunity_mapped')}`
+                window.open(url, '_blank');
+            })
+
+            $(document).on('click', '.btn-add-document', function () {
+                let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
+                window.open(url, '_blank');
+            })
+
+            // event on click to create relate apps from opportunity
+            $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
+                let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
+                window.open(url, '_blank');
+            })
+
+            $('#btn-create-related-feature').on('click', function () {
+                let dataInitSaleCode = results[0];
+
+                let dataParam_ap = {'list_from_app': 'cashoutflow.advancepayment.create'}
+                let opp_list_ajax= $.fn.callAjax2({
+                    url: $('#script-url').attr('data-url-opp-list'),
+                    data: dataParam_ap,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                return data?.['opportunity_list'];
+                            }
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([opp_list_ajax]).then(
+                    (results) => {
+                        let opp_list = results[0];
+                        for (let opp of opp_list) {
+                            if (opp?.['id'] === dataInitSaleCode?.['id']) {
+                                let sale_code_mapped= encodeURIComponent(JSON.stringify({'id': opp?.['id'], 'code': opp?.['code'], 'title': opp?.['title']}));
+                                let quotation= encodeURIComponent(JSON.stringify(opp?.['quotation']));
+                                let sale_order= encodeURIComponent(JSON.stringify(opp?.['sale_order']));
+                                $('#create-advance-payment-shortcut').removeClass('disabled');
+                                $('#create-advance-payment-shortcut').attr('data-sale_code_mapped', sale_code_mapped)
+                                $('#create-advance-payment-shortcut').attr('data-quotation_object', quotation)
+                                $('#create-advance-payment-shortcut').attr('data-sale_order_object', sale_order)
+                                break;
+                            }
+                        }
+                    })
+
+                let dataParam_payment = {'list_from_app': 'cashoutflow.payment.create'}
+                opp_list_ajax= $.fn.callAjax2({
+                    url: $('#script-url').attr('data-url-opp-list'),
+                    data: dataParam_payment,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                return data?.['opportunity_list'];
+                            }
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([opp_list_ajax]).then(
+                    (results) => {
+                        let opp_list = results[0];
+                        for (let opp of opp_list) {
+                            if (opp?.['id'] === dataInitSaleCode?.['id']) {
+                                let sale_code_mapped= encodeURIComponent(JSON.stringify({'id': opp?.['id'], 'code': opp?.['code'], 'title': opp?.['title']}));
+                                let quotation= encodeURIComponent(JSON.stringify(opp?.['quotation']));
+                                let sale_order= encodeURIComponent(JSON.stringify(opp?.['sale_order']));
+                                $('#create-payment-shortcut').removeClass('disabled')
+                                $('#create-payment-shortcut').attr('data-sale_code_mapped', sale_code_mapped)
+                                $('#create-payment-shortcut').attr('data-quotation_object', quotation)
+                                $('#create-payment-shortcut').attr('data-sale_order_object', sale_order)
+                                break;
+                            }
+                        }
+                    })
+
+                $('#create-return-advance-shortcut').attr('data-opportunity_mapped', encodeURIComponent(JSON.stringify({'id': dataInitSaleCode?.['id'], 'code': dataInitSaleCode?.['code'], 'title': dataInitSaleCode?.['title']})))
+            })
+        })
+
 })

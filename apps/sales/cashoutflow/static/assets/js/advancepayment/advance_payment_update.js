@@ -6,7 +6,6 @@ $(document).ready(function () {
     $('#form-detail-advance').submit(function (event) {
         event.preventDefault();
         let combinesData = new AdvancePaymentHandle().combinesData($(this), true);
-        console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

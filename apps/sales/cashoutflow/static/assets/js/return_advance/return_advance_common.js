@@ -180,15 +180,15 @@ class ReturnAdvanceLoadPage {
             'dataParams': params,
             callbackDataResp(resp, keyResp) {
                 let list_result = []
-                if ($.fn.hasOwnProperties(params, ['advance_payment'])) {
+                if (params?.['advance_payment']) {
                     resp.data[keyResp].map(function (item) {
-                        if (item.id === params.advance_payment.id) {
+                        if (item.id === params?.['advance_payment'].id) {
                             list_result.push(item)
                         }
                     })
-                } else if ($.fn.hasOwnProperties(params, ['opportunity'])) {
+                } else if (params?.['opportunity']) {
                     resp.data[keyResp].map(function (item) {
-                        if (item?.['opportunity_id'] === params.opportunity.id) {
+                        if (item?.['opportunity_id'] === params?.['opportunity'].id) {
                             list_result.push(item)
                         }
                     })
@@ -199,7 +199,6 @@ class ReturnAdvanceLoadPage {
             }
         }).on('change', function () {
             let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
-            console.log(obj_selected)
             let sale_code_mapped = null
             if (Object.keys(obj_selected?.['opportunity_mapped']).length !== 0) {
                 sale_code_mapped = obj_selected?.['opportunity_mapped']
@@ -210,7 +209,6 @@ class ReturnAdvanceLoadPage {
             if (Object.keys(obj_selected?.['sale_order_mapped']).length !== 0) {
                 sale_code_mapped = obj_selected?.['sale_order_mapped']
             }
-            console.log(sale_code_mapped)
             if (sale_code_mapped) {
                 $('#inp-sale-code').val(sale_code_mapped.code)
             }

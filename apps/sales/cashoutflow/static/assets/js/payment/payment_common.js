@@ -519,8 +519,6 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
-                console.log(data_expense)
-                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -602,8 +600,6 @@ function LoadPlanQuotationNoOPP(quotation_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
-                console.log(data_expense)
-                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -685,8 +681,6 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
-                console.log(data_expense)
-                console.log(data_ap_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -1174,6 +1168,8 @@ class PaymentHandle {
                 PaymentLoadQuotation(quotation_object)
                 PaymentLoadSaleOrder(sale_order_object)
                 AP_filter = ap_mapped_id?.['id'];
+
+                LoadPlanQuotation(opp_mapped_select.val(), quotation_object?.['id'])
             }
             else if (type === 1) {
                 tableLineDetail.find('tbody').html('');
@@ -1301,39 +1297,44 @@ class PaymentHandle {
             }
         }
 
-        let opportunity_mapped = opp_mapped_select.val();
-        let quotation_mapped = quotation_mapped_select.val();
-        let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped) {
+        if (opp_mapped_select.prop('disabled') && quotation_mapped_select.prop('disabled') && sale_order_mapped_select.prop('disabled')) {
             frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
-            frm.dataForm['quotation_expense_plan'] = []
-            $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
-                if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
-                    frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
-                }
-            })
-        }
-        else if (quotation_mapped) {
-            frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
-            frm.dataForm['quotation_expense_plan'] = []
-            $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
-                if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
-                    frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
-                }
-            })
-        }
-        else if (sale_order_mapped) {
-            frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
-            frm.dataForm['sale_order_expense_plan'] = []
-            $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
-                if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
-                    frm.dataForm['sale_order_expense_plan'].push($(this).attr('data-id'))
-                }
-            })
         }
         else {
-            $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
-            return false;
+            let opportunity_mapped = opp_mapped_select.val();
+            let quotation_mapped = quotation_mapped_select.val();
+            let sale_order_mapped = sale_order_mapped_select.val();
+            if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
+                frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+                frm.dataForm['quotation_expense_plan'] = []
+                $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
+                    if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
+                        frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
+                    }
+                })
+            }
+            else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
+                frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
+                frm.dataForm['quotation_expense_plan'] = []
+                $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
+                    if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
+                        frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
+                    }
+                })
+            }
+            else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
+                frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
+                frm.dataForm['sale_order_expense_plan'] = []
+                $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
+                    if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
+                        frm.dataForm['sale_order_expense_plan'].push($(this).attr('data-id'))
+                    }
+                })
+            }
+            else {
+                $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
+                return false;
+            }
         }
 
         frm.dataForm['payment_expense_valid_list'] = payment_expense_valid_list;

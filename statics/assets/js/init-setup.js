@@ -3353,8 +3353,9 @@ class PersonControl {
         if (typeof personData === 'object') {
             if (shortNameKey === null) {
                 if ($.fn.hasOwnProperties(personData, ['first_name', 'last_name'])) {
-                    let last_name = personData['last_name'];
-                    let first_name = personData['first_name'];
+                    let last_name = personData['last_name'].split(' ')[0][0];
+                    let first_name = personData['first_name'].split(' ');
+                    first_name = first_name[first_name.length - 1][0]
                     return `${last_name.length > 0 ? last_name[0] : ''}${first_name.length > 0 ? first_name[0] : ''}`;
                 }
             } else {

@@ -5010,3 +5010,96 @@ msgstr "Vui lòng chọn đơn hàng"
 msgid "Load last storage local"
 msgstr "Tải lại bản lưu trữ cuối cùng ở máy tính này"
 
+
+#
+msgid "Sale reports"
+msgstr "Báo cáo kinh doanh"
+
+#
+msgid "Revenue report"
+msgstr "Báo cáo doanh thu"
+
+#
+msgid "Product report"
+msgstr "Báo cáo sản phẩm"
+
+#
+msgid "Customer report"
+msgstr "Báo cáo khách hàng"
+
+#
+msgid "Sale order code"
+msgstr "Mã đơn hàng"
+
+#
+msgid "Sale order name"
+msgstr "Tên đơn hàng"
+
+#
+msgid "Gross profit"
+msgstr "Lợi nhuận gộp"
+
+#
+msgid "Net income"
+msgstr "Lợi nhuận thuần"
+
+#
+msgid "Customer code"
+msgstr "Mã khách hàng"
+
+#
+msgid "Industry name"
+msgstr "Ngành nghề"
+
+#
+msgid "Update permit"
+msgstr "Cập nhập quyền"
+
+#
+msgid "Sale Activities"
+msgstr "Hoạt động bán hàng"
+
+#
+msgid "Log a call"
+msgstr "Ghi cuộc gọi"
+
+#
+msgid "Send email"
+msgstr "Gửi email"
+
+#
+msgid "Meeting"
+msgstr "Cuộc họp"
+
+#
+msgid "Activity logs"
+msgstr "Hoạt động ghi lại"
+
+#
+msgid "Current action"
+msgstr "Hoạt động hiện tại"
+
+#
+msgid "Next action"
+msgstr "Hoạt động tiếp theo"
+
+#
+msgid "Related features"
+msgstr "Tính năng liên quan"
+
+#
+msgid "Activity type"
+msgstr "Loại hoạt động"
+
+#
+msgid "Subject"
+msgstr "Tiêu đề"
+
+#
+msgid "Competitor"
+msgstr "Đối thủ"
+
+#
+msgid "Account History"
+msgstr "Lịnh sử khách hàng"
+

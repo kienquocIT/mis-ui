@@ -32,17 +32,34 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script id="script-url"
+            data-url-opp-list="{% url "OpportunityListAPI" %}"
+            data-url-quo-list="{% url "QuotationListAPI" %}"
+            data-url-so-list="{% url "SaleOrderListAPI" %}"
+            data-url-ap-list="{% url "AdvancePaymentListAPI" %}"
+            data-url-payment-list="{% url "PaymentListAPI" %}"
+            data-url-return-list="{% url "ReturnAdvanceListAPI" %}"
+            data-url-ap-detail="{% url "AdvancePaymentDetail" '0' %}"
+            data-url-payment-detail="{% url "PaymentDetail" '0' %}"
+            data-url-return-detail="{% url "ReturnAdvanceDetail" '0' %}"
+    ></script>
+
     <div class="page-content">
         <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
               data-url-redirect="{% url "OpportunityList" %}">
             {% csrf_token %}
             <div class="row">
-                <div class="col-md-12 col-lg-4 col-xl-3 border-right" id="group-general-info-opp">
+                <div class="col-12 col-md-12 col-lg-12 mb-3 text-center">
+                    <span id="header-title" class="text-primary" style="font-weight: bolder; font-size: xx-large"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-3" id="group-general-info-opp">
                     <div class="col-12">
                         {% include 'sales/opportunity/extends/general-info.html' %}
                     </div>
                 </div>
-                <div class="col-md-12 col-lg-8 col-xl-9">
+                <div class="col-12 col-md-12 col-lg-9">
                     <div class="col-12">
                         {% include 'sales/opportunity/extends/relate-info.html' %}
                     </div>
@@ -489,6 +506,24 @@
     >
 {% endblock %}
 {% block jsFooter %}
+    <script>
+        function loadPermitEmpty() {
+            let cls = new HandlePermissions();
+            cls.loadData([], [], {
+                enableVisibleColumns : false,
+                enableSortColumns : false,
+                enableTools : false,
+                searching : false,
+                ordering : false,
+                visibleSearchField : false,
+                visibleOrder : false,
+            });
+        }
+
+        $('#btnResetData').on('click', function (){
+            $('#member-current-edit').trigger('change');
+        })
+    </script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>

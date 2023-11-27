@@ -67,14 +67,14 @@ $(function () {
                             if (row?.['is_indicator'] === true) {
                                 return `<b><span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span></b>`;
                             } else {
-                                return `<span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span>`;
+                                return `<p></p>`;
                             }
                         }
                     },
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            if (row?.['sale_order_indicator']?.['indicator']?.['title'] !== 'HR labor expense' && row?.['is_delivery'] === false) {
+                            if (!row?.['sale_order_indicator']?.['indicator']?.['formula_data_show'].includes('Internal labor item') && row?.['is_delivery'] === false && row?.['is_sale_order'] === false) {
                                 if (row?.['is_indicator'] === true) {
                                     return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
                                 } else {
@@ -96,7 +96,11 @@ $(function () {
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
+                            if (row?.['is_indicator'] === true) {
+                                return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                     {
@@ -171,17 +175,19 @@ $(function () {
                                 for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
                                     let row = $table[0].tBodies[0].rows[i];
                                     if (row?.querySelector('.table-row-indicator')) {
-                                        let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
-                                        if (dataFormula) {
-                                            for (let key in payment_row_data) {
-                                                if (dataFormula.includes(key)) {
-                                                    let newActualValue = 0;
-                                                    for (let payment_data of payment_row_data[key]) {
-                                                        let newPaymentRow = $table.DataTable().row.add(payment_data).node();
-                                                        $(newPaymentRow).detach().insertAfter(row);
-                                                        newActualValue += payment_data?.['actual_value'];
+                                        if (!['IN0001', 'IN0002', 'IN0005', 'IN0006'].includes(row?.querySelector('.table-row-indicator').getAttribute('data-code'))) {
+                                            let dataFormula = row?.querySelector('.table-row-indicator').getAttribute('data-formula');
+                                            if (dataFormula) {
+                                                for (let key in payment_row_data) {
+                                                    if (dataFormula.includes(key)) {
+                                                        let newActualValue = 0;
+                                                        for (let payment_data of payment_row_data[key]) {
+                                                            let newPaymentRow = $table.DataTable().row.add(payment_data).node();
+                                                            $(newPaymentRow).detach().insertAfter(row);
+                                                            newActualValue += payment_data?.['actual_value'];
+                                                        }
+                                                        loadActualDifferentRateValue(row, newActualValue);
                                                     }
-                                                    loadActualDifferentRateValue(row, newActualValue);
                                                 }
                                             }
                                         }
@@ -217,7 +223,11 @@ $(function () {
             let eleRate = row?.querySelector('.table-row-rate-value');
             if (elePlanedVal && eleActual && eleDifferent && eleRate) {
                 // set actual value
-                eleActual.setAttribute('data-init-money', String(newActualValue));
+                if (eleActual.hasAttribute('data-init-money')) {
+                    eleActual.setAttribute('data-init-money', String(newActualValue));
+                } else {
+                    $(eleActual).attr('value', String(newActualValue));
+                }
                 // set different value
                 let differVal = parseFloat(elePlanedVal) - parseFloat(newActualValue);
                 eleDifferent.setAttribute('data-init-money', String(differVal));
@@ -238,21 +248,98 @@ $(function () {
             }
         }
 
-        function changeActualValue(row) {
+        function changeActualValue(row, eleInput) {
             let elePlanedVal = row?.querySelector('.table-row-planed-value')?.getAttribute('data-init-money');
             let eleDifferent = row?.querySelector('.table-row-different-value');
-            if (elePlanedVal && eleDifferent) {
-                let differVal = parseFloat(elePlanedVal) - parseFloat(this.value);
+            let eleRate = row?.querySelector('.table-row-rate-value');
+            if (elePlanedVal && eleDifferent && eleRate) {
+                // set different value
+                let differVal = parseFloat(elePlanedVal) - parseFloat(eleInput.value);
                 eleDifferent.setAttribute('data-init-money', String(differVal));
+                // set rate value
+                let rateValue = parseFloat(eleRate.getAttribute('data-value'));
+                let revenueEle = $table[0].querySelector('.table-row-indicator[data-code="IN0001"]');
+                if (revenueEle) {
+                    let revenueRow = revenueEle.closest('tr');
+                    let revenuePlanedVal = revenueRow?.querySelector('.table-row-planed-value')?.getAttribute('data-init-money');
+                    eleRate.innerHTML = '';
+                    rateValue = ((parseFloat(eleInput.value) / parseFloat(revenuePlanedVal)) * 100).toFixed(1);
+                    eleRate.innerHTML = String(rateValue) + ' %';
+                }
+                // reCalculate LNT
+                if (!['IN0001', 'IN0002', 'IN0003', 'IN0004', 'IN0005', 'IN0006'].includes(row?.querySelector('.table-row-indicator').getAttribute('data-code'))) {
+                    let netIncomeEle = $table[0].querySelector('.table-row-indicator[data-code="IN0006"]');
+                    if (netIncomeEle) {
+                        let netIncomeRow = netIncomeEle.closest('tr');
+                        let netIncomePlanedVal = parseFloat(netIncomeRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
+                        let netIncomeActualVal = parseFloat(netIncomeRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
+                        let newActualValue = netIncomePlanedVal;
+                        if (differVal !== 0) {
+                            newActualValue = netIncomeActualVal + differVal;
+                        }
+                        loadActualDifferentRateValue(netIncomeRow, newActualValue);
+                    }
+                } else {
+                    if (row?.querySelector('.table-row-indicator').getAttribute('data-code') === 'IN0002') {
+                        let grossProfitEle = $table[0].querySelector('.table-row-indicator[data-code="IN0003"]');
+                        if (grossProfitEle) {
+                            let grossProfitRow = grossProfitEle.closest('tr');
+                            let grossProfitPlanedVal = parseFloat(grossProfitRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
+                            let grossProfitActualVal = parseFloat(grossProfitRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
+                            let newActualValue = grossProfitPlanedVal;
+                            if (differVal !== 0) {
+                                newActualValue = grossProfitActualVal + differVal;
+                            }
+                            loadActualDifferentRateValue(grossProfitRow, newActualValue);
+                        }
+                        let netIncomeEle = $table[0].querySelector('.table-row-indicator[data-code="IN0006"]');
+                        if (netIncomeEle) {
+                            let netIncomeRow = netIncomeEle.closest('tr');
+                            let netIncomePlanedVal = parseFloat(netIncomeRow?.querySelector('.table-row-planed-value').getAttribute('data-init-money'));
+                            let netIncomeActualVal = parseFloat(netIncomeRow?.querySelector('.table-row-actual-value').getAttribute('data-init-money'));
+                            let newActualValue = netIncomePlanedVal;
+                            if (grossProfitEle) {
+                                let grossProfitRow = grossProfitEle.closest('tr');
+                                let grossProfitDifferentVal = parseFloat(grossProfitRow?.querySelector('.table-row-different-value').getAttribute('data-init-money'));
+                                if (grossProfitDifferentVal !== 0) {
+                                    newActualValue = netIncomeActualVal + differVal;
+                                }
+                            }
+                            loadActualDifferentRateValue(netIncomeRow, newActualValue);
+                        }
+                    }
+                }
                 $.fn.initMaskMoney2();
                 let IDIndicator = row?.querySelector('.table-row-indicator')?.getAttribute('data-id');
-                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(this.value), 'different_value': differVal}
+                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(eleInput.value), 'different_value': differVal, 'rate_value': rateValue}
             }
         }
 
-        boxOpp.initSelect2({'allowClear': true,});
-        boxEmployee.initSelect2({'allowClear': true,});
-        boxSO.initSelect2({'allowClear': true,});
+        function loadOpp(dataOpp = {}) {
+            boxOpp.empty();
+            boxOpp.initSelect2({
+                data: dataOpp,
+                'allowClear': true,
+            });
+        }
+        loadOpp();
+
+        function loadEmployee(dataEmployee = {}) {
+            boxEmployee.empty();
+            boxEmployee.initSelect2({
+                data: dataEmployee,
+            });
+        }
+        loadEmployee();
+
+        function loadSO(dataSO = {}) {
+            boxSO.empty();
+            boxSO.initSelect2({
+                data: dataSO,
+                'allowClear': true,
+            });
+        }
+        loadSO();
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -268,9 +355,25 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Events
-        // boxSO.on('change', function () {
-        //     loadFinalAcceptance();
-        // });
+        boxOpp.on('change', function () {
+            if (boxOpp.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxOpp, boxOpp.val());
+                if (dataSelected) {
+                    loadSO(dataSelected?.['sale_order']);
+                    loadEmployee(dataSelected?.['sale_person']);
+                }
+            }
+        });
+
+        boxSO.on('change', function () {
+            if (boxSO.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxSO, boxSO.val());
+                if (dataSelected) {
+                    loadOpp(dataSelected?.['opportunity']);
+                    loadEmployee(dataSelected?.['sale_person']);
+                }
+            }
+        });
 
         btnRefresh.on('click', function () {
             if (boxSO.val()) {
@@ -296,7 +399,7 @@ $(function () {
                 }
             } else {
                 let row = this.closest('tr');
-                changeActualValue(row);
+                changeActualValue(row, this);
             }
         });
 

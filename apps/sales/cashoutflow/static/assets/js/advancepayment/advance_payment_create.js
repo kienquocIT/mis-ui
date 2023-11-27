@@ -13,14 +13,12 @@ $(document).ready(function () {
     sale_order_object = sale_order_object !== 'undefined' ? JSON.parse(decodeURIComponent(sale_order_object)) : null;
     ap_mapped_id = ap_mapped_id !== 'undefined' ? JSON.parse(decodeURIComponent(ap_mapped_id)) : null;
 
-    console.log(sale_code_mapped, type, quotation_object, sale_order_object, ap_mapped_id)
     new AdvancePaymentHandle().load(sale_code_mapped, type, quotation_object, sale_order_object, ap_mapped_id);
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT
     $('#form-create-advance').submit(function (event) {
         event.preventDefault();
         let combinesData = new AdvancePaymentHandle().combinesData($(this));
-        console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

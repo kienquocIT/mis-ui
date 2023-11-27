@@ -265,7 +265,7 @@ class MenusCRM:
                 icon='<i class="bi bi-telephone-fill"></i>',
             ),
             MenuCommon(
-                name='Email', code='id_menu_email', view_name='OpportunityEmailList',
+                name='Send email', code='id_menu_email', view_name='OpportunityEmailList',
                 icon='<i class="bi bi-envelope-fill"></i>',
             ),
             MenuCommon(
@@ -377,19 +377,19 @@ class MenusReport:
         name='Sale reports', code='menu_sale_reports', view_name='', icon='<i class="fas fa-chart-line"></i>',
         child=[
             MenuCommon(
-                name='Revenue Report',
+                name='Revenue report',
                 code='menu_report_revenue_list',
                 view_name='ReportRevenueList',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
             MenuCommon(
-                name='Product Report',
+                name='Product report',
                 code='menu_report_product_list',
                 view_name='ReportProductList',
                 icon='<i class="fas fa-box-open"></i>',
             ),
             MenuCommon(
-                name='Customer Report',
+                name='Customer report',
                 code='menu_report_customer_list',
                 view_name='ReportCustomerList',
                 icon='<i class="fas fa-user-tie"></i>',

@@ -2062,7 +2062,7 @@ class QuotationCalculateCaseHandle {
                         }
                     }
                 }
-                //
+                // calculate Discount Amount
                 let eleRowDiscountAmountRaw = row.querySelector('.table-row-discount-amount-raw');
                 let eleRowQuantity = row.querySelector('.table-row-quantity');
                 if (eleRowDiscountAmountRaw && eleRowQuantity) {

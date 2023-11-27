@@ -167,14 +167,22 @@ $(function () {
                                         delivery_row_data.push(indicator);
                                     }
                                 }
-                                // Plan rows
+                                // Add Plan child rows
                                 for (let plan_data of plan_row_data) {
                                     if (planAffectRows.hasOwnProperty(plan_data?.['indicator']?.['id'])) {
-                                        let newPlanRow = $table.DataTable().row.add(plan_data).node();
-                                        $(newPlanRow).detach().insertAfter(planAffectRows[plan_data?.['indicator']?.['id']]);
+                                        let parentRow = planAffectRows[plan_data?.['indicator']?.['id']];
+                                        if (parentRow) {
+                                            let newPlanRow = $table.DataTable().row.add(plan_data).node();
+                                            $(newPlanRow).detach().insertAfter(parentRow);
+                                            newPlanRow.setAttribute('data-parent-id', parentRow.querySelector('.table-row-indicator').getAttribute('data-id'));
+                                            let newActualValue = plan_data?.['actual_value'];
+                                            if (newActualValue !== 0) {
+                                                loadActualDifferentRateValue(parentRow, newActualValue);
+                                            }
+                                        }
                                     }
                                 }
-                                // Payment rows
+                                // Add Payment child rows
                                 for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
                                     let row = $table[0].tBodies[0].rows[i];
                                     if (row?.querySelector('.table-row-indicator')) {
@@ -191,6 +199,7 @@ $(function () {
                                                                 payment_data['sale_order_indicator'] = {'indicator': {'is_acceptance_editable': dataRow?.['indicator']?.['is_acceptance_editable']}};
                                                                 let newPaymentRow = $table.DataTable().row.add(payment_data).node();
                                                                 $(newPaymentRow).detach().insertAfter(row);
+                                                                newPaymentRow.setAttribute('data-parent-id', row.getAttribute('data-id'));
                                                                 newActualValue += payment_data?.['actual_value'];
                                                             }
                                                             if (newActualValue !== 0) {
@@ -203,7 +212,7 @@ $(function () {
                                         }
                                     }
                                 }
-                                // Delivery rows
+                                // Add Delivery child rows
                                 let newActualValue = 0;
                                 let deliveryExistRow = null;
                                 if (deliveryAffectRow) {
@@ -240,11 +249,7 @@ $(function () {
             let eleRate = row?.querySelector('.table-row-rate-value');
             if (elePlanedVal && eleActual && eleDifferent && eleRate) {
                 // set actual value
-                if (eleActual.hasAttribute('data-init-money')) {
-                    eleActual.setAttribute('data-init-money', String(newActualValue));
-                } else {
-                    $(eleActual).attr('value', String(newActualValue));
-                }
+                eleActual.setAttribute('data-init-money', String(newActualValue));
                 // set different value
                 let differVal = parseFloat(elePlanedVal) - parseFloat(newActualValue);
                 eleDifferent.setAttribute('data-init-money', String(differVal));

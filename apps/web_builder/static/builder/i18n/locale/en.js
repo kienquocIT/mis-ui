@@ -177,5 +177,7 @@ const localeEn = {
         displayList: "List",
         displayBlock: "Block",
         resultCount: "result was count",
+        amoutLeftBefore: "There are still ",
+        amoutLeftAfter: " products left.",
     }
 };

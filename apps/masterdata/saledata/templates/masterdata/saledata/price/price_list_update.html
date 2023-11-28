@@ -51,29 +51,31 @@
         <div class="tab-pane fade show active" id="tab-item-list">
             <div class="row">
                 <div class="col-12 text-left">
-                    <button class="btn btn-soft-primary" id="btn-add-new-item" data-bs-toggle="modal"
-                            data-bs-target="#modal-add-new-item" type="button">
+                    <button class="btn btn-soft-primary btn-sm" id="btn-add-new-item" type="button">
                         <span data-bs-placement="bottom" data-bs-toggle="tooltip"
                               title="{% trans 'Add Item' %}">
                             <i class="fas fa-plus-circle"></i>&nbsp;
-                            {% trans 'Add Item' %}
+                            {% trans 'Add' %}
                         </span>
                     </button>
                 </div>
             </div>
-            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
+            <form id="form-update-item-price"
+                  data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
+                  data-url-detail="{% url "PriceDetailAPI" pk=0 %}"
                   data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}" data-url-redirect="{% url 'PriceList' %}"
                   data-method="PUT">
                 <table id="datatable-item-list" class="table nowrap w-100">
+                    <thead>
                     <tr>
-                        <thead>
-                        <th>#</th>
+                        <th></th>
                         <th>{% trans "Code" %}</th>
                         <th>{% trans "Item name" %}</th>
                         <th>{% trans "UoM group" %}</th>
                         <th>{% trans "UoM" %}</th>
-                        </thead>
                     </tr>
+                    </thead>
+                    <tbody></tbody>
                 </table>
             </form>
         </div>
@@ -152,75 +154,6 @@
             </form>
         </div>
     </div>
-
-    <!-- Modal create new Product -->
-    <div class="modal fade" id="modal-add-new-item" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenter"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Select an item" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="form-create-product" data-method="PUT" data-url="{% url "ProductAddFromPriceListAPI" pk=0 %}" data-url-redirect="{% url 'PriceList' %}">
-                    <div class="modal-body">
-                        <div class="row" hidden>
-                            <div class="form-group">
-                                <label class="form-label required">{% trans "Code" %}
-                                </label>
-                                <input type="text" class="form-control" id="inp-code" readonly>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group">
-                                <label class="form-label required">{% trans "Name" %}
-                                </label>
-                                <select class="form-select"
-                                        name="product"
-                                        id="select-box-product"
-                                        data-method="GET"
-                                        data-url="">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group">
-                                <label class="form-label required">{% trans "UoM Group" %}</label>
-                                <input type="text" class="form-control" id="inp-uom-group" name="uom_group" readonly>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group">
-                                <label class="form-label">{% trans "UoM" %}
-                                    <span class="field-required">*</span>
-                                </label>
-                                <select class="form-select"
-                                        name="uom"
-                                        id="select-box-uom"
-                                        data-method="GET"
-                                        data-url="{% url "UnitOfMeasureListAPI" %}"
-                                        data-keyResp="unit_of_measure"
-                                ></select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                        <button type="submit" class="btn btn-primary" id="save-product-selected"
-                                form="form-create-product">
-                            {% trans 'Save' %}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <script type="application/json" id="price_parent"></script>
-    <script type="application/json" id="data_detail"></script>
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"

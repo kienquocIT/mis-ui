@@ -20,13 +20,20 @@ opp_mapped_select.on('change', function () {
     sale_order_mapped_select.find('option').remove();
 
     if (opp_mapped_select.val()) {
-        sale_order_mapped_select.prop('disabled', true);
-        quotation_mapped_select.prop('disabled', true);
+        let opp_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
+        if (opp_mapped_opp?.['is_close']) {
+            $.fn.notifyB({description: `Opportunity ${opp_mapped_opp?.['code']} has been closed. Can not select.`}, 'failure');
+            opp_mapped_select.find('option').remove();
+        }
+        else {
+            sale_order_mapped_select.prop('disabled', true);
+            quotation_mapped_select.prop('disabled', true);
 
-        let quo_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
-        let so_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
-        PaymentLoadQuotation(quo_mapped_opp)
-        PaymentLoadSaleOrder(so_mapped_opp);
+            let quo_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
+            let so_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
+            PaymentLoadQuotation(quo_mapped_opp)
+            PaymentLoadSaleOrder(so_mapped_opp);
+        }
     }
     else {
         quotation_mapped_select.prop('disabled', false);

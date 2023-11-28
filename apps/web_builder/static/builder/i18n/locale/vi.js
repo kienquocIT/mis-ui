@@ -177,5 +177,7 @@ const localeVi = {
         displayList: "Danh sách",
         displayBlock: "Khối",
         resultCount: "kết quả đã được tìm thấy",
+        amountLeftBefore: "Vẫn còn ",
+        amountLeftAfter: " sản phẩm.",
     }
 };

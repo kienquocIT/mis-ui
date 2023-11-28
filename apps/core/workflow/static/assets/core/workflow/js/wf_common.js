@@ -195,7 +195,7 @@ $(document).ready(function () {
     $select_box.on("select2:select", function (e) {
         $next_btn.prop('disabled', false);
         $next_btn.on('click', () => $prev_btn.prop('disabled', false))
-        $('#property_list_choices').attr('data-params', JSON.stringify({application: e.params.data.id}))
+        $('#property_list_choices').attr('data-params', JSON.stringify({application: e.params.data.id, is_sale_indicator: false}))
     });
 
     // button create new zone

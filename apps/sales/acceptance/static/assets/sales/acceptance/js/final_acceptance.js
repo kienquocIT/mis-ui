@@ -145,7 +145,7 @@ $(function () {
                                 let payment_row_data = {};
                                 let delivery_row_data = [];
                                 let planAffectRows = {};
-                                let deliveryAffectRow = null;
+                                let deliveryAffectRows = [];
                                 let paymentAffectRows = [];
                                 let otherExpensesRow = null;
                                 for (let indicator of data.final_acceptance_list[0]?.['final_acceptance_indicator']) {
@@ -157,7 +157,7 @@ $(function () {
                                         }
                                         // acceptance_affect_by delivery
                                         if (indicator?.['indicator']?.['acceptance_affect_by'] === 3) {
-                                            deliveryAffectRow = newRow;
+                                            deliveryAffectRows.push(newRow);
                                         }
                                         // acceptance_affect_by payment
                                         if (indicator?.['indicator']?.['acceptance_affect_by'] === 4) {
@@ -258,9 +258,9 @@ $(function () {
                                     }
                                 }
                                 // Add Delivery child rows
-                                let newActualValue = 0;
-                                let deliveryExistRow = null;
-                                if (deliveryAffectRow) {
+                                for (let deliveryAffectRow of deliveryAffectRows) {
+                                    let newActualValue = 0;
+                                    let deliveryExistRow = null;
                                     let dataRowRaw = deliveryAffectRow.querySelector('.table-row-indicator').getAttribute('data-row');
                                     if (dataRowRaw) {
                                         let dataRow = JSON.parse(dataRowRaw);
@@ -276,10 +276,12 @@ $(function () {
                                             newActualValue += delivery_data?.['actual_value'];
                                         }
                                     }
+                                    if (newActualValue !== 0) {
+                                        loadActualDifferentRateValue(deliveryAffectRow, newActualValue);
+                                    }
                                 }
-                                if (newActualValue !== 0) {
-                                    loadActualDifferentRateValue(deliveryAffectRow, newActualValue);
-                                }
+
+                                // init money
                                 $.fn.initMaskMoney2();
                             }
                         }

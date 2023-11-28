@@ -402,7 +402,7 @@ function loadAPList() {
                 if (data) {
                     if (resp.data['advance_payment_list']) {
                         let result = [];
-                        if (AP_filter === null) {
+                        if (!AP_filter) {
                             for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
                                 if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0 && resp.data['advance_payment_list'][i]?.['employee_inherit_id'] === initEmployee.id) {
                                     result.push(resp.data['advance_payment_list'][i])
@@ -515,10 +515,29 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
             }
         )
 
-        Promise.all([expense_quotation, ap_mapped_item]).then(
+        let dataParam3 = {'opportunity_mapped_id': opportunity_id}
+        let payment_mapped_item = $.fn.callAjax2({
+            url: script_url.attr('data-url-payment-cost-list'),
+            data: dataParam3,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('payment_cost_list')) {
+                    return data?.['payment_cost_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([expense_quotation, ap_mapped_item, payment_mapped_item]).then(
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                let data_payment_mapped_item = results[2];
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -527,12 +546,17 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
+                    let sum_real_value = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
-                            sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
+                        }
+                    }
+                    for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                        if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                            sum_real_value += data_payment_mapped_item[j]?.['real_value'];
+                            sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -596,10 +620,29 @@ function LoadPlanQuotationNoOPP(quotation_id) {
             }
         )
 
-        Promise.all([expense_quotation, ap_mapped_item]).then(
+        let dataParam3 = {'quotation_mapped_id': quotation_id}
+        let payment_mapped_item = $.fn.callAjax2({
+            url: script_url.attr('data-url-payment-cost-list'),
+            data: dataParam3,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('payment_cost_list')) {
+                    return data?.['payment_cost_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([expense_quotation, ap_mapped_item, payment_mapped_item]).then(
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                let data_payment_mapped_item = results[2];
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -608,12 +651,17 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
+                    let sum_real_value = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
-                            sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
+                        }
+                    }
+                    for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                        if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                            sum_real_value += data_payment_mapped_item[j]?.['real_value'];
+                            sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -677,10 +725,29 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
             }
         )
 
-        Promise.all([expense_sale_order, ap_mapped_item]).then(
+        let dataParam3 = {'sale_order_mapped_id': sale_order_id}
+        let payment_mapped_item = $.fn.callAjax2({
+            url: script_url.attr('data-url-payment-cost-list'),
+            data: dataParam3,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('payment_cost_list')) {
+                    return data?.['payment_cost_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([expense_sale_order, ap_mapped_item, payment_mapped_item]).then(
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                let data_payment_mapped_item = results[2];
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -689,12 +756,17 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
+                    let sum_real_value = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
-                            sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
+                        }
+                    }
+                    for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                        if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                            sum_real_value += data_payment_mapped_item[j]?.['real_value'];
+                            sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -1297,39 +1369,37 @@ class PaymentHandle {
             }
         }
 
+        let opportunity_mapped = opp_mapped_select.val();
+        let quotation_mapped = quotation_mapped_select.val();
+        let sale_order_mapped = sale_order_mapped_select.val();
         if (opp_mapped_select.prop('disabled') && quotation_mapped_select.prop('disabled') && sale_order_mapped_select.prop('disabled')) {
-            frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+            const urlParams = new URLSearchParams(window.location.search);
+            let type = urlParams.get('type');
+            if (type) {
+                if (opportunity_mapped && type === '0') {
+                    frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+                }
+                else if (quotation_mapped && type === '1') {
+                    frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
+                }
+                else if (sale_order_mapped && type === '2') {
+                    frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
+                }
+                else {
+                    $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
+                    return false;
+                }
+            }
         }
         else {
-            let opportunity_mapped = opp_mapped_select.val();
-            let quotation_mapped = quotation_mapped_select.val();
-            let sale_order_mapped = sale_order_mapped_select.val();
             if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
                 frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
-                frm.dataForm['quotation_expense_plan'] = []
-                $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
-                    if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
-                        frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
-                    }
-                })
             }
             else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
                 frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
-                frm.dataForm['quotation_expense_plan'] = []
-                $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
-                    if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
-                        frm.dataForm['quotation_expense_plan'].push($(this).attr('data-id'))
-                    }
-                })
             }
             else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
                 frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
-                frm.dataForm['sale_order_expense_plan'] = []
-                $('#tab_plan_datatable tbody tr .expense_item_title').each(function () {
-                    if (line_detail_expense_items.includes($(this).attr('data-expense-id'))) {
-                        frm.dataForm['sale_order_expense_plan'].push($(this).attr('data-id'))
-                    }
-                })
             }
             else {
                 $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');

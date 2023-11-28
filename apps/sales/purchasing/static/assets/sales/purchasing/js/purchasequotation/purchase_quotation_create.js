@@ -3,7 +3,7 @@ $(document).ready(function () {
     const pqr_id = urlParams.get('pqr_id');
     const pqr_title = urlParams.get('pqr_title');
     let param_PQR = null;
-    if (pqr_id !== null && pqr_title !== null) {
+    if (pqr_id && pqr_title) {
         param_PQR = {
             'id': pqr_id,
             'title': pqr_title,

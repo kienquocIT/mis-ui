@@ -46,7 +46,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label required">{% trans "Supplier" %}</label>
-                        <select id="supplier-select-box" class="select2" type="button" data-placeholder="Select Supplier"></select>
+                        <select id="supplier-select-box" class="select2" data-placeholder="Select Supplier"></select>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
@@ -75,11 +75,11 @@
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
                         <label class="form-label required">{% trans "Contact" %}</label>
-                        <select id="contact-select-box" class="select2" type="button" data-placeholder="Select Contact"></select>
+                        <select id="contact-select-box" class="select2" data-placeholder="Select Contact"></select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">{% trans "PQ Request" %}</label>
-                        <select id="pqr-select-box" class="select2" type="button" data-placeholder="Select Purchase Quotation Request"></select>
+                        <select id="pqr-select-box" class="select2" data-placeholder="Select Purchase Quotation Request"></select>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
@@ -118,39 +118,43 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <table class="table nowrap w-100" id="table-purchase-quotation-products-selected">
-                                    <thead>
-                                    <th class="w-5"></th>
-                                    <th class="w-15 required">{% trans "Product" %}</th>
-                                    <th class="w-10">{% trans "Description" %}</th>
-                                    <th class="w-15 required">{% trans "UoM" %}</th>
-                                    <th class="w-10 required">{% trans "Quantity" %}</th>
-                                    <th class="w-15 required">{% trans "PR Unit Price" %}
-                                        <i class="fas fa-info-circle icon-info"
-                                           data-bs-toggle="tooltip"
-                                           data-bs-placement="top"
-                                           title="{% trans 'If the products are merged, Default Unit Price will be got from the smallest UoM ratio product.' %}">
-                                        </i>
-                                    </th>
-                                    <th class="w-10 required">{% trans "Tax" %}
-                                        <i class="fas fa-info-circle icon-info"
-                                           data-bs-toggle="tooltip"
-                                           data-bs-placement="top"
-                                           title="{% trans 'If the products are merged, Default Tax will be got from the smallest UoM ratio product.' %}">
-                                        </i>
-                                    </th>
-                                    <th class="w-15 required">{% trans "Subtotal Price" %}</th>
-                                    <th class="w-5">{% trans "Action" %}</th>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                        <button id="new-product-btn" class="btn btn-soft-primary mb-3" type="button">
-                            <span>
-                                <span>{% trans "New product" %}</span>
-                                <span class="icon">
-                                    <i class="fas fa-plus-circle"></i>
-                                </span>
-                            </span>
-                        </button>
+                            <thead>
+                            <th class="w-5"></th>
+                            <th class="w-15 required">{% trans "Product" %}</th>
+                            <th class="w-10">{% trans "Description" %}</th>
+                            <th class="w-15 required">{% trans "UoM" %}</th>
+                            <th class="w-10 required">{% trans "Quantity" %}</th>
+                            <th class="w-15 required">{% trans "PR Unit Price" %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{% trans 'If the products are merged, Default Unit Price will be got from the smallest UoM ratio product.' %}">
+                                </i>
+                            </th>
+                            <th class="w-10 required">{% trans "Tax" %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{% trans 'If the products are merged, Default Tax will be got from the smallest UoM ratio product.' %}">
+                                </i>
+                            </th>
+                            <th class="w-15 required">{% trans "Subtotal Price" %}</th>
+                            <th class="w-5">{% trans "Action" %}</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-12">
+                                <button id="new-product-btn" class="btn btn-soft-primary mb-3" type="button">
+                                    <span>
+                                        <span>{% trans "New product" %}</span>
+                                        <span class="icon">
+                                            <i class="fas fa-plus-circle"></i>
+                                        </span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-12 col-md-6 col-lg-8"></div>
                             <div class="col-12 col-md-6 col-lg-4">

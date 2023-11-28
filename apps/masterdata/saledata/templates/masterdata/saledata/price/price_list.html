@@ -14,7 +14,6 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-
     <a href="#" data-bs-toggle="modal" id="btn-add-new" data-bs-target="#modal-create-price-list">
         <button class="btn btn-outline-primary">
             <span>
@@ -28,6 +27,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script id="script-url"
+            data-url-price-list="{% url 'PriceListAPI' %}"
+            data-url-price-list-detail="{% url "PriceListDetail" pk=0 %}"
+            data-url-currency-list="{% url 'CurrencyListAPI' %}"
+    ></script>
+
     <table id="datatable-price-list" class="table nowrap w-100 mb-5"
            data-url="{% url "PriceListAPI" %}"
            data-method="GET">
@@ -46,7 +51,6 @@
         </thead>
     </table>
 
-    <!-- Modal Create Price List -->
     <form id="form-create-price" data-method="POST"
           data-url="{% url "PriceListAPI" %}"
           data-url-redirect="{% url "PriceList" %}">
@@ -66,8 +70,7 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label required">{% trans "Price list Name" %}</label>
-                                <input class="form-control" type="text" name="title"
-                                       placeholder="Input Name">
+                                <input class="form-control" type="text" id="title">
                             </div>
                             <div class="form-check ml-3">
                                 <input class="form-check-input" type="checkbox" value=""
@@ -83,11 +86,8 @@
                                 <div class="card card-body mt-1 mb-1">
                                     <div class="form-group mt-2">
                                         <label class="form-label">{% trans "Select price list" %}</label>
-                                        <select class="form-select" data-method="GET"
-                                                data-url="{% url 'PriceListAPI' %}" data-keyResp="price_list"
-                                                data-url-detail="{% url "PriceDetailAPI" pk=0 %}"
-                                                name="price_list_mapped"
-                                                id="select-box-price-list" disabled></select>
+                                        <select class="select2 form-select" data-method="GET"
+                                                id="price_list_mapped"></select>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox"
@@ -109,26 +109,23 @@
                         <div class="row">
                             <div class="form-group mt-2">
                                 <label class="form-label required">{% trans "Currency" %}</label>
-                                <select
-                                        class="form-select"
+                                <select class="select2 form-select"
                                         multiple
                                         data-method="GET"
                                         data-url="{% url "CurrencyListAPI" %}"
-                                        id="select-box-currency" name="currency"
-                                        data-keyResp="currency_list"
-                                >
+                                        id="select-box-currency">
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-6">
                                 <label class="form-label required">{% trans "Factor" %}</label>
-                                <input class="form-control" type="text" name="factor" id="factor-inp" readonly
+                                <input class="form-control" type="text" id="input-factor" readonly
                                        value="1" placeholder="Input factor (0.8)">
                             </div>
                             <div class="form-group col-6">
                                 <label class="form-label required">{% trans "Select list type" %}</label>
-                                <select class="form-select" name="price_list_type" id="select-box-type">
+                                <select class="form-select" id="select-box-type">
                                     <option value="0">{% trans "For Sale" %}</option>
                                     <option value="1">{% trans "For Purchase" %}</option>
                                     <option value="2">{% trans "For Expense" %}</option>
@@ -150,8 +147,6 @@
             </div>
         </div>
     </form>
-    <!-- End Modal Create Master Data -->
-
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
@@ -160,8 +155,10 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'assets/js/masterdata/saledata/price/price_list.js' %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+
+    <script src="{% static 'assets/js/masterdata/saledata/price/price_list_common.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/price/price_list_list.js' %}"></script>
 {% endblock %}

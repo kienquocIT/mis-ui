@@ -26,7 +26,7 @@ function loadEmailToList(contact_list) {
     email_to_slb.html(``);
     for (let i = 0; i < contact_list.length; i++) {
         let item = contact_list[i];
-        if (item.email !== null) {
+        if (item.email) {
             email_to_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
         }
     }
@@ -42,7 +42,7 @@ function loadEmailCcList(contact_list) {
     email_cc_slb.html(``);
     for (let i = 0; i < contact_list.length; i++) {
         let item = contact_list[i];
-        if (item.email !== null) {
+        if (item.email) {
             email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
         }
     }

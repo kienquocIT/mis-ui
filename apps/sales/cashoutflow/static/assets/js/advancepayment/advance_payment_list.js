@@ -157,7 +157,7 @@ $(document).ready(function () {
 
 $(document).on("click", '.ap-shortcut', function() {
     let html_to_payment = '';
-    if ($(this).attr('data-sale-code-id') !== null && $(this).attr('data-sale-code-title') !== null && $(this).attr('data-sale-code-CODE') !== null && $(this).attr('data-flag') !== null) {
+    if ($(this).attr('data-sale-code-id') && $(this).attr('data-sale-code-title') && $(this).attr('data-sale-code-CODE') && $(this).attr('data-flag')) {
         let sale_code_mapped_obj = JSON.stringify({'id': $(this).attr('data-sale-code-id'), 'title': $(this).attr('data-sale-code-title'), 'code': $(this).attr('data-sale-code-CODE')});
         if ($(this).attr('data-flag') === '0') {
             let dataInitSaleCode = JSON.parse(sale_code_mapped_obj);

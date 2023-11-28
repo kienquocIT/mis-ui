@@ -27,7 +27,7 @@ function loadDetailBeneficiary(id) {
 function loadCreator(id) {
     let ele = $('[name="employee_created_id"]');
     let frm = new SetupFormSubmit(ele);
-    if (id === null) {
+    if (!id) {
         id = ele.attr('data-id')
     }
     $.fn.callAjax2({

@@ -69,6 +69,8 @@ $(function () {
                 frm.dataForm['advance_payment'] = $('#chooseAdvancePayment').val();
                 frm.dataForm['employee_inherit'] = $('#chooseBeneficiary').val();
 
+                console.log(frm.dataForm)
+
                 $.fn.callAjax2({
                     'url': frm.dataUrl,
                     'method': frm.dataMethod,

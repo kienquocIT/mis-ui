@@ -154,7 +154,7 @@ class PurchaseRequestLoadPage {
                 $('[name="delivered_date"]').val(detail.delivered_date.split(' ')[0]);
                 $('[name="note"]').val(detail.note);
 
-                if (detail.sale_order !== null) {
+                if (detail.sale_order) {
                     let saleOrderEle = $('[name="sale_order"]');
                     saleOrderEle.val(detail.sale_order.code);
                     saleOrderEle.attr('data-id', detail.sale_order.id);

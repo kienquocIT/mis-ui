@@ -388,15 +388,15 @@ class OpportunityLoadDetail {
         } else
             $('#check-input-rate').prop('checked', false);
 
-        if (opportunity_detail?.['open_date'] !== null)
+        if (opportunity_detail?.['open_date'])
             $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
 
-        if (opportunity_detail?.['close_date'] !== null)
+        if (opportunity_detail?.['close_date'])
             $('#input-close-date').val(opportunity_detail?.['close_date'].split(' ')[0]);
         else {
             $('#input-close-date').val('');
         }
-        if (opportunity_detail.decision_maker !== null) {
+        if (opportunity_detail.decision_maker) {
             let ele_decision_maker = $('#input-decision-maker');
             ele_decision_maker.val(opportunity_detail.decision_maker.name);
             ele_decision_maker.attr('data-id', opportunity_detail.decision_maker.id);
@@ -1265,7 +1265,7 @@ function loadDtbProduct(data) {
                     data: 'product',
                     className: 'wrap-text',
                     render: (data) => {
-                        if (data !== null) {
+                        if (data) {
                             return `<select class="form-select select-box-product" data-method="GET" data-url="${urlEle.data('url-product')}" data-keyResp="product_sale_list" required></select><input class="form-control input-product-name hidden" type="text" value="${data.title}"/>`
                         } else {
                             return `<input class="form-control input-product-name" type="text" required/>`
@@ -1468,7 +1468,7 @@ function autoLoadStage(
     let obj_customer = SelectDDControl.get_data_from_idx(ele_customer, ele_customer.val());
     if (ele_customer.length > 0) {
         let compare_data = '0';
-        if (obj_customer.annual_revenue !== null) {
+        if (obj_customer.annual_revenue) {
             compare_data = obj_customer.annual_revenue;
         }
         list_property_config.push({
@@ -1767,7 +1767,7 @@ function sortStage(list_stage) {
         return a.win_rate - b.win_rate;
     });
     list_result.push(object_lost);
-    if (delivery !== null)
+    if (delivery)
         list_result.push(delivery);
     list_result.push(object_close);
 

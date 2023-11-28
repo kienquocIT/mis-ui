@@ -191,6 +191,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_LIST = StringUrl('saledata/products')
     PRODUCT_DETAIL = StringUrl('saledata/product/{pk}')
     PRODUCT_SALE_LIST = StringUrl('saledata/products-sale')
+    PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
 
     # advance payment
     ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
@@ -201,6 +202,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PAYMENT_LIST = StringUrl('cashoutflow/payments')
     PAYMENT_DETAIL = StringUrl('cashoutflow/payments')
     PAYMENT_CONFIG_LIST = StringUrl('cashoutflow/payment-config')
+    PAYMENT_COST_LIST = StringUrl('cashoutflow/payments-cost-list/lists')
 
     PAYMENT_COST_ITEMS_LIST = StringUrl('cashoutflow/payment-cost-items-list')
 

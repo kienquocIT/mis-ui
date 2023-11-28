@@ -26,9 +26,9 @@ $(function () {
                                 if (row?.['indicator']?.['formula_data_show']) {
                                     formula = row?.['indicator']?.['formula_data_show'].replace(/"/g, "'");
                                 }
-                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-row="${dataRow}" data-formula="${formula}">${row?.['indicator']?.['title'] ? row?.['indicator']?.['title'] : ''}</p>`;
+                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="${row?.['indicator']?.['code'] ? row?.['indicator']?.['code'] : ''}" data-row="${dataRow}" data-formula="${formula}">${row?.['indicator']?.['title'] ? row?.['indicator']?.['title'] : ''}</p>`;
                             } else {
-                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-row="${dataRow}"></p>`;
+                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="" data-row="${dataRow}"></p>`;
                             }
                         }
                     },
@@ -225,6 +225,7 @@ $(function () {
                                                         }
                                                         if (newActualValue !== 0) {
                                                             loadActualDifferentRateValue(paymentRow, newActualValue);
+                                                            calculateIndicatorFormula(paymentRow);
                                                         }
                                                         delete payment_row_data[key];
                                                     }
@@ -251,6 +252,7 @@ $(function () {
                                                 }
                                                 if (newActualValue !== 0) {
                                                     loadActualDifferentRateValue(otherExpensesRow, newActualValue);
+                                                    calculateIndicatorFormula(otherExpensesRow);
                                                 }
                                                 delete payment_row_data[key];
                                             }
@@ -278,6 +280,7 @@ $(function () {
                                     }
                                     if (newActualValue !== 0) {
                                         loadActualDifferentRateValue(deliveryAffectRow, newActualValue);
+                                        calculateIndicatorFormula(deliveryAffectRow);
                                     }
                                 }
 
@@ -299,7 +302,7 @@ $(function () {
                 // set actual value
                 eleActual.setAttribute('data-init-money', String(newActualValue));
                 // set different value
-                let differVal = parseFloat(elePlanedVal) - parseFloat(newActualValue);
+                let differVal = parseFloat(newActualValue) - parseFloat(elePlanedVal);
                 eleDifferent.setAttribute('data-init-money', String(differVal));
                 // set rate value
                 let rateValue = parseFloat(eleRate.getAttribute('data-value'));
@@ -333,7 +336,11 @@ $(function () {
             for (let eleIndicator of $table[0].querySelectorAll('.table-row-indicator')) {
                 if (eleIndicator.innerHTML) {
                     let indicatorTitle = `indicator(${eleIndicator.innerHTML})`;
-                    dataIndicatorJSON[indicatorTitle] = eleIndicator.closest('tr').querySelector('.table-row-actual-value').getAttribute('data-init-money');
+                    let indicatorVal = eleIndicator.closest('tr').querySelector('.table-row-actual-value').getAttribute('data-init-money');
+                    if (indicatorVal === '0') {
+                        indicatorVal = eleIndicator.closest('tr').querySelector('.table-row-planed-value').getAttribute('data-init-money');
+                    }
+                    dataIndicatorJSON[indicatorTitle] = indicatorVal
                 }
             }
             dataIndicatorJSON['%'] = '/100';
@@ -349,8 +356,10 @@ $(function () {
                             }
                         }
                         let newVal = evaluateFormula(formula);
-                        loadActualDifferentRateValue(eleIndicator.closest('tr'), newVal);
-                        changeRows.push(eleIndicator.closest('tr'));
+                        if (newVal !== null) {
+                            loadActualDifferentRateValue(eleIndicator.closest('tr'), newVal);
+                            changeRows.push(eleIndicator.closest('tr'));
+                        }
                     }
                 }
             }

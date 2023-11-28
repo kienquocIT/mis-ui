@@ -1048,6 +1048,7 @@ class QuotationDataTableHandle {
                                             data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                             data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
                                             data-keyResp="product_sale_list"
+                                            data-zone="quotation_products_data"
                                             required>
                                             </select>
                                         </div>
@@ -1110,6 +1111,7 @@ class QuotationDataTableHandle {
                                             data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                             data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                             data-keyResp="unit_of_measure"
+                                            data-zone="quotation_products_data"
                                             required
                                          >
                                         </select>
@@ -1133,7 +1135,7 @@ class QuotationDataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" required>
+                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="quotation_products_data" required>
                                 </div>`;
                     }
                 },
@@ -1149,6 +1151,7 @@ class QuotationDataTableHandle {
                                                 class="form-control mask-money table-row-price" 
                                                 value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
+                                                data-zone="quotation_products_data"
                                             >
                                             <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
                                         </div>
@@ -1166,7 +1169,7 @@ class QuotationDataTableHandle {
                         return `<div class="row">
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
-                                            <input type="text" class="form-control table-row-discount validated-number" value="${row?.['product_discount_value']}">
+                                            <input type="text" class="form-control table-row-discount validated-number" value="${row?.['product_discount_value']}" data-zone="quotation_products_data">
                                             <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                                         </div>
                                     </div>
@@ -1201,6 +1204,7 @@ class QuotationDataTableHandle {
                                     data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
+                                    data-zone="quotation_products_data"
                                  >
                                 </select>
                                 <input
@@ -1366,6 +1370,7 @@ class QuotationDataTableHandle {
                                     class="form-control mask-money table-row-price" 
                                     data-return-type="number"
                                     value="${row.product_cost_price}"
+                                    data-zone="quotation_costs_data"
                                     required
                                 >
                             </div>`;
@@ -1393,6 +1398,7 @@ class QuotationDataTableHandle {
                                     data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
+                                    data-zone="quotation_costs_data"
                                 >
                                 </select>
                                 <input
@@ -1481,7 +1487,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         if (row?.['is_labor'] === false) {
                             return `<div class="row">
-                                        <input type="text" class="form-control table-row-expense-title" value="${row?.['expense_title']}" required>
+                                        <input type="text" class="form-control table-row-expense-title" value="${row?.['expense_title']}" data-zone="quotation_expenses_data" required>
                                     </div>`;
                         } else {
                             return `<div class="row">
@@ -1507,6 +1513,7 @@ class QuotationDataTableHandle {
                                                 data-link-detail="${QuotationDataTableHandle.expenseInitEle.attr('data-link-detail')}"
                                                 data-method="${QuotationDataTableHandle.expenseInitEle.attr('data-method')}"
                                                 data-keyResp="expense_list"
+                                                data-zone="quotation_expenses_data"
                                                 required>
                                                 </select>
                                             </span>
@@ -1542,6 +1549,7 @@ class QuotationDataTableHandle {
                                                 data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
                                                 data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
                                                 data-keyResp="expense_item_list"
+                                                data-zone="quotation_expenses_data"
                                                 required>
                                                 </select>
                                             </span>
@@ -1590,6 +1598,7 @@ class QuotationDataTableHandle {
                                             data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                             data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                             data-keyResp="unit_of_measure"
+                                            data-zone="quotation_expenses_data"
                                             required
                                         >
                                         </select>
@@ -1613,7 +1622,7 @@ class QuotationDataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['expense_quantity']}" required>
+                                <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['expense_quantity']}" data-zone="quotation_expenses_data" required>
                             </div>`;
                     }
                 },
@@ -1627,6 +1636,7 @@ class QuotationDataTableHandle {
                                             class="form-control mask-money table-row-price" 
                                             value="${row?.['expense_price']}"
                                             data-return-type="number"
+                                            data-zone="quotation_expenses_data"
                                         >
                                     </div>
                                 </div>`;
@@ -1641,6 +1651,7 @@ class QuotationDataTableHandle {
                                     data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
+                                    data-zone="quotation_expenses_data"
                                 >
                                 </select>
                                 <input

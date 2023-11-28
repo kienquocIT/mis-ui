@@ -1,308 +1,312 @@
-let script_url = $('#script-url')
-let title_ele = $('#title')
-let checkbox_copy_source_ele = $('#checkbox-copy-source')
-let price_list_mapped_ele = $('#price_list_mapped')
-let checkbox_update_auto_ele = $('#checkbox-update-auto')
-let checkbox_can_delete_ele = $('#checkbox-can-delete')
-let select_box_currency_ele = $('#select-box-currency')
-let input_factor_ele = $('#input-factor')
-let select_box_type_ele = $('#select-box-type')
-let valid_time_ele = $('#valid_time')
-let btn_add_new_item = $('#btn-add-new-item')
-let tbl = $('#datatable-item-list');
+let [urlEle, transEle] = [$('#url-factory'), $('#trans-factory')];
+let [priceSelectEle, currencySelectEle, canDeleteCheckBoxEle, autoUpdateCheckBoxEle, factorInputEle, itemSelectEle] = [$('#select-box-price-list'), $('#select-box-currency'), $('#checkbox-can-delete'), $('#checkbox-update-auto'), $('#inp-factor'), $('#select-box-product')]
 
-btn_add_new_item.om('click', function () {
-    tbl.find('tbody').append(`
-        <tr class="even">
-            <td class="wrap-text"></td>
-            <td class="wrap-text"><span class="badge badge-soft-primary w-100 code_span"></span></td>
-            <td class="wrap-text"></td>
-            <td class="wrap-text"></td>
-            <td class="wrap-text"></td>
-        </tr>
-    `)
-})
+let columns = [
+    {
+        render: (data, type, row, meta) => {
+            return '';
+        }
+    }, {
+        data: 'code',
+        render: (data, type, row, meta) => {
+            return `<span class="badge badge-soft-success span-product" data-id="` + row.id + `"
+                        style="min-width: max-content; width: 70%" href="#"><b>` + row.code + `</b></span>`
+        }
+    }, {
+        data: 'title',
+        render: (data, type, row, meta) => {
+            return `<span><b>` + row.title + `</b></span>`
+        }
+    }, {
+        data: 'uom_group',
+        render: (data, type, row, meta) => {
+            return `<div class="row">
+                        <div class="col-10" style="padding-right: 5px">
+                            <span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span>
+                        </div>
+                    </div>`
+        }
+    }, {
+        data: 'uom',
+        render: (data, type, row, meta) => {
+            return `<div class="row">
+                    <div class="col-10" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
+                    </div>`
+        }
+    },]
 
-function loadDtbPriceList() {
-    if (!$.fn.DataTable.isDataTable('#datatable-price-list')) {
-        let $table = $('#datatable-price-list')
-        let frm = new SetupFormSubmit($table);
-        $table.DataTableDefault({
-            rowIdx: true,
-            useDataServer: true,
-            ajax: {
-                url: frm.dataUrl,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('price_list')) {
-                        return resp.data['price_list'] ? resp.data['price_list'] : [];
-                    }
-                    throw Error('Call data raise errors.')
-                },
-            },
-            columns: [
+class PriceListAction {
+    static generateColCurrency(product_mapped, currencies, pk) {
+        let table = $('#datatable-item-list');
+        currencies.forEach(function (value, index) {
+            table.find('thead tr').append(`<th>{0} {1}</th>`.format_by_idx(transEle.data('trans-price'), value.abbreviation))
+            columns.push(
                 {
-                    render: () => {
-                        return ``;
-                    }
-                }, {
-                    data: 'title',
-                    render: (data, type, row) => {
-                        return `<a class="btn-detail" href="${script_url.attr('data-url-price-list-detail').format_url_with_uuid(row.id)}">
-                                    <span><b>${data}</b></span>
-                                </a>${$x.fn.buttonLinkBlank(script_url.attr('data-url-price-list-detail').format_url_with_uuid(row.id))}`
-                    }
-                }, {
-                    data: 'price_list_type',
-                    className: 'text-center',
-                    render: (data) => {
-                        if (data.value === 0) {
-                            return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">${data.name}</span>`
-                        } else if (data.value === 1) {
-                            return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">${data.name}</span>`
-                        } else if (data.value === 2) {
-                            return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">${data.name}</span>`
+                    data: 'price',
+                    render: (data, type, row, meta) => {
+                        if (row.is_auto_update) {
+                            return `<input class="form-control mask-money w-150p" data-id-currency="${data[index].id}" value="${data[index].value}" readonly/>`
                         } else {
-                            return ''
+                            return `<input class="form-control mask-money w-150p" data-id-currency="${data[index].id}" value="${data[index].value}" />`
                         }
                     }
-                }, {
-                    data: 'status',
-                    render: (data) => {
-                        let badge_type;
-                        if (data === 'Valid') {
-                            badge_type = 'text-success'
-                        } else if (data === 'Invalid') {
-                            badge_type = 'text-orange'
-                        } else if (data === 'Expired') {
-                            badge_type = 'text-danger'
-                        } else {
-                            badge_type = 'text-gray'
-                        }
+                },
+            )
+        })
+        this.addColDel(table, pk);
+    }
 
-                        return `<span class="${badge_type}">${data}</span>`;
-                    }
-                }, {
-                    className: 'action-center',
-                    render: (data, type, row) => {
-                        if (row.is_default === false) {
-                            return `<a data-method="DELETE" data-id="${row.id}" class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button delete-price-list-btn">
-                                <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
-                                </a>`;
-                        } else {
-                            return ``
-                        }
-                    }
+    static addColDel(table, pk) {
+        table.find('thead tr').append(`<th></th>`)
+        columns.push(
+            {
+                data: 'id',
+                render: (data, type, row, meta) => {
+                    return `<a class="btn btn-icon btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del" data-id="${pk}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></button>`
+
                 }
-            ],
-        });
+            },
+        )
+    }
+
+    static addRow(table, data) {
+        data.map(function (item) {
+            table.DataTable().row.add(item).draw();
+
+        })
+    }
+
+    static loadDtbPriceItem(data, columns) {
+        if (!$.fn.DataTable.isDataTable('#datatable-item-list')) {
+            let dtb = $('#datatable-item-list');
+            dtb.DataTableDefault({
+                rowIdx: true,
+                reloadCurrency: true,
+                data: data,
+                paging: false,
+                columns: columns,
+            });
+        }
+    }
+
+    static getProductWithCurrency(list_product, currency) {
+        let list_result = []
+        list_product.map(function (item) {
+            if (list_result.length === 0 || !list_result.find(obj => obj.id === item.id)) {
+                list_result.push({
+                    'code': item.code,
+                    'id': item.id,
+                    'title': item.title,
+                    'uom': item.uom,
+                    'uom_group': item.uom_group,
+                    'price': [{
+                        'id': item.currency_using.id,
+                        'abbreviation': item.currency_using.abbreviation,
+                        'value': item.price
+                    }],
+                    'is_auto_update': item.is_auto_update,
+                })
+            } else {
+                let exists = list_result.filter(function (obj) {
+                    return obj.id === item.id;
+                })
+                if (!exists.find(obj => obj.uom.id === item.uom.id)) {
+                    list_result.push({
+                        'code': item.code,
+                        'id': item.id,
+                        'title': item.title,
+                        'uom': item.uom,
+                        'uom_group': item.uom_group,
+                        'price': [{
+                            'id': item.currency_using.id,
+                            'abbreviation': item.currency_using.abbreviation,
+                            'value': item.price
+                        }],
+                        'is_auto_update': item.is_auto_update,
+                    })
+                } else {
+                    list_result.find(obj => obj.id === item.id && obj.uom.id === item.uom.id).price.push({
+                        'id': item.currency_using.id,
+                        'abbreviation': item.currency_using.abbreviation,
+                        'value': item.price
+                    })
+                }
+            }
+        })
+
+        list_result.map(function (item) {
+            if (item.price.length !== currency.length) {
+                currency.map(function (obj) {
+                    if (!item.price.map(obj => obj.id).includes(obj.id)) {
+                        item.price.push({
+                            'id': obj.id,
+                            'abbreviation': obj.abbreviation,
+                            'value': 0
+                        })
+                    }
+                })
+            }
+
+        })
+        return list_result
+    }
+
+    static getDataItemChangePrice() {
+        let list_result = [];
+        let ele_changed = document.querySelectorAll('.inp-edited');
+        ele_changed.forEach(function (element) {
+            let tr_parent_ele = element.closest('tr');
+            let product_id = tr_parent_ele.querySelector('.span-product').getAttribute('data-id');
+            let uom_id = tr_parent_ele.querySelector('.span-uom').getAttribute('data-id');
+            let uom_group_id = tr_parent_ele.querySelector('.span-uom-group').getAttribute('data-id');
+            let price = element.getAttribute('value');
+            let currency = element.getAttribute('data-id-currency');
+            list_result.push(
+                {
+                    'product_id': product_id,
+                    'uom_id': uom_id,
+                    'uom_group_id': uom_group_id,
+                    'currency': currency,
+                    'price': price
+                }
+            )
+        })
+        return list_result
+    }
+
+    static configBtnUpdate(form_id, text) {
+        let btn_update_ele = $('#btn-update');
+        btn_update_ele.attr('form', form_id);
+        btn_update_ele.find('span span').first().text(text);
     }
 }
 
-loadDtbPriceList();
-
-valid_time_ele.daterangepicker({
-    timePicker: true,
-    startDate: moment().startOf('millisecond'),
-    endDate: moment().startOf('millisecond'),
-    "cancelClass": "btn-secondary",
-    locale: {
-        format: 'YYYY-MM-DD HH:mm'
-    },
-    drops: 'up'
-});
-valid_time_ele.val('')
-
-checkbox_copy_source_ele.on('change', function () {
-    if ($(this).prop("checked")) {
-        checkbox_update_auto_ele.prop('disabled', false);
-        select_box_currency_ele.prop('disabled', true);
-        input_factor_ele.prop('readonly', false);
-    } else {
-        checkbox_update_auto_ele.prop('disabled', true);
-        select_box_currency_ele.prop('disabled', false);
-        input_factor_ele.prop('readonly', true).val(1);
+class PriceListLoadPage {
+    static loadSourcePriceList(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
     }
-})
 
-checkbox_update_auto_ele.on('change', function () {
-    if ($(this).prop("checked")) {
-        checkbox_can_delete_ele.prop('disabled', false);
-    } else {
-        checkbox_can_delete_ele.prop('checked', false);
-        checkbox_can_delete_ele.prop('disabled', true);
+    static loadCurrency(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
     }
-})
 
-function loadPriceList(ele, data) {
-    ele.initSelect2({
-        ajax: {
-            url: script_url.attr('data-url-price-list'),
-            method: 'GET',
-        },
-        data: (data ? data : null),
-        keyResp: 'price_list',
-        keyId: 'id',
-        keyText: 'title',
-    }).on('change', function () {
-        let obj_selected = SelectDDControl.get_data_from_idx(ele, ele.val());
-        let currency_mapped = $.fn.callAjax2({
-            url: script_url.attr('data-url-currency-list'),
+    static loadItem(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
+    }
+
+    static loadUoM(ele, data, group_id) {
+        ele.initSelect2({
+            data: data,
+            dataParams: {'group': group_id},
+        })
+
+    }
+
+    static loadDetailPage(frm, pk, page_type) {
+        $.fn.callAjax2({
+            url: frm.data('url').format_url_with_uuid(pk),
             method: 'GET'
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                let result = []
-                if (data && typeof data === 'object' && data.hasOwnProperty('currency_list')) {
-                    for (let i = 0; i < data?.['currency_list'].length; i++) {
-                        if (obj_selected?.['currency'].includes(data?.['currency_list'][i]?.['id'])) {
-                            result.push(data?.['currency_list'][i])
+                if (data) {
+                    let price_list_detail = data?.['price'];
+                    $('#data_detail').text(JSON.stringify(price_list_detail));
+                    $.fn.compareStatusShowPageAction(price_list_detail)
+
+                    if (price_list_detail.is_default) {
+                        $('#price_list_name').text(price_list_detail.title.toUpperCase());
+                        $('#tab-setting input,#tab-setting select').not(currencySelectEle).prop('disabled', true);
+                    } else {
+                        if (price_list_detail.auto_update) {
+                            $('#price_list_name').html(`${price_list_detail.title}
+                        <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='${transEle.data('trans-source-price')} ${price_list_detail.price_list_mapped.title}'>
+                        </i>`
+                            )
+                        } else {
+                            $('#price_list_name').text(price_list_detail.title)
+                        }
+                    }
+
+                    if (price_list_detail.auto_update) {
+                        autoUpdateCheckBoxEle.prop('checked', true);
+                        currencySelectEle.prop('disabled', true);
+                        $('#btn-add-new-item').prop('disabled', true);
+                    }
+                    let timeValidEle = $('#time-valid');
+
+                    if (price_list_detail.valid_time_start && price_list_detail.valid_time_start) {
+                        if (price_list_detail.is_default) {
+                            timeValidEle.html(`<span>${price_list_detail.valid_time_start} - ${transEle.data('trans-now')}</span>`)
+                        } else {
+                            timeValidEle.html(`<span>${price_list_detail.valid_time_start} - ${price_list_detail.valid_time_end}</span>`)
+                        }
+                    }
+
+
+                    let product_mapped = PriceListAction.getProductWithCurrency(price_list_detail?.['products_mapped'], price_list_detail.currency);
+                    PriceListAction.generateColCurrency(product_mapped, price_list_detail.currency, pk);
+                    PriceListAction.loadDtbPriceItem([], columns);
+                    PriceListAction.addRow($('#datatable-item-list'), product_mapped.sort((a, b) => a.code.localeCompare(b.code)));
+
+
+                    // load data tab settings
+                    $('#select-box-type').val(price_list_detail?.['price_list_type']);
+
+                    factorInputEle.val(price_list_detail.factor);
+
+                    canDeleteCheckBoxEle.prop('checked', price_list_detail.can_delete);
+
+
+                    // load parent price list
+                    PriceListLoadPage.loadSourcePriceList(priceSelectEle, price_list_detail?.['price_list_mapped'])
+                    if (Object.keys(price_list_detail?.['price_list_mapped']).length !== 0) {
+                        if (page_type !== 1)
+                            autoUpdateCheckBoxEle.prop('disabled', false);
+                    } else {
+                        autoUpdateCheckBoxEle.prop('disabled', true);
+                    }
+
+                    PriceListLoadPage.loadCurrency(currencySelectEle, price_list_detail.currency);
+
+                    if (price_list_detail.status) {
+                        if (price_list_detail.status === 'Valid') {
+                            timeValidEle.find('span').addClass('text-green')
+                        } else if (price_list_detail.status === 'Invalid') {
+                            timeValidEle.find('span').addClass('text-orange')
+                        } else if (price_list_detail.status === 'Expired') {
+                            timeValidEle.find('span').addClass('text-red')
+                            this.loadPriceExpired(price_list_detail);
+                        } else {
+                            timeValidEle.find('span').addClass('text-gray')
                         }
                     }
                 }
-                return result;
-            },
-            (errs) => {
-                console.log(errs);
+            }).then(
+            () => {
+                if (page_type === 1) {
+                    $('#datatable-item-list input').prop('readonly', true);
+                }
             }
         )
-
-        Promise.all([currency_mapped]).then(
-            (results) => {
-                loadCurrencyList(select_box_currency_ele, results[0])
-            })
-    })
-}
-
-function loadCurrencyList(ele, data) {
-    ele.initSelect2({
-        ajax: {
-            url: script_url.attr('data-url-currency-list'),
-            method: 'GET',
-        },
-        data: (data ? data : null),
-        keyResp: 'currency_list',
-        keyId: 'id',
-        keyText: 'title',
-    })
-}
-
-function getDataForm() {
-    let data = {
-        'title': title_ele.val(),
-        'price_list_type': select_box_type_ele.val(),
-        'valid_time_start': valid_time_ele.val().split(' - ')[0],
-        'valid_time_end': valid_time_ele.val().split(' - ')[1]
-    }
-    if (checkbox_copy_source_ele.prop('checked', true)) {
-        data['auto_update'] = checkbox_update_auto_ele.prop('checked')
-        data['can_delete'] = checkbox_can_delete_ele.prop('checked')
-        data['factor'] = input_factor_ele.val()
-        data['price_list_mapped'] = price_list_mapped_ele.val()
-    }
-    data['currency'] = select_box_currency_ele.val()
-
-    // valid data UI
-    let fields = ['title', 'price_list_type', 'valid_time_start', 'valid_time_end', 'factor']
-    let fields_sub = ['Title', 'Price list type', 'Time start', 'Time end', 'Factor']
-    for (let i = 0; i < fields.length; i++) {
-        if (!data[fields[i]]) {
-            $.fn.notifyB({description: `${fields_sub[i]} must not missing`}, 'failure');
-            return false
-        }
-    }
-    return data
-}
-
-class PriceListHandle {
-    load() {
-        loadPriceList(price_list_mapped_ele)
-        loadCurrencyList(select_box_currency_ele)
     }
 
-    combinesData(frmEle) {
-        let dataForm = getDataForm();
-        if (dataForm) {
-            let frm = new SetupFormSubmit($(frmEle));
+    static loadPriceExpired(price_list_detail) {
+        $('#btn-add-new-item').prop('disabled', true);
+        $('#datatable-item-list input').prop('readonly', true);
 
-            return {
-                url: frm.dataUrl,
-                method: frm.dataMethod,
-                data: dataForm,
-                urlRedirect: frm?.['urlRedirect'],
-            };
-        }
-        return false;
+        $('#datatable-item-list .del-button').remove();
+        $('#notify').text(`* {0} {1}`.format_by_idx(price_list_detail.status, transEle.data('trans-not-modify')))
+        factorInputEle.prop('disabled', true);
+        autoUpdateCheckBoxEle.prop('disabled', true);
+        canDeleteCheckBoxEle.prop('disabled', true);
+        currencySelectEle.prop('disabled', true);
     }
 }
 
-function LoadDetailPriceList(option) {
-    let pk = $.fn.getPkDetail()
-    $.fn.callAjax($('#form-update-item-price').attr('data-url-detail').format_url_with_uuid(pk), 'GET').then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                WFRTControl.setWFRuntimeID(data['price']?.['workflow_runtime_id']);
-                let price_list_detail = data['price'];
-                $.fn.compareStatusShowPageAction(data);
-                $x.fn.renderCodeBreadcrumb(price_list_detail);
-                console.log(price_list_detail)
-
-                $('#price_list_name').text(price_list_detail['title']);
-                let timeValidEle = $('#time-valid');
-
-                if (price_list_detail?.['valid_time_start'] && price_list_detail?.['valid_time_start']) {
-                    let text_class = ''
-                    if (price_list_detail?.['status'] === 'Valid') {text_class = 'text-success'}
-                    if (price_list_detail?.['status'] === 'Invalid') {text_class = 'text-warning'}
-                    if (price_list_detail?.['status'] === 'Expired') {text_class = 'text-danger'}
-
-                    if (price_list_detail.is_default) {
-                        timeValidEle.html(`<span class="${text_class}">${price_list_detail.valid_time_start} - Now</span>`)
-                    } else {
-                        timeValidEle.html(`<span class="${text_class}">${price_list_detail.valid_time_start} - ${price_list_detail.valid_time_end}</span>`)
-                    }
-                }
-
-                tbl.DataTableDefault({
-                    paging: false,
-                    reloadCurrency: true,
-                    rowIdx: true,
-                    data: price_list_detail?.['products_mapped'],
-                    columns: [
-                        {
-                            'render': () => {
-                                return ``;
-                            }
-                        },
-                        {
-                            'data': 'code',
-                            render: (data, type, row) => {
-                                return `<span class="badge badge-soft-primary w-100 code_span">${row?.['code']}</span>`
-                            }
-                        },
-                        {
-                            'data': 'title',
-                            render: (data, type, row) => {
-                                return `<span><b>${row.title}</b></span>`
-                            }
-                        },
-                        {
-                            'data': 'uom_group',
-                            render: (data, type, row) => {
-                                return `<span>${row.uom_group.title}</span>`
-                            }
-                        },
-                        {
-                            'data': 'uom',
-                            render: (data, type, row) => {
-                                return `<span>${row.uom.title}</span>`
-                            }
-                        }],
-                })
-
-                $.fn.initMaskMoney2();
-            }
-        })
-}

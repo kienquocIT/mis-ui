@@ -1078,8 +1078,6 @@ function LoadDetailPayment() {
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
                 console.log(data)
-                let sale_code_CODE = null;
-                let sale_code_ID = null;
 
                 if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
                     new $x.cls.bastionField({

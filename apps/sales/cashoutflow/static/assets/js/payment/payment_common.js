@@ -688,6 +688,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
 }
 
 function LoadPlanSaleOrderNoOPP(sale_order_id) {
+    console.log(sale_order_id)
     if (sale_order_id) {
         let dataParam1 = {'sale_order_id': sale_order_id}
         let expense_sale_order = $.fn.callAjax2({
@@ -1081,8 +1082,6 @@ function LoadDetailPayment() {
                 let sale_code_ID = null;
 
                 if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
-                    sale_code_CODE = data?.['opportunity_mapped']?.['code'];
-                    sale_code_ID = data?.['opportunity_mapped']?.['id'];
                     new $x.cls.bastionField({
                         has_opp: true,
                         has_inherit: true,
@@ -1103,11 +1102,10 @@ function LoadDetailPayment() {
                         }]
                     }).init();
                     PaymentLoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
+                    LoadPlanQuotation(opp_mapped_select.val(), data?.['opportunity_mapped']?.['quotation_mapped']?.['id'])
                 }
-                else if (data?.['quotation_mapped']) {
+                else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
                     PaymentLoadQuotation(data?.['quotation_mapped'])
-                    sale_code_CODE = data?.['quotation_mapped']?.['code'];
-                    sale_code_ID = data?.['quotation_mapped']?.['id'];
 
                     let dataParam = {'quotation_id': quotation_mapped_select.val()}
                     let ap_mapped_item = $.fn.callAjax2({
@@ -1134,13 +1132,14 @@ function LoadDetailPayment() {
                                 PaymentLoadSaleOrder(so_mapped_opp[0]);
                             }
                         })
-                }
-                else if (data?.['sale_order_mapped']) {
-                    PaymentLoadSaleOrder(data?.['sale_order_mapped'])
-                    sale_code_CODE = data?.['sale_order_mapped']?.['code'];
-                    sale_code_ID = data?.['sale_order_mapped']?.['id'];
 
+                    LoadPlanQuotationNoOPP(data?.['quotation_mapped']?.['id'])
+                }
+                else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
+                    PaymentLoadSaleOrder(data?.['sale_order_mapped'])
                     PaymentLoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
+
+                    LoadPlanSaleOrderNoOPP(data?.['sale_order_mapped']?.['id'])
                 }
 
                 $('#title').val(data.title);

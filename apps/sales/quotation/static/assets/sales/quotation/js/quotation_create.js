@@ -479,7 +479,7 @@ $(function () {
                     let shipping = row.querySelector('.table-row-shipping');
                     if ($(product).val()) { // PRODUCT
                         dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
-                        valuePrice = dataProduct?.['sale_cost'];
+                        valuePrice = dataProduct?.['sale_cost'] ? dataProduct?.['sale_cost'] : 0;
                         if ($(uom).val()) {
                             dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
                         }

@@ -201,6 +201,7 @@ $(function () {
                                             let newActualValue = plan_data?.['actual_value'];
                                             if (newActualValue !== 0) {
                                                 loadActualDifferentRateValue(parentRow, newActualValue);
+                                                calculateIndicatorFormula(parentRow);
                                             }
                                         }
                                     }

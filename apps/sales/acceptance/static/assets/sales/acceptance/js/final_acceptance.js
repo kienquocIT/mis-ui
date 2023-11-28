@@ -271,7 +271,7 @@ $(function () {
                                                 deliveryExistRow = deliveryAffectRow;
                                             }
                                             $(newDeliRow).detach().insertAfter(deliveryExistRow);
-                                            newDeliRow.querySelector('.table-row-indicator').setAttribute('data-parent-id', deliveryExistRow.querySelector('.table-row-indicator').getAttribute('data-id'));
+                                            newDeliRow.querySelector('.table-row-indicator').setAttribute('data-parent-id', deliveryAffectRow.querySelector('.table-row-indicator').getAttribute('data-id'));
                                             deliveryExistRow = newDeliRow;
                                             newActualValue += delivery_data?.['actual_value'];
                                         }

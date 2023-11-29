@@ -12,20 +12,24 @@ let script_url = $('#script-url')
 let tab_plan_datatable = $('#tab_plan_datatable')
 let offcanvasRightLabel = $('#offcanvasRightLabel')
 let checkbox_internal = $('#internal')
+let supplier_label = $('#supplier-label')
+let employee_label = $('#employee-label')
+let employee_detail_span = $('#employee-detail-span')
+let supplier_detail_span = $('#supplier-detail-span')
 let AP_filter = null
 
 checkbox_internal.on('change', function () {
     if ($(this).prop('checked')) {
-        $('#supplier-label').prop('hidden', true)
-        $('#employee-label').prop('hidden', false)
-        $('#employee-detail-span').prop('hidden', false)
-        $('#supplier-detail-span').prop('hidden', true)
+        supplier_label.prop('hidden', true)
+        employee_label.prop('hidden', false)
+        employee_detail_span.prop('hidden', false)
+        supplier_detail_span.prop('hidden', true)
     }
     else {
-        $('#supplier-label').prop('hidden', false)
-        $('#employee-label').prop('hidden', true)
-        $('#employee-detail-span').prop('hidden', true)
-        $('#supplier-detail-span').prop('hidden', false)
+        supplier_label.prop('hidden', false)
+        employee_label.prop('hidden', true)
+        employee_detail_span.prop('hidden', true)
+        supplier_detail_span.prop('hidden', false)
     }
 })
 
@@ -200,7 +204,7 @@ function PaymentLoadEmployee(data) {
     }).on('change', function () {
         let employee_selected = SelectDDControl.get_data_from_idx(employeeEle, employeeEle.val())
         let btn_detail = $('#btn-detail-employee-tab');
-        $('#employee-detail-span').prop('hidden', false);
+        employee_detail_span.prop('hidden', false);
         $('#employee-name').text(employee_selected?.['full_name'])
         $('#employee-code').text(employee_selected?.['code']);
         $('#employee-department').text(employee_selected?.['group']['title']);
@@ -238,7 +242,7 @@ function PaymentLoadCreator(data) {
 
 function InforSpanSupplier(data) {
     let btn_detail = $('#btn-detail-supplier-tab');
-    $('#supplier-detail-span').prop('hidden', false);
+    supplier_detail_span.prop('hidden', false);
     $('#supplier-name').text(data?.['name']);
     $('#supplier-code').text(data?.['code']);
     $('#supplier-owner').text(data?.['owner']['fullname']);
@@ -383,7 +387,7 @@ function count_row(table_body, option) {
 }
 
 function changePriceCommon(tr) {
-    let unit_price = tr.find('.expense-unit-price-input');
+    let unit_price = tr.find('.expense-unit-price-input')
     let quantity = tr.find('.expense_quantity');
     let subtotal = tr.find('.expense-subtotal-price');
     let subtotal_after_tax = tr.find('.expense-subtotal-price-after-tax');
@@ -396,7 +400,7 @@ function changePriceCommon(tr) {
     if (unit_price.attr('value') && quantity.val()) {
         let subtotal_value = parseFloat(unit_price.attr('value')) * parseInt(quantity.val())
         subtotal.attr('value', subtotal_value);
-        subtotal_after_tax.attr('value', subtotal_value + subtotal_value * parseFloat(tax_rate) / 100);
+        subtotal_after_tax.attr('value', subtotal_value + subtotal_value * tax_rate / 100);
     }
     else {
         unit_price.attr('value', '');
@@ -499,7 +503,7 @@ function loadAPList() {
                 data: 'to_payment',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="text-primary mask-money" data-init-money="` + row.to_payment + `"></span>`
+                    return `<span class="text-primary mask-money" data-init-money="${row?.['to_payment']}"></span>`
                 }
             },
             {
@@ -742,7 +746,6 @@ function LoadPlanQuotationNoOPP(quotation_id) {
 }
 
 function LoadPlanSaleOrderNoOPP(sale_order_id) {
-    console.log(sale_order_id)
     if (sale_order_id) {
         let dataParam1 = {'sale_order_id': sale_order_id}
         let expense_sale_order = $.fn.callAjax2({
@@ -1194,24 +1197,24 @@ function LoadDetailPayment() {
                     LoadPlanSaleOrderNoOPP(data?.['sale_order_mapped']?.['id'])
                 }
 
-                $('#title').val(data.title);
+                $('#title').val(data?.['title']);
 
-                $('#ap-method').val(data.method);
+                $('#payment-method').val(data?.['method']);
 
-                $('#created_date_id').val(data.date_created.split(' ')[0]);
+                $('#created_date_id').val(data?.['date_created'].split(' ')[0]);
 
-                PaymentLoadCreator(data.creator_name)
+                PaymentLoadCreator(data?.['creator_name'])
 
-                if (data.is_internal_payment) {
+                if (data?.['is_internal_payment']) {
                     checkbox_internal.prop('checked', true)
-                    $('#supplier-label').prop('hidden', true)
-                    $('#employee-label').prop('hidden', false)
-                    $('#employee-detail-span').prop('hidden', false)
-                    $('#supplier-detail-span').prop('hidden', true)
+                    supplier_label.prop('hidden', true)
+                    employee_label.prop('hidden', false)
+                    employee_detail_span.prop('hidden', false)
+                    supplier_detail_span.prop('hidden', true)
                     if (Object.keys(data?.['employee_payment']).length !== 0) {
                         PaymentLoadEmployee(data?.['employee_payment'])
                         let btn_detail = $('#btn-detail-employee-tab');
-                        $('#employee-detail-span').prop('hidden', false);
+                        employee_detail_span.prop('hidden', false);
                         $('#employee-name').text(data?.['employee_payment']?.['full_name'])
                         $('#employee-code').text(data?.['employee_payment']?.['code']);
                         $('#employee-department').text(data?.['employee_payment']?.['group']['title']);
@@ -1221,10 +1224,10 @@ function LoadDetailPayment() {
                 }
                 else {
                     checkbox_internal.prop('checked', false)
-                    $('#supplier-label').prop('hidden', false)
-                    $('#employee-label').prop('hidden', true)
-                    $('#employee-detail-span').prop('hidden', true)
-                    $('#supplier-detail-span').prop('hidden', false)
+                    supplier_label.prop('hidden', false)
+                    employee_label.prop('hidden', true)
+                    employee_detail_span.prop('hidden', true)
+                    supplier_detail_span.prop('hidden', false)
                     if (Object.keys(data?.['supplier']).length !== 0) {
                         PaymentLoadSupplier(data?.['supplier'])
                         InforSpanSupplier(data?.['supplier']);
@@ -1360,9 +1363,9 @@ class PaymentHandle {
 
         frm.dataForm['supplier'] = supplierEle.val();
 
-        frm.dataForm['method'] = parseInt($('#ap-method').val());
-        if (![0, 1].includes(frm.dataForm['method'])) {
-            $.fn.notifyB({description: 'Method must be in [0, 1]'}, 'failure');
+        frm.dataForm['method'] = parseInt($('#payment-method').val());
+        if (![0, 1, 2].includes(frm.dataForm['method'])) {
+            $.fn.notifyB({description: 'Method must be in [0, 1, 2]'}, 'failure');
             return false;
         }
 
@@ -1379,7 +1382,6 @@ class PaymentHandle {
         }
 
         let payment_expense_valid_list = [];
-        let line_detail_expense_items = [];
         if (tableLineDetail.find('tr').length > 0) {
             let row_count = tableLineDetail.find('.row-number').length;
             for (let i = 1; i <= row_count; i++) {
@@ -1418,7 +1420,7 @@ class PaymentHandle {
                     if ($(this).find('.total-value-salecode-item').attr('value') !== '') {
                         sum_value = $(this).find('.total-value-salecode-item').attr('value');
                     }
-                    expense_detail_value = parseFloat(expense_detail_value) + parseFloat(sum_value);
+                    expense_detail_value = expense_detail_value + sum_value;
                     payment_expense_valid_list.push({
                         'expense_type_id': expense_type,
                         'expense_description': expense_name_input,
@@ -1435,7 +1437,6 @@ class PaymentHandle {
                         'sum_value': sum_value,
                         'ap_cost_converted_list': expense_items_detail_list
                     })
-                    line_detail_expense_items.push(expense_type)
                 })
 
                 if (expense_after_tax_price !== expense_detail_value) {

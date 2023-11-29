@@ -202,7 +202,6 @@ $(function () {
                                             let newActualValue = plan_data?.['actual_value'];
                                             if (newActualValue !== 0) {
                                                 loadActualDifferentRateValue(parentRow, newActualValue);
-                                                // calculateIndicatorFormula(parentRow);
                                                 changeRows.push(parentRow);
                                             }
                                         }
@@ -228,7 +227,6 @@ $(function () {
                                                         }
                                                         if (newActualValue !== 0) {
                                                             loadActualDifferentRateValue(paymentRow, newActualValue);
-                                                            // calculateIndicatorFormula(paymentRow);
                                                             changeRows.push(paymentRow);
                                                         }
                                                         delete payment_row_data[key];
@@ -256,7 +254,6 @@ $(function () {
                                                 }
                                                 if (newActualValue !== 0) {
                                                     loadActualDifferentRateValue(otherExpensesRow, newActualValue);
-                                                    // calculateIndicatorFormula(otherExpensesRow);
                                                     changeRows.push(otherExpensesRow);
                                                 }
                                                 delete payment_row_data[key];
@@ -285,7 +282,6 @@ $(function () {
                                     }
                                     if (newActualValue !== 0) {
                                         loadActualDifferentRateValue(deliveryAffectRow, newActualValue);
-                                        // calculateIndicatorFormula(deliveryAffectRow);
                                         changeRows.push(deliveryAffectRow);
                                     }
                                 }

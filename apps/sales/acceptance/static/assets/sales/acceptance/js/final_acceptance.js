@@ -148,6 +148,7 @@ $(function () {
                                 let deliveryAffectRows = [];
                                 let paymentAffectRows = [];
                                 let otherExpensesRow = null;
+                                let changeRows = [];
                                 for (let indicator of data.final_acceptance_list[0]?.['final_acceptance_indicator']) {
                                     if (indicator?.['is_indicator'] === true) {
                                         let newRow = $table.DataTable().row.add(indicator).draw().node();
@@ -201,7 +202,8 @@ $(function () {
                                             let newActualValue = plan_data?.['actual_value'];
                                             if (newActualValue !== 0) {
                                                 loadActualDifferentRateValue(parentRow, newActualValue);
-                                                calculateIndicatorFormula(parentRow);
+                                                // calculateIndicatorFormula(parentRow);
+                                                changeRows.push(parentRow);
                                             }
                                         }
                                     }
@@ -226,7 +228,8 @@ $(function () {
                                                         }
                                                         if (newActualValue !== 0) {
                                                             loadActualDifferentRateValue(paymentRow, newActualValue);
-                                                            calculateIndicatorFormula(paymentRow);
+                                                            // calculateIndicatorFormula(paymentRow);
+                                                            changeRows.push(paymentRow);
                                                         }
                                                         delete payment_row_data[key];
                                                     }
@@ -253,7 +256,8 @@ $(function () {
                                                 }
                                                 if (newActualValue !== 0) {
                                                     loadActualDifferentRateValue(otherExpensesRow, newActualValue);
-                                                    calculateIndicatorFormula(otherExpensesRow);
+                                                    // calculateIndicatorFormula(otherExpensesRow);
+                                                    changeRows.push(otherExpensesRow);
                                                 }
                                                 delete payment_row_data[key];
                                             }
@@ -281,12 +285,16 @@ $(function () {
                                     }
                                     if (newActualValue !== 0) {
                                         loadActualDifferentRateValue(deliveryAffectRow, newActualValue);
-                                        calculateIndicatorFormula(deliveryAffectRow);
+                                        // calculateIndicatorFormula(deliveryAffectRow);
+                                        changeRows.push(deliveryAffectRow);
                                     }
                                 }
-
                                 // init money
                                 $.fn.initMaskMoney2();
+                                // Recalculate change rows
+                                for (let changeRow of changeRows) {
+                                    calculateIndicatorFormula(changeRow);
+                                }
                             }
                         }
                     }
@@ -337,11 +345,7 @@ $(function () {
             for (let eleIndicator of $table[0].querySelectorAll('.table-row-indicator')) {
                 if (eleIndicator.innerHTML) {
                     let indicatorTitle = `indicator(${eleIndicator.innerHTML})`;
-                    let indicatorVal = eleIndicator.closest('tr').querySelector('.table-row-actual-value').getAttribute('data-init-money');
-                    if (indicatorVal === '0') {
-                        indicatorVal = eleIndicator.closest('tr').querySelector('.table-row-planed-value').getAttribute('data-init-money');
-                    }
-                    dataIndicatorJSON[indicatorTitle] = indicatorVal
+                    dataIndicatorJSON[indicatorTitle] = eleIndicator.closest('tr').querySelector('.table-row-actual-value').getAttribute('data-init-money');
                 }
             }
             dataIndicatorJSON['%'] = '/100';

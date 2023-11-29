@@ -5166,3 +5166,7 @@ msgstr "Hiển thị thuộc tính"
 #
 msgid "Select by"
 msgstr "Chọn"
+
+#
+msgid "Internal"
+msgstr "Nội bộ"

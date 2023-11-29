@@ -19,4 +19,16 @@ SALE_ORDER_DATA_MAP = {
     'payment_term': FieldMapCommon(
         name_mapping=['payment_term'],
     ).data,
+    'sale_order_products_data': FieldMapCommon(
+        name_mapping=['sale_order_products_data'],
+    ).data,
+    'sale_order_logistic_data': FieldMapCommon(
+        name_mapping=['sale_order_logistic_data'],
+    ).data,
+    'sale_order_costs_data': FieldMapCommon(
+        name_mapping=['sale_order_costs_data'],
+    ).data,
+    'sale_order_expenses_data': FieldMapCommon(
+        name_mapping=['sale_order_expenses_data'],
+    ).data,
 }

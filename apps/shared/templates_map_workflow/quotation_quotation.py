@@ -22,18 +22,13 @@ QUOTATION_DATA_MAP = {
     'quotation_products_data': FieldMapCommon(
         name_mapping=['quotation_products_data'],
     ).data,
+    'quotation_logistic_data': FieldMapCommon(
+        name_mapping=['quotation_logistic_data'],
+    ).data,
     'quotation_costs_data': FieldMapCommon(
         name_mapping=['quotation_costs_data'],
     ).data,
     'quotation_expenses_data': FieldMapCommon(
         name_mapping=['quotation_expenses_data'],
-    ).data,
-
-
-    'quotation_logistic_data': FieldMapCommon(
-        id_mapping=[
-            'quotation-create-shipping-address',
-            'quotation-create-billing-address',
-        ],
     ).data,
 }

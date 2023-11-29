@@ -71,39 +71,74 @@
                         <input class="form-control" id="title">
                     </div>
                     <div class="form-group">
-                        <label class="form-label required" id="supplier-label">{% trans "Supplier name" %}</label>
-                        <span class="input-affix-wrapper">
-                                <span class="input-prefix" id="supplier-detail-span" hidden>
-                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
-                                        <div class="row">
-                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
-                                            <a id="btn-detail-supplier-tab" class="col-5 text-right" href="{% url 'AccountDetail' '0' %}" data-url="{% url 'AccountDetail' '0' %}" target="_blank">
-                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
-                                            </a>
-                                        </div>
-                                        <div class="dropdown-divider"></div>
-                                        <div class="row">
-                                            <span class="col-3" style="font-style: italic">{% trans "Supplier" %}</span>
-                                            <span class="col-9 text-primary" id="supplier-name"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-3" style="font-style: italic">{% trans "Code" %}</span>
-                                            <span class="col-9 text-primary" id="supplier-code"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-3" style="font-style: italic">{% trans "Owner" %}</span>
-                                            <span class="col-9 text-primary" id="supplier-owner"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-3" style="font-style: italic">{% trans "Industry" %}</span>
-                                            <span class="col-9 text-primary" id="supplier-industry"></span>
-                                        </div>
-                                    </span>
+                        <div class="row">
+                            <div class="col-6 text-left">
+                                <label class="form-label required" id="supplier-label">{% trans "Supplier name" %}</label>
+                                <label class="form-label required" hidden id="employee-label">{% trans "Employee" %}</label>
+                            </div>
+                            <div class="col-6 text-right form-check">
+                                <input class="form-check-input" type="checkbox" id="internal">
+                                <label for="internal" class="form-label">{% trans "Internal" %}</label>
+                            </div>
+                        </div>
+                        <span id="supplier-detail-span" class="input-affix-wrapper">
+                            <span class="input-prefix" >
+                                <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
+                                    <div class="row">
+                                        <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                        <a id="btn-detail-supplier-tab" class="col-5 text-right" href="{% url 'AccountDetail' '0' %}" data-url="{% url 'AccountDetail' '0' %}" target="_blank">
+                                            <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                        </a>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="row">
+                                        <span class="col-3" style="font-style: italic">{% trans "Supplier" %}</span>
+                                        <span class="col-9 text-primary" id="supplier-name"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-3" style="font-style: italic">{% trans "Code" %}</span>
+                                        <span class="col-9 text-primary" id="supplier-code"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-3" style="font-style: italic">{% trans "Owner" %}</span>
+                                        <span class="col-9 text-primary" id="supplier-owner"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-3" style="font-style: italic">{% trans "Industry" %}</span>
+                                        <span class="col-9 text-primary" id="supplier-industry"></span>
+                                    </div>
                                 </span>
-                                <select class="form-select" data-method="GET" id="supplier-select-box"
-                                        data-url="{% url 'AccountListAPI' %}"></select>
                             </span>
+                            <select class="form-select" data-method="GET" id="supplier-select-box" data-url="{% url 'AccountListAPI' %}"></select>
+                        </span>
+                        <span id="employee-detail-span" hidden class="input-affix-wrapper">
+                            <span class="input-prefix">
+                                <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
+                                    <div class="row">
+                                        <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                        <a id="btn-detail-employee-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
+                                            <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                        </a>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="row">
+                                        <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
+                                        <span class="col-7 text-primary" id="employee-name"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
+                                        <span class="col-7 text-primary" id="employee-code"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
+                                        <span class="col-7 text-primary" id="employee-department"></span>
+                                    </div>
+                                </span>
+                            </span>
+                            <select class="form-select" data-method="GET" id="employee-select-box" data-url="{% url 'EmployeeListAPI' %}"></select>
+                        </span>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
@@ -155,6 +190,7 @@
                             <option selected></option>
                             <option value="0">{% trans "Cash" %}</option>
                             <option value="1">{% trans "Bank transfer" %}</option>
+                            <option value="2">{% trans "None" %}</option>
                         </select>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 const initEmployee = JSON.parse($('#employee_current').text());
 let PaymentCreatorEle = $('#creator-select-box')
 let supplierEle = $('#supplier-select-box')
+let employeeEle = $('#employee-select-box')
 let tableLineDetail = $('#tab_line_detail_datatable')
 let AP_db = $('#advance_payment_list_datatable')
 let current_value_converted_from_ap = '';
@@ -10,7 +11,23 @@ let opp_mapped_select = $('#opportunity_id')
 let script_url = $('#script-url')
 let tab_plan_datatable = $('#tab_plan_datatable')
 let offcanvasRightLabel = $('#offcanvasRightLabel')
+let checkbox_internal = $('#internal')
 let AP_filter = null
+
+checkbox_internal.on('change', function () {
+    if ($(this).prop('checked')) {
+        $('#supplier-label').prop('hidden', true)
+        $('#employee-label').prop('hidden', false)
+        $('#employee-detail-span').prop('hidden', false)
+        $('#supplier-detail-span').prop('hidden', true)
+    }
+    else {
+        $('#supplier-label').prop('hidden', false)
+        $('#employee-label').prop('hidden', true)
+        $('#employee-detail-span').prop('hidden', true)
+        $('#supplier-detail-span').prop('hidden', false)
+    }
+})
 
 $('#quo-so-row').prop('hidden', false);
 
@@ -161,6 +178,36 @@ $('#input-file-now').dropify({
             '</div>',
     }
 });
+
+function PaymentLoadEmployee(data) {
+    employeeEle.initSelect2({
+        ajax: {
+            url: employeeEle.attr('data-url'),
+            method: 'GET',
+        },
+        data: (data ? data : null),
+        templateResult: function(data) {
+            let ele = $('<div class="row col-12"></div>');
+            ele.append(`<div class="col-2"><span class="badge badge-soft-primary">${data.data?.['code']}</span></div><div class="col-6">${data.data?.['full_name']}</div>`);
+            if (data.data?.['group']['title'] !== undefined) {
+                ele.append(`<div class="col-4">(${data.data?.['group']['title']})</div>`);
+            }
+            return ele;
+        },
+        keyResp: 'employee_list',
+        keyId: 'id',
+        keyText: 'full_name',
+    }).on('change', function () {
+        let employee_selected = SelectDDControl.get_data_from_idx(employeeEle, employeeEle.val())
+        let btn_detail = $('#btn-detail-employee-tab');
+        $('#employee-detail-span').prop('hidden', false);
+        $('#employee-name').text(employee_selected?.['full_name'])
+        $('#employee-code').text(employee_selected?.['code']);
+        $('#employee-department').text(employee_selected?.['group']['title']);
+        let url = btn_detail.attr('data-url').replace('0', employee_selected?.['id']);
+        btn_detail.attr('href', url);
+    })
+}
 
 function PaymentLoadCreatedDate() {
     $('#created_date_id').daterangepicker({
@@ -1149,17 +1196,41 @@ function LoadDetailPayment() {
 
                 $('#title').val(data.title);
 
-                if (Object.keys(data?.['supplier']).length !== 0) {
-                    PaymentLoadSupplier(data?.['supplier'])
-                    InforSpanSupplier(data?.['supplier']);
-                    LoadBankAccount(data?.['supplier']?.['bank_accounts_mapped']);
-                }
-
                 $('#ap-method').val(data.method);
 
                 $('#created_date_id').val(data.date_created.split(' ')[0]);
 
                 PaymentLoadCreator(data.creator_name)
+
+                if (data.is_internal_payment) {
+                    checkbox_internal.prop('checked', true)
+                    $('#supplier-label').prop('hidden', true)
+                    $('#employee-label').prop('hidden', false)
+                    $('#employee-detail-span').prop('hidden', false)
+                    $('#supplier-detail-span').prop('hidden', true)
+                    if (Object.keys(data?.['employee_payment']).length !== 0) {
+                        PaymentLoadEmployee(data?.['employee_payment'])
+                        let btn_detail = $('#btn-detail-employee-tab');
+                        $('#employee-detail-span').prop('hidden', false);
+                        $('#employee-name').text(data?.['employee_payment']?.['full_name'])
+                        $('#employee-code').text(data?.['employee_payment']?.['code']);
+                        $('#employee-department').text(data?.['employee_payment']?.['group']['title']);
+                        let url = btn_detail.attr('data-url').replace('0', data?.['employee_payment']?.['id']);
+                        btn_detail.attr('href', url);
+                    }
+                }
+                else {
+                    checkbox_internal.prop('checked', false)
+                    $('#supplier-label').prop('hidden', false)
+                    $('#employee-label').prop('hidden', true)
+                    $('#employee-detail-span').prop('hidden', true)
+                    $('#supplier-detail-span').prop('hidden', false)
+                    if (Object.keys(data?.['supplier']).length !== 0) {
+                        PaymentLoadSupplier(data?.['supplier'])
+                        InforSpanSupplier(data?.['supplier']);
+                        LoadBankAccount(data?.['supplier']?.['bank_accounts_mapped']);
+                    }
+                }
 
                 for (let i = 0; i < data?.['expense_items'].length; i++) {
                     let data_row = data?.['expense_items'][i];
@@ -1222,6 +1293,7 @@ function LoadDetailPayment() {
 
 class PaymentHandle {
     async load(sale_code_mapped, type, quotation_object, sale_order_object, ap_mapped_id) {
+        PaymentLoadEmployee()
         PaymentLoadCreatedDate();
         PaymentLoadCreator(initEmployee);
         PaymentLoadSupplier();
@@ -1416,6 +1488,10 @@ class PaymentHandle {
         frm.dataForm['status'] = true;
 
         frm.dataForm['system_status'] = 1;
+
+        frm.dataForm['is_internal_payment'] = checkbox_internal.prop('checked');
+
+        frm.dataForm['employee_payment'] = employeeEle.val();
 
         return {
             url: frm.dataUrl,

@@ -174,17 +174,17 @@ $(function () {
                                         // payment on expense item
                                         if (indicator?.['expense_item']?.['title']) {
                                             if (payment_row_data.hasOwnProperty(indicator?.['expense_item']?.['title'])) {
-                                                payment_row_data[indicator['expense_item']['title']].push(indicator);
+                                                payment_row_data[indicator['expense_item']['title'].toLowerCase()].push(indicator);
                                             } else {
-                                                payment_row_data[indicator['expense_item']['title']] = [indicator];
+                                                payment_row_data[indicator['expense_item']['title'].toLowerCase()] = [indicator];
                                             }
                                         }
                                         // payment on labor item
                                         if (indicator?.['labor_item']?.['title']) {
                                             if (payment_row_data.hasOwnProperty(indicator?.['labor_item']?.['title'])) {
-                                                payment_row_data[indicator['labor_item']['title']].push(indicator);
+                                                payment_row_data[indicator['labor_item']['title'].toLowerCase()].push(indicator);
                                             } else {
-                                                payment_row_data[indicator['labor_item']['title']] = [indicator];
+                                                payment_row_data[indicator['labor_item']['title'].toLowerCase()] = [indicator];
                                             }
                                         }
                                     } else if (indicator?.['is_delivery'] === true) {
@@ -215,6 +215,7 @@ $(function () {
                                             let dataRow = JSON.parse(dataRowRaw);
                                             let dataFormula = dataRow?.['indicator']?.['formula_data_show'].replace(/"/g, "'");
                                             if (dataFormula) {
+                                                dataFormula = dataFormula.toLowerCase();
                                                 for (let key in payment_row_data) {
                                                     if (dataFormula.includes(key)) {
                                                         let newActualValue = 0;
@@ -314,9 +315,9 @@ $(function () {
                 let revenueEle = $table[0].querySelector('.table-row-indicator[data-code="IN0001"]');
                 if (revenueEle) {
                     let revenueRow = revenueEle.closest('tr');
-                    let revenuePlanedVal = revenueRow?.querySelector('.table-row-planed-value')?.getAttribute('data-init-money');
+                    let revenueActualVal = revenueRow?.querySelector('.table-row-actual-value')?.getAttribute('data-init-money');
                     eleRate.innerHTML = '';
-                    rateValue = ((parseFloat(newActualValue) / parseFloat(revenuePlanedVal)) * 100).toFixed(1);
+                    rateValue = ((parseFloat(newActualValue) / parseFloat(revenueActualVal)) * 100).toFixed(1);
                     eleRate.innerHTML = String(rateValue) + ' %';
                 }
                 $.fn.initMaskMoney2();

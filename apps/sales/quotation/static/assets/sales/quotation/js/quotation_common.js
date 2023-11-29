@@ -878,7 +878,13 @@ class QuotationLoadDataHandle {
         if (ele.hasClass('quotation-config')) {
             let url = ele.attr('data-url');
             let method = ele.attr('data-method');
-            $.fn.callAjax(url, method).then(
+            $.fn.callAjax2(
+                {
+                    'url': url,
+                    'method': method,
+                    'isDropdown': true,
+                }
+            ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

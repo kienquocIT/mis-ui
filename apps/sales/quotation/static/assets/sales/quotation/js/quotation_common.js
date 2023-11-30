@@ -373,11 +373,12 @@ class QuotationLoadDataHandle {
     }
 
     static loadBoxQuotationExpense(ele, dataExpense = {}) {
+        ele.empty();
         ele.initSelect2({
             data: dataExpense,
             disabled: !(ele.attr('data-url')),
         });
-    }
+    };
 
     static loadBoxQuotationProductPurchasing(box_id, valueToSelect = null) {
         let ele = QuotationDataTableHandle.productInitEle;

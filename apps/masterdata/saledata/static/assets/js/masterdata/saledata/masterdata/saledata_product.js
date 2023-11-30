@@ -45,12 +45,12 @@ $(document).ready(function () {
             }
         }, {
             render: (data, type, row, meta) => {
-                if (row.is_default === false) {
+                if (!row.is_default) {
                     return `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
                         row.id
                     );
                 } else {
-                    return `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    return ``;
                 }
             }
         }
@@ -186,7 +186,7 @@ $(document).ready(function () {
                         }, {
                             render: (data, type, row, meta) => {
                                 if (row.is_default) {
-                                    return `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                                    return ``;
                                 } else {
                                     return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(row.id);
                                 }

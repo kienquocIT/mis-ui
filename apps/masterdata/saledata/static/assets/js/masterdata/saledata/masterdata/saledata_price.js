@@ -190,7 +190,7 @@ $(document).ready(function () {
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="{0}" data-bs-toggle="modal"
-                                        data-bs-target="#modal-detail-tax" style="min-width: max-content; width: 100%" href="#"><span><b>{1}</b></span></a>`.format_by_idx(
+                                        data-bs-target="#modal-detail-tax" href="#"><span><b>{1}</b></span></a>`.format_by_idx(
                                     row.id, data
                                 )
                             }

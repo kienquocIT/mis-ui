@@ -359,7 +359,7 @@ $(function () {
                                                         </div>
                                                     </div>
                                                     <h6 class="text-primary mt-1">${eleTrans.attr('data-final-acceptance')}</h6>
-                                                    <div class="row">
+                                                    <div class="row final-acceptance-zone">
                                                         <div class="col-12 col-md-6 col-lg-6">
                                                             <div class="form-group form-group-data-source">
                                                                 <label class="form-label">${eleTrans.attr('data-source')}</label>
@@ -469,6 +469,15 @@ $(function () {
             }
             let eleParamFunctionListShow = $(this)[0].closest('tr').querySelector('.function-list');
             loadInitParamList('init-indicator-param-list', $(eleParamFunctionListShow));
+            // load final acceptance
+            let eleBoxFASource = row.querySelector('.box-acceptance-affect');
+            let eleEditable = row.querySelector('.acceptance-editable');
+            if (eleBoxFASource && eleEditable) {
+                if ($(eleBoxFASource).val() === '1') {
+                    eleEditable.checked = false;
+                    eleEditable.setAttribute('disabled', 'true');
+                }
+            }
         });
 
         tableIndicator.on('click', '.param-item', function() {
@@ -512,6 +521,20 @@ $(function () {
                                                     <p class="ml-2">${dataShow.example}</p>
                                                 </div>
                                             </div>`)
+                }
+            }
+        });
+
+        tableIndicator.on('change', '.box-acceptance-affect', function () {
+            let eleEditable = this.closest('.final-acceptance-zone').querySelector('.acceptance-editable');
+            if ($(this).val() === '1') {
+                if (eleEditable) {
+                    eleEditable.checked = false;
+                    eleEditable.setAttribute('disabled', 'true');
+                }
+            } else {
+                if (eleEditable) {
+                    eleEditable.removeAttribute('disabled');
                 }
             }
         });

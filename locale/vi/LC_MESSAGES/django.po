@@ -5282,3 +5282,23 @@ msgstr "Lớp"
 #
 msgid "Styles"
 msgstr "Phong cách"
+
+#
+msgid "Position title"
+msgstr "Tên chức danh"
+
+#
+msgid "1st manager"
+msgstr "Quản lý thứ nhất"
+
+#
+msgid "2nd manager"
+msgstr "Quản lý thứ hai"
+
+#
+msgid "Editing zone"
+msgstr "Vùng chỉnh sửa"
+
+#
+msgid "Add Collaborators"
+msgstr "Thêm cộng tác viên"

@@ -50,6 +50,12 @@ function actionsClick(elm, data, iEvent) {
         $form.find('[name="title"]').val(data.title)
         $form.find('[name="remark"]').val(data.remark)
         $form.find('#property_list_choices').val(data.property_list).trigger('change')
+        // load data detail to Select2
+        for (let prop of data.property_list) {
+            if (typeof prop === 'object' && prop !== null) {
+                $form.find('#property_list_choices').append(`<option value="${prop?.['id']}" selected>${prop?.['title']}</option>`);
+            }
+        }
         $form.find('[name="order"]').val(data.order)
         if (data.hasOwnProperty('id'))
             $form.find('[name="zone_id"]').val(data.id)

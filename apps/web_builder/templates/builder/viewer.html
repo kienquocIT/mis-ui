@@ -49,10 +49,24 @@
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.3.1/jquery-migrate.min.js" integrity="sha512-wDH73bv6rW6O6ev5DGYexNboWMzBoY+1TEAx5Q/sdbqN2MB2cNTG9Ge/qv3c1QNvuiAuETsKJnnHH2UDJGmmAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.3.1/jquery-migrate.min.js"
+            integrity="sha512-wDH73bv6rW6O6ev5DGYexNboWMzBoY+1TEAx5Q/sdbqN2MB2cNTG9Ge/qv3c1QNvuiAuETsKJnnHH2UDJGmmAQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"
+    ></script>
 
     <style>
         {{ data.page_css|safe }}
+    </style>
+    <style>
+        .scrollToTop {
+            position: fixed;
+            bottom: 75px;
+            right: 40px;
+            display: none;
+            background-color: #0dcaf0;
+            color: #ffffff;
+        }
     </style>
 </head>
 <script
@@ -82,5 +96,29 @@
 {% endif %}
 {{ data.page_html|safe }}
 {% csrf_token %}
+<button id="bubble-scrollToTop" class="scrollToTop btn btn-light rounded px-2 py-1"><i class="fa-solid fa-arrows-up-to-line"></i></button>
+<script>
+    $(function () {
+        let eleOnTop = $('#bubble-scrollToTop');
+        let docCheck = $('html, body');
 
+        $(window).scroll(function () {
+            let lengthTop = $(this).scrollTop();
+            lengthTop > 100 ? eleOnTop.fadeIn() : eleOnTop.fadeOut();
+        });
+
+        eleOnTop.click(function () {
+            docCheck.animate({scrollTop: 0}, "slow");
+            return false;
+        });
+
+        $(document).ready(function () {
+            let hashCode = window.location.hash;
+            if (hashCode) {
+                let eleIdx = $(this).find(hashCode);
+                if (eleIdx.length > 0) docCheck.animate({scrollTop: eleIdx.offset().top});
+            }
+        });
+    })
+</script>
 </html>

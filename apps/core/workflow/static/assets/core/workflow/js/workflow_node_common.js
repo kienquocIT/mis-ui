@@ -927,7 +927,7 @@ class NodeDataTableHandle {
                                                 <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Add Collaborators</h5>
+                                                            <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -1184,7 +1184,7 @@ class NodeDataTableHandle {
                                                 <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Add Collaborators</h5>
+                                                            <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -1238,7 +1238,7 @@ class NodeDataTableHandle {
                                                 <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Add Collaborators</h5>
+                                                            <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>

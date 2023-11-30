@@ -5284,6 +5284,26 @@ msgid "Styles"
 msgstr "Phong cách"
 
 #
+msgid "Position title"
+msgstr "Tên chức danh"
+
+#
+msgid "1st manager"
+msgstr "Quản lý thứ nhất"
+
+#
+msgid "2nd manager"
+msgstr "Quản lý thứ hai"
+
+#
+msgid "Editing zone"
+msgstr "Vùng chỉnh sửa"
+
+#
+msgid "Add Collaborators"
+msgstr "Thêm cộng tác viên"
+
+#
 msgid "Primary currency"
 msgstr "Đồng tiền mặc định"
 
@@ -5298,12 +5318,12 @@ msgstr "Kê khai thường xuyên"
 
 #
 msgid "Periodic inventory"
-msgstr "Kiểm kê định kì"
+msgstr "Kiểm kê định kỳ"
 
 
 #
 msgid "Default inventory value method"
-msgstr "Phương pháp tính giá tồn khoặc định"
+msgstr "Phương pháp tính giá tồn mặc định"
 
 
 #
@@ -5313,7 +5333,7 @@ msgstr "Nhập trước xuất trước"
 
 #
 msgid "Cumulative weighted average"
-msgstr "Bình quân gia quyền tích lũy cuối kì"
+msgstr "Bình quân gia quyền tích lũy cuối kỳ"
 
 
 #

@@ -179,5 +179,18 @@ const localeEn = {
         resultCount: "result was count",
         amountLeftBefore: "There are still ",
         amountLeftAfter: " products left.",
-    }
+        favourPrice: "Favour",
+        variantProd: "Variant",
+        quantityBuy: "Quantity",
+        buyNow: "Buy Now",
+        addToCart: "Add to card",
+        descriptionProduct: "Descriptions",
+        addrDelivery: "Delivery address",
+        btnChange: "Change",
+        exchangeAndWarranty: "Exchange and Warranty",
+        returnable: "Returnable",
+        dayReturned: "-day return period for the Seller",
+        noApplyWarranty: "Warranty not applicable",
+        shipCode: "Shipping Code"
+    },
 };

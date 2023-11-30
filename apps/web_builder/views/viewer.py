@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.shared import ServerAPI, ApiURL
+from apps.shared import ServerAPI, ApiURL, TypeCheck
 
 from apps.core.account.models import Tenant, Company
 
@@ -40,7 +40,10 @@ class CompanyWebsitePathView(View):
     def render_404(self, ctx=None):
         if not ctx:
             ctx = {}
-        return render(self.request, 'extends/systems/out-layout/company_page_not_found.html', ctx)
+        return render(
+            self.request, 'extends/systems/out-layout/company_page_not_found.html',
+            {**ctx, 'path_redirect': '/site/'}
+        )
 
     def active_language(self):
         if self.request.user and hasattr(self.request.user, 'id') and not isinstance(self.request.user, AnonymousUser):
@@ -112,7 +115,7 @@ class CompanyWebsitePathView(View):
                 if company_obj and hasattr(company_obj, 'id'):
                     url = ApiURL.BUILDER_PAGE_VIEWER.fill_key(
                         company_id=company_obj.id,
-                        path_sub=path_sub if path_sub else '-',
+                        path_sub=path_sub.replace("/", "---") if path_sub else '-',
                     )
                     resp = ServerAPI(request=request, user=request.user, url=url).get(data=api_filter)
                     if resp.state:
@@ -138,6 +141,29 @@ class PublicProductListAPI(APIView, PublicViewerMixin):
         return Response(
             {
                 'data': [],
+                'status': status.HTTP_200_OK
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class PublicProductDetailAPI(APIView, PublicViewerMixin):
+    def get(self, request, *args, pk, **kwargs):
+        company_sub_domain = self.check_and_set_company(request=request)
+        if company_sub_domain and TypeCheck.check_uuid(pk):
+            url = ApiPublicURL.PUBLIC_PRODUCT_DETAIL.fill_key(
+                sub_domain=company_sub_domain.lower(),
+                pk=pk,
+            )
+            resp = ServerAPI(url=url).get(data=request.query_params.dict())
+            result, _status = resp.auto_return(key_success='data')
+            return Response(
+                result,
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            {
+                'data': {},
                 'status': status.HTTP_200_OK
             },
             status=status.HTTP_200_OK

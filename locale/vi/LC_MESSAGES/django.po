@@ -5121,3 +5121,115 @@ msgstr "Không có"
 #
 msgid "Plan value"
 msgstr "Giá trị phương án kinh doanh"
+
+#
+msgid "Building a website instructions"
+msgstr "Hướng dẫn xây dựng trang"
+
+#
+msgid "Website architecture"
+msgstr "Kiến trúc của trang"
+
+#
+msgid "Page List"
+msgstr "Danh sách trang"
+
+#
+msgid "Representative Name of page (visible to only the editor)"
+msgstr "Tên đại diện của trang (chỉ người biên tập mới nhìn thấy)"
+
+#
+msgid "Remarks"
+msgstr "Mô tả"
+
+#
+msgid "Descriptions of page (visible to only the editor)"
+msgstr "Mô tả trang (chỉ người biên tập mới nhìn thấy)"
+
+#
+msgid "Page Title"
+msgstr "Tiêu đề trang"
+
+#
+msgid "Represents the name displayed at the top of a webpage, providing a brief description of its content."
+msgstr "Đại diện cho tên được hiển thị ở đầu trang web, cung cấp mô tả ngắn gọn về nội dung của trang web đó."
+
+#
+msgid "Path"
+msgstr "Đường dẫn trang"
+
+#
+msgid "Specifies the location or URL of the content within the website structure."
+msgstr "Chỉ định vị trí hoặc URL của nội dung trong cấu trúc trang web."
+
+#
+msgid "Publish"
+msgstr "Công bố"
+
+#
+msgid "Indicates the publication status, determining whether the content is currently visible to the audience (true) or not (false)."
+msgstr "Cho biết trạng thái xuất bản, xác định xem nội dung hiện có hiển thị với khán giả hay không (đúng) hay không (sai)."
+
+#
+msgid "Fill id with {id}."
+msgstr "Sử dụng '{id}' để tự động điền ID theo đường dẫn."
+
+#
+msgid "Set up the display of product listings"
+msgstr "Thiết lập hiển thị danh sách sản phẩm"
+
+#
+msgid "Create a page where you want to display the product listings"
+msgstr "Tạo trang muốn hiển thị danh sách sản phẩm"
+
+#
+msgid "Skip this step if you already have a page"
+msgstr "nếu đã có trang thì bỏ qua bước này"
+
+#
+msgid "Go to the page's design mode"
+msgstr "Vào trình thiết kế của page"
+
+#
+msgid "Use the 'Product List' block in the page's design to display product details"
+msgstr "Sử dụng khối 'Product List' trong thiết kế của page vừa tạo để hiển thị chi tiết sản phẩm"
+
+#
+msgid "Save the design"
+msgstr "Lưu lại bản thiết kế"
+
+#
+msgid "Access the page preview to see the display of the newly added product listings"
+msgstr "Truy cập trình xem trang để xem hiển thị danh sách sản phẩm vừa được thêm vào"
+
+#
+msgid "Set up the product detail page"
+msgstr "Thiết lập trang chi tiết sản phẩm"
+
+#
+msgid "Create a new page with Path = 'product/{id}'"
+msgstr "Tạo trang mới với Path = 'product/{id}'"
+
+#
+msgid "Use the 'Product Detail' block in the design of the newly created page to display product details"
+msgstr "Sử dụng khối 'Product Detail' trong thiết kế của trang vừa tạo để hiển thị chi tiết sản phẩm"
+
+#
+msgid "Access the preview of the page containing the product listings and click on any product to navigate to the Product Detail page"
+msgstr "Truy cập trình xem trang chứa danh sách sản phẩm và nhấn vào một sản phẩm bất kỳ để chuyển hướng đến trang Chi tiết sản phẩm"
+
+#
+msgid "Overview design page"
+msgstr "Tổng quan màng hình thiết kế"
+
+#
+msgid "Block"
+msgstr "Khối"
+
+#
+msgid "Layer"
+msgstr "Lớp"
+
+#
+msgid "Styles"
+msgstr "Phong cách"

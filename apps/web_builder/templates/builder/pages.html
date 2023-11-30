@@ -23,6 +23,91 @@
                         </ul>
                     </ul>
                 </div>
+                <div class="border border-light p-3 rounded shadow-sm mt-1">
+                    <div>
+                        <h5>{% trans 'Website architecture' %}</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 150px;">{% trans 'Property' %}</th>
+                                    <th>{% trans 'Descriptions' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{% trans 'Name' %}</td>
+                                    <td>{% trans 'Representative Name of page (visible to only the editor)' %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans 'Remarks' %}</td>
+                                    <td>{% trans 'Descriptions of page (visible to only the editor)' %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans 'Page Title' %}</td>
+                                    <td>{% trans 'Represents the name displayed at the top of a webpage, providing a brief description of its content.' %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans 'Path' %}</td>
+                                    <td>{% trans 'Specifies the location or URL of the content within the website structure.' %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans 'Publish' %}</td>
+                                    <td>{% trans 'Indicates the publication status, determining whether the content is currently visible to the audience (true) or not (false).' %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-5">
+                        <h5>{% trans 'Set up the display of product listings' %}:</h5>
+                        <div class="px-3 py-2 border border-light rounded" style="border-left: 3px solid #ffce33!important;">
+                            <ol class="mb-0">
+                                <li>{% trans 'Create a page where you want to display the product listings' %}. <small>({% trans 'Skip this step if you already have a page' %}.)</small></li>
+                                <li>{% trans "Go to the page's design mode" %}</li>
+                                <li>{% trans "Use the 'Product List' block in the page's design to display product details" %}</li>
+                                <li>{% trans 'Save the design' %}</li>
+                                <li>{% trans 'Access the page preview to see the display of the newly added product listings' %}</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <h5>{% trans 'Set up the product detail page' %}:</h5>
+                        <div class="px-3 py-2 border border-light rounded" style="border-left: 3px solid #ffce33!important;">
+                            <ol class="mb-0">
+                                <li>{% trans "Create a new page with Path = 'product/{id}'" %}</li>
+                                <li>{% trans "Use the 'Product Detail' block in the design of the newly created page to display product details" %}</li>
+                                <li>{% trans 'Save the design' %}</li>
+                                <li>{% trans 'Access the preview of the page containing the product listings and click on any product to navigate to the Product Detail page' %}</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="w-100 mt-5">
+                        <h5>{% trans 'Building a website instructions' %}</h5>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Overview design page' %}</p>
+                            <img src="{% static 'assets/images/web-design/full.png' %}" alt="Full design" class="w-100">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Block' %}</p>
+                            <img src="{% static 'assets/images/web-design/block.png' %}" alt="Block" style="max-height: 250px; object-fit: cover">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Layer' %}</p>
+                            <img src="{% static 'assets/images/web-design/layers.png' %}" alt="Layer">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Settings' %}</p>
+                            <img src="{% static 'assets/images/web-design/component-settings.png' %}" alt="component-settings">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Styles' %}</p>
+                            <img src="{% static 'assets/images/web-design/styles.png' %}" alt="Styles">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Actions' %}</p>
+                            <img src="{% static 'assets/images/web-design/actions.png' %}" alt="actions">
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-12 col-lg-6">
                 <form
@@ -113,7 +198,9 @@
     <script>
         function convertToSlug(txt) {
             return txt.toLowerCase()
-                .replace(/(?!\/)[^-\w ]+/g, "")
+                .replace(/(?!\/)[^-\w ]+/g, function(match) {
+                    return match !== "{pk}" ? match : "";
+                })
                 .replace(/ +/g, "-");
         }
 

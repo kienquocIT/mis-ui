@@ -64,7 +64,7 @@ $(function () {
         cmdm.add('save-to-api', function () {
             let frmEle = $('#frm-save');
             frmEle.find('input[name="page_html"]').val(editor.getHtml({cleanId: false}));
-            frmEle.find('input[name="page_css"]').val(editor.getCss());
+            frmEle.find('input[name="page_css"]').val(editor.getCss({keepUnusedStyles: true}));
             frmEle.find('input[name="page_js"]').val(editor.getJs());
             frmEle.find('input[name="project_data"]').val(JSON.stringify(editor.getProjectData()));
             let data = frmEle.serializeArray().reduce((o, kv) => ({
@@ -479,11 +479,14 @@ $(function () {
                 'productData': {
                     url: '/site/api/products',
                     method: 'GET',
+                    linkDetail: '/site/product/{id}',
+                    linkAPIDetail: '/site/api/product/{id}',
                 }
             },
             'grapesjs-plugin-bootstrap-carousel': {},
             'grapesjs-plugin-bootstrap-navbar': {
                 menus: JSON.parse($('#idx-menus-data').text()),
+                prefixPath: '/site',
             },
             'gjs-blocks-basic': {flexGrid: true},
             'grapesjs-tui-image-editor': {
@@ -539,6 +542,10 @@ $(function () {
 
                 // carousel
                 'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js',
+
+                // slick
+                'https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.3.1/jquery-migrate.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js',
             ],
             styles: [
                 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css',
@@ -546,6 +553,10 @@ $(function () {
 
                 // carousel
                 'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css',
+
+                // Slick
+                'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css',
             ],
         },
     });

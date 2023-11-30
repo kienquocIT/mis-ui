@@ -179,5 +179,18 @@ const localeVi = {
         resultCount: "kết quả đã được tìm thấy",
         amountLeftBefore: "Vẫn còn ",
         amountLeftAfter: " sản phẩm.",
-    }
+        favourPrice: "Ưu đãi",
+        variantProd: "Loại",
+        quantityBuy: "Số lượng",
+        buyNow: "Mua ngay",
+        addToCart: "Thêm vào giỏ hàng",
+        descriptionProduct: "Mô tả sản phẩm",
+        addrDelivery: "Địa chỉ giao hàng",
+        btnChange: "Thay đổi",
+        exchangeAndWarranty: "Đổi trả và Bảo hành",
+        returnable: "Được đổi ý",
+        dayReturned: " ngày trả cho Nhà bán hàng",
+        noApplyWarranty: "Không áp dụng chính sách bảo hành",
+        shipCode: "Giao hàng"
+    },
 };

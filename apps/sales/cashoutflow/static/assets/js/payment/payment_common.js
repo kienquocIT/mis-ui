@@ -1,6 +1,7 @@
 const initEmployee = JSON.parse($('#employee_current').text());
 let PaymentCreatorEle = $('#creator-select-box')
 let supplierEle = $('#supplier-select-box')
+let employeeEle = $('#employee-select-box')
 let tableLineDetail = $('#tab_line_detail_datatable')
 let AP_db = $('#advance_payment_list_datatable')
 let current_value_converted_from_ap = '';
@@ -10,7 +11,29 @@ let opp_mapped_select = $('#opportunity_id')
 let script_url = $('#script-url')
 let tab_plan_datatable = $('#tab_plan_datatable')
 let offcanvasRightLabel = $('#offcanvasRightLabel')
+let checkbox_internal = $('#internal')
+let supplier_label = $('#supplier-label')
+let employee_label = $('#employee-label')
+let employee_detail_span = $('#employee-detail-span')
+let supplier_detail_span = $('#supplier-detail-span')
 let AP_filter = null
+
+checkbox_internal.on('change', function () {
+    if ($(this).prop('checked')) {
+        supplier_label.prop('hidden', true)
+        employee_label.prop('hidden', false)
+        employee_detail_span.prop('hidden', false)
+        supplier_detail_span.prop('hidden', true)
+        $('#payment-method').val(0);
+    }
+    else {
+        supplier_label.prop('hidden', false)
+        employee_label.prop('hidden', true)
+        employee_detail_span.prop('hidden', true)
+        supplier_detail_span.prop('hidden', false)
+        $('#payment-method').val('');
+    }
+})
 
 $('#quo-so-row').prop('hidden', false);
 
@@ -162,6 +185,36 @@ $('#input-file-now').dropify({
     }
 });
 
+function PaymentLoadEmployee(data) {
+    employeeEle.initSelect2({
+        ajax: {
+            url: employeeEle.attr('data-url'),
+            method: 'GET',
+        },
+        data: (data ? data : null),
+        templateResult: function(data) {
+            let ele = $('<div class="row col-12"></div>');
+            ele.append(`<div class="col-2"><span class="badge badge-soft-primary">${data.data?.['code']}</span></div><div class="col-6">${data.data?.['full_name']}</div>`);
+            if (data.data?.['group']['title'] !== undefined) {
+                ele.append(`<div class="col-4">(${data.data?.['group']['title']})</div>`);
+            }
+            return ele;
+        },
+        keyResp: 'employee_list',
+        keyId: 'id',
+        keyText: 'full_name',
+    }).on('change', function () {
+        let employee_selected = SelectDDControl.get_data_from_idx(employeeEle, employeeEle.val())
+        let btn_detail = $('#btn-detail-employee-tab');
+        employee_detail_span.prop('hidden', false);
+        $('#employee-name').text(employee_selected?.['full_name'])
+        $('#employee-code').text(employee_selected?.['code']);
+        $('#employee-department').text(employee_selected?.['group']['title']);
+        let url = btn_detail.attr('data-url').replace('0', employee_selected?.['id']);
+        btn_detail.attr('href', url);
+    })
+}
+
 function PaymentLoadCreatedDate() {
     $('#created_date_id').daterangepicker({
         singleDatePicker: true,
@@ -191,7 +244,7 @@ function PaymentLoadCreator(data) {
 
 function InforSpanSupplier(data) {
     let btn_detail = $('#btn-detail-supplier-tab');
-    $('#supplier-detail-span').prop('hidden', false);
+    supplier_detail_span.prop('hidden', false);
     $('#supplier-name').text(data?.['name']);
     $('#supplier-code').text(data?.['code']);
     $('#supplier-owner').text(data?.['owner']['fullname']);
@@ -336,7 +389,7 @@ function count_row(table_body, option) {
 }
 
 function changePriceCommon(tr) {
-    let unit_price = tr.find('.expense-unit-price-input');
+    let unit_price = tr.find('.expense-unit-price-input')
     let quantity = tr.find('.expense_quantity');
     let subtotal = tr.find('.expense-subtotal-price');
     let subtotal_after_tax = tr.find('.expense-subtotal-price-after-tax');
@@ -349,7 +402,7 @@ function changePriceCommon(tr) {
     if (unit_price.attr('value') && quantity.val()) {
         let subtotal_value = parseFloat(unit_price.attr('value')) * parseInt(quantity.val())
         subtotal.attr('value', subtotal_value);
-        subtotal_after_tax.attr('value', subtotal_value + subtotal_value * parseFloat(tax_rate) / 100);
+        subtotal_after_tax.attr('value', subtotal_value + subtotal_value * tax_rate / 100);
     }
     else {
         unit_price.attr('value', '');
@@ -452,7 +505,7 @@ function loadAPList() {
                 data: 'to_payment',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="text-primary mask-money" data-init-money="` + row.to_payment + `"></span>`
+                    return `<span class="text-primary mask-money" data-init-money="${row?.['to_payment']}"></span>`
                 }
             },
             {
@@ -695,7 +748,6 @@ function LoadPlanQuotationNoOPP(quotation_id) {
 }
 
 function LoadPlanSaleOrderNoOPP(sale_order_id) {
-    console.log(sale_order_id)
     if (sale_order_id) {
         let dataParam1 = {'sale_order_id': sale_order_id}
         let expense_sale_order = $.fn.callAjax2({
@@ -1147,19 +1199,43 @@ function LoadDetailPayment() {
                     LoadPlanSaleOrderNoOPP(data?.['sale_order_mapped']?.['id'])
                 }
 
-                $('#title').val(data.title);
+                $('#title').val(data?.['title']);
 
-                if (Object.keys(data?.['supplier']).length !== 0) {
-                    PaymentLoadSupplier(data?.['supplier'])
-                    InforSpanSupplier(data?.['supplier']);
-                    LoadBankAccount(data?.['supplier']?.['bank_accounts_mapped']);
+                $('#payment-method').val(data?.['method']);
+
+                $('#created_date_id').val(data?.['date_created'].split(' ')[0]);
+
+                PaymentLoadCreator(data?.['creator_name'])
+
+                if (data?.['is_internal_payment']) {
+                    checkbox_internal.prop('checked', true)
+                    supplier_label.prop('hidden', true)
+                    employee_label.prop('hidden', false)
+                    employee_detail_span.prop('hidden', false)
+                    supplier_detail_span.prop('hidden', true)
+                    if (Object.keys(data?.['employee_payment']).length !== 0) {
+                        PaymentLoadEmployee(data?.['employee_payment'])
+                        let btn_detail = $('#btn-detail-employee-tab');
+                        employee_detail_span.prop('hidden', false);
+                        $('#employee-name').text(data?.['employee_payment']?.['full_name'])
+                        $('#employee-code').text(data?.['employee_payment']?.['code']);
+                        $('#employee-department').text(data?.['employee_payment']?.['group']['title']);
+                        let url = btn_detail.attr('data-url').replace('0', data?.['employee_payment']?.['id']);
+                        btn_detail.attr('href', url);
+                    }
                 }
-
-                $('#ap-method').val(data.method);
-
-                $('#created_date_id').val(data.date_created.split(' ')[0]);
-
-                PaymentLoadCreator(data.creator_name)
+                else {
+                    checkbox_internal.prop('checked', false)
+                    supplier_label.prop('hidden', false)
+                    employee_label.prop('hidden', true)
+                    employee_detail_span.prop('hidden', true)
+                    supplier_detail_span.prop('hidden', false)
+                    if (Object.keys(data?.['supplier']).length !== 0) {
+                        PaymentLoadSupplier(data?.['supplier'])
+                        InforSpanSupplier(data?.['supplier']);
+                        LoadBankAccount(data?.['supplier']?.['bank_accounts_mapped']);
+                    }
+                }
 
                 for (let i = 0; i < data?.['expense_items'].length; i++) {
                     let data_row = data?.['expense_items'][i];
@@ -1222,6 +1298,7 @@ function LoadDetailPayment() {
 
 class PaymentHandle {
     async load(sale_code_mapped, type, quotation_object, sale_order_object, ap_mapped_id) {
+        PaymentLoadEmployee()
         PaymentLoadCreatedDate();
         PaymentLoadCreator(initEmployee);
         PaymentLoadSupplier();
@@ -1288,9 +1365,9 @@ class PaymentHandle {
 
         frm.dataForm['supplier'] = supplierEle.val();
 
-        frm.dataForm['method'] = parseInt($('#ap-method').val());
-        if (![0, 1].includes(frm.dataForm['method'])) {
-            $.fn.notifyB({description: 'Method must be in [0, 1]'}, 'failure');
+        frm.dataForm['method'] = parseInt($('#payment-method').val());
+        if (![0, 1, 2].includes(frm.dataForm['method'])) {
+            $.fn.notifyB({description: 'Method must be in [0, 1, 2]'}, 'failure');
             return false;
         }
 
@@ -1307,7 +1384,6 @@ class PaymentHandle {
         }
 
         let payment_expense_valid_list = [];
-        let line_detail_expense_items = [];
         if (tableLineDetail.find('tr').length > 0) {
             let row_count = tableLineDetail.find('.row-number').length;
             for (let i = 1; i <= row_count; i++) {
@@ -1344,9 +1420,9 @@ class PaymentHandle {
                     }
                     let sum_value = 0;
                     if ($(this).find('.total-value-salecode-item').attr('value') !== '') {
-                        sum_value = $(this).find('.total-value-salecode-item').attr('value');
+                        sum_value = parseFloat($(this).find('.total-value-salecode-item').attr('value'));
                     }
-                    expense_detail_value = parseFloat(expense_detail_value) + parseFloat(sum_value);
+                    expense_detail_value = expense_detail_value + sum_value;
                     payment_expense_valid_list.push({
                         'expense_type_id': expense_type,
                         'expense_description': expense_name_input,
@@ -1363,10 +1439,9 @@ class PaymentHandle {
                         'sum_value': sum_value,
                         'ap_cost_converted_list': expense_items_detail_list
                     })
-                    line_detail_expense_items.push(expense_type)
                 })
 
-                if (expense_after_tax_price !== expense_detail_value) {
+                if (parseFloat(expense_after_tax_price) !== parseFloat(expense_detail_value)) {
                     $.fn.notifyB({description: 'Detail tab - line ' + i.toString() + ': product value must be equal to sum Sale Code value.'}, 'failure');
                     return false;
                 }
@@ -1416,6 +1491,10 @@ class PaymentHandle {
         frm.dataForm['status'] = true;
 
         frm.dataForm['system_status'] = 1;
+
+        frm.dataForm['is_internal_payment'] = checkbox_internal.prop('checked');
+
+        frm.dataForm['employee_payment'] = employeeEle.val();
 
         return {
             url: frm.dataUrl,

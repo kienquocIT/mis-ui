@@ -190,7 +190,7 @@ $(function () {
                                     } else if (indicator?.['is_payment'] === true) {
                                         // payment on expense item
                                         if (indicator?.['expense_item']?.['title']) {
-                                            if (payment_row_data.hasOwnProperty(indicator?.['expense_item']?.['title'])) {
+                                            if (payment_row_data.hasOwnProperty(indicator?.['expense_item']?.['title'].toLowerCase())) {
                                                 payment_row_data[indicator['expense_item']['title'].toLowerCase()].push(indicator);
                                             } else {
                                                 payment_row_data[indicator['expense_item']['title'].toLowerCase()] = [indicator];
@@ -198,7 +198,7 @@ $(function () {
                                         }
                                         // payment on labor item
                                         if (indicator?.['labor_item']?.['title']) {
-                                            if (payment_row_data.hasOwnProperty(indicator?.['labor_item']?.['title'])) {
+                                            if (payment_row_data.hasOwnProperty(indicator?.['labor_item']?.['title'].toLowerCase())) {
                                                 payment_row_data[indicator['labor_item']['title'].toLowerCase()].push(indicator);
                                             } else {
                                                 payment_row_data[indicator['labor_item']['title'].toLowerCase()] = [indicator];

@@ -5282,3 +5282,75 @@ msgstr "Lớp"
 #
 msgid "Styles"
 msgstr "Phong cách"
+
+#
+msgid "Position title"
+msgstr "Tên chức danh"
+
+#
+msgid "1st manager"
+msgstr "Quản lý thứ nhất"
+
+#
+msgid "2nd manager"
+msgstr "Quản lý thứ hai"
+
+#
+msgid "Editing zone"
+msgstr "Vùng chỉnh sửa"
+
+#
+msgid "Add Collaborators"
+msgstr "Thêm cộng tác viên"
+
+#
+msgid "Primary currency"
+msgstr "Đồng tiền mặc định"
+
+#
+msgid "Definition of inventory valuation"
+msgstr "Loại kiểm tra tồn kho"
+
+#
+msgid "Perpetual inventory"
+msgstr "Kê khai thường xuyên"
+
+
+#
+msgid "Periodic inventory"
+msgstr "Kiểm kê định kỳ"
+
+
+#
+msgid "Default inventory value method"
+msgstr "Phương pháp tính giá tồn mặc định"
+
+
+#
+msgid "FIFO"
+msgstr "Nhập trước xuất trước"
+
+
+#
+msgid "Cumulative weighted average"
+msgstr "Bình quân gia quyền tích lũy cuối kỳ"
+
+
+#
+msgid "Weighted average"
+msgstr "Bình quân gia quyền"
+
+
+#
+msgid "Specific identification method"
+msgstr "Thực tế đích danh"
+
+
+#
+msgid "Cost per warehouse management"
+msgstr "Tính giá theo từng kho"
+
+
+#
+msgid "Cost per lot/batch management"
+msgstr "Tính giá theo lô"

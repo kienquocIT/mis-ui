@@ -39,14 +39,14 @@ class NodeLoadDataHandle {
         {'id': 1, 'title': 'In form'},
     ];
     static dataInWFOption = [
-        {'id': 2, 'title': 'Employee'},
-        {'id': 1, 'title': 'Position title'},
-        {'id': 0, 'title': ''},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-employee')},
+        {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-position')},
+        {'id': 0, 'title': NodeLoadDataHandle.transEle.attr('data-choose')},
     ];
     static dataPosition = [
-        {'id': 3, 'title': 'Beneficiary'},
-        {'id': 2, 'title': '2nd manager'},
-        {'id': 1, 'title': '1st manager'},
+        {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-select-beneficiary')},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-2nd-manager')},
+        {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-1st-manager')},
     ];
 
     static loadSystemNode() {
@@ -927,7 +927,7 @@ class NodeDataTableHandle {
                                                 <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Add Collaborators</h5>
+                                                            <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -960,7 +960,7 @@ class NodeDataTableHandle {
                                                                     </select>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                    <label class="form-label">Editing zone</label>
+                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
                                                                     <input type="hidden" class="node-zone-submit">
                                                                     <input type="hidden" class="node-zone-json-submit">
                                                                     <div class="dropdown-zone">
@@ -1001,7 +1001,7 @@ class NodeDataTableHandle {
                                                                                 <tr>
                                                                                     <th>${NodeLoadDataHandle.transEle.attr('data-code')}</th>
                                                                                     <th>${NodeLoadDataHandle.transEle.attr('data-full-name')}</th>
-                                                                                    <th>${NodeLoadDataHandle.transEle.attr('data-role')}</th>
+                                                                                    <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
                                                                                     <th></th>
                                                                                 </tr>
                                                                                 </thead>
@@ -1022,7 +1022,7 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                    <label class="form-label">Editing zone</label>
+                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
                                                                     <input type="hidden" class="node-zone-submit">
                                                                     <input type="hidden" class="node-zone-json-submit">
                                                                     <div class="dropdown-zone">
@@ -1103,7 +1103,7 @@ class NodeDataTableHandle {
                                                                             </select>
                                                                         </div>
                                                                         <div class="form-group">
-                                                                            <label class="form-label">Editing zone</label>
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
                                                                             <input type="hidden" class="node-zone-submit">
                                                                             <input type="hidden" class="node-zone-json-submit">
                                                                             <div class="dropdown-zone">
@@ -1140,11 +1140,11 @@ class NodeDataTableHandle {
                                                                 >
                                                                     <thead>
                                                                     <tr>
-                                                                        <th>Collaborator</th>
-                                                                        <th>Position</th>
-                                                                        <th>Role</th>
-                                                                        <th>Editing Zone</th>
-                                                                        <th>Actions</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-actions')}</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -1184,7 +1184,7 @@ class NodeDataTableHandle {
                                                 <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Add Collaborators</h5>
+                                                            <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -1196,10 +1196,10 @@ class NodeDataTableHandle {
                                                                 >
                                                                     <thead>
                                                                     <tr>
-                                                                        <th class="w-20">Collaborator</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
 <!--                                                                        <th>Group</th>-->
 <!--                                                                        <th>Role</th>-->
-                                                                        <th class="w-80">Editing Zone</th>
+                                                                        <th class="w-80">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody></tbody>
@@ -1238,7 +1238,7 @@ class NodeDataTableHandle {
                                                 <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Add Collaborators</h5>
+                                                            <h5 class="modal-title">${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -1250,10 +1250,10 @@ class NodeDataTableHandle {
                                                                 >
                                                                     <thead>
                                                                     <tr>
-                                                                        <th>Collaborator</th>
-                                                                        <th>Group</th>
-                                                                        <th>Role</th>
-                                                                        <th>Editing Zone</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-select-group')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody></tbody>

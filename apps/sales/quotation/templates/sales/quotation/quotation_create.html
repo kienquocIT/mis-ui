@@ -223,13 +223,13 @@
                                         <tr>
                                             <th class="w-5">#</th>
                                             <th class="w-10 required">{% trans 'Product' %}</th>
-                                            <th class="w-5">{% trans 'Description' %}</th>
+                                            <th class="w-10">{% trans 'Description' %}</th>
                                             <th class="w-5 required">{% trans 'Unit Of Measure' %}</th>
                                             <th class="w-10 required">{% trans 'Quantity' %}</th>
                                             <th class="w-30 required">{% trans 'Unit Price' %}</th>
                                             <th class="w-10">{% trans 'Discount' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
-                                            <th class="w-15">{% trans 'Subtotal Price' %}</th>
+                                            <th class="w-10">{% trans 'Subtotal Price' %}</th>
                                             <th class="w-5">{% trans 'Actions' %}</th>
                                         </tr>
                                         </thead>
@@ -301,13 +301,13 @@
                                                     </div>
                                                 </div>
                                             </th>
-                                            <th colspan="3"></th>
-                                            <th colspan="5">
+                                            <th colspan="4"></th>
+                                            <th colspan="4">
                                                 <div class="row">
-                                                    <div class="col-6">
+                                                    <div class="col-5">
                                                         <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
                                                     </div>
-                                                    <div class="col-2"></div>
+                                                    <div class="col-3"></div>
                                                     <div class="col-4">
                                                         <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-pretax-amount"></span></h6>
                                                         <input id="quotation-create-product-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
@@ -315,10 +315,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-6">
+                                                    <div class="col-5">
                                                         <h6 class="mb-3" style="text-align: right">{% trans 'Discount' %}:</h6>
                                                     </div>
-                                                    <div class="col-2">
+                                                    <div class="col-3">
                                                         <div class="input-group">
                                                             <span class="input-affix-wrapper">
                                                                 <input type="text" class="form-control validated-number" id="quotation-create-product-discount" value="0">
@@ -332,20 +332,21 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-6">
+                                                    <div class="col-5">
                                                         <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
                                                     </div>
-                                                    <div class="col-2"></div>
+                                                    <div class="col-3"></div>
                                                     <div class="col-4">
                                                         <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-taxes"></span></h6>
                                                         <input id="quotation-create-product-taxes-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
+                                                <hr class="bg-teal">
                                                 <div class="row">
-                                                    <div class="col-6">
+                                                    <div class="col-5">
                                                         <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
                                                     </div>
-                                                    <div class="col-2"></div>
+                                                    <div class="col-3"></div>
                                                     <div class="col-4">
                                                         <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-total"></span></h6>
                                                         <input id="quotation-create-product-total-raw" type="text" class="form-control" value="0" hidden>
@@ -510,8 +511,8 @@
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <th colspan="4"></th>
-                                            <th colspan="4">
+                                            <th colspan="5"></th>
+                                            <th colspan="3">
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
@@ -532,6 +533,7 @@
                                                         <input id="quotation-create-cost-taxes-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
+                                                <hr class="bg-teal">
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
@@ -560,10 +562,10 @@
                                             <th class="w-15 required">{% trans 'Expense name' %}</th>
                                             <th class="w-15 required">{% trans 'Expense items' %}</th>
                                             <th class="w-5 required">{% trans 'Unit Of Measure' %}</th>
-                                            <th class="w-5 required">{% trans 'Quantity' %}</th>
+                                            <th class="w-10 required">{% trans 'Quantity' %}</th>
                                             <th class="w-30 required">{% trans 'Expense Price' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
-                                            <th class="w-15">{% trans 'Subtotal Price' %}</th>
+                                            <th class="w-10">{% trans 'Subtotal Price' %}</th>
                                             <th class="w-5">{% trans 'Actions' %}</th>
                                         </tr>
                                         </thead>
@@ -583,8 +585,8 @@
                                                     </button>
                                                 </div>
                                             </th>
-                                            <th colspan="2"></th>
-                                            <th colspan="5">
+                                            <th colspan="4"></th>
+                                            <th colspan="3">
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
@@ -605,6 +607,7 @@
                                                         <input id="quotation-create-expense-taxes-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
+                                                <hr class="bg-teal">
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>

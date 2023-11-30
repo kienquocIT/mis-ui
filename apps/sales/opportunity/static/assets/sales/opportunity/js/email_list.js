@@ -26,7 +26,7 @@ function loadEmailToList(contact_list) {
     email_to_slb.html(``);
     for (let i = 0; i < contact_list.length; i++) {
         let item = contact_list[i];
-        if (item.email !== null) {
+        if (item.email) {
             email_to_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
         }
     }
@@ -42,7 +42,7 @@ function loadEmailCcList(contact_list) {
     email_cc_slb.html(``);
     for (let i = 0; i < contact_list.length; i++) {
         let item = contact_list[i];
-        if (item.email !== null) {
+        if (item.email) {
             email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
         }
     }
@@ -89,9 +89,18 @@ function loadEmailSaleCodeList(data) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        let obj_selected = JSON.parse($('#' + email_Opp_slb.attr('data-idx-data-loaded')).text())[email_Opp_slb.val()];
-        loadEmailToList(obj_selected.customer.contact_mapped);
-        loadEmailCcList(obj_selected.customer.contact_mapped);
+        let obj_selected = SelectDDControl.get_data_from_idx(email_Opp_slb, email_Opp_slb.val())
+        if (obj_selected) {
+            if (obj_selected?.['is_close']) {
+                $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
+                email_Opp_slb.find('option').remove();
+
+            }
+            else {
+                loadEmailToList(obj_selected?.['customer']?.['contact_mapped'])
+                loadEmailCcList(obj_selected?.['customer']?.['contact_mapped'])
+            }
+        }
     })
 }
 

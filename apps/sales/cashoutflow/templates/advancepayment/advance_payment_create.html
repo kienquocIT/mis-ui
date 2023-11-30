@@ -40,7 +40,8 @@
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
             data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
             data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"
-            data-url-expense-sale-order="{% url 'SaleOrderExpenseListAPI' %}">
+            data-url-expense-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
+            data-url-payment-cost-list="{% url 'PaymentCostListAPI' %}">
     </script>
     {{ data.data.employee_current | json_script:"employee_current" }}
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
@@ -248,7 +249,7 @@
                                 <tr>
                                     <td colspan="1"></td>
                                     <td colspan="1">
-                                        <button type="button" id="btn-add-row-line-detail" class="btn btn-outline-primary btn-sm w-50">
+                                        <button type="button" id="btn-add-row-line-detail" class="btn btn-outline-primary btn-sm">
                                             <i class="fas fa-plus-circle"></i>
                                             {% trans 'Add new row' %}
                                         </button>

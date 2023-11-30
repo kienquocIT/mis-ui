@@ -36,7 +36,8 @@ $(document).ready(function () {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="ap_info" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span>`
+                            let sale_code_code = row.opportunity_mapped.code || row.quotation_mapped.code || row.sale_order_mapped.code || null
+                            return `<span class="ap_info" data-sale-code-code="${sale_code_code}" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span>`
                         }
                     },
                     {
@@ -156,8 +157,9 @@ $(document).ready(function () {
 })
 
 $(document).on("click", '.ap-shortcut', function() {
+    $(this).find('.dropdown-menu').html('')
     let html_to_payment = '';
-    if ($(this).attr('data-sale-code-id') !== null && $(this).attr('data-sale-code-title') !== null && $(this).attr('data-sale-code-CODE') !== null && $(this).attr('data-flag') !== null) {
+    if ($(this).attr('data-sale-code-id') && $(this).attr('data-sale-code-title') && $(this).attr('data-sale-code-CODE') && $(this).attr('data-flag')) {
         let sale_code_mapped_obj = JSON.stringify({'id': $(this).attr('data-sale-code-id'), 'title': $(this).attr('data-sale-code-title'), 'code': $(this).attr('data-sale-code-CODE')});
         if ($(this).attr('data-flag') === '0') {
             let dataInitSaleCode = JSON.parse(sale_code_mapped_obj);
@@ -294,7 +296,8 @@ $(document).on("click", '.ap-shortcut', function() {
     let ap_id = $(this).closest('tr').find('.ap_info').attr('data-id');
     let ap_code = $(this).closest('tr').find('.ap_info').attr('data-code');
     let ap_title = $(this).closest('tr').find('.ap_info').attr('data-title');
-    let advance_payment_obj= encodeURIComponent(JSON.stringify({'id': ap_id, 'title': ap_title, 'code': ap_code}));
+    let sale_code_code = $(this).closest('tr').find('.ap_info').attr('data-sale-code-code');
+    let advance_payment_obj= encodeURIComponent(JSON.stringify({'id': ap_id, 'title': ap_title, 'code': ap_code, 'sale_code_code': sale_code_code}));
     let html_return = `<a class="dropdown-item" href="${$('#datatable_advance_list').attr('data-return')}?advance_payment=${advance_payment_obj}&opportunity=${opp_obj}">Return</a>`;
     $(this).find('.dropdown-menu').append(html_return)
 });

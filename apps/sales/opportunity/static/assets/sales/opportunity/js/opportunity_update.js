@@ -753,7 +753,7 @@ $(document).ready(function () {
                 email_cc_slb.html(``);
                 for (let i = 0; i < contact_list.length; i++) {
                     let item = contact_list[i];
-                    if (item.email !== null) {
+                    if (item.email) {
                         email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
                     }
                 }
@@ -1016,7 +1016,6 @@ $(document).ready(function () {
                 event.preventDefault();
                 let combinesData = new combinesData_Meeting($(this));
                 if (combinesData) {
-                    WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
                         .then(
                             (resp) => {

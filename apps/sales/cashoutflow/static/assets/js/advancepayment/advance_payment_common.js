@@ -37,16 +37,22 @@ APTypeEle.on('change', function () {
 opp_mapped_select.on('change', function () {
     quotation_mapped_select.find('option').remove();
     sale_order_mapped_select.find('option').remove();
-
     if (opp_mapped_select.val()) {
-        sale_order_mapped_select.prop('disabled', true);
-        quotation_mapped_select.prop('disabled', true);
+        let opp_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
+        if (opp_mapped_opp?.['is_close']) {
+            $.fn.notifyB({description: `Opportunity ${opp_mapped_opp?.['code']} has been closed. Can not select.`}, 'failure');
+            opp_mapped_select.find('option').remove();
+        }
+        else {
+            sale_order_mapped_select.prop('disabled', true);
+            quotation_mapped_select.prop('disabled', true);
 
-        let quo_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
-        let so_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
-        APLoadQuotation(quo_mapped_opp)
-        LoadPlanQuotation(opp_mapped_select.val(), quo_mapped_opp?.['id'])
-        APLoadSaleOrder(so_mapped_opp);
+            let quo_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
+            let so_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
+            APLoadQuotation(quo_mapped_opp)
+            LoadPlanQuotation(opp_mapped_select.val(), quo_mapped_opp?.['id'])
+            APLoadSaleOrder(so_mapped_opp);
+        }
     }
     else {
         quotation_mapped_select.prop('disabled', false);
@@ -444,10 +450,29 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
             }
         )
 
-        Promise.all([expense_quotation, ap_mapped_item]).then(
+        let dataParam3 = {'opportunity_mapped_id': opportunity_id}
+        let payment_mapped_item = $.fn.callAjax2({
+            url: script_url.attr('data-url-payment-cost-list'),
+            data: dataParam3,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('payment_cost_list')) {
+                    return data?.['payment_cost_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([expense_quotation, ap_mapped_item, payment_mapped_item]).then(
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                let data_payment_mapped_item = results[2];
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -456,12 +481,17 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
+                    let sum_real_value = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
-                            sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
+                        }
+                    }
+                    for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                        if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                            sum_real_value += data_payment_mapped_item[j]?.['real_value'];
+                            sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -525,10 +555,29 @@ function LoadPlanQuotationNoOPP(quotation_id) {
             }
         )
 
-        Promise.all([expense_quotation, ap_mapped_item]).then(
+        let dataParam3 = {'quotation_mapped_id': quotation_id}
+        let payment_mapped_item = $.fn.callAjax2({
+            url: script_url.attr('data-url-payment-cost-list'),
+            data: dataParam3,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('payment_cost_list')) {
+                    return data?.['payment_cost_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([expense_quotation, ap_mapped_item, payment_mapped_item]).then(
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                let data_payment_mapped_item = results[2];
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -537,12 +586,17 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
+                    let sum_real_value = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
-                            sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
+                        }
+                    }
+                    for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                        if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                            sum_real_value += data_payment_mapped_item[j]?.['real_value'];
+                            sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -606,10 +660,29 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
             }
         )
 
-        Promise.all([expense_sale_order, ap_mapped_item]).then(
+        let dataParam3 = {'sale_order_mapped_id': sale_order_id}
+        let payment_mapped_item = $.fn.callAjax2({
+            url: script_url.attr('data-url-payment-cost-list'),
+            data: dataParam3,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('payment_cost_list')) {
+                    return data?.['payment_cost_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([expense_sale_order, ap_mapped_item, payment_mapped_item]).then(
             (results) => {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
+                let data_payment_mapped_item = results[2];
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
@@ -618,12 +691,17 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
-                    let sum_real_value = data_expense[i]?.['payment_plan_real_value'];
+                    let sum_real_value = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
-                            sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
+                        }
+                    }
+                    for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                        if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                            sum_real_value += data_payment_mapped_item[j]?.['real_value'];
+                            sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -915,7 +993,7 @@ class AdvancePaymentHandle {
             return false;
         }
 
-        if (frm.dataForm['advance_payment_type'] === 1 && frm.dataForm['supplier'] === null) {
+        if (frm.dataForm['advance_payment_type'] === 1 && !frm.dataForm['supplier']) {
             $.fn.notifyB({description: 'Supplier is required.'}, 'failure');
             return false;
         }
@@ -929,19 +1007,36 @@ class AdvancePaymentHandle {
         frm.dataForm['return_date'] = $('#return_date_id').val();
 
         frm.dataForm['creator_name'] = APCreatorEle.val();
-        if (frm.dataForm['creator_name'] === null) {
+        if (!frm.dataForm['creator_name']) {
             $.fn.notifyB({description: 'Creator name must not be NULL'}, 'failure');
             return false;
         }
 
         frm.dataForm['sale_code_type'] = 0;
+
+        let opportunity_mapped = opp_mapped_select.val();
+        let quotation_mapped = quotation_mapped_select.val();
+        let sale_order_mapped = sale_order_mapped_select.val();
         if (opp_mapped_select.prop('disabled') && quotation_mapped_select.prop('disabled') && sale_order_mapped_select.prop('disabled')) {
-            frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+            const urlParams = new URLSearchParams(window.location.search);
+            let type = urlParams.get('type');
+            if (type) {
+                if (opportunity_mapped && type === '0') {
+                    frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+                }
+                else if (quotation_mapped && type === '1') {
+                    frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
+                }
+                else if (sale_order_mapped && type === '2') {
+                    frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
+                }
+                else {
+                    $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
+                    return false;
+                }
+            }
         }
         else {
-            let opportunity_mapped = opp_mapped_select.val();
-            let quotation_mapped = quotation_mapped_select.val();
-            let sale_order_mapped = sale_order_mapped_select.val();
             if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
                 frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
             }

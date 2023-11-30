@@ -154,7 +154,7 @@ $(document).ready(function () {
         tableSelectedEmployees.find('tbody tr').each(function () {
             let item = $(this).find('.code');
             let employee_id = item.attr('data-id');
-            if (employee_id !== null) {
+            if (employee_id) {
                 employees_allowed_list.push(employee_id)
             }
         })

@@ -5122,6 +5122,55 @@ msgstr "Không có"
 msgid "Plan value"
 msgstr "Giá trị phương án kinh doanh"
 
+
+#
+msgid "Variants"
+msgstr "Biến thể"
+
+#
+msgid "Attributes"
+msgstr "Thuộc tính"
+
+#
+msgid "Values"
+msgstr "Giá trị"
+
+#
+msgid "Configurations"
+msgstr "Cấu hình"
+
+#
+msgid "Variant"
+msgstr "Biến thể"
+
+#
+msgid "Extra Price"
+msgstr "Giá trị cộng thêm"
+
+#
+msgid "Variant Description"
+msgstr "Mô tả biến thể"
+
+#
+msgid "Variant name"
+msgstr "Tên biến thể"
+
+#
+msgid "Traceability method"
+msgstr "Phương pháp truy xuất"
+
+#
+msgid "Attribute display"
+msgstr "Hiển thị thuộc tính"
+
+#
+msgid "Select by"
+msgstr "Chọn"
+
+#
+msgid "Internal"
+msgstr "Nội bộ"
+
 #
 msgid "Building a website instructions"
 msgstr "Hướng dẫn xây dựng trang"

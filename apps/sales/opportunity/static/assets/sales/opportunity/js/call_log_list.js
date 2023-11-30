@@ -41,9 +41,18 @@ function loadSaleCodeList(data) {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-        let obj_selected = JSON.parse($('#' + call_log_Opp_slb.attr('data-idx-data-loaded')).text())[call_log_Opp_slb.val()];
-        loadCustomerList(obj_selected.customer);
-        loadContactList(obj_selected.customer.contact_mapped);
+        let obj_selected = SelectDDControl.get_data_from_idx(call_log_Opp_slb, call_log_Opp_slb.val())
+        if (obj_selected) {
+            if (obj_selected?.['is_close']) {
+                $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
+                call_log_Opp_slb.find('option').remove();
+
+            }
+            else {
+                loadCustomerList(obj_selected?.['customer'])
+                loadContactList(obj_selected?.['customer']?.['contact_mapped'])
+            }
+        }
     })
 }
 

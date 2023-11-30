@@ -343,7 +343,7 @@ function calculate_price(table_tr) {
         let quantity = $(this).find('.product-quantity').val();
         let pr_unit_price = $(this).find('.pr-unit-price-input').attr('value');
         let tax_selected = $(this).find('.product-tax-select-box').val();
-        if (tax_selected !== null) {
+        if (tax_selected) {
             tax_selected = JSON.parse($('#' + $(this).find('.product-tax-select-box').attr('data-idx-data-loaded')).text())[$(this).find('.product-tax-select-box').val()]
         }
         let tax_rate = 0;

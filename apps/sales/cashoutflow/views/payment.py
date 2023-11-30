@@ -140,3 +140,14 @@ class PaymentConfigListAPI(APIView):
             resp.result['message'] = SaleMsg.PAYMENT_CREATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class PaymentCostListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_LIST).get(data)
+        return resp.auto_return(key_success='payment_cost_list')

@@ -27,7 +27,7 @@ function loadDetailBeneficiary(id) {
 function loadCreator(id) {
     let ele = $('[name="employee_created_id"]');
     let frm = new SetupFormSubmit(ele);
-    if (id === null) {
+    if (!id) {
         id = ele.attr('data-id')
     }
     $.fn.callAjax2({
@@ -198,10 +198,15 @@ class ReturnAdvanceLoadPage {
                 return list_result
             }
         }).on('change', function () {
-            let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
+            let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
             let sale_code_mapped = null
             if (Object.keys(obj_selected?.['opportunity_mapped']).length !== 0) {
                 sale_code_mapped = obj_selected?.['opportunity_mapped']
+                if (obj_selected?.['opportunity_mapped']?.['is_close']) {
+                    $.fn.notifyB({description: `Opportunity ${obj_selected?.['opportunity_mapped']?.['code']} has been closed. Can not select.`}, 'failure');
+                    $(this).find('option').remove();
+                    return;
+                }
             }
             if (Object.keys(obj_selected?.['quotation_mapped']).length !== 0) {
                 sale_code_mapped = obj_selected?.['quotation_mapped']

@@ -5,6 +5,15 @@ class DocumentLoadPage {
     static loadOpportunity(data) {
         this.opportunitySelectEle.initSelect2({
             data: data,
+        }).on('change', function () {
+            let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+            if (obj_selected) {
+                if (obj_selected?.['is_close']) {
+                    $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
+                    $(this).find('option').remove();
+
+                }
+            }
         })
     }
 

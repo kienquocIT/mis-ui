@@ -76,17 +76,21 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="tab_block_line_detail">
-                    <button id="btn-add-row-line-detail" class="btn btn-soft-primary mb-3 w-20" type="button"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#select-items-modal"
-                            aria-controls="offcanvasExample">
-                        <span>
-                            <span>{% trans 'Select products' %}</span>
-                            <span class="icon">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </span>
-                        </span>
-                    </button>
+                    <div class="row">
+                        <div class="col-12">
+                            <button id="btn-add-row-line-detail" class="btn btn-soft-primary mb-3" type="button"
+                                    data-bs-toggle="offcanvas"
+                                    data-bs-target="#select-items-modal"
+                                    aria-controls="offcanvasExample">
+                                <span>
+                                    <span>{% trans 'Select products' %}</span>
+                                    <span class="icon">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
                     <table data-url="{% url "WareHouseListAPI" %}"
                            data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
                            data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
@@ -116,7 +120,7 @@
             </div>
         </div>
 
-        <div class="offcanvas offcanvas-end mt-9 w-50" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas offcanvas-end mt-9 w-60" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
             <div class="offcanvas-header row">
                 <div class="col-9"><h5 id="offcanvasRightLabel">{% trans 'Select products from warehouses' %}</h5></div>
                 <div class="col-2"><button id="btn-select-product" type="button" class="btn btn-primary w-100" data-bs-dismiss="offcanvas">{% trans 'Select' %}</button></div>

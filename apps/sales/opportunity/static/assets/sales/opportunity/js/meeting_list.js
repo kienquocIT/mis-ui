@@ -104,10 +104,18 @@ function loadMeetingSaleCodeList(data) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        let obj_selected = JSON.parse($('#' + meeting_Opp_slb.attr('data-idx-data-loaded')).text())[meeting_Opp_slb.val()];
-        console.log(obj_selected)
-        loadMeetingAddress(obj_selected.customer.shipping_address);
-        loadCustomerMember(obj_selected.customer.contact_mapped);
+        let obj_selected = SelectDDControl.get_data_from_idx(meeting_Opp_slb, meeting_Opp_slb.val())
+        if (obj_selected) {
+            if (obj_selected?.['is_close']) {
+                $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
+                meeting_Opp_slb.find('option').remove();
+
+            }
+            else {
+                loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'])
+                loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'])
+            }
+        }
     })
 }
 

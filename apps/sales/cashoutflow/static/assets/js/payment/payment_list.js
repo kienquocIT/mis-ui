@@ -39,6 +39,16 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        data: 'type',
+                        className: 'wrap-text',
+                        render: (data, type, row, meta) => {
+                            if (!row.supplier) {
+                                return `<span class="badge badge-sm badge-soft-blue">Internal</span>`;
+                            }
+                            return `<span class="badge badge-sm badge-soft-danger">Supplier</span>`;
+                        }
+                    },
+                    {
                         data: 'date_created',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {

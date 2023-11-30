@@ -131,7 +131,7 @@ $(function () {
                     {
                         targets: 7,
                         render: (data, type, row) => {
-                            return `<p>${row?.['remark'] ? row?.['remark'] : ''}</p>`;
+                            return `<input class="form-control" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
                         }
                     },
                 ],
@@ -232,6 +232,9 @@ $(function () {
                                                     if (dataFormula.includes(key)) {
                                                         let newActualValue = 0;
                                                         for (let payment_data of payment_row_data[key]) {
+                                                            if (dataFormula.includes('after tax')) {
+                                                                payment_data['actual_value'] = payment_data?.['actual_value_after_tax'] ? payment_data?.['actual_value_after_tax'] : 0;
+                                                            }
                                                             payment_data['indicator'] = {'is_acceptance_editable': dataRow?.['indicator']?.['is_acceptance_editable']};
                                                             let newPaymentRow = $table.DataTable().row.add(payment_data).node();
                                                             $(newPaymentRow).detach().insertAfter(paymentRow);
@@ -428,15 +431,16 @@ $(function () {
                         loadActualDifferentRateValue(parentRow, newActualValue);
                         calculateIndicatorFormula(parentRow);
                     }
+                    let IDIndicator = eleIndicator?.getAttribute('data-id');
+                    updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(eleInput.value)}
                 } else { // change on indicator rows
                     newActualValue = eleInput.value;
                     loadActualDifferentRateValue(row, newActualValue);
                     calculateIndicatorFormula(row);
                 }
                 $.fn.initMaskMoney2();
-                let IDIndicator = eleIndicator?.getAttribute('data-id');
-                updateIndicatorData[IDIndicator] = {'actual_value': parseFloat(eleInput.value)}
             }
+            return true;
         }
 
         function loadOpp(dataOpp = {}) {

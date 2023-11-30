@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_final_acceptance_update">
+    <button class="btn btn-outline-primary" type="submit" form="frm_final_acceptance_update" disabled>
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -104,12 +104,12 @@
             <tr>
                 <th class="w-15">{% trans 'Indicator' %}</th>
                 <th class="w-5">{% trans 'Items code' %}</th>
-                <th class="w-15">{% trans 'Items name' %}</th>
+                <th class="w-10">{% trans 'Items name' %}</th>
                 <th class="w-15">{% trans 'Planed value' %}</th>
                 <th class="w-15">{% trans 'Actual value' %}</th>
                 <th class="w-15">{% trans 'Different value' %}</th>
                 <th class="w-10">{% trans '%' %}</th>
-                <th class="w-10">{% trans 'Note' %}</th>
+                <th class="w-15">{% trans 'Note' %}</th>
             </tr>
             </thead>
             <tbody>

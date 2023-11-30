@@ -5282,3 +5282,55 @@ msgstr "Lớp"
 #
 msgid "Styles"
 msgstr "Phong cách"
+
+#
+msgid "Primary currency"
+msgstr "Đồng tiền mặc định"
+
+#
+msgid "Definition of inventory valuation"
+msgstr "Loại kiểm tra tồn kho"
+
+#
+msgid "Perpetual inventory"
+msgstr "Kê khai thường xuyên"
+
+
+#
+msgid "Periodic inventory"
+msgstr "Kiểm kê định kì"
+
+
+#
+msgid "Default inventory value method"
+msgstr "Phương pháp tính giá tồn khoặc định"
+
+
+#
+msgid "FIFO"
+msgstr "Nhập trước xuất trước"
+
+
+#
+msgid "Cumulative weighted average"
+msgstr "Bình quân gia quyền tích lũy cuối kì"
+
+
+#
+msgid "Weighted average"
+msgstr "Bình quân gia quyền"
+
+
+#
+msgid "Specific identification method"
+msgstr "Thực tế đích danh"
+
+
+#
+msgid "Cost per warehouse management"
+msgstr "Tính giá theo từng kho"
+
+
+#
+msgid "Cost per lot/batch management"
+msgstr "Tính giá theo lô"

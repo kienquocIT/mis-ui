@@ -24,12 +24,14 @@ checkbox_internal.on('change', function () {
         employee_label.prop('hidden', false)
         employee_detail_span.prop('hidden', false)
         supplier_detail_span.prop('hidden', true)
+        $('#payment-method').val(0);
     }
     else {
         supplier_label.prop('hidden', false)
         employee_label.prop('hidden', true)
         employee_detail_span.prop('hidden', true)
         supplier_detail_span.prop('hidden', false)
+        $('#payment-method').val('');
     }
 })
 
@@ -1418,7 +1420,7 @@ class PaymentHandle {
                     }
                     let sum_value = 0;
                     if ($(this).find('.total-value-salecode-item').attr('value') !== '') {
-                        sum_value = $(this).find('.total-value-salecode-item').attr('value');
+                        sum_value = parseFloat($(this).find('.total-value-salecode-item').attr('value'));
                     }
                     expense_detail_value = expense_detail_value + sum_value;
                     payment_expense_valid_list.push({
@@ -1439,7 +1441,7 @@ class PaymentHandle {
                     })
                 })
 
-                if (expense_after_tax_price !== expense_detail_value) {
+                if (parseFloat(expense_after_tax_price) !== parseFloat(expense_detail_value)) {
                     $.fn.notifyB({description: 'Detail tab - line ' + i.toString() + ': product value must be equal to sum Sale Code value.'}, 'failure');
                     return false;
                 }

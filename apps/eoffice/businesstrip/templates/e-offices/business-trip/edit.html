@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Business trip request' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/e-offices/business-trip/css/business-common.css' %}" rel="stylesheet"
+          type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="business_trip_form">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
+            </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form class="container-fluid mt-4" id="business_trip_form" method="post" data-method="PUT" autocomplete="off"
+          data-url-redirect="{% url 'BusinessTripRequestList' %}" data-url="{% url 'BusinessTripRequestEditAPI' data.pk%}">
+        {% csrf_token %}
+        <input type="hidden" name="employee_inherit_id">
+        <input type="hidden" name="pretax_amount">
+        <input type="hidden" name="taxes">
+        <input type="hidden" name="total_amount">
+        <div class="row">
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
+                <input type="text" name="title" id="titleInput" class="form-control" required>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="dateCreatedInput" class="form-label">{% trans 'Date' %}</label>
+                <div class="input-affix-wrapper">
+                    <input type="text" id="dateCreatedInput" name="date_created" class="form-control date-picker"
+                           autocomplete="off">
+                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="remarkInput" class="form-label">{% trans 'Description' %}</label>
+                <textarea name="remark" id="remarkInput" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="SystemStatusInput" class="form-label">{% trans 'Status' %}</label>
+                <input type="text" name="system_status" id="SystemStatusInput" class="form-control" disabled>
+            </div>
+            <div class="col-xs-12 col-md-3 form-group">
+                <label for="selectDeparture" class="form-label required">{% trans 'Departure' %}</label>
+                <select class="form-select" name="departure" id="selectDeparture"
+                        data-url="{% url 'CityListAPI' %}"
+                        data-keyResp="cities" data-keyText="title" data-keyId="id"
+                >
+                </select>
+            </div>
+            <div class="col-xs-12 col-md-3 form-group">
+                <label for="selectDestination" class="form-label required">{% trans 'Destination' %}</label>
+                <select class="form-select" name="destination" id="selectDestination"
+                        data-url="{% url 'CityListAPI' %}"
+                        data-keyResp="cities" data-keyText="title" data-keyId="id"
+                >
+                </select>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="selectEmployeeOnTrip" class="form-label">{% trans 'Employee on trip' %}</label>
+                <select class="form-select" name="employee_on_trip" id="selectEmployeeOnTrip" multiple
+                        data-url="{% url 'EmployeeListAPI' %}"
+                        data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                        data-onload="{{ data.employee_inherit|safe }}"
+                >
+                </select>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <div class="row">
+                    <div class="col-xs-12 col-md-5">
+                        <label class="form-label" for="dateFInput">{% trans 'From' %}</label>
+                        <div class="date_from_wrap">
+                            <div class="form-check form-check-sm form-check-inline">
+                                <input type="radio" id="morning_f_01" name="morning_f" class="form-check-input"
+                                       value="true">
+                                <label class="form-check-label" for="morning_f_01">{% trans 'Morning' %}</label>
+                            </div>
+                            <div class="form-check form-check-sm form-check-inline">
+                                <input type="radio" id="morning_f_02" name="morning_f" class="form-check-input"
+                                       value="false">
+                                <label class="form-check-label" for="morning_f_02">{% trans 'Afternoon' %}</label>
+                            </div>
+                            <div class="form-group spec-date-layout">
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_f" id="dateFInput" class="form-control date-picker"
+                                           autocomplete="off">
+                                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-5">
+                        <label class="form-label" for="dateTInput">{% trans 'To' %}</label>
+                        <div class="date_from_wrap">
+                            <div class="form-check form-check-sm form-check-inline">
+                                <input type="radio" id="morning_t_01" name="morning_t" class="form-check-input f_mor"
+                                       value="true">
+                                <label class="form-check-label" for="morning_t_01">{% trans 'Morning' %}</label>
+                            </div>
+                            <div class="form-check form-check-sm form-check-inline">
+                                <input type="radio" id="morning_t_02" name="morning_t" class="form-check-input f_aft"
+                                       value="false">
+                                <label class="form-check-label" for="morning_t_02">{% trans 'Afternoon' %}</label>
+                            </div>
+                            <div class="form-group spec-date-layout">
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_t" id="dateTInput" class="form-control date-picker"
+                                           autocomplete="off">
+                                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-2 form-group total-day">
+                        <label for="totalDayInput"></label>
+                        <input type="text" class="form-control" name="total_day" id="totalDayInput" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-12 col-xs-12">
+                <ul class="nav nav-line nav-light nav-tabs">
+                    <li class="nav-item">
+                        <a href="#expense_items" class="nav-link active" data-bs-toggle="tab">
+                            <span class="nav-link-text">{% trans 'Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#attachment" class="nav-link" data-bs-toggle="tab">
+                        <span class="nav-link-text">
+                            {% trans 'Attachment' %}
+                        </span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="expense_items">
+                        <div class="overflow-x-scroll">
+                            <table id="expense_detail_tbl" class="table nowrap mb-5">
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'Expense name' %}</th>
+                                    <th>{% trans 'Expense item' %}</th>
+                                    <th>{% trans 'UoM' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'Price' %}</th>
+                                    <th>{% trans 'Tax' %}</th>
+                                    <th>{% trans 'Subtotal price' %}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                <tr>
+                                    <th colspan="5" class="border-0"></th>
+                                    <th class="border-0"><p style="text-align:right">{% trans 'Pretax Amount' %}:</p></th>
+                                    <th colspan="2" class="border-0"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="5" class="border-0"></th>
+                                    <th class="border-0"><p style="text-align:right">{% trans 'Taxes' %}:</p></th>
+                                    <th colspan="2" class="border-0"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="5" class="border-0"></th>
+                                    <th class="border-bottom-0 border-dark"><p style="text-align:right">{% trans 'Total' %}:</p></th>
+                                    <th colspan="2" class="border-bottom-0 border-dark"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <br>
+                        <button class="btn btn-outline-primary" type="button" id="add_new_line">
+                        <span>
+                            <span>{% trans 'Add date' %}</span>
+                            <span class="icon">
+                                <i class="fa-regular fa-plus"></i>
+                            </span>
+                        </span>
+                        </button>
+                    </div>
+                    <div class="tab-pane fade" id="attachment">
+                        <div class="form-group">
+                            <button
+                                    type="button"
+                                    class="form-control btn btn-outline-primary btn-file-upload"
+                                    data-f-input-name="attachment"
+                                    data-f-input-required="false"
+                                    data-f-input-disabled="false"
+                                    data-f-name-ele-id="#fileNameTestDisplay"
+                            >{% trans 'Click here to upload image' %}</button>
+                            <p id="fileNameTestDisplay"></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+    {{ data.system_status|json_script:'sys_stt' }}
+    <div class="delete_btn">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row">
+                    <span class="btn-icon-wrap">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </span>
+        </a>
+    </div>
+    <input type="text" id="url-factory"
+           data-detail-url="{% url 'BusinessTripRequestDetailAPI' data.pk %}"
+           data-expense-url="{% url 'ExpenseItemListAPI' %}"
+           data-tax-url="{% url 'TaxListAPI' %}"
+    >
+    <input type="text" id="trans-factory"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/e-offices/business-trip/js/business-trip-common.js' %}"></script>
+    <script src="{% static 'assets/e-offices/business-trip/js/edit.js' %}"></script>
+{% endblock %}

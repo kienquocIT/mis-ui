@@ -1343,7 +1343,7 @@ class ListeningEventController {
 class WFRTControl {
     // Handle every thing about Workflow Runtime
 
-    static appendBodyCheckWFTask(method, reqBodyData) {
+    static appendBodyCheckWFTask(method, reqBodyData, url) {
         // handle body data before send
         // if BtnIdLastSubmit = 'idxSaveInZoneWF' => is update data in zones
         // check WF ID, task ID, url exist PK
@@ -1351,7 +1351,8 @@ class WFRTControl {
         // True: convert body data with Zone Accept
         let pk = $.fn.getPkDetail();
         let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
-        if ((btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext') && WFRTControl.getWFRuntimeID() && WFRTControl.getTaskWF() && pk && url.includes(pk) && method.toLowerCase() === 'put') {
+        if ((btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext')
+            && WFRTControl.getWFRuntimeID() && WFRTControl.getTaskWF() && pk && url.includes(pk) && method.toLowerCase() === 'put') {
             let taskID = WFRTControl.getTaskWF();
             let keyOk = WFRTControl.getZoneKeyData();
             let newData = {};

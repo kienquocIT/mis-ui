@@ -368,7 +368,7 @@ class MenuEOffice:
         ]
     )
     BUSINESS_TRIP = MenuCommon(
-        name='Business trip', code='menu_business', view_name='HomeView',
+        name='Business trip', code='menu_business', view_name='BusinessTripRequestList',
         icon='<i class="fa-solid fa-business-time"></i>',
     )
 

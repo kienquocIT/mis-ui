@@ -259,7 +259,7 @@ $.fn.extend({
                     type: method, // dataType: 'json',
                     contentType: content_type === "multipart/form-data" ? false : content_type,
                     processData: content_type !== "multipart/form-data",
-                    data: content_type === "application/json" ? JSON.stringify(data) : WFRTControl.appendBodyCheckWFTask(data, method),
+                    data: content_type === "application/json" ? JSON.stringify(data) : WFRTControl.appendBodyCheckWFTask(method, data, url),
                     headers: {
                         "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken),
                         "DTISDD": isDropdown ? 'true' : '', ...headers
@@ -334,7 +334,7 @@ $.fn.extend({
                     let headers = opts?.['headers'] || {}
                     let data = opts?.['data'];
                     if (method.toLowerCase() === 'put' && typeof data === 'object') {
-                        data = WFRTControl.appendBodyCheckWFTask(method, data);
+                        data = WFRTControl.appendBodyCheckWFTask(method, data, url);
                     }
                     if (method.toLowerCase() !== 'get' && contentType === "application/json") {
                         data = JSON.stringify(data);

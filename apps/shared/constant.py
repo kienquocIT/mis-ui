@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
-from .msg import LeaveMsg
+from .msg import LeaveMsg, BaseMsg
 from .msg.workflow import WorkflowMsg
 
 __all__ = [
@@ -55,11 +55,11 @@ WORKFLOW_ACTION = {
 }
 
 SYSTEM_STATUS = (
-    (0, 'Draft'),
-    (1, 'Created'),
-    (2, 'Added'),
-    (3, 'Finish'),
-    (4, 'Cancel'),
+    (0, BaseMsg.DRAFT),
+    (1, BaseMsg.CREATED),
+    (2, BaseMsg.ADDED),
+    (3, BaseMsg.FINISH),
+    (4, BaseMsg.CANCEL),
 )
 
 # Opportunity

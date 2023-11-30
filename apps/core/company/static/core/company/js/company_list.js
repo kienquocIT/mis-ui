@@ -193,7 +193,6 @@ $(function () {
                 isLoading: true,
             }).then(
                 (resp) => {
-                    debugger
                     let data = $.fn.switcherResp(resp);
                     if (data['status'] === 200) {
                         window.location.reload();

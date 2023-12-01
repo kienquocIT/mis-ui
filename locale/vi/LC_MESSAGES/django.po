@@ -2858,7 +2858,7 @@ msgstr "Đã thêm"
 
 #
 msgid "Finish"
-msgstr "Kết thúc"
+msgstr "Hoàn thành"
 
 #
 msgid "Loading"
@@ -5345,12 +5345,33 @@ msgstr "Bình quân gia quyền"
 msgid "Specific identification method"
 msgstr "Thực tế đích danh"
 
+msgid "Business trip"
+msgstr "Công tác"
 
 #
-msgid "Cost per warehouse management"
-msgstr "Tính giá theo từng kho"
-
+msgid "Business trip list"
+msgstr "Danh sách công tác"
 
 #
-msgid "Cost per lot/batch management"
-msgstr "Tính giá theo lô"
+msgid "Departure"
+msgstr "Khởi hành"
+
+#
+msgid "Destination"
+msgstr "Điểm đến"
+
+#
+msgid "Employee on trip"
+msgstr "Thành viên trong đoàn"
+
+#
+msgid "Expense item"
+msgstr "Chi phí"
+
+#
+msgid "From date"
+msgstr "Từ ngày"
+
+#
+msgid "To date"
+msgstr "Đến ngày"

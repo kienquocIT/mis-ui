@@ -148,6 +148,11 @@ PLAN_APP_OF_E_OFFICE = {
             list_view_name='LeaveRequestList', detail_view_name='LeaveRequestDetail'
         ).data,
     },
+    'businesstrip': {
+        'businessrequest': ReverseUrlCommon(
+            list_view_name='BusinessTripRequestList', detail_view_name='BusinessTripRequestDetail'
+        ).data,
+    },
 }
 
 PLAN_APP_MAP_VIEW = {

@@ -259,8 +259,17 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     )
     LEAVE_REQUEST_DETAIL = BreadcrumbChildren(_('Detail'))
     LEAVE_REQUEST_EDIT = BreadcrumbChildren(_('Edit'))
+
     # Working calendar
     WORKING_CALENDAR_CONFIG = BreadcrumbChildren(_('Working calendar'), 'WorkingCalendarConfig')
+
+    # Business trip
+    BUSINESS_TRIP_REQUEST = BreadcrumbChildren(
+        _('Business trip list'), 'BusinessTripRequestList'
+    )
+    BUSINESS_TRIP_CREATE = BreadcrumbChildren(
+        _('Create'), 'BusinessTripCreate'
+    )
 
 
 class BreadcrumbView:
@@ -681,3 +690,8 @@ class BreadcrumbView:
     GOODS_ISSUE_DETAIL_PAGE = GOODS_ISSUE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_ISSUE_UPDATE_PAGE = GOODS_ISSUE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    # Business trip
+    BUSINESS_TRIP_REQUEST_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.BUSINESS_TRIP_REQUEST]
+    BUSINESS_TRIP_CREATE = BUSINESS_TRIP_REQUEST_LIST + [BreadcrumbItem.BUSINESS_TRIP_CREATE]
+    BUSINESS_TRIP_DETAIL = BUSINESS_TRIP_REQUEST_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    BUSINESS_TRIP_EDIT = BUSINESS_TRIP_REQUEST_LIST + [BreadcrumbItem.BASTION_UPDATE]

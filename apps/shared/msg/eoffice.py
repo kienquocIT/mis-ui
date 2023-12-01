@@ -18,3 +18,7 @@ class LeaveMsg:
     LEAVE_AVAILABLE_UPDATE = _("Leave available update successfully")
     LEAVE_ACTION_INS = _("Increase")
     LEAVE_ACTION_DES = _("Decrease")
+
+
+class BusinessTripMsg:
+    BUSINESS_TRIP = _('Business trip')

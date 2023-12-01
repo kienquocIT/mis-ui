@@ -2858,7 +2858,7 @@ msgstr "Đã thêm"
 
 #
 msgid "Finish"
-msgstr "Kết thúc"
+msgstr "Hoàn thành"
 
 #
 msgid "Loading"
@@ -5315,42 +5315,77 @@ msgstr "Loại kiểm tra tồn kho"
 msgid "Perpetual inventory"
 msgstr "Kê khai thường xuyên"
 
-
 #
 msgid "Periodic inventory"
 msgstr "Kiểm kê định kỳ"
-
 
 #
 msgid "Default inventory value method"
 msgstr "Phương pháp tính giá tồn mặc định"
 
-
 #
 msgid "FIFO"
 msgstr "Nhập trước xuất trước"
-
 
 #
 msgid "Cumulative weighted average"
 msgstr "Bình quân gia quyền tích lũy cuối kỳ"
 
-
 #
 msgid "Weighted average"
 msgstr "Bình quân gia quyền"
-
 
 #
 msgid "Specific identification method"
 msgstr "Thực tế đích danh"
 
+msgid "Business trip"
+msgstr "Công tác"
 
 #
-msgid "Cost per warehouse management"
-msgstr "Tính giá theo từng kho"
-
+msgid "Business trip list"
+msgstr "Danh sách công tác"
 
 #
-msgid "Cost per lot/batch management"
-msgstr "Tính giá theo lô"
+msgid "Departure"
+msgstr "Khởi hành"
+
+#
+msgid "Destination"
+msgstr "Điểm đến"
+
+#
+msgid "Employee on trip"
+msgstr "Thành viên trong đoàn"
+
+#
+msgid "Expense item"
+msgstr "Chi phí"
+
+#
+msgid "From date"
+msgstr "Từ ngày"
+
+#
+msgid "To date"
+msgstr "Đến ngày"
+
+#
+msgid "Group description"
+msgstr "Mô tả phòng ban"
+
+#
+msgid "1st manager title"
+msgstr "Tên quản lý thứ nhất"
+
+#
+msgid "2nd manager title"
+msgstr "Tên quản lý thứ hai"
+
+#
+msgid "Add group level"
+msgstr "Thêm cấp phòng ban"
+
+#
+msgid "Expense items"
+msgstr "Danh mục chi phí"

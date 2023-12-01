@@ -262,6 +262,7 @@ $(document).ready(function () {
         formData.expense_items.map(function (item) {
             if (!item?.['expense_item'] && item?.['expense_item_data'])
                 item['expense_item'] = item['expense_item_data']['id']
+            if (!item?.['tax']) item['tax'] = item['tax_data']['id']
             item['price'] = parseInt(item['price'])
             return item
         })

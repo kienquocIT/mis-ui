@@ -1,6 +1,5 @@
 $(document).ready(function () {
     new CompanyHandle().load();
-    loadPrimaryCurrency(VND_currency);
     loadFunctionNumberTable(FunctionNumberTableData);
 
     $("#frm-add-company").submit(function (event) {

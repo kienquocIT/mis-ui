@@ -31,7 +31,7 @@ $(function () {
                 data: 'code',
                 className: 'wrap-text',
                 render: (data, type, row, meta) => {
-                    return `<a href="/company/detail/` + row.id + `">` + data + `</a>`
+                    return `<a href="/company/detail/` + row.id + `">${data}</a>`
                 }
             }, {
                 width: '30%',
@@ -39,9 +39,10 @@ $(function () {
                 className: 'wrap-text',
                 'render': (data, type, row, meta) => {
                     if (data) {
-                        return `<div class="media align-items-center">
+                        if (row.id === company_current_id) {
+                            return `<div class="media align-items-center">
                                         <div class="media-head me-2">
-                                            <div class="avatar avatar-xs avatar-success avatar-rounded">
+                                            <div class="avatar avatar-xs avatar-primary avatar-rounded">
                                                 <span class="initial-wrap"><b>` + row.title.charAt(0).toUpperCase() + `</b></span>
                                             </div>
                                         </div>
@@ -51,6 +52,16 @@ $(function () {
                                             </a>
                                         </div>
                                     </div>`;
+                        }
+                        else {
+                            return `<div class="media align-items-center">
+                                        <div class="media-body">
+                                            <a href="/company/detail/` + row.id + `">
+                                                <span class="d-block"><b>` + row.title + `</b></span>
+                                            </a>
+                                        </div>
+                                    </div>`;
+                        }
                     } else {
                         return ''
                     }
@@ -84,14 +95,8 @@ $(function () {
                         </a>
                     `;
 
-                    let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="edit-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/company/update/` + row.id + `" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    let bt1 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-setting" data-bs-toggle="modal" data-bs-target="#modal-setting" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="settings"></i></span></span></a>`;
-                    if (row.id === company_current_id) {
-                        return `<div>` + bt2 + bt3 + bt1 + btnOpenWebsite + `</div>`;
-                    } else {
-                        return `<div>` + bt2 + bt3 + btnOpenWebsite + `</div>`;
-                    }
+                    let bt1 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" id="del-company-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" data-id="` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                    return `<div>${bt1}${btnOpenWebsite}</div>`;
                 }
             },
         ]
@@ -108,99 +113,4 @@ $(function () {
 
         return window.location.protocol + '//' + sub_domain + '.' + dtb.attr('data-ui-domain') + getPortOfHost() + '/site/';
     }
-
-    // Load Data Config
-    $('html').on('click', '.btn-setting', function (e) {
-        e.preventDefault();
-
-        $x.fn.showLoadingPage();
-
-        let rowData = DTBControl.getRowData($(this));
-        let modalControl = $('#modal-setting');
-        Promise.all([
-            $.fn.callAjax2({
-                'url': modalControl.attr('data-url-detail'),
-                'method': 'GET',
-            }),
-            $.fn.callAjax2({
-                'url': modalControl.attr('data-url-currency-list'),
-                'method': 'GET',
-            })
-        ]).then(([result1, result2]) => {
-            let data1 = $.fn.switcherResp(result1);
-            let data2 = $.fn.switcherResp(result2);
-            let myCurrency = $('#idxCurrencyDefault');
-            myCurrency.closest('.modal').find('.modal-title').text(
-                DTBControl.getRowData($(this))?.['title']
-            )
-            if (data2['currency_list']) {
-                myCurrency.empty();
-                for (let i = 0; i < data2['currency_list'].length; i++) {
-                    let option = $('<option>').val(
-                        data2['currency_list'][i]['currency'].code
-                    ).text(
-                        data2['currency_list'][i]['currency'].code +
-                        ' - ' +
-                        data2['currency_list'][i]['currency'].title
-                    );
-                    myCurrency.append(option);
-                }
-                myCurrency.trigger('change');
-            }
-            if (data1['config']) {
-                $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
-                myCurrency.val(data1['config']['currency']['code']).trigger('change.select2');
-                $('#idxCurrencyMaskPrefix').val(data1['config']['currency_rule'].prefix);
-                $('#idxCurrencyMaskSuffix').val(data1['config']['currency_rule'].suffix);
-                $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);
-                $('#idxCurrencyMaskDecimal').val(data1['config']['currency_rule'].decimal);
-                $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
-                $('#idxSubdomain').val(data1['config']['sub_domain']);
-            }
-
-            $x.fn.hideLoadingPage();
-        })
-    })
-
-    $('#tblCompanySetting').on('submit', function (e) {
-        e.preventDefault();
-
-        let frm = new SetupFormSubmit($(this));
-        let dataBody = frm.dataForm
-        dataBody['currency_rule'] = SetupFormSubmit.groupDataFromPrefix(dataBody, 'currency_rule__');
-        dataBody['sub_domain'] = $(this).find('input[name="sub_domain"]').val();
-
-        if (
-            dataBody['currency_rule'] &&
-            (
-                dataBody['currency_rule']['thousands'] &&
-                dataBody['currency_rule']['decimal'] &&
-                dataBody['currency_rule']['thousands'] === dataBody['currency_rule']['decimal']
-            )
-        ) {
-            $.fn.notifyB({
-                'description': "Decimal values are not allowed to be the same as thousands"
-            }, 'failure');
-        } else if (dataBody['currency_rule'] && dataBody['currency_rule']['thousands'] === '.' && !dataBody['currency_rule']['decimal']) {
-            $.fn.notifyB({
-                'description': "Decimal default values is dot(.), please select thousand value isn't dot(.)"
-            }, 'failure');
-        } else {
-            return $.fn.callAjax2({
-                'url': frm.dataUrl,
-                'method': frm.dataMethod,
-                'data': dataBody,
-                isLoading: true,
-            }).then(
-                (resp) => {
-                    debugger
-                    let data = $.fn.switcherResp(resp);
-                    if (data['status'] === 200) {
-                        window.location.reload();
-                    }
-                },
-            );
-        }
-    })
-
 });

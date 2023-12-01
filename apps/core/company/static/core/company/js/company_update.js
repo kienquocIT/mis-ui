@@ -33,4 +33,51 @@ $(document).ready(function () {
                 )
         }
     })
+
+
+    $('#tblCompanyConfig').on('submit', function (e) {
+        e.preventDefault();
+
+        let frm = new SetupFormSubmit($(this));
+        let dataBody = frm.dataForm
+        dataBody['currency_rule'] = SetupFormSubmit.groupDataFromPrefix(dataBody, 'currency_rule__');
+        dataBody['sub_domain'] = $(this).find('input[name="sub_domain"]').val();
+        dataBody['definition_inventory_valuation'] = !$('#perpetual-selection').prop('checked');
+        dataBody['default_inventory_value_method'] = $('#default-inventory-value-method').val();
+        dataBody['cost_per_warehouse'] = $('#cost-per-warehouse').is(':checked');
+        dataBody['cost_per_lot_batch'] = $('#cost-per-lot-batch').is(':checked');
+
+        if (
+            dataBody['currency_rule'] &&
+            (
+                dataBody['currency_rule']['thousands'] &&
+                dataBody['currency_rule']['decimal'] &&
+                dataBody['currency_rule']['thousands'] === dataBody['currency_rule']['decimal']
+            )
+        ) {
+            $.fn.notifyB({
+                'description': "Decimal values are not allowed to be the same as thousands"
+            }, 'failure');
+        } else if (dataBody['currency_rule'] && dataBody['currency_rule']['thousands'] === '.' && !dataBody['currency_rule']['decimal']) {
+            $.fn.notifyB({
+                'description': "Decimal default values is dot(.), please select thousand value isn't dot(.)"
+            }, 'failure');
+        } else {
+            console.log(dataBody)
+            return $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': dataBody,
+                isLoading: true,
+            }).then(
+                (resp) => {
+                    // debugger
+                    let data = $.fn.switcherResp(resp);
+                    if (data['status'] === 200) {
+                        window.location.reload();
+                    }
+                },
+            );
+        }
+    })
 });

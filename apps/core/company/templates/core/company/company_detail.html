@@ -146,17 +146,17 @@
                 </div>
             </div>
         </div>
-        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+        <button id="btn-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
             <span class="icon">
                 <i class="fas fa-angle-double-up text-primary"></i>
             </span>
         </button>
-        <div class="row">
+        <div class="row" id="tabs">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light">
                     <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_setting">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-cogs"></i></span></span>
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_config">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-tools"></i></span></span>
                             <span class="nav-link-text">{% trans 'Company setting' %}</span>
                         </a>
                     </li>
@@ -169,53 +169,82 @@
                 </ul>
             </div>
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="tab_setting">
-                    <div class="row mt-3 mb-5">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="row">
-                                <label class="col-12 col-md-4 col-lg-4 col-form-label required" for="primary-currency">
-                                        {% trans 'Primary currency' %}
-                                    </label>
-                                <div class="col-12 col-md-8 col-lg-8">
-                                    <select type="text" id="primary-currency" data-url="{% url 'BaseCurrencyListAPI' %}" class="select2 form-select" required></select>
+                <div class="tab-pane fade show active" id="tab_config">
+                    <form id="tblCompanyConfig"
+                          data-url="{% url 'CompanyConfigDetailAPI' %}"
+                          data-method="PUT">
+                            {% csrf_token %}
+                        <div class="row" id="company-config"
+                             data-url-detail="{% url 'CompanyConfigDetailAPI' %}"
+                             data-url-currency-list="{% url 'CurrencyListAPI' %}">
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label class="form-label required" for="idxLanguage">{% trans 'Language' %}</label>
+                                    <select name="language" id="idxLanguage" class="form-control select2">
+                                        <option value="vi">Tiếng Việt</option>
+                                        <option value="en" selected>English</option>
+                                    </select>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="row">
-                                <div class="col-12 col-md-4 col-lg-4">
-                                    <label class="form-label" for="definition-inventory-valuation">
-                                {% trans 'Definition of inventory valuation' %}:
-                            </label>
+                                <div class="form-group">
+                                    <label for="idxSubdomain" class="form-label required">{% trans 'Sub domain' %}</label>
+                                    <input type="text" name="sub_domain" id="idxSubdomain" class="form-control">
                                 </div>
-                                <div class="col-12 col-md-8 col-lg-8">
+                                <div class="form-group">
                                     <div class="row">
                                         <div class="col-12 col-md-6 col-lg-6">
-                                            <div class="form-check form-check-sm">
-                                                <input type="radio" id="perpetual-selection" name="definition-inventory-valuation" class="form-check-input" checked>
-                                                <label class="form-check-label" for="perpetual-selection">{% trans 'Perpetual inventory' %}</label>
-                                            </div>
+                                            <label for="idxCurrencyMaskThousand" class="form-label">{% trans 'Thousand' %}</label>
+                                            <input type="text" id="idxCurrencyMaskThousand" name="currency_rule__thousands" class="form-control"/>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-6">
-                                            <div class="form-check form-check-sm">
-                                                <input type="radio" id="periodic-selection" name="definition-inventory-valuation" class="form-check-input">
-                                                <label class="form-check-label" for="periodic-selection">{% trans 'Periodic inventory' %}</label>
-                                            </div>
+                                            <label for="idxCurrencyMaskDecimal" class="form-label">{% trans 'Decimal' %}</label>
+                                            <input type="text" id="idxCurrencyMaskDecimal" name="currency_rule__decimal" class="form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <button id="save-company-config" class="btn btn-gradient-primary w-100 mt-5" type="submit">
+                                                <span>
+                                                    <span>{% trans 'Save changes' %}</span>
+                                                    <span class="icon">
+                                                        <i class="fa-regular fa-floppy-disk"></i>
+                                                    </span>
+                                                </span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="row">
-                                <label class="col-12 col-md-4 col-lg-4 col-form-label" for="default-inventory-value-method">
-                                    {% trans 'Default inventory value method' %}:
-                                </label>
-                                <div class="col-12 col-md-8 col-lg-8">
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label class="form-label" for="idxCurrencyDefault">{% trans 'Primary currency' %}: </label>
+                                    <select class="form-control select2" name="currency" id="idxCurrencyDefault">
+                                        <option value="1">VND</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <label for="idxCurrencyMaskPrefix" class="form-label">{% trans 'Prefix' %}</label>
+                                            <input type="text" id="idxCurrencyMaskPrefix" name="currency_rule__prefix" class="form-control">
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <label for="idxCurrencyMaskSuffix" class="form-label">{% trans 'Suffix' %}</label>
+                                            <input type="text" id="idxCurrencyMaskSuffix" name="currency_rule__suffix" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="idxCurrencyMaskPrecision" class="form-label">{% trans 'Precision' %}</label>
+                                    <input type="text" id="idxCurrencyMaskPrecision" name="currency_rule__precision" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="default-inventory-value-method">
+                                        {% trans 'Default inventory value method' %}:
+                                    </label>
                                     <select type="text" id="default-inventory-value-method" class="form-select" required>
                                         <option value="0">{% trans 'FIFO' %}</option>
                                         <option value="1">{% trans 'Cumulative weighted average' %}</option>
@@ -223,23 +252,42 @@
                                         <option value="3">{% trans 'Specific identification method' %}</option>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="definition-inventory-valuation">
+                                        {% trans 'Definition of inventory valuation' %}:
+                                    </label>
+                                    <div class="row mt-1">
+                                        <div class="col-12 col-md-4 col-lg-4">
+                                            <div class="form-check">
+                                                <input type="radio" id="perpetual-selection" name="definition-inventory-valuation" class="form-check-input" checked>
+                                                <label class="form-check-label" for="perpetual-selection">{% trans 'Perpetual inventory' %}</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4 col-lg-4">
+                                            <div class="form-check">
+                                                <input type="radio" id="periodic-selection" name="definition-inventory-valuation" class="form-check-input">
+                                                <label class="form-check-label" for="periodic-selection">{% trans 'Periodic inventory' %}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-7">
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <div class="form-check">
+                                            <input type="checkbox" id="cost-per-warehouse" class="form-check-input">
+                                            <label class="form-check-label" for="cost-per-warehouse">{% trans 'Cost per warehouse management' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <div class="form-check">
+                                            <input type="checkbox" id="cost-per-lot-batch" class="form-check-input">
+                                            <label class="form-check-label" for="cost-per-lot-batch">{% trans 'Cost per lot/batch management' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-12 col-lg-12">
-                            <div class="form-check">
-                                <input type="checkbox" id="cost-per-warehouse" class="form-check-input">
-                                <label class="form-check-label" for="cost-per-warehouse">{% trans 'Cost per warehouse management' %}</label>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-12 col-lg-12">
-                            <div class="form-check">
-                                <input type="checkbox" id="cost-per-lot-batch" class="form-check-input">
-                                <label class="form-check-label" for="cost-per-lot-batch">{% trans 'Cost per lot/batch management' %}</label>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="tab-pane fade" id="tab_function_number">
                     <table class="table nowrap w-100" id="function_number_table">

@@ -16,6 +16,7 @@ $(function () {
                 searching: false,
                 info: false,
                 paging: false,
+                width: 'auto',
                 columns: [
                     {
                         targets: 0,
@@ -75,7 +76,7 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            if (row?.['is_indicator'] === true) {
+                            if (row?.['is_indicator'] === true) { // INDICATOR ROWS
                                 if (row?.['indicator']?.['acceptance_affect_by'] === 2) { // Plan value
                                     let actualVal = row?.['actual_value'];
                                     if (actualVal === 0) {
@@ -96,7 +97,7 @@ $(function () {
                                 } else {
                                     return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
                                 }
-                            } else {
+                            } else { // NOT INDICATOR ROWS
                                 if (row?.['indicator']?.['is_acceptance_editable'] === true) {
                                     return `<div class="row">
                                                 <input 

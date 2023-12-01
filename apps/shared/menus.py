@@ -304,13 +304,13 @@ class MenusPurchase:
                 icon='<i class="fas fa-file-upload"></i>',
             ),
             MenuCommon(
-                name='Purchase Quotation Request',
+                name='Purchase quotation request',
                 code='id_menu_purchase_quotation_request_list',
                 view_name='PurchaseQuotationRequestList',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
             MenuCommon(
-                name='Purchase Quotation',
+                name='Purchase quotation',
                 code='id_menu_purchase_quotation_list',
                 view_name='PurchaseQuotationList',
                 icon='<i class="fas fa-file-alt"></i>',
@@ -332,7 +332,7 @@ class MenusPurchase:
                 icon='<i class="fas fa-file-import"></i>',
             ),
             MenuCommon(
-                name='Inventory Adjustment',
+                name='Inventory adjustment',
                 code='menu_inventory_adjustment_list',
                 view_name='InventoryAdjustmentList',
                 icon='<i class="bi bi-sliders"></i>',

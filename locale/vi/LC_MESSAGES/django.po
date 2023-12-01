@@ -5389,3 +5389,23 @@ msgstr "Thêm cấp phòng ban"
 #
 msgid "Expense items"
 msgstr "Danh mục chi phí"
+
+#
+msgid "Select position"
+msgstr "Chọn chức danh"
+
+#
+msgid "List source"
+msgstr "Danh sách nguồn"
+
+#
+msgid "Purchase quotation request"
+msgstr "Yêu cầu báo giá mua hàng"
+
+#
+msgid "Purchase quotation"
+msgstr "Báo giá mua hàng"
+
+#
+msgid "Inventory adjustment"
+msgstr "Điều chỉnh tồn kho"

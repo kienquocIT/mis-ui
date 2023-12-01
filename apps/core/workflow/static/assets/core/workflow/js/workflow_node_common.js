@@ -935,7 +935,7 @@ class NodeDataTableHandle {
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-common-area">
                                                                 <div class="form-group">
-                                                                    <label class="form-label required">List source</label>
+                                                                    <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-list-source')}</label>
                                                                     <select
                                                                         class="form-select box-list-source"
                                                                         data-url=""
@@ -1063,7 +1063,7 @@ class NodeDataTableHandle {
                                                                             </select>
                                                                         </div>
                                                                         <div class="form-group position-area" hidden>
-                                                                            <label class="form-label">Select position</label>
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-position-select')}</label>
                                                                             <select
                                                                                 class="form-select box-in-workflow-position"
                                                                                 data-url=""

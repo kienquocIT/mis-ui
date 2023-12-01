@@ -86,12 +86,12 @@
             </div>
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-3" id="group-general-info-opp">
-                    <div class="col-12">
+                    <div class="col-12" style="overflow-y: auto; height: 80vh">
                         {% include 'sales/opportunity/extends/general-info.html' %}
                     </div>
                 </div>
                 <div class="col-12 col-md-12 col-lg-9">
-                    <div class="col-12">
+                    <div class="col-12" style="overflow-y: auto; height: 80vh">
                         {% include 'sales/opportunity/extends/relate-info.html' %}
                     </div>
                 </div>
@@ -631,8 +631,6 @@
     ></script>
 {% endblock %}
 {% block jsFooter %}
-
-
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>

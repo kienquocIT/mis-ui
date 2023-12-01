@@ -61,7 +61,11 @@ class OpportunityDetail(View):
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+            'employee_current_id': request.user.employee_current_data.get('id', None),
+            'type_customer': TYPE_CUSTOMER,
+            'role_customer': ROLE_CUSTOMER,
+        }, status.HTTP_200_OK
 
 
 class OpportunityUpdate(View):

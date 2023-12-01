@@ -55,12 +55,12 @@
             </div>
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-3" id="group-general-info-opp">
-                    <div class="col-12">
+                    <div class="col-12" style="overflow-y: auto; height: 80vh">
                         {% include 'sales/opportunity/extends/general-info.html' %}
                     </div>
                 </div>
                 <div class="col-12 col-md-12 col-lg-9">
-                    <div class="col-12">
+                    <div class="col-12" style="overflow-y: auto; height: 80vh">
                         {% include 'sales/opportunity/extends/relate-info.html' %}
                     </div>
                 </div>
@@ -486,6 +486,9 @@
             </div>
         </div>
     </div>
+
+    {{ data.type_customer|json_script:'data_type_customer' }}
+    {{ data.role_customer|json_script:'data_role_customer' }}
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
@@ -506,6 +509,15 @@
     >
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/permission_group_tabs.js' %}"></script>
     <script>
         function loadPermitEmpty() {
             let cls = new HandlePermissions();
@@ -524,15 +536,6 @@
             $('#member-current-edit').trigger('change');
         })
     </script>
-    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
-    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
-    <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-
-    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/permission_group_tabs.js' %}"></script>
 
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>

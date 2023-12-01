@@ -5302,3 +5302,23 @@ msgstr "Vùng chỉnh sửa"
 #
 msgid "Add Collaborators"
 msgstr "Thêm cộng tác viên"
+
+#
+msgid "Group description"
+msgstr "Mô tả phòng ban"
+
+#
+msgid "1st manager title"
+msgstr "Tên quản lý thứ nhất"
+
+#
+msgid "2nd manager title"
+msgstr "Tên quản lý thứ hai"
+
+#
+msgid "Add group level"
+msgstr "Thêm cấp phòng ban"
+
+#
+msgid "Expense items"
+msgstr "Danh mục chi phí"

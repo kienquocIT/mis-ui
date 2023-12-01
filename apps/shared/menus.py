@@ -228,15 +228,15 @@ class MenusCRM:
         child=[
             MenuCommon(
                 name='Price List', code='id_menu_pricing_list', view_name='PriceList',
-                icon='<i class="bi bi-cash-coin"></i>',
+                icon='<i class="far fa-money-bill-alt"></i>',
             ),
             MenuCommon(
-                name='Shipping List', code='id_menu_shipping_list', view_name='ShippingList',
-                icon='<i class="bi bi-truck-flatbed"></i>',
+                name='Shipping list', code='id_menu_shipping_list', view_name='ShippingList',
+                icon='<i class="fas fa-truck"></i>',
             ),
             MenuCommon(
                 name='Promotion List', code='id_menu_promotion_list', view_name='PromotionList',
-                icon='<i class="bi bi-percent"></i>',
+                icon='<i class="fas fa-shopping-cart"></i>',
             ),
         ]
     )

@@ -195,4 +195,7 @@ const localeVi = {
         noApplyWarranty: "Không áp dụng chính sách bảo hành",
         shipCode: "Giao hàng"
     },
+    'grapesjs-plugin-bootstrap-breadcrumb': {
+        homeTxt: "Trang chủ"
+    },
 };

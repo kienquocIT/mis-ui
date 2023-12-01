@@ -473,8 +473,10 @@ $(function () {
             'grapesjs-plugin-bootstrap-carousel',
             'grapesjs-plugin-bootstrap-navbar',
             'grapesjs-plugin-my-products',
+            'grapesjs-plugin-bootstrap-breadcrumb',
         ],
         pluginsOpts: {
+            'grapesjs-plugin-bootstrap-breadcrumb': {'linkType': 'link-advance'},
             'grapesjs-plugin-my-products': {
                 'productData': {
                     url: '/site/api/products',

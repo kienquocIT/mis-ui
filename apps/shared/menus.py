@@ -228,15 +228,15 @@ class MenusCRM:
         child=[
             MenuCommon(
                 name='Price List', code='id_menu_pricing_list', view_name='PriceList',
-                icon='<i class="bi bi-cash-coin"></i>',
+                icon='<i class="far fa-money-bill-alt"></i>',
             ),
             MenuCommon(
-                name='Shipping List', code='id_menu_shipping_list', view_name='ShippingList',
-                icon='<i class="bi bi-truck-flatbed"></i>',
+                name='Shipping list', code='id_menu_shipping_list', view_name='ShippingList',
+                icon='<i class="fas fa-truck"></i>',
             ),
             MenuCommon(
                 name='Promotion List', code='id_menu_promotion_list', view_name='PromotionList',
-                icon='<i class="bi bi-percent"></i>',
+                icon='<i class="fas fa-shopping-cart"></i>',
             ),
         ]
     )
@@ -304,13 +304,13 @@ class MenusPurchase:
                 icon='<i class="fas fa-file-upload"></i>',
             ),
             MenuCommon(
-                name='Purchase Quotation Request',
+                name='Purchase quotation request',
                 code='id_menu_purchase_quotation_request_list',
                 view_name='PurchaseQuotationRequestList',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
             MenuCommon(
-                name='Purchase Quotation',
+                name='Purchase quotation',
                 code='id_menu_purchase_quotation_list',
                 view_name='PurchaseQuotationList',
                 icon='<i class="fas fa-file-alt"></i>',
@@ -332,7 +332,7 @@ class MenusPurchase:
                 icon='<i class="fas fa-file-import"></i>',
             ),
             MenuCommon(
-                name='Inventory Adjustment',
+                name='Inventory adjustment',
                 code='menu_inventory_adjustment_list',
                 view_name='InventoryAdjustmentList',
                 icon='<i class="bi bi-sliders"></i>',
@@ -366,6 +366,10 @@ class MenuEOffice:
                 icon='<i class="fa-regular fa-calendar-check"></i>',
             )
         ]
+    )
+    BUSINESS_TRIP = MenuCommon(
+        name='Business trip', code='menu_business', view_name='BusinessTripRequestList',
+        icon='<i class="fa-solid fa-business-time"></i>',
     )
 
 
@@ -480,6 +484,7 @@ class SpaceItem:
             icon='<i class="fa-solid fa-laptop-file"></i>',
             menus=[
                 MenuEOffice.LEAVE,
+                MenuEOffice.BUSINESS_TRIP,
             ],
         ),
         'report': SpaceCommon(

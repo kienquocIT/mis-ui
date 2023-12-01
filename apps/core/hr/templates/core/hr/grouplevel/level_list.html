@@ -40,10 +40,10 @@
         >
             <thead>
             <tr>
-                <th>{% trans 'Group Level' %}</th>
-                <th>{% trans 'Group Description' %}</th>
-                <th>{% trans '1st Manager Title' %}</th>
-                <th>{% trans '2nd Manager Title' %}</th>
+                <th>{% trans 'Group level' %}</th>
+                <th>{% trans 'Group description' %}</th>
+                <th>{% trans '1st manager title' %}</th>
+                <th>{% trans '2nd manager title' %}</th>
                 <th>{% trans 'Actions' %}</th>
             </tr>
             </thead>
@@ -51,12 +51,11 @@
             </tbody>
         </table>
         <div class="row">
-            <div class="col-11"></div>
-            <div class="col-1 float-right">
+            <div class="d-flex justify-content-end">
                 <button
                         type="button" class="btn btn-secondary"
                         id="btn-cancel-group-level"
-                >{% trans 'Cancel' %}</button>
+                >{% trans 'Prev' %}</button>
             </div>
         </div>
 
@@ -82,39 +81,33 @@
                                 ></span></label>
                                 <input
                                         type="text" class="form-control"
-                                        placeholder="input description"
                                         id="group-level-create-description"
                                         name="group_level_description"
                                 >
-                                <small class="form-text text-muted">{% trans 'Description of group level' %}</small>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label
                                         class="form-label" for="group-level-create-first-manager-description"
-                                >{% trans 'First manager title' %}</label>
+                                >{% trans '1st manager title' %}</label>
                                 <input
                                         type="text" class="form-control"
-                                        placeholder="input description"
                                         id="group-level-create-first-manager-description"
                                         name="group_level_first_manager_description"
                                 >
-                                <small class="form-text text-muted">{% trans 'Title of first manager' %}</small>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label
                                         class="form-label" for="group-level-create-second-manager-description"
-                                >{% trans 'Second manager title' %}</label>
+                                >{% trans '2nd manager title' %}</label>
                                 <input
                                         type="text" class="form-control"
-                                        placeholder="input description"
                                         id="group-level-create-second-manager-description"
                                         name="group_level_second_manager_description"
                                 >
-                                <small class="form-text text-muted">{% trans 'Title of second manager' %}</small>
                             </div>
                         </div>
                     </div>

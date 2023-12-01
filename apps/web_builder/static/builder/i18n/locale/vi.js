@@ -161,13 +161,15 @@ const localeVi = {
     storageManager: {
         recover: 'Bạn có muốn khôi phục những thay đổi chưa được lưu?',
     },
-    myProducts: {
-        dataVision: "Tầm nhìn dữ liệu",
-        search: "Tìm kiếm",
-        relateSuitable: "Mức độ liên quan: Phù hợp nhất",
-        pricesLowsToHights: "Giá: từ Thấp đến Cao",
-        pricesHightsToLows: "Giá: từ Cao đến Thấp",
-        sold: "đã bán"
+    'grapejs-plugin-bootstrap-navbar': {
+        onPageMenu: 'Liên kết nội bộ',
+        fragId: 'Nhận dạng ID',
+        offSite: 'Liên kết ngoài',
+        typeOfLink: 'Kiểu liên kết',
+        homeTxt: "Trang chủ",
+        linkMenu: "Liên kết Menu",
+        linkAdvance: "Liên kết nâng cao",
+        linkTxt: "Liên kết",
     },
     'grapesjs-plugin-my-products': {
         search: "Tìm kiếm",
@@ -192,5 +194,8 @@ const localeVi = {
         dayReturned: " ngày trả cho Nhà bán hàng",
         noApplyWarranty: "Không áp dụng chính sách bảo hành",
         shipCode: "Giao hàng"
+    },
+    'grapesjs-plugin-bootstrap-breadcrumb': {
+        homeTxt: "Trang chủ"
     },
 };

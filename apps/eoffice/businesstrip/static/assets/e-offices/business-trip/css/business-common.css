@@ -1,0 +1,16 @@
+.total-day{
+    display: flex;
+    align-items: end;
+}
+.form-select:not(.select2-hidden-accessible){
+    height: 38px;
+}
+
+.overflow-x-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.overflow-x-scroll::-webkit-scrollbar-thumb {
+    background-color: #d6d9da;
+    border-radius: 4px;
+}

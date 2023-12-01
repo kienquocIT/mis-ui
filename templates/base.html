@@ -108,6 +108,17 @@
             .my-avatar:hover .my-upload-avatar {
                 display: flex !important;
             }
+
+            {# Bubble #}
+            .scrollToTop {
+                position: fixed;
+                bottom: 75px;
+                right: 40px;
+                display: none;
+                background-color: #0dcaf0;
+                color: #ffffff;
+                z-index: 9999999;
+            }
         </style>
 
         {% block cssHeader %}
@@ -137,6 +148,11 @@
     {% endcompress %}
 </head>
 <body>
+
+<!-- Bubble -->
+<button id="bubble-scrollToTop" class="scrollToTop btn btn-light rounded px-2 py-1"><i class="fa-solid fa-arrows-up-to-line"></i></button>
+<!-- // Bubble -->
+
 <!-- Wrapper -->
 <div
         class="hk-wrapper" data-layout="vertical" data-layout-style="collapsed" data-menu="light" data-footer="simple"
@@ -598,6 +614,21 @@
                      }
                 }
             )
+        })
+
+        {# Bubble #}
+        $(function () {
+            let eleOnTop = $('#bubble-scrollToTop');
+            let docCheck = $('#idxPageContent .simplebar-content-wrapper');
+
+            $(docCheck).scroll(function () {
+                $(this).scrollTop() > 100 ? eleOnTop.fadeIn() : eleOnTop.fadeOut();
+            });
+
+            eleOnTop.click(function () {
+                docCheck.animate({scrollTop: 0}, "slow");
+                return false;
+            });
         })
     </script>
 

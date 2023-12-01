@@ -161,13 +161,15 @@ const localeEn = {
     storageManager: {
         recover: 'Do you want to recover unsaved changes?',
     },
-    myProducts: {
-        dataVision: "Data Vision",
-        search: "Seach",
-        relateSuitable: "Relevancy: Suitable",
-        pricesLowsToHights: "Price: Lows to Hights (1-n)",
-        pricesHightsToLows: "Price: Hights to Lows (n-1)",
-        sold: "sold"
+    'grapejs-plugin-bootstrap-navbar': {
+        onPageMenu: 'On-page menu',
+        fragId: 'Fragment Identifier',
+        offSite: 'Off-site links',
+        typeOfLink: 'Type of link',
+        homeTxt: "Home",
+        linkMenu: "Menu Link",
+        linkAdvance: "Link Advance",
+        linkTxt: "Link",
     },
     'grapesjs-plugin-my-products': {
         search: "Search",
@@ -192,5 +194,8 @@ const localeEn = {
         dayReturned: "-day return period for the Seller",
         noApplyWarranty: "Warranty not applicable",
         shipCode: "Shipping Code"
+    },
+    'grapesjs-plugin-bootstrap-breadcrumb': {
+        homeTxt: "Home"
     },
 };

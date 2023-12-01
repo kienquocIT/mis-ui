@@ -45,16 +45,16 @@ function loadAccountType(accountTypeData) {
     }).on('change', function () {
         let account_type_title_selected = [];
         accountTypeEle.find('option:selected').each(function () {
-            account_type_title_selected.push($(this).text())
+            account_type_title_selected.push($(this).text().toLowerCase())
         })
-        if (account_type_title_selected.includes('Customer'))
+        if (account_type_title_selected.includes('customer'))
         {
             roleForCustomerEle.prop('hidden', false);
         }
         else {
             roleForCustomerEle.prop('hidden', true);
         }
-        if (account_type_title_selected.includes('Supplier'))
+        if (account_type_title_selected.includes('supplier'))
         {
             roleForSupplierEle.prop('hidden', false);
         }
@@ -467,11 +467,11 @@ function LoadDetail(option) {
                 loadAccountType(data.account_type)
 
                 for (let i = 0; i < data.account_type.length; i++) {
-                    if (data.account_type[i].title === 'Customer')
+                    if (data.account_type[i].code === 'AT001')
                     {
                         roleForCustomerEle.prop('hidden', false);
                     }
-                    if (data.account_type[i].title === 'Supplier')
+                    if (data.account_type[i].title === 'AT002')
                     {
                         roleForSupplierEle.prop('hidden', false);
                     }

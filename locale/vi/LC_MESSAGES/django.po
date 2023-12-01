@@ -2858,7 +2858,7 @@ msgstr "Đã thêm"
 
 #
 msgid "Finish"
-msgstr "Kết thúc"
+msgstr "Hoàn thành"
 
 #
 msgid "Loading"
@@ -5256,8 +5256,8 @@ msgid "Set up the product detail page"
 msgstr "Thiết lập trang chi tiết sản phẩm"
 
 #
-msgid "Create a new page with Path = 'product/{id}'"
-msgstr "Tạo trang mới với Path = 'product/{id}'"
+msgid "Create a new page with Path = '/product/{id}'"
+msgstr "Tạo trang mới với Path = '/product/{id}'"
 
 #
 msgid "Use the 'Product Detail' block in the design of the newly created page to display product details"
@@ -5302,6 +5302,73 @@ msgstr "Vùng chỉnh sửa"
 #
 msgid "Add Collaborators"
 msgstr "Thêm cộng tác viên"
+
+#
+msgid "Primary currency"
+msgstr "Đồng tiền mặc định"
+
+#
+msgid "Definition of inventory valuation"
+msgstr "Loại kiểm tra tồn kho"
+
+#
+msgid "Perpetual inventory"
+msgstr "Kê khai thường xuyên"
+
+#
+msgid "Periodic inventory"
+msgstr "Kiểm kê định kỳ"
+
+#
+msgid "Default inventory value method"
+msgstr "Phương pháp tính giá tồn mặc định"
+
+#
+msgid "FIFO"
+msgstr "Nhập trước xuất trước"
+
+#
+msgid "Cumulative weighted average"
+msgstr "Bình quân gia quyền tích lũy cuối kỳ"
+
+#
+msgid "Weighted average"
+msgstr "Bình quân gia quyền"
+
+#
+msgid "Specific identification method"
+msgstr "Thực tế đích danh"
+
+msgid "Business trip"
+msgstr "Công tác"
+
+#
+msgid "Business trip list"
+msgstr "Danh sách công tác"
+
+#
+msgid "Departure"
+msgstr "Khởi hành"
+
+#
+msgid "Destination"
+msgstr "Điểm đến"
+
+#
+msgid "Employee on trip"
+msgstr "Thành viên trong đoàn"
+
+#
+msgid "Expense item"
+msgstr "Chi phí"
+
+#
+msgid "From date"
+msgstr "Từ ngày"
+
+#
+msgid "To date"
+msgstr "Đến ngày"
 
 #
 msgid "Group description"

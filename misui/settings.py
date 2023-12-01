@@ -83,6 +83,7 @@ INSTALLED_APPS = \
         'apps.sales.acceptance',
     ] + [  # e-office Application
         'apps.eoffice.leave',
+        'apps.eoffice.businesstrip',
     ] + [  # external
         'apps.web_builder',
     ]

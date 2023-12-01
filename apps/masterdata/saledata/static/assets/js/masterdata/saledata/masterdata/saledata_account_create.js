@@ -51,9 +51,10 @@ $(document).ready(function () {
                                     data
                                 )
                             }
-                        }, {
+                        },
+                        {
                             render: (data, type, row) => {
-                                if (data?.['is_default']) {
+                                if (!row?.['is_default']) {
                                     let url = $('#url-factory').data('url-account-type').format_url_with_uuid(row.id);
                                     return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                         row.id

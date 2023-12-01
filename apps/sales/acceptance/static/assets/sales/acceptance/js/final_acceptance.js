@@ -125,7 +125,11 @@ $(function () {
                     {
                         targets: 6,
                         render: (data, type, row) => {
-                            return `<p class="table-row-rate-value" data-value="${row?.['rate_value']}">${row?.['rate_value']} %</p>`;
+                            if (row?.['is_indicator'] === true) {
+                                return `<p class="table-row-rate-value" data-value="${row?.['rate_value']}">${row?.['rate_value']} %</p>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                     {
@@ -162,7 +166,6 @@ $(function () {
                                 let planRows = [];
                                 let payment_row_data = {};
                                 let delivery_row_data = [];
-                                let planAffectRows = {};
                                 let deliveryAffectRows = [];
                                 let paymentAffectRows = [];
                                 let otherExpensesRow = null;
@@ -172,7 +175,6 @@ $(function () {
                                         let newRow = $table.DataTable().row.add(indicator).draw().node();
                                         // acceptance_affect_by plan value
                                         if (indicator?.['indicator']?.['acceptance_affect_by'] === 2) {
-                                            // planAffectRows[indicator?.['indicator']?.['id']] = newRow;
                                             planRows.push(newRow);
                                         }
                                         // acceptance_affect_by delivery
@@ -180,7 +182,7 @@ $(function () {
                                             deliveryAffectRows.push(newRow);
                                         }
                                         // acceptance_affect_by payment
-                                        if (indicator?.['indicator']?.['acceptance_affect_by'] === 4) {
+                                        if (indicator?.['indicator']?.['acceptance_affect_by'] === 4 && indicator?.['indicator']?.['code'] !== 'IN0005') {
                                             paymentAffectRows.push(newRow);
                                         }
                                         // other expenses
@@ -188,20 +190,21 @@ $(function () {
                                             otherExpensesRow = newRow;
                                         }
                                     } else if (indicator?.['is_payment'] === true) {
-                                        // payment on expense item
-                                        if (indicator?.['expense_item']?.['title']) {
-                                            if (payment_row_data.hasOwnProperty(indicator?.['expense_item']?.['title'].toLowerCase())) {
-                                                payment_row_data[indicator['expense_item']['title'].toLowerCase()].push(indicator);
-                                            } else {
-                                                payment_row_data[indicator['expense_item']['title'].toLowerCase()] = [indicator];
-                                            }
-                                        }
                                         // payment on labor item
                                         if (indicator?.['labor_item']?.['title']) {
                                             if (payment_row_data.hasOwnProperty(indicator?.['labor_item']?.['title'].toLowerCase())) {
                                                 payment_row_data[indicator['labor_item']['title'].toLowerCase()].push(indicator);
                                             } else {
                                                 payment_row_data[indicator['labor_item']['title'].toLowerCase()] = [indicator];
+                                            }
+                                        } else {
+                                            // payment on expense item
+                                            if (indicator?.['expense_item']?.['title']) {
+                                                if (payment_row_data.hasOwnProperty(indicator?.['expense_item']?.['title'].toLowerCase())) {
+                                                    payment_row_data[indicator['expense_item']['title'].toLowerCase()].push(indicator);
+                                                } else {
+                                                    payment_row_data[indicator['expense_item']['title'].toLowerCase()] = [indicator];
+                                                }
                                             }
                                         }
                                     } else if (indicator?.['is_delivery'] === true) {
@@ -331,7 +334,7 @@ $(function () {
                 eleDifferent.setAttribute('data-init-money', String(differVal));
                 // set rate value
                 let rateValue = parseFloat(eleRate.getAttribute('data-value'));
-                if (row.querySelector('.table-row-indicator').getAttribute('data-code') !== "IN0001") {
+                if (row.querySelector('.table-row-indicator').getAttribute('data-code') !== "IN0001") { // if current row is not REVENUE
                     let revenueEle = $table[0].querySelector('.table-row-indicator[data-code="IN0001"]');
                     if (revenueEle) {
                         let revenueRow = revenueEle.closest('tr');
@@ -345,6 +348,19 @@ $(function () {
                             eleRate.innerHTML = '';
                             rateValue = ((parseFloat(newActualValue) / parseFloat(revenueActualVal)) * 100).toFixed(1);
                             eleRate.innerHTML = String(rateValue) + ' %';
+                        }
+                    }
+                } else { // if current row is REVENUE
+                    for (let eleIndi of $table[0].querySelectorAll('.table-row-indicator[data-code]:not([data-code=""]):not([data-code="IN0001"])')) {
+                        let indiRow = eleIndi.closest('tr');
+                        let indiActualEle = indiRow?.querySelector('.table-row-actual-value');
+                        let indiRateEle = indiRow?.querySelector('.table-row-rate-value');
+                        if (indiActualEle && indiRateEle) {
+                            if (indiActualEle.hasAttribute('data-init-money')) {
+                                let indiActualVal = indiActualEle.getAttribute('data-init-money');
+                                indiRateEle.innerHTML = '';
+                                indiRateEle.innerHTML = String(((parseFloat(indiActualVal) / parseFloat(newActualValue)) * 100).toFixed(1)) + ' %';
+                            }
                         }
                     }
                 }

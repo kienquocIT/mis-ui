@@ -5389,3 +5389,7 @@ msgstr "Thêm cấp phòng ban"
 #
 msgid "Expense items"
 msgstr "Danh mục chi phí"
+
+#
+msgid "Estimate is wrong format"
+msgstr "Sai định dạng trường dự tính"

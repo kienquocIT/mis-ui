@@ -1324,35 +1324,15 @@ class QuotationDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if (row.is_shipping === false) {
-                            return `<div class="row">
-                                <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <div class="btn-group dropstart">
-                                                <i
-                                                    class="fas fa-info-circle text-blue"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                                >
-                                                </i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                        </span>
-                                        <select
-                                            class="form-select table-row-item disabled-custom-show"
-                                            data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
-                                            data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                            data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
-                                            data-keyResp="product_sale_list"
-                                            disabled
-                                        >
-                                        </select>
-                                    </span>
-                                </div>
-                            </div>`;
+                            return `<select
+                                        class="form-select table-row-item disabled-custom-show"
+                                        data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
+                                        data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                        data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
+                                        data-keyResp="product_sale_list"
+                                        disabled
+                                    >
+                                    </select>`;
                         } else {
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
@@ -1538,39 +1518,17 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_expenses_data";
                         }
                         if (row?.['is_labor'] === false) {
-                            return `<div class="row">
-                                        <input type="text" class="form-control table-row-expense-title" value="${row?.['expense_title']}" data-zone="${dataZone}" required>
-                                    </div>`;
+                            return `<input type="text" class="form-control table-row-expense-title" value="${row?.['expense_title']}" data-zone="${dataZone}" required>`;
                         } else {
-                            return `<div class="row">
-                                        <div class="input-group">
-                                            <span class="input-affix-wrapper">
-                                                <span class="input-prefix">
-                                                    <div class="btn-group dropstart">
-                                                        <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                        >
-                                                        </i>
-                                                        <div class="dropdown-menu w-210p mt-4"></div>
-                                                    </div>
-                                                </span>
-                                                <select 
-                                                class="form-select table-row-labor-item" 
-                                                data-url="${QuotationDataTableHandle.expenseInitEle.attr('data-url')}"
-                                                data-link-detail="${QuotationDataTableHandle.expenseInitEle.attr('data-link-detail')}"
-                                                data-method="${QuotationDataTableHandle.expenseInitEle.attr('data-method')}"
-                                                data-keyResp="expense_list"
-                                                data-zone="${dataZone}"
-                                                required>
-                                                </select>
-                                            </span>
-                                        </div>
-                                    </div>`;
+                            return `<select 
+                                    class="form-select table-row-labor-item" 
+                                    data-url="${QuotationDataTableHandle.expenseInitEle.attr('data-url')}"
+                                    data-link-detail="${QuotationDataTableHandle.expenseInitEle.attr('data-link-detail')}"
+                                    data-method="${QuotationDataTableHandle.expenseInitEle.attr('data-method')}"
+                                    data-keyResp="expense_list"
+                                    data-zone="${dataZone}"
+                                    required>
+                                    </select>`;
                         }
                     }
                 },
@@ -1583,64 +1541,24 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_expenses_data";
                         }
                         if (row?.['is_labor'] === false) {
-                           return `<div class="row">
-                                        <div class="input-group">
-                                            <span class="input-affix-wrapper">
-                                                <span class="input-prefix">
-                                                    <div class="btn-group dropstart">
-                                                        <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                        >
-                                                        </i>
-                                                        <div class="dropdown-menu w-210p mt-4"></div>
-                                                    </div>
-                                                </span>
-                                                <select 
-                                                class="form-select table-row-item" 
-                                                data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
-                                                data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
-                                                data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
-                                                data-keyResp="expense_item_list"
-                                                data-zone="${dataZone}"
-                                                required>
-                                                </select>
-                                            </span>
-                                        </div>
-                                    </div>`;
+                           return `<select 
+                                    class="form-select table-row-item" 
+                                    data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
+                                    data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
+                                    data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
+                                    data-keyResp="expense_item_list"
+                                    data-zone="${dataZone}"
+                                    required>
+                                    </select>`;
                         } else {
-                            return `<div class="row">
-                                        <div class="input-group">
-                                            <span class="input-affix-wrapper">
-                                                <span class="input-prefix">
-                                                    <div class="btn-group dropstart">
-                                                        <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                        >
-                                                        </i>
-                                                        <div class="dropdown-menu w-210p mt-4"></div>
-                                                    </div>
-                                                </span>
-                                                <select 
-                                                class="form-select table-row-item" 
-                                                data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
-                                                data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
-                                                data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
-                                                data-keyResp="expense_item_list"
-                                                disabled>
-                                                </select>
-                                            </span>
-                                        </div>
-                                    </div>`;
+                            return `<select 
+                                    class="form-select table-row-item" 
+                                    data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
+                                    data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
+                                    data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
+                                    data-keyResp="expense_item_list"
+                                    disabled>
+                                    </select>`;
                         }
 
                     }
@@ -1654,29 +1572,25 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_expenses_data";
                         }
                         if (row?.['is_labor'] === false) {
-                           return `<div class="row">
-                                        <select 
-                                            class="form-select table-row-uom"
-                                            data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                            data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
-                                            data-keyResp="unit_of_measure"
-                                            data-zone="${dataZone}"
-                                            required
-                                        >
-                                        </select>
-                                    </div>`;
+                           return `<select 
+                                        class="form-select table-row-uom"
+                                        data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                        data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                        data-keyResp="unit_of_measure"
+                                        data-zone="${dataZone}"
+                                        required
+                                    >
+                                    </select>`;
                         } else {
-                            return `<div class="row">
-                                        <select 
-                                            class="form-select table-row-uom"
-                                            data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                            data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
-                                            data-keyResp="unit_of_measure"
-                                            required
-                                            disabled
-                                        >
-                                        </select>
-                                    </div>`;
+                            return `<select 
+                                        class="form-select table-row-uom"
+                                        data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                        data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                        data-keyResp="unit_of_measure"
+                                        required
+                                        disabled
+                                    >
+                                    </select>`;
                         }
                     },
                 },
@@ -1688,9 +1602,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
-                        return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['expense_quantity']}" data-zone="${dataZone}" required>
-                            </div>`;
+                        return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['expense_quantity']}" data-zone="${dataZone}" required>`;
                     }
                 },
                 {
@@ -1701,17 +1613,13 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
-                        return `<div class="row">
-                                    <div class="col-12">
-                                        <input 
-                                            type="text" 
-                                            class="form-control mask-money table-row-price" 
-                                            value="${row?.['expense_price']}"
-                                            data-return-type="number"
-                                            data-zone="${dataZone}"
-                                        >
-                                    </div>
-                                </div>`;
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-price" 
+                                    value="${row?.['expense_price']}"
+                                    data-return-type="number"
+                                    data-zone="${dataZone}"
+                                >`;
                     }
                 },
                 {

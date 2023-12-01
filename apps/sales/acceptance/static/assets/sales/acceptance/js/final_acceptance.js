@@ -360,6 +360,10 @@ $(function () {
                                 let indiActualVal = indiActualEle.getAttribute('data-init-money');
                                 indiRateEle.innerHTML = '';
                                 indiRateEle.innerHTML = String(((parseFloat(indiActualVal) / parseFloat(newActualValue)) * 100).toFixed(1)) + ' %';
+                            } else {
+                                let indiActualVal = $(indiActualEle).valCurrency();
+                                indiRateEle.innerHTML = '';
+                                indiRateEle.innerHTML = String(((parseFloat(indiActualVal) / parseFloat(newActualValue)) * 100).toFixed(1)) + ' %';
                             }
                         }
                     }

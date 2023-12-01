@@ -196,7 +196,7 @@ class MenusCRM:
         icon='<i class="fas fa-file-invoice"></i>',
     )
     FINAL_ACCEPTANCE = MenuCommon(
-        name='Final Acceptance', code='menu_final_acceptance_list', view_name='FinalAcceptanceList',
+        name='Final acceptance', code='menu_final_acceptance_list', view_name='FinalAcceptanceList',
         icon='<i class="fas fa-file-alt"></i>',
     )
     PRODUCT = MenuCommon(

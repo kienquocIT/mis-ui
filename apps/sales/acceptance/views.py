@@ -22,7 +22,7 @@ class FinalAcceptanceList(View):
         auth_require=True,
         template='sales/acceptance/final_acceptance.html',
         menu_active='menu_final_acceptance_list',
-        breadcrumb='',
+        breadcrumb='FINAL_ACCEPTANCE_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

@@ -16,7 +16,6 @@ $(function () {
                 searching: false,
                 info: false,
                 paging: false,
-                width: 'auto',
                 columns: [
                     {
                         targets: 0,
@@ -493,12 +492,14 @@ $(function () {
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
             minYear: 1901,
+            singleDatePicker: true,
             timePicker: true,
             showDropdowns: true,
             locale: {
-                format: 'DD/MM/YYYY'
+                format: 'DD/MM/YYYY hh:mm A'
             }
         });
+        $('#final-acceptance-date-save').val(null).trigger('change');
 
         // mask money
         $.fn.initMaskMoney2();

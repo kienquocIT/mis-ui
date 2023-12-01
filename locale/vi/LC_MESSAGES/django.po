@@ -4866,7 +4866,7 @@ msgid "Clone"
 msgstr "Nhân bản"
 
 #
-msgid "Final Acceptance"
+msgid "Final acceptance"
 msgstr "Nghiệm thu"
 
 #

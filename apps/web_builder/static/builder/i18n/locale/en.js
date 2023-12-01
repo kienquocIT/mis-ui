@@ -195,4 +195,7 @@ const localeEn = {
         noApplyWarranty: "Warranty not applicable",
         shipCode: "Shipping Code"
     },
+    'grapesjs-plugin-bootstrap-breadcrumb': {
+        homeTxt: "Home"
+    },
 };

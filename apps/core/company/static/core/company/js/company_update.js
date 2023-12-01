@@ -34,7 +34,6 @@ $(document).ready(function () {
         }
     })
 
-
     $('#tblCompanyConfig').on('submit', function (e) {
         e.preventDefault();
 
@@ -63,7 +62,6 @@ $(document).ready(function () {
                 'description': "Decimal default values is dot(.), please select thousand value isn't dot(.)"
             }, 'failure');
         } else {
-            console.log(dataBody)
             return $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,
@@ -74,7 +72,10 @@ $(document).ready(function () {
                     // debugger
                     let data = $.fn.switcherResp(resp);
                     if (data['status'] === 200) {
-                        window.location.reload();
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                     }
                 },
             );

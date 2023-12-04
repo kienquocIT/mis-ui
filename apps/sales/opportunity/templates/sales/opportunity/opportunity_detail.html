@@ -493,6 +493,11 @@
            data-task_list="{% url 'OpportunityTaskListAPI' %}"
            data-url-edit="{% url 'OpportunityUpdate' pk=0 %}"
            data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
+           data-url-quotation-detail="{% url 'QuotationDetail' pk=0 %}"
+           data-url-sale-order-detail="{% url 'SaleOrderDetail' pk=0 %}"
+           data-url-advance-detail="{% url 'AdvancePaymentDetail' pk=0 %}"
+           data-url-payment-detail="{% url 'PaymentDetail' pk=0 %}"
+           data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
     >
     <input type="text" id="trans-factory"
            data-activity-type01="{% trans 'Call to customer' %}"
@@ -503,6 +508,14 @@
            data-trans-decision-maker="{% trans "Decision Maker" %}"
            data-trans-influence="{% trans "Influence" %}"
            data-trans-contact-involved="{% trans "Contact Involved" %}"
+           data-trans-quotation="{% trans "Quotation" %}"
+           data-trans-sale-order="{% trans "Sale Order" %}"
+           data-trans-advance="{% trans "Advance Payment" %}"
+           data-trans-payment="{% trans "Payment" %}"
+           data-trans-return="{% trans "Return Advance" %}"
+           data-trans-call="{% trans "Call customer" %}"
+           data-trans-email="{% trans "Email to customer" %}"
+           data-trans-meeting="{% trans "Meeting with customer" %}"
     >
 {% endblock %}
 {% block jsFooter %}

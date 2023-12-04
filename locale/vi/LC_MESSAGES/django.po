@@ -5429,3 +5429,19 @@ msgstr "Theo sản phẩm"
 #
 msgid "Estimate is wrong format"
 msgstr "Sai định dạng trường dự tính"
+
+#
+msgid "Cost per warehouse management"
+msgstr "Tính giá theo từng kho"
+
+#
+msgid "Cost per lot/batch management"
+msgstr "Tính giá theo lô"
+
+#
+msgid "Save changes"
+msgstr "Lưu thay đổi"
+
+#
+msgid "Representator fullname"
+msgstr "Họ tên người đại diện"

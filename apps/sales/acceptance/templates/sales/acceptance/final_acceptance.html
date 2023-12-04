@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_final_acceptance_update" disabled>
+    <button class="btn btn-outline-primary" type="submit" form="frm_final_acceptance_update" hidden>
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -71,10 +71,10 @@
         <div class="row">
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label" for="report-revenue-date-approved">{% trans 'Date' %}</label>
+                    <label class="form-label" for="final-acceptance-date-save">{% trans 'Date' %}</label>
                     <div class="input-affix-wrapper">
-                        <input type="text" name="date_approved" id="report-revenue-date-approved"
-                               class="form-control date-picker" autocomplete="off">
+                        <input type="text" name="date_save" id="final-acceptance-date-save"
+                               class="form-control date-picker" autocomplete="off" disabled>
                         <div class="input-suffix">
                             <i class="fas fa-calendar-week"></i>
                         </div>
@@ -94,27 +94,29 @@
             </div>
         </div>
 
-        <table
-                id="table_final_acceptance_list"
-                class="table nowrap w-100 mb-5"
-                data-url="{% url 'FinalAcceptanceListAPI' %}"
-                data-method="get"
-        >
-            <thead>
-            <tr>
-                <th class="w-15">{% trans 'Indicator' %}</th>
-                <th class="w-5">{% trans 'Items code' %}</th>
-                <th class="w-10">{% trans 'Items name' %}</th>
-                <th class="w-15">{% trans 'Planed value' %}</th>
-                <th class="w-15">{% trans 'Actual value' %}</th>
-                <th class="w-15">{% trans 'Different value' %}</th>
-                <th class="w-10">{% trans '%' %}</th>
-                <th class="w-15">{% trans 'Note' %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="overflow-x-scroll">
+            <table
+                    id="table_final_acceptance_list"
+                    class="table nowrap w-100 mb-5"
+                    data-url="{% url 'FinalAcceptanceListAPI' %}"
+                    data-method="get"
+            >
+                <thead>
+                <tr>
+                    <th class="w-15">{% trans 'Indicator' %}</th>
+                    <th class="w-5">{% trans 'Items code' %}</th>
+                    <th class="w-10">{% trans 'Items name' %}</th>
+                    <th class="w-15">{% trans 'Planed value' %}</th>
+                    <th class="w-15">{% trans 'Actual value' %}</th>
+                    <th class="w-15">{% trans 'Different value' %}</th>
+                    <th class="w-10">{% trans '%' %}</th>
+                    <th class="w-15">{% trans 'Note' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
         <input
             type="hidden"

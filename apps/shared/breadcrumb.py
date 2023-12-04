@@ -271,6 +271,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Create'), 'BusinessTripCreate'
     )
 
+    # Final acceptance
+    FINAL_ACCEPTANCE_LIST_PAGE = BreadcrumbChildren(_('Final acceptance'), 'FinalAcceptanceList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -695,3 +698,6 @@ class BreadcrumbView:
     BUSINESS_TRIP_CREATE = BUSINESS_TRIP_REQUEST_LIST + [BreadcrumbItem.BUSINESS_TRIP_CREATE]
     BUSINESS_TRIP_DETAIL = BUSINESS_TRIP_REQUEST_LIST + [BreadcrumbItem.BASTION_DETAIL]
     BUSINESS_TRIP_EDIT = BUSINESS_TRIP_REQUEST_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Final acceptance
+    FINAL_ACCEPTANCE_LIST_PAGE = [BreadcrumbItem.FINAL_ACCEPTANCE_LIST_PAGE]

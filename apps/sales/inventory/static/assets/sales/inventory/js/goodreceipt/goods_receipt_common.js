@@ -70,15 +70,15 @@ class GRLoadDataHandle {
             dataType = [
                 {
                     'id': 3,
-                    'title': 'For product'
+                    'title': GRLoadDataHandle.transEle.attr('data-for-product')
                 },
                 {
                     'id': 2,
-                    'title': 'For inventory adjustment'
+                    'title': GRLoadDataHandle.transEle.attr('data-for-ia')
                 },
                 {
                     'id': 1,
-                    'title': 'For purchase order'
+                    'title': GRLoadDataHandle.transEle.attr('data-for-po')
                 },
             ];
         }
@@ -832,9 +832,9 @@ class GRLoadDataHandle {
             }
         }
         let type_data = {
-            '1': 'For purchase order',
-            '2': 'For inventory adjustment',
-            '3': 'For production',
+            '1': GRLoadDataHandle.transEle.attr('data-for-po'),
+            '2': GRLoadDataHandle.transEle.attr('data-for-ia'),
+            '3': GRLoadDataHandle.transEle.attr('data-for-product'),
         }
         let idAreaShow = String(data?.['goods_receipt_type'] + 1);
         GRLoadDataHandle.loadBoxType({

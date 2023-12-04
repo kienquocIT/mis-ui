@@ -1446,8 +1446,8 @@ $(document).ready(function () {
                 },
                 {
                     targets: 4,
-                    render: (data, type, row) => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                     }
                 },
             ],

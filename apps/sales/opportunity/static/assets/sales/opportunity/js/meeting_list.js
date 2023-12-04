@@ -36,7 +36,7 @@ function loadOpportunityMeetingList() {
                     data: 'subject',
                     className: 'wrap-text w-45',
                     render: (data, type, row) => {
-                        return  `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
+                        return `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
                                     data-bs-target="#detail-meeting"><span><b>` + row.subject + `</b></span></a>`
                     }
                 },
@@ -60,10 +60,18 @@ function loadOpportunityMeetingList() {
                     data: 'action',
                     className: 'wrap-text w-5 text-center',
                     render: (data, type, row) => {
-                        return `<button data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs delete-activity"><span class="icon"><i class="bi bi-trash"></i></span></button>`
+                        let btn = $(`${$('.delete-btn').html()}`)
+                        btn.attr('data-id', row.id)
+                        return btn.prop('outerHTML')
                     }
                 },
             ],
+            rowCallback: function(row, data, index){
+                $('.detail-meeting-button', row).on('click', function () {
+                    let $this = $(this)
+                    detailMeeting($this)
+                })
+            },
         });
     }
 }
@@ -84,7 +92,7 @@ function loadMeetingSaleCodeList(data) {
                     added = true;
                 }
                 if (item.opportunity_sale_team_datas.length > 0 && added === false) {
-                    $.each(item.opportunity_sale_team_datas, function(index, member_obj) {
+                    $.each(item.opportunity_sale_team_datas, function (index, member_obj) {
                         if (member_obj.member.id === employee_current_id) {
                             result.push(item);
                         }
@@ -93,7 +101,7 @@ function loadMeetingSaleCodeList(data) {
             }
             return result;
         },
-        templateResult: function(data) {
+        templateResult: function (data) {
             let ele = $('<div class="row col-12"></div>');
             ele.append('<div class="col-4"><span class="badge badge-soft-primary badge-outline">' + data.data?.['code'] + '</span></div>');
             ele.append('<div class="col-8">' + data.data?.['title'] + '</div>');
@@ -110,8 +118,7 @@ function loadMeetingSaleCodeList(data) {
                 $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
                 meeting_Opp_slb.find('option').remove();
 
-            }
-            else {
+            } else {
                 loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'])
                 loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'])
             }
@@ -148,8 +155,7 @@ function loadMeetingAddress(shipping_address_list) {
     for (let i = 0; i < shipping_address_list.length; i++) {
         if (shipping_address_list[i].is_default) {
             meeting_address_slb.append(`<option selected>${shipping_address_list[i].full_address}</option>`);
-        }
-        else {
+        } else {
             meeting_address_slb.append(`<option>${shipping_address_list[i].full_address}</option>`);
         }
     }
@@ -179,9 +185,9 @@ $('#meeting-address-select-btn').on('click', function () {
     $('#meeting-address-input-div').prop('hidden', true);
 })
 
-$(document).on('click', '#table_opportunity_meeting_list .detail-meeting-button', function () {
-    let meeting_id = $(this).attr('data-id');
-    let meeting_obj = MEETING_LIST.filter(function(item) {
+function detailMeeting($this) {
+    let meeting_id = $this.attr('data-id');
+    let meeting_obj = MEETING_LIST.filter(function (item) {
         return item.id === meeting_id;
     })[0]
     $('#detail-meeting-subject-input').val(meeting_obj.subject);
@@ -211,26 +217,29 @@ $(document).on('click', '#table_opportunity_meeting_list .detail-meeting-button'
     detail_meeting_customer_member_slb.prop('disabled', true);
 
     $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
+    moment.locale('en')
+    $('#meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
+    $('#meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
 
     $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
     $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
-})
+}
 
 $(document).on('click', '#table_opportunity_meeting_list .delete-activity', function () {
     let meeting_id = $(this).attr('data-id');
     let frm = $('#table_opportunity_meeting_list');
     let csr = $("input[name=csrfmiddlewaretoken]").val();
     $.fn.callAjax(frm.attr('data-url-delete').replace(0, meeting_id), 'DELETE', {}, csr)
-    .then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            $.fn.notifyB({description: "Successfully"}, 'success')
-            $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
-        }
-    },(errs) => {
-        $.fn.notifyB({description: errs.data.errors}, 'failure');
-    })
+        .then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $.fn.notifyB({description: "Successfully"}, 'success')
+                $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
+            }
+        }, (errs) => {
+            $.fn.notifyB({description: errs.data.errors}, 'failure');
+        })
 })
 
 class MeetingHandle {
@@ -239,6 +248,7 @@ class MeetingHandle {
         loadMeetingSaleCodeList();
         loadEmployeeAttended();
     }
+
     combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
@@ -247,8 +257,7 @@ class MeetingHandle {
         frm.dataForm['meeting_date'] = meeting_date_input.val();
         if ($('#meeting-address-select-div').is(':hidden')) {
             frm.dataForm['meeting_address'] = $('#meeting-address-input').val();
-        }
-        else {
+        } else {
             frm.dataForm['meeting_address'] = $('#meeting-address-select-box option:selected').val();
         }
         frm.dataForm['room_location'] = $('#meeting-room-location-input').val();
@@ -279,6 +288,8 @@ class MeetingHandle {
 
         frm.dataForm['employee_attended_list'] = employee_attended_list;
         frm.dataForm['customer_member_list'] = customer_member_list;
+        frm.dataForm['meeting_from_time'] = frm.dataForm['meeting_from_time'].split(' ')[0]+':00';
+        frm.dataForm['meeting_to_time'] = frm.dataForm['meeting_to_time'].split(' ')[0]+':00';
 
         return {
             url: frm.dataUrl,

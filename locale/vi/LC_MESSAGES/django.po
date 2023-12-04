@@ -5439,8 +5439,8 @@ msgid "Cost per lot/batch management"
 msgstr "Tính giá theo lô"
 
 #
-msgid "Save changes"
-msgstr "Lưu thay đổi"
+msgid "Save config"
+msgstr "Lưu cấu hình"
 
 #
 msgid "Representator fullname"

@@ -15,6 +15,11 @@ function resetFormTask() {
     $('.create-task').attr('disabled', false)
 }
 
+function isValidString(inputString) {
+    let pattern = /^\d+[wdh]*$/;
+    return pattern.test(inputString);
+}
+
 function logworkSubmit() {
     $('#save-logtime').off().on('click', function () {
         const startDate = $('#startDateLogTime').val()
@@ -225,6 +230,12 @@ $(function () {
         $empElm.val(employee.id).trigger('change')
     });
 
+    $('#inputTextEstimate').on('blur', function(){
+        if (!isValidString(this.value))
+            $.fn.notifyB({description: $('#form_valid').attr('data-estimate-error')}, 'failure')
+    })
+
+
     //--INPUT LABEL-- run init label function
     let formLabel = new labelHandle()
     formLabel.init()
@@ -320,6 +331,11 @@ $(function () {
                     'title': task_status.text,
                 }
 
+                if (!isValidString(formData.estimate)){
+                    $.fn.notifyB({description: $('#form_valid').attr('data-estimate-error')}, 'failure')
+                    return false
+                }
+
                 const assign_to = $empElm.select2('data')[0]
                 let assign_toData = {}
                 if (assign_to){
@@ -381,7 +397,8 @@ $(function () {
                                 if (data?.id) formData = data
                                 const datadump = JSON.stringify(formData)
                                 elm.removeAttr('data-task').attr('data-task', datadump)
-                                $('body').append(elm)
+                                $('body').append(elm).trigger('From-Task.Submitted')
+
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')
                         }

@@ -5425,3 +5425,7 @@ msgstr "Theo điều chỉnh tồn kho"
 #
 msgid "For production"
 msgstr "Theo sản phẩm"
+
+#
+msgid "Estimate is wrong format"
+msgstr "Sai định dạng trường dự tính"

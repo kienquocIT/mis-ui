@@ -126,7 +126,7 @@
                                                             data-url="{% url 'OpportunityListAPI' %}"
                                                             data-method="GET"
                                                             data-keyResp="opportunity_list"
-                                                            data-params='{"list_from_app": "{{ data.list_from_app }}"}'
+                                                            data-params='{"list_from_app": "{{ data.list_from_app }}", "is_close_lost":"false", "is_deal_close":"false"}'
                                                             data-keyText="code"
 
                                                             data-url-info-detail="{% url 'OpportunityDetail' pk='__pk__' %}"

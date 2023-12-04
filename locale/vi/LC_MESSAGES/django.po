@@ -4866,7 +4866,7 @@ msgid "Clone"
 msgstr "Nhân bản"
 
 #
-msgid "Final Acceptance"
+msgid "Final acceptance"
 msgstr "Nghiệm thu"
 
 #
@@ -5409,3 +5409,23 @@ msgstr "Báo giá mua hàng"
 #
 msgid "Inventory adjustment"
 msgstr "Điều chỉnh tồn kho"
+
+#
+msgid "Goods receipt type"
+msgstr "Loại nhập kho"
+
+#
+msgid "For purchase order"
+msgstr "Theo đơn mua hàng"
+
+#
+msgid "For inventory adjustment"
+msgstr "Theo điều chỉnh tồn kho"
+
+#
+msgid "For production"
+msgstr "Theo sản phẩm"
+
+#
+msgid "Estimate is wrong format"
+msgstr "Sai định dạng trường dự tính"

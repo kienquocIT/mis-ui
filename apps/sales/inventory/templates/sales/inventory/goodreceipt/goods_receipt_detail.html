@@ -360,9 +360,9 @@
                                     <tr>
                                         <th class="w-5">#</th>
                                         <th class="w-5">{% trans 'Product' %}</th>
-                                        <th class="w-20">{% trans 'Description' %}</th>
+                                        <th class="w-10">{% trans 'Description' %}</th>
                                         <th class="w-5">UoM</th>
-                                        <th class="w-5">{% trans 'Quantity' %}</th>
+                                        <th class="w-15">{% trans 'Quantity' %}</th>
                                         <th class="w-5">{% trans 'Warehouse' %}</th>
                                         <th class="w-30">{% trans 'Unit Cost' %}</th>
                                         <th class="w-25">{% trans 'Subtotal Price' %}</th>
@@ -404,6 +404,13 @@
             data-validate-import="{% trans 'Quantity import must be less than equal remain quantity' %}"
             data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
             data-select="{% trans 'Select' %}"
+            data-lot-exist="{% trans 'Lot number is exist' %}"
+            data-serial-exist="{% trans 'Serial number is exist' %}"
+            data-lot-different="{% trans 'Lot number must be different' %}"
+            data-serial-different="{% trans 'Serial number must be different' %}"
+            data-for-po="{% trans 'For purchase order' %}"
+            data-for-ia="{% trans 'For inventory adjustment' %}"
+            data-for-product="{% trans 'For production' %}"
         >
         <input
             type="hidden"

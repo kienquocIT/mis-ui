@@ -1370,13 +1370,14 @@ $(document).ready(function () {
             'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
         }
         let typeMapActivity = {
+            1: transEle.attr('data-trans-task'),
             2: transEle.attr('data-trans-call'),
             3: transEle.attr('data-trans-email'),
             4: transEle.attr('data-trans-meeting'),
         }
         let typeMapIcon = {
             0: `<i class="fas fa-file-alt"></i>`,
-            1: `<i class="fas fa-file-alt"></i>`,
+            1: `<i class="fas fa-tasks"></i>`,
             2: `<i class="fas fa-phone-alt"></i>`,
             3: `<i class="far fa-envelope"></i>`,
             4: `<i class="fas fa-users"></i>`,
@@ -1417,7 +1418,9 @@ $(document).ready(function () {
                             link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
                         }
                         let title = row?.['title'] ? row?.['title'] : '';
-                        if (row?.['log_type'] === 2) {
+                        if (row?.['log_type'] === 1) {
+                            title = row?.['task']?.['subject'];
+                        } else if (row?.['log_type'] === 2) {
                             title = row?.['call_log']?.['subject'];
                         } else if (row?.['log_type'] === 3) {
                             title = row?.['email']?.['subject'];

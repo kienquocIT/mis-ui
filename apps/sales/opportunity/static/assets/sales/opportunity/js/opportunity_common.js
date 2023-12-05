@@ -422,6 +422,7 @@ class OpportunityLoadDetail {
 
             list_stage.reverse().map(function (item) {
                 ele.prepend(html);
+
                 let ele_first_stage = ele.find('.sub-stage').first();
                 ele_first_stage.attr('data-id', item.id);
                 ele_first_stage.find('.stage-indicator').text(item.indicator);

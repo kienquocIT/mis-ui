@@ -5557,3 +5557,7 @@ msgstr "Gửi email cho khách hàng"
 #
 msgid "Meeting with customer"
 msgstr "Cuộc họp với khách hàng"
+
+#
+msgid "Quotation is not finished"
+msgstr "Báo giá chưa hoàn tất"

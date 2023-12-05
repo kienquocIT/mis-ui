@@ -787,6 +787,12 @@ class QuotationLoadDataHandle {
                 }]
             }).init();
         }
+        if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {
+            let btnCopy = document.getElementById('btn-copy-quotation');
+            if (btnCopy) {
+                btnCopy.setAttribute('disabled', 'true');
+            }
+        }
         if (data?.['customer']) {
             data['customer']['name'] = data['customer']['title'];
             if (is_copy === true) {

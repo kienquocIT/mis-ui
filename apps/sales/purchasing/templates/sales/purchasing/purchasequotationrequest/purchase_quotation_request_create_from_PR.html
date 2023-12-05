@@ -115,7 +115,7 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab_line_detail">
+                    <div class="tab-pane fade show active" id="tab_line_detail" style="position: relative; overflow: auto; width: 100%;">
                         <table class="table nowrap w-100" id="table-purchase-quotation-request-products-selected">
                             <thead>
                             <th></th>
@@ -204,7 +204,7 @@
                     <div class="row" id="table-select-purchase-request-div"
                     data-url="{% url 'PurchaseRequestListAPI' %}"
                     data-method="GET">
-                        <div class="col-5 pr-2" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
+                        <div class="col-12 col-md-5 col-lg-5 pr-2" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
                             <table id="table-select-purchase-request"
                                    class="table nowrap w-100" data-method="GET"
                                    data-url="{% url 'PurchaseRequestListForPQRAPI' %}">
@@ -216,7 +216,7 @@
                                 <tbody></tbody>
                             </table>
                         </div>
-                        <div id="table-select-purchase-request-products-div" class="col-7" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
+                        <div id="table-select-purchase-request-products-div" class="col-12 col-lg-7 col-md-7" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
                             <table id="table-select-purchase-request-products" class="table nowrap w-100" data-method="GET">
                                 <thead>
                                 <th></th>

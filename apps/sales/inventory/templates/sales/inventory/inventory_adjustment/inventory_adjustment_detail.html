@@ -88,9 +88,9 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab_block_line_detail">
+                    <div class="tab-pane fade show active" id="tab_block_line_detail" style="position: relative; overflow: auto; width: 100%;">
                         <div class="row mb-3">
-                            <div class="col-6 col-md-1 col-lg-12 text-right">
+                            <div class="col-12 col-md-12 col-lg-12 text-right">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         {% trans 'Actions' %}
@@ -104,23 +104,23 @@
                             </div>
                         </div>
                         <table data-url="{% url "WareHouseListAPI" %}"
-                                   data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
-                                   data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
-                                   data-method="GET"
-                                   class="table nowrap w-100" id="table-line-detail">
-                                <thead>
-                                <th>{% trans 'Product name' %}</th>
-                                <th>{% trans 'Warehouse' %}</th>
-                                <th>{% trans 'Unit Of Measure' %}</th>
-                                <th>{% trans 'Booked quantity' %}</th>
-                                <th class="required">{% trans 'Counted quantity' %}</th>
-                                <th>{% trans 'Difference' %}</th>
-                                <th>{% trans 'Select for actions' %}</th>
-                                <th>{% trans 'Action type' %}</th>
-                                <th>{% trans 'Action status' %}</th>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                               data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
+                               data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+                               data-method="GET"
+                               class="table nowrap w-100" id="table-line-detail">
+                            <thead>
+                            <th>{% trans 'Product name' %}</th>
+                            <th>{% trans 'Warehouse' %}</th>
+                            <th>{% trans 'Unit Of Measure' %}</th>
+                            <th>{% trans 'Booked quantity' %}</th>
+                            <th class="required">{% trans 'Counted quantity' %}</th>
+                            <th>{% trans 'Difference' %}</th>
+                            <th>{% trans 'Select for actions' %}</th>
+                            <th>{% trans 'Action type' %}</th>
+                            <th>{% trans 'Action status' %}</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                     <div class="tab-pane fade" id="tab_block_attachment">
                         <div class="row">

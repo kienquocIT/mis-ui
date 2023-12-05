@@ -251,7 +251,6 @@ class OpportunityLoadDetail {
     }
 
     static loadDetailTableContactRole(table, data) {
-        console.log(data.opportunity_contact_role_datas)
         data.opportunity_contact_role_datas.map(function (item) {
             table.DataTable().row.add(item).draw();
             let tr_current_ele = table.find('tbody tr').last();
@@ -1272,16 +1271,17 @@ function autoLoadStage(
     let ele_customer = OpportunityLoadDropdown.customerSelectEle;
     let obj_customer = SelectDDControl.get_data_from_idx(ele_customer, ele_customer.val());
     if (ele_customer.length > 0) {
-        let compare_data = '0';
-        if (obj_customer.annual_revenue) {
-            compare_data = obj_customer.annual_revenue;
-        }
         list_property_config.push({
             'property': 'Customer',
             'comparison_operator': '≠',
             'compare_data': '0',
         })
-
+    }
+    else {
+        let compare_data = '0';
+        if (obj_customer.annual_revenue) {
+            compare_data = obj_customer.annual_revenue;
+        }
         list_property_config.push({
             'property': 'Customer',
             'comparison_operator': '=',
@@ -1422,7 +1422,6 @@ function autoLoadStage(
         })
     }
 
-
     if (condition_sale_oder_approved) {
         list_property_config.push({
             'property': 'SaleOrder.status',
@@ -1451,20 +1450,68 @@ function autoLoadStage(
         })
     }
 
+    let list_property_config_string = []
+    for (let i = 0; i < list_property_config.length; i++) {
+        let condition_temp = list_property_config[i]
+        list_property_config_string.push(
+            condition_temp.property + condition_temp.comparison_operator + condition_temp.compare_data
+        )
+    }
+
     let id_stage_current = '';
+    let list_stage_condition_string = []
     for (let i = 0; i < list_stage_condition.length; i++) {
-        if (list_stage_condition[i].logical_operator === 0) {
-            if (list_stage_condition[i].condition_datas.every(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
-                id_stage_current = list_stage_condition[i].id
-                break;
+        let stage_condition_string = []
+        for (let j = 0; j < list_stage_condition[i].condition_datas.length; j++) {
+            let condition_temp = list_stage_condition[i].condition_datas[j]
+            stage_condition_string.push(
+                condition_temp.property + condition_temp.comparison_operator + condition_temp.compare_data
+            )
+        }
+        list_stage_condition_string.push({
+            'stage_logic': list_stage_condition[i].logical_operator,
+            'stage_id': list_stage_condition[i].id,
+            'stage_condition': stage_condition_string,
+            'stage_win_rate': dict_stage[list_stage_condition[i].id].win_rate
+        })
+    }
+
+    let id_stage_current_list = []
+    for (let i = 0; i < list_stage_condition_string.length; i++) {
+        if (list_stage_condition_string[i]?.['stage_logic'] === 0) {
+            let flag= true
+            let stage_condition_len = list_stage_condition_string[i]?.['stage_condition'].length;
+            for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
+                if (!list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
+                    flag = false
+                }
             }
-        } else {
-            if (list_stage_condition[i].condition_datas.some(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
-                id_stage_current = list_stage_condition[i].id
-                break;
+            if (flag) {
+                id_stage_current_list.push({
+                    'stage_id': list_stage_condition_string[i].stage_id,
+                    'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
+                })
+            }
+        }
+        else {
+            let flag= false
+            for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
+                if (list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
+                    flag = true
+                    break
+                }
+            }
+            if (flag) {
+                id_stage_current_list.push({
+                    'stage_id': list_stage_condition_string[i].stage_id,
+                    'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
+                })
             }
         }
     }
+    id_stage_current_list = id_stage_current_list.sort((a, b) => b.stage_win_rate - a.stage_win_rate);
+    id_stage_current = id_stage_current_list[0].stage_id
+
     if (!just_check) {
         let stage_selected_ele = $('.stage-selected');
         let input_rate_ele = $('#check-input-rate');
@@ -1516,7 +1563,6 @@ function autoLoadStage(
                 } else {
                     $('#input-rate').prop('disabled', true);
                 }
-
             }
             if (!$('#check-agency-role').is(':checked')) {
                 OpportunityLoadDropdown.endCustomerSelectEle.prop('disabled', true);
@@ -1531,6 +1577,7 @@ function autoLoadStage(
             $('#rangeInput').val(obj_stage?.win_rate);
         }
     }
+
     return id_stage_current
 }
 

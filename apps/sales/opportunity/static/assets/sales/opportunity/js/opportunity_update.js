@@ -141,7 +141,7 @@ $(document).ready(function () {
                     let so_id = opportunity_detail.sale_order.id;
                     let link = so_id !== undefined ? urlEle.data('url-related-sale-order').format_url_with_uuid(so_id) : '#';
                     $('#item-related-sale-order').attr('href', link)
-                    if (opportunity_detail.sale_order.system_status === 0) {
+                    if (opportunity_detail.sale_order.system_status === 3) {
                         condition_sale_oder_approved = true;
                         if ($.fn.hasOwnProperties(opportunity_detail.sale_order, ['delivery'])) {
                             condition_sale_oder_delivery_status = true;
@@ -486,6 +486,7 @@ $(document).ready(function () {
                     config_is_input_rate,
                     dict_stage
                 );
+                $.fn.notifyB({description: "Stage has just updated!"}, 'success')
                 $(this).tooltip('hide');
             })
 

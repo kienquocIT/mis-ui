@@ -1418,9 +1418,9 @@ $(document).ready(function () {
                                 let status = ``;
                                 if (row?.['app_code'] === 'quotation.quotation') {
                                     if (opportunity_detail_data?.['quotation']?.['id'] === row?.['doc_id']) {
-                                        status = `<small class="text-green">valid</small>`
+                                        status = `<small class="text-green">${transEle.attr('data-trans-valid')}</small>`
                                     } else {
-                                        status = `<small class="text-red">invalid</small>`
+                                        status = `<small class="text-red">${transEle.attr('data-trans-invalid')}</small>`
                                     }
                                 }
 

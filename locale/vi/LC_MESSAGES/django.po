@@ -5545,3 +5545,15 @@ msgstr "từ ngày đặt hàng"
 #
 msgid "New product"
 msgstr "Thêm sản phẩm"
+
+#
+msgid "Call customer"
+msgstr "Gọi khách hàng"
+
+#
+msgid "Email to customer"
+msgstr "Gửi email cho khách hàng"
+
+#
+msgid "Meeting with customer"
+msgstr "Cuộc họp với khách hàng"

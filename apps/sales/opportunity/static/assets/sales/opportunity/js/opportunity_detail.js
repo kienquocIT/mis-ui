@@ -1413,10 +1413,24 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['log_type'] === 0) {
                             if (row?.['app_code']) {
-                                return `<span class="badge badge-soft-success">${activityMapApp[row?.['app_code']]}</span>`;
+                                // return `<span class="badge badge-soft-success">${activityMapApp[row?.['app_code']]}</span>`;
+
+                                let status = ``;
+                                if (row?.['app_code'] === 'quotation.quotation') {
+                                    if (opportunity_detail_data?.['quotation']?.['id'] === row?.['doc_id']) {
+                                        status = `<small class="text-green">valid</small>`
+                                    } else {
+                                        status = `<small class="text-red">invalid</small>`
+                                    }
+                                }
+
+                                return `<div class="d-flex justify-content-start">
+                                            <span class="badge badge-soft-primary mr-2">${activityMapApp[row?.['app_code']]}</span>
+                                            ${status}
+                                        </div>`;
                             }
                         } else {
-                            return `<span class="badge badge-soft-success">${typeMapActivity[row?.['log_type']]}</span>`;
+                            return `<span class="badge badge-soft-primary">${typeMapActivity[row?.['log_type']]}</span>`;
                         }
                         return `<p></p>`;
                     }

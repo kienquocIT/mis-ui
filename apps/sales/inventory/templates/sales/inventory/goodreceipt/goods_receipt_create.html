@@ -388,6 +388,7 @@
                                                 </button>
                                             </div>
                                         </th>
+                                        <th colspan="6"></th>
                                     </tfoot>
                                 </table>
                             </div>
@@ -623,8 +624,8 @@
                         <div class="row ml-2"><h6>{% trans 'Product list' %}</h6></div>
                         <div class="row">
                             <div class="col-6">
-                                <div class="row mb-2">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
+                                <div class="row">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll">
                                         <table
                                             id="datable-good-receipt-ia-product"
                                             class="table nowrap w-100"
@@ -633,33 +634,12 @@
                                         >
                                             <thead>
                                             <tr>
-                                                <th></th>
-                                                <th>{% trans 'Product' %}</th>
-                                                <th>{% trans 'UOM' %} (PO)</th>
-                                                <th>{% trans 'Quantity' %} (IA)</th>
-                                                <th>{% trans 'This time' %}</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-ia-wh" hidden>
-                                        <table
-                                            id="datable-good-receipt-ia-wh"
-                                            class="table nowrap w-100"
-                                            data-url=""
-                                            data-method="GET"
-                                        >
-                                            <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>{% trans 'Code' %} WH</th>
-                                                <th>{% trans 'Name' %} WH</th>
-                                                <th>{% trans 'Quantity' %}</th>
-                                                <th>{% trans 'UOM' %}</th>
+                                                <th class="w-10"></th>
+                                                <th class="w-20">{% trans 'Product' %}</th>
+                                                <th class="w-10">{% trans 'UOM' %}</th>
+                                                <th class="w-20">{% trans 'Quantity' %}</th>
+                                                <th class="w-20">{% trans 'Warehouse' %}</th>
+                                                <th class="w-20">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -670,8 +650,8 @@
                             </div>
                             <div class="col-6">
                                 <div class="row">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-ia-lot-serial" hidden>
-                                        <div id="table-good-receipt-manage-lot-area" hidden>
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-ia-lot-serial" hidden>
+                                        <div id="table-good-receipt-ia-lot-area" hidden>
                                             <table
                                                 id="datable-good-receipt-ia-lot"
                                                 class="table nowrap w-100"
@@ -691,12 +671,12 @@
                                                 </tbody>
                                             </table>
 
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-ia-lot">
-                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-lot">
+                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
                                         </div>
 
-                                        <div id="table-good-receipt-manage-serial-area" hidden>
+                                        <div id="table-good-receipt-ia-serial-area" hidden>
                                             <table
                                                 id="datable-good-receipt-ia-serial"
                                                 class="table nowrap w-100"
@@ -718,8 +698,8 @@
                                                 </tbody>
                                             </table>
 
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-ia-serial">
-                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-serial">
+                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
                                         </div>
                                     </div>
@@ -729,7 +709,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                        <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="modal">{% trans 'Next' %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-confirm-add-ia-product" data-bs-dismiss="modal">{% trans 'Next' %}</button>
                     </div>
                 </div>
             </div>

@@ -520,6 +520,15 @@ class QuotationLoadDataHandle {
                 data_filter['opportunity__sale_order__isnull'] = true;
                 data_filter['opportunity__is_close_lost'] = false;
                 data_filter['opportunity__is_deal_close'] = false;
+                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                    let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, QuotationLoadDataHandle.opportunitySelectEle.val());
+                    if (dataSelected?.['quotation']?.['id']) {
+                        data_filter['id'] = dataSelected?.['quotation']?.['id'];
+                    } else {
+                        QuotationDataTableHandle.dataTableCopyQuotation();
+                        return false;
+                    }
+                }
             } else {
                 data_filter['opportunity__isnull'] = true;
             }
@@ -542,6 +551,7 @@ class QuotationLoadDataHandle {
         } else {
             QuotationDataTableHandle.dataTableCopyQuotation();
         }
+        return true;
     };
 
     static loadShippingBillingCustomer(item = null) {

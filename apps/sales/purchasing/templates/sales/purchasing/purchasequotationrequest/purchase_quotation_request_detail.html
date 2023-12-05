@@ -154,36 +154,30 @@
                                 </i>
                             </th>
                             <th class="required">{% trans "Subtotal Price" %}</th>
+                            <th>{% trans "Action" %}</th>
                             </thead>
                             <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="7"></td>
+                                <td colspan="2">
+                                    <div class="row mt-3 mb-3">
+                                        <div class="col-4">{% trans "Pretax price" %}</div>
+                                        <span class="col-8 text-right mask-money" id="pretax-value">0</span>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4">{% trans "Taxes" %}</div>
+                                        <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                    </div>
+                                    <div class="dropdown-divider mb-3"></div>
+                                    <div class="row mb-3" style="font-weight: bold">
+                                        <div class="col-4">{% trans "Total" %}</div>
+                                        <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tfoot>
                         </table>
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-8"></div>
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="card card-refresh">
-                                    <div class="refresh-container">
-                                        <div class="loader-pendulums"></div>
-                                    </div>
-                                    <div id="content-card" class="collapse show">
-                                        <div class="card-body text-primary">
-                                            <div class="row mb-3">
-                                                <div class="col-4">{% trans "Pretax price" %}</div>
-                                                <span class="col-8 text-right mask-money" id="pretax-value">0</span>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-4">{% trans "Taxes" %}</div>
-                                                <span class="col-8 text-right mask-money" id="taxes-value">0</span>
-                                            </div>
-                                            <div class="dropdown-divider mb-3"></div>
-                                            <div class="row mb-3" style="font-weight: bold">
-                                                <div class="col-4">{% trans "Total" %}</div>
-                                                <span class="col-8 text-right mask-money" id="total-value">0</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab_block_attachment">
                         <div class="row">

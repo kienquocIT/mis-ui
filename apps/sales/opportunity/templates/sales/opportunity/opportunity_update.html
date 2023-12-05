@@ -6,8 +6,8 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
 
-    <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         @media screen and (max-width: 991px) {
                 #group-general-info-opp {
@@ -49,7 +49,6 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
-            data-url-opp-list="{% url "OpportunityListAPI" %}"
             data-url-opp-list="{% url "OpportunityListAPI" %}"
             data-url-quo-list="{% url "QuotationListAPI" %}"
             data-url-so-list="{% url "SaleOrderListAPI" %}"

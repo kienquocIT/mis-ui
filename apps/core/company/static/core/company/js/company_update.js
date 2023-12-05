@@ -34,10 +34,10 @@ $(document).ready(function () {
         }
     })
 
-    $('#tblCompanyConfig').on('submit', function (e) {
+    $('#save-company').on('click', function (e) {
         e.preventDefault();
 
-        let frm = new SetupFormSubmit($(this));
+        let frm = new SetupFormSubmit($('#tblCompanyConfig'));
         let dataBody = frm.dataForm
         dataBody['currency_rule'] = SetupFormSubmit.groupDataFromPrefix(dataBody, 'currency_rule__');
         dataBody['sub_domain'] = $(this).find('input[name="sub_domain"]').val();

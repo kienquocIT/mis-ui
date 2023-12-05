@@ -31,7 +31,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="employee-code">{% trans 'Code' %}</label>
-                                    <input
+                                    <input oninput="this.value=this.value.toUpperCase()"
                                             type="text"
                                             class="form-control"
                                             name="code"

@@ -354,7 +354,7 @@ function Disable() {
     $('.form-control').prop('disabled', true).css({color: 'black'});
     $('.form-select').prop('disabled', true).css({color: 'black'});
     $('.select2').prop('disabled', true);
-    $('input').prop('disabled', true);
+    $('#collapse-area input').prop('disabled', true);
 }
 
 function LoadDetailIA(option) {

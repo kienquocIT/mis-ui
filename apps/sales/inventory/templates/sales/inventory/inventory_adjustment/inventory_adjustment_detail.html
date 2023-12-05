@@ -24,14 +24,14 @@
           data-url-goods-receipt="{% url "GoodsReceiptCreate" %}"
           id="frm_inventory_adjustment_detail">
         {% csrf_token %}
-        <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
+        <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
-                <div class="col-6">
-                    <div class="mb-3">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
                         <label for="title" class="form-label required">{% trans 'Title' %}</label>
                         <input type="text" class="form-control" id="title" placeholder="Inventory adjustment in January">
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="warehouse-select-box" class="form-label required">{% trans 'Warehouse' %}</label>
                         <select class="form-select select2 select-multiple"
                                 data-url="{% url 'WareHouseListAPI' %}"
@@ -40,18 +40,22 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6 col-lg-6">
                     <div class="row">
-                        <div class="mb-3 col-6">
-                            <label for="date" class="form-label required">{% trans 'Date' %}</label>
-                            <input type="text" class="form-control" id="date">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="date" class="form-label required">{% trans 'Date' %}</label>
+                                <input type="text" class="form-control" id="date">
+                            </div>
                         </div>
-                        <div class="mb-3 col-6">
-                            <label for="status" class="form-label required">{% trans 'Status' %}</label>
-                            <input type="text" class="form-control" id="status">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="status" class="form-label required">{% trans 'Status' %}</label>
+                                <input type="text" class="form-control" id="status">
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="in-charge-select-box" class="form-label required">{% trans 'In charge' %}</label>
                         <select class="form-select select2 select-multiple"
                                 data-url="{% url 'EmployeeListAPI' %}"
@@ -62,65 +66,67 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-3 mb-3">
-            <div class="col-11">
-                <a class="btn btn-flush-secondary flush-soft-hover w-100" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area">
-                    <i class="bi bi-chevron-bar-expand text-secondary"></i>
-                </a>
-            </div>
-            <div class="col-1">
-                <div class="btn-group dropdown w-100">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Actions' %}
-                    </button>
-                    <div class="dropdown-menu dropdown-bordered">
-                        <a class="dropdown-item" id="get-increase-items-btn" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" id="get-decrease-items-btn" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+            <span class="icon">
+                <i class="fas fa-angle-double-up text-primary"></i>
+            </span>
+        </button>
         <div class="row">
-            <ul class="nav nav-tabs nav-icon nav-light">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_line_detail">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-justify-left"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_attachment">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="tab_block_line_detail">
-                    <table data-url="{% url "WareHouseListAPI" %}"
-                           data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
-                           data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
-                           data-method="GET"
-                           class="table nowrap w-100" id="table-line-detail">
-                        <thead>
-                        <th>{% trans 'Product name' %}</th>
-                        <th>{% trans 'Warehouse' %}</th>
-                        <th>{% trans 'Unit of measure' %}</th>
-                        <th>{% trans 'Book quantity' %}</th>
-                        <th class="required">{% trans 'Count' %}</th>
-                        <th>{% trans 'Difference' %}</th>
-                        <th>{% trans 'Select for actions' %}</th>
-                        <th>{% trans 'Action type' %}</th>
-                        <th>{% trans 'Action status' %}</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="tab-pane fade" id="tab_block_attachment">
-                    <div class="row">
-                        <div class="col-12">
-                            <input type="file" id="input-file-now" class="dropify">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-icon nav-light">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_line_detail">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-justify-left"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_attachment">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_block_line_detail">
+                        <div class="row mb-3">
+                            <div class="col-6 col-md-1 col-lg-12 text-right">
+                                <div class="btn-group dropdown">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {% trans 'Actions' %}
+                                    </button>
+                                    <div class="dropdown-menu dropdown-bordered">
+                                        <a class="dropdown-item" id="get-increase-items-btn" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" id="get-decrease-items-btn" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table data-url="{% url "WareHouseListAPI" %}"
+                                   data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
+                                   data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+                                   data-method="GET"
+                                   class="table nowrap w-100" id="table-line-detail">
+                                <thead>
+                                <th>{% trans 'Product name' %}</th>
+                                <th>{% trans 'Warehouse' %}</th>
+                                <th>{% trans 'Unit Of Measure' %}</th>
+                                <th>{% trans 'Booked quantity' %}</th>
+                                <th class="required">{% trans 'Counted quantity' %}</th>
+                                <th>{% trans 'Difference' %}</th>
+                                <th>{% trans 'Select for actions' %}</th>
+                                <th>{% trans 'Action type' %}</th>
+                                <th>{% trans 'Action status' %}</th>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                    </div>
+                    <div class="tab-pane fade" id="tab_block_attachment">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="file" id="input-file-now" class="dropify">
+                            </div>
                         </div>
                     </div>
                 </div>

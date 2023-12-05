@@ -12,22 +12,22 @@
                 <a href="#"><i class="bi bi-bar-chart-line-fill"></i></a>
             </div>
         </div>
-        <div class="row">
+        <div class="row" style="position: relative; overflow: auto; width: 100%;">
             <div class="d-flex" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
             <div id="stage-hidden" class="hidden">
-                <div class="border rounded pr-2 sub-stage w-100 text-center d-flex justify-content-center" style="flex-direction: column;">
-                    <p class="stage-indicator" style="margin-bottom: auto;"></p>
-                    <div class="dropdown dropup" style="margin-top: auto;">
+                <div class="border rounded sub-stage w-100 text-center d-flex justify-content-center py-2 px-2" style="flex-direction: column;">
+                    <p class="stage-indicator"></p>
+                    <div class="dropdown dropup pt-3">
                         <a href="#" data-bs-toggle="dropdown">
                             <span class="text-right">
-                                <i class="bi bi-chevron-bar-right"></i>
+                                <i class="fas fa-chevron-circle-right"></i>
                             </span>
                         </a>
                         <div class="dropdown-menu position-absolute" style="z-index: 999;">
                             <a class="dropdown-item btn-go-to-stage" href="#">{% trans "Go to Stage" %}</a>
                         </div>
                     </div>
-                </div>
+                </div>&nbsp;
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@
             </div>
         </div>
         <div class="row div-activity">
-            <div class="col-12 col-md-12 col-lg-2">
+            <div class="col-12 col-md-12 col-lg-3">
                 <h4 class="text-primary">{% trans "Activity logs" %}</h4>
             </div>
             <div class="col-8 col-md-4 col-lg-3">
@@ -92,7 +92,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4 col-md-4 col-lg-4 text-right">
+            <div class="col-4 col-md-4 col-lg-3 text-right">
                 <a href="#" id="btn-show-action">
                     <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="{% trans 'Show actions' %}">
                         <i class="bi bi-pip text-primary"></i>
@@ -327,7 +327,7 @@
                             <table class="table nowrap w-100" id="table-contact-role">
                                 <thead>
                                 <tr>
-                                    <th>{% trans "Which Customer" %}</th>
+                                    <th class="w-25">{% trans "Which Customer" %}</th>
                                     <th>{% trans 'Name' %}</th>
                                     <th>{% trans 'Job title' %}</th>
                                     <th>{% trans "Role" %}</th>
@@ -355,7 +355,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="tab-pane fade" id="tab_account_history">
                 <div class="d-flex overflow-auto"></div>
@@ -374,8 +373,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-12 hidden" id="box-edit-permit"
-                         data-url="{% url 'MemberOfOpportunityDetail' pk_opp=pk pk_member='__pk_member__' %}" data-id="">
+                    <div class="col-12 hidden" id="box-edit-permit" data-url="{% url 'MemberOfOpportunityDetail' pk_opp=pk pk_member='__pk_member__' %}" data-id="">
                         <div class="row mb-2">
                             <div class="col-12 col-md-8 col-lg-8 col-xl-8 mb-1">
                                 <div class="form-group">

@@ -6,8 +6,6 @@ $(document).ready(function () {
     let transEle = $('#trans-factory');
     $('#btn-opp-edit').attr('href', dataUrlEle.data('url-edit').format_url_with_uuid(pk));
 
-    loadDtbContactRolePageDetail([]);
-
     $('#rangeInput').on('mousedown', function () {
         return false;
     });
@@ -42,22 +40,29 @@ $(document).ready(function () {
 
                 $('#input-budget').attr('value', opportunity_detail.budget_value);
 
-                loadDtbProductDetailPageDetail(opportunity_detail.opportunity_product_datas);
+                // load table product
+                loadDtbProduct([]);
+                let table_product = OpportunityLoadDetail.productTableEle;
+                OpportunityLoadDetail.loadDetailTableProduct(table_product, opportunity_detail);
 
                 $('#input-product-pretax-amount').attr('value', opportunity_detail.total_product_pretax_amount);
                 $('#input-product-taxes').attr('value', opportunity_detail.total_product_tax);
                 $('#input-product-total').attr('value', opportunity_detail.total_product);
 
-                loadDtbCompetitorPageDetail(opportunity_detail.opportunity_competitors_datas);
-                let table_contact_role = $('#table-contact-role');
+                // load competitor
+                loadDtbCompetitor([]);
+                let table_competitor = OpportunityLoadDetail.competitorTableEle;
+                OpportunityLoadDetail.loadDetailTableCompetitor(table_competitor, opportunity_detail)
 
-                opportunity_detail.opportunity_contact_role_datas.map(function (item) {
-                    table_contact_role.DataTable().row.add(item).draw();
-                    loadDetailContactRole(item, table_contact_role, transEle)
-                })
-                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.members, false);
-
+                // load table contact role
+                loadDtbContactRole([]);
+                let table_contact_role = OpportunityLoadDetail.contactRoleTableEle;
+                OpportunityLoadDetail.loadDetailTableContactRole(table_contact_role, opportunity_detail);
                 OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
+
+                // load sale team
+                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.members, true, opportunity_detail?.['sale_person'] || {});
+
                 $.fn.initMaskMoney2();
 
                 Disable();
@@ -78,6 +83,12 @@ $(document).ready(function () {
         $('#tab_contact_role .btn').prop('hidden', true);
         $('#member-item-list .btn').prop('hidden', true);
         $('#box-select-factor').prop('disabled', true);
+        $('#table-products input').prop('readonly', true);
+        $('#table-products select').prop('disabled', true);
+        $('#table-competitors input').prop('readonly', true);
+        $('#table-competitors select').prop('disabled', true);
+        $('#table-contact-role input').prop('readonly', true);
+        $('#table-contact-role select').prop('disabled', true);
     }
 
     loadDetail();

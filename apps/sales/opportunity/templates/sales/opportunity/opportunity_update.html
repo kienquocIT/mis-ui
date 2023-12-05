@@ -6,8 +6,8 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
 
-    <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         @media screen and (max-width: 991px) {
                 #group-general-info-opp {
@@ -50,7 +50,6 @@
 {% block pageContent %}
     <script id="script-url"
             data-url-opp-list="{% url "OpportunityListAPI" %}"
-            data-url-opp-list="{% url "OpportunityListAPI" %}"
             data-url-quo-list="{% url "QuotationListAPI" %}"
             data-url-so-list="{% url "SaleOrderListAPI" %}"
             data-url-ap-list="{% url "AdvancePaymentListAPI" %}"
@@ -86,12 +85,12 @@
             </div>
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-3" id="group-general-info-opp">
-                    <div class="col-12">
+                    <div class="col-12" style="overflow-y: auto; height: 80vh">
                         {% include 'sales/opportunity/extends/general-info.html' %}
                     </div>
                 </div>
                 <div class="col-12 col-md-12 col-lg-9">
-                    <div class="col-12">
+                    <div class="col-12" style="overflow-y: auto; height: 80vh">
                         {% include 'sales/opportunity/extends/relate-info.html' %}
                     </div>
                 </div>
@@ -631,8 +630,6 @@
     ></script>
 {% endblock %}
 {% block jsFooter %}
-
-
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>

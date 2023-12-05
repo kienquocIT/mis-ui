@@ -1,12 +1,19 @@
 let companyCityEle = $('#company-address-city')
 let companyDistrictEle = $('#company-address-district')
 let companyWardEle = $('#company-address-ward')
-let primary_currency = $('#primary-currency')
 let VND_currency = {}
 const VND_currency_text = $('#VND_currency').text()
 if (VND_currency_text) {
     VND_currency = JSON.parse(VND_currency_text)
 }
+
+let company_current_id = $('#company-current-id').attr('data-id')
+let pk = $.fn.getPkDetail();
+if (pk !== company_current_id) {
+    $('#btn-collapse').remove()
+    $('#tabs').remove()
+}
+
 
 function loadCompanyCities(cityData) {
     companyCityEle.initSelect2({
@@ -267,25 +274,6 @@ $('#save-changes-modal-function-number').on('click', function () {
     }
 })
 
-function loadPrimaryCurrency(data) {
-    primary_currency.initSelect2({
-        ajax: {
-            url: primary_currency.attr('data-url'),
-            method: 'GET',
-        },
-        templateResult: function(data) {
-            let ele = $('<div class="row col-12"></div>');
-            ele.append('<div class="col-10">' + data.data?.['title'] + '</div>');
-            ele.append('<div class="col-2">' + data.data?.['code'] + '</div>');
-            return ele;
-        },
-        data: (data ? data : null),
-        keyResp: 'base_currencies',
-        keyId: 'id',
-        keyText: 'title'
-    })
-}
-
 let trans_script_ele = $('#trans-script')
 
 const FunctionNumberTableData = [
@@ -452,11 +440,6 @@ class CompanyHandle {
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));
 
-        let definition_inventory_valuation = 1;
-        if ($('#perpetual-selection').is(':checked')) {
-            definition_inventory_valuation = 0;
-        }
-
         frm.dataForm['title'] = $('#title').val();
         frm.dataForm['code'] = $('#code').val();
         frm.dataForm['representative_fullname'] = $('#representative_fullname').val();
@@ -464,11 +447,6 @@ class CompanyHandle {
         frm.dataForm['email'] = $('#email').val();
         frm.dataForm['phone'] = $('#phone').val();
         frm.dataForm['fax'] = $('#fax').val();
-        frm.dataForm['primary_currency'] = primary_currency.val();
-        frm.dataForm['definition_inventory_valuation'] = definition_inventory_valuation;
-        frm.dataForm['default_inventory_value_method'] = $('#default-inventory-value-method').val();
-        frm.dataForm['cost_per_warehouse'] = $('#cost-per-warehouse').is(':checked');
-        frm.dataForm['cost_per_lot_batch'] = $('#cost-per-lot-batch').is(':checked');
 
         frm.dataForm['company_function_number_data'] = []
         $('#function_number_table tbody tr').each(function (index) {
@@ -494,7 +472,6 @@ class CompanyHandle {
         })
 
         if (for_update) {
-            let pk = $.fn.getPkDetail();
             return {
                 url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
                 method: frm.dataMethod,
@@ -543,22 +520,6 @@ function LoadDetailCompany(frm, option) {
                 $('#email').val(data.email);
                 $('#phone').val(data.phone);
                 $('#fax').val(data.fax);
-                loadPrimaryCurrency(data?.['company_setting']?.['primary_currency'])
-                if (!data?.['company_setting']?.['definition_inventory_valuation']) {
-                    $('#perpetual-selection').prop('checked', true);
-                }
-                else {
-                    $('#periodic-selection').prop('checked', true);
-                }
-
-                $('#default-inventory-value-method').val(data?.['company_setting']?.['default_inventory_value_method']);
-
-                if (data?.['company_setting']?.['cost_per_warehouse']) {
-                    $('#cost-per-warehouse').prop('checked', true);
-                }
-                if (data?.['company_setting']?.['cost_per_lot_batch']) {
-                    $('#cost-per-lot-batch').prop('checked', true);
-                }
 
                 loadFunctionNumberTableDetail(option, data?.['company_function_number'])
 
@@ -567,6 +528,65 @@ function LoadDetailCompany(frm, option) {
                 Disable(option);
             }
         })
+
+    let company_config = $('#company-config');
+    Promise.all([
+        $.fn.callAjax2({
+            'url': company_config.attr('data-url-detail'),
+            'method': 'GET',
+        }),
+        $.fn.callAjax2({
+            'url': company_config.attr('data-url-currency-list'),
+            'method': 'GET',
+        })
+    ]).then(([result1, result2]) => {
+        let data1 = $.fn.switcherResp(result1);
+        let data2 = $.fn.switcherResp(result2);
+        let myCurrency = $('#idxCurrencyDefault');
+        myCurrency.closest('.modal').find('.modal-title').text(
+            DTBControl.getRowData($(this))?.['title']
+        )
+        if (data2['currency_list']) {
+            myCurrency.empty();
+            for (let i = 0; i < data2['currency_list'].length; i++) {
+                let option = $('<option>').val(
+                    data2['currency_list'][i]['currency'].code
+                ).text(
+                    data2['currency_list'][i]['currency'].code +
+                    ' - ' +
+                    data2['currency_list'][i]['currency'].title
+                );
+                myCurrency.append(option);
+            }
+            myCurrency.trigger('change');
+        }
+        if (data1['config']) {
+            if (!data1['config']?.['definition_inventory_valuation']) {
+                $('#perpetual-selection').prop('checked', true);
+            }
+            else {
+                $('#periodic-selection').prop('checked', true);
+            }
+
+            $('#default-inventory-value-method').val(data1['config']?.['default_inventory_value_method']);
+
+            if (data1['config']?.['cost_per_warehouse']) {
+                $('#cost-per-warehouse').prop('checked', true);
+            }
+            if (data1['config']?.['cost_per_lot_batch']) {
+                $('#cost-per-lot-batch').prop('checked', true);
+            }
+
+            $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
+            myCurrency.val(data1['config']['currency']['code']).trigger('change.select2');
+            $('#idxCurrencyMaskPrefix').val(data1['config']['currency_rule'].prefix);
+            $('#idxCurrencyMaskSuffix').val(data1['config']['currency_rule'].suffix);
+            $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);
+            $('#idxCurrencyMaskDecimal').val(data1['config']['currency_rule'].decimal);
+            $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
+            $('#idxSubdomain').val(data1['config']['sub_domain']);
+        }
+    })
 }
 
 $("tbody").on("click", "#del-company-button", function (event){

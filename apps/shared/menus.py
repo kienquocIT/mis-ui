@@ -145,10 +145,10 @@ class MenusCoreConfigurations:
                 name='Task', code='menu_opportunity_task_config', view_name='OpportunityTaskConfig',
                 icon='<i class="fa-solid fa-clipboard-check"></i>',
             ),
-            MenuCommon(
-                name='Payment', code='menu_payment_config', view_name='PaymentConfigList',
-                icon='<i class="bi bi-credit-card-fill"></i>',
-            ),
+            # MenuCommon(
+            #     name='Payment', code='menu_payment_config', view_name='PaymentConfigList',
+            #     icon='<i class="bi bi-credit-card-fill"></i>',
+            # ),
             MenuCommon(
                 name='Expense Items', code='id_menu_expense_item_list', view_name='ExpenseItemList',
                 icon='<i class="bi bi-wallet2"></i>',

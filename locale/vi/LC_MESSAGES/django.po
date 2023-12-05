@@ -5429,3 +5429,119 @@ msgstr "Theo sản phẩm"
 #
 msgid "Estimate is wrong format"
 msgstr "Sai định dạng trường dự tính"
+
+#
+msgid "Cost per warehouse management"
+msgstr "Tính giá theo từng kho"
+
+#
+msgid "Cost per lot/batch management"
+msgstr "Tính giá theo lô"
+
+#
+msgid "Save config"
+msgstr "Lưu cấu hình"
+
+#
+msgid "Representator fullname"
+msgstr "Họ tên người đại diện"
+
+#
+msgid "Select products"
+msgstr "Chọn sản phẩm"
+
+#
+msgid "Product name"
+msgstr "Tên sản phẩm"
+
+#
+msgid "Booked quantity"
+msgstr "Số lượng hệ thống"
+
+#
+msgid "Counted quantity"
+msgstr "Số lượng đếm"
+
+#
+msgid "Difference"
+msgstr "Khác biệt"
+
+#
+msgid "Select for actions"
+msgstr "Chọn hành động"
+
+#
+msgid "Action type"
+msgstr "Loại hành động"
+
+#
+msgid "Action status"
+msgstr "Trạng thái hành động"
+
+#
+msgid "In charge"
+msgstr "Người kiểm kê"
+
+#
+msgid "Select products from warehouses"
+msgstr "Chọn sản phẩm trong kho"
+
+#
+msgid "Get Increase Items"
+msgstr "Lọc lấy sản phẩm tăng"
+
+#
+msgid "Get Decrease Items"
+msgstr "Lọc lấy sản phẩm giảm"
+
+#
+msgid "Warehouses"
+msgstr "Kho"
+
+#
+msgid "Purchase request"
+msgstr "Yêu cầu mua hàng"
+
+#
+msgid "Response status"
+msgstr "Trạng thái phản hồi"
+
+#
+msgid "PR Unit Price"
+msgstr "Đơn giá yêu cầu"
+
+#
+msgid "From PR"
+msgstr "Từ yêu cầu mua hàng"
+
+#
+msgid "Manual"
+msgstr "Tùy chỉnh"
+
+#
+msgid "PQ Request"
+msgstr "Yêu cầu báo giá mua hàng"
+
+#
+msgid "Lead time"
+msgstr "Thời gian chuẩn bị"
+
+#
+msgid "to"
+msgstr "đến"
+
+#
+msgid "Day"
+msgstr "Ngày"
+
+#
+msgid "Hour"
+msgstr "Giờ"
+
+#
+msgid "from order date"
+msgstr "từ ngày đặt hàng"
+
+#
+msgid "New product"
+msgstr "Thêm sản phẩm"

@@ -422,6 +422,7 @@ class OpportunityLoadDetail {
 
             list_stage.reverse().map(function (item) {
                 ele.prepend(html);
+
                 let ele_first_stage = ele.find('.sub-stage').first();
                 ele_first_stage.attr('data-id', item.id);
                 ele_first_stage.find('.stage-indicator').text(item.indicator);
@@ -809,7 +810,6 @@ class OpportunityLoadDetail {
         return data_form
     }
 
-
     // function support event
     static onChangeContactRole(ele) {
         let ele_decision_maker = $('#input-decision-maker');
@@ -1050,201 +1050,6 @@ async function loadMemberSaleTeam() {
     }
 }
 
-function loadDtbProductDetailPageDetail(data) {
-    if (!$.fn.DataTable.isDataTable('#table-products')) {
-        let dtb = OpportunityLoadDetail.productTableEle;
-        dtb.DataTableDefault({
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
-            rowIdx: true,
-            reloadCurrency: true,
-            data: data,
-            columns: [
-                {
-                    render: () => {
-                        return '';
-                    }
-                },
-                {
-                    data: 'product_name',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span>{0}</span>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'product_category',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span>{0}</span>`.format_by_idx(
-                            data.title
-                        )
-                    }
-                },
-                {
-                    data: 'uom',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span>{0}</span>`.format_by_idx(
-                            data.title
-                        )
-                    }
-                },
-                {
-                    data: 'product_quantity',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span>{0}</span>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'product_unit_price',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span class="mask-money" data-init-money="{0}"></span>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'tax',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span>{0}</span>`.format_by_idx(
-                            data ? data.title : '-'
-                        )
-                    }
-                },
-                {
-                    data: 'product_subtotal_price',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span class="mask-money" data-init-money="{0}"></span>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-            ],
-        });
-    }
-}
-
-function loadDtbCompetitorPageDetail(data) {
-    if (!$.fn.DataTable.isDataTable('#table-competitors')) {
-        let dtb = OpportunityLoadDetail.competitorTableEle;
-        dtb.DataTableDefault({
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
-            data: data,
-            columns: [
-
-                {
-                    data: 'competitor',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span>{0}</span>`.format_by_idx(
-                            data.name
-                        )
-                    }
-                },
-                {
-                    data: 'strength',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span>{0}</span>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'weakness',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span>{0}</span>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'win_deal',
-                    className: 'wrap-text text-center',
-                    render: (data) => {
-                        if (data) {
-                            return `<div class="form-check"><input checked type="checkbox" class="form-check-input" disabled></div>`
-                        } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input" disabled></div>`
-                        }
-                    }
-                },
-            ],
-        });
-    }
-}
-
-function loadDtbContactRolePageDetail(data) {
-    if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
-        let dtb = OpportunityLoadDetail.contactRoleTableEle;
-        dtb.DataTableDefault({
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
-            data: data,
-            columns: [
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<span class="text-type-customer"></span>`
-                    }
-                },
-                {
-                    data: 'contact',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<input type="text" class="form-control" value="${data.fullname}" disabled>`
-                    }
-                },
-                {
-                    data: 'job_title',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<span>{0}</span>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    className: 'wrap-text text-center',
-                    render: () => {
-                        return `<span class="text-contact-role"></span>`
-                    }
-                },
-            ],
-        });
-    }
-}
-
-function loadDetailContactRole(data, table, transEle) {
-    let row_current = table.find('tbody tr').last();
-    let text_type_customer;
-    if (data.type_customer === 0) {
-        text_type_customer = transEle.data('trans-customer');
-    } else {
-        text_type_customer = transEle.data('end-customer');
-    }
-
-    let text_role;
-    if (data.role === 0) {
-        text_role = transEle.data('trans-decision-maker');
-    } else if (data.role === 1) {
-        text_role = transEle.data('trans-influence');
-    } else {
-        text_role = transEle.data('trans-contact-involved');
-    }
-
-    row_current.find('.text-type-customer').text(text_type_customer)
-    row_current.find('.text-contact-role').text(text_role)
-}
-
 // page update
 
 function loadDtbProduct(data) {
@@ -1467,16 +1272,17 @@ function autoLoadStage(
     let ele_customer = OpportunityLoadDropdown.customerSelectEle;
     let obj_customer = SelectDDControl.get_data_from_idx(ele_customer, ele_customer.val());
     if (ele_customer.length > 0) {
-        let compare_data = '0';
-        if (obj_customer.annual_revenue) {
-            compare_data = obj_customer.annual_revenue;
-        }
         list_property_config.push({
             'property': 'Customer',
             'comparison_operator': '≠',
             'compare_data': '0',
         })
-
+    }
+    else {
+        let compare_data = '0';
+        if (obj_customer.annual_revenue) {
+            compare_data = obj_customer.annual_revenue;
+        }
         list_property_config.push({
             'property': 'Customer',
             'comparison_operator': '=',
@@ -1617,7 +1423,6 @@ function autoLoadStage(
         })
     }
 
-
     if (condition_sale_oder_approved) {
         list_property_config.push({
             'property': 'SaleOrder.status',
@@ -1646,20 +1451,68 @@ function autoLoadStage(
         })
     }
 
+    let list_property_config_string = []
+    for (let i = 0; i < list_property_config.length; i++) {
+        let condition_temp = list_property_config[i]
+        list_property_config_string.push(
+            condition_temp.property + condition_temp.comparison_operator + condition_temp.compare_data
+        )
+    }
+
     let id_stage_current = '';
+    let list_stage_condition_string = []
     for (let i = 0; i < list_stage_condition.length; i++) {
-        if (list_stage_condition[i].logical_operator === 0) {
-            if (list_stage_condition[i].condition_datas.every(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
-                id_stage_current = list_stage_condition[i].id
-                break;
+        let stage_condition_string = []
+        for (let j = 0; j < list_stage_condition[i].condition_datas.length; j++) {
+            let condition_temp = list_stage_condition[i].condition_datas[j]
+            stage_condition_string.push(
+                condition_temp.property + condition_temp.comparison_operator + condition_temp.compare_data
+            )
+        }
+        list_stage_condition_string.push({
+            'stage_logic': list_stage_condition[i].logical_operator,
+            'stage_id': list_stage_condition[i].id,
+            'stage_condition': stage_condition_string,
+            'stage_win_rate': dict_stage[list_stage_condition[i].id].win_rate
+        })
+    }
+
+    let id_stage_current_list = []
+    for (let i = 0; i < list_stage_condition_string.length; i++) {
+        if (list_stage_condition_string[i]?.['stage_logic'] === 0) {
+            let flag= true
+            let stage_condition_len = list_stage_condition_string[i]?.['stage_condition'].length;
+            for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
+                if (!list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
+                    flag = false
+                }
             }
-        } else {
-            if (list_stage_condition[i].condition_datas.some(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
-                id_stage_current = list_stage_condition[i].id
-                break;
+            if (flag) {
+                id_stage_current_list.push({
+                    'stage_id': list_stage_condition_string[i].stage_id,
+                    'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
+                })
+            }
+        }
+        else {
+            let flag= false
+            for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
+                if (list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
+                    flag = true
+                    break
+                }
+            }
+            if (flag) {
+                id_stage_current_list.push({
+                    'stage_id': list_stage_condition_string[i].stage_id,
+                    'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
+                })
             }
         }
     }
+    id_stage_current_list = id_stage_current_list.sort((a, b) => b.stage_win_rate - a.stage_win_rate);
+    id_stage_current = id_stage_current_list[0].stage_id
+
     if (!just_check) {
         let stage_selected_ele = $('.stage-selected');
         let input_rate_ele = $('#check-input-rate');
@@ -1711,7 +1564,6 @@ function autoLoadStage(
                 } else {
                     $('#input-rate').prop('disabled', true);
                 }
-
             }
             if (!$('#check-agency-role').is(':checked')) {
                 OpportunityLoadDropdown.endCustomerSelectEle.prop('disabled', true);
@@ -1726,6 +1578,7 @@ function autoLoadStage(
             $('#rangeInput').val(obj_stage?.win_rate);
         }
     }
+
     return id_stage_current
 }
 

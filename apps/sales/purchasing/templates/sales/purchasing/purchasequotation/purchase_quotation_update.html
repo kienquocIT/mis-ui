@@ -117,34 +117,37 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab_line_detail">
-                                <table class="table nowrap w-100" id="table-purchase-quotation-products-selected">
-                                    <thead>
-                                    <th class="w-5"></th>
-                                    <th class="w-15 required">{% trans "Product" %}</th>
-                                    <th class="w-10">{% trans "Description" %}</th>
-                                    <th class="w-15 required">{% trans "UoM" %}</th>
-                                    <th class="w-10 required">{% trans "Quantity" %}</th>
-                                    <th class="w-15 required">{% trans "PR Unit Price" %}
-                                        <i class="fas fa-info-circle icon-info"
-                                           data-bs-toggle="tooltip"
-                                           data-bs-placement="top"
-                                           title="{% trans 'If the products are merged, Default Unit Price will be got from the smallest UoM ratio product.' %}">
-                                        </i>
-                                    </th>
-                                    <th class="w-10 required">{% trans "Tax" %}
-                                        <i class="fas fa-info-circle icon-info"
-                                           data-bs-toggle="tooltip"
-                                           data-bs-placement="top"
-                                           title="{% trans 'If the products are merged, Default Tax will be got from the smallest UoM ratio product.' %}">
-                                        </i>
-                                    </th>
-                                    <th class="w-15 required">{% trans "Subtotal Price" %}</th>
-                                    <th class="w-5">{% trans "Action" %}</th>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                                <button id="new-product-btn" class="btn btn-soft-primary mb-3" type="button">
+                    <div class="tab-pane fade show active" id="tab_line_detail" style="position: relative; overflow: auto; width: 100%;">
+                        <table class="table nowrap w-100" id="table-purchase-quotation-products-selected">
+                            <thead>
+                            <th class="w-5"></th>
+                            <th class="w-15 required">{% trans "Product" %}</th>
+                            <th class="w-10">{% trans "Description" %}</th>
+                            <th class="w-15 required">{% trans "UoM" %}</th>
+                            <th class="w-10 required">{% trans "Quantity" %}</th>
+                            <th class="w-15 required">{% trans "PR Unit Price" %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{% trans 'If the products are merged, Default Unit Price will be got from the smallest UoM ratio product.' %}">
+                                </i>
+                            </th>
+                            <th class="w-10 required">{% trans "Tax" %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{% trans 'If the products are merged, Default Tax will be got from the smallest UoM ratio product.' %}">
+                                </i>
+                            </th>
+                            <th class="w-15 required">{% trans "Subtotal Price" %}</th>
+                            <th class="w-5">{% trans "Action" %}</th>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button id="new-product-btn" class="btn btn-soft-primary mb-3" type="button">
                                     <span>
                                         <span>{% trans "New product" %}</span>
                                         <span class="icon">
@@ -152,34 +155,27 @@
                                         </span>
                                     </span>
                                 </button>
-                                <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-8"></div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="card card-refresh">
-                                            <div class="refresh-container">
-                                                <div class="loader-pendulums"></div>
-                                            </div>
-                                            <div id="content-card" class="collapse show">
-                                                <div class="card-body text-primary">
-                                                    <div class="row mb-3">
-                                                        <div class="col-4">{% trans "Pretax price" %}</div>
-                                                        <span class="col-8 text-right mask-money" id="pretax-value">0</span>
-                                                    </div>
-                                                    <div class="row mb-3">
-                                                        <div class="col-4">{% trans "Taxes" %}</div>
-                                                        <span class="col-8 text-right mask-money" id="taxes-value">0</span>
-                                                    </div>
-                                                    <div class="dropdown-divider mb-3"></div>
-                                                    <div class="row mb-3" style="font-weight: bold">
-                                                        <div class="col-4">{% trans "Total" %}</div>
-                                                        <span class="col-8 text-right mask-money" id="total-value">0</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                </td>
+                                <td colspan="5"></td>
+                                <td colspan="2">
+                                    <div class="row mb-3">
+                                        <div class="col-4">{% trans "Pretax price" %}</div>
+                                        <span class="col-8 text-right mask-money" id="pretax-value">0</span>
                                     </div>
-                                </div>
-                            </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4">{% trans "Taxes" %}</div>
+                                        <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                    </div>
+                                    <div class="dropdown-divider mb-3"></div>
+                                    <div class="row mb-3" style="font-weight: bold">
+                                        <div class="col-4">{% trans "Total" %}</div>
+                                        <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                     <div class="tab-pane fade" id="tab_block_attachment">
                         <div class="row">
                             <div class="col-12">

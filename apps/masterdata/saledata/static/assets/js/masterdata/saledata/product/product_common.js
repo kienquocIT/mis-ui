@@ -784,7 +784,7 @@ function getDataForm() {
         return false
     }
 
-    data['is_public_website'] = $('input[name="is_public_website"]').prop('checked');
+    data['is_public_website'] = $('#is_publish_website').prop('checked');
 
     return data
 }
@@ -909,6 +909,8 @@ function LoadDetailProduct(option) {
                      loadPurchaseDefaultUom(purchase_information['default_uom']);
                      loadPurchaseTaxCode(purchase_information['tax']);
                  }
+
+                 $('#is_publish_website').prop('checked', product_detail['is_public_website'])
 
                  $('#data-detail-page').val(JSON.stringify(product_detail));
                  $.fn.initMaskMoney2();

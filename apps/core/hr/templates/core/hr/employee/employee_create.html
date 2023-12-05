@@ -42,43 +42,45 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="row">
-                                <div class="form-group">
-                                    <label class="form-label" for="select-box-user">{% trans 'Select User' %}</label>
-                                    <div class="input-affix-wrapper">
-                                        <div class="dropdown input-prefix">
-                                            <i class="fas fa-info-circle text-blue"
-                                               data-bs-toggle="dropdown"
-                                               data-dropdown-animation
-                                               aria-haspopup="true"
-                                               aria-expanded="false"
-                                               disabled></i>
-                                            <div class="dropdown-menu w-210p mt-2"></div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="select-box-user">{% trans 'Select User' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropdown input-prefix">
+                                                <i class="fas fa-info-circle text-blue"
+                                                   data-bs-toggle="dropdown"
+                                                   data-dropdown-animation
+                                                   aria-haspopup="true"
+                                                   aria-expanded="false"
+                                                   disabled></i>
+                                                <div class="dropdown-menu w-210p mt-2"></div>
+                                            </div>
+                                            <select class="form-select" id="select-box-user"
+                                                    data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
+                                                    data-method="GET"
+                                                    data-keyResp="company_user_list"
+                                                    name="user"
+                                            >
+                                            </select>
                                         </div>
-                                        <select class="form-select" id="select-box-user"
-                                                data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
-                                                data-method="GET"
-                                                data-keyResp="company_user_list"
-                                                name="user"
-                                        >
-                                        </select>
+                                        <span class="form-text text-muted">{% trans 'User link to the employee' %}</span>
                                     </div>
-                                    <span class="form-text text-muted">{% trans 'User link to the employee' %}</span>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="employee-code">{% trans 'Code' %}</label>
+                                        <input
+                                                type="text"
+                                                class="form-control"
+                                                name="code"
+                                                id="employee-code"
+                                                required
+                                        >
+                                        <span class="form-text text-muted">{% trans 'Employee Code' %}</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="form-label required" for="employee-first-name">{% trans 'First Name' %}</label>
-                                        <input
-                                                type="text" class="form-control"
-                                                placeholder="A"
-                                                name="first_name"
-                                                id="employee-first-name"
-                                                required
-                                        >
-                                        <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
-                                    </div>
-                                </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label class="form-label required" for="employee-last-name">{% trans 'Last Name' %}</label>
@@ -92,8 +94,20 @@
                                         <span class="form-text text-muted">{% trans 'Surname and Middle Names' %}</span>
                                     </div>
                                 </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="employee-first-name">{% trans 'First Name' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                placeholder="A"
+                                                name="first_name"
+                                                id="employee-first-name"
+                                                required
+                                        >
+                                        <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
                         <div class="col-4">
                             <div class="form-group">

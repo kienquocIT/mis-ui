@@ -677,6 +677,7 @@ function Disable(option) {
 
 function getDataForm() {
     let data = {
+        'code': $('#code').val(),
         'title': $('#title').val(),
         'description': $('#description').val()
     };
@@ -837,6 +838,7 @@ function LoadDetailProduct(option) {
                  $x.fn.renderCodeBreadcrumb(product_detail);
                  console.log(product_detail)
 
+                 $('#code').val(product_detail['code']);
                  $('#title').val(product_detail['title']);
                  $('#description').val(product_detail['description']);
 

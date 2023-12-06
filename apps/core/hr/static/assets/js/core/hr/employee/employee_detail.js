@@ -2,7 +2,7 @@ $(function () {
     function renderDetailData(employeeData) {
         if (employeeData && typeof employeeData === 'object') {
             $x.fn.renderCodeBreadcrumb(employeeData);
-
+            $('#employee-code').attr('disabled', true).attr('readonly', true).val(employeeData.code)
             EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
             EmployeeLoadPage.lastNameEle.val(employeeData.last_name);
             EmployeeLoadPage.emailEle.val(employeeData.email);

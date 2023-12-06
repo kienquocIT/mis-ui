@@ -2,6 +2,7 @@ $(function () {
     function renderDetailForUpdate(employeeData) {
         if (employeeData && typeof employeeData === 'object') {
             $x.fn.renderCodeBreadcrumb(employeeData);
+            $('#employee-code').val(employeeData.code)
             EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
             EmployeeLoadPage.lastNameEle.val(employeeData.last_name);
             EmployeeLoadPage.emailEle.val(employeeData.email);

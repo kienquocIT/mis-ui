@@ -267,7 +267,7 @@ function LoadBankAccount(data) {
                 checked = 'checked';
             }
             ele.append(
-                `<div class="card ${default_card_color} close-over col-5 mr-5">
+                `<div class="card ${default_card_color} close-over col-12 col-lg-5 col-md-5 mr-5">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-1">

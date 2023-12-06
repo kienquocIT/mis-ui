@@ -614,6 +614,12 @@
             data-url-employee-list="{% url 'EmployeeListAPI' %}"
 
             data-url-config-stage="{% url 'OpportunityConfigStageListAPI' %}"
+
+            data-url-quotation-detail="{% url 'QuotationDetail' pk=0 %}"
+            data-url-sale-order-detail="{% url 'SaleOrderDetail' pk=0 %}"
+            data-url-advance-detail="{% url 'AdvancePaymentDetail' pk=0 %}"
+            data-url-payment-detail="{% url 'PaymentDetail' pk=0 %}"
+            data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
     ></script>
     <script
             type="text" id="trans-factory"
@@ -627,6 +633,18 @@
             data-assignee_empty="{% trans 'Assignee is required' %}"
             data-trans-not-created="{% trans 'has not been created for Opportunity' %}"
             data-msg-deny-delete-member-owner="{% trans 'This is Sale Person, can not remove!' %}"
+
+            data-trans-quotation="{% trans "Quotation" %}"
+            data-trans-sale-order="{% trans "Sale Order" %}"
+            data-trans-advance="{% trans "Advance Payment" %}"
+            data-trans-payment="{% trans "Payment" %}"
+            data-trans-return="{% trans "Return Advance" %}"
+            data-trans-task="{% trans "Task" %}"
+            data-trans-call="{% trans "Call customer" %}"
+            data-trans-email="{% trans "Email to customer" %}"
+            data-trans-meeting="{% trans "Meeting with customer" %}"
+            data-trans-valid="{% trans "Valid" %}"
+            data-trans-invalid="{% trans "invalid" %}"
     ></script>
 {% endblock %}
 {% block jsFooter %}

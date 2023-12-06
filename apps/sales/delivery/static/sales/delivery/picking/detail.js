@@ -415,10 +415,16 @@ $(async function () {
             return false
         }
         const pickingData = pickupInit.getPicking
-        if (_form.dataForm?.estimated_delivery_date)
-            pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
-                'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-        else delete pickingData['estimated_delivery_date']
+        // if (_form.dataForm?.estimated_delivery_date)
+        //     pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
+        //         'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+        // else delete pickingData['estimated_delivery_date']
+
+        if (_form.dataForm?.estimated_delivery_date) {
+            pickingData['estimated_delivery_date'] = _form.dataForm?.estimated_delivery_date;
+        } else {
+            delete pickingData['estimated_delivery_date']
+        }
 
         pickingData['ware_house'] = _form.dataForm['warehouse_id']
         pickingData['remarks'] = _form.dataForm['remarks']

@@ -520,6 +520,15 @@ class QuotationLoadDataHandle {
                 data_filter['opportunity__sale_order__isnull'] = true;
                 data_filter['opportunity__is_close_lost'] = false;
                 data_filter['opportunity__is_deal_close'] = false;
+                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                    let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, QuotationLoadDataHandle.opportunitySelectEle.val());
+                    if (dataSelected?.['quotation']?.['id']) {
+                        data_filter['id'] = dataSelected?.['quotation']?.['id'];
+                    } else {
+                        QuotationDataTableHandle.dataTableCopyQuotation();
+                        return false;
+                    }
+                }
             } else {
                 data_filter['opportunity__isnull'] = true;
             }
@@ -542,6 +551,7 @@ class QuotationLoadDataHandle {
         } else {
             QuotationDataTableHandle.dataTableCopyQuotation();
         }
+        return true;
     };
 
     static loadShippingBillingCustomer(item = null) {
@@ -777,6 +787,12 @@ class QuotationLoadDataHandle {
                 }]
             }).init();
         }
+        if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {
+            let btnCopy = document.getElementById('btn-copy-quotation');
+            if (btnCopy) {
+                btnCopy.setAttribute('disabled', 'true');
+            }
+        }
         if (data?.['customer']) {
             data['customer']['name'] = data['customer']['title'];
             if (is_copy === true) {
@@ -873,9 +889,8 @@ class QuotationLoadDataHandle {
         }
     }
 
-    static loadInitQuotationConfig(config_id, page_method) {
-        let jqueryId = '#' + config_id;
-        let ele = $(jqueryId);
+    static loadInitQuotationConfig(page_method) {
+        let ele = $('#quotation-config-data');
         if (ele.hasClass('quotation-config')) {
             let url = ele.attr('data-url');
             let method = ele.attr('data-method');

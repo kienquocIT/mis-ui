@@ -146,7 +146,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label required" for="select-box-group-employee">{% trans 'Department' %}</label>
+                                <label class="form-label" for="select-box-group-employee">{% trans 'Department' %}</label>
                                 <select
                                         class="form-select"
                                         name="group"
@@ -154,7 +154,6 @@
                                         data-url="{% url 'GroupListAPI' %}"
                                         data-method="GET"
                                         data-keyResp="group_list"
-                                        required
                                 >
                                 </select>
                                 <span class="form-text text-muted">{% trans 'Department of the employee' %}</span>

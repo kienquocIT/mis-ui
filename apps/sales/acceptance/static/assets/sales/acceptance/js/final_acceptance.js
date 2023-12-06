@@ -262,8 +262,8 @@ $(function () {
                                         let dataRow = JSON.parse(dataRowRaw);
                                         let dataFormula = dataRow?.['indicator']?.['formula_data_show'].replace(/"/g, "'");
                                         if (dataFormula) {
+                                            let newActualValue = 0;
                                             for (let key in payment_row_data) {
-                                                let newActualValue = 0;
                                                 for (let payment_data of payment_row_data[key]) {
                                                     payment_data['indicator'] = {'is_acceptance_editable': dataRow?.['indicator']?.['is_acceptance_editable']};
                                                     let newPaymentRow = $table.DataTable().row.add(payment_data).node();

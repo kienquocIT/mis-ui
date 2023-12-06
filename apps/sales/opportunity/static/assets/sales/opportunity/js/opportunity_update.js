@@ -8,6 +8,7 @@ $(document).ready(function () {
     });
 
     const urlFactory = $('#url-factory');
+    let transEle = $('#trans-factory');
     const pk = $.fn.getPkDetail();
     const frmDetail = $('#frm-detail');
     // element
@@ -1985,7 +1986,124 @@ $(document).ready(function () {
                     })
             }
 
-            callAjaxToLoadTimeLineList();
+            // callAjaxToLoadTimeLineList();
+
+            function loadDblActivityLogs() {
+                let $table = table_timeline;
+                let urlMapApp = {
+                    'quotation.quotation': urlFactory.attr('data-url-quotation-detail'),
+                    'saleorder.saleorder': urlFactory.attr('data-url-sale-order-detail'),
+                    'cashoutflow.advancepayment': urlFactory.attr('data-url-advance-detail'),
+                    'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
+                    'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
+                }
+                let activityMapApp = {
+                    'quotation.quotation': transEle.attr('data-trans-quotation'),
+                    'saleorder.saleorder': transEle.attr('data-trans-sale-order'),
+                    'cashoutflow.advancepayment': transEle.attr('data-trans-advance'),
+                    'cashoutflow.payment': transEle.attr('data-trans-payment'),
+                    'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
+                }
+                let typeMapActivity = {
+                    1: transEle.attr('data-trans-task'),
+                    2: transEle.attr('data-trans-call'),
+                    3: transEle.attr('data-trans-email'),
+                    4: transEle.attr('data-trans-meeting'),
+                }
+                let typeMapIcon = {
+                    0: `<i class="fas fa-file-alt"></i>`,
+                    1: `<i class="fas fa-tasks"></i>`,
+                    2: `<i class="fas fa-phone-alt"></i>`,
+                    3: `<i class="far fa-envelope"></i>`,
+                    4: `<i class="fas fa-users"></i>`,
+                }
+                $table.DataTableDefault({
+                    ajax: {
+                        url: $table.attr('data-url-logs_list'),
+                        type: 'GET',
+                        data: {'opportunity': pk},
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('activity_logs_list')) {
+                                return resp.data['activity_logs_list'] ? resp.data['activity_logs_list'] : []
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    columnDefs: [],
+                    columns: [
+                        {
+                            targets: 0,
+                            render: (data, type, row) => {
+                                if (row?.['log_type'] === 0) {
+                                    if (row?.['app_code']) {
+                                        // return `<span class="badge badge-soft-success">${activityMapApp[row?.['app_code']]}</span>`;
+
+                                        let status = ``;
+                                        if (row?.['app_code'] === 'quotation.quotation') {
+                                            if (opportunity_detail_data?.['quotation']?.['id'] === row?.['doc_id']) {
+                                                status = `<small class="text-green">${transEle.attr('data-trans-valid')}</small>`
+                                            } else {
+                                                status = `<small class="text-red">${transEle.attr('data-trans-invalid')}</small>`
+                                            }
+                                        }
+
+                                        return `<div class="d-flex justify-content-start">
+                                            <span class="badge badge-soft-primary mr-2">${activityMapApp[row?.['app_code']]}</span>
+                                            ${status}
+                                        </div>`;
+                                    }
+                                } else {
+                                    return `<span class="badge badge-soft-primary">${typeMapActivity[row?.['log_type']]}</span>`;
+                                }
+                                return `<p></p>`;
+                            }
+                        },
+                        {
+                            targets: 1,
+                            render: (data, type, row) => {
+                                let link = '';
+                                if (row?.['app_code'] && row?.['doc_id']) {
+                                    link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
+                                }
+                                let title = row?.['title'] ? row?.['title'] : '';
+                                if (row?.['log_type'] === 1) {
+                                    title = row?.['task']?.['subject'];
+                                } else if (row?.['log_type'] === 2) {
+                                    title = row?.['call_log']?.['subject'];
+                                } else if (row?.['log_type'] === 3) {
+                                    title = row?.['email']?.['subject'];
+                                } else if (row?.['log_type'] === 4) {
+                                    title = row?.['meeting']?.['subject'];
+                                }
+                                return `<a href="${link}" target="_blank"><p>${title}</p></a>`;
+                            }
+                        },
+                        {
+                            targets: 2,
+                            render: (data, type, row) => {
+                                return typeMapIcon[row?.['log_type']];
+                            }
+                        },
+                        {
+                            targets: 3,
+                            render: (data, type, row) => {
+                                return $x.fn.displayRelativeTime(row?.['date_created'], {
+                                    'outputFormat': 'DD-MM-YYYY',
+                                });
+                            }
+                        },
+                        {
+                            targets: 4,
+                            render: () => {
+                                return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                            }
+                        },
+                    ],
+                });
+            }
+
+            loadDblActivityLogs();
 
             // event create related features
             $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {

@@ -3,15 +3,18 @@ $(function () {
     $(document).ready(function () {
 
         let formSubmit = $('#frm_good_receipt_create');
-        // Elements
+        // Elements Case PO
         let btnEdit = $('#btn-edit-product-good-receipt');
         let btnAdd = $('#btn-add-product-good-receipt');
         let btnConfirmAdd = $('#btn-confirm-add-product');
-        // let btnLot = $('#btn-manage-by-lot');
-        // let btnSerial = $('#btn-manage-by-serial');
-        // let btnNoLotSerial = $('#btn-no-manage-by-lot-serial');
         let btnAddLot = $('#btn-add-manage-lot');
         let btnAddSerial = $('#btn-add-manage-serial');
+        // Elements Case IA
+        let btnIAConfirmAdd = $('#btn-confirm-add-ia-product');
+        let btnIAEdit = $('#btn-edit-ia-product-good-receipt');
+        let btnAddIALot = $('#btn-add-ia-lot');
+        let btnAddIASerial = $('#btn-add-ia-serial');
+
 
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
@@ -25,6 +28,11 @@ $(function () {
             GRDataTableHandle.dataTableGoodReceiptWHLot();
             GRDataTableHandle.dataTableGoodReceiptWHSerial();
             GRDataTableHandle.dataTableGoodReceiptLineDetailPO();
+
+
+            GRDataTableHandle.dataTableGoodReceiptIAProduct();
+            GRDataTableHandle.dataTableGoodReceiptIAWHLot();
+            GRDataTableHandle.dataTableGoodReceiptIAWHSerial();
             GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
         }
 
@@ -206,12 +214,33 @@ $(function () {
             this.value = value;
         });
 
+        // IA BEGIN
         GRLoadDataHandle.IASelectEle.on('change', function () {
             if ($(this).val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, $(this).val());
-                GRDataTableHandle.tableLineDetailIA.DataTable().rows.add(dataSelected?.['inventory_adjustment_product']).draw();
-                GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailIA);
+                GRDataTableHandle.tableIAProduct.DataTable().clear().draw();
+                GRDataTableHandle.tableIAProduct.DataTable().rows.add(dataSelected?.['inventory_adjustment_product']).draw();
             }
+            btnIAEdit.click();
+        });
+
+        GRDataTableHandle.tableIAProduct.on('click', '.table-row-checkbox', function () {
+            GRLoadDataHandle.loadCheckIAProduct(this);
+        });
+
+        btnAddIASerial.on('click', function () {
+            GRLoadDataHandle.loadAddRowIASerial();
+        });
+
+        GRDataTableHandle.tableIASerial.on('change', '.table-row-serial-number', function () {
+            // validate serial exist
+            GRValidateHandle.validateIASerialNumber(this);
+            GRValidateHandle.validateIASerialNumberExistRow(this);
+        });
+
+        btnIAConfirmAdd.on('click', function () {
+            GRStoreDataHandle.storeIADataAll();
+            GRLoadDataHandle.loadIALineDetail();
         });
 
         GRDataTableHandle.tableLineDetailIA.on('change', '.table-row-price', function () {

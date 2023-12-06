@@ -646,7 +646,11 @@ $(async function () {
                         class: 'text-center',
                         data: 'expire_date',
                         render: (row, type, data) => {
-                            return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                            if (row) {
+                                return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                     {
@@ -654,7 +658,11 @@ $(async function () {
                         class: 'text-center',
                         data: 'manufacture_date',
                         render: (row, type, data) => {
-                            return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                            if (row) {
+                                return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                     {
@@ -770,7 +778,11 @@ $(async function () {
                         class: 'text-center',
                         data: 'warranty_start',
                         render: (row, type, data) => {
-                            return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                            if (row) {
+                                return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                     {
@@ -778,7 +790,11 @@ $(async function () {
                         class: 'text-center',
                         data: 'warranty_end',
                         render: (row, type, data) => {
-                            return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                            if (row) {
+                                return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                 ],

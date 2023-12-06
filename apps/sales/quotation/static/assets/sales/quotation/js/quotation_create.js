@@ -20,7 +20,7 @@ $(function () {
             QuotationLoadDataHandle.loadBoxSOQuotation();
         }
         // init config
-        QuotationLoadDataHandle.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
+        QuotationLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
         // init first time indicator
         indicatorClass.loadQuotationIndicator('quotation-indicator-data', true);
         // init dataTable

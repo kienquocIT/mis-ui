@@ -34,8 +34,8 @@ urlpatterns = [
     path('role/create', RoleCreate.as_view(), name='RoleCreate'),
     path('role/update/<str:pk>', RoleUpdateView.as_view(), name='RoleUpdateView'),
     path('role/update/<str:pk>/api', RoleUpdateAPI.as_view(), name='RoleUpdateAPI'),
-    path('role/<str:pk>', RoleDetail.as_view(), name='RoleDetail'),
-    path('role/<str:pk>/api', RoleDetailAPI.as_view(), name='RoleDetailAPI'),
+    path('role/detail/<str:pk>', RoleDetail.as_view(), name='RoleDetail'),
+    path('role/<str:pk>', RoleDetailAPI.as_view(), name='RoleDetailAPI'),
 
     path('level', GroupLevelList.as_view(), name='GroupLevelList'),
     path('level/api', GroupLevelListAPI.as_view(), name='GroupLevelListAPI'),

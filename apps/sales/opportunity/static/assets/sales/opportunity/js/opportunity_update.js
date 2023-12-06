@@ -40,9 +40,7 @@ $(document).ready(function () {
             }
             return {};
         },
-        (errs) => {
-
-        }
+        (errs) => {}
     )
 
     let prm_detail = $.fn.callAjax2({
@@ -57,8 +55,7 @@ $(document).ready(function () {
             }
             return {};
         },
-        (errs) => {
-        }
+        (errs) => {}
     )
     let list_stage_condition = []
     let config_is_input_rate = null;

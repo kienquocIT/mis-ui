@@ -1636,7 +1636,7 @@ msgstr "Loại thuế"
 
 #
 msgid "Selling rate"
-msgstr "Tỉ lệ bán hàng"
+msgstr "Tỉ giá bán hàng"
 
 #
 msgid "Category"
@@ -5100,7 +5100,7 @@ msgstr "Đối thủ"
 
 #
 msgid "Account History"
-msgstr "Lịnh sử khách hàng"
+msgstr "Lịch sử khách hàng"
 
 #
 msgid "Final acceptance setting"
@@ -5545,3 +5545,7 @@ msgstr "từ ngày đặt hàng"
 #
 msgid "New product"
 msgstr "Thêm sản phẩm"
+
+#
+msgid "Sync with VCB"
+msgstr "Đồng bộ theo Vietcombank"

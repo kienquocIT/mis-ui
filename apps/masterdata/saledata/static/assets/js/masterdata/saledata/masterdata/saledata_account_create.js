@@ -21,44 +21,44 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
+                            className: 'wrap-text w-5',
                             render: () => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text',
-                            render: (data) => {
-                                return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
-                                    data,
-                                )
+                            className: 'wrap-text w-15',
+                            render: (data, type, row, meta) => {
+                                if (row?.['is_default']) {
+                                    return `<span class="badge badge-secondary">${data}</span>`
+                                }
+                                return `<span class="badge badge-primary">${data}</span>`
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text',
-                            render: (data) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                            className: 'wrap-text w-40',
+                            render: (data, type, row, meta) => {
+                                if (row.is_default) {
+                                     return `<b>${data}</b>`
+                                }
+                                return `<b class="text-primary">${data}</b>`
                             }
                         },
                         {
                             data: 'description',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-30',
                             render: (data) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                                return `<span class="initial-wrap">${data}</span>`
                             }
                         },
                         {
+                            className: 'wrap-text w-10',
                             render: (data, type, row) => {
                                 if (!row?.['is_default']) {
                                     let url = $('#url-factory').data('url-account-type').format_url_with_uuid(row.id);
-                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
-                                        row.id
-                                    )
+                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="${row.id}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span></a>`
                                 }
                                 return ``
                             }
@@ -90,40 +90,37 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
+                            className: 'wrap-text w-5',
                             render: () => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text',
-                            render: (data) => {
-                                return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
-                                    data,
-                                )
+                            className: 'wrap-text w-15',
+                            render: (data, type, row, meta) => {
+                                return `<span class="badge badge-primary">${data}</span>`
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-40',
                             render: (data) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                                return `<b class="text-primary">${data}</b>`
                             }
                         },
                         {
                             data: 'description',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-30',
                             render: (data) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                                return `<span class="initial-wrap">${data}</span>`
                             }
-                        }, {
+                        },
+                        {
+                            className: 'wrap-text w-10',
                             render: (data, type, row) => {
                                 let url = $('#url-factory').data('url-account-group').format_url_with_uuid(row.id);
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_group" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                     row.id
                                 )
                             }
@@ -155,40 +152,37 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
-                            render: (data, type, row, meta) => {
+                            className: 'wrap-text w-5',
+                            render: () => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-15',
                             render: (data, type, row, meta) => {
-                                return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
-                                    data,
-                                )
+                                return `<span class="badge badge-primary">${data}</span>`
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text',
-                            render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                            className: 'wrap-text w-40',
+                            render: (data) => {
+                                return `<b class="text-primary">${data}</b>`
                             }
                         },
                         {
                             data: 'description',
-                            className: 'wrap-text',
-                            render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                            className: 'wrap-text w-30',
+                            render: (data) => {
+                                return `<span class="initial-wrap">${data}</span>`
                             }
-                        }, {
-                            render: (data, type, row, meta) => {
+                        },
+                        {
+                            className: 'wrap-text w-10',
+                            render: (data, type, row) => {
                                 let url = $('#url-factory').data('url-industry').format_url_with_uuid(row.id);
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="industry" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                     row.id
                                 )
                             }
@@ -199,106 +193,40 @@ $(document).ready(function () {
         }
     }
 
-    loadAccountType();
+    loadAccountType()
+    loadAccountGroup()
+    loadIndustry()
 
     $('#btn-show-modal-create').on('click', function () {
         $('.modal-body input').val('');
     })
 
-    // Switch view table
     $("#tab-select-table a").on("click", function () {
         let section = $(this).attr('data-collapse')
         $(".lookup-data").hide()
         let id_tag = `#` + section
         if (section === 'section-account-type') {
-            $('#modal-lookup-data h5').text('Account Type');
+            $('#modal-lookup-data .modal-title').text($(this).text());
             loadAccountType();
         }
         if (section === 'section-account-group') {
-            $('#modal-lookup-data h5').text('Account Group');
+            $('#modal-lookup-data .modal-title').text($(this).text());
             loadAccountGroup();
         }
         if (section === 'section-industry') {
-            $('#modal-lookup-data h5').text('Industry');
+            $('#modal-lookup-data .modal-title').text($(this).text());
             loadIndustry();
         }
         $('#form-create-lookup').attr('data-lookup', section)
         $(id_tag).show();
     })
 
-    // submit form create lookup data
-    let frm = $('#form-create-lookup');
-
-    new SetupFormSubmit(frm).validate({
-        rules: {
-            code: {
-                required: true,
-            },
-            title: {
-                required: true,
-            }
-        },
-        submitHandler: function (form) {
-            let frm = new SetupFormSubmit($(form));
-            let frm_data = frm.dataForm;
-            let lookup = $(form).attr('data-lookup');
-            let data_url = ''
-            if (lookup === 'section-account-type') {
-                data_url = $(form).attr('data-url-account-type');
-            }
-            if (lookup === 'section-account-group') {
-                data_url = $(form).attr('data-url-account-group');
-            }
-            if (lookup === 'section-industry') {
-                data_url = $(form).attr('data-url-industry');
-            }
-
-            if (frm_data['code'] === '') {
-                frm_data['code'] = null;
-            }
-
-            if (frm_data['title'] === '') {
-                frm_data['title'] = null;
-            }
-            $.fn.callAjax2({
-                'url': data_url,
-                'method': frm.dataMethod,
-                'data': frm_data,
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        $('#modal-lookup-data').modal('hide');
-                        switch (lookup) {
-                            case 'section-account-type':
-                                $('#datatable-account-type-list').DataTable().ajax.reload();
-                                break;
-                            case 'section-account-group':
-                                $('#datatable-account-group-list').DataTable().ajax.reload();
-                                break;
-                            case 'section-industry':
-                                $('#datatable-industry-list').DataTable().ajax.reload();
-                                break;
-                        }
-                    }
-                },
-                (errs) => {
-                }
-            )
-        }
-    })
-
-    // show modal edit
     $(document).on('click', '.edit-button', function () {
         if ($(this).attr('data-type') === 'account_type') {
-            $('#modal-update-data h5').text('Edit Account Type');
             $('#master-data-type').val('account_type');
         } else if ($(this).attr('data-type') === 'account_group') {
-            $('#modal-update-data h5').text('Edit Account Group');
             $('#master-data-type').val('account_group');
         } else if ($(this).attr('data-type') === 'industry') {
-            $('#modal-update-data h5').text('Edit Industry');
             $('#master-data-type').val('industry');
         }
 
@@ -328,11 +256,58 @@ $(document).ready(function () {
                     }
                 }
             }, (errs) => {
-                //$.fn.notifyB({description: errs.data.errors}, 'failure');
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             },)
 
     });
-    let frmUpdate = $('#form-update-masterdata');
+
+    const frm = $('#form-create-lookup');
+    new SetupFormSubmit(frm).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            let lookup = $(form).attr('data-lookup');
+            let data_url = ''
+            if (lookup === 'section-account-type') {
+                data_url = $(form).attr('data-url-account-type');
+            }
+            if (lookup === 'section-account-group') {
+                data_url = $(form).attr('data-url-account-group');
+            }
+            if (lookup === 'section-industry') {
+                data_url = $(form).attr('data-url-industry');
+            }
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': frm.dataMethod,
+                'data': frm_data,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $('#modal-lookup-data').modal('hide');
+                        $('#datatable-account-type-list').DataTable().ajax.reload();
+                        $('#datatable-account-group-list').DataTable().ajax.reload();
+                        $('#datatable-industry-list').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    const frmUpdate = $('#form-update-masterdata');
     new SetupFormSubmit(frmUpdate).validate({
         rules: {
             code: {
@@ -352,14 +327,6 @@ $(document).ready(function () {
                 'title': inp_name.val(),
                 'description': inp_des.val(),
             }
-
-            if (data_form['code'] === '') {
-                data_form['code'] = null;
-            }
-
-            if (data_form['title'] === '') {
-                data_form['title'] = null;
-            }
             let data_url = $('#master-data-url-detail').val();
             $.fn.callAjax2({
                 'url': data_url,
@@ -371,21 +338,13 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
                         $('#modal-update-data').modal('hide');
-                        switch ($('#master-data-type').val()) {
-                            case 'account_type':
-                                $('#datatable-account-type-list').DataTable().ajax.reload();
-                                break;
-                            case 'account_group':
-                                $('#datatable-account-group-list').DataTable().ajax.reload();
-                                break;
-                            case 'industry':
-                                $('#datatable-industry-list').DataTable().ajax.reload();
-                                break;
-                        }
+                        $('#datatable-account-type-list').DataTable().ajax.reload();
+                        $('#datatable-account-group-list').DataTable().ajax.reload();
+                        $('#datatable-industry-list').DataTable().ajax.reload();
                     }
                 },
                 (errs) => {
-                    //$.fn.notifyB({description: errs.data.errors}, 'failure');
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }

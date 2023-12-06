@@ -50,7 +50,7 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-2">
+        <div class="col-12 col-lg-2 col-md-2">
             <ul class="nav flex-column nav-light nav-pills nav-vertical mr-3" id="tab-select-table">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-currency">
@@ -74,61 +74,63 @@
                 </li>
             </ul>
         </div>
-        <div class="col-10">
-            <!-- Section Currency -->
+        <div class="col-12 col-lg-1 col-md-1"></div>
+        <div class="col-12 col-lg-9 col-md-9">
             <div class="lookup-data" id="section-currency" style="display: block">
-                <table id="datatable-currency" class="table nowrap w-100 mb-5"
+                <div class="row">
+                    <div class="col-12 text-left">
+                        <button id="sync-from-VCB-button" type="button" data-method="PUT" data-url="{% url "SyncSellingRateWithVCB" pk=0 %}" class="btn btn-sm btn-soft-success">
+                            <span>
+                                {% trans 'Sync with VCB' %}
+                                <span class="icon ml-1">
+                                    <img style="height: 20px; width: 20px" src="https://th.bing.com/th?id=ODLS.e7251d40-a200-429a-b20a-69524cf4921d" alt="">
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <table id="datatable-currency" class="table nowrap w-100"
                        data-url="{% url "CurrencyListAPI" %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-20">{% trans "Abbreviation" %}</th>
-                    <th class="w-25">{% trans "Selling rate" %}&nbsp;&nbsp;&nbsp;
-                        <a href="#" data-method="PUT" data-url="{% url "SyncSellingRateWithVCB" pk=0 %}"
-                           style="background: None; width: 60%" id="sync-from-VCB-button"
-                           class="badge badge-soft-primary">
-                            Sync with VCB &nbsp;<i class="bi bi-arrow-repeat"></i>
-                        </a>
-                        {#                        &nbsp;<span id="sync-status"></span>&nbsp;#}
-                    </th>
-                    <th class="w-5"></th>
+                    <th></th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Abbreviation" %}</th>
+                    <th>{% trans "Selling rate" %}</th>
                     </thead>
                 </table>
             </div>
 
-            <!-- Section Tax -->
             <div class="lookup-data" id="section-tax" style="display: none">
-                <table id="datatable-tax" class="table nowrap w-100 mb-5"
+                <table id="datatable-tax" class="table nowrap w-100"
                        data-url="{% url "TaxListAPI" %}" data-url-detail="{% url "TaxDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-10">{% trans "Code" %}</th>
-                    <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-20 text-center">{% trans "Type" %}</th>
-                    <th class="w-20 text-center">{% trans "Category" %}</th>
-                    <th class="w-10 text-center">{% trans "Rate" %}</th>
-                    <th class="w-5"></th>
+                    <th></th>
+                    <th>{% trans "Code" %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "Category" %}</th>
+                    <th>{% trans "Rate" %}</th>
+                    <th>{% trans "Action" %}</th>
                     </thead>
                 </table>
             </div>
 
-            <!-- Section Tax Category -->
             <div class="lookup-data" id="section-tax-category" style="display: none">
-                <table id="datatable-tax-category" class="table nowrap w-100 mb-5"
+                <table id="datatable-tax-category" class="table nowrap w-100"
                        data-url="{% url "TaxCategoryListAPI" %}" data-url-detail="{% url "TaxCategoryDetailAPI" pk=0 %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-30">{% trans "Description" %}</th>
-                    <th class="w-5"></th>
+                    <th></th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Description" %}</th>
+                    <th>{% trans "Action" %}</th>
                     </thead>
                 </table>
             </div>
 
-            <!-- Section Payment term -->
             <div class="lookup-data" id="section-payment-terms" style="display: none">
                 <table id="datatable-payment-terms" class="table nowrap w-100 mb-5"
                        data-url="{% url "PaymentsTermsListAPI" %}"
@@ -202,7 +204,6 @@
         </div>
     </div>
 
-    <!-- Modal Create Currency -->
     <form id="form-create-currency" data-method="POST"
           data-url-delete={% url 'CurrencyDetailAPI' '0' %}
                   data-url="{% url "CurrencyListAPI" %}">
@@ -260,7 +261,6 @@
             </div>
         </div>
     </form>
-    <!-- Modal Create Tax -->
     <form id="form-create-tax" data-method="POST"
           data-url="{% url "TaxListAPI" %}">
         {% csrf_token %}
@@ -324,8 +324,6 @@
             </div>
         </div>
     </form>
-
-    <!-- Modal Create Tax Category -->
     <form id="form-create-tax-category" data-method="POST"
           data-url="{% url "TaxCategoryListAPI" %}">
         {% csrf_token %}
@@ -343,8 +341,8 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control" type="text" name="title"
+                                <label class="form-label required">{% trans "Name" %}</label>
+                                <input class="form-control" type="text" name="title" required
                                        placeholder="Input name">
                             </div>
                             <div class="form-group">
@@ -352,7 +350,6 @@
                                 <textarea class="form-control" name="description"></textarea>
                             </div>
                         </div>
-
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">{% trans 'Close' %}</button>
@@ -363,8 +360,6 @@
             </div>
         </div>
     </form>
-
-    <!-- Modal Add Terms -->
     <div class="modal fade" id="modal-add-table" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalCenter"
          aria-hidden="true">
@@ -438,8 +433,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal Update Tax -->
     <form id="form-update-tax" data-method="PUT"
           data-url="{% url 'TaxDetailAPI' pk=0 %}">
         <div class="modal fade" id="modal-detail-tax" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
@@ -504,8 +497,6 @@
             </div>
         </div>
     </form>
-
-    <!-- Modal Update Tax Category -->
     <form id="form-update-tax-category" data-method="PUT"
           data-url="{% url "TaxCategoryDetailAPI" pk=0 %}">
         <div class="modal fade" id="modal-detail-tax-category" tabindex="-1" role="dialog"
@@ -522,8 +513,8 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group inp-can-edit">
-                                <label class="form-label">{% trans "Name" %}</label>
-                                <input class="form-control" type="text" name="title"
+                                <label class="form-label required">{% trans "Name" %}</label>
+                                <input class="form-control" required type="text" name="title"
                                        placeholder="Input name" id="tax-category-title">
                             </div>
                             <div class="form-group inp-can-edit">
@@ -532,7 +523,6 @@
                                           id="tax-category-description"></textarea>
                             </div>
                         </div>
-
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">{% trans 'Close' %}</button>

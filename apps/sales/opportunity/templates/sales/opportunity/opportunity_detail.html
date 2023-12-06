@@ -20,7 +20,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="#" id="btn-opp-edit">
+    <a href="{% url 'OpportunityUpdate' pk=pk %}" id="btn-opp-edit">
         <button class="btn btn-outline-primary">
         <span>
             <span>{% trans 'Edit' %}</span>
@@ -43,6 +43,20 @@
             data-url-payment-detail="{% url "PaymentDetail" '0' %}"
             data-url-return-detail="{% url "ReturnAdvanceDetail" '0' %}"
     ></script>
+    <div id="json-data">
+        <input id="emp-current-id" class="hidden" value="{{ request.user.employee_current_data.id }}">
+    </div>
+    <div id="text-notify" hidden>
+        <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
+        <span id="limit-close-date">{% trans "The closing date must not be later than the opening date" %}</span>
+        <span id="not-select-stage">{% trans "Configuration does not allow selecting stage" %}</span>
+        <span id="deal-close-lost">{% trans "Can not select stage because this opportunity is close lost" %}</span>
+        <span id="deal-closed">{% trans "Can not select stage because this opportunity has been closed" %}</span>
+        <span id="opp-updated">{% trans "Stage has been updated, Please Save!" %}</span>
+    </div>
+    <div id="div-url" hidden>
+        <input id="url-member" value="{% url "EmployeeDetail" pk=0 %}">
+    </diV>
 
     <div class="page-content">
         <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
@@ -62,6 +76,50 @@
                 <div class="col-12 col-md-12 col-lg-9">
                     <div class="col-12" style="overflow-y: auto; height: 80vh">
                         {% include 'sales/opportunity/extends/relate-info.html' %}
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <form id="frm-add-member" data-method="POST" data-url="{% url 'MemberOfOpportunityDetailAddAPI' pk_opp='__pk_opp__' %}">
+            <div
+                    class="modal fade" id="modalAddMember" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLarge01"
+                    aria-hidden="true"
+            >
+                <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans "Add member to Sale team" %}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive" style="max-height: 400px">
+                                <table class="table nowrap w-100" id="dtbMember" data-method="GET"
+                                       data-url="{% url 'EmployeeListAPI' %}">
+                                    <thead>
+                                    <tr>
+                                        <th class="w-10"></th>
+                                        <th class="w-20">{% trans "Employee Code" %}</th>
+                                        <th class="w-30">{% trans "Employee Name" %}</th>
+                                        <th class="w-30">{% trans "Group" %}</th>
+                                        <th class="w-10"></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                    type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                            >{% trans "Close" %}</button>
+                            <button
+                                    type="submit" form="frm-add-member" class="btn btn-primary"
+                            >{% trans "Add" %}</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -489,31 +547,76 @@
 
     {{ data.type_customer|json_script:'data_type_customer' }}
     {{ data.role_customer|json_script:'data_role_customer' }}
+
+    <div
+            class="modal fade" id="modalEditMember" tabindex="-1" role="dialog" aria-labelledby="modalEditMember"
+            aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button
+                            type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    >{% trans 'Cancel' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory"
-           data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
-           data-task_list="{% url 'OpportunityTaskListAPI' %}"
-           data-url-edit="{% url 'OpportunityUpdate' pk=0 %}"
-           data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
-    >
-    <input type="text" id="trans-factory"
-           data-activity-type01="{% trans 'Call to customer' %}"
-           data-activity-type02="{% trans 'Send email' %}"
-           data-activity-type03="{% trans 'Meeting with customer' %}"
-           data-trans-customer="{% trans 'Direct Customer' %}"
-           data-trans-end-customer="{% trans 'End Customer' %}"
-           data-trans-decision-maker="{% trans "Decision Maker" %}"
-           data-trans-influence="{% trans "Influence" %}"
-           data-trans-contact-involved="{% trans "Contact Involved" %}"
-    >
+    <script
+            type="text" id="url-factory"
+            data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
+            data-task_list="{% url 'OpportunityTaskListAPI' %}"
+            data-url-product="{% url 'ProductForSaleListAPI' %}"
+            data-url-product-category="{% url 'ProductCategoryListAPI' %}"
+            data-url-tax="{% url 'TaxListAPI' %}"
+            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
+            data-url-competitor="{% url 'AccountForSaleListAPI' %}"
+            data-url-contact="{% url 'ContactListAPI' %}"
+            data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
+            data-url-config="{% url 'OpportunityConfigAPI' %}"
+            data-url-related-quotation="{% url 'QuotationDetail' pk=0 %}"
+            data-url-related-sale-order="{% url 'SaleOrderDetail' pk=0 %}"
+            data-url-member-detail="{% url 'OpportunityMemberDetailAPI' pk=0 %}"
+            data-url-delete-member="{% url 'OpportunityDeleteMemberAPI' pk=0 %}"
+            data-url-member-list="{% url 'OpportunityMemberListAPI' pk=0 %}"
+
+            data-url-account-list="{% url 'AccountListAPI' %}"
+            data-url-contact-list="{% url 'ContactListAPI' %}"
+            data-url-opp-list="{% url 'OpportunityListAPI' %}"
+            data-url-employee-list="{% url 'EmployeeListAPI' %}"
+
+            data-url-config-stage="{% url 'OpportunityConfigStageListAPI' %}"
+    ></script>
+    <script
+            type="text" id="trans-factory"
+            data-activity-type01="{% trans 'Call to customer' %}"
+            data-activity-type02="{% trans 'Send email' %}"
+            data-activity-type03="{% trans 'Meeting with customer' %}"
+            data-trans-limit-quantity="{% trans 'quantity must not be less than zero' %}"
+            data-trans-limit-money="{% trans 'money must not be less than zero' %}"
+            data-trans-role-decision-maker="{% trans 'Only one decision maker can be selected' %}"
+            data-trans-opp-win-deal="{% trans 'Opp has been Win Deal' %}"
+            data-assignee_empty="{% trans 'Assignee is required' %}"
+            data-trans-not-created="{% trans 'has not been created for Opportunity' %}"
+            data-msg-deny-delete-member-owner="{% trans 'This is Sale Person, can not remove!' %}"
+    ></script>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
-    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
@@ -539,4 +642,8 @@
 
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
+    <script>
+    document.getElementById('btn-auto-update-stage').click();
+    </script>
 {% endblock %}

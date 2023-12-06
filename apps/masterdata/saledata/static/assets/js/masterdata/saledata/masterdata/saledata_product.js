@@ -4,59 +4,44 @@ $(document).ready(function () {
 
     const column_product_expense = [
         {
+            className: 'wrap-text w-10',
             render: (data, type, row, meta) => {
                 return '';
             }
         },
         {
             data: 'title',
-            className: 'wrap-text',
+            className: 'wrap-text w-45',
             render: (data, type, row, meta) => {
-                if (row.is_default) {
-                    if (row.is_default === false) {
-                        return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                                data-bs-target="#modal-detail-product-and-expense" data-id="{0}">
-                                    <span><b>{1}</b></span>
-                                </a>`.format_by_idx(
-                            row.id, data
-                        )
-                    } else {
-                        return `<a>
-                                    <span><b>{0}</b></span>
-                                </a>`.format_by_idx(data)
-                    }
-                } else {
-                    return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                            data-bs-target="#modal-detail-product-and-expense" data-id="{0}">
-                                <span><b>{1}</b></span>
-                            </a>`.format_by_idx(
-                        row.id, data
-                    )
+                if (!row?.['is_default']) {
+                    return `<span class="text-primary"><b>${data}</b></span>`
                 }
+                return `<span><b>${data}</b></span>`
             }
         },
         {
             data: 'description',
-            className: 'wrap-text',
+            className: 'wrap-text w-35',
             render: (data, type, row, meta) => {
-                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                    data
-                )
+                return `<span class="initial-wrap">${data}</span>`
             }
-        }, {
+        },
+        {
+            className: 'wrap-text w-10',
             render: (data, type, row, meta) => {
                 if (!row?.['is_default']) {
-                    return `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
-                        row.id
-                    );
-                } else {
-                    return ``;
+                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
+                               data-id="${row.id}" data-bs-toggle="modal"
+                               data-bs-target="#modal-detail-product-and-expense" data-bs-placement="top" title="" 
+                               data-bs-original-title="Edit">
+                               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                            </a>`
                 }
+                return ``
             }
         }
     ]
 
-    //Switch view table
     $("#tab-select-table a.product-and-expense").on("click", function () {
         $('.btn-show-modal').attr('data-bs-target', '#modal-product-and-expense')
         let section = $(this).attr('data-collapse');
@@ -166,30 +151,34 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-80',
                             render: (data, type, row, meta) => {
                                 if (row.is_default) {
-                                    return `<span><b>` + row.title + `</b></span>`
+                                    return `<span><b>${row.title}</b></span>`
                                 } else {
-                                    return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#modal-detail-unit-measure-group" data-id="{0}">
-                                            <span><b>{1}</b></span>
-                                        </a>`.format_by_idx(row.id, data)
+                                    return `<span class="text-primary"><b>${row.title}</b></span>`
                                 }
                             }
-                        }, {
+                        },
+                        {
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
-                                if (row.is_default) {
-                                    return ``;
-                                } else {
-                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(row.id);
+                                if (!row.is_default) {
+                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
+                                               data-id="${row.id}" data-bs-toggle="modal"
+                                               data-bs-target="#modal-detail-unit-measure-group" data-bs-placement="top" title="" 
+                                               data-bs-original-title="Edit">
+                                               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                            </a>`
                                 }
+                                return ``
                             }
                         }
                     ],
@@ -203,6 +192,7 @@ $(document).ready(function () {
             let tbl = $('#datatable-unit-measure-list');
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault({
+                    paging: false,
                     useDataServer: true,
                     columnDefs: [{
                         "searchable": false,
@@ -230,38 +220,37 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
+                            className: 'wrap-text w-5',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-20',
                             render: (data, type, row, meta) => {
-                                return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#modal-detail-unit-measure" data-id="{0}">
-                                            <span><b>{1}</b></span>
-                                        </a>`.format_by_idx(row.id, data)
+                                return `<span class="badge badge-primary">${data}</span>`
                             }
-                        }, {
+                        },
+                        {
                             data: 'title',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-40',
                             render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                                return `<b class="text-primary">${data}</b>`
                             }
-                        }, {
+                        },
+                        {
                             data: 'group',
-                            className: 'wrap-text',
+                            className: 'wrap-text ',
                             render: (data, type, row, meta) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data.title
                                 )
                             }
-                        }, {
+                        },
+                        {
                             data: 'is_referenced_unit',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-25 text-center',
                             render: (data, type, row, meta) => {
                                 if (row.group.hasOwnProperty('is_referenced_unit')) {
                                     if (row.group.is_referenced_unit === true) {
@@ -272,12 +261,16 @@ $(document).ready(function () {
                                 }
                                 return '';
                             }
-                        }, {
+                        },
+                        {
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
-                                    row.id
-                                );
-
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
+                                           data-id="${row.id}" data-bs-toggle="modal"
+                                           data-bs-target="#modal-detail-unit-measure" data-bs-placement="top" title="" 
+                                           data-bs-original-title="Edit">
+                                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                        </a>`
                             }
                         }
                     ],
@@ -293,7 +286,10 @@ $(document).ready(function () {
         })
     }
 
-    loadProductType();
+    loadProductType()
+    loadProDuctCategory()
+    loadUnitOfMeasureGroup()
+    loadUnitOfMeasure()
 
     // change select box unit measure group
     $('#select-box-unit-measure-group').on('change', function () {
@@ -641,7 +637,6 @@ $(document).ready(function () {
         let url = $('#form-edit-product-and-expense').attr('data-url-product-type')
         url_update = url.replace(0, $(this).attr('data-id'));
 
-        $('#modal-detail-product-and-expense h5').text('Edit Product Type');
         let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
         $.fn.callAjax2({
             'url': url_detail,
@@ -666,7 +661,6 @@ $(document).ready(function () {
     $(document).on('click', '#datatable-product-category-list .btn-detail', function () {
         let url = $('#form-edit-product-and-expense').attr('data-url-product-category')
         url_update = url.replace(0, $(this).attr('data-id'));
-        $('#modal-detail-product-and-expense h5').text('Edit Product Category')
         let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
         $.fn.callAjax2({
             'url': url_detail,

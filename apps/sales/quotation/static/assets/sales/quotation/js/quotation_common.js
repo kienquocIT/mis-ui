@@ -889,9 +889,8 @@ class QuotationLoadDataHandle {
         }
     }
 
-    static loadInitQuotationConfig(config_id, page_method) {
-        let jqueryId = '#' + config_id;
-        let ele = $(jqueryId);
+    static loadInitQuotationConfig(page_method) {
+        let ele = $('#quotation-config-data');
         if (ele.hasClass('quotation-config')) {
             let url = ele.attr('data-url');
             let method = ele.attr('data-method');

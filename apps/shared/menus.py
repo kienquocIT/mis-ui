@@ -130,13 +130,13 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-truck"></i>',
             ),
             MenuCommon(
-                name='Quotation', code='menu_quotation_config', view_name='QuotationConfigDetail',
+                name='Sale Order', code='menu_quotation_config', view_name='QuotationConfigDetail',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
-            MenuCommon(
-                name='Sale Order', code='menu_sale_order_config', view_name='SaleOrderConfigDetail',
-                icon='<i class="fas fa-file-invoice"></i>',
-            ),
+            # MenuCommon(
+            #     name='Sale Order', code='menu_sale_order_config', view_name='SaleOrderConfigDetail',
+            #     icon='<i class="fas fa-file-invoice"></i>',
+            # ),
             MenuCommon(
                 name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfig',
                 icon='<i class="fa-solid fa-lightbulb"></i>',

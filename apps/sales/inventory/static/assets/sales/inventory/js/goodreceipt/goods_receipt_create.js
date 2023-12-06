@@ -239,7 +239,7 @@ $(function () {
         });
 
         btnIAConfirmAdd.on('click', function () {
-            // GRStoreDataHandle.storeDataAll();
+            GRStoreDataHandle.storeIADataAll();
             GRLoadDataHandle.loadIALineDetail();
         });
 

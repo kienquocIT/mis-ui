@@ -1,0 +1,23 @@
+.blog-body .nicescroll-bar {
+    padding: 0 !important;
+}
+
+.btn-LGBT {
+    border: 3px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(130deg, #ff7a18, #af002d 41.07%, #319197 76.05%);
+    clip-path: inset(0 round 4px);
+}
+
+.hk-wrapper .hk-drawer.calendar-drawer.drawer-right {
+    top: 65px;
+}
+.fc-daygrid-event-harness:hover{
+    cursor: pointer;
+}
+.fc-prev-button, .fc-next-button{
+    color: #555;
+}
+.fc-prev-button:hover, .fc-next-button:hover{
+    color: #8d8d8d;
+}

@@ -3,7 +3,7 @@ from django.urls import path
 from apps.eoffice.leave.views import LeaveConfigDetail, LeaveTypeConfigAPI, WorkingCalendarConfig, WorkingYearConfig, \
     WorkingHolidayConfig, WorkingCalendarConfigAPI, LeaveRequestList, LeaveRequestListAPI, LeaveRequestCreate, \
     LeaveRequestCreateAPI, LeaveAvailableList, LeaveAvailableListAPI, LeaveRequestDetail, LeaveRequestDetailAPI, \
-    LeaveRequestEdit, LeaveRequestEditAPI, LeaveAvailableHistoryAPI
+    LeaveRequestEdit, LeaveRequestEditAPI, LeaveAvailableHistoryAPI, LeaveRequestCalendarListAPI
 
 urlpatterns = [
     path('config', LeaveConfigDetail.as_view(), name='LeaveConfigDetail'),
@@ -19,6 +19,7 @@ urlpatterns = [
     path('working-calendar/holiday/detail/<str:pk>', WorkingHolidayConfig.as_view(), name='WorkingHolidayDetail'),
     # leave request
     path('requests/list', LeaveRequestList.as_view(), name='LeaveRequestList'),
+    path('calendar', LeaveRequestCalendarListAPI.as_view(), name='LeaveRequestCalendarListAPI'),
     path('requests/list-api', LeaveRequestListAPI.as_view(), name='LeaveRequestListAPI'),
     path('requests/create', LeaveRequestCreate.as_view(), name='LeaveRequestCreate'),
     path('requests/create-api', LeaveRequestCreateAPI.as_view(), name='LeaveRequestCreateAPI'),

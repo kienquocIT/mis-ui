@@ -174,7 +174,7 @@ class MenusCRM:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     CALENDAR = MenuCommon(
-        name='Calendar', code='menu_calendar', view_name='HomeView',
+        name='Calendar', code='menu_calendar', view_name='ProgrammeList',
         icon='<i class="fa-regular fa-calendar-days"></i>',
     )
     CONTACT = MenuCommon(
@@ -362,7 +362,7 @@ class MenuEOffice:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     CALENDAR = MenuCommon(
-        name='Calendar', code='menu_calendar', view_name='HomeView', icon='<i class="fa-regular fa-calendar-days"></i>',
+        name='Calendar', code='menu_calendar', view_name='ProgrammeList', icon='<i class="fa-regular fa-calendar-days"></i>',
     )
     LEAVE = MenuCommon(
         name='Leave', code='menu_leave', icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',

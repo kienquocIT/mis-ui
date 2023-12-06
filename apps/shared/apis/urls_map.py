@@ -397,6 +397,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
     LEAVE_REQUEST = StringUrl('leave/request')
     LEAVE_REQUEST_DETAIL = StringUrl('leave/request/detail/{pk}')
+    LEAVE_REQUEST_CALENDAR = StringUrl('leave/calendar')
 
     #  Working calendar config
     WORKING_CALENDAR_CONFIG = StringUrl('leave/working-calendar/config')

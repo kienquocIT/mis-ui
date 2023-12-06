@@ -653,6 +653,7 @@ class GRLoadDataHandle {
         if (eleProductDataRaw) {
             let eleProductData = JSON.parse(eleProductDataRaw);
             let data = {
+                'product_id': eleProductData?.['id'],
                 'warehouse_id': eleProductData?.['warehouse']?.['id'],
                 'vendor_serial_number': '',
                 'serial_number': '',

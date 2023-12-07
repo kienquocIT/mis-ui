@@ -5587,3 +5587,11 @@ msgstr "Chọn theo danh sách giá bên trái"
 #
 msgid "For Inventory"
 msgstr "Quản lý tồn kho"
+
+#
+msgid "Price list for sale online"
+msgstr "Bảng giá bán hàng online"
+
+#
+msgid "Sale online"
+msgstr "Bán hàng online"

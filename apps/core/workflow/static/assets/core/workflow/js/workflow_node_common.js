@@ -438,10 +438,7 @@ class NodeLoadDataHandle {
         let eleZoneSubmit = ele?.closest('.collab-area')?.querySelector('.node-zone-submit');
         let eleZoneJSonSubmit = ele?.closest('.collab-area')?.querySelector('.node-zone-json-submit');
         let eleZoneDD = ele?.closest('.dropdown-zone');
-        // let eleZoneShow = ele?.closest('.collab-area')?.querySelector('.node-zone-show');
-        // $(eleZoneShow).empty();
         for (let eleChecked of eleZoneDD?.querySelectorAll('.checkbox-node-zone:checked')) {
-            // $(eleZoneShow).append(`<span class="badge badge-soft-success mr-1">${$(eleChecked).attr('data-title')}</span>`);
             zone_list.push(parseInt($(eleChecked).attr('data-id')));
             zone_json_list.push({
                 'id': parseInt($(eleChecked).attr('data-id')),
@@ -948,7 +945,7 @@ class NodeDataTableHandle {
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <div class="row collab-area collab-in-form-area">
+                                                            <div class="row collab-area collab-in-form-area mb-5">
                                                                 <div class="form-group">
                                                                     <label class="form-label">Select field in form</label>
                                                                     <select 
@@ -970,7 +967,7 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="row collab-area collab-out-form-area" hidden>
+                                                            <div class="row collab-area collab-out-form-area mb-5" hidden>
                                                                 <div class="form-group">
                                                                     <label class="form-label">Employee list</label>
                                                                     <div 
@@ -1032,7 +1029,7 @@ class NodeDataTableHandle {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="row collab-area collab-in-workflow-area" hidden>
+                                                            <div class="row collab-area collab-in-workflow-area mb-5" hidden>
                                                                 <div class="row">
                                                                     <div class="col-2">
                                                                         <button
@@ -1197,8 +1194,6 @@ class NodeDataTableHandle {
                                                                     <thead>
                                                                     <tr>
                                                                         <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
-<!--                                                                        <th>Group</th>-->
-<!--                                                                        <th>Role</th>-->
                                                                         <th class="w-80">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
                                                                     </tr>
                                                                     </thead>
@@ -1306,36 +1301,9 @@ class NodeDataTableHandle {
                         return `<span class="badge badge-soft-primary table-row-title" data-row="${dataRow}">${row?.['title']}</span>`;
                     }
                 },
-                // {
-                //     targets: 1,
-                //     render: (data, type, row) => {
-                //         return `<span class="badge badge-soft-primary table-row-group">${row?.['group']?.['title']}</span>`;
-                //     }
-                // },
-                // {
-                //     targets: 2,
-                //     render: (data, type, row) => {
-                //         if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
-                //             let result = [];
-                //             row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
-                //             return result.join(" ");
-                //         }
-                //         return '';
-                //     }
-                // },
                 {
                     targets: 1,
                     render: () => {
-                        // return `<div class="dropdown dropdown-zone">
-                        //             <button aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">zone</button>
-                        //             <div class="dropdown-menu dropdown-menu-up w-250p">
-                        //                 <div class="h-250p">
-                        //                     <div data-simplebar class="nicescroll-bar">
-                        //                         <ul class="node-zone-list p-0"></ul>
-                        //                     </div>
-                        //                 </div>
-                        //             </div>
-                        //         </div>`
                         return `<div class="dropdown-zone">
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
                                         <ul class="node-zone-list p-0"></ul>
@@ -1441,9 +1409,20 @@ class NodeDataTableHandle {
                     targets: 3,
                     render: (data, type, row) => {
                         if (row.hasOwnProperty('zone') && Array.isArray(row?.['zone'])) {
-                            let result = [];
-                            row?.['zone'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">${item?.['title']}</span>`) : null);
-                            return result.join(" ");
+                            let resultZone = ``;
+                            for (let zone of row?.['zone']) {
+                                if (zone?.['title']) {
+                                    resultZone += `<span class="badge badge-soft-success mb-1 mr-1">${zone?.['title']}</span>`;
+                                }
+                            }
+                            return `${resultZone}`;
+                            // return `<div class="d-flex justify-content-start">
+                            //             ${resultZone}
+                            //             <div class="dropdown dropdown-zone">
+                            //                 <button aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-link" type="button"><span class="icon"><i class="fas fa-caret-down"></i></span></button>
+                            //                 <ul role="menu" class="dropdown-menu node-zone-list"></ul>
+                            //             </div>
+                            //         </div>`;
                         }
                         return '';
                     }
@@ -1451,7 +1430,10 @@ class NodeDataTableHandle {
                 {
                     targets: 4,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                        return `<div class="actions-btn">
+                                    <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover edit-row-in-wf-emp" hidden><span class="icon"><i class="far fa-edit"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover del-row-in-wf-emp"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>
+                                </div>`
                     }
                 },
             ],
@@ -1550,7 +1532,7 @@ class NodeSubmitHandle {
                                 if (dataRowInWFRaw) {
                                     let dataRowInWF = JSON.parse(dataRowInWFRaw);
                                     let zone = [];
-                                    for (let zoneData of dataRowInWF?.['zone']) {
+                                    for (let zoneData of dataRowInWF?.['zone']) {  // In WF employee has different zones => need to for every row to get zones
                                         zone.push(parseInt(zoneData?.['id']));
                                     }
                                     if (dataRowInWF?.['in_wf_option']) {
@@ -1592,4 +1574,12 @@ function filterFieldList(field_list, data_json) {
         if (!field_list.includes(key)) delete data_json[key]
     }
     return data_json;
+}
+
+function deleteWFNodeRowTable(currentRow, $table) {
+    // Get the index of the current row within the DataTable
+    let rowIndex = $table.DataTable().row(currentRow).index();
+    let row = $table.DataTable().row(rowIndex);
+    // Delete current row
+    row.remove().draw();
 }

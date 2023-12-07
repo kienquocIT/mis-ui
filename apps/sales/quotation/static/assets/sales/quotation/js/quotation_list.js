@@ -37,11 +37,11 @@ $(function () {
                         "width": "10%",
                         "targets": 4
                     }, {
-                        "width": "15%",
+                        "width": "10%",
                         "targets": 5,
                     },
                     {
-                        "width": "5%",
+                        "width": "10%",
                         "targets": 6,
                     },
                     {

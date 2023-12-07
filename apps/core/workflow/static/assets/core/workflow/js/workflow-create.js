@@ -187,6 +187,12 @@ $(function () {
             NodeLoadDataHandle.loadDoneFailCollab(this);
         });
 
+        NodeDataTableHandle.tableNode.on('click', '.del-row-in-wf-emp', function () {
+            let row = this.closest('tr');
+            let $table = $(this.closest('.table-in-workflow-employee'));
+            deleteWFNodeRowTable(row, $table);
+        });
+
 
     });
 });

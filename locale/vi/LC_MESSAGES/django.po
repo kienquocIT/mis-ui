@@ -2125,7 +2125,7 @@ msgstr "Mã phiếu tạm ứng"
 
 #
 msgid "Return Status"
-msgstr "Trạng thái hoàn trả"
+msgstr "Trạng thái hoàn ứng"
 
 #
 msgid "Opportunity list"

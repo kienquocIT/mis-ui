@@ -1415,35 +1415,23 @@ class NodeDataTableHandle {
                                     resultZone += `<span class="badge badge-soft-success mb-1 mr-1">${zone?.['title']}</span>`;
                                 }
                             }
-                            return `<div class="d-flex justify-content-start">
-                                        ${resultZone}
-                                        <div class="dropdown dropdown-zone">
-                                            <button aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-link" type="button"><span class="icon"><i class="fas fa-caret-down"></i></span></button>
-                                                <ul role="menu" class="dropdown-menu node-zone-list"></ul>
-                                        </div>
-                                    </div>`;
+                            return `${resultZone}`;
+                            // return `<div class="d-flex justify-content-start">
+                            //             ${resultZone}
+                            //             <div class="dropdown dropdown-zone">
+                            //                 <button aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-link" type="button"><span class="icon"><i class="fas fa-caret-down"></i></span></button>
+                            //                 <ul role="menu" class="dropdown-menu node-zone-list"></ul>
+                            //             </div>
+                            //         </div>`;
                         }
                         return '';
-
-
-
-
-
-
-
-                        // if (row.hasOwnProperty('zone') && Array.isArray(row?.['zone'])) {
-                        //     let result = [];
-                        //     row?.['zone'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">${item?.['title']}</span>`) : null);
-                        //     return result.join(" ");
-                        // }
-                        // return '';
                     }
                 },
                 {
                     targets: 4,
                     render: () => {
                         return `<div class="actions-btn">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover edit-row-in-wf-emp"><span class="icon"><i class="far fa-edit"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover edit-row-in-wf-emp" hidden><span class="icon"><i class="far fa-edit"></i></span></button>
                                     <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover del-row-in-wf-emp"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>
                                 </div>`
                     }

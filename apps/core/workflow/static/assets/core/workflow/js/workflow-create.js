@@ -193,15 +193,6 @@ $(function () {
             deleteWFNodeRowTable(row, $table);
         });
 
-        NodeDataTableHandle.tableNode.on('click', '.edit-row-in-wf-emp', function () {
-            let row = this.closest('tr');
-            let dataRowInWFRaw = row?.querySelector('.table-row-title').getAttribute('data-row');
-            if (dataRowInWFRaw) {
-                let dataRowInWF = JSON.parse(dataRowInWFRaw);
-            }
-
-        });
-
 
     });
 });

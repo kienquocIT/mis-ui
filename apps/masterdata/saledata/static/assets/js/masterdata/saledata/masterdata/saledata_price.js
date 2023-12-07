@@ -99,13 +99,14 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-40',
                             render: (data, type, row, meta) => {
                                 return `<a><span><b>{0}</b></span></a>`.format_by_idx(
                                     data,
@@ -114,7 +115,7 @@ $(document).ready(function () {
                         },
                         {
                             data: 'abbreviation',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-20',
                             render: (data, type, row, meta) => {
                                 if (row.is_default === false) {
                                     return `<span style="width: 50%;" class="badge badge-soft-primary badge-pill"><b>{0}</b></span></a>`.format_by_idx(
@@ -129,7 +130,7 @@ $(document).ready(function () {
                         },
                         {
                             data: 'rate',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-30',
                             render: (data, type, row, meta) => {
                                 if (data !== null) {
                                     if (row?.['is_primary'] === true) {
@@ -143,17 +144,7 @@ $(document).ready(function () {
                                     return ``;
                                 }
                             }
-                        }, {
-                            render: (data, type, row, meta) => {
-                                if (row.is_default === false) {
-                                    return `<a data-id="` + row.id + `" class="btn btn-icon btn-flush-dark btn-rounded del-button del-btn-currency" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
-                                        row.id
-                                    );
-                                } else {
-                                    return `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                                }
-                            }
-                        }
+                        },
                     ],
                 },
             );
@@ -181,6 +172,7 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
@@ -189,68 +181,59 @@ $(document).ready(function () {
                             data: 'code',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
-                                return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="{0}" data-bs-toggle="modal"
-                                        data-bs-target="#modal-detail-tax" href="#"><span><b>{1}</b></span></a>`.format_by_idx(
-                                    row.id, data
-                                )
+                                return `<span class="badge badge-primary">${data}</span>`
                             }
                         },
                         {
                             data: 'title',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                                return `<span class="initial-wrap text-primary"><b>${data}</b></span>`
                             }
                         },
                         {
-                            data: 'type',
+                            data: 'tax_type',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 if (data === 0) {
-                                    return `<div class="row">
-                                            <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill" style="min-width: max-content; width: 100%">Sale</span></div>
-                                            </div>`
-                                } else if (data === 1) {
-                                    return `<div class="row">
-                                            <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill" style="min-width: max-content; width: 100%">Purchase</span></div>
-                                            </div>`
-                                } else if (data === 2) {
-                                    return `<div class="row">
-                                            <div class="col-6" style="padding-right: 5px"><span class="badge badge-soft-danger badge-pill" style="min-width: max-content; width: 100%">Sale</span></div>
-                                            <div class="col-6" style="padding-left: 5px"><span class="badge badge-soft-blue badge-pill" style="min-width: max-content; width: 100%">Purchase</span></div>
-                                            </div>`
-                                } else {
-                                    return ``;
+                                    return 'Sale'
                                 }
+                                if (data === 1) {
+                                    return 'Purchase'
+                                }
+                                return 'Sale, Purchase'
                             }
-                        }, {
+                        },
+                        {
                             data: 'category',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 if (row.category) {
-                                    return `<span class="badge badge-soft-primary badge-pill" style="min-width: max-content; width: 100%">{0}</span>`.format_by_idx(data.title)
+                                    return `<span class="badge badge-soft-primary">${data.title}</span>`
                                 } else {
                                     return `<span></span>`
                                 }
                             }
-                        }, {
+                        },
+                        {
                             data: 'rate',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 if (data >= 0) {
-                                    return `<span class="badge badge-soft-pink badge-pill" style="min-width: max-content; width: 100%">{0}%</span>`.format_by_idx(data)
+                                    return `<span class="badge badge-soft-pink" >${data}%</span>`
                                 } else {
                                     return `<span></span>`
                                 }
                             }
-                        }, {
+                        },
+                        {
                             render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
-                                    row.id
-                                );
-
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
+                                           data-id="${row.id}" data-bs-toggle="modal"
+                                           data-bs-target="#modal-detail-tax" data-bs-placement="top" title="" 
+                                           data-bs-original-title="Edit">
+                                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                        </a>`
                             }
                         }
                     ],
@@ -282,42 +265,43 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-40',
                             render: (data, type, row, meta) => {
-                                if (row.is_default === false) {
-                                    return `<a class="btn-detail" href="#" data-bs-toggle="modal"
-                                            data-bs-target="#modal-detail-tax-category" data-id="{0}">
-                                            <span><b>{1}</b></span>
-                                            </a>`.format_by_idx(row.id, data)
+                                if (row.is_default) {
+                                    return `<span class="initial-wrap text-secondary"><b>${data}</b></span>`
                                 } else {
-                                    return `<a>
-                                            <span><b>{0}</b></span>
-                                            </a>`.format_by_idx(data)
+                                    return `<span class="initial-wrap text-primary"><b>${data}</b></span>`
                                 }
                             }
                         },
                         {
                             data: 'description',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-35',
                             render: (data, type, row, meta) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data
                                 )
                             }
-                        }, {
+                        },
+                        {
+                            className: 'wrap-text w-15',
                             render: (data, type, row, meta) => {
-                                if (row.is_default === false) {
-                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded del-button" data-bs-toggle="tooltip" data-bs-placement="top" data-id="{0}" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
-                                        row.id
-                                    );
+                                if (row.is_default) {
+                                    return ``
                                 } else {
-                                    return `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
+                                               data-id="${row.id}" data-bs-toggle="modal"
+                                               data-bs-target="#modal-detail-tax-category" data-bs-placement="top" title="" 
+                                               data-bs-original-title="Edit">
+                                               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                            </a>`
                                 }
                             }
                         }
@@ -341,8 +325,10 @@ $(document).ready(function () {
         })
     }
 
-    loadBaseCurrency();
-    loadCurrency();
+    loadBaseCurrency()
+    loadCurrency()
+    loadTax()
+    loadTaxCategory()
 
     $('#select-box-type').initSelect2({
         data: [
@@ -381,6 +367,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -428,7 +415,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -453,6 +440,7 @@ $(document).ready(function () {
                             'data': data.tax.category
                         })
                         let typeEle = $('#tax-type');
+                        typeEle.find('option').remove()
                         typeEle.initSelect2({
                             data: [
                                 {
@@ -465,9 +453,9 @@ $(document).ready(function () {
                                 }
                             ]
                         })
-                        if (data.tax.type === 0) {
+                        if (data.tax.tax_type === 0) {
                             typeEle.val(['0']).trigger("change");
-                        } else if (data.tax.type === 1) {
+                        } else if (data.tax.tax_type === 1) {
                             typeEle.val(['1']).trigger("change");
                         } else {
                             typeEle.val(['0', '1']).trigger("change");
@@ -519,9 +507,9 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($(form));
             let tax_type_ele = $('#tax-type')
             if (tax_type_ele.val().length > 1) {
-                frm.dataForm['type'] = '2';
+                frm.dataForm['tax_type'] = '2';
             } else {
-                frm.dataForm['type'] = tax_type_ele.val()[0];
+                frm.dataForm['tax_type'] = tax_type_ele.val()[0];
             }
             frm.dataForm['category'] = $('#select-box-category-update').val();
             $.fn.callAjax2({
@@ -538,6 +526,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -567,6 +556,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -606,7 +596,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -634,58 +624,9 @@ $(document).ready(function () {
             })
     })
 
-// delete currency
-    $(document).on("click", '.del-btn-currency', function () {
-        Swal.fire({
-            html:
-                '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' +
-                '<h6 class="text-danger">Delete currency ?</h6>',
-            customClass: {
-                confirmButton: 'btn btn-outline-secondary text-danger',
-                cancelButton: 'btn btn-outline-secondary text-gray',
-                container: 'swal2-has-bg'
-            },
-            showCancelButton: true,
-            buttonsStyling: false,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
-            reverseButtons: true,
-        }).then((result) => {
-            if (result.value) {
-                let data_url = $('#form-create-currency').attr('data-url-delete').replace(0, $(this).attr('data-id'))
-                $.fn.callAjax2({
-                    'url': data_url,
-                    'method': 'PUT',
-                    'data': {}
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        // $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        Swal.fire({
-                            html:
-                                '<div><h6 class="text-danger mb-0">Source Price List can not be deleted!</h6></div>',
-                            customClass: {
-                                content: 'text-center',
-                                confirmButton: 'btn btn-primary',
-                            },
-                            buttonsStyling: false,
-                        })
-                    })
-            }
-        })
-    });
 
     // sync selling rate from VietComBank
     $(document).on("click", '#sync-from-VCB-button', function () {
-        $('#sync-from-VCB-button').html('In Sync... &nbsp;<i class="bi bi-arrow-repeat"></i>')
         $('#datatable-currency tbody tr td:nth-child(4)').each(function () {
             if ($(this).find('span').hasClass('badge') === false) {
                 $(this).html('<div class="spinner-border text-primary" role="status" style="height: 15px; width: 15px;"></div>');
@@ -699,18 +640,19 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    $.fn.notifyB({description: 'Sync successfully!'}, 'success');
                     setTimeout(function () {
-                        $('#sync-from-VCB-button').text('Sync with VCB &nbsp;')
                         $('#datatable-currency').DataTable().ajax.reload();
                     }, 0);
                 }
             },
             (errs) => {
+                $.fn.notifyB({description: 'Sync Failed!'}, 'failure');
             }
         )
     });
 
-// PAYMENTS TERMS handle
+    // PAYMENTS TERMS handle
 
     function PaymentTermsList() {
         // init dataTable
@@ -800,13 +742,6 @@ $(document).ready(function () {
             }
         })
     }
-
-    /**
-     * declare action delete/edit button of terms DataTable
-     * @param elm element of button
-     * @param data data of row had object format
-     * @param iEvent event object of element on click
-     */
 
     function tableActionRow(elm, data, iEvent) {
         let isAction = $(iEvent.currentTarget).attr('data-action');

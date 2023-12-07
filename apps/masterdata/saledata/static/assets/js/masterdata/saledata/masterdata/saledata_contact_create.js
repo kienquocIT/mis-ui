@@ -21,42 +21,36 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
+                            className: 'wrap-text w-5',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-15',
                             render: (data, type, row, meta) => {
-                                return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
-                                    data,
-                                )
+                                return `<span class="badge badge-primary">${data}</span>`
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-40',
                             render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                                return `<b class="text-primary">${data}</b>`
                             }
                         },
                         {
                             data: 'description',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-30',
                             render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                                return `<span class="initial-wrap">${data}</span>`
                             }
                         }, {
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
                                 let url = $('#url-factory').data('salutation-detail').format_url_with_uuid(row.id)
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="salutation" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
-                                    row.id
-                                )
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="salutation" data-id="${row.id}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span></a>`
                             }
                         }
                     ],
@@ -86,42 +80,36 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
+                            className: 'wrap-text w-5',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-15',
                             render: (data, type, row, meta) => {
-                                return `<h6><a href="#">{0}</a> <span class="{1}"></span></h6>`.format_by_idx(
-                                    data
-                                )
+                                return `<span class="badge badge-primary">${data}</span>`
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-40',
                             render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                                return `<b class="text-primary">${data}</b>`
                             }
                         },
                         {
                             data: 'description',
-                            className: 'wrap-text',
+                            className: 'wrap-text w-30',
                             render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
+                                return `<span class="initial-wrap">${data}</span>`
                             }
                         }, {
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
                                 let url = $('#url-factory').data('interest-detail').format_url_with_uuid(row.id)
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="interest" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
-                                    row.id
-                                )
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="salutation" data-id="${row.id}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span></a>`
                             }
                         }
                     ],
@@ -131,13 +119,12 @@ $(document).ready(function () {
     }
 
     loadSalutation();
-
+    loadInterest();
 
     $('#btn-show-modal-create').on('click', function () {
         $('.modal-body input').val('');
     })
 
-    //Switch view table
     $("#tab-select-table a").on("click", function () {
         let section = $(this).attr('data-collapse')
         if (section === 'section-salutation') {
@@ -148,78 +135,13 @@ $(document).ready(function () {
         $(".lookup-data").hide()
         let id_tag = `#` + section
 
-        let lookup = section.split('-').pop()
-        $('#modal-lookup-data h5').text(lookup.charAt(0).toUpperCase() + lookup.slice(1));
+        let lookup = $(this).text()
+        $('#modal-lookup-data .modal-title').text(lookup.charAt(0).toUpperCase() + lookup.slice(1));
         $('#form-create-lookup').attr('data-lookup', lookup)
         $(id_tag).show();
     })
 
-    // submit form create lookup data
-    let frm = $('#form-create-lookup');
-    new SetupFormSubmit(frm).validate({
-        rules: {
-            code: {
-                required: true,
-            },
-            title: {
-                required: true,
-            }
-        },
-        submitHandler: function (form) {
-            let frm = new SetupFormSubmit($(form));
-            let frm_data = frm.dataForm;
-            let lookup = $(form).attr('data-lookup');
-            let data_url = ''
-            if (lookup === 'salutation') {
-                data_url = $('#form-create-lookup').attr('data-url-salutation');
-            } else if (lookup === 'interests') {
-                data_url = $('#form-create-lookup').attr('data-url-interests');
-            }
-
-            if (frm_data['code'] === '') {
-                frm_data['code'] = null;
-            }
-
-            if (frm_data['title'] === '') {
-                frm_data['title'] = null;
-            }
-
-            $.fn.callAjax2({
-                'url': data_url,
-                'method': frm.dataMethod,
-                'data': frm_data
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        if (lookup === 'salutation') {
-                            let table = $('#datatable_salutation_list').DataTable();
-                            setTimeout(function () {
-                                table.ajax.reload();
-                                $('#modal-lookup-data').modal('hide');
-                            })
-
-                        } else {
-                            let table = $('#datatable_interests_list').DataTable();
-                            setTimeout(function () {
-                                table.ajax.reload();
-                                $('#modal-lookup-data').modal('hide');
-                            })
-                        }
-                    }
-                },
-                (errs) => {
-                })
-        }
-    })
-
     $(document).on('click', '.edit-button', function () {
-        if ($(this).attr('data-type') === 'salutation') {
-            $('#modal-update-data h5').text('Edit Salutation');
-        } else {
-            $('#modal-update-data h5').text('Edit Interest');
-        }
         let data_url = $(this).data('url');
         $('[name="url_detail"]').val(data_url);
         $('#inp-type').val($(this).attr('data-type'));
@@ -244,7 +166,49 @@ $(document).ready(function () {
                     }
                 }
             }, (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             },)
+    })
+
+    const frm = $('#form-create-lookup');
+    new SetupFormSubmit(frm).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            let lookup = $(form).attr('data-lookup');
+            let data_url = ''
+            if (lookup === 'salutation') {
+                data_url = $('#form-create-lookup').attr('data-url-salutation');
+            } else if (lookup === 'interests') {
+                data_url = $('#form-create-lookup').attr('data-url-interests');
+            }
+
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': frm.dataMethod,
+                'data': frm_data
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-lookup-data').modal('hide');
+                        $('#datatable_salutation_list').DataTable().ajax.reload();
+                        $('#datatable_interests_list').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                })
+        }
     })
 
     const frm_update = $('#form-update-masterdata');
@@ -268,10 +232,6 @@ $(document).ready(function () {
                 'description': inp_des.val(),
             }
 
-            if (data_form['title'] === '') {
-                data_form['title'] = null;
-            }
-
             $.fn.callAjax2({
                 'url': frm.dataForm['url_detail'],
                 'method': frm.dataMethod,
@@ -282,17 +242,14 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-data').modal('hide');
-                        if ($('#inp-type').val() === 'salutation') {
-                            $('#datatable_salutation_list').DataTable().ajax.reload();
-                        } else {
-                            $('#datatable_interests_list').DataTable().ajax.reload();
-                        }
+                        $('#datatable_salutation_list').DataTable().ajax.reload();
+                        $('#datatable_interests_list').DataTable().ajax.reload();
                     }
                 },
                 (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
     });
-})
-;
+});

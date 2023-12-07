@@ -1236,10 +1236,6 @@ function loadDtbContactRole(data) {
     }
 }
 
-function objectsMatch(objA, objB) {
-    return objA.property === objB.property && objA.comparison_operator === objB.comparison_operator && objA.compare_data === objB.compare_data;
-}
-
 function autoLoadStage(
     is_load_rate = false,
     just_check = false,
@@ -1510,8 +1506,13 @@ function autoLoadStage(
             }
         }
     }
-    id_stage_current_list = id_stage_current_list.sort((a, b) => b.stage_win_rate - a.stage_win_rate);
-    id_stage_current = id_stage_current_list[0].stage_id
+    if (id_stage_current_list.length > 0) {
+        id_stage_current_list = id_stage_current_list.sort((a, b) => b.stage_win_rate - a.stage_win_rate);
+        id_stage_current = id_stage_current_list[0].stage_id
+    }
+
+    console.log(list_stage_condition_string)
+    console.log(list_property_config_string)
 
     if (!just_check) {
         let stage_selected_ele = $('.stage-selected');

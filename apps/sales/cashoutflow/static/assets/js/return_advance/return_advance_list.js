@@ -13,6 +13,7 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
+                            console.log(resp.data['return_advances'])
                             return resp.data['return_advances'] ? resp.data['return_advances'] : [];
                         }
                         return [];
@@ -68,26 +69,15 @@ $(document).ready(function () {
                         data: 'money_received',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            if (row.money_received === 'Waiting') {
-                                return `<span class="badge badge-soft-warning badge-outline">${data}</span>`
-                            } else {
-                                return `<span class="badge badge-soft-blue badge-outline">${data}</span>`
-                            }
-
+                            return `<span class="badge badge-soft-blue badge-outline">${row.money_received}</span>`
                         }
                     },
                     {
                         data: 'status',
                         render: (data, type, row) => {
-                            if (row.money_received === 'Received') {
-                                return `<span class="text-success">${data}<i class="bi bi-check2-circle"></i></span>`
-                            }
-                            if (row.money_received === 'Waiting') {
-                                return `<span class="text-success">${data}</span>`
-                            }
+                            return `<span class="text-success">${data}</span>`
                         },
                     },
-
                 ],
             });
         }

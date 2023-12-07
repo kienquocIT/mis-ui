@@ -33,7 +33,7 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-3">
+        <div class="col-12 col-md-3 col-lg-3">
             <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
                 <li class="nav-item">
                     <a
@@ -66,81 +66,73 @@
                 </li>
             </ul>
         </div>
-        <div class="col-1"></div>
-        <div class="col-8">
-
-            <!-- Section Product Type -->
+        <div class="col-12 col-md-1 col-lg-1"></div>
+        <div class="col-12 col-md-8 col-lg-8">
             <div class="lookup-data" id="section-product-type" style="display: block">
-                <table
-                        id="datatable-product-type-list" class="table nowrap w-100 mb-5"
-                        data-url="{% url "ProductTypeListAPI" %}"
-                        data-url-detail="{% url "ProductTypeDetailAPI" pk=0 %}"
-                        data-method="GET"
-                >
+                <table id="datatable-product-type-list" class="table nowrap w-100"
+                       data-url="{% url "ProductTypeListAPI" %}"
+                       data-url-detail="{% url "ProductTypeDetailAPI" pk=0 %}"
+                       data-method="GET">
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-30">{% trans "Description" %}</th>
-                    <th class="w-5">{% trans "Action" %}</th>
+                    <th></th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Description" %}</th>
+                    <th>{% trans "Action" %}</th>
                     </thead>
                 </table>
             </div>
 
-            <!-- Section product category-->
             <div class="lookup-data" id="section-product-category" style="display: none">
                 <table
-                        id="datatable-product-category-list" class="table nowrap w-100 mb-5"
+                        id="datatable-product-category-list" class="table nowrap w-100"
                         data-url="{% url "ProductCategoryListAPI" %}"
                         data-url-detail="{% url "ProductCategoryDetailAPI" pk=0 %}"
                         data-method="GET"
                 >
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-30">{% trans "Description" %}</th>
-                    <th class="w-5">{% trans "Action" %}</th>
+                    <th></th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Description" %}</th>
+                    <th>{% trans "Action" %}</th>
                     </thead>
                 </table>
             </div>
 
-            <!-- Section unit of measure-->
-            <div class="lookup-data" id="section-unit-measure" style="display: none">
+            <div class="lookup-data" id="section-unit-measure" style="display: none; overflow-x: hidden; overflow-y: auto; height: 80vh">
                 <table
-                        id="datatable-unit-measure-list" class="table nowrap w-100 mb-5"
+                        id="datatable-unit-measure-list" class="table nowrap w-100"
                         data-url="{% url "UnitOfMeasureListAPI" %}"
                         data-url-detail="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
                         data-method="GET"
                 >
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-20">{% trans "Code" %}</th>
-                    <th class="w-20">{% trans "Name" %}</th>
-                    <th class="w-20">{% trans "UoM Group" %}</th>
-                    <th class="w-20">{% trans "Is referenced unit" %}</th>
-                    <th class="w-10">{% trans "Action" %}</th>
+                    <th></th>
+                    <th>{% trans "Code" %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "UoM Group" %}</th>
+                    <th>{% trans "Is referenced unit" %}</th>
+                    <th>{% trans "Action" %}</th>
                     </thead>
                 </table>
             </div>
 
-            <!-- Section unit of measure group-->
             <div class="lookup-data" id="section-unit-measure-group" style="display: none">
                 <table
-                        id="datatable-unit-measure-group-list" class="table nowrap w-100 mb-5"
+                        id="datatable-unit-measure-group-list" class="table nowrap w-100"
                         data-url="{% url "UnitOfMeasureGroupListAPI" %}"
                         data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
                         data-method="GET"
                 >
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-5">{% trans "Action" %}</th>
+                    <th></th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Action" %}</th>
                     </thead>
                 </table>
             </div>
-
         </div>
     </div>
-    <!-- Modal Create Product, Expense -->
+
     <form
             id="form-create-product-and-expense" data-method="POST" data-lookup="section-product-type"
             data-url-product-type="{% url "ProductTypeListAPI" %} "
@@ -163,8 +155,8 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}</label>
-                                <input
+                                <label class="form-label required">{% trans "Name" %}</label>
+                                <input  required
                                         class="form-control" type="text" name="title"
                                         placeholder="Input name"
                                 >
@@ -190,9 +182,7 @@
             </div>
         </div>
     </form>
-    <!-- End Modal Create Product, Expense-->
 
-    <!-- Modal Create Unit Of Measure -->
     <form
             id="form-create-unit-measure" data-method="POST"
             data-url="{% url "UnitOfMeasureListAPI" %}"
@@ -271,10 +261,9 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Name" %}
-                                        <span class="field-required">*</span>
+                                    <label class="form-label required">{% trans "Name" %}
                                     </label>
-                                    <input
+                                    <input  required
                                             class="form-control" type="text" name="title" readonly
                                             placeholder="Input name" id="name-unit"
                                     >
@@ -316,9 +305,7 @@
             </div>
         </div>
     </form>
-    <!-- End Modal Create Unit Of Measure-->
 
-    <!-- Modal Create Unit Of Measure Group -->
     <form
             id="form-create-unit-measure-group" data-method="POST"
             data-url="{% url "UnitOfMeasureGroupListAPI" %} "
@@ -340,8 +327,8 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}</label>
-                                <input
+                                <label class="form-label required">{% trans "Name" %}</label>
+                                <input required
                                         class="form-control" type="text" name="title"
                                         placeholder="Input name"
                                 >
@@ -363,9 +350,7 @@
             </div>
         </div>
     </form>
-    <!-- End Modal Create Unit Of Measure Group -->
 
-    <!-- Modal Edit Unit Of Measure -->
     <form
             id="form-edit-unit-measure" data-method="PUT"
             data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
@@ -379,7 +364,7 @@
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Unit Of Measure Detail" %}</h5>
+                        <h5 class="modal-title">{% trans "Edit" %}&nbsp;{% trans "Unit Of Measure" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -391,7 +376,7 @@
                                     <label class="form-label required">{% trans "Select Group" %}
                                     </label>
                                     <input id="group-id" disabled hidden>
-                                    <select
+                                    <select disabled
                                             class="select2 form-select"
                                             data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
                                             id="select-box-edit-uom-group"
@@ -417,7 +402,7 @@
                                 <div class="form-group">
                                     <label class="form-label required">{% trans "Code" %}
                                     </label>
-                                    <input
+                                    <input disabled readonly
                                             class="form-control" type="text" name="code" id="inp-code-uom"
                                     >
                                 </div>
@@ -449,11 +434,10 @@
                                 <div class="form-group inp-can-edit">
                                     <label class="form-label required">{% trans "Name" %}
                                     </label>
-                                    <input
+                                    <input required
                                             class="form-control" type="text" name="title"
                                             placeholder="Input name" id="inp-edit-name-unit" value=""
                                     >
-
                                 </div>
                             </div>
                             <div class="col-3">
@@ -493,9 +477,7 @@
             </div>
         </div>
     </form>
-    <!-- End Modal Edit Unit Of Measure-->
 
-    <!-- Modal Edit Product, Expense -->
     <form
             id="form-edit-product-and-expense" data-method="PUT"
             data-url-product-type="{% url "ProductTypeDetailAPI" pk=0 %} "
@@ -510,7 +492,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Product Type" %}</h5>
+                        <h5 class="modal-title">{% trans "Edit" %}&nbsp;{% trans "Product Type" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -518,8 +500,8 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group inp-can-edit" id="inp-edit-name-div">
-                                <label class="form-label">{% trans "Name" %}</label>
-                                <input
+                                <label class="form-label required">{% trans "Name" %}</label>
+                                <input required
                                         class="form-control inp-can-edit" type="text" name="title"
                                         placeholder="Input name" id="inp-edit-name"
                                 >
@@ -549,9 +531,7 @@
             </div>
         </div>
     </form>
-    <!-- End Modal Edit Product, Expense-->
 
-    <!-- Modal Edit Unit Of Measure Group -->
     <form
             id="form-edit-unit-measure-group" data-method="PUT"
             data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %} "
@@ -565,7 +545,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Edit Unit Of Measure Group" %}</h5>
+                        <h5 class="modal-title">{% trans "Edit" %}&nbsp;{% trans "UoM Group" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -573,8 +553,8 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group inp-can-edit" id="inp-edit-name-uom-group-div">
-                                <label class="form-label">{% trans "Name" %}</label>
-                                <input
+                                <label class="form-label required">{% trans "Name" %}</label>
+                                <input required
                                         class="form-control inp-can-edit" type="text" name="title"
                                         id="inp-edit-name-uom-group"
                                         placeholder="Input name"
@@ -595,8 +575,6 @@
             </div>
         </div>
     </form>
-    <!-- End Modal Edit Unit Of Measure Group -->
-
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/saledata_product.js' %}"></script>

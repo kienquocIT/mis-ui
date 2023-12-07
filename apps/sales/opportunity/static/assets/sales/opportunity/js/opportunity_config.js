@@ -449,7 +449,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                        $.fn.notifyB({description: 'Success'}, 'success')
                         $('#modalDetailStage').modal('hide');
                     }
                 },

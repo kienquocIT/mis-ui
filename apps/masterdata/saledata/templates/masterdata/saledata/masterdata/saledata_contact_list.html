@@ -20,7 +20,7 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-3">
+        <div class="col-12 col-md-3 col-lg-3">
             <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-salutation">
@@ -34,39 +34,36 @@
                 </li>
             </ul>
         </div>
-        <div class="col-1"></div>
-        <div class="col-8">
-
-            <!-- Section Salutation -->
-            <div class="lookup-data" id="section-salutation" style="display: block">
-                <table id="datatable_salutation_list" class="table nowrap w-100 mb-5" data-method="GET"
+        <div class="col-12 col-md-1 col-lg-1"></div>
+        <div class="col-12 col-md-8 col-lg-8">
+            <div class="lookup-data" id="section-salutation" style="display: block; position: relative; width: 100%;">
+                <table id="datatable_salutation_list" class="table nowrap w-100" data-method="GET"
                        data-url="{% url "SalutationListAPI" %}">
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-30">{% trans "Code" %}</th>
-                    <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-30">{% trans "Description" %}</th>
-                    <th class="w-5">{% trans "Action" %}</th>
+                    <th></th>
+                    <th>{% trans "Code" %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Description" %}</th>
+                    <th>{% trans "Action" %}</th>
                     </thead>
                 </table>
             </div>
-            <!-- End section salutation-->
-            <div class="lookup-data" id="section-interests" style="display: none">
-                <table id="datatable_interests_list" class="table nowrap w-100 mb-5"
+            <div class="lookup-data" id="section-interests" style="display: none; position: relative; width: 100%;">
+                <table id="datatable_interests_list" class="table nowrap w-100"
                        data-url="{% url "InterestListAPI" %}"
                        data-method="GET">
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-30">{% trans "Code" %}</th>
-                    <th class="w-30">{% trans "Name" %}</th>
-                    <th class="w-30">{% trans "Description" %}</th>
-                    <th class="w-5">{% trans "Action" %}</th>
+                    <th></th>
+                    <th>{% trans "Code" %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Description" %}</th>
+                    <th>{% trans "Action" %}</th>
                     </thead>
                 </table>
             </div>
         </div>
     </div>
-    <!-- Modal Modal Create Lookup Data -->
+
     <div class="modal fade" id="modal-lookup-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -85,12 +82,12 @@
                         {% csrf_token %}
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Code" %}</label>
+                                <label class="form-label required">{% trans "Code" %}</label>
                                 <input id="inp-code" class="form-control" type="text" name="code"
                                        placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}</label>
+                                <label class="form-label required">{% trans "Name" %}</label>
                                 <input class="form-control" type="text" name="title"
                                        placeholder="Input name">
                             </div>
@@ -99,7 +96,6 @@
                                 <input class="form-control" type="text" name="description"
                                        placeholder="Input text">
                             </div>
-
                         </div>
                     </form>
                     <div class="modal-footer">
@@ -113,39 +109,35 @@
         </div>
     </div>
 
-    <!-- End Modal Create Lookup Data-->
-
-    <!-- Modal Update Master Data>-->
     <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Edit Salutation" %}</h5>
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-update-masterdata" data-method="PUT" data-lookup="salutation"
-                    >
+                    <form id="form-update-masterdata" data-method="PUT" data-lookup="salutation">
                         <div class="row">
                             <input name="url_detail" class="hidden">
                             <input id="inp-type" class="hidden">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Code" %}</label>
+                                <label class="form-label required">{% trans "Code" %}</label>
                                 <input id="code-update" class="form-control" type="text" name="code" readonly
                                        placeholder="CODE01" oninput="this.value=this.value.toUpperCase()" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">{% trans "Name" %}</label>
+                                <label class="form-label required">{% trans "Name" %}</label>
                                 <input class="form-control" type="text" name="title" id="name-update"
                                        placeholder="Input name" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Description" %}</label>
                                 <input class="form-control" type="text" name="description"
-                                       id="description-update" placeholder="Input text" readonly>
+                                       id="description-update" placeholder="Input text">
                             </div>
                         </div>
                     </form>
@@ -159,7 +151,6 @@
             </div>
         </div>
     </div>
-    <!-- Modal Update Master Data>-->
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"

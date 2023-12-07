@@ -58,22 +58,16 @@
                 </div>
                 <div class="col-12 col-md-9 col-lg-9">
                     <div class="row">
-                        <div class="col-2 col-md-3 col-lg-3">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label required" for="code">{% trans "Product Code" %}</label>
                                 <input type="text" id="code" class="form-control" oninput="this.value=this.value.toUpperCase()" required>
                             </div>
                         </div>
-                        <div class="col-5 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-9 col-lg-9">
                             <div class="form-group">
                                 <label class="form-label required" for="title">{% trans "Product Name" %}</label>
                                 <input type="text" id="title" placeholder="Input Product Name" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-5 col-md-3 col-lg-3">
-                            <div class="form-check form-switch mt-5">
-                                <input type="checkbox" class="form-check-input" id="is_publish_website">
-                                <label class="form-check-label" for="is_publish_website">{% trans "is publish website" %}</label>
                             </div>
                         </div>
                     </div>
@@ -229,13 +223,27 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12 col-md-9 col-lg-9">
+                <div class="row mt-5">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label class="form-label required">{% trans "Price List" %}</label>
                             <div id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                                 <div class="border-secondary card card-body ul-price-list"></div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-6 text-left">
+                                    <label class="form-label" for="price_list_for_sale_online">{% trans "Price list for sale online" %}</label>
+                                </div>
+                                <div class="col-6 text-right form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="is_publish_website">
+                                    <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
+                                </div>
+                            </div>
+                            <select id="price_list_for_sale_online" class="select2 form-select"></select>
                         </div>
                     </div>
                 </div>

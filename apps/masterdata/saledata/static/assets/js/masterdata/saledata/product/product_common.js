@@ -5,6 +5,8 @@ let generalUomGroupEle = $('#general-select-box-uom-group');
 let generalProductTypeEle = $('#general-select-box-product-type');
 let generalProductCateEle = $('#general-select-box-product-category');
 let saleDefaultUomEle = $('#sale-select-box-default-uom');
+let public_website_Ele = $('#is_publish_website')
+let price_list_for_sale_online_Ele = $('#price_list_for_sale_online')
 let purchaseDefaultUomEle = $('#purchase-select-box-default-uom');
 let inventoryDefaultUomEle = $('#inventory-select-box-uom-name');
 let saleProductTaxEle = $('#sale-select-box-tax-code');
@@ -197,6 +199,27 @@ function loadSaleTaxCode(tax_list) {
         keyId: 'id',
         keyText: 'title',
     })
+}
+
+public_website_Ele.on('change', function () {
+    if (!$(this).prop('checked')) {
+        price_list_for_sale_online_Ele.val('').trigger('change')
+        price_list_for_sale_online_Ele.prop('disabled', true)
+    }
+    else {
+        price_list_for_sale_online_Ele.prop('disabled', false)
+    }
+})
+
+function loadSalePriceListForSaleOnline(price_list_for_sale_online) {
+    price_list_for_sale_online_Ele.initSelect2({
+        data: price_list_for_sale_online,
+        keyResp: 'price_list_for_sale_online',
+        keyId: 'id',
+        keyText: 'title',
+    })
+    $.fn.initMaskMoney2()
+    price_list_for_sale_online_Ele.val('').trigger('change');
 }
 
 async function loadPriceList() {
@@ -718,6 +741,11 @@ function getDataForm() {
         data['sale_cost'] = parseFloat($('#sale-cost').attr('value'));
         data['sale_price_list'] = sale_product_price_list;
         data['sale_currency_using'] = currency_primary;
+
+        data['is_public_website'] = public_website_Ele.prop('checked');
+        if (public_website_Ele.prop('checked')) {
+            data['price_list_for_sale_online'] = price_list_for_sale_online_Ele.val();
+        }
     }
     else {
         data['sale_default_uom'] = null;
@@ -755,6 +783,10 @@ function getDataForm() {
     }
 
     if (data['product_choice'].includes(0)) {
+        if (data['is_public_website'] && Object.keys(data).includes('price_list_for_sale_online')) {
+            $.fn.notifyB({description: 'Missing Price list for Sale online'}, 'failure');
+            return false
+        }
         if (!data['sale_default_uom'] || !data['sale_currency_using'] || !data['sale_tax'] || data['sale_price_list'].length < 1) {
             $.fn.notifyB({description: 'Some fields in Sale tab is missing'}, 'failure');
             return false
@@ -784,8 +816,6 @@ function getDataForm() {
         $.fn.notifyB({description: 'Inventory level min can not greater than Inventory level max'}, 'failure');
         return false
     }
-
-    data['is_public_website'] = $('#is_publish_website').prop('checked');
 
     return data
 }
@@ -878,10 +908,18 @@ function LoadDetailProduct(option) {
                      loadSaleDefaultUom(sale_information['default_uom']);
                      loadSaleTaxCode(sale_information['tax']);
                      $('#sale-cost').attr('value', sale_information['sale_product_cost']);
+                     let price_list_for_sale_online = []
                      for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
                          let item = sale_information['sale_product_price_list'][i];
                          $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
+                         price_list_for_sale_online.push({
+                             'id': item.id,
+                             'title': item.title,
+                             'price': item.price
+                         })
                      }
+
+                     loadSalePriceListForSaleOnline(price_list_for_sale_online);
                      $.fn.initMaskMoney2();
                  }
 
@@ -912,7 +950,7 @@ function LoadDetailProduct(option) {
                      loadPurchaseTaxCode(purchase_information['tax']);
                  }
 
-                 $('#is_publish_website').prop('checked', product_detail['is_public_website'])
+                 public_website_Ele.prop('checked', product_detail['is_public_website'])
 
                  $('#data-detail-page').val(JSON.stringify(product_detail));
                  $.fn.initMaskMoney2();

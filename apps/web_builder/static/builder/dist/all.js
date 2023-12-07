@@ -77,14 +77,11 @@ $(function () {
                     url: frmEle.attr('data-url'),
                     type: 'PUT',
                     data: data,
-                }).then(
-                    (resp) => {
-                        localStorage.clear();
-                    },
-                    (errs) => {
-                        console.log('Errors:', errs);
-                    }
-                )
+                }).then((resp) => {
+                    localStorage.clear();
+                }, (errs) => {
+                    console.log('Errors:', errs);
+                })
             } else {
                 console.log("You canceled!");
             }
@@ -106,8 +103,8 @@ $(function () {
     function buttonAndCommandLoadStoreDataWhenDropEditor(cmdm, pn, editor) {
         cmdm.add('load-last-store', async function () {
             let data = await editorTmp.Storage.load();
-            if (data){
-                if (confirm(transEle.attr('data-msg-load-last-store')) === true){
+            if (data) {
+                if (confirm(transEle.attr('data-msg-load-last-store')) === true) {
                     editor.loadProjectData(data);
                 }
             }
@@ -128,12 +125,18 @@ $(function () {
 
     function clearCanvas(cmdm) {
         cmdm.add('canvas-clear', function () {
-            if (confirm(transEle.attr('data-msg-sure-clear-canvas'))) {
-                editor.runCommand('core:canvas-clear')
-                setTimeout(function () {
-                    localStorage.clear()
-                }, 0)
-            }
+            Swal.fire({
+                title: transEle.attr('data-msg-sure-clear-canvas'),
+                showCancelButton: true,
+                confirmButtonText: "Save",
+            }).then((result) => {
+                if (result.isConfirmed){
+                    editor.runCommand('core:canvas-clear')
+                    setTimeout(function () {
+                        localStorage.clear()
+                    }, 0);
+                }
+            })
         });
     }
 
@@ -142,7 +145,7 @@ $(function () {
         });
         editor.on('storage:store', function (e) {
         });
-        editor.on('storage:start', function (e){
+        editor.on('storage:start', function (e) {
         })
     }
 
@@ -155,8 +158,7 @@ $(function () {
         height: '100%',
         container: '#gjs',
         fromElement: true,
-        showOffsets: true,
-        // storageManager: false,
+        showOffsets: true, // storageManager: false,
         storageManager: {
             type: 'local', // Storage type. Available: local | remote
             autosave: true, // Store data automatically
@@ -175,8 +177,10 @@ $(function () {
             },
         },
         assetManager: {
-            embedAsBase64: true,
-            assets: []
+            upload: false,
+            embedAsBase64: false,
+            assets: [],
+            openAssetsOnDrop: false,
         },
         selectorManager: {componentFirst: true},
         styleManager: {
@@ -268,7 +272,11 @@ $(function () {
                     name: 'Decorations',
                     open: false,
                     properties: [
-                        'opacity', 'border-radius', 'border', 'box-shadow', 'background', // { id: 'background-bg', property: 'background', type: 'bg' }
+                        'opacity', 'border-radius', 'border', 'box-shadow',
+                        {
+                            extend: 'background', name: 'Background Advance'
+                        },
+                        { id: 'background-bg', property: 'background-color', type: 'color' },
                     ],
                 }, {
                     name: 'Extra',
@@ -277,8 +285,7 @@ $(function () {
                         'transition', 'perspective', 'transform'
                     ],
                     properties: [
-                        {extend: 'filter'},
-                        {
+                        {extend: 'filter'}, {
                             extend: 'filter',
                             property: 'backdrop-filter'
                         },
@@ -455,6 +462,7 @@ $(function () {
         },
         plugins: [
             'gjs-blocks-basic',
+            'grapesjs-preset-webpage',
             'grapesjs-plugin-forms',
             'grapesjs-component-countdown',
             'grapesjs-plugin-export',
@@ -466,31 +474,80 @@ $(function () {
             'grapesjs-tui-image-editor',
             'grapesjs-typed',
             'grapesjs-style-bg',
-            'grapesjs-preset-webpage',
-            'grapesjs-navbar',
             'grapesjs-style-filter',
             'grapesjs-style-bg',
             'grapesjs-plugin-bootstrap-carousel',
             'grapesjs-plugin-bootstrap-navbar',
             'grapesjs-plugin-my-products',
             'grapesjs-plugin-bootstrap-breadcrumb',
+            'grapesjs-plugin-bootstrap-layout',
+            'grapesjs-plugin-page-template',
         ],
         pluginsOpts: {
-            'grapesjs-plugin-bootstrap-breadcrumb': {'linkType': 'link-advance'},
+            'grapesjs-plugin-page-template': {
+                urlTemplateList: '/site-config/templates',
+                urlTemplateDetail: '/site-config/template/{pk}',
+            },
+            'grapesjs-plugin-bootstrap-breadcrumb': {
+                'linkType': 'link-advance',
+                category: {
+                    label: 'Breadcrumb',
+                    order: -5,
+                    open: false,
+                }
+            },
             'grapesjs-plugin-my-products': {
                 'productData': {
                     url: '/site/api/products',
                     method: 'GET',
                     linkDetail: '/site/product/{id}',
                     linkAPIDetail: '/site/api/product/{id}',
+                },
+                category: {
+                    label: 'Data Visions',
+                    order: -4,
+                    open: false,
+                },
+            },
+            'grapesjs-plugin-bootstrap-layout': {
+                category: {
+                    label: "Layouts",
+                    order: -3,
+                    open: true,
                 }
             },
-            'grapesjs-plugin-bootstrap-carousel': {},
             'grapesjs-plugin-bootstrap-navbar': {
                 menus: JSON.parse($('#idx-menus-data').text()),
                 prefixPath: '/site',
+                category: {
+                    label: 'Navigation Bar',
+                    order: -2,
+                    open: false,
+                },
             },
-            'gjs-blocks-basic': {flexGrid: true},
+            'grapesjs-plugin-bootstrap-carousel': {
+                category: {
+                    label: 'Slideshow',
+                    order: -1,
+                    open: false,
+                }
+            },
+            'gjs-blocks-basic': {
+                flexGrid: true,
+                category: {
+                    label: "Basic",
+                    order: 100,
+                    open: false,
+                }
+            },
+            'grapesjs-plugin-forms': {
+                category: 'Basic',
+            },
+            'grapesjs-component-countdown': {
+                block: {
+                    category: 'Basic',
+                },
+            },
             'grapesjs-tui-image-editor': {
                 script: [
                     // 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.7/fabric.min.js',
@@ -501,14 +558,13 @@ $(function () {
                 ],
             },
             'grapesjs-tabs': {
-                tabsBlock: {category: 'Extra'}
-            },
-            'grapesjs-navbar': {
-                tabsBlock: {category: 'Extra'}
+                tabsBlock: {
+                    category: 'Basic',
+                },
             },
             'grapesjs-typed': {
                 block: {
-                    category: 'Extra',
+                    category: 'Basic',
                     content: {
                         type: 'typed',
                         'type-speed': 40,
@@ -518,13 +574,23 @@ $(function () {
                     }
                 }
             },
+            'grapesjs-custom-code': {
+                blockCustomCode: {
+                    category: 'Basic'
+                },
+            },
+            'grapesjs-tooltip': {
+                blockTooltip: {
+                    category: 'Basic',
+                }
+            },
             'grapesjs-style-bg': { /* options */},
             'grapesjs-preset-webpage': {
-                modalImportTitle: 'Import Template',
-                modalImportLabel: '<div style="margin-bottom: 10px; font-size: 13px;">Paste here your HTML/CSS and click Import</div>',
-                modalImportContent: function (editor) {
-                    return editor.getHtml() + '<style>' + editor.getCss() + '</style>'; // + `<script>${editor.getJs()}</script>`;
-                },
+                // modalImportTitle: 'Import Template',
+                // modalImportLabel: '<div style="margin-bottom: 10px; font-size: 13px;">Paste here your HTML/CSS and click Import</div>',
+                // modalImportContent: function (editor) {
+                //     return editor.getHtml() + '<style>' + editor.getCss() + '</style>'; // + `<script>${editor.getJs()}</script>`;
+                // },
             },
         },
         i18n: {
@@ -535,30 +601,24 @@ $(function () {
                 en: localeEn,
             }
         },
-        style: '.vote-star::before{color:#ffc107;display:inline-block;overflow:hidden;width:100%}.vote-10::before{width:10%}.vote-20::before{width:20%}.vote-30::before{width:30%}.vote-40::before{width:40%}.vote-50::before{width:50%}.vote-60::before{width:60%}.vote-70::before{width:70%}.vote-80::before{width:80%}.vote-90::before{width:90%}.vote-100::before{width:100%}',
         canvas: {
             scripts: [
-                'https://code.jquery.com/jquery-3.3.1.min.js',
-                'https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js',
-                'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
+                'https://code.jquery.com/jquery-3.3.1.min.js', 'https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js', 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
 
                 // carousel
                 'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js',
 
                 // slick
-                'https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.3.1/jquery-migrate.min.js',
-                'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.3.1/jquery-migrate.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js',
             ],
             styles: [
-                'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css',
-                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css',
+                'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css',
 
                 // carousel
                 'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css',
 
                 // Slick
-                'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css',
-                'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css',
             ],
         },
     });

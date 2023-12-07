@@ -5100,7 +5100,7 @@ msgstr "Đối thủ"
 
 #
 msgid "Account History"
-msgstr "Lịnh sử khách hàng"
+msgstr "Lịch sử khách hàng"
 
 #
 msgid "Final acceptance setting"

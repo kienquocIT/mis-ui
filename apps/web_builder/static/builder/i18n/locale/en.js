@@ -198,4 +198,12 @@ const localeEn = {
     'grapesjs-plugin-bootstrap-breadcrumb': {
         homeTxt: "Home"
     },
+    'grapesjs-plugin-page-template': {
+        loadErrorTxt: "Load Errors",
+        templateTxt: "Templates",
+        renderTemplateTxt: "Render Templates",
+        areYouSure: 'Are you sure?',
+        okTxt: "Ok",
+        cancelTxt: "Cancel"
+    },
 };

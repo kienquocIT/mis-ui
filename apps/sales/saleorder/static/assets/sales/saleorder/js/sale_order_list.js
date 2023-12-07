@@ -20,10 +20,10 @@ $(function () {
                 },
                 columnDefs: [
                     {
-                        "width": "10%",
+                        "width": "5%",
                         "targets": 0
                     }, {
-                        "width": "20%",
+                        "width": "15%",
                         "targets": 1
                     }, {
                         "width": "20%",
@@ -35,17 +35,21 @@ $(function () {
                         "width": "10%",
                         "targets": 4
                     }, {
-                        "width": "15%",
+                        "width": "10%",
                         "targets": 5,
                     },
                     {
-                        "width": "5%",
+                        "width": "10%",
                         "targets": 6,
                     },
                     {
-                        "width": "5%",
+                        "width": "10%",
                         "targets": 7,
-                    }
+                    },
+                    {
+                        "width": "5%",
+                        "targets": 8,
+                    },
                 ],
                 columns: [
                     {
@@ -110,6 +114,18 @@ $(function () {
                     },
                     {
                         targets: 7,
+                        render: (data, type, row) => {
+                            let status_data = {
+                                "Confirm": "badge badge-soft-light",
+                                "Delivery": "badge badge-soft-warning",
+                                "Partially delivered": "badge badge-soft-info text-sky",
+                                "Delivered": "badge badge-soft-success",
+                            }
+                            return `<span class="${status_data[row?.['delivery_status']]}">${row?.['delivery_status']}</span>`;
+                        }
+                    },
+                    {
+                        targets: 8,
                         className: 'action-center',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])

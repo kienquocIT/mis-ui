@@ -5264,7 +5264,7 @@ msgstr "Truy cập trình xem trang chứa danh sách sản phẩm và nhấn v�
 
 #
 msgid "Overview design page"
-msgstr "Tổng quan màng hình thiết kế"
+msgstr "Tổng quan màn hình thiết kế"
 
 #
 msgid "Block"

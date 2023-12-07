@@ -116,7 +116,7 @@ $(function () {
                         targets: 7,
                         render: (data, type, row) => {
                             let $eleTrans = $('#trans-factory');
-                            let status_data = {}
+                            let status_data = {};
                             status_data[$eleTrans.attr('data-status-confirm')] = "badge badge-soft-light";
                             status_data[$eleTrans.attr('data-status-delivery')] = "badge badge-soft-warning";
                             status_data[$eleTrans.attr('data-status-partially')] = "badge badge-soft-info text-sky";

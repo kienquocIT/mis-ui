@@ -69,12 +69,12 @@ $(function () {
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            let status_data = {
-                                "None": "badge badge-soft-light",
-                                "Wait": "badge badge-soft-warning",
-                                "Partially received": "badge badge-soft-info text-sky",
-                                "Received": "badge badge-soft-success",
-                            }
+                            let $eleTrans = $('#trans-factory');
+                            let status_data = {};
+                            status_data[$eleTrans.attr('data-status-none')] = "badge badge-soft-light";
+                            status_data[$eleTrans.attr('data-status-wait')] = "badge badge-soft-warning";
+                            status_data[$eleTrans.attr('data-status-partially')] = "badge badge-soft-info text-sky";
+                            status_data[$eleTrans.attr('data-status-received')] = "badge badge-soft-success";
                             return `<span class="${status_data[row?.['receipt_status']]}">${row?.['receipt_status']}</span>`;
                         }
                     },

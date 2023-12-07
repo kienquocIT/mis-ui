@@ -198,4 +198,12 @@ const localeVi = {
     'grapesjs-plugin-bootstrap-breadcrumb': {
         homeTxt: "Trang chủ"
     },
+    'grapesjs-plugin-page-template': {
+        loadErrorTxt: "Xảy ra lỗi khi tải",
+        templateTxt: "Mẫu",
+        renderTemplateTxt: "Áp dụng mẫu",
+        areYouSure: 'Bạn có muốn tiếp tục không?',
+        okTxt: "Đồng ý",
+        cancelTxt: "Huỷ bỏ"
+    },
 };

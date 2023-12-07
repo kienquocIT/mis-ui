@@ -8,6 +8,28 @@ from apps.core.account.models import Company
 from apps.web_builder.serializers import WebDesignUpdateSerializer
 
 
+class TemplateList(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.BUILDER_PAGE_TEMPLATE).get()
+        return resp.auto_return(key_success='template_list')
+
+
+class TemplateDetail(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.BUILDER_PAGE_TEMPLATE_DETAIL.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return(key_success='template_detail')
+
+
 class MyCompanyWebsiteList(View):
     def callback_success(self, result):
         try:

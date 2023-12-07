@@ -238,6 +238,10 @@ $(function () {
             GRValidateHandle.validateIASerialNumberExistRow(this);
         });
 
+        btnAddIALot.on('click', function () {
+            GRLoadDataHandle.loadAddRowIALot();
+        });
+
         btnIAConfirmAdd.on('click', function () {
             GRStoreDataHandle.storeIADataAll();
             GRLoadDataHandle.loadIALineDetail();

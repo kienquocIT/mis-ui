@@ -65,6 +65,7 @@ $(document).ready(function () {
         (results) => {
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
+            console.log(opportunity_detail_data)
             const config = results[1];
             const config_is_select_stage = config.is_select_stage;
             const config_is_AM_create = config.is_account_manager_create;

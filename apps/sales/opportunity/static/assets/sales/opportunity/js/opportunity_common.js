@@ -1511,6 +1511,8 @@ function autoLoadStage(
         id_stage_current = id_stage_current_list[0].stage_id
     }
 
+    console.log(list_stage_condition_string)
+    console.log(list_property_config_string)
 
     if (!just_check) {
         let stage_selected_ele = $('.stage-selected');

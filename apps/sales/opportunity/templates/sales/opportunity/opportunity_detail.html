@@ -526,7 +526,24 @@
     <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/permission_group_tabs.js' %}"></script>
-    <script></script>
+    <script>
+        function loadPermitEmpty() {
+            let cls = new HandlePermissions();
+            cls.loadData([], [], {
+                enableVisibleColumns : false,
+                enableSortColumns : false,
+                enableTools : false,
+                searching : false,
+                ordering : false,
+                visibleSearchField : false,
+                visibleOrder : false,
+            });
+        }
+
+        $('#btnResetData').on('click', function (){
+            $('#member-current-edit').trigger('change');
+        })
+    </script>
 
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>

@@ -5562,12 +5562,16 @@ msgid "Activity"
 msgstr "Hoạt động"
 
 #
+msgid "Delivering"
+msgstr "Đang giao hàng"
+
+#
 msgid "Partially delivered"
-msgstr "Giao hàng một phần"
+msgstr "Đã giao một phần"
 
 #
 msgid "Delivered"
-msgstr "Đã giao hàng xong"
+msgstr "Đã giao hàng"
 
 #
 msgid "Partially received"
@@ -5575,4 +5579,4 @@ msgstr "Nhập kho một phần"
 
 #
 msgid "Received"
-msgstr "Đã nhập kho xong"
+msgstr "Đã nhập kho"

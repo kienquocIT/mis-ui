@@ -641,6 +641,104 @@
             </div>
         </div>
 
+        <div class="modal fade mt-5" id="productIAModalCenter" tabindex="-1" role="dialog" aria-labelledby="productIAModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row ml-2"><h6>{% trans 'Product list' %}</h6></div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll">
+                                        <table
+                                            id="datable-good-receipt-ia-product"
+                                            class="table nowrap w-100"
+                                            data-url=""
+                                            data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th class="w-5"></th>
+                                                <th class="w-25">{% trans 'Product' %}</th>
+                                                <th class="w-5">{% trans 'UOM' %}</th>
+                                                <th class="w-20">{% trans 'Quantity' %}</th>
+                                                <th class="w-25">{% trans 'Warehouse' %}</th>
+                                                <th class="w-20">{% trans 'This time' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-ia-lot-serial" hidden>
+                                        <div id="table-good-receipt-ia-lot-area" hidden>
+                                            <table
+                                                id="datable-good-receipt-ia-lot"
+                                                class="table nowrap w-100"
+                                                data-url=""
+                                                data-method="GET"
+                                            >
+                                                <thead>
+                                                <tr>
+                                                    <th class="required w-40">{% trans 'Lot number' %}</th>
+                                                    <th class="required w-10">{% trans 'Quantity' %}</th>
+                                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                                    <th class="w-20">{% trans 'Expiration date' %}</th>
+                                                    <th class="w-20">{% trans 'Manufacturing date' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+
+                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-lot">
+                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                            </button>
+                                        </div>
+
+                                        <div id="table-good-receipt-ia-serial-area" hidden>
+                                            <table
+                                                id="datable-good-receipt-ia-serial"
+                                                class="table nowrap w-100"
+                                                data-url=""
+                                                data-method="GET"
+                                            >
+                                                <thead>
+                                                <tr>
+                                                    <th class="w-15 required">{% trans 'Vendor serial no.' %}</th>
+                                                    <th class="w-15 required">{% trans 'Serial no.' %}</th>
+                                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                                    <th class="w-15">{% trans 'Expiration date' %}</th>
+                                                    <th class="w-15">{% trans 'Mfr date' %}</th>
+                                                    <th class="w-15">{% trans 'Warranty start' %}</th>
+                                                    <th class="w-15">{% trans 'Warranty end' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+
+                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-serial">
+                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-confirm-add-ia-product" data-bs-dismiss="modal">{% trans 'Next' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
 {% endblock %}
 

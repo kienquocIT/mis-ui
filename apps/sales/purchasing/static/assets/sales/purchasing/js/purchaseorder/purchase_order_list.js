@@ -71,8 +71,8 @@ $(function () {
                         render: (data, type, row) => {
                             let status_data = {
                                 "None": "badge badge-soft-light",
-                                "Wait": "badge badge-soft-light",
-                                "Partially received": "badge badge-soft-warning",
+                                "Wait": "badge badge-soft-warning",
+                                "Partially received": "badge badge-soft-info text-sky",
                                 "Received": "badge badge-soft-success",
                             }
                             return `<span class="${status_data[row?.['receipt_status']]}">${row?.['receipt_status']}</span>`;

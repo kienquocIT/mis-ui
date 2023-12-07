@@ -828,11 +828,6 @@ msgstr "Từ chối"
 msgid "Return"
 msgstr "Trả Về"
 
-
-#
-msgid "Received"
-msgstr "Đã tiếp nhận"
-
 #
 msgid "Đã nhận"
 msgstr ""
@@ -5565,3 +5560,19 @@ msgstr "Báo giá chưa hoàn tất"
 #
 msgid "Activity"
 msgstr "Hoạt động"
+
+#
+msgid "Partially delivered"
+msgstr "Giao hàng một phần"
+
+#
+msgid "Delivered"
+msgstr "Đã giao hàng xong"
+
+#
+msgid "Partially received"
+msgstr "Nhập kho một phần"
+
+#
+msgid "Received"
+msgstr "Đã nhập kho xong"

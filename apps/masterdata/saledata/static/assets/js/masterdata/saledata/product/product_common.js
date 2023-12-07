@@ -6,7 +6,7 @@ let generalProductTypeEle = $('#general-select-box-product-type');
 let generalProductCateEle = $('#general-select-box-product-category');
 let saleDefaultUomEle = $('#sale-select-box-default-uom');
 let public_website_Ele = $('#is_publish_website')
-let price_list_for_sale_online_Ele = $('#price_list_for_sale_online')
+let price_list_for_online_sale_Ele = $('#price_list_for_sale_online')
 let purchaseDefaultUomEle = $('#purchase-select-box-default-uom');
 let inventoryDefaultUomEle = $('#inventory-select-box-uom-name');
 let saleProductTaxEle = $('#sale-select-box-tax-code');
@@ -115,14 +115,23 @@ $(document).on('change', '.select_price_list', function () {
 $(document).on('change', '.input_price_list', function () {
     let this_data_id = $(this).attr('data-id');
     let this_data_value = $(this).attr('value');
+    let sale_product_price_list = []
     $('.ul-price-list').find('.input_price_list').each(function () {
         if ($(this).attr('data-source') === this_data_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
             let value = parseFloat(this_data_value) * parseFloat($(this).attr('data-factor'));
             $(this).attr('value', value);
             loadPriceForChild($(this).attr('data-id'), value);
         }
+
+        let price_list_id = $(this).attr('data-id');
+        let price_list_value = $(this).attr('value');
+        if (price_list_id && price_list_value) {
+            sale_product_price_list.push(price_list_id);
+        }
     })
     $.fn.initMaskMoney2();
+
+    loadSalePriceListForSaleOnline(null, sale_product_price_list)
 })
 
 function disabledTab(check, link_tab, id_tab) {
@@ -203,23 +212,34 @@ function loadSaleTaxCode(tax_list) {
 
 public_website_Ele.on('change', function () {
     if (!$(this).prop('checked')) {
-        price_list_for_sale_online_Ele.val('').trigger('change')
-        price_list_for_sale_online_Ele.prop('disabled', true)
+        price_list_for_online_sale_Ele.val('').trigger('change')
+        price_list_for_online_sale_Ele.prop('disabled', true)
     }
     else {
-        price_list_for_sale_online_Ele.prop('disabled', false)
+        price_list_for_online_sale_Ele.prop('disabled', false)
     }
 })
 
-function loadSalePriceListForSaleOnline(price_list_for_sale_online) {
-    price_list_for_sale_online_Ele.initSelect2({
-        data: price_list_for_sale_online,
-        keyResp: 'price_list_for_sale_online',
+function loadSalePriceListForSaleOnline(data, filter=[]) {
+    price_list_for_online_sale_Ele.initSelect2({
+        ajax: {
+            url: price_list_for_online_sale_Ele.attr('data-url'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (filter.includes(resp.data[keyResp][i].id)) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            return result;
+        },
+        data: (data ? data : null),
+        keyResp: 'price_list',
         keyId: 'id',
         keyText: 'title',
     })
-    $.fn.initMaskMoney2()
-    price_list_for_sale_online_Ele.val('').trigger('change');
 }
 
 async function loadPriceList() {
@@ -744,7 +764,7 @@ function getDataForm() {
 
         data['is_public_website'] = public_website_Ele.prop('checked');
         if (public_website_Ele.prop('checked')) {
-            data['price_list_for_sale_online'] = price_list_for_sale_online_Ele.val();
+            data['price_list_for_online_sale'] = price_list_for_online_sale_Ele.val();
         }
     }
     else {
@@ -828,6 +848,7 @@ class ProductHandle {
         loadSaleTaxCode();
         loadPurchaseTaxCode();
         loadSaleDefaultUom();
+        loadSalePriceListForSaleOnline();
         loadInventoryDefaultUom();
         loadPurchaseDefaultUom();
         loadBaseItemUnit();
@@ -908,18 +929,20 @@ function LoadDetailProduct(option) {
                      loadSaleDefaultUom(sale_information['default_uom']);
                      loadSaleTaxCode(sale_information['tax']);
                      $('#sale-cost').attr('value', sale_information['sale_product_cost']);
-                     let price_list_for_sale_online = []
+                     let price_list_filter = []
                      for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
                          let item = sale_information['sale_product_price_list'][i];
                          $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
-                         price_list_for_sale_online.push({
-                             'id': item.id,
-                             'title': item.title,
-                             'price': item.price
-                         })
+                         price_list_filter.push(item.id)
                      }
 
-                     loadSalePriceListForSaleOnline(price_list_for_sale_online);
+                     loadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
+                     if (Object.keys(sale_information['price_list_for_online_sale']).length !== 0) {
+                         price_list_for_online_sale_Ele.prop('disabled', false)
+                     }
+                     else {
+                         price_list_for_online_sale_Ele.prop('disabled', true)
+                     }
                      $.fn.initMaskMoney2();
                  }
 

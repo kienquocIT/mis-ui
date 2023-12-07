@@ -5585,14 +5585,5 @@ msgid "From Price List in left side"
 msgstr "Chọn theo danh sách giá bên trái"
 
 #
-msgid "For Sale"
-msgstr "Cho bán"
-
-#
-msgid "For Purchase"
-msgstr "Cho mua"
-
-#
 msgid "For Inventory"
 msgstr "Quản lý tồn kho"
-

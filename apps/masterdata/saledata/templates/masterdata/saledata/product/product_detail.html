@@ -44,15 +44,15 @@
                     <div class="form-group">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="check-tab-sale" value="option2">
-                            <label class="form-check-label" for="check-tab-sale">{% trans "Sale" %}</label>
+                            <label class="form-check-label" for="check-tab-sale">{% trans "For Sale" %}</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1">
-                            <label class="form-check-label" for="check-tab-inventory">{% trans "Inventory" %}</label>
+                            <label class="form-check-label" for="check-tab-inventory">{% trans "For Inventory" %}</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="check-tab-purchase" value="option3">
-                            <label class="form-check-label" for="check-tab-purchase">{% trans "Purchase" %}</label>
+                            <label class="form-check-label" for="check-tab-purchase">{% trans "For Purchase" %}</label>
                         </div>
                     </div>
                 </div>
@@ -243,7 +243,8 @@
                                     <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
                                 </div>
                             </div>
-                            <select id="price_list_for_sale_online" class="select2 form-select"></select>
+                            <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select"></select>
+                            <span class="text-muted">{% trans 'From Price List in left side' %}</span>
                         </div>
                     </div>
                 </div>

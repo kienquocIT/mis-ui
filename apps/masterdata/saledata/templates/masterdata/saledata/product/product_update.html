@@ -241,7 +241,7 @@
                                     <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
                                 </div>
                             </div>
-                            <select id="price_list_for_sale_online" class="select2 form-select"></select>
+                            <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select"></select>
                             <span class="text-muted">{% trans 'From Price List in left side' %}</span>
                         </div>
                     </div>

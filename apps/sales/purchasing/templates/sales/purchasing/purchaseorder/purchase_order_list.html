@@ -54,7 +54,14 @@
         </tbody>
     </table>
 {% endblock %}
-
+{% block dataHiddenGroup %}
+    <input type="hidden" id="trans-factory"
+    data-status-none="{% trans 'None' %}"
+    data-status-wait="{% trans 'Wait' %}"
+    data-status-partially="{% trans 'Partially received' %}"
+    data-status-received="{% trans 'Received' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
 
 

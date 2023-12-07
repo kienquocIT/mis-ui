@@ -176,8 +176,10 @@ class NodeLoadDataHandle {
             data: dataEmployee,
             'dataParams': {'company_id': companyVal, 'role__id': roleVal},
             disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['full_name'] || '';
+            templateResult: function (state) {
+                let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
+                let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success"></span>` : `<span class="badge badge-light"></span>`;
+                return $(`<span>${state.text} ${activeHTML} ${groupHTML}</span>`);
             },
         });
         return true;
@@ -1096,6 +1098,7 @@ class NodeDataTableHandle {
                                                                                 data-url="${NodeDataTableHandle.employeeCompanyInitEle.attr('data-url')}"
                                                                                 data-method="${NodeDataTableHandle.employeeCompanyInitEle.attr('data-method')}"
                                                                                 data-keyResp="employee_company_list"
+                                                                                data-keyText="full_name"
                                                                             >
                                                                             </select>
                                                                         </div>

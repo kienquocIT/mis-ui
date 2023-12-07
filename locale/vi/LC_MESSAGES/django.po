@@ -828,11 +828,6 @@ msgstr "Từ chối"
 msgid "Return"
 msgstr "Trả Về"
 
-
-#
-msgid "Received"
-msgstr "Đã tiếp nhận"
-
 #
 msgid "Đã nhận"
 msgstr ""
@@ -1636,7 +1631,7 @@ msgstr "Loại thuế"
 
 #
 msgid "Selling rate"
-msgstr "Tỉ giá bán hàng"
+msgstr "Tỉ lệ bán hàng"
 
 #
 msgid "Category"
@@ -2125,7 +2120,7 @@ msgstr "Mã phiếu tạm ứng"
 
 #
 msgid "Return Status"
-msgstr "Trạng thái hoàn ứng"
+msgstr "Trạng thái hoàn trả"
 
 #
 msgid "Opportunity list"
@@ -5567,9 +5562,24 @@ msgid "Activity"
 msgstr "Hoạt động"
 
 #
-msgid "Sync with VCB"
-msgstr "Đồng bộ theo Vietcombank"
+msgid "Delivering"
+msgstr "Đang giao hàng"
 
+#
+msgid "Partially delivered"
+msgstr "Đã giao một phần"
+
+#
+msgid "Delivered"
+msgstr "Đã giao hàng"
+
+#
+msgid "Partially received"
+msgstr "Nhập kho một phần"
+
+#
+msgid "Received"
+msgstr "Đã nhập kho"
 #
 msgid "From Price List in left side"
 msgstr "Chọn theo danh sách giá bên trái"
@@ -5585,3 +5595,4 @@ msgstr "Cho mua"
 #
 msgid "For Inventory"
 msgstr "Quản lý tồn kho"
+

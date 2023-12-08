@@ -204,7 +204,7 @@ class GRLoadDataHandle {
                             $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
                                                 <div class="d-flex">
                                                     <span class="mr-2">${lot?.['lot_number']}</span>
-                                                    <span class="text-red">${lot?.['quantity_import']} ${uom}</span>
+                                                    <span class="badge badge-soft-success">${lot?.['quantity_import']} <i>${uom}</i></span>
                                                 </div>
                                             </a>`);
                         }

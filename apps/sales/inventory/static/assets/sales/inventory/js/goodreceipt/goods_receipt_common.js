@@ -250,7 +250,7 @@ class GRLoadDataHandle {
                             $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
                                                 <div class="d-flex">
                                                     <span class="mr-2">${lot?.['lot_number']}</span>
-                                                    <span class="text-red">${lot?.['quantity_import']} ${uom}</span>
+                                                    <span class="badge badge-soft-success">${lot?.['quantity_import']} <i>${uom}</i></span>
                                                 </div>
                                             </a>`);
                         }
@@ -667,6 +667,18 @@ class GRLoadDataHandle {
         }
         return is_checked;
     };
+
+    static loadDataIfChangeDateLotRow(row) {
+        let is_checked = GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            if (is_checked === true) {
+                row.querySelector('.table-row-lot-number').value = '';
+                if ($(this).hasClass('table-row-expire-date')) {
+                    row.querySelector('.table-row-manufacture-date').value = '';
+                } else {
+                    row.querySelector('.table-row-expire-date').value = '';
+                }
+            }
+    }
 
     static loadNewRowsSerial() {
         let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
@@ -2328,6 +2340,45 @@ class GRValidateHandle {
         return true
     };
 
+    static validateIALotNumber(ele) {
+        let lot_number = ele.value;
+        if (lot_number !== '') {
+            let dataIAProductCheckedRaw = GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+            if (dataIAProductCheckedRaw) {
+                let dataIAProductChecked = JSON.parse(dataIAProductCheckedRaw);
+                $.fn.callAjax2({
+                        'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
+                        'method': 'GET',
+                        'data': {
+                            'product_warehouse__product_id': dataIAProductChecked?.['product']?.['id'],
+                            'lot_number': lot_number
+                        },
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                                if (data.warehouse_lot_list.length > 0) {
+                                    ele.value = '';
+                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                    if (eleImport) {
+                                        eleImport.value = '0';
+                                    }
+                                    GRLoadDataHandle.loadIAQuantityImport();
+                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                    return false
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+        }
+        return true
+    };
+
     static validateSerialNumber(ele) {
         let serial_number = ele.value;
         let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
@@ -2422,6 +2473,23 @@ class GRValidateHandle {
         if (ele.value !== '') {
             let checkNum = 0;
             for (let eleLotNumber of GRDataTableHandle.tableLot[0].querySelectorAll(".table-row-lot-number")) {
+                if (ele.value === eleLotNumber.value) {
+                    checkNum++;
+                }
+            }
+            if (checkNum > 1) {
+                ele.value = '';
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-different')}, 'failure');
+                return false
+            }
+        }
+        return true;
+    };
+
+    static validateIALotNumberExistRow(ele) {
+        if (ele.value !== '') {
+            let checkNum = 0;
+            for (let eleLotNumber of GRDataTableHandle.tableIALot[0].querySelectorAll(".table-row-lot-number")) {
                 if (ele.value === eleLotNumber.value) {
                     checkNum++;
                 }

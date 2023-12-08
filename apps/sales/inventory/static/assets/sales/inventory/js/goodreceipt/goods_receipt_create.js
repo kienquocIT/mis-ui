@@ -164,15 +164,7 @@ $(function () {
 
         GRDataTableHandle.tableLot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
             let row = this.closest('tr');
-            let is_checked = GRLoadDataHandle.loadUnCheckLotDDItem(row);
-            if (is_checked === true) {
-                row.querySelector('.table-row-lot-number').value = '';
-                if ($(this).hasClass('table-row-expire-date')) {
-                    row.querySelector('.table-row-manufacture-date').value = '';
-                } else {
-                    row.querySelector('.table-row-expire-date').value = '';
-                }
-            }
+            GRLoadDataHandle.loadDataIfChangeDateLotRow(row);
         });
 
         btnAddSerial.on('click', function () {
@@ -240,6 +232,42 @@ $(function () {
 
         btnAddIALot.on('click', function () {
             GRLoadDataHandle.loadAddRowIALot();
+        });
+
+        GRDataTableHandle.tableIALot.on('click', '.dropdown-item-lot', function () {
+            let row = this.closest('tr');
+            GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            GRLoadDataHandle.loadCheckLotDDItem(this, row);
+        });
+
+        GRDataTableHandle.tableIALot.on('change', '.table-row-lot-number', function () {
+            let row = this.closest('tr');
+            // validate lot exist
+            GRValidateHandle.validateIALotNumber(this);
+            GRValidateHandle.validateIALotNumberExistRow(this);
+            //
+            let is_checked = GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            if (this.value === '') {
+                row.querySelector('.table-row-import').value = '0';
+                GRLoadDataHandle.loadIAQuantityImport();
+            }
+            if (is_checked === true) {
+                row.querySelector('.table-row-expire-date').value = '';
+                row.querySelector('.table-row-manufacture-date').value = '';
+            }
+        });
+
+        GRDataTableHandle.tableIALot.on('change', '.table-row-import', function () {
+            let importResult = GRLoadDataHandle.loadIAQuantityImport();
+            if (importResult === false) {
+                this.value = '0';
+                GRLoadDataHandle.loadIAQuantityImport();
+            }
+        });
+
+        GRDataTableHandle.tableIALot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
+            let row = this.closest('tr');
+            GRLoadDataHandle.loadDataIfChangeDateLotRow(row);
         });
 
         btnIAConfirmAdd.on('click', function () {

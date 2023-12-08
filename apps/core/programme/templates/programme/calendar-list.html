@@ -110,60 +110,35 @@
                         <div class="event-head mb-4">
                             <span class="badge badge-violet badge-indicator badge-indicator-xl flex-shrink-0 me-2"></span>
                             <div>
-                                <div class="event-name">Jampack Team Meet</div>
-                                <span>Event</span>
+                                <div class="event-name">Event name</div>
+                                <span>{% trans 'Event' %}</span>
                             </div>
                         </div>
                         <ul class="event-detail">
                             <li>
                                 <span class="ev-icon-wrap"><i class="fa-regular fa-calendar"></i></span>
-                                Aug 18,2020 - Aug 19, 2020
+                                <span class="date_txt"></span>
                             </li>
                             <li>
                                 <span class="ev-icon-wrap"><i class="fa-regular fa-clock"></i></span>
-                                8:40 AM - 5:40 PM
+                                <span class="time_txt"></span>
                             </li>
                             <li>
                                 <span class="ev-icon-wrap"><i class="fa-solid fa-location-dot"></i></span>
-                                Oslo, Canada
+                                <span class="loca_txt"></span>
                             </li>
                             <li>
                                 <span class="ev-icon-wrap"><i class="fa-regular fa-square-check"></i></span>
-                                Meetings
+                                <span class="type_txt"></span>
                             </li>
                             <li>
                                 <span class="ev-icon-wrap"><i class="fa-solid fa-user-plus"></i></span>
-                                <div class="d-flex flex-wrap">
-                                    <div class="chip chip-primary user-chip mb-2 me-2">
-											<span>
-												<span class="avatar">
-													<img src="dist/img/avatar11.jpg" alt="user" class="avatar-img">
-												</span>
-												<span class="chip-text">Morgan</span>
-											</span>
-                                    </div>
-                                    <div class="chip chip-primary user-chip mb-2 me-2">
-											<span>
-												<span class="avatar">
-													<img src="dist/img/avatar12.jpg" alt="user" class="avatar-img">
-												</span>
-												<span class="chip-text">Charlie</span>
-											</span>
-                                    </div>
-                                    <div class="chip chip-primary user-chip mb-2 me-2">
-											<span>
-												<span class="avatar">
-													<img src="dist/img/avatar13.jpg" alt="user" class="avatar-img">
-												</span>
-												<span class="chip-text">Winston</span>
-											</span>
-                                    </div>
+                                <div class="d-flex flex-wrap member_txt">
                                 </div>
                             </li>
                             <li>
                                 <span class="ev-icon-wrap"><i class="fa-solid fa-bars"></i></span>
-                                Annual meeting with global branch teams & bosses about growth planning and fiscal year
-                                reports
+                                <span class="des_txt"></span>
                             </li>
                         </ul>
                     </div>
@@ -273,7 +248,7 @@
                                     <div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
 											<span>
 												<span class="avatar">
-													<img src="dist/img/avatar11.jpg" alt="user" class="avatar-img">
+													<img src="#" alt="user" class="avatar-img">
 												</span>
 												<span class="chip-text">Morgan</span>
 												<button type="button" class="btn-close"></button>
@@ -282,7 +257,7 @@
                                     <div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
 											<span>
 												<span class="avatar">
-													<img src="dist/img/avatar12.jpg" alt="user" class="avatar-img">
+													<img src="#" alt="user" class="avatar-img">
 												</span>
 												<span class="chip-text">Charlie</span>
 												<button type="button" class="btn-close"></button>
@@ -291,7 +266,7 @@
                                     <div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
 											<span>
 												<span class="avatar">
-													<img src="dist/img/avatar13.jpg" alt="user" class="avatar-img">
+													<img src="#" alt="user" class="avatar-img">
 												</span>
 												<span class="chip-text">Winston</span>
 												<button type="button" class="btn-close"></button>
@@ -315,14 +290,21 @@
     </div>
 {% endblock %}
 {% block dataHiddenGroup %}
+    <dev class="temp-chip">
+        <div class="chip chip-primary chip-pill mb-2 me-2">
+            <span><span class="chip-text">Morgan</span></span>
+        </div>
+    </dev>
     <input type="text" id="url-factory"
            data-leave="{% url 'LeaveRequestListAPI' %}"
            data-meet="{% url 'OpportunityMeetingListAPI' %}"
            data-business="{% url 'BusinessTripRequestListAPI' %}"
     >
+    <input type="text" id="trans-factory" data-meet="{% trans 'Meetings' %}">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/fullcalendar/main.min.js' %}"></script>
+    {#    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>#}
     <script src="{% static 'assets/js/programme/calendar-list.js' %}"></script>
 {% endblock %}

@@ -27,17 +27,17 @@ $(document).ready(function () {
                         'text': msgData.attr('data-msg-of-all'),
                     },
                     {
-                        'id': 'me',
-                        'text': msgData.attr('data-msg-of-me'),
-                        selected: true,
-                    },
-                    {
                         'id': 'same',
                         'text': msgData.attr('data-msg-of-group'),
                     },
                     {
                         'id': 'staff',
                         'text': msgData.attr('data-msg-of-staff'),
+                    },
+                    {
+                        'id': 'me',
+                        'text': msgData.attr('data-msg-of-me'),
+                        selected: true,
                     },
                 ],
             },

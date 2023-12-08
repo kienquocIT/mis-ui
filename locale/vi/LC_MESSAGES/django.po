@@ -1478,7 +1478,7 @@ msgstr "Tỉnh"
 
 #
 msgid "Inventory"
-msgstr "Kho - giao hàng"
+msgstr "Kho"
 
 #
 msgid "Sale"
@@ -5580,3 +5580,18 @@ msgstr "Nhập kho một phần"
 #
 msgid "Received"
 msgstr "Đã nhập kho"
+#
+msgid "From Price List in left side"
+msgstr "Chọn theo danh sách giá bên trái"
+
+#
+msgid "For Inventory"
+msgstr "Quản lý tồn kho"
+
+#
+msgid "Price list for sale online"
+msgstr "Bảng giá bán hàng online"
+
+#
+msgid "Sale online"
+msgstr "Bán hàng online"

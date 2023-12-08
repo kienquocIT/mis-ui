@@ -764,7 +764,7 @@ function getDataForm() {
 
         data['is_public_website'] = public_website_Ele.prop('checked');
         if (public_website_Ele.prop('checked')) {
-            data['price_list_for_online_sale'] = price_list_for_online_sale_Ele.val();
+            data['online_price_list'] = price_list_for_online_sale_Ele.val();
         }
     }
     else {

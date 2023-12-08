@@ -6,9 +6,7 @@ $(document).ready(function () {
     $("#frm-update-company").submit(function (event) {
         event.preventDefault();
         let combinesData = new CompanyHandle().combinesData($(this), true);
-        console.log(combinesData)
         if (combinesData) {
-            WindowControl.showLoading();
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {
@@ -66,12 +64,6 @@ $(document).ready(function () {
                         }
                     },
                     (errs) => {
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
-                            },
-                            1000
-                        )
                         $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )

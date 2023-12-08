@@ -880,6 +880,8 @@ class QuotationLoadDataHandle {
                 let general_price = 0;
                 let customer_price = null;
                 let current_price_checked = price.getAttribute('value');
+                let transJSON = {};
+                transJSON['Valid'] = QuotationLoadDataHandle.transEle.attr('data-valid');
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
@@ -895,7 +897,7 @@ class QuotationLoadDataHandle {
                                                             <div class="d-flex">
                                                                 <span class="mr-2">${data.price_list[i].title}</span>
                                                                 <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                                <span class="valid-price mr-2"><i>${data.price_list[i]?.['price_status']}</i></span>
+                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
                                                             </div>
                                                         </a>`);
                                 } else {
@@ -903,26 +905,27 @@ class QuotationLoadDataHandle {
                                                             <div class="d-flex">
                                                                 <span class="mr-2">${data.price_list[i].title}</span>
                                                                 <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                                <span class="valid-price mr-2"><i>${data.price_list[i]?.['price_status']}</i></span>
+                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
                                                             </div>
                                                         </a>`);
                                 }
-                            } else { // If Expired Price
-                                $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-                                                        <div class="d-flex">
-                                                            <span class="mr-2">${data.price_list[i].title}</span>
-                                                            <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                            <span class="expired-price mr-2"><i>${data.price_list[i]?.['price_status']}</i></span>
-                                                        </div>
-                                                    </a>`);
                             }
+                            // else { // If Expired Price
+                            //     $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}" disabled>
+                            //                             <div class="d-flex">
+                            //                                 <span class="mr-2">${data.price_list[i].title}</span>
+                            //                                 <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                            //                                 <span class="expired-price mr-2"><i>${data.price_list[i]?.['price_status']}</i></span>
+                            //                             </div>
+                            //                         </a>`);
+                            // }
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
                                                     <div class="d-flex">
                                                         <span class="mr-2">${data.price_list[i].title}</span>
                                                         <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                        <span class="valid-price mr-2"><i>${data.price_list[i]?.['price_status']}</i></span>
+                                                        <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
                                                     </div>
                                                 </a>`);
                         }

@@ -738,7 +738,7 @@ $(function () {
             }
         });
 
-// Load data quotation COPY TO sale order when sale order page loaded
+// Load data quotation COPY TO sale order when sale order page CREATE loaded
         function prepareDataCopyTo() {
             let eleDataCopy = $('#data-init-quotation-copy-to');
             if (eleDataCopy) {

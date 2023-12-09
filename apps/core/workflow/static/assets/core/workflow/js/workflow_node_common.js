@@ -777,6 +777,13 @@ class NodeLoadDataHandle {
                     if (inWF?.['position_choice']) {
                         inWF['position_choice'] = dataPosition[inWF['position_choice']];
                     }
+                    if (inWF?.['zone']) { // set id zone to zone's order
+                        for (let zone_detail of inWF?.['zone']) {
+                            if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
+                                zone_detail['id'] = zone_detail?.['order'];
+                            }
+                        }
+                    }
                 }
                 $(tableInWF).DataTable().rows.add(dataInWF).draw();
             }

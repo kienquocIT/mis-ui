@@ -1247,6 +1247,13 @@ function autoLoadStage(
     config_is_input_rate,
     dict_stage
 ) {
+    console.log(list_stage_condition,
+    list_stage,
+    condition_sale_oder_approved,
+    condition_is_quotation_confirm,
+    condition_sale_oder_delivery_status,
+    config_is_input_rate,
+    dict_stage)
     if (list_stage_condition.length === 0) {
         list_stage.map(function (item) {
             let list_condition = []
@@ -1582,7 +1589,6 @@ function autoLoadStage(
 
     return id_stage_current
 }
-
 
 //common
 function toggleShowActivity() {

@@ -204,7 +204,53 @@ class GRLoadDataHandle {
                             $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
                                                 <div class="d-flex">
                                                     <span class="mr-2">${lot?.['lot_number']}</span>
-                                                    <span class="text-red">${lot?.['quantity_import']} ${uom}</span>
+                                                    <span class="badge badge-soft-success">${lot?.['quantity_import']} <i>${uom}</i></span>
+                                                </div>
+                                            </a>`);
+                        }
+                        if (ele.querySelector(".dropdown-item-lot[data-checked='true']")) {
+                            $(ele.querySelector(".dropdown-item-lot[data-checked='true']")).css('background-color', '#ebfcf5');
+                        }
+                    }
+                }
+            }
+        )
+    };
+
+    static loadDDIALot(ele, checkedID = null) {
+        let productID = null;
+        let warehouseID = null;
+        let dataIAProductCheckedRaw = GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+        if (dataIAProductCheckedRaw) {
+            let dataIAProductChecked = JSON.parse(dataIAProductCheckedRaw);
+            productID = dataIAProductChecked?.['product']?.['id'];
+            warehouseID = dataIAProductChecked?.['warehouse']?.['id'];
+        }
+        $.fn.callAjax2({
+                'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
+                'method': 'GET',
+                'data': {
+                    'product_warehouse__product_id': productID,
+                    'product_warehouse__warehouse_id': warehouseID
+                },
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                        for (let lot of data.warehouse_lot_list) {
+                            let dataLot = JSON.stringify(lot).replace(/"/g, "&quot;");
+                            let uom = lot?.['product_warehouse']?.['product']?.['uom_inventory']?.['title'] ? lot?.['product_warehouse']?.['product']?.['uom_inventory']?.['title'] : '';
+                            let isChecked = 'false';
+                            if (lot?.['id'] === checkedID) {
+                                isChecked = 'true';
+                            }
+                            $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
+                                                <div class="d-flex">
+                                                    <span class="mr-2">${lot?.['lot_number']}</span>
+                                                    <span class="badge badge-soft-success">${lot?.['quantity_import']} <i>${uom}</i></span>
                                                 </div>
                                             </a>`);
                         }
@@ -389,7 +435,7 @@ class GRLoadDataHandle {
             let row = eleCheck.closest('tr');
             $(row).css('background-color', '');
         }
-        // GRStoreDataHandle.storeDataAll();
+        GRStoreDataHandle.storeIADataAll();
         GRDataTableHandle.tableIALot.DataTable().clear().draw();
         GRDataTableHandle.tableIASerial.DataTable().clear().draw();
         if (is_checked === true) {
@@ -399,7 +445,7 @@ class GRLoadDataHandle {
                 let dataRow = JSON.parse(dataRowRaw);
                 if (dataRow?.['product']?.['general_traceability_method'] === 1) { // LOT
                     GRLoadDataHandle.loadAreaIALotSerial(true, false);
-                    GRLoadDataHandle.loadNewRowsIALot();
+                    // GRLoadDataHandle.loadNewRowsIALot();
                 } else if (dataRow?.['product']?.['general_traceability_method'] === 2) { // SERIAL
                     GRLoadDataHandle.loadAreaIALotSerial(false, true);
                 }
@@ -563,6 +609,24 @@ class GRLoadDataHandle {
         }
     };
 
+    static loadAddRowIALot() {
+        let eleProductDataRaw = GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+        if (eleProductDataRaw) {
+            let eleProductData = JSON.parse(eleProductDataRaw);
+            let data = {
+                'product_id': eleProductData?.['id'],
+                'lot_number': '',
+                'quantity_import': '',
+                'expire_date': '',
+                'manufacture_date': '',
+                'uom': eleProductData?.['uom'],
+            }
+            let newRow = GRDataTableHandle.tableIALot.DataTable().row.add(data).draw().node();
+            GRLoadDataHandle.loadLotSerialDatePicker(newRow);
+            GRLoadDataHandle.loadDDIALot(newRow.querySelector('.dropdown-menu-lot'));
+        }
+    };
+
     static loadCheckLotDDItem(ele, row) {
         let dataLotRaw = ele.getAttribute('data-lot');
         if (dataLotRaw) {
@@ -603,6 +667,18 @@ class GRLoadDataHandle {
         }
         return is_checked;
     };
+
+    static loadDataIfChangeDateLotRow(row) {
+        let is_checked = GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            if (is_checked === true) {
+                row.querySelector('.table-row-lot-number').value = '';
+                if ($(this).hasClass('table-row-expire-date')) {
+                    row.querySelector('.table-row-manufacture-date').value = '';
+                } else {
+                    row.querySelector('.table-row-expire-date').value = '';
+                }
+            }
+    }
 
     static loadNewRowsSerial() {
         let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
@@ -2264,6 +2340,45 @@ class GRValidateHandle {
         return true
     };
 
+    static validateIALotNumber(ele) {
+        let lot_number = ele.value;
+        if (lot_number !== '') {
+            let dataIAProductCheckedRaw = GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+            if (dataIAProductCheckedRaw) {
+                let dataIAProductChecked = JSON.parse(dataIAProductCheckedRaw);
+                $.fn.callAjax2({
+                        'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
+                        'method': 'GET',
+                        'data': {
+                            'product_warehouse__product_id': dataIAProductChecked?.['product']?.['id'],
+                            'lot_number': lot_number
+                        },
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                                if (data.warehouse_lot_list.length > 0) {
+                                    ele.value = '';
+                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                    if (eleImport) {
+                                        eleImport.value = '0';
+                                    }
+                                    GRLoadDataHandle.loadIAQuantityImport();
+                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                    return false
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+        }
+        return true
+    };
+
     static validateSerialNumber(ele) {
         let serial_number = ele.value;
         let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
@@ -2358,6 +2473,23 @@ class GRValidateHandle {
         if (ele.value !== '') {
             let checkNum = 0;
             for (let eleLotNumber of GRDataTableHandle.tableLot[0].querySelectorAll(".table-row-lot-number")) {
+                if (ele.value === eleLotNumber.value) {
+                    checkNum++;
+                }
+            }
+            if (checkNum > 1) {
+                ele.value = '';
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-different')}, 'failure');
+                return false
+            }
+        }
+        return true;
+    };
+
+    static validateIALotNumberExistRow(ele) {
+        if (ele.value !== '') {
+            let checkNum = 0;
+            for (let eleLotNumber of GRDataTableHandle.tableIALot[0].querySelectorAll(".table-row-lot-number")) {
                 if (ele.value === eleLotNumber.value) {
                     checkNum++;
                 }
@@ -2647,70 +2779,88 @@ class GRSubmitHandle {
             for (let i = 0; i < tableBody.rows.length; i++) {
                 let rowData = {};
                 let row = tableBody.rows[i];
-                let eleProduct = row.querySelector('.table-row-item');
-                if (eleProduct) { // PRODUCT
-                    let dataInfo = {}
-                    if ($(eleProduct).val()) {
-                        dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-                    }
-                    if (dataInfo) {
-                        rowData['product'] = dataInfo.id;
-                        rowData['product_title'] = dataInfo.title;
-                        rowData['product_code'] = dataInfo.code;
-                    }
-                    let eleDescription = row.querySelector('.table-row-description');
-                    if (eleDescription) {
-                        rowData['product_description'] = eleDescription.innerHTML;
-                    }
-                    let eleUOM = row.querySelector('.table-row-uom');
-                    if ($(eleUOM).val()) {
-                        let dataInfo = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
+                let dataRowRaw = row?.querySelector('.table-row-order')?.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    let eleProduct = row.querySelector('.table-row-item');
+                    if (eleProduct) { // PRODUCT
+                        let dataInfo = {}
+                        if ($(eleProduct).val()) {
+                            dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+                        }
                         if (dataInfo) {
-                            rowData['uom'] = dataInfo.id;
+                            rowData['product'] = dataInfo.id;
+                            rowData['product_title'] = dataInfo.title;
+                            rowData['product_code'] = dataInfo.code;
                         }
-                    }
-                    let eleQuantityImport = row.querySelector('.table-row-import');
-                    if (eleQuantityImport) {
-                        rowData['quantity_import'] = parseFloat(eleQuantityImport.value);
-                    }
-                    let elePrice = row.querySelector('.table-row-price');
-                    if (elePrice) {
-                        if ($(elePrice).valCurrency() > 0) {
-                            rowData['product_unit_price'] = $(elePrice).valCurrency();
+                        let eleDescription = row.querySelector('.table-row-description');
+                        if (eleDescription) {
+                            rowData['product_description'] = eleDescription.innerHTML;
                         }
-                    }
-                    let eleTax = row.querySelector('.table-row-tax');
-                    if ($(eleTax).val()) {
-                        let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-                        if (dataInfo) {
-                            rowData['tax'] = dataInfo.id;
-                            rowData['product_tax_title'] = dataInfo.title;
-                            rowData['product_tax_value'] = dataInfo.rate;
-                        } else {
-                            rowData['product_tax_value'] = 0;
+                        let eleUOM = row.querySelector('.table-row-uom');
+                        if ($(eleUOM).val()) {
+                            let dataInfo = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
+                            if (dataInfo) {
+                                rowData['uom'] = dataInfo.id;
+                            }
                         }
-                    }
-                    let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-                    if (eleTaxAmount) {
-                        rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-                    }
-                    let eleWH = row.querySelector('.table-row-warehouse');
-                    if ($(eleWH).val()) {
-                        let dataInfo = SelectDDControl.get_data_from_idx($(eleWH), $(eleWH).val());
-                        if (dataInfo) {
-                            rowData['warehouse'] = dataInfo.id;
+                        let eleQuantityImport = row.querySelector('.table-row-import');
+                        if (eleQuantityImport) {
+                            rowData['quantity_import'] = parseFloat(eleQuantityImport.value);
                         }
-                    }
-                    let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-                    if (eleSubtotal) {
-                        rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-                    }
-                    if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
-                        rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
-                    }
-                    let eleOrder = row.querySelector('.table-row-order');
-                    if (eleOrder) {
-                        rowData['order'] = parseInt(eleOrder.innerHTML);
+                        let elePrice = row.querySelector('.table-row-price');
+                        if (elePrice) {
+                            if ($(elePrice).valCurrency() > 0) {
+                                rowData['product_unit_price'] = $(elePrice).valCurrency();
+                            }
+                        }
+                        let eleTax = row.querySelector('.table-row-tax');
+                        if ($(eleTax).val()) {
+                            let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                            if (dataInfo) {
+                                rowData['tax'] = dataInfo.id;
+                                rowData['product_tax_title'] = dataInfo.title;
+                                rowData['product_tax_value'] = dataInfo.rate;
+                            } else {
+                                rowData['product_tax_value'] = 0;
+                            }
+                        }
+                        let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+                        if (eleTaxAmount) {
+                            rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                        }
+                        let eleWH = row.querySelector('.table-row-warehouse');
+                        if ($(eleWH).val()) {
+                            let dataInfo = SelectDDControl.get_data_from_idx($(eleWH), $(eleWH).val());
+                            if (dataInfo) {
+                                rowData['warehouse'] = dataInfo.id;
+                                rowData['warehouse_data'] = [{'warehouse': dataInfo.id}];
+                                if (dataRow?.['product']?.['general_traceability_method'] === 1) {
+                                    rowData['warehouse_data'] = [{
+                                        'warehouse': dataInfo.id,
+                                        'lot_data': dataRow?.['lot_data'],
+                                    }]
+                                }
+                                if (dataRow?.['product']?.['general_traceability_method'] === 2) {
+                                    rowData['warehouse_data'] = [{
+                                        'warehouse': dataInfo.id,
+                                        'serial_data': dataRow?.['serial_data'],
+                                    }]
+                                }
+                                GRSubmitHandle.setupDataWHLotSerial(rowData);
+                            }
+                        }
+                        let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+                        if (eleSubtotal) {
+                            rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                        }
+                        if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
+                            rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
+                        }
+                        let eleOrder = row.querySelector('.table-row-order');
+                        if (eleOrder) {
+                            rowData['order'] = parseInt(eleOrder.innerHTML);
+                        }
                     }
                 }
                 result.push(rowData);

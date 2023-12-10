@@ -492,7 +492,7 @@ class QuotationLoadDataHandle {
             }
             // load PRICE
             if (price && priceList) {
-                loadPriceProduct(ele[0], is_change_item, is_expense);
+                QuotationLoadDataHandle.loadPriceProduct(ele[0], is_change_item, is_expense);
             }
             // load TAX
             if (tax && data.tax) {
@@ -652,7 +652,13 @@ class QuotationLoadDataHandle {
         let ele = $('#data-init-copy-quotation');
         let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2(
+            {
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -757,6 +763,193 @@ class QuotationLoadDataHandle {
         }
         if (row.querySelector('.table-row-tax')) {
             row.querySelector('.table-row-tax').setAttribute('disabled', 'true');
+        }
+    };
+
+    // static loadPriceProduct(eleProduct, is_change_item = true, is_expense = false) {
+    //     let optionSelected = eleProduct;
+    //     let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+    //     if (is_expense === true) { // EXPENSE
+    //         optionSelected = eleProduct.closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
+    //         productData = optionSelected.querySelector('.data-default');
+    //     }
+    //     let is_change_price = false;
+    //     if (productData) {
+    //         let data = productData;
+    //         if (is_expense === true) {
+    //             data = JSON.parse(productData.value);
+    //         }
+    //         let price = eleProduct.closest('tr').querySelector('.table-row-price');
+    //         let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
+    //         // load PRICE
+    //         if (price && priceList) {
+    //             let account_price_id = document.getElementById('customer-price-list').value;
+    //             let general_price_id = null;
+    //             let general_price = 0;
+    //             let customer_price = null;
+    //             let current_price_checked = price.getAttribute('value');
+    //             $(priceList).empty();
+    //             if (Array.isArray(data.price_list) && data.price_list.length > 0) {
+    //                 for (let i = 0; i < data.price_list.length; i++) {
+    //                     if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
+    //                         if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST OF PRODUCT
+    //                             general_price_id = data.price_list[i].id;
+    //                             general_price = parseFloat(data.price_list[i].value);
+    //                             $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+    //                                                 <div class="row">
+    //                                                     <div class="col-5"><span>${data.price_list[i].title}</span></div>
+    //                                                     <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+    //                                                     <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
+    //                                                 </div>
+    //                                             </button>`);
+    //                         }
+    //                         if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
+    //                             if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
+    //                                 customer_price = parseFloat(data.price_list[i].value);
+    //                                 $(priceList).empty();
+    //                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
+    //                                                     <div class="row">
+    //                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
+    //                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+    //                                                         <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
+    //                                                     </div>
+    //                                                 </button>`);
+    //                             } else { // Customer price invalid, expired
+    //                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
+    //                                                     <div class="row">
+    //                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
+    //                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+    //                                                         <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
+    //                                                     </div>
+    //                                                 </button>`);
+    //                             }
+    //                         }
+    //                     } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
+    //                         general_price = parseFloat(data.price_list[i].value);
+    //                         $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+    //                                                 <div class="row">
+    //                                                     <div class="col-5"><span>${data.price_list[i].title}</span></div>
+    //                                                     <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+    //                                                     <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
+    //                                                 </div>
+    //                                             </button>`);
+    //                     }
+    //                 }
+    //             }
+    //             // get Price to display
+    //             if (is_change_item === true) {
+    //                 if (customer_price) {
+    //                     $(price).attr('value', String(customer_price));
+    //                 } else {
+    //                     $(price).attr('value', String(general_price));
+    //                 }
+    //             }
+    //             if (current_price_checked !== price.getAttribute('value')) {
+    //                 is_change_price = true;
+    //             }
+    //         }
+    //     }
+    //     $.fn.initMaskMoney2();
+    //     // If change price then remove promotion & shipping
+    //     if (is_change_price === true) {
+    //         let tableProduct = document.getElementById('datable-quotation-create-product');
+    //         deletePromotionRows($(tableProduct), true, false);
+    //         deletePromotionRows($(tableProduct), false, true);
+    //     }
+    // };
+
+    static loadPriceProduct(eleProduct, is_change_item = true, is_expense = false) {
+        let optionSelected = eleProduct;
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        if (is_expense === true) { // EXPENSE
+            optionSelected = eleProduct.closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
+            productData = optionSelected.querySelector('.data-default');
+        }
+        let is_change_price = false;
+        if (productData) {
+            let data = productData;
+            if (is_expense === true) {
+                data = JSON.parse(productData.value);
+            }
+            let price = eleProduct.closest('tr').querySelector('.table-row-price');
+            let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
+            // load PRICE
+            if (price && priceList) {
+                let account_price_id = document.getElementById('customer-price-list').value;
+                let general_price_id = null;
+                let general_price = 0;
+                let customer_price = null;
+                let current_price_checked = price.getAttribute('value');
+                let transJSON = {};
+                transJSON['Valid'] = QuotationLoadDataHandle.transEle.attr('data-valid');
+                $(priceList).empty();
+                if (Array.isArray(data.price_list) && data.price_list.length > 0) {
+                    for (let i = 0; i < data.price_list.length; i++) {
+                        if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
+                            if (data.price_list[i].is_default === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
+                                general_price_id = data.price_list[i].id;
+                                general_price = parseFloat(data.price_list[i].value);
+                            }
+                            if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // If Valid Price
+                                if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
+                                    customer_price = parseFloat(data.price_list[i].value);
+                                    $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
+                                                            <div class="d-flex">
+                                                                <span class="mr-2">${data.price_list[i].title}</span>
+                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            </div>
+                                                        </a>`);
+                                } else {
+                                    $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                                            <div class="d-flex">
+                                                                <span class="mr-2">${data.price_list[i].title}</span>
+                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            </div>
+                                                        </a>`);
+                                }
+                            }
+                            // else { // If Expired Price
+                            //     $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}" disabled>
+                            //                             <div class="d-flex">
+                            //                                 <span class="mr-2">${data.price_list[i].title}</span>
+                            //                                 <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                            //                                 <span class="expired-price mr-2"><i>${data.price_list[i]?.['price_status']}</i></span>
+                            //                             </div>
+                            //                         </a>`);
+                            // }
+                        } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
+                            general_price = parseFloat(data.price_list[i].value);
+                            $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                                    <div class="d-flex">
+                                                        <span class="mr-2">${data.price_list[i].title}</span>
+                                                        <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                                                        <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                    </div>
+                                                </a>`);
+                        }
+                    }
+                }
+                // get Price to display
+                if (is_change_item === true) {
+                    if (customer_price) {
+                        $(price).attr('value', String(customer_price));
+                    } else {
+                        $(price).attr('value', String(general_price));
+                    }
+                }
+                if (current_price_checked !== price.getAttribute('value')) {
+                    is_change_price = true;
+                }
+            }
+        }
+        $.fn.initMaskMoney2();
+        // If change price then remove promotion & shipping
+        if (is_change_price === true) {
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            deletePromotionRows($(tableProduct), true, false);
+            deletePromotionRows($(tableProduct), false, true);
         }
     };
 
@@ -882,7 +1075,7 @@ class QuotationLoadDataHandle {
             let row = table.tBodies[0].rows[i];
             let eleItem = row.querySelector('.table-row-item');
             if (eleItem) {
-                loadPriceProduct(eleItem);
+                QuotationLoadDataHandle.loadPriceProduct(eleItem);
                 // Re Calculate all data of rows & total
                 QuotationCalculateCaseHandle.commonCalculate($(table), row, true, false, false);
             }
@@ -1198,7 +1391,7 @@ class QuotationDataTableHandle {
                                             <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
                                         </div>
                                         </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                        <div role="menu" class="dropdown-menu table-row-price-list w-650p">
                                         <a class="dropdown-item" data-value=""></a>
                                         </div>
                                     </div>
@@ -2391,7 +2584,7 @@ class QuotationCheckConfigHandle {
                     if (config.short_sale_config.is_choose_price_list === false) {
                         if (elePriceList.hasAttribute('data-bs-toggle')) {
                             elePriceList.removeAttribute('data-bs-toggle');
-                            loadPriceProduct(eleProduct);
+                            QuotationLoadDataHandle.loadPriceProduct(eleProduct);
                         }
                     } else {
                         if (!elePriceList.hasAttribute('data-bs-toggle')) {
@@ -2401,7 +2594,7 @@ class QuotationCheckConfigHandle {
                     if (config.short_sale_config.is_input_price === false) {
                         elePrice.setAttribute('disabled', 'true');
                         elePrice.classList.add('disabled-custom-show');
-                        loadPriceProduct(eleProduct);
+                        QuotationLoadDataHandle.loadPriceProduct(eleProduct);
                     } else {
                         if (elePrice.hasAttribute('disabled')) {
                             elePrice.removeAttribute('disabled');
@@ -2433,7 +2626,7 @@ class QuotationCheckConfigHandle {
                     } else {
                         elePrice.setAttribute('disabled', 'true');
                         elePrice.classList.add('disabled-custom-show');
-                        loadPriceProduct(eleProduct);
+                        QuotationLoadDataHandle.loadPriceProduct(eleProduct);
                     }
                     if (eleDiscount) {
                         if (config.long_sale_config.is_not_discount_on_product === false) {
@@ -3074,98 +3267,6 @@ function filterDataProductNotPromotion(data_products) {
         }
     }
     return finalList
-}
-
-function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false) {
-    let optionSelected = eleProduct;
-    let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-    if (is_expense === true) { // EXPENSE
-        optionSelected = eleProduct.closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
-        productData = optionSelected.querySelector('.data-default');
-    }
-    let is_change_price = false;
-    if (productData) {
-        let data = productData;
-        if (is_expense === true) {
-            data = JSON.parse(productData.value);
-        }
-        let price = eleProduct.closest('tr').querySelector('.table-row-price');
-        let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
-        // load PRICE
-        if (price && priceList) {
-            let account_price_id = document.getElementById('customer-price-list').value;
-            let general_price_id = null;
-            let general_price = 0;
-            let customer_price = null;
-            let current_price_checked = price.getAttribute('value');
-            $(priceList).empty();
-            if (Array.isArray(data.price_list) && data.price_list.length > 0) {
-                for (let i = 0; i < data.price_list.length; i++) {
-                    if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
-                        if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
-                            general_price_id = data.price_list[i].id;
-                            general_price = parseFloat(data.price_list[i].value);
-                            $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                    </div>
-                                                </button>`);
-                        }
-                        if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                            if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
-                                customer_price = parseFloat(data.price_list[i].value);
-                                $(priceList).empty();
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                        </div>
-                                                    </button>`);
-                            } else { // Customer price invalid, expired
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                        </div>
-                                                    </button>`);
-                            }
-                        }
-                    } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
-                        general_price = parseFloat(data.price_list[i].value);
-                        $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                    </div>
-                                                </button>`);
-                    }
-                }
-            }
-            // get Price to display
-            if (is_change_item === true) {
-                if (customer_price) {
-                    $(price).attr('value', String(customer_price));
-                } else {
-                    $(price).attr('value', String(general_price));
-                }
-            }
-            if (current_price_checked !== price.getAttribute('value')) {
-                is_change_price = true;
-            }
-        }
-    }
-    $.fn.initMaskMoney2();
-    // If change price then remove promotion & shipping
-    if (is_change_price === true) {
-        let tableProduct = document.getElementById('datable-quotation-create-product');
-        deletePromotionRows($(tableProduct), true, false);
-        deletePromotionRows($(tableProduct), false, true);
-    }
 }
 
 function getDataByProductID(product_id) {

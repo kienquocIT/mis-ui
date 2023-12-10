@@ -769,12 +769,20 @@ class NodeLoadDataHandle {
                 let InWFArea = modalCollab?.querySelector('.collab-in-workflow-area');
                 let tableInWF = InWFArea?.querySelector('.table-in-workflow-employee');
                 let dataPosition = {
-                    1: {'id': 1, 'title': '1st manager'},
-                    2: {'id': 2, 'title': '2nd manager'},
+                    1: {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-1st-manager')},
+                    2: {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-2nd-manager')},
+                    3: {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-select-beneficiary')},
                 }
                 for (let inWF of dataInWF) {
                     if (inWF?.['position_choice']) {
                         inWF['position_choice'] = dataPosition[inWF['position_choice']];
+                    }
+                    if (inWF?.['zone']) { // set id zone to zone's order
+                        for (let zone_detail of inWF?.['zone']) {
+                            if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
+                                zone_detail['id'] = zone_detail?.['order'];
+                            }
+                        }
                     }
                 }
                 $(tableInWF).DataTable().rows.add(dataInWF).draw();

@@ -2221,7 +2221,7 @@ $(document).ready(function () {
                 $('#create-return-advance-shortcut').attr('data-opportunity_mapped', encodeURIComponent(JSON.stringify({'id': dataInitSaleCode?.['id'], 'code': dataInitSaleCode?.['code'], 'title': dataInitSaleCode?.['title']})))
             })
         }
-    ).then($('#btn-auto-update-stage').trigger('click'))
+    ).then()
 
     // submit form edit
     new SetupFormSubmit(frmDetail).validate({

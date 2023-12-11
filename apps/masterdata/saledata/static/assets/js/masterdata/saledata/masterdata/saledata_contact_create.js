@@ -187,7 +187,7 @@ $(document).ready(function () {
             let data_url = ''
             if (lookup === 'salutation') {
                 data_url = $('#form-create-lookup').attr('data-url-salutation');
-            } else if (lookup === 'interests') {
+            } else {
                 data_url = $('#form-create-lookup').attr('data-url-interests');
             }
 

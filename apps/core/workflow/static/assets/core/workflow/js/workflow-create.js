@@ -27,7 +27,15 @@ $(function () {
                     for (let item of dataZone) {
                         let property_temp = []
                         for (let val of item.property_list) {
-                            property_temp.push(val.id)
+                            if (val !== null) {
+                                if (typeof val === 'object') {
+                                    property_temp.push(val?.['id']);
+                                } else {
+                                    property_temp.push(val);
+                                }
+                            }
+
+                            // property_temp.push(val.id)
                         }
                         item.property_list = property_temp
                     }

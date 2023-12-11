@@ -1,8 +1,8 @@
 $(function () {
     $(document).ready(function () {
 
-        let boxOpp = $('#box-final-acceptance-opp');
-        let boxEmployee = $('#box-final-acceptance-employee');
+        let boxOpp = $('#opportunity_id');
+        let boxEmployee = $('#employee_inherit_id');
         let boxSO = $('#box-final-acceptance-so');
         let btnRefresh = $('#btn-refresh-data');
         let eleTrans = $('#app-trans-factory');
@@ -510,7 +510,7 @@ $(function () {
                 let dataSelected = SelectDDControl.get_data_from_idx(boxOpp, boxOpp.val());
                 if (dataSelected) {
                     loadSO(dataSelected?.['sale_order']);
-                    loadEmployee(dataSelected?.['sale_person']);
+                    // loadEmployee(dataSelected?.['sale_person']);
                 }
             }
         });

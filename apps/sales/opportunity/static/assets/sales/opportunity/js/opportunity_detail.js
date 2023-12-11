@@ -76,6 +76,7 @@ $(document).ready(function () {
             }
             let paramString = {}
 
+            console.log(opportunity_detail_data)
             async function loadDetail(opportunity_detail) {
                 $x.fn.renderCodeBreadcrumb(opportunity_detail);
 
@@ -158,27 +159,6 @@ $(document).ready(function () {
                     }
                 }
                 $.fn.initMaskMoney2();
-
-                // Disable and make readonly for all input elements
-                let inputElements = document.querySelectorAll('input');
-                inputElements.forEach(function (input) {
-                    input.disabled = true;
-                    input.readOnly = true;
-                });
-
-                // Disable all select elements
-                let selectElements = document.querySelectorAll('select');
-                selectElements.forEach(function (select) {
-                    select.disabled = true;
-                });
-
-                $('#btn-auto-update-stage').prop('hidden', true)
-                $('#btn-add-row-line-detail').prop('hidden', true)
-                $('.btn-del-item').prop('hidden', true)
-                $('#btn-add-competitor').prop('hidden', true)
-                $('#btn-add-contact').prop('hidden', true)
-                $('#btn-show-modal-add-member').prop('hidden', true)
-                $('.card-action-edit').prop('hidden', true)
             }
 
             loadDetail(opportunity_detail_data).then(function () {
@@ -193,6 +173,22 @@ $(document).ready(function () {
                     config_is_input_rate,
                     dict_stage
                 )
+
+                // Disable all select elements
+                $('#btn-auto-update-stage').prop('hidden', true)
+                $('#btn-add-row-line-detail').prop('hidden', true)
+                $('.btn-del-item').prop('hidden', true)
+                $('#btn-add-competitor').prop('hidden', true)
+                $('#btn-add-contact').prop('hidden', true)
+                $('#btn-show-modal-add-member').prop('hidden', true)
+                $('.card-action-edit').prop('hidden', true)
+                $('#group-general-info-opp input').prop('disabled', true).prop('readonly', true)
+                $('#group-general-info-opp select').prop('disabled', true)
+
+                $('.tab-content input').prop('disabled', true).prop('readonly', true)
+                $('.tab-content select').prop('disabled', true)
+                $('#check-lost-reason').prop('disabled', true)
+                $('.btn-go-to-stage').addClass('disabled')
             });
 
             // even in tab product

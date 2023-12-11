@@ -1061,7 +1061,6 @@ function loadDtbProduct(data) {
     if (!$.fn.DataTable.isDataTable('#table-products')) {
         let dtb = OpportunityLoadDetail.productTableEle;
         dtb.DataTableDefault({
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             rowIdx: true,
             reloadCurrency: true,
             data: data,
@@ -1142,7 +1141,6 @@ function loadDtbCompetitor(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
             columns: [
                 {
@@ -1196,7 +1194,6 @@ function loadDtbContactRole(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
             columns: [
                 {

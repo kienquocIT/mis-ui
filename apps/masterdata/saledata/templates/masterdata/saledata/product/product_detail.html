@@ -32,8 +32,8 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-update-product" data-method="GET" data-url="{% url "ProductDetailAPI" pk=0 %}"
-          data-url-redirect="{% url "ProductList" %}">
+    <form id="form-update-product" data-method="PUT" data-url="{% url "ProductDetailAPI" pk=0 %}"
+          data-url-redirect="{% url "ProductDetail" pk=0 %}">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
@@ -224,27 +224,47 @@
                     </div>
                 </div>
                 <div class="row mt-5">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label required">{% trans "Price List" %}</label>
-                            <div id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                                <div class="border-secondary card card-body ul-price-list"></div>
-                            </div>
-                        </div>
+                    <div class="col-12">
+                        <a class="btn btn-primary" data-bs-toggle="collapse" href="#sale-select-price-list" role="button" aria-expanded="false" aria-controls="sale-select-price-list">
+                            {% trans "Collapse Price List" %}
+                        </a>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div style="overflow-y: auto; height: 50vh" class="col-12 col-md-6 col-lg-6 collapse show ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                        <table class="table nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                            <thead>
+                            <th></th>
+                            <th>{% trans 'Select' %}</th>
+                            <th>{% trans 'Price list' %}</th>
+                            <th>{% trans 'Price' %}</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-6 text-left">
+                                <div class="col-8 text-left">
                                     <label class="form-label" for="price_list_for_sale_online">{% trans "Price list for sale online" %}</label>
                                 </div>
-                                <div class="col-6 text-right form-check form-switch">
+                                <div class="col-4 text-right form-check form-switch">
                                     <input type="checkbox" class="form-check-input" id="is_publish_website">
                                     <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
                                 </div>
                             </div>
-                            <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select"></select>
-                            <span class="text-muted">{% trans 'From Price List in left side' %}</span>
+                            <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select" data-placeholder="{% trans 'From Price List in left side' %}"></select>
+                        </div>
+                        <div class="form-check form-check">
+                            <div class="row">
+                                <div class="col-6 col-lg-8 col-md-8 mt-2">
+                                    <input type="checkbox" class="form-check-input" id="available_notify_checkbox">
+                                    <label class="form-check-label" for="available_notify_checkbox">{% trans "Notify when available quantity is less than" %}</label>
+                                </div>
+                                <div class="col-6 col-lg-4 col-md-4">
+                                    <input id="less_than_number" type="number" min="0" class="form-control">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -330,67 +350,6 @@
                 </div>
             </div>
         </div>
-
-
-        <input type="hidden" id="data-detail-page">
-        <div class="modal fade" id="detailProductWH" tabindex="-1" role="dialog" aria-labelledby="detailProductWH" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Detail" %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="table-lot-area" hidden>
-                            <table
-                                id="datable-lot"
-                                class="table nowrap w-100"
-                                data-url="{% url "WarehouseLotListAPI" %}"
-                                data-method="GET"
-                            >
-                                <thead>
-                                <tr>
-                                    <th class="w-30">{% trans 'Lot number' %}</th>
-                                    <th class="w-20">{% trans 'Quantity' %}</th>
-                                    <th class="w-20">{% trans 'Expiration date' %}</th>
-                                    <th class="w-20">{% trans 'Manufacturing date' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="table-serial-area" hidden>
-                            <table
-                                id="datable-serial"
-                                class="table nowrap w-100"
-                                data-url="{% url "WarehouseSerialListAPI" %}"
-                                data-method="GET"
-                            >
-                                <thead>
-                                <tr>
-                                    <th>{% trans 'Vendor serial no.' %}</th>
-                                    <th>{% trans 'Serial no.' %}</th>
-                                    <th>{% trans 'Expiration date' %}</th>
-                                    <th>{% trans 'Mfr date' %}</th>
-                                    <th>{% trans 'Warranty start' %}</th>
-                                    <th>{% trans 'Warranty end' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </form>
     {{ data.unit | json_script:"id-unit-list" }}
     {{ data.warehouse_list | json_script:"warehouse_list" }}

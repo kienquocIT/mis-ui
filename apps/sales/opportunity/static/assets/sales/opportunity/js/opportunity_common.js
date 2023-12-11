@@ -864,6 +864,7 @@ function loadDtbOpportunityList() {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('opportunity_list')) {
+                        console.log(resp.data['opportunity_list'])
                         return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
                     }
                     throw Error('Call data raise errors.')
@@ -1247,6 +1248,13 @@ function autoLoadStage(
     config_is_input_rate,
     dict_stage
 ) {
+    console.log(list_stage_condition,
+    list_stage,
+    condition_sale_oder_approved,
+    condition_is_quotation_confirm,
+    condition_sale_oder_delivery_status,
+    config_is_input_rate,
+    dict_stage)
     if (list_stage_condition.length === 0) {
         list_stage.map(function (item) {
             let list_condition = []
@@ -1582,7 +1590,6 @@ function autoLoadStage(
 
     return id_stage_current
 }
-
 
 //common
 function toggleShowActivity() {

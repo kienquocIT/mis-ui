@@ -219,27 +219,47 @@
                     </div>
                 </div>
                 <div class="row mt-5">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label required">{% trans "Price List" %}</label>
-                            <div id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                                <div class="border-secondary card card-body ul-price-list"></div>
-                            </div>
-                        </div>
+                    <div class="col-12">
+                        <a class="btn btn-primary" data-bs-toggle="collapse" href="#sale-select-price-list" role="button" aria-expanded="false" aria-controls="sale-select-price-list">
+                            {% trans "Collapse Price List" %}
+                        </a>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div style="overflow-y: auto; height: 50vh" class="col-12 col-md-6 col-lg-6 collapse show ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                        <table class="table nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                            <thead>
+                            <th></th>
+                            <th>{% trans 'Select' %}</th>
+                            <th>{% trans 'Price list' %}</th>
+                            <th>{% trans 'Price' %}</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-6 text-left">
+                                <div class="col-8 text-left">
                                     <label class="form-label" for="price_list_for_sale_online">{% trans "Price list for sale online" %}</label>
                                 </div>
-                                <div class="col-6 text-right form-check form-switch">
+                                <div class="col-4 text-right form-check form-switch">
                                     <input type="checkbox" class="form-check-input" id="is_publish_website">
                                     <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
                                 </div>
                             </div>
-                            <select disabled id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select"></select>
-                            <span class="text-muted">{% trans 'From Price List in left side' %}</span>
+                            <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select" data-placeholder="{% trans 'From Price List in left side' %}"></select>
+                        </div>
+                        <div class="form-check form-check">
+                            <div class="row">
+                                <div class="col-6 col-lg-8 col-md-8 mt-2">
+                                    <input type="checkbox" class="form-check-input" id="available_notify_checkbox">
+                                    <label class="form-check-label" for="available_notify_checkbox">{% trans "Notify when available quantity is less than" %}</label>
+                                </div>
+                                <div class="col-6 col-lg-4 col-md-4">
+                                    <input id="less_than_number" type="number" min="0" class="form-control">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

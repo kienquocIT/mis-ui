@@ -190,14 +190,19 @@ $(document).on("click", '.schema-custom', function () {
         first_number_ele.val(schema_show_ele.attr('data-first-number'));
         last_number_ele.val(schema_show_ele.attr('data-last-number'));
         reset_frequency_ele.val(schema_show_ele.attr('data-reset-frequency'));
-        min_num_char_ele.val(schema_show_ele.attr('data-min-number-char')).prop('disabled', false);
-        min_num_char_checkbox_ele.prop('checked', true);
     }
     else {
         schema_item_list.val('');
         first_number_ele.val('');
         last_number_ele.val('');
         reset_frequency_ele.val('');
+
+    }
+    if (schema_show_ele.attr('data-min-number-char') && schema_show_ele.attr('data-min-number-char') !== 'null') {
+        min_num_char_ele.val(schema_show_ele.attr('data-min-number-char')).prop('disabled', false);
+        min_num_char_checkbox_ele.prop('checked', true);
+    }
+    else {
         min_num_char_ele.val('').prop('disabled', true);
         min_num_char_checkbox_ele.prop('checked', false);
     }
@@ -253,7 +258,7 @@ $('#save-changes-modal-function-number').on('click', function () {
         let reset_frequency = reset_frequency_ele.val();
         let min_number_char = min_num_char_ele.val();
 
-        if (min_number_char < 2) {
+        if (min_number_char < 2 && min_num_char_checkbox_ele.prop('checked')) {
             $.fn.notifyB({'description': 'Minimum char number must be > 2.'}, 'warning');
         }
         else {
@@ -456,6 +461,9 @@ class CompanyHandle {
             let last_number = $(this).find('.schema-show').attr('data-last-number');
             let reset_frequency = $(this).find('.schema-show').attr('data-reset-frequency');
             let min_number_char = $(this).find('.schema-show').attr('data-min-number-char');
+            if (min_number_char === 'null') {
+                min_number_char = null
+            }
 
             if (schema_text && schema && first_number && last_number && reset_frequency) {
                 frm.dataForm['company_function_number_data'].push({
@@ -466,7 +474,7 @@ class CompanyHandle {
                     'first_number': first_number,
                     'last_number': last_number,
                     'reset_frequency': reset_frequency,
-                    'min_number_char': min_number_char
+                    'min_number_char': min_number_char ? min_number_char : null
                 })
             }
         })

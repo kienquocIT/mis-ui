@@ -76,6 +76,7 @@ $(document).ready(function () {
             }
             let paramString = {}
 
+            console.log(opportunity_detail_data)
             async function loadDetail(opportunity_detail) {
                 $x.fn.renderCodeBreadcrumb(opportunity_detail);
 
@@ -158,20 +159,22 @@ $(document).ready(function () {
                     }
                 }
                 $.fn.initMaskMoney2();
+            }
 
-                // Disable and make readonly for all input elements
-                let inputElements = document.querySelectorAll('input');
-                inputElements.forEach(function (input) {
-                    input.disabled = true;
-                    input.readOnly = true;
-                });
+            loadDetail(opportunity_detail_data).then(function () {
+                autoLoadStage(
+                    true,
+                    false,
+                    list_stage_condition,
+                    list_stage,
+                    condition_sale_oder_approved,
+                    condition_is_quotation_confirm,
+                    condition_sale_oder_delivery_status,
+                    config_is_input_rate,
+                    dict_stage
+                )
 
                 // Disable all select elements
-                let selectElements = document.querySelectorAll('select');
-                selectElements.forEach(function (select) {
-                    select.disabled = true;
-                });
-
                 $('#btn-auto-update-stage').prop('hidden', true)
                 $('#btn-add-row-line-detail').prop('hidden', true)
                 $('.btn-del-item').prop('hidden', true)
@@ -179,340 +182,13 @@ $(document).ready(function () {
                 $('#btn-add-contact').prop('hidden', true)
                 $('#btn-show-modal-add-member').prop('hidden', true)
                 $('.card-action-edit').prop('hidden', true)
-            }
+                $('#group-general-info-opp input').prop('disabled', true).prop('readonly', true)
+                $('#group-general-info-opp select').prop('disabled', true)
 
-            loadDetail(opportunity_detail_data).then(function () {
-                let is_load_rate = true
-                let just_check = false
-                if (list_stage_condition.length === 0) {
-        list_stage.map(function (item) {
-            let list_condition = []
-            item.condition_datas.map(function (condition) {
-                list_condition.push({
-                    'property': condition.condition_property.title,
-                    'comparison_operator': condition.comparison_operator,
-                    'compare_data': condition.compare_data,
-                })
-            })
-            list_stage_condition.push({
-                'id': item.id,
-                'logical_operator': item.logical_operator,
-                'condition_datas': list_condition
-            })
-        })
-    }
-                let list_property_config = []
-                let ele_customer = OpportunityLoadDropdown.customerSelectEle;
-                let obj_customer = SelectDDControl.get_data_from_idx(ele_customer, ele_customer.val());
-                if (ele_customer.length > 0) {
-                    list_property_config.push({
-                        'property': 'Customer',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                }
-                else {
-                    let compare_data = '0';
-                    if (obj_customer.annual_revenue) {
-                        compare_data = obj_customer.annual_revenue;
-                    }
-                    list_property_config.push({
-                        'property': 'Customer',
-                        'comparison_operator': '=',
-                        'compare_data': compare_data,
-                    })
-                }
-
-                let ele_product_category = $('#select-box-product-category option:selected');
-                if (ele_product_category.length > 0) {
-                    list_property_config.push({
-                        'property': 'Product Category',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'Product Category',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                }
-
-                let ele_budget = $('#input-budget');
-                if (ele_budget.valCurrency() === 0) {
-                    list_property_config.push({
-                        'property': 'Budget',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'Budget',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                }
-
-                let ele_open_date = $('#input-open-date');
-                if (ele_open_date.val() === '') {
-                    list_property_config.push({
-                        'property': 'Open Date',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'Open Date',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                }
-
-                let ele_close_date = $('#input-close-date');
-                if (ele_close_date.val() === '') {
-                    list_property_config.push({
-                        'property': 'Close Date',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'Close Date',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                }
-
-                let ele_decision_maker = $('#input-decision-maker');
-                if (ele_decision_maker.attr('data-id') === '') {
-                    list_property_config.push({
-                        'property': 'Decision maker',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'Decision maker',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                }
-
-                if (OpportunityLoadDetail.productTableEle.DataTable().data().length === 0) {
-                    list_property_config.push({
-                        'property': 'Product.Line.Detail',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'Product.Line.Detail',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                }
-
-                let ele_competitor_win = $('.input-win-deal:checked');
-                if (ele_competitor_win.length === 0) {
-                    list_property_config.push({
-                        'property': 'Competitor.Win',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'Competitor.Win',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                }
-
-                let ele_check_lost = $('#check-lost-reason');
-                if (ele_check_lost.is(':checked')) {
-                    list_property_config.push({
-                        'property': 'Lost By Other Reason',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'Lost By Other Reason',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                }
-
-                if (condition_is_quotation_confirm) {
-                    list_property_config.push({
-                        'property': 'Quotation.confirm',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'Quotation.confirm',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                }
-
-                if (condition_sale_oder_approved) {
-                    list_property_config.push({
-                        'property': 'SaleOrder.status',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'SaleOrder.status',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                }
-
-                if (condition_sale_oder_delivery_status) {
-                    list_property_config.push({
-                        'property': 'SaleOrder.Delivery.Status',
-                        'comparison_operator': '≠',
-                        'compare_data': '0',
-                    })
-                } else {
-                    list_property_config.push({
-                        'property': 'SaleOrder.Delivery.Status',
-                        'comparison_operator': '=',
-                        'compare_data': '0',
-                    })
-                }
-
-                let list_property_config_string = []
-                for (let i = 0; i < list_property_config.length; i++) {
-                    let condition_temp = list_property_config[i]
-                    list_property_config_string.push(
-                        condition_temp.property + condition_temp.comparison_operator + condition_temp.compare_data
-                    )
-                }
-
-                let id_stage_current = '';
-                let list_stage_condition_string = []
-                for (let i = 0; i < list_stage_condition.length; i++) {
-                    let stage_condition_string = []
-                    for (let j = 0; j < list_stage_condition[i].condition_datas.length; j++) {
-                        let condition_temp = list_stage_condition[i].condition_datas[j]
-                        stage_condition_string.push(
-                            condition_temp.property + condition_temp.comparison_operator + condition_temp.compare_data
-                        )
-                    }
-                    list_stage_condition_string.push({
-                        'stage_logic': list_stage_condition[i].logical_operator,
-                        'stage_id': list_stage_condition[i].id,
-                        'stage_condition': stage_condition_string,
-                        'stage_win_rate': dict_stage[list_stage_condition[i].id].win_rate
-                    })
-                }
-
-                let id_stage_current_list = []
-                for (let i = 0; i < list_stage_condition_string.length; i++) {
-                    if (list_stage_condition_string[i]?.['stage_logic'] === 0) {
-                        let flag= true
-                        let stage_condition_len = list_stage_condition_string[i]?.['stage_condition'].length;
-                        for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
-                            if (!list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
-                                flag = false
-                            }
-                        }
-                        if (flag) {
-                            id_stage_current_list.push({
-                                'stage_id': list_stage_condition_string[i].stage_id,
-                                'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
-                            })
-                        }
-                    }
-                    else {
-                        let flag= false
-                        for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
-                            if (list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
-                                flag = true
-                                break
-                            }
-                        }
-                        if (flag) {
-                            id_stage_current_list.push({
-                                'stage_id': list_stage_condition_string[i].stage_id,
-                                'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
-                            })
-                        }
-                    }
-                }
-                if (id_stage_current_list.length > 0) {
-                    id_stage_current_list = id_stage_current_list.sort((a, b) => b.stage_win_rate - a.stage_win_rate);
-                    id_stage_current = id_stage_current_list[0].stage_id
-                }
-
-                if (!just_check) {
-                    let stage_selected_ele = $('.stage-selected');
-                    let input_rate_ele = $('#check-input-rate');
-                    let ele_close_deal = $('#input-close-deal');
-                    let ele_stage = $(`.sub-stage`);
-                    if (id_stage_current === '') {
-                        id_stage_current = $('#div-stage').find('div:first-child').attr('data-id');
-                    }
-                    let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
-                    let index = ele_stage_current.index();
-                    if (ele_stage_current.hasClass('stage-lost')) {
-                        ele_stage_current.addClass('bg-red-light-5 stage-selected');
-                        ele_stage.removeClass('bg-primary-light-5 stage-selected');
-                    }
-                    else {
-                        for (let i = 0; i <= ele_stage.length; i++) {
-                            if (i <= index) {
-                                if (!ele_stage.eq(i).hasClass('stage-lost'))
-                                    ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
-                                else {
-                                    ele_stage.eq(i).removeClass('bg-red-light-5 stage-selected');
-                                }
-                            } else {
-                                ele_stage.eq(i).removeClass('bg-primary-light-5 bg-red-light-5 stage-selected');
-                            }
-                        }
-                    }
-
-                    if (ele_close_deal.is(':checked')) {
-                        ele_stage_current = ele_close_deal.closest('.sub-stage');
-                        ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
-                        $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
-                        if (!config_is_input_rate) {
-                            input_rate_ele.prop('disabled', true);
-                            $('#input-rate').prop('disabled', true);
-                        }
-                    }
-                    else {
-                        $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
-                        ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
-                        if (!config_is_input_rate) {
-                            input_rate_ele.prop('disabled', true);
-                            $('#input-rate').prop('disabled', true);
-                        } else {
-                            let ele_check_input_rate = input_rate_ele;
-                            ele_check_input_rate.prop('disabled', false);
-                            if (ele_check_input_rate.is(':checked')) {
-                                $('#input-rate').prop('disabled', false);
-                            } else {
-                                $('#input-rate').prop('disabled', true);
-                            }
-                        }
-                        if (!$('#check-agency-role').is(':checked')) {
-                            OpportunityLoadDropdown.endCustomerSelectEle.prop('disabled', true);
-                        }
-                    }
-
-                    if (!input_rate_ele.is(':checked') && is_load_rate) {
-                        let obj_stage = dict_stage[ele_stage_current.data('id')]
-                        if (ele_stage_current.hasClass('stage-close'))
-                            obj_stage = dict_stage[stage_selected_ele.not(ele_stage_current).last().data('id')];
-                        $('#input-rate').val(obj_stage?.win_rate);
-                        $('#rangeInput').val(obj_stage?.win_rate);
-                    }
-                }
+                $('.tab-content input').prop('disabled', true).prop('readonly', true)
+                $('.tab-content select').prop('disabled', true)
+                $('#check-lost-reason').prop('disabled', true)
+                $('.btn-go-to-stage').addClass('disabled')
             });
 
             // even in tab product

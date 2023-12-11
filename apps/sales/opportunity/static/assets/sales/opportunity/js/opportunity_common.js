@@ -169,7 +169,12 @@ class OpportunityLoadDetail {
         data.opportunity_product_datas.map(function (item) {
             table.DataTable().row.add(item).draw();
             let tr_current_ele = table.find('tbody tr').last();
-            OpportunityLoadDropdown.loadProduct(tr_current_ele.find('.select-box-product'), item.product, data.product_category.map(obj => obj.id))
+            if (item.product) {
+                OpportunityLoadDropdown.loadProduct(tr_current_ele.find('.select-box-product'), item.product, data.product_category.map(obj => obj.id))
+            }
+            else {
+                table.find('tbody tr').last().find('.input-product-name').val(item.product_name)
+            }
             OpportunityLoadDropdown.loadSubProductCategory(tr_current_ele.find('.box-select-product-category'), item.product_category, data.product_category.map(obj => obj.id))
             OpportunityLoadDropdown.loadUoM(tr_current_ele.find('.box-select-uom'), item.uom);
             OpportunityLoadDropdown.loadTax(tr_current_ele.find('.box-select-tax'), item.tax)
@@ -864,7 +869,6 @@ function loadDtbOpportunityList() {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('opportunity_list')) {
-                        console.log(resp.data['opportunity_list'])
                         return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
                     }
                     throw Error('Call data raise errors.')
@@ -1057,7 +1061,6 @@ function loadDtbProduct(data) {
     if (!$.fn.DataTable.isDataTable('#table-products')) {
         let dtb = OpportunityLoadDetail.productTableEle;
         dtb.DataTableDefault({
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             rowIdx: true,
             reloadCurrency: true,
             data: data,
@@ -1138,7 +1141,6 @@ function loadDtbCompetitor(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
             columns: [
                 {
@@ -1192,7 +1194,6 @@ function loadDtbContactRole(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
-            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
             columns: [
                 {
@@ -1248,13 +1249,6 @@ function autoLoadStage(
     config_is_input_rate,
     dict_stage
 ) {
-    console.log(list_stage_condition,
-    list_stage,
-    condition_sale_oder_approved,
-    condition_is_quotation_confirm,
-    condition_sale_oder_delivery_status,
-    config_is_input_rate,
-    dict_stage)
     if (list_stage_condition.length === 0) {
         list_stage.map(function (item) {
             let list_condition = []
@@ -1281,8 +1275,6 @@ function autoLoadStage(
             'comparison_operator': '≠',
             'compare_data': '0',
         })
-    }
-    else {
         let compare_data = '0';
         if (obj_customer.annual_revenue) {
             compare_data = obj_customer.annual_revenue;
@@ -1291,6 +1283,13 @@ function autoLoadStage(
             'property': 'Customer',
             'comparison_operator': '=',
             'compare_data': compare_data,
+        })
+    }
+    else {
+        list_property_config.push({
+            'property': 'Customer',
+            'comparison_operator': '=',
+            'compare_data': '0',
         })
     }
 
@@ -1518,9 +1517,6 @@ function autoLoadStage(
         id_stage_current_list = id_stage_current_list.sort((a, b) => b.stage_win_rate - a.stage_win_rate);
         id_stage_current = id_stage_current_list[0].stage_id
     }
-
-    console.log(list_stage_condition_string)
-    console.log(list_property_config_string)
 
     if (!just_check) {
         let stage_selected_ele = $('.stage-selected');

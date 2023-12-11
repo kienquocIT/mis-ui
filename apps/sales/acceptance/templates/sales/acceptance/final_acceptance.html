@@ -27,19 +27,10 @@
     >
     {% csrf_token %}
         <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="box-final-acceptance-opp">{% trans 'Opportunity' %}</label>
-                    <select
-                            class="form-select"
-                            id="box-final-acceptance-opp"
-                            data-url="{% url "OpportunityListAPI" %}"
-                            data-method="GET"
-                            name="opportunity"
-                            data-keyResp="opportunity_list"
-                    ></select>
-                </div>
-            </div>
+            {% trans 'Select Sale Person' as inherit_title %}
+            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+        </div>
+        <div class="row">
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
@@ -55,22 +46,6 @@
             </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label" for="box-final-acceptance-employee">{% trans 'Sale Person' %}</label>
-                    <select
-                            class="form-select"
-                            id="box-final-acceptance-employee"
-                            data-url="{% url "EmployeeListAPI" %}"
-                            data-method="GET"
-                            name="employee"
-                            data-keyResp="employee_list"
-                            data-keyText="full_name"
-                    ></select>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
                     <label class="form-label" for="final-acceptance-date-save">{% trans 'Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="date_save" id="final-acceptance-date-save"
@@ -81,8 +56,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-8">
-                <div class="d-flex justify-content-end">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="d-flex mt-5">
                     <button
                             type="button"
                             class="btn btn-outline-primary"

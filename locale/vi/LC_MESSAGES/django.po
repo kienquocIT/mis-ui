@@ -2255,8 +2255,8 @@ msgid "Select Quotation"
 msgstr "Chọn báo giá"
 
 #
-msgid "Copy all from quotation to sale order"
-msgstr "Sao chép tất cả từ báo giá sang đơn hàng"
+msgid "Copy all from quotation"
+msgstr "Sao chép tất cả từ báo giá"
 
 #
 msgid "Input"

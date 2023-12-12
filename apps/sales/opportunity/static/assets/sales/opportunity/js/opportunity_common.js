@@ -1484,7 +1484,6 @@ function autoLoadStage(
     for (let i = 0; i < list_stage_condition_string.length; i++) {
         if (list_stage_condition_string[i]?.['stage_logic'] === 0) {
             let flag= true
-            let stage_condition_len = list_stage_condition_string[i]?.['stage_condition'].length;
             for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
                 if (!list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
                     flag = false

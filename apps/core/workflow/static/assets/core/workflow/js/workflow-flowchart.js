@@ -212,6 +212,7 @@ class JSPlumbsHandle {
                 _assoc_object[key] = {node_in: a.node_in.order, node_out: a.node_out.order, condition: a.condition}
             }
             this.setAssociateList = _assoc_object
+            $('#node-associate').val(JSON.stringify(_assoc_object));
         }
         let $wrapWF = $('#flowchart_workflow');
         let wrap_w = $wrapWF.width(),

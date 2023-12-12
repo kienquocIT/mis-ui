@@ -466,12 +466,13 @@ class NodeLoadDataHandle {
             area.setAttribute('hidden', 'true');
         }
         if ($(ele).val() === '1') {
-            row.querySelector('.collab-in-form-area').removeAttribute('hidden')
+            row.querySelector('.collab-in-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '2') {
-            row.querySelector('.collab-out-form-area').removeAttribute('hidden')
+            row.querySelector('.collab-out-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '3') {
-            row.querySelector('.collab-in-workflow-area').removeAttribute('hidden')
+            row.querySelector('.collab-in-workflow-area').removeAttribute('hidden');
         }
+        NodeLoadDataHandle.loadZoneDD(row, true); // reset zones
     };
 
     static loadOutFormEmployeeShow(ele) {
@@ -1529,6 +1530,11 @@ class NodeSubmitHandle {
                             dataRow['order'] = table[0].tBodies[0].rows.length;
                         }
                     } else { // COLLAB NODES
+                        // reset data collab_in_form, collab_out_form, collab_in_workflow when update
+                        dataRow['collab_in_form'] = {};
+                        dataRow['collab_out_form'] = {};
+                        dataRow['collab_in_workflow'] = [];
+                        // setup data collab depend on option_collaborator
                         let boxListSource = modalCollab.querySelector('.box-list-source');
                         if ($(boxListSource).val() === '1') { // In Form
                             dataRow['option_collaborator'] = 0;

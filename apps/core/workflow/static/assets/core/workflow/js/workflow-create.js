@@ -71,7 +71,6 @@ $(function () {
             if (associate_temp) {
                 let associate_data_submit = [];
                 let associate_data_json = JSON.parse(associate_temp);
-                if (formSubmit.attr('data-method') === 'POST') {
                     for (let key in associate_data_json) {
                         let item = associate_data_json[key]
                         if (typeof item.node_in === "object") {
@@ -81,17 +80,6 @@ $(function () {
                         }
                         associate_data_submit.push(item);
                     }
-                }
-                if (formSubmit.attr('data-method') === 'PUT') {
-                    for (let item of associate_data_json) {
-                        if (typeof item.node_in === "object") {
-                            // case from detail page update workflow if node_in is not order number
-                            item.node_in = item.node_in.order
-                            item.node_out = item.node_out.order
-                        }
-                        associate_data_submit.push(item);
-                    }
-                }
                 _form.dataForm['association'] = associate_data_submit;
             }
             let submitFields = [

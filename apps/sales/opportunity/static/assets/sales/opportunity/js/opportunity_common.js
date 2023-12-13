@@ -940,17 +940,17 @@ function loadDtbOpportunityList() {
                         return `<span class="badge badge-light">${stage_current.indicator}</span>`
                     }
                 },
-                {
-                    targets: 8,
-                    className: 'action-center',
-                    render: (data, type, row) => {
-                        let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
-                        return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
-                            + `data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
-                            + `data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
-                            + `<i data-feather="trash-2"></i></span></span></a></div>`;
-                    },
-                }
+                // {
+                //     targets: 8,
+                //     className: 'action-center',
+                //     render: (data, type, row) => {
+                //         let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
+                //         return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
+                //             + `data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
+                //             + `data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
+                //             + `<i data-feather="trash-2"></i></span></span></a></div>`;
+                //     },
+                // }
             ],
         });
     }

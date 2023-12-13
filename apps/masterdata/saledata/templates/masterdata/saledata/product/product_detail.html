@@ -224,14 +224,7 @@
                     </div>
                 </div>
                 <div class="row mt-5">
-                    <div class="col-12">
-                        <a class="btn btn-primary" data-bs-toggle="collapse" href="#sale-select-price-list" role="button" aria-expanded="false" aria-controls="sale-select-price-list">
-                            {% trans "Collapse Price List" %}
-                        </a>
-                    </div>
-                </div>
-                <div class="row mt-5">
-                    <div style="overflow-y: auto; height: 50vh" class="col-12 col-md-6 col-lg-6 collapse show ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                    <div style="overflow-y: auto; height: 50vh" class="col-12 col-md-6 col-lg-6 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                         <table class="table nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                             <thead>
                             <th></th>

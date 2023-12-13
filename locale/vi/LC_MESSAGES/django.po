@@ -5595,3 +5595,11 @@ msgstr "Bảng giá bán hàng online"
 #
 msgid "Sale online"
 msgstr "Bán hàng online"
+
+#
+msgid "Stage"
+msgstr "Giai đoạn"
+
+#
+msgid "Notify when available quantity is less than"
+msgstr "Thông báo khi số lượng khả dụng ít hơn"

@@ -1593,10 +1593,10 @@ class NodeSubmitHandle {
                                         zone.push(parseInt(zoneData?.['id']));
                                     }
                                     if (dataRowInWF?.['in_wf_option']) {
-                                        if (dataRowInWF?.['employee']?.['id']) {
+                                        if (dataRowInWF?.['employee']?.['id'] || dataRowInWF?.['position_choice']?.['id']) {
                                             dataInWF.push({
                                                 'in_wf_option': dataRowInWF?.['in_wf_option'],
-                                                'employee': dataRowInWF?.['employee']?.['id'],
+                                                'employee': dataRowInWF?.['employee']?.['id'] ? dataRowInWF?.['employee']?.['id'] : null,
                                                 'position_choice': dataRowInWF?.['position_choice']?.['id'] ? dataRowInWF?.['position_choice']?.['id'] : null,
                                                 'zone': zone,
                                             })

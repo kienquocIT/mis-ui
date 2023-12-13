@@ -34,8 +34,6 @@ $(function () {
                                     property_temp.push(val);
                                 }
                             }
-
-                            // property_temp.push(val.id)
                         }
                         item.property_list = property_temp
                     }
@@ -71,8 +69,14 @@ $(function () {
                             item.node_in = item.node_in.order
                             item.node_out = item.node_out.order
                         }
-                        associate_data_submit.push(item);
+                        if (item?.['node_in'] && item?.['node_out']) {
+                            associate_data_submit.push(item);
+                        }
                     }
+                if (associate_data_submit.length <= 0) {  // check required data association
+                    $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-association')}, 'failure');
+                    return false
+                }
                 _form.dataForm['association'] = associate_data_submit;
             }
             let submitFields = [

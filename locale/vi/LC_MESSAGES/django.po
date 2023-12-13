@@ -5595,3 +5595,7 @@ msgstr "Bảng giá bán hàng online"
 #
 msgid "Sale online"
 msgstr "Bán hàng online"
+
+#
+msgid "Please complete associations data"
+msgstr "Vui lòng hoàn thành dữ liệu liên kết trạm"

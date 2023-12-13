@@ -5597,9 +5597,14 @@ msgid "Sale online"
 msgstr "Bán hàng online"
 
 #
+msgid "Please complete associations data"
+msgstr "Vui lòng hoàn thành dữ liệu liên kết trạm"
+
+#
 msgid "Stage"
 msgstr "Giai đoạn"
 
 #
 msgid "Notify when available quantity is less than"
 msgstr "Thông báo khi số lượng khả dụng ít hơn"
+

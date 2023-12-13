@@ -53,6 +53,7 @@ class OpportunityLoadDropdown {
     }
 
     static loadEndCustomer(data, customer) {
+        $('#check-agency-role').prop('checked', Object.keys(data).length !== 0)
         this.endCustomerSelectEle.initSelect2({
             data: data,
             callbackDataResp(resp, keyResp) {
@@ -940,17 +941,17 @@ function loadDtbOpportunityList() {
                         return `<span class="badge badge-light">${stage_current.indicator}</span>`
                     }
                 },
-                {
-                    targets: 8,
-                    className: 'action-center',
-                    render: (data, type, row) => {
-                        let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
-                        return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
-                            + `data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
-                            + `data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
-                            + `<i data-feather="trash-2"></i></span></span></a></div>`;
-                    },
-                }
+                // {
+                //     targets: 8,
+                //     className: 'action-center',
+                //     render: (data, type, row) => {
+                //         let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
+                //         return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
+                //             + `data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
+                //             + `data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
+                //             + `<i data-feather="trash-2"></i></span></span></a></div>`;
+                //     },
+                // }
             ],
         });
     }
@@ -1063,6 +1064,7 @@ function loadDtbProduct(data) {
         dtb.DataTableDefault({
             rowIdx: true,
             reloadCurrency: true,
+            paging: false,
             data: data,
             columns: [
                 {
@@ -1142,6 +1144,7 @@ function loadDtbCompetitor(data) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
             data: data,
+            paging: false,
             columns: [
                 {
                     className: 'wrap-text',
@@ -1195,6 +1198,7 @@ function loadDtbContactRole(data) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
             data: data,
+            paging: false,
             columns: [
                 {
                     className: 'wrap-text',
@@ -1276,8 +1280,8 @@ function autoLoadStage(
             'compare_data': '0',
         })
         let compare_data = '0';
-        if (obj_customer.annual_revenue) {
-            compare_data = obj_customer.annual_revenue;
+        if (obj_customer.total_employees) {
+            compare_data = obj_customer.total_employees;
         }
         list_property_config.push({
             'property': 'Customer',

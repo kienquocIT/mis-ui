@@ -42,13 +42,6 @@ $(function () {
                 _form.dataForm['zone'] = dataZone
             }
             let nodeData = NodeSubmitHandle.setupDataSubmit();
-            // check status Node before submit
-            // if (nodeData === false) {
-            //     $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-check-complete-node')}, 'failure');
-            //     return false
-            // }
-            // get exit node condition for node list
-            // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode
             for (let item of nodeData) {
                 if (flowNode.hasOwnProperty(item.order)) {

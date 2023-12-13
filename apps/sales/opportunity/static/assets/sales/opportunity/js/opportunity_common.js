@@ -1064,6 +1064,7 @@ function loadDtbProduct(data) {
         dtb.DataTableDefault({
             rowIdx: true,
             reloadCurrency: true,
+            paging: false,
             data: data,
             columns: [
                 {
@@ -1143,6 +1144,7 @@ function loadDtbCompetitor(data) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
             data: data,
+            paging: false,
             columns: [
                 {
                     className: 'wrap-text',
@@ -1196,6 +1198,7 @@ function loadDtbContactRole(data) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
             data: data,
+            paging: false,
             columns: [
                 {
                     className: 'wrap-text',

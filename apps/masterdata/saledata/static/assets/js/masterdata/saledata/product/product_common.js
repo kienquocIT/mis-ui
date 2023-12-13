@@ -1,6 +1,6 @@
-let check_tab_inventory =  $('#check-tab-inventory');
-let check_tab_sale =  $('#check-tab-sale');
-let check_tab_purchase =  $('#check-tab-purchase');
+let check_tab_inventory = $('#check-tab-inventory');
+let check_tab_sale = $('#check-tab-sale');
+let check_tab_purchase = $('#check-tab-purchase');
 let generalUomGroupEle = $('#general-select-box-uom-group');
 let generalProductTypeEle = $('#general-select-box-product-type');
 let generalProductCateEle = $('#general-select-box-product-category');
@@ -62,8 +62,7 @@ check_tab_inventory.change(function () {
     $('#tab_inventory input, #tab_inventory select').val('');
     if (check_tab_inventory.is(':checked')) {
         $('#label-dimension').addClass('required');
-    }
-    else {
+    } else {
         $('#label-dimension').removeClass('required');
     }
 });
@@ -109,8 +108,7 @@ $(document).on("change", '#height', function () {
 $(document).on('change', '.select_price_list', function () {
     if ($(this).is(':checked') === true) {
         $(this).closest('tr').find('.input_price_list').attr('disabled', false);
-    }
-    else {
+    } else {
         $(this).closest('tr').find('.input_price_list').attr('disabled', true);
         $(this).closest('tr').find('.input_price_list').attr('value', '');
         $(this).closest('tr').find('.input_price_list').val('');
@@ -219,13 +217,12 @@ public_website_Ele.on('change', function () {
     if (!$(this).prop('checked')) {
         price_list_for_online_sale_Ele.val('').trigger('change')
         price_list_for_online_sale_Ele.prop('disabled', true)
-    }
-    else {
+    } else {
         price_list_for_online_sale_Ele.prop('disabled', false)
     }
 })
 
-function loadSalePriceListForSaleOnline(data, filter=[]) {
+function loadSalePriceListForSaleOnline(data, filter = []) {
     price_list_for_online_sale_Ele.initSelect2({
         allowClear: true,
         ajax: {
@@ -514,8 +511,7 @@ function loadWareHouseListDetail(product_warehouse_detail) {
                         } else {
                             return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
                         }
-                    }
-                    else {
+                    } else {
                         return `<span>0</span>`;
                     }
                 }
@@ -637,8 +633,7 @@ function loadWareHouseOverViewDetail(data_overview) {
                 render: (data, type, row) => {
                     if (row.sum_stock > 0) {
                         return `<span style="font-weight: bolder" class="text-primary">${row.sum_stock}</span>`
-                    }
-                    else {
+                    } else {
                         return `<span style="font-weight: bolder" class="text-danger">${row.sum_stock}</span>`
                     }
                 }
@@ -649,8 +644,7 @@ function loadWareHouseOverViewDetail(data_overview) {
                 render: (data, type, row) => {
                     if (row.sum_wait_for_delivery > 0) {
                         return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_delivery}</span>`
-                    }
-                    else {
+                    } else {
                         return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_delivery}</span>`
                     }
                 }
@@ -661,8 +655,7 @@ function loadWareHouseOverViewDetail(data_overview) {
                 render: (data, type, row) => {
                     if (row.sum_wait_for_receipt > 0) {
                         return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_receipt}</span>`
-                    }
-                    else {
+                    } else {
                         return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_receipt}</span>`
                     }
                 }
@@ -673,8 +666,7 @@ function loadWareHouseOverViewDetail(data_overview) {
                 render: (data, type, row) => {
                     if (row.sum_available_value > 0) {
                         return `<span style="font-weight: bolder" class="text-primary">${row.sum_available_value}</span>`
-                    }
-                    else {
+                    } else {
                         return `<span style="font-weight: bolder" class="text-danger">${row.sum_available_value}</span>`
                     }
                 }
@@ -741,32 +733,32 @@ function dataTableSerial(data) {
                 targets: 2,
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['expire_date'], {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
                 }
             },
             {
                 targets: 3,
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['manufacture_date'], {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
                 }
             },
             {
                 targets: 4,
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['warranty_start'], {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
                 }
             },
             {
                 targets: 5,
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['warranty_end'], {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
                 }
             },
         ],
@@ -829,8 +821,7 @@ function getDataForm() {
         }
         data['available_notify'] = available_notify_checkboxEle.prop('checked');
         data['available_notify_quantity'] = $('#less_than_number').val();
-    }
-    else {
+    } else {
         data['sale_default_uom'] = null;
         data['sale_tax'] = null;
         data['sale_cost'] = null;
@@ -843,8 +834,7 @@ function getDataForm() {
         data['inventory_uom'] = $('#inventory-select-box-uom-name option:selected').attr('value');
         data['inventory_level_min'] = parseFloat($('#inventory-level-min').val());
         data['inventory_level_max'] = parseFloat($('#inventory-level-max').val());
-    }
-    else {
+    } else {
         data['inventory_uom'] = null;
         data['inventory_level_min'] = null;
         data['inventory_level_max'] = null;
@@ -854,8 +844,7 @@ function getDataForm() {
         data['product_choice'].push(2)
         data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
         data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
-    }
-    else {
+    } else {
         data['purchase_default_uom'] = null;
         data['purchase_tax'] = null;
     }
@@ -917,7 +906,8 @@ class ProductHandle {
         loadBaseItemUnit();
         loadWareHouseOverView();
     }
-    combinesData(frmEle, for_update=false) {
+
+    combinesData(frmEle, for_update = false) {
         let dataForm = getDataForm();
         if (dataForm) {
             let frm = new SetupFormSubmit($(frmEle));
@@ -945,106 +935,112 @@ function LoadDetailProduct(option) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-             WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
-             let product_detail = data['product'];
-             $.fn.compareStatusShowPageAction(data);
-             $x.fn.renderCodeBreadcrumb(product_detail);
-             console.log(product_detail)
+                WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
+                let product_detail = data['product'];
+                $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(product_detail);
+                console.log(product_detail)
 
-             $('#code').val(product_detail['code']);
-             $('#title').val(product_detail['title']);
-             $('#description').val(product_detail['description']);
+                $('#code').val(product_detail['code']);
+                $('#title').val(product_detail['title']);
+                $('#description').val(product_detail['description']);
 
-             if (product_detail['product_choice'].includes(0)) {
-                 $('#check-tab-sale').attr('checked', true);
-                 $('#link-tab-sale').removeClass('disabled');
-             }
+                if (product_detail['product_choice'].includes(0)) {
+                    $('#check-tab-sale').attr('checked', true);
+                    $('#link-tab-sale').removeClass('disabled');
+                }
 
-             if (product_detail['product_choice'].includes(1)) {
-                 $('#check-tab-inventory').attr('checked', true);
-                 $('#link-tab-inventory').removeClass('disabled');
-             }
+                if (product_detail['product_choice'].includes(1)) {
+                    $('#check-tab-inventory').attr('checked', true);
+                    $('#link-tab-inventory').removeClass('disabled');
+                }
 
-             if (product_detail['product_choice'].includes(2)) {
-                 $('#check-tab-purchase').attr('checked', true);
-                 $('#link-tab-purchase').removeClass('disabled');
-             }
+                if (product_detail['product_choice'].includes(2)) {
+                    $('#check-tab-purchase').attr('checked', true);
+                    $('#link-tab-purchase').removeClass('disabled');
+                }
 
-             if (Object.keys(product_detail['general_information']).length !== 0) {
-                 let general_information = product_detail['general_information'];
-                 loadGeneralProductType(general_information['general_product_types_mapped']);
-                 loadGeneralProductCategory(general_information['product_category']);
-                 loadGeneralUoMGroup(general_information['uom_group']);
-                 $('#general-select-box-traceability-method').val(general_information['traceability_method']);
-                 if (Object.keys(general_information['product_size']).length !== 0) {
-                     lengthEle.val(general_information['product_size']['length']);
-                     widthEle.val(general_information['product_size']['width']);
-                     heightEle.val(general_information['product_size']['height']);
-                     volumeEle.val(general_information['product_size']['volume']['value']);
-                     weightEle.val(general_information['product_size']['weight']['value']);
-                 }
-                 loadBaseItemUnit();
-             }
+                if (Object.keys(product_detail['general_information']).length !== 0) {
+                    let general_information = product_detail['general_information'];
+                    loadGeneralProductType(general_information['general_product_types_mapped']);
+                    loadGeneralProductCategory(general_information['product_category']);
+                    loadGeneralUoMGroup(general_information['uom_group']);
+                    $('#general-select-box-traceability-method').val(general_information['traceability_method']);
+                    if (Object.keys(general_information['product_size']).length !== 0) {
+                        lengthEle.val(general_information['product_size']['length']);
+                        widthEle.val(general_information['product_size']['width']);
+                        heightEle.val(general_information['product_size']['height']);
+                        volumeEle.val(general_information['product_size']['volume']['value']);
+                        weightEle.val(general_information['product_size']['weight']['value']);
+                    }
+                    loadBaseItemUnit();
+                }
 
-             if (Object.keys(product_detail['sale_information']).length !== 0) {
-                 let sale_information = product_detail['sale_information'];
-                 loadSaleDefaultUom(sale_information['default_uom']);
-                 loadSaleTaxCode(sale_information['tax']);
-                 $('#sale-cost').attr('value', sale_information['sale_product_cost']);
+                if (Object.keys(product_detail['sale_information']).length !== 0) {
+                    let sale_information = product_detail['sale_information'];
+                    loadSaleDefaultUom(sale_information['default_uom']);
+                    loadSaleTaxCode(sale_information['tax']);
+                    $('#sale-cost').attr('value', sale_information['sale_product_cost']);
 
-                 let price_list_filter = []
-                 for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
-                    let item = sale_information['sale_product_price_list'][i];
-                    price_list_filter.push(item.id)
-                 }
+                    let price_list_filter = []
+                    for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
+                        let item = sale_information['sale_product_price_list'][i];
+                        price_list_filter.push(item.id)
+                    }
 
-                 loadPriceList(sale_information['sale_product_price_list'], option);
+                    loadPriceList(sale_information['sale_product_price_list'], option);
 
-                 loadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
-                 if (Object.keys(sale_information['price_list_for_online_sale']).length !== 0) {
-                     price_list_for_online_sale_Ele.prop('disabled', false)
-                 }
-                 else {
-                     price_list_for_online_sale_Ele.prop('disabled', true)
-                 }
-                 available_notify_checkboxEle.prop('checked', sale_information?.['available_notify']);
-                 $('#less_than_number').val(sale_information?.['available_notify_quantity']);
-                 $.fn.initMaskMoney2();
-             }
+                    loadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
 
-             if (Object.keys(product_detail['inventory_information']).length !== 0) {
-                 let inventory_information = product_detail['inventory_information'];
-                 loadInventoryDefaultUom(inventory_information['uom']);
-                 $('#inventory-level-min').val(inventory_information['inventory_level_min']);
-                 $('#inventory-level-max').val(inventory_information['inventory_level_max']);
+                    public_website_Ele.prop('checked', product_detail['is_public_website'])
+                    if (product_detail['is_public_website']) {
+                        price_list_for_online_sale_Ele.prop('disabled', false)
+                    }
+                    else {
+                        price_list_for_online_sale_Ele.prop('disabled', true)
+                    }
 
-                 loadWareHouseListDetail(product_detail['product_warehouse_detail']);
-                 let data_overview = [];
-                 let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
-                 let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
-                 let sum_wait_for_receipt = product_detail?.['wait_receipt_amount'] ? product_detail?.['wait_receipt_amount'] : 0;
-                 let sum_available_value = product_detail?.['available_amount'] ? product_detail?.['available_amount'] : 0;
-                 data_overview.push({
-                     'sum_stock': sum_stock,
-                     'sum_wait_for_delivery': sum_wait_for_delivery,
-                     'sum_wait_for_receipt': sum_wait_for_receipt,
-                     'sum_available_value': sum_available_value
-                 })
-                 loadWareHouseOverViewDetail(data_overview);
-             }
+                    available_notify_checkboxEle.prop('checked', sale_information?.['available_notify']);
+                    if (sale_information?.['available_notify']) {
+                        $('#less_than_number').prop('disabled', false).val(sale_information?.['available_notify_quantity']);
+                    }
+                    else {
+                        $('#less_than_number').prop('disabled', true).val('')
+                    }
+                    $.fn.initMaskMoney2();
+                }
 
-             if (Object.keys(product_detail['purchase_information']).length !== 0) {
-                 let purchase_information = product_detail['purchase_information'];
-                 loadPurchaseDefaultUom(purchase_information['default_uom']);
-                 loadPurchaseTaxCode(purchase_information['tax']);
-             }
+                if (Object.keys(product_detail['inventory_information']).length !== 0) {
+                    let inventory_information = product_detail['inventory_information'];
+                    loadInventoryDefaultUom(inventory_information['uom']);
+                    $('#inventory-level-min').val(inventory_information['inventory_level_min']);
+                    $('#inventory-level-max').val(inventory_information['inventory_level_max']);
 
-             public_website_Ele.prop('checked', product_detail['is_public_website'])
+                    loadWareHouseListDetail(product_detail['product_warehouse_detail']);
+                    let data_overview = [];
+                    let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
+                    let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
+                    let sum_wait_for_receipt = product_detail?.['wait_receipt_amount'] ? product_detail?.['wait_receipt_amount'] : 0;
+                    let sum_available_value = product_detail?.['available_amount'] ? product_detail?.['available_amount'] : 0;
+                    data_overview.push({
+                        'sum_stock': sum_stock,
+                        'sum_wait_for_delivery': sum_wait_for_delivery,
+                        'sum_wait_for_receipt': sum_wait_for_receipt,
+                        'sum_available_value': sum_available_value
+                    })
+                    loadWareHouseOverViewDetail(data_overview);
+                }
 
-             $('#data-detail-page').val(JSON.stringify(product_detail));
-             $.fn.initMaskMoney2();
+                if (Object.keys(product_detail['purchase_information']).length !== 0) {
+                    let purchase_information = product_detail['purchase_information'];
+                    loadPurchaseDefaultUom(purchase_information['default_uom']);
+                    loadPurchaseTaxCode(purchase_information['tax']);
+                }
 
-             Disable(option);
+                $('#data-detail-page').val(JSON.stringify(product_detail));
+                $.fn.initMaskMoney2();
+
+                Disable(option);
             }
         })
 }

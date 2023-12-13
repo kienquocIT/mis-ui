@@ -53,12 +53,7 @@ class OpportunityLoadDropdown {
     }
 
     static loadEndCustomer(data, customer) {
-        if (Object.keys(data).length !== 0) {
-            $('#check-agency-role').prop('checked', true)
-        }
-        else {
-            $('#check-agency-role').prop('checked', false)
-        }
+        $('#check-agency-role').prop('checked', Object.keys(data).length !== 0)
         this.endCustomerSelectEle.initSelect2({
             data: data,
             callbackDataResp(resp, keyResp) {

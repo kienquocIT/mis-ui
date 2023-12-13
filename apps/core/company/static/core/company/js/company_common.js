@@ -14,7 +14,6 @@ if (pk !== company_current_id) {
     $('#tabs').remove()
 }
 
-
 function loadCompanyCities(cityData) {
     companyCityEle.initSelect2({
         data: (cityData ? cityData : null),
@@ -316,7 +315,6 @@ const FunctionNumberTableData = [
 
 function loadFunctionNumberTable(table_data=[]) {
     $('#function_number_table').DataTableDefault({
-        dom: '',
         rowIdx: true,
         paging: false,
         data: table_data,
@@ -365,7 +363,6 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
         return a.function - b.function;
     });
     $('#function_number_table').DataTableDefault({
-        dom: '',
         rowIdx: true,
         paging: false,
         data: table_detail_data,
@@ -379,17 +376,14 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 data: 'function',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    if ([0, 6, 7, 8].includes(row.function)) {
-                        return `<span class="text-primary"><b>${FunctionNumberTableData[row.function].function}</b></span>`;
-                    }
-                    return `<span class="text-secondary">${FunctionNumberTableData[row.function].function}</span>`;
+                    return `<span class="text-primary"><b>${FunctionNumberTableData[row.function].function}</b></span>`;
                 }
             }, {
                 data: '',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
                     let disabled = '';
-                    if (option === 'detail' || ![0, 6, 7, 8].includes(row.function)) {
+                    if (option === 'detail') {
                         disabled = 'disabled';
                     }
                     let system = trans_script_ele.attr('data-trans-numbering0');

@@ -1276,8 +1276,8 @@ function autoLoadStage(
             'compare_data': '0',
         })
         let compare_data = '0';
-        if (obj_customer.annual_revenue) {
-            compare_data = obj_customer.annual_revenue;
+        if (obj_customer.total_employees) {
+            compare_data = obj_customer.total_employees;
         }
         list_property_config.push({
             'property': 'Customer',

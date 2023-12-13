@@ -431,7 +431,7 @@ function LoadDetail(option) {
                 WFRTControl.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 data = data['account_detail'];
-                // console.log(data)
+                console.log(data)
 
                 accountName.val(data.name);
                 accountCode.val(data.code);

@@ -35,6 +35,6 @@ QUOTATION_DATA_MAP = {
         name_mapping=['is_customer_confirm'],
     ).data,
     'print_document': FieldMapCommon(
-        name_mapping=['print_document'],
+        id_mapping=['print_document'],
     ).data,
 }

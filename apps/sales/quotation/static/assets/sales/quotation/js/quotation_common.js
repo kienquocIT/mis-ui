@@ -980,10 +980,12 @@ class QuotationLoadDataHandle {
                 }]
             }).init();
         }
-        if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {
-            let btnCopy = document.getElementById('btn-copy-quotation');
-            if (btnCopy) {
-                btnCopy.setAttribute('disabled', 'true');
+        if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
+            if (form.getAttribute('data-method') === 'GET') {
+                let btnCopy = document.getElementById('btn-copy-quotation');
+                if (btnCopy) {
+                    btnCopy.setAttribute('disabled', 'true');
+                }
             }
         }
         if (data?.['customer']) {
@@ -1001,7 +1003,6 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term'])
         }
         if (data?.['quotation'] && data?.['sale_person']) {
-            // QuotationLoadDataHandle.loadBoxSaleOrderQuotation('select-box-quotation', data?.['quotation']?.['id'], null, data?.['sale_person']?.['id']);
             QuotationLoadDataHandle.loadBoxSOQuotation(data?.['quotation']);
         }
         if (data?.['date_created']) {
@@ -1042,17 +1043,12 @@ class QuotationLoadDataHandle {
             }
         }
         if (is_copy === true) {
-            let boxQuotation = $('#select-box-quotation');
-            let dataStr = JSON.stringify({
-                'id': data.id,
-                'title': data.title,
-                'code': data.code,
-            }).replace(/"/g, "&quot;");
-            boxQuotation.append(`<option value="${data.id}" selected>
-                                    <span class="quotation-title">${data.title}</span>
-                                    <input type="hidden" class="data-info" value="${dataStr}">
-                                </option>`)
-            QuotationLoadDataHandle.loadInformationSelectBox(boxQuotation);
+            let dataQuotationCopy = {
+                'id': data?.['id'],
+                'title': data?.['title'],
+                'code': data?.['code'],
+            }
+            QuotationLoadDataHandle.loadBoxSOQuotation(dataQuotationCopy);
         }
         if (data?.['quotation_logistic_data']) {
             document.getElementById('quotation-create-shipping-address').value = data?.['quotation_logistic_data']?.['shipping_address'];

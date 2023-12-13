@@ -180,7 +180,7 @@
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="d-flex justify-content-end">
-                                    <div class="form-check mr-3">
+                                    <div class="form-check mr-2 mt-2">
                                         <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" disabled>
                                         <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
                                     </div>
@@ -214,7 +214,7 @@
                                             <div class="modal-body">
                                                 <div class="form-check" id="copy-quotation-option">
                                                     <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
-                                                    <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation to sale order' %}</label>
+                                                    <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
                                                 </div>
                                                 <table
                                                         id="datable-copy-quotation-product"
@@ -295,7 +295,7 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">STT</th>
+                                            <th class="w-5">#</th>
                                             <th class="w-10">{% trans 'Product' %}<span class="required"></span></th>
                                             <th class="w-10">{% trans 'Description' %}</th>
                                             <th class="w-5">{% trans 'Unit Of Measure' %}<span class="required"></span></th>
@@ -304,7 +304,7 @@
                                             <th class="w-10">{% trans 'Discount' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-10">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5">{% trans 'Actions' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -446,14 +446,14 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">STT</th>
+                                            <th class="w-5">#</th>
                                             <th class="w-5">{% trans 'Product' %}</th>
                                             <th class="w-5">{% trans 'Unit Of Measure' %}</th>
                                             <th class="w-15">{% trans 'Quantity' %}</th>
                                             <th class="w-30">{% trans 'Cost Price' %}<span class="required"></span></th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-30">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5">{% trans 'Actions' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -507,7 +507,7 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">STT</th>
+                                            <th class="w-5">#</th>
                                             <th class="w-15 required">{% trans 'Expense name' %}</th>
                                             <th class="w-15 required">{% trans 'Expense items' %}</th>
                                             <th class="w-5 required">{% trans 'Unit Of Measure' %}</th>
@@ -515,7 +515,7 @@
                                             <th class="w-30 required">{% trans 'Expense Price' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-10">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5">{% trans 'Actions' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -675,7 +675,7 @@
                     >
                         <thead>
                         <tr>
-                            <th class="w-10">STT</th>
+                            <th class="w-10">#</th>
                             <th class="w-40">{% trans 'Indicator name' %}</th>
                             <th class="w-30">{% trans 'Indicator value' %}</th>
                             <th class="w-20">{% trans 'Indicator rate' %}</th>

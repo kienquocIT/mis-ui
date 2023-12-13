@@ -167,9 +167,82 @@
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="d-flex justify-content-end">
-                                    <div class="form-check">
+                                    <div class="form-check mr-2 mt-2">
                                         <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" name="is_customer_confirm">
                                         <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
+                                    </div>
+                                    <button
+                                            type="button"
+                                            class="btn btn-soft-primary"
+                                            id="btn-copy-quotation"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#quotationModalCenter"
+                                            data-copy-type="copy-from"
+                                    >{% trans 'Copy Quotation' %}</button>
+                                </div>
+                                <div
+                                        class="modal fade" id="quotationModalCenter" tabindex="-1"
+                                        role="dialog" aria-labelledby="quotationModalCenter"
+                                        aria-hidden="true"
+                                >
+                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">{% trans 'Select Quotation' %}</h5>
+                                                <button
+                                                        type="button" class="btn-close"
+                                                        data-bs-dismiss="modal" aria-label="Close"
+                                                >
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table
+                                                        id="datable-copy-quotation"
+                                                        class="table nowrap w-100 mb-5"
+                                                >
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="w-10">#</th>
+                                                        <th class="w-50">{% trans 'Title' %}</th>
+                                                        <th class="w-40">{% trans 'Code' %}</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                                <div class="form-check" id="copy-quotation-option" hidden>
+                                                    <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
+                                                    <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
+                                                </div>
+                                                <table
+                                                        id="datable-copy-quotation-product"
+                                                        class="table nowrap w-100 mb-5"
+                                                        hidden
+                                                >
+                                                    <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th></th>
+                                                        <th>{% trans 'Product' %}</th>
+                                                        <th>{% trans 'Quantity' %}</th>
+                                                        <th>{% trans 'Input' %}</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button
+                                                        type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal"
+                                                >{% trans 'Close' %}</button>
+                                                <button type="button" class="btn btn-primary" id="btn-select-quotation-copy">{% trans 'Select' %}</button>
+                                                <button type="button" class="btn btn-primary" id="btn-quotation-copy-confirm" data-copy-type="copy-from" data-bs-dismiss="modal" hidden>{% trans 'Copy' %}</button>
+                                                <input type="hidden" id="data-copy-quotation-detail">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -230,7 +303,7 @@
                                             <th class="w-10">{% trans 'Discount' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-10">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5">{% trans 'Actions' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -504,7 +577,7 @@
                                             <th class="w-30 required">{% trans 'Cost Price' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-30">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5">{% trans 'Actions' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -566,7 +639,7 @@
                                             <th class="w-30 required">{% trans 'Expense Price' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-10">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5">{% trans 'Actions' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -688,6 +761,13 @@
                         >
                         <input
                                 type="hidden"
+                                id="data-init-copy-quotation"
+                                data-url="{% url "QuotationListAPI" %}"
+                                data-url-detail="{% url "QuotationDetailAPI" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
                                 id="data-init-opportunity"
                                 value="{{ data.data.opportunity }}"
                         >
@@ -758,7 +838,7 @@
                     >
                         <thead>
                         <tr>
-                            <th class="w-10">STT</th>
+                            <th class="w-10">#</th>
                             <th class="w-40">{% trans 'Indicator name' %}</th>
                             <th class="w-30">{% trans 'Indicator value' %}</th>
                             <th class="w-20">{% trans 'Indicator rate' %}</th>

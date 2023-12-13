@@ -30,6 +30,16 @@ $(function () {
             if (dataGroupEmployee.val()) {
                 frm.dataForm['group_employee'] = JSON.parse(dataGroupEmployee.val());
             }
+            if (GroupLoadDataHandle.box1stManager.val()) {
+                frm.dataForm['first_manager'] = GroupLoadDataHandle.box1stManager.val();
+            } else {
+                frm.dataForm['first_manager'] = null;
+            }
+            if (GroupLoadDataHandle.box2ndManager.val()) {
+                frm.dataForm['second_manager'] = GroupLoadDataHandle.box2ndManager.val();
+            } else {
+                frm.dataForm['second_manager'] = null;
+            }
             if (frm.dataForm) {
                 for (let key in frm.dataForm) {
                     if (frm.dataForm[key] === '') {

@@ -644,7 +644,8 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                 }
                 $('#tab_plan_datatable tbody').append(`
                     <tr>
-                        <td colspan="8">Unplanned payments: <span class="mask-money text-primary" data-init-money="${others}"></span></td>
+                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
+                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
                     </tr>
                 `)
                 $.fn.initMaskMoney2();
@@ -758,7 +759,8 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                 }
                 $('#tab_plan_datatable tbody').append(`
                     <tr>
-                        <td colspan="8">Unplanned payments: <span class="mask-money text-primary" data-init-money="${others}"></span></td>
+                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
+                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
                     </tr>
                 `)
                 $.fn.initMaskMoney2();
@@ -872,7 +874,8 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                 }
                 $('#tab_plan_datatable tbody').append(`
                     <tr>
-                        <td colspan="8">Unplanned payments: <span class="mask-money text-primary" data-init-money="${others}"></span></td>
+                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
+                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
                     </tr>
                 `)
                 $.fn.initMaskMoney2();

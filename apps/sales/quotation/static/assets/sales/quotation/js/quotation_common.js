@@ -961,11 +961,13 @@ class QuotationLoadDataHandle {
                 }]
             }).init();
         }
-        if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
-            if (form.getAttribute('data-method') === 'GET') {
-                let btnCopy = document.getElementById('btn-copy-quotation');
-                if (btnCopy) {
-                    btnCopy.setAttribute('disabled', 'true');
+        if (Object.keys(data?.['opportunity']).length > 0) {
+            if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
+                if (form.getAttribute('data-method') === 'GET') {
+                    let btnCopy = document.getElementById('btn-copy-quotation');
+                    if (btnCopy) {
+                        btnCopy.setAttribute('disabled', 'true');
+                    }
                 }
             }
         }

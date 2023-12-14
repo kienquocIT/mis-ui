@@ -333,7 +333,7 @@
                 <div id="step1" style="overflow: auto; height: 70vh">
                     <table id="advance_payment_list_datatable" class="table nowrap w-100"
                            data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
-                           data-url-ap-detail="{% url 'AdvancePaymentDetailAPI' '0' %}">
+                           data-url-ap-detail="{% url 'AdvancePaymentDetailAPI' pk='0' %}">
                         <thead>
                             <tr>
                                 <th class="w-10">{% trans 'Code' %}</th>

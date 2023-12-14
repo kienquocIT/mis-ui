@@ -598,10 +598,12 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
                 let data_payment_mapped_item = results[2];
+                console.log(data_payment_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
+                let others = 0;
                 for (let i = 0; i < data_expense.length; i++) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
@@ -617,6 +619,9 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                         if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             sum_real_value += data_payment_mapped_item[j]?.['real_value'];
                             sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
+                        }
+                        else {
+                            others += data_payment_mapped_item[j]?.['real_value'] + data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -637,6 +642,11 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                         </tr>
                     `)
                 }
+                $('#tab_plan_datatable tbody').append(`
+                    <tr>
+                        <td colspan="8">Unplanned payments: <span class="mask-money text-primary" data-init-money="${others}"></span></td>
+                    </tr>
+                `)
                 $.fn.initMaskMoney2();
             })
     }
@@ -707,6 +717,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
+                let others = 0;
                 for (let i = 0; i < data_expense.length; i++) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
@@ -722,6 +733,9 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                         if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             sum_real_value += data_payment_mapped_item[j]?.['real_value'];
                             sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
+                        }
+                        else {
+                            others += data_payment_mapped_item[j]?.['real_value'] + data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -742,6 +756,11 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                         </tr>
                     `)
                 }
+                $('#tab_plan_datatable tbody').append(`
+                    <tr>
+                        <td colspan="8">Unplanned payments: <span class="mask-money text-primary" data-init-money="${others}"></span></td>
+                    </tr>
+                `)
                 $.fn.initMaskMoney2();
             })
     }
@@ -812,6 +831,7 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
+                let others = 0;
                 for (let i = 0; i < data_expense.length; i++) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
@@ -827,6 +847,9 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                         if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             sum_real_value += data_payment_mapped_item[j]?.['real_value'];
                             sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
+                        }
+                        else {
+                            others += data_payment_mapped_item[j]?.['real_value'] + data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -847,6 +870,11 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                         </tr>
                     `)
                 }
+                $('#tab_plan_datatable tbody').append(`
+                    <tr>
+                        <td colspan="8">Unplanned payments: <span class="mask-money text-primary" data-init-money="${others}"></span></td>
+                    </tr>
+                `)
                 $.fn.initMaskMoney2();
             })
     }
@@ -963,6 +991,15 @@ function calculate_sum_ap_product_items() {
     return result_total_value;
 }
 
+function findValueConvertedById(id, converted_list) {
+    for (let i = 0; i < converted_list.length; i++) {
+        if (converted_list[i].ap_cost_converted_id === id) {
+            return converted_list[i].value_converted;
+        }
+    }
+    return 0;
+}
+
 $("#next-btn").on('click', function () {
     offcanvasRightLabel.text(offcanvasRightLabel.attr('data-text-2'));
     $('#step1').prop('hidden', true);
@@ -987,8 +1024,15 @@ $("#next-btn").on('click', function () {
             $.fn.notifyB({description: 'Warning: Select at least 1 Advance Payment Item for next step.'}, 'warning');
     }
     else {
+        let selected_converted_value = []
+        $('.detail-ap-items').each(function () {
+            if ($(this).text()) {
+                selected_converted_value = selected_converted_value.concat(JSON.parse($(this).text()))
+            }
+        })
+
         for (let i = 0; i < selected_ap_list.length; i++) {
-            $.fn.callAjax(AP_db.attr('data-url-ap-detail').replace('/0', '/' + selected_ap_list[i]), AP_db.attr('data-method')).then((resp) => {
+            $.fn.callAjax(AP_db.attr('data-url-ap-detail').format_url_with_uuid(selected_ap_list[i]), AP_db.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
@@ -1029,7 +1073,9 @@ $("#next-btn").on('click', function () {
                                     <td>${expense_item.expense_quantity}</td>
                                     <td><span class="text-primary mask-money" data-init-money="${expense_item.expense_unit_price}"></span></td>
                                     <td><span class="badge badge-soft-danger">${tax_code}</span></td>
-                                    <td><span class="text-primary mask-money product-remain-value" data-init-money="${expense_item.remain_total}"></span></td>
+                                    <td>
+                                    <span class="text-primary mask-money product-remain-value" data-init-money="${expense_item.remain_total - findValueConvertedById(expense_item.id, selected_converted_value)}"></span>
+                                    </td>
                                     <td><input class="mask-money form-control converted-value-inp" disabled></td>
                                 </tr>`)
                             }
@@ -1411,15 +1457,15 @@ class PaymentHandle {
                         expense_items_detail_list = JSON.parse($(this).find('.detail-ap-items').html());
                     }
                     let real_value = 0;
-                    if ($(this).find('.value-inp').attr('value') !== '') {
-                        real_value = $(this).find('.value-inp').attr('value');
+                    if ($(this).find('.value-inp').attr('value') && $(this).find('.value-inp').attr('value') !== 'NaN') {
+                        real_value = parseFloat($(this).find('.value-inp').attr('value'));
                     }
                     let converted_value = $(this).find('.value-converted-from-ap-inp').attr('value');
                     if (expense_items_detail_list.length <= 0) {
                         converted_value = 0;
                     }
                     let sum_value = 0;
-                    if ($(this).find('.total-value-salecode-item').attr('value') !== '') {
+                    if ($(this).find('.total-value-salecode-item').attr('value')) {
                         sum_value = parseFloat($(this).find('.total-value-salecode-item').attr('value'));
                     }
                     expense_detail_value = expense_detail_value + sum_value;

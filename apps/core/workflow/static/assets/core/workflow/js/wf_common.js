@@ -25,7 +25,8 @@ function modalFormSubmit($form) {
         if (_form.get('zone_id'))
             temp['id'] = _form.get('zone_id')
         if (_form.get("order") && _form.get("order") !== undefined) {
-            let rowIdx = form_order - 1
+            // let rowIdx = form_order - 1
+            let rowIdx = form_order - 2
             $('#table_workflow_zone').DataTable().row(rowIdx).data(temp).draw()
         } else $('#table_workflow_zone').DataTable().row.add(temp).draw()
         $form[0].reset();

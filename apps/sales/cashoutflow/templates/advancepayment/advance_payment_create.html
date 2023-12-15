@@ -37,6 +37,7 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
+            data-trans-unplanned="{% trans 'Unplanned expenses' %}"
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
             data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
             data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"

@@ -3,7 +3,7 @@ from apps.sales.cashoutflow.views import (
     AdvancePaymentList, AdvancePaymentCreate, AdvancePaymentListAPI, AdvancePaymentDetail, AdvancePaymentDetailAPI,
     AdvancePaymentUpdate, PaymentCostListAPI,
     ReturnAdvanceListAPI, ReturnAdvanceDetail, ReturnAdvanceCreate, ReturnAdvanceList, ReturnAdvanceDetailAPI,
-    PaymentList, PaymentCreate, PaymentListAPI, PaymentDetailAPI, PaymentDetail, PaymentCostItemsListAPI,
+    PaymentList, PaymentCreate, PaymentListAPI, PaymentDetailAPI, PaymentDetail, PaymentCostItemsListAPI, PaymentUpdate,
     ReturnAdvanceUpdate, PaymentConfigList, PaymentConfigListAPI, AdvancePaymentCostListAPI
 )
 
@@ -30,6 +30,7 @@ urlpatterns = [
     path('payment-config/api', PaymentConfigListAPI.as_view(), name='PaymentConfigListAPI'),
     path('payment/create', PaymentCreate.as_view(), name='PaymentCreate'),
     path('payment/detail/<str:pk>', PaymentDetail.as_view(), name='PaymentDetail'),
+    path('payment/update/<str:pk>', PaymentUpdate.as_view(), name='PaymentUpdate'),
     path('payment/api/<str:pk>', PaymentDetailAPI.as_view(), name='PaymentDetailAPI'),
     path('payment-cost-items-list', PaymentCostItemsListAPI.as_view(), name='PaymentCostItemsListAPI'),
 ]

@@ -473,10 +473,12 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
                 let data_payment_mapped_item = results[2];
+                console.log(data_payment_mapped_item)
 
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
+                let others = 0;
                 for (let i = 0; i < data_expense.length; i++) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
@@ -492,6 +494,9 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                         if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             sum_real_value += data_payment_mapped_item[j]?.['real_value'];
                             sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
+                        }
+                        else {
+                            others += data_payment_mapped_item[j]?.['real_value'] + data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -512,6 +517,12 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                         </tr>
                     `)
                 }
+                $('#tab_plan_datatable tbody').append(`
+                    <tr>
+                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
+                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
+                    </tr>
+                `)
                 $.fn.initMaskMoney2();
             })
     }
@@ -582,6 +593,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
+                let others = 0;
                 for (let i = 0; i < data_expense.length; i++) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
@@ -597,6 +609,9 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                         if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             sum_real_value += data_payment_mapped_item[j]?.['real_value'];
                             sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
+                        }
+                        else {
+                            others += data_payment_mapped_item[j]?.['real_value'] + data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -617,6 +632,12 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                         </tr>
                     `)
                 }
+                $('#tab_plan_datatable tbody').append(`
+                    <tr>
+                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
+                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
+                    </tr>
+                `)
                 $.fn.initMaskMoney2();
             })
     }
@@ -687,6 +708,7 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
+                let others = 0;
                 for (let i = 0; i < data_expense.length; i++) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
@@ -702,6 +724,9 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                         if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             sum_real_value += data_payment_mapped_item[j]?.['real_value'];
                             sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
+                        }
+                        else {
+                            others += data_payment_mapped_item[j]?.['real_value'] + data_payment_mapped_item[j]?.['converted_value'];
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
@@ -722,6 +747,12 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                         </tr>
                     `)
                 }
+                $('#tab_plan_datatable tbody').append(`
+                    <tr>
+                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
+                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
+                    </tr>
+                `)
                 $.fn.initMaskMoney2();
             })
     }

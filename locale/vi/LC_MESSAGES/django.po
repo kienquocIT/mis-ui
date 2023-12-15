@@ -5608,3 +5608,6 @@ msgstr "Giai đoạn"
 msgid "Notify when available quantity is less than"
 msgstr "Thông báo khi số lượng khả dụng ít hơn"
 
+#
+msgid "Unplanned expenses"
+msgstr "Chi phí ngoài kế hoạch"

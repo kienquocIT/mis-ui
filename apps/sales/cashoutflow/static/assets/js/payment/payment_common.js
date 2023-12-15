@@ -644,7 +644,8 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                 }
                 $('#tab_plan_datatable tbody').append(`
                     <tr>
-                        <td colspan="8">Unplanned payments: <span class="mask-money text-primary" data-init-money="${others}"></span></td>
+                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
+                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
                     </tr>
                 `)
                 $.fn.initMaskMoney2();
@@ -758,7 +759,8 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                 }
                 $('#tab_plan_datatable tbody').append(`
                     <tr>
-                        <td colspan="8">Unplanned payments: <span class="mask-money text-primary" data-init-money="${others}"></span></td>
+                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
+                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
                     </tr>
                 `)
                 $.fn.initMaskMoney2();
@@ -872,7 +874,8 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                 }
                 $('#tab_plan_datatable tbody').append(`
                     <tr>
-                        <td colspan="8">Unplanned payments: <span class="mask-money text-primary" data-init-money="${others}"></span></td>
+                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
+                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
                     </tr>
                 `)
                 $.fn.initMaskMoney2();
@@ -1162,16 +1165,18 @@ $("#finish-btn").on('click', function () {
     $.fn.initMaskMoney2();
 })
 
-function Disable() {
-    $('.form-control').prop('disabled', true).css({color: 'black'});
-    $('.form-select').prop('disabled', true).css({color: 'black'});
-    $('.select2').prop('disabled', true);
-    $('input').prop('disabled', true);
-    $('#btn-add-row-line-detail').prop('disabled', true);
-    $('.btn-del-line-detail').prop('disabled', true);
+function Disable(option) {
+    if (option === 'detail') {
+        $('.form-control').prop('disabled', true).css({color: 'black'});
+        $('.form-select').prop('disabled', true).css({color: 'black'});
+        $('.select2').prop('disabled', true);
+        $('input').prop('disabled', true);
+        $('#btn-add-row-line-detail').prop('disabled', true);
+        $('.btn-del-line-detail').prop('disabled', true);
+    }
 }
 
-function LoadDetailPayment() {
+function LoadDetailPayment(option) {
     let pk = $.fn.getPkDetail()
     let url_loaded = $('#form-detail-payment').attr('data-url-detail').replace(0, pk);
     $.fn.callAjax(url_loaded, 'GET').then(
@@ -1337,7 +1342,7 @@ function LoadDetailPayment() {
 
                 $.fn.initMaskMoney2();
 
-                Disable();
+                Disable(option);
             }
         })
 }

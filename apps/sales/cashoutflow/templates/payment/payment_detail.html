@@ -25,9 +25,20 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    <a href="{% url 'PaymentUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
+            data-trans-unplanned="{% trans 'Unplanned expenses' %}"
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
             data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
             data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"

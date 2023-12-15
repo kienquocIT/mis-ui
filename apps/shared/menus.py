@@ -449,7 +449,7 @@ class SpaceItem:
                 MenusCRM.HOME,
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,
-                MenusCRM.LEAD,
+                # MenusCRM.LEAD,
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
                 MenusCRM.SALE_ORDER,

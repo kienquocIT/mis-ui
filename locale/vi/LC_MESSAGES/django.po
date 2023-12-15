@@ -5610,4 +5610,4 @@ msgstr "Thông báo khi số lượng khả dụng ít hơn"
 
 #
 msgid "Unplanned expenses"
-msgstr "Chi phí ngoài kế hoạch"
+msgstr "Các khoản đã chi ngoài kế hoạch"

@@ -28,11 +28,6 @@ $(function () {
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
                         $('#data-copy-quotation-detail').val(JSON.stringify(data))
                     }
-                    // else { // SALE ORDER PAGES
-                    //     if (Object.keys(data.quotation).length > 0) {
-                    //         QuotationLoadDataHandle.loadAPIDetailQuotation(data.quotation.id);
-                    //     }
-                    // }
 
                     if ($form.attr('data-method') === 'PUT') {
                         // Check config when begin edit

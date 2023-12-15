@@ -384,6 +384,7 @@
             data-product-not-in="{% trans 'Product is not in' %}"
             data-validate-order-request="{% trans 'Quantity order must be less than quantity remain' %}"
             data-validate-order-actual="{% trans 'Quantity order actually must be greater than or equal quantity order on request' %}"
+            data-valid="{% trans "Valid" %}"
         >
         <input
             type="hidden"
@@ -409,6 +410,10 @@
             id="data-purchase-quotation-products"
             data-url="{% url "PurchaseQuotationProductListAPI" %}"
             data-method="GET"
+        >
+        <input
+            type="hidden"
+            id="customer-price-list"
         >
 
 

@@ -514,7 +514,7 @@ msgstr "Thêm Nhân Viên, Quản Lý"
 
 #
 msgid "Select Group Level"
-msgstr "Chọn Cấp Nhóm"
+msgstr "Chọn cấp nhóm"
 
 #
 msgid "Level link to this group"
@@ -522,7 +522,7 @@ msgstr "Cấp được liên kết với nhóm này"
 
 #
 msgid "Select Parent Group"
-msgstr "Lựa chọn Nhóm cha"
+msgstr "Lựa chọn nhóm cha"
 
 #
 msgid "Group parent of this group"
@@ -530,23 +530,23 @@ msgstr "Nhóm cha của nhóm này"
 
 #
 msgid "Reference Group Title"
-msgstr "Tên Nhóm Liên Kết"
+msgstr "Tên nhóm Liên Kết"
 
 #
 msgid "Input Display Group Title"
-msgstr "Nhập Tên Hiển Thị Của Nhóm"
+msgstr "Nhập tên hiển thị của nhóm"
 
 #
 msgid "Name of Group"
-msgstr "Tên của Nhóm"
+msgstr "Tên của nhóm"
 
 #
 msgid "Input Group Code"
-msgstr "Nhập Mã Nhóm"
+msgstr "Nhập mã nhóm"
 
 #
 msgid "Code of Group"
-msgstr "Mã của Nhóm"
+msgstr "Mã của nhóm"
 
 #
 msgid "Description"
@@ -554,7 +554,7 @@ msgstr "Mô Tả"
 
 #
 msgid "Desciption of Group"
-msgstr "Mô Tả của Nhóm"
+msgstr "Mô Tả của nhóm"
 
 #
 msgid "Add Employee to group"
@@ -618,7 +618,7 @@ msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Hai"
 
 #
 msgid "Name of Reference Group"
-msgstr "Tên Của Nhóm Liên Quan"
+msgstr "Tên của nhóm liên quan"
 
 #
 msgid "System title of 1st manager"
@@ -1066,7 +1066,7 @@ msgstr "Tên khách hàng"
 
 #
 msgid "Group"
-msgstr "Phòng ban"
+msgstr "Nhóm"
 
 #
 msgid "Industry"
@@ -4866,23 +4866,23 @@ msgstr "Nghiệm thu"
 
 #
 msgid "Group level"
-msgstr "Cấp phòng"
+msgstr "Cấp nhóm"
 
 #
 msgid "Group reference title"
-msgstr "Tên phòng tham chiếu"
+msgstr "Tên nhóm tham chiếu"
 
 #
 msgid "Group display title"
-msgstr "Tên phòng hiển thị"
+msgstr "Tên nhóm hiển thị"
 
 #
 msgid "Group code"
-msgstr "Mã phòng"
+msgstr "Mã nhóm"
 
 #
 msgid "Upper group"
-msgstr "Phòng cấp trên"
+msgstr "Nhóm cấp trên"
 
 #
 msgid "Manager"
@@ -5367,7 +5367,7 @@ msgstr "Đến ngày"
 
 #
 msgid "Group description"
-msgstr "Mô tả phòng ban"
+msgstr "Mô tả nhóm"
 
 #
 msgid "1st manager title"
@@ -5379,7 +5379,7 @@ msgstr "Tên quản lý thứ hai"
 
 #
 msgid "Add group level"
-msgstr "Thêm cấp phòng ban"
+msgstr "Thêm cấp nhóm"
 
 #
 msgid "Expense items"

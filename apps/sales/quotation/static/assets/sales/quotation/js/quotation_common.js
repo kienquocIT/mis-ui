@@ -456,24 +456,13 @@ class QuotationLoadDataHandle {
         )
     };
 
-    static loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
-        let self = this;
-        let optionSelected = ele;
-        let productData = SelectDDControl.get_data_from_idx(optionSelected, optionSelected.val());
-        if (is_expense === true) { // EXPENSE
-            optionSelected = ele[0].querySelector('.option-btn-checked');
-            productData = optionSelected.querySelector('.data-default');
-        }
+    static loadDataProductSelect(ele) {
+        let productData = SelectDDControl.get_data_from_idx(ele, ele.val());
         if (productData) {
             let data = productData;
-            if (is_expense === false) {
-                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
-                data['uom_group'] = data?.['general_information']?.['uom_group'];
-                data['tax'] = data?.['sale_information']?.['tax_code'];
-            }
-            if (is_expense === true) {
-                data = JSON.parse(productData.value);
-            }
+            data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
+            data['uom_group'] = data?.['general_information']?.['uom_group'];
+            data['tax'] = data?.['sale_information']?.['tax_code'];
             let description = ele[0].closest('tr').querySelector('.table-row-description');
             let uom = ele[0].closest('tr').querySelector('.table-row-uom');
             let price = ele[0].closest('tr').querySelector('.table-row-price');
@@ -486,24 +475,24 @@ class QuotationLoadDataHandle {
             // load UOM
             if (uom && data.unit_of_measure && data.uom_group) {
                 $(uom).empty();
-                self.loadBoxQuotationUOM($(uom), data.unit_of_measure, data.uom_group.id);
+                QuotationLoadDataHandle.loadBoxQuotationUOM($(uom), data.unit_of_measure, data.uom_group.id);
             } else {
-                self.loadBoxQuotationUOM($(uom));
+                QuotationLoadDataHandle.loadBoxQuotationUOM($(uom));
             }
             // load PRICE
             if (price && priceList) {
-                QuotationLoadDataHandle.loadPriceProduct(ele[0], is_change_item, is_expense);
+                QuotationLoadDataHandle.loadPriceProduct(ele[0], true);
             }
             // load TAX
             if (tax && data.tax) {
                 $(tax).empty();
-                self.loadBoxQuotationTax($(tax), data.tax);
+                QuotationLoadDataHandle.loadBoxQuotationTax($(tax), data.tax);
             } else {
-                self.loadBoxQuotationTax($(tax));
+                QuotationLoadDataHandle.loadBoxQuotationTax($(tax));
             }
         }
         $.fn.initMaskMoney2();
-    }
+    };
 
     static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
         let ele = $('#data-init-copy-quotation');
@@ -858,19 +847,11 @@ class QuotationLoadDataHandle {
     //     }
     // };
 
-    static loadPriceProduct(eleProduct, is_change_item = true, is_expense = false) {
-        let optionSelected = eleProduct;
+    static loadPriceProduct(eleProduct, is_change_item = false) {
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-        if (is_expense === true) { // EXPENSE
-            optionSelected = eleProduct.closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
-            productData = optionSelected.querySelector('.data-default');
-        }
         let is_change_price = false;
         if (productData) {
             let data = productData;
-            if (is_expense === true) {
-                data = JSON.parse(productData.value);
-            }
             let price = eleProduct.closest('tr').querySelector('.table-row-price');
             let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
             // load PRICE
@@ -980,11 +961,13 @@ class QuotationLoadDataHandle {
                 }]
             }).init();
         }
-        if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
-            if (form.getAttribute('data-method') === 'GET') {
-                let btnCopy = document.getElementById('btn-copy-quotation');
-                if (btnCopy) {
-                    btnCopy.setAttribute('disabled', 'true');
+        if (Object.keys(data?.['opportunity']).length > 0) {
+            if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
+                if (form.getAttribute('data-method') === 'GET') {
+                    let btnCopy = document.getElementById('btn-copy-quotation');
+                    if (btnCopy) {
+                        btnCopy.setAttribute('disabled', 'true');
+                    }
                 }
             }
         }

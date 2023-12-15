@@ -580,13 +580,13 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                         $('#tab_plan_datatable tbody').append(`
                             <tr>
                                 <td>${$('#tab_plan_datatable tbody tr').length}</td>
-                                <td class="text-danger" data-id="${unplanned_ap_merged[i]?.['id']}" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
-                                <td>-</td>
+                                <td class="text-danger" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
+                                <td></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['expense_after_tax_price']}"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['sum_return_value']}"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_converted_value}"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_real_value}"></span></td>
-                                <td>-</td>
+                                <td><i class="bi bi-dash"></i></td>
                             </tr>
                         `)
                     }
@@ -596,12 +596,12 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                                 <tr>
                                     <td>${$('#tab_plan_datatable tbody tr').length}</td>
                                     <td class="text-danger" data-expense-id="${unplanned_payment_merged[i]?.['expense_type']?.['id']}">${unplanned_payment_merged[i]?.['expense_type']?.['title']}</td>
-                                    <td>-</td>
+                                    <td><i class="bi bi-dash"></i></td>
                                     <td><span class="mask-money text-danger" data-init-money="0"></span></td>
                                     <td><span class="mask-money text-danger" data-init-money="0"></span></td>
                                     <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['converted_value']}"></span></td>
                                     <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['real_value']}"></span></td>
-                                    <td>-</td>
+                                    <td><i class="bi bi-dash"></i></td>
                                 </tr>
                             `)
                         }
@@ -781,13 +781,13 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                         $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${$('#tab_plan_datatable tbody tr').length}</td>
-                            <td class="text-danger" data-id="${unplanned_ap_merged[i]?.['id']}" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
-                            <td>-</td>
+                            <td class="text-danger" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
+                            <td><i class="bi bi-dash"></i></td>
                             <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['expense_after_tax_price']}"></span></td>
                             <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['sum_return_value']}"></span></td>
                             <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_converted_value}"></span></td>
                             <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_real_value}"></span></td>
-                            <td>-</td>
+                            <td><i class="bi bi-dash"></i></td>
                         </tr>
                     `)
                     }
@@ -797,12 +797,12 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                             <tr>
                                 <td>${$('#tab_plan_datatable tbody tr').length}</td>
                                 <td class="text-danger" data-expense-id="${unplanned_payment_merged[i]?.['expense_type']?.['id']}">${unplanned_payment_merged[i]?.['expense_type']?.['title']}</td>
-                                <td>-</td>
+                                <td><i class="bi bi-dash"></i></td>
                                 <td><span class="mask-money text-danger" data-init-money="0"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="0"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['converted_value']}"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['real_value']}"></span></td>
-                                <td>-</td>
+                                <td><i class="bi bi-dash"></i></td>
                             </tr>
                         `)
                         }
@@ -981,13 +981,13 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                         $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${$('#tab_plan_datatable tbody tr').length}</td>
-                            <td class="text-danger" data-id="${unplanned_ap_merged[i]?.['id']}" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
-                            <td>-</td>
+                            <td class="text-danger" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
+                            <td><i class="bi bi-dash"></i></td>
                             <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['expense_after_tax_price']}"></span></td>
                             <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['sum_return_value']}"></span></td>
                             <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_converted_value}"></span></td>
                             <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_real_value}"></span></td>
-                            <td>-</td>
+                            <td><i class="bi bi-dash"></i></td>
                         </tr>
                     `)
                     }
@@ -997,12 +997,12 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                             <tr>
                                 <td>${$('#tab_plan_datatable tbody tr').length}</td>
                                 <td class="text-danger" data-expense-id="${unplanned_payment_merged[i]?.['expense_type']?.['id']}">${unplanned_payment_merged[i]?.['expense_type']?.['title']}</td>
-                                <td>-</td>
+                                <td><i class="bi bi-dash"></i></td>
                                 <td><span class="mask-money text-danger" data-init-money="0"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="0"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['converted_value']}"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['real_value']}"></span></td>
-                                <td>-</td>
+                                <td><i class="bi bi-dash"></i></td>
                             </tr>
                         `)
                         }

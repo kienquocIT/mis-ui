@@ -724,7 +724,7 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                                     <td>-</td>
                                     <td><span class="mask-money text-danger" data-init-money="0"></span></td>
                                     <td><span class="mask-money text-danger" data-init-money="0"></span></td>
-                                    <td><span class="mask-money text-danger" data-init-money="0"></span></td>
+                                    <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['converted_value']}"></span></td>
                                     <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['real_value']}"></span></td>
                                     <td>-</td>
                                 </tr>
@@ -798,6 +798,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
                 let data_payment_mapped_item = results[2];
+
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
@@ -924,7 +925,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                                 <td>-</td>
                                 <td><span class="mask-money text-danger" data-init-money="0"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="0"></span></td>
-                                <td><span class="mask-money text-danger" data-init-money="0"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['converted_value']}"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['real_value']}"></span></td>
                                 <td>-</td>
                             </tr>
@@ -1124,7 +1125,7 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                                 <td>-</td>
                                 <td><span class="mask-money text-danger" data-init-money="0"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="0"></span></td>
-                                <td><span class="mask-money text-danger" data-init-money="0"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['converted_value']}"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['real_value']}"></span></td>
                                 <td>-</td>
                             </tr>

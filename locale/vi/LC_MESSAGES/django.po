@@ -1751,7 +1751,7 @@ msgstr "Đơn vị"
 
 #
 msgid "Unit Of Measure Group"
-msgstr "Nhóm Đơn vị tính"
+msgstr "Nhóm Đơn vị"
 
 #
 msgid "Is referenced unit"

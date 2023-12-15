@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    LoadDetailPayment('detail');
+    LoadDetailPayment('update');
 })

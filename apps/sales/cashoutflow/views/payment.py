@@ -85,6 +85,26 @@ class PaymentDetail(View):
                }, status.HTTP_200_OK
 
 
+class PaymentUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='payment/payment_update.html',
+        breadcrumb='PAYMENT_DETAIL_PAGE',
+        menu_active='menu_payment_detail',
+        perm_check=PermCheck(url=ApiURL.PAYMENT_DETAIL, method='GET', fill_key=['pk']),
+    )
+    def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
+        return {
+                   'data': {'employee_current': resp1.result}
+               }, status.HTTP_200_OK
+
+
 class PaymentDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 

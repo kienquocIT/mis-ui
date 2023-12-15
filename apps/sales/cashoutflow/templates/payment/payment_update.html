@@ -25,16 +25,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'PaymentUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
+    <button id="update-payment" class="btn btn-outline-primary" type="submit" form="form-detail-payment">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
@@ -337,5 +335,5 @@
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/jquery-steps/build/jquery.steps.min.js' %}" type="text/javascript"></script>
     <script src="{% static "assets/js/payment/payment_common.js" %}"></script>
-    <script src="{% static "assets/js/payment/payment_detail.js" %}"></script>
+    <script src="{% static "assets/js/payment/payment_update.js" %}"></script>
 {% endblock %}

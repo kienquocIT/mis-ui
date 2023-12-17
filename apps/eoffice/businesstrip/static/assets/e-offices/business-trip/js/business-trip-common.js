@@ -149,7 +149,7 @@ class expenseItemTable {
 
                     //delete row
                     $('.btn-remove-row', row).off().on('click', () => {
-                        detailTab.$tableElm.DataTable().row(row).remove().draw(false)
+                        $tbl.DataTable().row(row).remove().draw(false)
                     })
                 },
                 footerCallback: function () {
@@ -266,7 +266,7 @@ $(document).ready(function () {
             item['price'] = parseInt(item['price'])
             return item
         })
-
+        let OriginalList = $.map($empTripElm.select2('data'), (item)=> {return item.data.id});
         let data = {
             'title': formData.title,
             'remark': formData.remark,
@@ -274,7 +274,7 @@ $(document).ready(function () {
             'date_created': $x.fn.reformatData(formData.date_created, 'DD/MM/YYYY', 'YYYY-MM-DD'),
             'departure': formData.departure,
             'destination': formData.destination,
-            'employee_on_trip': $empTripElm.val(),
+            'employee_on_trip': OriginalList,
             'date_f': $x.fn.reformatData(formData.date_f, 'DD/MM/YYYY', 'YYYY-MM-DD'),
             'morning_f': formData.morning_f === 'true',
             'date_t': $x.fn.reformatData(formData.date_t, 'DD/MM/YYYY', 'YYYY-MM-DD'),

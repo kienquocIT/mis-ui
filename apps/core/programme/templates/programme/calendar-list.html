@@ -13,6 +13,8 @@
 {% endblock %}
 
 {% block pageContent %}
+
+    <!-- main content -->
     <div class="calendarapp-wrap">
         <div class="calendarapp-sidebar">
             <div data-simplebar class="nicescroll-bar">
@@ -21,70 +23,75 @@
                         {% trans 'Create' %}
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{% url 'LeaveRequestList' %}" data-bs-toggle="modal"
-                           data-bs-target="#create_new_event"><span class="feather-icon dropdown-icon"><i
-                                class="fa-solid fa-arrow-right-from-bracket"></i></span><span>{% trans 'Create leave' %}</span></a>
-                        <a class="dropdown-item" href="{% url 'BusinessTripRequestList' %}" data-bs-toggle="modal"
-                           data-bs-target="#set_new_reminder"><span class="feather-icon dropdown-icon"><i
-                                class="fa-solid fa-business-time"></i></span><span>{% trans 'Create business trip' %}</span></a>
-                        <a class="dropdown-item" href="{% url 'OpportunityMeetingList' %}" data-bs-toggle="modal"
-                           data-bs-target="#set_new_reminder"><span class="feather-icon dropdown-icon"><i
+                        <a class="dropdown-item" href="{% url 'LeaveRequestList' %}" target="_blank">
+                            <span class="feather-icon dropdown-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                            <span>{% trans 'Create leave' %}</span></a>
+                        <a class="dropdown-item" href="{% url 'BusinessTripRequestList' %}" target="_blank">
+                            <span class="feather-icon dropdown-icon"><i class="fa-solid fa-business-time"></i></span>
+                            <span>{% trans 'Create business trip' %}</span>
+                        </a>
+                        <a class="dropdown-item" href="{% url 'OpportunityMeetingList' %}" target="_blank">
+                            <span class="feather-icon dropdown-icon"><i
                                 class="fa-solid fa-users-rectangle"></i></span><span>{% trans 'Create meeting' %}</span></a>
                     </div>
-                    <div class="mt-4">
-                        <div id="inline_calendar" class="d-inline-block">
-                            <input class="form-control invisible position-absolute" type="text" name="calendar"
-                                   value=""/>
-                        </div>
+                    <div class="clearfix mt-4"></div>
+
+                    <div class="title-sm text-black mb-0 title-x-scaret">{% trans 'Category' %}
+                        <div class="wrap-btn is_active"><span></span></div>
                     </div>
-                    <div class="separator separator-light"></div>
-                    <div class="title-sm text-primary">{% trans 'Upcoming Events' %}</div>
-                    <div class="upcoming-event-wrap">
-                        <ul class="nav nav-light navbar-nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <div class="d-flex align-items-center">
-                                        <span class="badge badge-violet badge-indicator badge-indicator-lg me-2"></span>
-                                        <span class="event-time">Today, 5:00 onwards</span>
-                                    </div>
-                                    <div class="event-name">Jampack Team Meet</div>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <div class="d-flex align-items-center">
-                                        <span class="badge badge-primary badge-indicator badge-indicator-lg me-2"></span>
-                                        <span class="event-time">Tomorrow, 2:35 PM</span>
-                                    </div>
-                                    <div class="event-name">Indigo Flight to Indonesia</div>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <div class="d-flex align-items-center">
-                                        <span class="badge badge-warning badge-indicator badge-indicator-lg me-2"></span>
-                                        <span class="event-time">24 Jul, 9:30 AM</span>
-                                    </div>
-                                    <div class="event-name">Awwwards Conference</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="separator separator-light"></div>
-                    <div class="title-sm text-primary mb-0">{% trans 'Category' %}</div>
-                    <div class="categories-wrap">
+                    <div class="separator"></div>
+                    <div class="categories-wrap content-wrap">
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="customChecksc3" checked>
+                            <input type="checkbox" class="form-check-input" id="customChecksc3"
+                                   value="meeting" checked>
                             <label class="form-check-label" for="customChecksc3">{% trans 'Meeting' %}</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="customChecksc2">
+                            <input type="checkbox" class="form-check-input" id="customChecksc2" value="business">
                             <label class="form-check-label" for="customChecksc2">{% trans 'Business trip' %}</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="customChecksc1">
+                            <input type="checkbox" class="form-check-input" id="customChecksc1" value="leave">
                             <label class="form-check-label" for="customChecksc1">{% trans 'Leave' %}</label>
                         </div>
+                    </div>
+                    <div class="title-sm text-black mb-0 title-x-scaret">{% trans 'Group' %}
+                        <div class="wrap-btn is_active"><span></span></div>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="content-wrap">
+                        <select
+                                id="filter_group_id"
+                                class="form-select"
+                                data-url="{% url 'GroupListAPI' %}"
+                                data-keyResp="group_list"
+                                data-allowClear="true"
+                        ></select>
+                    </div>
+                    <div class="title-sm text-black mb-0 title-x-scaret">{% trans 'Employee' %}
+                        <div class="wrap-btn is_active"><span></span></div>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="content-wrap">
+                        <select
+                                id="filter_employee_id"
+                                class="form-select emp-list"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-keyResp="employee_list"
+                                data-keyText="full_name"
+                                data-allowClear="true"
+                                multiple
+                                data-closeOnSelect="false"
+                        ></select>
+                        <button class="btn btn-square filter-emp hidden">
+                            <i class="fa-solid fa-filter"></i>
+                        {% trans 'Show' %}</button>
+                    </div>
+                    <div class="title-sm text-primary tit-upcoming-evt">{% trans 'Upcoming Events' %}</div>
+                    <div class="separator"></div>
+                    <div class="upcoming-event-wrap">
+                        <ul class="nav nav-light navbar-nav flex-column">
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -290,21 +297,34 @@
     </div>
 {% endblock %}
 {% block dataHiddenGroup %}
+    <!-- template upcoming event -->
+    <div class="html-evt">
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <div class="d-flex align-items-center">
+                    <span class="badge badge-indicator badge-indicator-lg me-2"></span>
+                    <span class="event-time">Today, 5:00 onwards</span>
+                </div>
+                <div class="event-name">Jampack Team Meet</div>
+            </a>
+        </li>
+    </div>
+    <!-- template detail event -->
     <dev class="temp-chip">
         <div class="chip chip-primary chip-pill mb-2 me-2">
             <span><span class="chip-text">Morgan</span></span>
         </div>
     </dev>
     <input type="text" id="url-factory"
-           data-leave="{% url 'LeaveRequestListAPI' %}"
+           data-leave="{% url 'LeaveRequestCalendarListAPI' %}"
            data-meet="{% url 'OpportunityMeetingListAPI' %}"
            data-business="{% url 'BusinessTripRequestListAPI' %}"
     >
-    <input type="text" id="trans-factory" data-meet="{% trans 'Meetings' %}">
+    <input type="text" id="trans-factory" data-meet="{% trans 'Meetings' %}"
+    data-business="{% trans 'Business trip' %}" data-leave="{% trans 'Leave' %}">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/fullcalendar/main.min.js' %}"></script>
-    {#    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>#}
     <script src="{% static 'assets/js/programme/calendar-list.js' %}"></script>
 {% endblock %}

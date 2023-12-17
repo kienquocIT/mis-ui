@@ -111,14 +111,16 @@ function loadMeetingSaleCodeList(data) {
         keyResp: 'opportunity_list',
         keyId: 'id',
         keyText: 'title',
-    }).on('change', function () {
+    })
+    .on('change', function () {
         let obj_selected = SelectDDControl.get_data_from_idx(meeting_Opp_slb, meeting_Opp_slb.val())
         if (obj_selected) {
             if (obj_selected?.['is_close']) {
                 $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
                 meeting_Opp_slb.find('option').remove();
 
-            } else {
+            }
+            else {
                 loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'])
                 loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'])
             }

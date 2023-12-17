@@ -69,7 +69,10 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Sale Code' %}</label>
-                                    <select id="meeting-sale-code-select-box" data-url="{% url 'OpportunityListAPI' %}" data-method="GET" class="select2 form-select"></select>
+                                    <select id="meeting-sale-code-select-box"
+                                            data-url="{% url 'OpportunityListAPI' %}"
+                                            data-keyResp="opportunity_list"
+                                            data-method="GET" class="form-select"></select>
                                 </div>
                             </div>
                         </div>
@@ -99,11 +102,11 @@
                                     <label class="form-label required">{% trans 'Meeting address' %}</label>
                                     <div id="meeting-address-select-div">
                                         <select disabled id="meeting-address-select-box" class="select2"></select>
-                                        <a id="meeting-address-input-btn" class="text-primary form-text text-muted text-right" href="#">input address</a>
+                                        <a id="meeting-address-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'Input address' %}</a>
                                     </div>
                                     <div id="meeting-address-input-div" hidden>
-                                        <input id="meeting-address-input" placeholder="Input meeting address" class="form-control">
-                                        <a id="meeting-address-select-btn" class="text-primary form-text text-muted text-right" href="#">select address</a>
+                                        <input id="meeting-address-input" placeholder="{% trans 'Input address' %}" class="form-control">
+                                        <a id="meeting-address-select-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'Select address' %}</a>
                                     </div>
                                 </div>
                             </div>
@@ -136,7 +139,7 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">
-                                        {% trans 'Input Result' %}
+                                        {% trans 'Input result' %}
                                     </label>
                                     <textarea id="meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
                                 </div>

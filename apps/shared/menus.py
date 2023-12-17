@@ -173,6 +173,10 @@ class MenusCRM:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
+    CALENDAR = MenuCommon(
+        name='Calendar', code='menu_calendar', view_name='ProgrammeList',
+        icon='<i class="fa-regular fa-calendar-days"></i>',
+    )
     CONTACT = MenuCommon(
         name='Contact', code='id_menu_contact', view_name='ContactList',
         icon='<i class="bi bi-journal-bookmark-fill"></i>',
@@ -354,6 +358,12 @@ class MenusPurchase:
 
 
 class MenuEOffice:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    CALENDAR = MenuCommon(
+        name='Calendar', code='menu_calendar', view_name='ProgrammeList', icon='<i class="fa-regular fa-calendar-days"></i>',
+    )
     LEAVE = MenuCommon(
         name='Leave', code='menu_leave', icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',
         child=[
@@ -447,6 +457,7 @@ class SpaceItem:
             icon='<i class="fa-solid fa-users-gear"></i>',
             menus=[
                 MenusCRM.HOME,
+                MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,
                 # MenusCRM.LEAD,
@@ -483,6 +494,8 @@ class SpaceItem:
             'e-office',
             icon='<i class="fa-solid fa-laptop-file"></i>',
             menus=[
+                MenuEOffice.HOME,
+                MenuEOffice.CALENDAR,
                 MenuEOffice.LEAVE,
                 MenuEOffice.BUSINESS_TRIP,
             ],

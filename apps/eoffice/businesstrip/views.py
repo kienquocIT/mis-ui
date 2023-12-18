@@ -23,7 +23,7 @@ class BusinessTripRequestList(View):
         breadcrumb='BUSINESS_TRIP_REQUEST',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
 
 
 class BusinessTripRequestListAPI(APIView):

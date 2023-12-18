@@ -2,10 +2,12 @@ const $urlElm = $('#url-factory')
 let $tbl = $('#expense_detail_tbl')
 class expenseItemTable {
     static calcSubtotal(data, index) {
-        if (data.price > 0 && data.quantity > 0 && data.tax_data) {
+        if (data.price > 0 && data.quantity > 0) {
             let total = parseInt(data.price) * parseInt(data.quantity)
-            let tax = data?.tax_data?.rate > 0 ? total / 100 * data.tax_data.rate : 0
-            total += tax
+            if (data.tax_data){
+                let tax = data?.tax_data?.rate > 0 ? total / 100 * data.tax_data.rate : 0
+                total += tax
+            }
             data.subtotal = total
         } else data.subtotal = 0
         $tbl.DataTable().cell(index, 6).data(data.subtotal).draw(false)
@@ -187,7 +189,6 @@ class expenseItemTable {
                 'uom_txt': '',
                 'quantity': 0,
                 'price': 0,
-                'tax': {},
                 'subtotal': 0,
             }
             $tbl.DataTable().row.add(newData).draw()
@@ -262,7 +263,7 @@ $(document).ready(function () {
         formData.expense_items.map(function (item) {
             if (!item?.['expense_item'] && item?.['expense_item_data'])
                 item['expense_item'] = item['expense_item_data']['id']
-            if (!item?.['tax']) item['tax'] = item['tax_data']['id']
+            if (item?.['tax_data']?.['id']) item['tax'] = item['tax_data']['id']
             item['price'] = parseInt(item['price'])
             return item
         })

@@ -154,7 +154,7 @@ $(document).ready(function () {
                     {
                         data: 'open_year',
                         width: '10%',
-                        responsivePriority:2,
+                        responsivePriority: 2,
                         render: (row, type, data) => {
                             return row ? row : '--'
                         }
@@ -195,17 +195,17 @@ $(document).ready(function () {
         }
     }
 
-    function validApproved(dataList){
+    function validApproved(dataList) {
         if (!dataList.length) return true
         for (let item of dataList) {
             const LType = item.leave_available
-            if (LType.check_balance && item.subtotal > LType.available){
+            if (LType.check_balance && item.subtotal > LType.available) {
                 let noti = $(`<span class="text-red">`)
                 noti.text($trans.attr('data-out-of-stock'))
 
-                let setITerval = setInterval(()=>{
+                let setITerval = setInterval(() => {
                     const $btn = $('.btnAddFilter')
-                    if ($btn.length){
+                    if ($btn.length) {
                         clearInterval(setITerval)
                         $btn.append(noti)
                     }
@@ -234,7 +234,8 @@ $(document).ready(function () {
 
             // run table when page loaded
             detailTab.load_table(data.detail_data)
-            validApproved(data.detail_data)
+            if (data.system_status < 3)
+                validApproved(data.detail_data)
 
             // after load employee inherit load table leave available
             TabAvailable.load_table()

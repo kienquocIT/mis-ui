@@ -755,98 +755,6 @@ class QuotationLoadDataHandle {
         }
     };
 
-    // static loadPriceProduct(eleProduct, is_change_item = true, is_expense = false) {
-    //     let optionSelected = eleProduct;
-    //     let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-    //     if (is_expense === true) { // EXPENSE
-    //         optionSelected = eleProduct.closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
-    //         productData = optionSelected.querySelector('.data-default');
-    //     }
-    //     let is_change_price = false;
-    //     if (productData) {
-    //         let data = productData;
-    //         if (is_expense === true) {
-    //             data = JSON.parse(productData.value);
-    //         }
-    //         let price = eleProduct.closest('tr').querySelector('.table-row-price');
-    //         let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
-    //         // load PRICE
-    //         if (price && priceList) {
-    //             let account_price_id = document.getElementById('customer-price-list').value;
-    //             let general_price_id = null;
-    //             let general_price = 0;
-    //             let customer_price = null;
-    //             let current_price_checked = price.getAttribute('value');
-    //             $(priceList).empty();
-    //             if (Array.isArray(data.price_list) && data.price_list.length > 0) {
-    //                 for (let i = 0; i < data.price_list.length; i++) {
-    //                     if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
-    //                         if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST OF PRODUCT
-    //                             general_price_id = data.price_list[i].id;
-    //                             general_price = parseFloat(data.price_list[i].value);
-    //                             $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-    //                                                 <div class="row">
-    //                                                     <div class="col-5"><span>${data.price_list[i].title}</span></div>
-    //                                                     <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-    //                                                     <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-    //                                                 </div>
-    //                                             </button>`);
-    //                         }
-    //                         if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-    //                             if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
-    //                                 customer_price = parseFloat(data.price_list[i].value);
-    //                                 $(priceList).empty();
-    //                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-    //                                                     <div class="row">
-    //                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
-    //                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-    //                                                         <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-    //                                                     </div>
-    //                                                 </button>`);
-    //                             } else { // Customer price invalid, expired
-    //                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-    //                                                     <div class="row">
-    //                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
-    //                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-    //                                                         <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
-    //                                                     </div>
-    //                                                 </button>`);
-    //                             }
-    //                         }
-    //                     } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
-    //                         general_price = parseFloat(data.price_list[i].value);
-    //                         $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-    //                                                 <div class="row">
-    //                                                     <div class="col-5"><span>${data.price_list[i].title}</span></div>
-    //                                                     <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-    //                                                     <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-    //                                                 </div>
-    //                                             </button>`);
-    //                     }
-    //                 }
-    //             }
-    //             // get Price to display
-    //             if (is_change_item === true) {
-    //                 if (customer_price) {
-    //                     $(price).attr('value', String(customer_price));
-    //                 } else {
-    //                     $(price).attr('value', String(general_price));
-    //                 }
-    //             }
-    //             if (current_price_checked !== price.getAttribute('value')) {
-    //                 is_change_price = true;
-    //             }
-    //         }
-    //     }
-    //     $.fn.initMaskMoney2();
-    //     // If change price then remove promotion & shipping
-    //     if (is_change_price === true) {
-    //         let tableProduct = document.getElementById('datable-quotation-create-product');
-    //         deletePromotionRows($(tableProduct), true, false);
-    //         deletePromotionRows($(tableProduct), false, true);
-    //     }
-    // };
-
     static loadPriceProduct(eleProduct, is_change_item = false) {
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         let is_change_price = false;
@@ -891,15 +799,6 @@ class QuotationLoadDataHandle {
                                                         </a>`);
                                 }
                             }
-                            // else { // If Expired Price
-                            //     $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-                            //                             <div class="d-flex">
-                            //                                 <span class="mr-2">${data.price_list[i].title}</span>
-                            //                                 <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                            //                                 <span class="expired-price mr-2"><i>${data.price_list[i]?.['price_status']}</i></span>
-                            //                             </div>
-                            //                         </a>`);
-                            // }
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
@@ -1059,7 +958,7 @@ class QuotationLoadDataHandle {
                 QuotationCalculateCaseHandle.commonCalculate($(table), row, true, false, false);
             }
         }
-    }
+    };
 
     static loadInitQuotationConfig(page_method) {
         let ele = $('#quotation-config-data');
@@ -2464,8 +2363,10 @@ class QuotationCheckConfigHandle {
                         if (config.short_sale_config.is_discount_on_total === false) {
                             eleDiscountTotal.setAttribute('disabled', 'true');
                             eleDiscountTotal.classList.add('disabled-custom-show');
-                            eleDiscountTotal.value = "0";
-                            is_make_price_change = true;
+                            if (eleDiscountTotal.value !== "0") {
+                                eleDiscountTotal.value = "0";
+                                is_make_price_change = true;
+                            }
                         } else {
                             if (eleDiscountTotal.hasAttribute('disabled')) {
                                 eleDiscountTotal.removeAttribute('disabled');
@@ -2519,8 +2420,10 @@ class QuotationCheckConfigHandle {
                         } else {
                             eleDiscountTotal.setAttribute('disabled', 'true');
                             eleDiscountTotal.classList.add('disabled-custom-show');
-                            eleDiscountTotal.value = "0";
-                            is_make_price_change = true;
+                            if (eleDiscountTotal.value !== "0") {
+                                eleDiscountTotal.value = "0";
+                                is_make_price_change = true;
+                            }
                         }
                     }
                     // ReCalculate Total
@@ -2550,7 +2453,7 @@ class QuotationCheckConfigHandle {
             'is_short_sale': false,
             'is_long_sale': false,
         }
-    }
+    };
 
     static reCheckTable(config, row, is_short_sale = false, is_long_sale = false, is_make_price_change = false) {
         if (row) {
@@ -2584,8 +2487,10 @@ class QuotationCheckConfigHandle {
                         if (config.short_sale_config.is_discount_on_product === false) {
                             eleDiscount.setAttribute('disabled', 'true');
                             eleDiscount.classList.add('disabled-custom-show');
-                            eleDiscount.value = "0";
-                            is_make_price_change = true;
+                            if (eleDiscount.value !== "0") {
+                                eleDiscount.value = "0";
+                                is_make_price_change = true;
+                            }
                         } else {
                             if (eleDiscount.hasAttribute('disabled')) {
                                 eleDiscount.removeAttribute('disabled');
@@ -2616,8 +2521,10 @@ class QuotationCheckConfigHandle {
                         } else {
                             eleDiscount.setAttribute('disabled', 'true');
                             eleDiscount.classList.add('disabled-custom-show');
-                            eleDiscount.value = "0";
-                            is_make_price_change = true;
+                            if (eleDiscount.value !== "0") {
+                                eleDiscount.value = "0";
+                                is_make_price_change = true;
+                            }
                         }
                     }
                 }

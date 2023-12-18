@@ -46,6 +46,7 @@
     >
     <input type="text" id="trans-factory"
     >
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/e-offices/business-trip/js/list.js' %}"></script>

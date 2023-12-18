@@ -23,7 +23,7 @@ class BusinessTripRequestList(View):
         breadcrumb='BUSINESS_TRIP_REQUEST',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
 
 
 class BusinessTripRequestListAPI(APIView):
@@ -33,7 +33,12 @@ class BusinessTripRequestListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.BUSINESS_TRIP_LIST).get(request.query_params.dict())
+        params = request.query_params.dict()
+        if 'self_employee' in params:
+            del params['self_employee']
+            employee_current_data = getattr(request.user, 'employee_current_data', {})
+            params['employee_inherit_list'] = employee_current_data.get('id', None)
+        resp = ServerAPI(user=request.user, url=ApiURL.BUSINESS_TRIP_LIST).get(params)
         return resp.auto_return(key_success='business_trip_request')
 
 

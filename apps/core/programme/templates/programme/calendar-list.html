@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Calendar list page' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/fullcalendar/main.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/programme/calendar-common.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+
+    <!-- main content -->
+    <div class="calendarapp-wrap">
+        <div class="calendarapp-sidebar">
+            <div data-simplebar class="nicescroll-bar">
+                <div class="menu-content-wrap">
+                    <button class="btn btn-rounded btn-block dropdown-toggle btn-LGBT" data-bs-toggle="dropdown">
+                        {% trans 'Create' %}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'LeaveRequestList' %}" target="_blank">
+                            <span class="feather-icon dropdown-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                            <span>{% trans 'Create leave' %}</span></a>
+                        <a class="dropdown-item" href="{% url 'BusinessTripRequestList' %}" target="_blank">
+                            <span class="feather-icon dropdown-icon"><i class="fa-solid fa-business-time"></i></span>
+                            <span>{% trans 'Create business trip' %}</span>
+                        </a>
+                        <a class="dropdown-item" href="{% url 'OpportunityMeetingList' %}" target="_blank">
+                            <span class="feather-icon dropdown-icon"><i
+                                class="fa-solid fa-users-rectangle"></i></span><span>{% trans 'Create meeting' %}</span></a>
+                    </div>
+                    <div class="clearfix mt-4"></div>
+
+                    <div class="title-sm text-black mb-0 title-x-scaret">{% trans 'Category' %}
+                        <div class="wrap-btn is_active"><span></span></div>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="categories-wrap content-wrap">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="customChecksc3"
+                                   value="meeting" checked>
+                            <label class="form-check-label" for="customChecksc3">{% trans 'Meeting' %}</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="customChecksc2" value="business">
+                            <label class="form-check-label" for="customChecksc2">{% trans 'Business trip' %}</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="customChecksc1" value="leave">
+                            <label class="form-check-label" for="customChecksc1">{% trans 'Leave' %}</label>
+                        </div>
+                    </div>
+                    <div class="title-sm text-black mb-0 title-x-scaret">{% trans 'Group' %}
+                        <div class="wrap-btn is_active"><span></span></div>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="content-wrap">
+                        <select
+                                id="filter_group_id"
+                                class="form-select"
+                                data-url="{% url 'GroupListAPI' %}"
+                                data-keyResp="group_list"
+                                data-allowClear="true"
+                        ></select>
+                    </div>
+                    <div class="title-sm text-black mb-0 title-x-scaret">{% trans 'Employee' %}
+                        <div class="wrap-btn is_active"><span></span></div>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="content-wrap">
+                        <select
+                                id="filter_employee_id"
+                                class="form-select emp-list"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-keyResp="employee_list"
+                                data-keyText="full_name"
+                                data-allowClear="true"
+                                multiple
+                                data-closeOnSelect="false"
+                        ></select>
+                        <button class="btn btn-square filter-emp hidden">
+                            <i class="fa-solid fa-filter"></i>
+                        {% trans 'Show' %}</button>
+                    </div>
+                    <div class="title-sm text-primary tit-upcoming-evt">{% trans 'Upcoming Events' %}</div>
+                    <div class="separator"></div>
+                    <div class="upcoming-event-wrap">
+                        <ul class="nav nav-light navbar-nav flex-column">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="calendarapp-content">
+            <div id="calendar" class="w-100"></div>
+        </div>
+    </div>
+
+    <!-- Calendar Drawer -->
+    <div class="hk-drawer calendar-drawer drawer-right">
+        <div>
+            <div class="drawer-header">
+                <div class="drawer-header-action">
+                    <button type="button" class="drawer-close btn-close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            </div>
+            <div class="drawer-body">
+                <div data-simplebar class="nicescroll-bar">
+                    <div class="drawer-content-wrap">
+                        <div class="event-head mb-4">
+                            <span class="badge badge-violet badge-indicator badge-indicator-xl flex-shrink-0 me-2"></span>
+                            <div>
+                                <div class="event-name">Event name</div>
+                                <span>{% trans 'Event' %}</span>
+                            </div>
+                        </div>
+                        <ul class="event-detail">
+                            <li>
+                                <span class="ev-icon-wrap"><i class="fa-regular fa-calendar"></i></span>
+                                <span class="date_txt"></span>
+                            </li>
+                            <li>
+                                <span class="ev-icon-wrap"><i class="fa-regular fa-clock"></i></span>
+                                <span class="time_txt"></span>
+                            </li>
+                            <li>
+                                <span class="ev-icon-wrap"><i class="fa-solid fa-location-dot"></i></span>
+                                <span class="loca_txt"></span>
+                            </li>
+                            <li>
+                                <span class="ev-icon-wrap"><i class="fa-regular fa-square-check"></i></span>
+                                <span class="type_txt"></span>
+                            </li>
+                            <li>
+                                <span class="ev-icon-wrap"><i class="fa-solid fa-user-plus"></i></span>
+                                <div class="d-flex flex-wrap member_txt">
+                                </div>
+                            </li>
+                            <li>
+                                <span class="ev-icon-wrap"><i class="fa-solid fa-bars"></i></span>
+                                <span class="des_txt"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-none">
+            <div class="drawer-header">
+                <div class="drawer-header-action">
+                    <a href="#" class="btn btn-sm btn-icon btn-flush-secondary btn-rounded flush-soft-hover me-2"><span
+                            class="icon"><span class="feather-icon"><i
+                            data-feather="external-link"></i></span></span></a>
+                    <button type="button" class="drawer-edit-close btn-close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            </div>
+            <div class="drawer-body">
+                <div data-simplebar class="nicescroll-bar">
+                    <div class="drawer-content-wrap">
+                        <div class="event-head mb-4">
+                            <span class="badge badge-violet badge-indicator badge-indicator-xl flex-shrink-0 me-2"></span>
+                            <div>
+                                <div class="event-name" contenteditable="true">Jampack Team Meet</div>
+                                <div class="form-group mt-2 mb-0">
+                                    <div class="form-check form-check-inline ps-0">
+                                        <div class="form-check">
+                                            <input type="radio" id="event_1" name="eventSelect" class="form-check-input"
+                                                   checked="">
+                                            <label class="form-check-label" for="event_1">Event</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-check-inline ps-0">
+                                        <div class="form-check">
+                                            <input type="radio" id="reminder_1" name="eventSelect"
+                                                   class="form-check-input">
+                                            <label class="form-check-label" for="reminder_1">Reminder</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <form>
+                            <div class="form-group">
+                                <div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i
+                                                    data-feather="calendar"></i></span></span>
+											<input class="form-control form-wth-icon" name="datetimes"
+                                                   value="Aug 18,2020 - Aug 19, 2020">
+										</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i
+                                                    data-feather="clock"></i></span></span>
+											<input type="text" class="form-control form-wth-icon input-timepicker"
+                                                   value="8:40 AM - 5:40 PM">
+										</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i
+                                                    data-feather="map-pin"></i></span></span>
+											<input type="text" class="form-control form-wth-icon" value="Oslo, Canada">
+										</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i
+                                                    data-feather="check-square"></i></span></span>
+											<select class="form-select">
+												<option selected="" value="1">All Time</option>
+												<option value="2">Half Day</option>
+												<option value="3">9 to 5</option>
+											</select>
+										</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i
+                                                    data-feather="eye"></i></span></span>
+											<select class="form-select">
+												<option selected="">Default Visibility</option>
+												<option value="1">Private</option>
+												<option value="2">Public</option>
+											</select>
+										</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group color-picker">
+                                    <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                                    <input type="text" class="form-control" value="#009B84"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="d-flex flex-wrap">
+                                    <div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
+											<span>
+												<span class="avatar">
+													<img src="#" alt="user" class="avatar-img">
+												</span>
+												<span class="chip-text">Morgan</span>
+												<button type="button" class="btn-close"></button>
+											</span>
+                                    </div>
+                                    <div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
+											<span>
+												<span class="avatar">
+													<img src="#" alt="user" class="avatar-img">
+												</span>
+												<span class="chip-text">Charlie</span>
+												<button type="button" class="btn-close"></button>
+											</span>
+                                    </div>
+                                    <div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
+											<span>
+												<span class="avatar">
+													<img src="#" alt="user" class="avatar-img">
+												</span>
+												<span class="chip-text">Winston</span>
+												<button type="button" class="btn-close"></button>
+											</span>
+                                    </div>
+                                    <input type="text" class="form-control border-0 p-0 shadow-none flex-1 mb-2 me-2"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" rows="4">Annual meeting with global branch teams & bosses about growth planning and fiscal year reports</textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="drawer-footer d-flex justify-content-end">
+                <button class="btn btn-secondary drawer-edit-close me-2">discard</button>
+                <button class="btn btn-primary drawer-edit-close">save</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <!-- template upcoming event -->
+    <div class="html-evt">
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <div class="d-flex align-items-center">
+                    <span class="badge badge-indicator badge-indicator-lg me-2"></span>
+                    <span class="event-time">Today, 5:00 onwards</span>
+                </div>
+                <div class="event-name">Jampack Team Meet</div>
+            </a>
+        </li>
+    </div>
+    <!-- template detail event -->
+    <dev class="temp-chip">
+        <div class="chip chip-primary chip-pill mb-2 me-2">
+            <span><span class="chip-text">Morgan</span></span>
+        </div>
+    </dev>
+    <input type="text" id="url-factory"
+           data-leave="{% url 'LeaveRequestCalendarListAPI' %}"
+           data-meet="{% url 'OpportunityMeetingListAPI' %}"
+           data-business="{% url 'BusinessTripRequestListAPI' %}"
+    >
+    <input type="text" id="trans-factory" data-meet="{% trans 'Meetings' %}"
+    data-business="{% trans 'Business trip' %}" data-leave="{% trans 'Leave' %}">
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/fullcalendar/main.min.js' %}"></script>
+    <script src="{% static 'assets/js/programme/calendar-list.js' %}"></script>
+{% endblock %}

@@ -12,7 +12,7 @@ __all__ = ['LeaveConfigDetail', 'LeaveTypeConfigAPI', 'WorkingCalendarConfig', '
            'WorkingHolidayConfig', 'WorkingCalendarConfigAPI', 'LeaveRequestList', 'LeaveRequestListAPI',
            'LeaveRequestCreate', 'LeaveRequestCreateAPI', 'LeaveAvailableList', 'LeaveAvailableListAPI',
            'LeaveRequestDetail', 'LeaveRequestDetailAPI', 'LeaveRequestEdit', 'LeaveRequestEditAPI',
-           'LeaveAvailableHistoryAPI'
+           'LeaveAvailableHistoryAPI', 'LeaveRequestCalendarListAPI'
            ]
 
 
@@ -184,6 +184,17 @@ class LeaveRequestListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_REQUEST).get(request.query_params.dict())
         return resp.auto_return(key_success='leave_request')
+
+
+class LeaveRequestCalendarListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_REQUEST_CALENDAR).get(request.query_params.dict())
+        return resp.auto_return(key_success='leave_request_calendar')
 
 
 class LeaveRequestCreate(View):

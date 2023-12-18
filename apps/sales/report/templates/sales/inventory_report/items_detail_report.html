@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Item' %}{% endblock %}
+{% block cssHeader %}
+    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12 col-lg-4 col-md-4">
+            <div class="form-group">
+                <label class="form-label" for="items_select">{% trans 'Items' %}</label>
+                <select class="form-select select2 select-multiple" id="items_select" multiple
+                        data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4 col-md-4">
+            <div class="form-group">
+                <label class="form-label" for="warehouses_select">{% trans 'Warehouses' %}</label>
+                <select class="form-select select2 select-multiple" id="warehouses_select"
+                        data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4 col-md-4">
+            <div class="form-group">
+                <label class="form-label" for="report-revenue-date-approved">{% trans 'Date' %}</label>
+                <div class="input-affix-wrapper">
+                    <input type="text" name="date_approved" id="report-revenue-date-approved"
+                           class="form-control date-picker" autocomplete="off">
+                    <div class="input-suffix">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <button type="button" class="btn btn-gradient-primary" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
+{#            <button type="button" class="btn btn-gradient-dark" id="btn-export"><span><span>{% trans 'Export' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-file-export"></i></span></span></span></button>#}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100" id="items_detail_report_table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Item code' %}</th>
+                    <th>{% trans 'Item title' %}</th>
+                    <th>{% trans 'Description' %}</th>
+                    <th>{% trans 'Valuation method' %}</th>
+                    <th>{% trans 'Warehouse' %}</th>
+                    <th>{% trans 'System date' %}</th>
+                    <th>{% trans 'Posting date' %}</th>
+                    <th>{% trans 'Document date' %}</th>
+                    <th>{% trans 'Trans description' %}</th>
+                    <th>{% trans 'Trans code' %}</th>
+                    <th class="text-primary">{% trans 'Stock in quantity' %}</th>
+                    <th class="text-primary">{% trans 'Cost' %}</th>
+                    <th class="text-primary">{% trans 'In value' %}</th>
+                    <th class="text-danger">{% trans 'Stock out quantity' %}</th>
+                    <th class="text-danger">{% trans 'Cost' %}</th>
+                    <th class="text-danger">{% trans 'Out value' %}</th>
+                    <th class="text-success">{% trans 'Cumulative quantity' %}</th>
+                    <th class="text-success">{% trans 'Cumulative value' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+    <script src="{% static 'assets/sales/inventory_report/js/items_detail.js' %}"></script>
+{% endblock %}

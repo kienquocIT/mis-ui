@@ -400,6 +400,17 @@ class MenusReport:
             ),
         ],
     )
+    INVENTORY_REPORT = MenuCommon(
+        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-chart-bar"></i>',
+        child=[
+            MenuCommon(
+                name='Items detail report',
+                code='menu_items_detail_report',
+                view_name='ItemsDetailReportList',
+                icon='<i class="far fa-file"></i>',
+            ),
+        ],
+    )
 
 
 # Space Setup
@@ -494,6 +505,7 @@ class SpaceItem:
             menus=[
                 MenusReport.HOME,
                 MenusReport.SALE_REPORT,
+                MenusReport.INVENTORY_REPORT,
             ],
         ),
         'company-system': SpaceCommon(

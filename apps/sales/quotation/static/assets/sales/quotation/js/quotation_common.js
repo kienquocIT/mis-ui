@@ -195,7 +195,7 @@ class QuotationLoadDataHandle {
                 });
             }
         }
-        QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
+        // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
         if (form.attr('data-method') !== 'GET') {
             if (!dataCustomer?.['is_copy']) {
                 QuotationLoadDataHandle.loadDataProductAll();
@@ -256,7 +256,7 @@ class QuotationLoadDataHandle {
                 return item?.['fullname'] || '';
             },
         });
-        QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.contactSelectEle);
+        // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.contactSelectEle);
     };
 
     static loadBoxQuotationPaymentTerm(dataPayment = {}) {
@@ -273,7 +273,7 @@ class QuotationLoadDataHandle {
             data: dataPayment,
             disabled: !(QuotationLoadDataHandle.paymentSelectEle.attr('data-url')),
         });
-        QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.paymentSelectEle);
+        // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.paymentSelectEle);
     }
 
     static loadDataBySalePerson() {
@@ -629,7 +629,7 @@ class QuotationLoadDataHandle {
                                 }
                                 ele.append(option)
                             });
-                            self.loadInformationSelectBox(ele);
+                            // QuotationLoadDataHandle.loadInformationSelectBox(ele);
                         }
                     }
                 }

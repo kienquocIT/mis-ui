@@ -57,31 +57,16 @@
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropstart input-prefix">
-                                                <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                ></i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-payment-term"
-                                                    data-url="{% url "PaymentsTermsListAPI" %}"
-                                                    data-link-detail=""
-                                                    data-method="GET"
-                                                    name="payment_term"
-                                                    data-keyResp="payment_terms_list"
-                                                    required
-                                            ></select>
-                                        </div>
-                                    </div>
+                                    <select
+                                            class="form-select"
+                                            id="select-box-quotation-create-payment-term"
+                                            data-url="{% url "PaymentsTermsListAPI" %}"
+                                            data-link-detail=""
+                                            data-method="GET"
+                                            name="payment_term"
+                                            data-keyResp="payment_terms_list"
+                                            required
+                                    ></select>
                                 </div>
                             </div>
                         </div>
@@ -89,31 +74,16 @@
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropstart input-prefix">
-                                                <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                ></i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-customer"
-                                                    data-url="{% url "AccountForSaleListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "AccountDetail" 1 %}"
-                                                    name="customer"
-                                                    data-keyResp="account_sale_list"
-                                                    required
-                                            ></select>
-                                        </div>
-                                    </div>
+                                    <select
+                                            class="form-select"
+                                            id="select-box-quotation-create-customer"
+                                            data-url="{% url "AccountForSaleListAPI" %}"
+                                            data-method="GET"
+                                            data-link-detail="{% url "AccountDetail" 1 %}"
+                                            name="customer"
+                                            data-keyResp="account_sale_list"
+                                            required
+                                    ></select>
                                 </div>
                             </div>
                             <div class="col-12 col-md-3 col-lg-3">
@@ -144,31 +114,16 @@
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropstart input-prefix">
-                                                <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                ></i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-contact"
-                                                data-url="{% url "ContactListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url 'ContactDetail' 1 %}"
-                                                name="contact"
-                                                data-keyResp="contact_list"
-                                                required
-                                            ></select>
-                                        </div>
-                                    </div>
+                                    <select
+                                        class="form-select"
+                                        id="select-box-quotation-create-contact"
+                                        data-url="{% url "ContactListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url 'ContactDetail' 1 %}"
+                                        name="contact"
+                                        data-keyResp="contact_list"
+                                        required
+                                    ></select>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">

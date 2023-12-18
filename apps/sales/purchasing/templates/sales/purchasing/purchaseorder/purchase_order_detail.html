@@ -102,31 +102,16 @@
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
-                                <div class="input-group more-information-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="dropstart input-prefix">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
-                                        <select
-                                                class="form-select"
-                                                id="box-purchase-order-supplier"
-                                                data-url="{% url "AccountForSaleListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url "AccountDetail" 1 %}"
-                                                name="supplier"
-                                                data-keyResp="account_sale_list"
-                                                disabled
-                                        ></select>
-                                    </div>
-                                </div>
+                                <select
+                                        class="form-select"
+                                        id="box-purchase-order-supplier"
+                                        data-url="{% url "AccountForSaleListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url "AccountDetail" 1 %}"
+                                        name="supplier"
+                                        data-keyResp="account_sale_list"
+                                        disabled
+                                ></select>
                             </div>
                         </div>
                     </div>
@@ -155,31 +140,16 @@
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
-                                <div class="input-group more-information-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="dropstart input-prefix">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4 more-information-dropdown"></div>
-                                        </div>
-                                        <select
-                                                class="form-select"
-                                                id="box-purchase-order-contact"
-                                                data-url="{% url "ContactListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url 'ContactDetail' 1 %}"
-                                                name="contact"
-                                                data-keyResp="contact_list"
-                                                disabled
-                                        ></select>
-                                    </div>
-                                </div>
+                                <select
+                                        class="form-select"
+                                        id="box-purchase-order-contact"
+                                        data-url="{% url "ContactListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url 'ContactDetail' 1 %}"
+                                        name="contact"
+                                        data-keyResp="contact_list"
+                                        disabled
+                                ></select>
                             </div>
                         </div>
                     </div>

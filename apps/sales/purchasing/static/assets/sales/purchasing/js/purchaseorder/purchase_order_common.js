@@ -75,7 +75,7 @@ class POLoadDataHandle {
                 return item?.['name'] || '';
             },
         });
-        POLoadDataHandle.loadMoreInformation(ele);
+        // POLoadDataHandle.loadMoreInformation(ele);
     };
 
     static loadBoxContact(dataContact = {}, supplierID = null) {
@@ -88,7 +88,7 @@ class POLoadDataHandle {
                 return item?.['fullname'] || '';
             },
         });
-        POLoadDataHandle.loadMoreInformation(ele);
+        // POLoadDataHandle.loadMoreInformation(ele);
     };
 
     static loadBoxProduct(ele, dataProduct = {}) {
@@ -131,7 +131,7 @@ class POLoadDataHandle {
                     POLoadDataHandle.loadBoxTax($(tax));
                 }
                 // load modal more information
-                POLoadDataHandle.loadMoreInformation(ele);
+                // POLoadDataHandle.loadMoreInformation(ele);
             }
             $.fn.initMaskMoney2();
         }

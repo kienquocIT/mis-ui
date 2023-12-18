@@ -62,31 +62,16 @@
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropstart input-prefix">
-                                                <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                ></i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-payment-term"
-                                                    data-url="{% url "PaymentsTermsListAPI" %}"
-                                                    data-link-detail=""
-                                                    data-method="GET"
-                                                    name="payment_term"
-                                                    data-keyResp="payment_terms_list"
-                                                    required
-                                            ></select>
-                                        </div>
-                                    </div>
+                                    <select
+                                            class="form-select"
+                                            id="select-box-quotation-create-payment-term"
+                                            data-url="{% url "PaymentsTermsListAPI" %}"
+                                            data-link-detail=""
+                                            data-method="GET"
+                                            name="payment_term"
+                                            data-keyResp="payment_terms_list"
+                                            required
+                                    ></select>
                                 </div>
                             </div>
                         </div>
@@ -94,31 +79,16 @@
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropstart input-prefix">
-                                                <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                ></i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-customer"
-                                                    data-url="{% url "AccountForSaleListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "AccountDetail" 1 %}"
-                                                    name="customer"
-                                                    data-keyResp="account_sale_list"
-                                                    required
-                                            ></select>
-                                        </div>
-                                    </div>
+                                    <select
+                                            class="form-select"
+                                            id="select-box-quotation-create-customer"
+                                            data-url="{% url "AccountForSaleListAPI" %}"
+                                            data-method="GET"
+                                            data-link-detail="{% url "AccountDetail" 1 %}"
+                                            name="customer"
+                                            data-keyResp="account_sale_list"
+                                            required
+                                    ></select>
                                 </div>
                             </div>
                             <div class="col-12 col-md-3 col-lg-3">
@@ -149,31 +119,16 @@
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropstart input-prefix">
-                                                <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                ></i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-contact"
-                                                data-url="{% url "ContactListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url 'ContactDetail' 1 %}"
-                                                name="contact"
-                                                data-keyResp="contact_list"
-                                                required
-                                            ></select>
-                                        </div>
-                                    </div>
+                                    <select
+                                        class="form-select"
+                                        id="select-box-quotation-create-contact"
+                                        data-url="{% url "ContactListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url 'ContactDetail' 1 %}"
+                                        name="contact"
+                                        data-keyResp="contact_list"
+                                        required
+                                    ></select>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
@@ -318,7 +273,7 @@
                                                     <div class="col-4">
                                                         <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-pretax-amount"></span></h6>
                                                         <input id="quotation-create-product-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
-                                                        <input type="hidden" id="quotation-final-revenue-before-tax">
+                                                        <input type="text" id="quotation-final-revenue-before-tax" hidden>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -328,7 +283,7 @@
                                                     <div class="col-3">
                                                         <div class="input-group">
                                                             <span class="input-affix-wrapper">
-                                                                <input type="text" class="form-control validated-number" id="quotation-create-product-discount" value="0">
+                                                                <input type="text" class="form-control validated-number" id="quotation-create-product-discount" value="0" data-zone="quotation_products_data">
                                                                 <span class="input-suffix"><i class="fas fa-percentage"></i></span>
                                                             </span>
                                                         </div>
@@ -433,7 +388,7 @@
                                             <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
                                         <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address" disabled></textarea>
-                                        <input type="hidden" id="quotation-create-customer-shipping">
+                                        <input type="text" id="quotation-create-customer-shipping" hidden>
                                     </div>
                                     <div
                                             class="modal fade" id="shippingModalCenter" tabindex="-1"
@@ -466,7 +421,7 @@
                                             <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
                                         <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address" disabled></textarea>
-                                        <input type="hidden" id="quotation-create-customer-billing">
+                                        <input type="text" id="quotation-create-customer-billing" hidden>
                                     </div>
                                     <div
                                             class="modal fade" id="billingModalCenter" tabindex="-1"
@@ -632,91 +587,6 @@
                                 </div>
                             </div>
                         </div>
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-product"
-                                data-url="{% url "ProductForSaleListAPI" %}"
-                                data-link-detail="{% url "ProductDetail" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-expense"
-                                data-url="{% url "ExpenseListAPI" %}"
-                                data-link-detail="{% url "ExpenseDetail" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-expense-item"
-                                data-url="{% url "ExpenseItemListAPI" %}"
-                                data-link-detail="{% url "ExpenseItemDetailAPI" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-uom"
-                                data-url="{% url "UnitOfMeasureListAPI" %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-tax"
-                                data-url="{% url "TaxListAPI" %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-request-employee"
-                                value="{{ data.data.employee_current }}"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-company-currency-config"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-quotation"
-                                value="[]"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-promotion"
-                                data-url="{% url "PromotionCheckListAPI" %}"
-                                data-link-detail="{% url "PromotionDetail" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-shipping"
-                                data-url="{% url "ShippingCheckListAPI" %}"
-                                data-link-detail="{% url "ShippingDetail" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-opportunity"
-                                value="{{ data.data.opportunity }}"
-                        >
-                        <input
-                                type="hidden"
-                                id="customer-price-list"
-                        >
-                        <input
-                                type="hidden"
-                                id="quotation-config-data"
-                                class="quotation-config"
-                                data-url="{% url "QuotationConfigDetailAPI" %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="quotation-detail-data"
-                        >
-                        <input
-                                type="hidden"
-                                id="quotation-copy-discount-on-total"
-                        >
                     </div>
                 </div>
             </div>
@@ -751,29 +621,118 @@
                     </table>
                 </div>
                 <input
-                        type="hidden"
+                        type="text"
                         id="quotation-indicator-data"
                         data-url="{% url 'QuotationIndicatorListAPI' %}"
                         data-method="get"
+                        hidden
                 >
             </div>
         </div>
-        <input
-            type="hidden"
-            id="app-trans-factory"
-            data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
-            data-select-address="{% trans 'Select this address' %}"
-            data-view-detail-info="{% trans 'View detail' %}"
-            data-btn-close="{% trans 'Close' %}"
-            data-more-information="{% trans 'More information' %}"
-            data-apply="{% trans 'Apply' %}"
-            data-refreshed="{% trans 'Data is refreshed.' %}"
-            data-valid-btn-copy="{% trans 'Opportunity was closed or had sale order' %}"
-            data-valid="{% trans "Valid" %}"
-        >
     </form>
 {% endblock %}
 
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
+        data-select-address="{% trans 'Select this address' %}"
+        data-view-detail-info="{% trans 'View detail' %}"
+        data-btn-close="{% trans 'Close' %}"
+        data-more-information="{% trans 'More information' %}"
+        data-apply="{% trans 'Apply' %}"
+        data-refreshed="{% trans 'Data is refreshed.' %}"
+        data-valid-btn-copy="{% trans 'Opportunity was closed or had sale order' %}"
+        data-valid="{% trans "Valid" %}"
+    >
+
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-product"
+            data-url="{% url "ProductForSaleListAPI" %}"
+            data-link-detail="{% url "ProductDetail" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-expense"
+            data-url="{% url "ExpenseListAPI" %}"
+            data-link-detail="{% url "ExpenseDetail" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-expense-item"
+            data-url="{% url "ExpenseItemListAPI" %}"
+            data-link-detail="{% url "ExpenseItemDetailAPI" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-uom"
+            data-url="{% url "UnitOfMeasureListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-tax"
+            data-url="{% url "TaxListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-request-employee"
+            value="{{ data.data.employee_current }}"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-company-currency-config"
+    >
+    <input
+            type="text"
+            id="data-quotation"
+            value="[]"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-promotion"
+            data-url="{% url "PromotionCheckListAPI" %}"
+            data-link-detail="{% url "PromotionDetail" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-shipping"
+            data-url="{% url "ShippingCheckListAPI" %}"
+            data-link-detail="{% url "ShippingDetail" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-opportunity"
+            value="{{ data.data.opportunity }}"
+    >
+    <input
+            type="text"
+            id="customer-price-list"
+    >
+    <input
+            type="text"
+            id="quotation-config-data"
+            class="quotation-config"
+            data-url="{% url "QuotationConfigDetailAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="quotation-detail-data"
+    >
+    <input
+            type="text"
+            id="quotation-copy-discount-on-total"
+    >
+{% endblock %}
 
 {% block jsFooter %}
     <!-- Select2 -->

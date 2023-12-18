@@ -76,8 +76,8 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label required">{% trans "Name" %}</label>
-                        <input class="form-control" id="title">
+                        <label for="title" class="form-label required">{% trans "Name" %}</label>
+                        <input class="form-control" id="title" name="title">
                     </div>
                     <div class="form-group">
                         <div class="row">
@@ -86,7 +86,7 @@
                                 <label class="form-label required" hidden id="employee-label">{% trans "Employee" %}</label>
                             </div>
                             <div class="col-6 text-right form-check">
-                                <input class="form-check-input" type="checkbox" id="internal">
+                                <input class="form-check-input" type="checkbox" id="internal" name="is_internal_payment">
                                 <label for="internal" class="form-label">{% trans "Internal" %}</label>
                             </div>
                         </div>
@@ -119,7 +119,7 @@
                                     </div>
                                 </span>
                             </span>
-                            <select class="form-select" data-method="GET" id="supplier-select-box" data-url="{% url 'AccountListAPI' %}"></select>
+                            <select class="form-select" data-method="GET" id="supplier-select-box" data-url="{% url 'AccountListAPI' %}" name="supplier"></select>
                         </span>
                         <span id="employee-detail-span" hidden class="input-affix-wrapper">
                             <span class="input-prefix">
@@ -146,7 +146,7 @@
                                     </div>
                                 </span>
                             </span>
-                            <select class="form-select" data-method="GET" id="employee-select-box" data-url="{% url 'EmployeeListAPI' %}"></select>
+                            <select class="form-select" data-method="GET" id="employee-select-box" data-url="{% url 'EmployeeListAPI' %}" name="employee_payment"></select>
                         </span>
                     </div>
                 </div>
@@ -162,40 +162,40 @@
                             <div class="form-group">
                                 <label class="form-label required">{% trans "Creator" %}</label>
                                 <span class="input-affix-wrapper">
-                                        <span class="input-prefix" id="creator-detail-span">
-                                            <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                                            <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
-                                                <div class="row">
-                                                    <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
-                                                    <a id="btn-detail-creator-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
-                                                        <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
-                                                    </a>
-                                                </div>
-                                                <div class="dropdown-divider"></div>
-                                                <div class="row">
-                                                    <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
-                                                    <span class="col-7 text-primary" id="creator-name"></span>
-                                                </div>
-                                                <div class="row">
-                                                    <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
-                                                    <span class="col-7 text-primary" id="creator-code"></span>
-                                                </div>
-                                                <div class="row">
-                                                    <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
-                                                    <span class="col-7 text-primary" id="creator-department"></span>
-                                                </div>
-                                            </span>
+                                    <span class="input-prefix" id="creator-detail-span">
+                                        <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                        <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
+                                            <div class="row">
+                                                <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                                <a id="btn-detail-creator-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
+                                                    <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                                </a>
+                                            </div>
+                                            <div class="dropdown-divider"></div>
+                                            <div class="row">
+                                                <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
+                                                <span class="col-7 text-primary" id="creator-name"></span>
+                                            </div>
+                                            <div class="row">
+                                                <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
+                                                <span class="col-7 text-primary" id="creator-code"></span>
+                                            </div>
+                                            <div class="row">
+                                                <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
+                                                <span class="col-7 text-primary" id="creator-department"></span>
+                                            </div>
                                         </span>
-                                        <select class="form-select" id="creator-select-box" data-method="GET"
-                                                style="color: black"
-                                                data-url="{% url 'EmployeeListAPI' %}"></select>
                                     </span>
+                                    <select class="form-select" id="creator-select-box" data-method="GET"
+                                            style="color: black"
+                                            data-url="{% url 'EmployeeListAPI' %}"></select>
+                                </span>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label required" id="supplier-label">{% trans "Method" %}</label>
-                        <select class="form-select" id="payment-method">
+                        <select class="form-select" id="payment-method" name="method">
                             <option selected></option>
                             <option value="0">{% trans "None" %}</option>
                             <option value="1">{% trans "Cash" %}</option>

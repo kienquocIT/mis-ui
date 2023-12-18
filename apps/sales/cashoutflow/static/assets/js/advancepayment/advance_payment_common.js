@@ -1184,12 +1184,12 @@ function LoadDetailAP(option) {
                 for (let i = 0; i < data?.['expense_items'].length; i++) {
                     table_body.append(`<tr id="" class="row-number">
                         <td class="number text-center"></td>
-                        <td><input class="form-control expense-name-input"></td>
-                        <td><select class="form-select expense-type-select-box"></select></td>
-                        <td><input class="form-control expense-uom-input"></td>
-                        <td><input type="number" min="1" class="form-control expense_quantity" value="1"></td>
-                        <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money"></td>
-                        <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
+                        <td><input class="form-control expense-name-input" name="expense_name"></td>
+                        <td><select class="form-select expense-type-select-box" name="expense_type"></select></td>
+                        <td><input class="form-control expense-uom-input" name="expense_uom"></td>
+                        <td><input type="number" min="1" class="form-control expense_quantity" value="1" name="expense_quantity"></td>
+                        <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money" name="expense_unit_price"></td>
+                        <td><select class="form-select expense-tax-select-box" data-method="GET" name="expense_tax"><option selected></option></select></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" disabled></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" disabled></td>
                         <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
@@ -1382,6 +1382,7 @@ class AdvancePaymentHandle {
 
         frm.dataForm['money_gave'] = money_gave.is(':checked');
         frm.dataForm['status'] = frm.dataForm['money_gave'];
+        frm.dataForm['system_status'] = 1;
 
         return {
             url: frm.dataUrl,

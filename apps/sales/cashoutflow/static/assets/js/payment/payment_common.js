@@ -450,6 +450,7 @@ function get_ap_product_items() {
 
 function loadAPList() {
     AP_db.DataTable().clear().destroy();
+    let current_sale_code = [].concat(opp_mapped_select.val()).concat(quotation_mapped_select.val()).concat(sale_order_mapped_select.val())
     AP_db.DataTableDefault({
         reloadCurrency: true,
         dom: "",
@@ -464,16 +465,28 @@ function loadAPList() {
                         let result = [];
                         if (!AP_filter) {
                             for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
-                                if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0 && resp.data['advance_payment_list'][i]?.['employee_inherit_id'] === initEmployee.id) {
-                                    result.push(resp.data['advance_payment_list'][i])
+                                let item = resp.data['advance_payment_list'][i]
+                                let this_sale_code = [].concat(item?.['opportunity_mapped']).concat(item?.['quotation_mapped']).concat(item?.['sale_order_mapped'])
+                                if (item?.['remain_value'] > 0 && item?.['employee_inherit_id'] === initEmployee.id) {
+                                    if (current_sale_code.length > 0 && this_sale_code.length > 0) {
+                                        if (current_sale_code[0] === this_sale_code[0]?.['id']) {
+                                            result.push(item)
+                                        }
+                                    }
                                 }
                             }
                         }
                         else {
                             for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
-                                if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0 && resp.data['advance_payment_list'][i]?.['employee_inherit_id'] === initEmployee.id && resp.data['advance_payment_list'][i]?.['id'] === AP_filter) {
-                                    result.push(resp.data['advance_payment_list'][i])
-                                    break
+                                let item = resp.data['advance_payment_list'][i]
+                                let this_sale_code = [].concat(item?.['opportunity_mapped']).concat(item?.['quotation_mapped']).concat(item?.['sale_order_mapped'])
+                                if (item?.['remain_value'] > 0 && item?.['employee_inherit_id'] === initEmployee.id && item?.['id'] === AP_filter) {
+                                    if (current_sale_code.length > 0 && this_sale_code.length > 0) {
+                                        if (current_sale_code[0] === this_sale_code[0]?.['id']) {
+                                            result.push(item)
+                                            break
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1315,34 +1328,39 @@ $("#next-btn").on('click', function () {
                             let total_remain_value = 0;
                             for (let i = 0; i < ap_item_detail?.['expense_items'].length; i++) {
                                 let expense_item = ap_item_detail?.['expense_items'][i];
-                                let tax_code = '';
-                                if (Object.keys(expense_item?.['expense_tax']).length !== 0) {
-                                    tax_code = expense_item?.['expense_tax'].code;
+                                let row_id_previous = `#row-${current_value_converted_from_ap.closest('tr').attr('class').slice(-1)}`
+                                if ($(row_id_previous).find('.expense-type-select-box').val() === expense_item?.['expense_type']?.['id']) {
+                                    let tax_code = expense_item?.['expense_tax']?.['code'] ? expense_item?.['expense_tax']?.['code'] : '';
+                                    let disabled = 'disabled';
+                                    if (expense_item.remain_total > 0) {
+                                        disabled = '';
+                                    }
+                                    total_remain_value += expense_item.remain_total;
+                                    product_table.find('tbody').append(`<tr>
+                                        <td class="text-center"><input data-id="${expense_item.id}" class="product-selected" type="checkbox" ${disabled}></td>
+                                        <td>${expense_item.expense_name}</td>
+                                        <td>${expense_item.expense_type.title}</td>
+                                        <td>${expense_item.expense_quantity}</td>
+                                        <td><span class="text-primary mask-money" data-init-money="${expense_item.expense_unit_price}"></span></td>
+                                        <td><span class="badge badge-soft-danger">${tax_code}</span></td>
+                                        <td>
+                                        <span class="text-primary mask-money product-remain-value" data-init-money="${expense_item.remain_total - findValueConvertedById(expense_item.id, selected_converted_value)}"></span>
+                                        </td>
+                                        <td><input class="mask-money form-control converted-value-inp" disabled></td>
+                                    </tr>`)
                                 }
-                                let disabled = 'disabled';
-                                if (expense_item.remain_total > 0) {
-                                    disabled = '';
-                                }
-                                total_remain_value += expense_item.remain_total;
-                                product_table.find('tbody').append(`<tr>
-                                    <td class="text-center"><input data-id="${expense_item.id}" class="product-selected" type="checkbox" ${disabled}></td>
-                                    <td>${expense_item.expense_name}</td>
-                                    <td>${expense_item.expense_type.title}</td>
-                                    <td>${expense_item.expense_quantity}</td>
-                                    <td><span class="text-primary mask-money" data-init-money="${expense_item.expense_unit_price}"></span></td>
-                                    <td><span class="badge badge-soft-danger">${tax_code}</span></td>
-                                    <td>
-                                    <span class="text-primary mask-money product-remain-value" data-init-money="${expense_item.remain_total - findValueConvertedById(expense_item.id, selected_converted_value)}"></span>
-                                    </td>
-                                    <td><input class="mask-money form-control converted-value-inp" disabled></td>
+                            }
+                            if (product_table.find('tbody').html() === '') {
+                                product_table.remove()
+                            }
+                            else {
+                                product_table.find('tbody').append(`<tr style="background-color: #ebf5f5">
+                                    <td colspan="5"></td>
+                                    <td><span style="text-align: left"><b>Total:</b></span></td>
+                                    <td><span class="mask-money total-available-value text-primary" data-init-money="${total_remain_value}"></span></td>
+                                    <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
                                 </tr>`)
                             }
-                            product_table.find('tbody').append(`<tr style="background-color: #ebf5f5">
-                                <td colspan="5"></td>
-                                <td><span style="text-align: left"><b>Total:</b></span></td>
-                                <td><span class="mask-money total-available-value text-primary" data-init-money="${total_remain_value}"></span></td>
-                                <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
-                            </tr>`)
 
                             $('.converted-value-inp').on('change', function () {
                                 let product_remain_value = $(this).closest('tr').find('.product-remain-value').attr('data-init-money');

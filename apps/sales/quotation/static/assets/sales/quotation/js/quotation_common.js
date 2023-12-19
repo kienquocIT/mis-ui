@@ -143,7 +143,11 @@ class QuotationLoadDataHandle {
         // Delete all shipping rows
         deletePromotionRows(tableProduct, false, true);
         // ReCheck Config when change Opportunity
-        QuotationCheckConfigHandle.checkConfig(true);
+        let check_config = QuotationCheckConfigHandle.checkConfig(true);
+        // load again total products if after check config the price change
+        if (check_config?.['is_make_price_change'] === true) {
+            QuotationCalculateCaseHandle.calculateAllRowsTableProduct($(tableProduct));
+        }
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}) {
@@ -2352,9 +2356,9 @@ class QuotationCheckConfigHandle {
                                 let row = tableProduct.tBodies[0].rows[i];
                                 is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, row, true, false, is_make_price_change);
                                 // Re Calculate all data of rows & total
-                                if (is_copy === false) {
-                                    QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
-                                }
+                                // if (is_copy === false) {
+                                //     QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
+                                // }
                             }
                         }
                     }
@@ -2375,9 +2379,9 @@ class QuotationCheckConfigHandle {
                         }
                     }
                     // ReCalculate Total
-                    if (is_first_time === false && is_copy === false) {
-                        QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
-                    }
+                    // if (is_first_time === false && is_copy === false) {
+                    //     QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
+                    // }
                 } else {
                     if (new_row) {
                         is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, new_row, true, false, is_make_price_change);
@@ -2404,9 +2408,9 @@ class QuotationCheckConfigHandle {
                                 let row = tableProduct.tBodies[0].rows[i];
                                 is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, row, false, true, is_make_price_change);
                                 // Re Calculate all data of rows & total
-                                if (is_copy === false) {
-                                    QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
-                                }
+                                // if (is_copy === false) {
+                                //     QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
+                                // }
                             }
                         }
                     }
@@ -2427,9 +2431,9 @@ class QuotationCheckConfigHandle {
                         }
                     }
                     // ReCalculate Total
-                    if (is_first_time === false && is_copy === false) {
-                        QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
-                    }
+                    // if (is_first_time === false && is_copy === false) {
+                    //     QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
+                    // }
                 } else {
                     if (new_row) {
                         is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, new_row, false, true, is_make_price_change);

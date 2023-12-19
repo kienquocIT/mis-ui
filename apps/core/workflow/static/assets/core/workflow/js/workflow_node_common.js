@@ -1829,6 +1829,11 @@ class NodeSubmitHandle {
                                         zone_initial_node.push(parseInt($(eleChecked).attr('data-id')));
                                     }
                                     dataRow['zone_initial_node'] = zone_initial_node;
+                                    let zone_hidden_initial_node = [];
+                                    for (let eleChecked of rowInit.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
+                                        zone_hidden_initial_node.push(parseInt($(eleChecked).attr('data-id')));
+                                    }
+                                    dataRow['zone_hidden_initial_node'] = zone_hidden_initial_node;
                                 }
                             }
                         } else if (dataRow?.['code'] === 'approved') {
@@ -1861,6 +1866,9 @@ class NodeSubmitHandle {
                             if ($(IFArea?.querySelector('.node-zone-submit')).val()) {
                                 dataInForm['zone'] = JSON.parse($(IFArea?.querySelector('.node-zone-submit')).val());
                             }
+                            if ($(IFArea?.querySelector('.node-zone-hidden-submit')).val()) {
+                                dataInForm['zone_hidden'] = JSON.parse($(IFArea?.querySelector('.node-zone-hidden-submit')).val());
+                            }
                             dataRow['collab_in_form'] = dataInForm;
                         } else if ($(boxListSource).val() === '2') { // Out Form
                             dataRow['option_collaborator'] = 1;
@@ -1874,6 +1882,9 @@ class NodeSubmitHandle {
                             }
                             if ($(OFArea?.querySelector('.node-zone-submit')).val()) {
                                 dataOutForm['zone'] = JSON.parse($(OFArea?.querySelector('.node-zone-submit')).val());
+                            }
+                            if ($(OFArea?.querySelector('.node-zone-hidden-submit')).val()) {
+                                dataOutForm['zone_hidden'] = JSON.parse($(OFArea?.querySelector('.node-zone-hidden-submit')).val());
                             }
                             dataRow['collab_out_form'] = dataOutForm;
                             if (is_flowchart === true) {
@@ -1893,6 +1904,10 @@ class NodeSubmitHandle {
                                     for (let zoneData of dataRowInWF?.['zone']) {  // In WF employee has different zones => need to for every row to get zones
                                         zone.push(parseInt(zoneData?.['id']));
                                     }
+                                    let zone_hidden = [];
+                                    for (let zoneData of dataRowInWF?.['zone_hidden']) {  // In WF employee has different zones => need to for every row to get zones
+                                        zone_hidden.push(parseInt(zoneData?.['id']));
+                                    }
                                     if (dataRowInWF?.['in_wf_option']) {
                                         if (dataRowInWF?.['employee']?.['id'] || dataRowInWF?.['position_choice']?.['id']) {
                                             dataInWF.push({
@@ -1900,6 +1915,7 @@ class NodeSubmitHandle {
                                                 'employee': dataRowInWF?.['employee']?.['id'] ? dataRowInWF?.['employee']?.['id'] : null,
                                                 'position_choice': dataRowInWF?.['position_choice']?.['id'] ? dataRowInWF?.['position_choice']?.['id'] : null,
                                                 'zone': zone,
+                                                'zone_hidden': zone_hidden,
                                             })
                                         } else {
                                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');

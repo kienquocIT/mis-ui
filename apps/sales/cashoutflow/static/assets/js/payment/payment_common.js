@@ -1643,7 +1643,7 @@ function LoadDetailPayment(option) {
                         </td>
                         <td colspan="2">
                             <span class="form-text text-muted">Sum</span>
-                            <input data-return-type="number" class="total-value-salecode-item form-control mask-money" value="${data_row?.['sum_value']}">
+                            <input readonly disabled data-return-type="number" class="total-value-salecode-item form-control mask-money" value="${data_row?.['sum_value']}">
                             <script type="application/json" class="detail-ap-items">${JSON.stringify(data_row_detail)}</script>
                         </td>
                     </tr>`);

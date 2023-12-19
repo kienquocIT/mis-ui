@@ -1,39 +1,34 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Product Detail' %}{% endblock %}
+{% block title %}{% trans 'Product Create' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/css/masterdata/saledata/accounts/account_create.css' %}" rel="stylesheet"
           type="text/css"/>
+    <link href="{% static 'vendors/dropify/dist/css/dropify.min.css' %}" rel="stylesheet" type="text/css"/>
     <link
             href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
             rel="stylesheet"
             type="text/css"
     />
-    <link href="{% static 'vendors/dropify/dist/css/dropify.min.css' %}" rel="stylesheet" type="text/css"/>
-    <style>
-        .form-control[readonly], .form-select:disabled { !important;
-            color: black;
-        }
-    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'ProductUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
+    <button id="save-account" class="btn btn-outline-primary" type="submit" form="form-create-product">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-update-product" data-method="PUT" data-url="{% url "ProductDetailAPI" pk=0 %}"
-          data-url-redirect="{% url "ProductDetail" pk=0 %}">
+    <form id="form-create-product"
+          data-method="POST"
+          data-url="{% url "ProductListAPI" %}"
+          data-url-redirect="{% url "ProductList" %}">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
@@ -44,32 +39,22 @@
                     <div class="form-group">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="check-tab-sale" value="option2">
-                            <label class="form-check-label" for="check-tab-sale">{% trans "For Sale" %}</label>
+                            <label class="form-check-label" for="check-tab-sale">{% trans "Sale" %}</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1">
-                            <label class="form-check-label" for="check-tab-inventory">{% trans "For Inventory" %}</label>
+                            <label class="form-check-label" for="check-tab-inventory">{% trans "Inventory" %}</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="check-tab-purchase" value="option3">
-                            <label class="form-check-label" for="check-tab-purchase">{% trans "For Purchase" %}</label>
+                            <label class="form-check-label" for="check-tab-purchase">{% trans "Purchase" %}</label>
                         </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-9 col-lg-9">
-                    <div class="row">
-                        <div class="col-12 col-md-3 col-lg-3">
-                            <div class="form-group">
-                                <label class="form-label required" for="code">{% trans "Product Code" %}</label>
-                                <input type="text" id="code" class="form-control" oninput="this.value=this.value.toUpperCase()" required>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-9 col-lg-9">
-                            <div class="form-group">
-                                <label class="form-label required" for="title">{% trans "Product Name" %}</label>
-                                <input type="text" id="title" placeholder="Input Product Name" class="form-control">
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="id">{% trans "Product Name" %}</label>
+                        <input type="text" id="title" placeholder="Input Product Name" class="form-control">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="description">{% trans "Description" %}</label>
@@ -86,37 +71,37 @@
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-hashtag"></i></span></span>
-                            <span class="nav-link-text">{% trans 'General' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-up"></i></span></span>
-                            <span class="nav-link-text">{% trans 'Sale' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-boxes"></i></span></span>
-                            <span class="nav-link-text">{% trans 'Inventory' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-down"></i></span></span>
-                            <span class="nav-link-text">{% trans 'Purchase' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-hashtag"></i></span></span>
+                        <span class="nav-link-text">{% trans 'General' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-up"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Sale' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-boxes"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Inventory' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-down"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Purchase' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" id="link-tab-variants" href="#tab_variants">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-splotch"></i></span></span>
                         <span class="nav-link-text">{% trans 'Variants' %}</span>
                     </a>
                 </li>
-                </ul>
+            </ul>
             </div>
         </div>
         <div class="tab-content">
@@ -229,40 +214,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-5">
-                    <div style="overflow-y: auto; height: 50vh" class="col-12 col-md-6 col-lg-6 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                        <table class="table nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                            <thead>
-                            <th></th>
-                            <th>{% trans 'Select' %}</th>
-                            <th>{% trans 'Price list' %}</th>
-                            <th>{% trans 'Price' %}</th>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    <div class="col-12 col-md-3 col-lg-3">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <div class="row">
-                                <div class="col-8 text-left">
-                                    <label class="form-label" for="price_list_for_sale_online">{% trans "Price list for sale online" %}</label>
-                                </div>
-                                <div class="col-4 text-right form-check form-switch">
-                                    <input type="checkbox" class="form-check-input" id="is_publish_website">
-                                    <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
-                                </div>
-                            </div>
-                            <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select" data-placeholder="{% trans 'From Price List in left side' %}"></select>
-                        </div>
-                        <div class="form-check form-check">
-                            <div class="row">
-                                <div class="col-6 col-lg-8 col-md-8 mt-2">
-                                    <input type="checkbox" class="form-check-input" id="available_notify_checkbox">
-                                    <label class="form-check-label" for="available_notify_checkbox">{% trans "Notify when available quantity is less than" %}</label>
-                                </div>
-                                <div class="col-6 col-lg-4 col-md-4">
-                                    <input id="less_than_number" type="number" min="0" class="form-control">
-                                </div>
+                            <label class="form-label required">{% trans "Price List" %}</label>
+                            <div id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                                <div class="border-secondary card card-body ul-price-list"></div>
                             </div>
                         </div>
                     </div>
@@ -292,7 +249,7 @@
                     </div>
                 </div>
                 <div class="row mt-8">
-                    <div class="col-12 col-md-5 col-lg-5">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div>
                             <span class="mb-3 badge-status">
                                 <span class="badge badge-danger badge-indicator"></span>
@@ -310,7 +267,6 @@
                             </tfoot>
                         </table>
                     </div>
-                    <div class="col-12 col-md-1 col-lg-1"></div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div>
                             <span class="mb-3 badge-status">
@@ -341,7 +297,7 @@
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label class="col-3 col-form-label required">{% trans "Tax Code" %}</label>
+                            <label class="form-label required">{% trans "Tax Code" %}</label>
                             <select id="purchase-select-box-tax-code" class="form-select" data-method="GET"
                                     data-url="{% url "TaxListAPI" %}"></select>
                         </div>
@@ -373,6 +329,7 @@
                         </button>
                     </div>
                 </div>
+
 
                 <div class="modal fade" id="modal-variant-attributes" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -507,11 +464,11 @@
         </div>
     </form>
     {{ data.unit | json_script:"id-unit-list" }}
-    {{ data.warehouse_list | json_script:"warehouse_list" }}
     {{ data.currency_list | json_script:"currency_list" }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "vendors/dropify/dist/js/dropify.min.js" %}"></script>
+    <script src="{% static "vendors/dropify/dist/js/dropify.min.js" %}"></script>
     <script src="{% static "assets/js/masterdata/saledata/product/product_common.js" %}"></script>
-    <script src="{% static "assets/js/masterdata/saledata/product/product_detail.js" %}"></script>
+    <script src="{% static "assets/js/masterdata/saledata/product/product_create.js" %}"></script>
 {% endblock %}

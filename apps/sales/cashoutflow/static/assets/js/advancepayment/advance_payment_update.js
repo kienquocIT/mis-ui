@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    new AdvancePaymentHandle().load()
     LoadDetailAP('update');
 
     // SUBMIT FORM UPDATE ADVANCE PAYMENT

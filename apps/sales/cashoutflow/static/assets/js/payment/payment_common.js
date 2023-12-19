@@ -335,7 +335,7 @@ function PaymentLoadSupplier(data) {
     })
 }
 
-function loadExpenseType(row_id, data) {
+function loadExpenseType(row_id, data){
     let ele = $('#' + row_id + ' .expense-type-select-box');
     ele.initSelect2({
         ajax: {
@@ -1444,7 +1444,7 @@ function Disable(option) {
         $('.form-select').prop('disabled', true).css({color: 'black'});
         $('.select2').prop('disabled', true);
         $('input').prop('disabled', true);
-        $('#btn-add-row-line-detail').prop('disabled', true);
+        $('.btn-add-payment-value').prop('disabled', true);
         $('.btn-del-line-detail').prop('disabled', true);
     }
 }
@@ -1527,7 +1527,7 @@ function LoadDetailPayment(option) {
 
                 $('#payment-method').val(data?.['method']);
 
-                $('#created_date_id').val(data?.['date_created'].split(' ')[0]);
+                $('#created_date_id').val(data?.['date_created'].split(' ')[0]).prop('readonly', true);
 
                 PaymentLoadCreator(data?.['creator_name'])
 
@@ -1563,22 +1563,19 @@ function LoadDetailPayment(option) {
 
                 for (let i = 0; i < data?.['expense_items'].length; i++) {
                     let data_row = data?.['expense_items'][i];
-                    let tax_html = ``;
-                    if (Object.keys(data_row?.['expense_tax']).length !== 0) {
-                        tax_html = `<option selected>${data_row?.['expense_tax']['title']}</option>`;
-                    }
                     tableLineDetail.append(`<tr id="row-${i+1}" class="row-number">
                         <td class="number text-center">${i+1}</td>
-                        <td><select class="form-select expense-type-select-box" name="expense_type"><option selected>${data_row?.['expense_type']['title']}</option></select></td>
+                        <td><select class="form-select expense-type-select-box" name="expense_type"></select></td>
                         <td><input class="form-control expense-name-input" name="expense_description" value="${data_row?.['expense_description']}"></td>
                         <td><input class="form-control expense-uom-input" name="expense_uom" value="${data_row?.['expense_uom_name']}"></td>
                         <td><input type="number" min="1" class="form-control expense_quantity" name="expense_quantity" value="${data_row?.['expense_quantity']}"></td>
                         <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money" name="expense_unit_price" value="${data_row?.['expense_unit_price']}"></td>
-                        <td><select class="form-select expense-tax-select-box" data-method="GET" name="expense_tax">${tax_html}</select></td>
+                        <td><select class="form-select expense-tax-select-box" data-method="GET" name="expense_tax"></select></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" value="${data_row?.['expense_subtotal_price']}" disabled></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" value="${data_row?.['expense_after_tax_price']}" disabled></td>
                         <td><input type="text" class="form-control expense-document-number" value="${data_row?.['document_number']}" name="document_number"></td>
                         <td>
+                        <button class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button>
                         <button class="btn-row-toggle btn text-primary btn-link btn-animated" type="button" title="Collapse row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></button>
                         </td>
                     </tr>`);
@@ -1598,7 +1595,7 @@ function LoadDetailPayment(option) {
                                 <input data-return-type="number" class="value-converted-from-ap-inp form-control mask-money" value="${data_row?.['converted_value']}" disabled>
                                 <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" 
                                         data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
-                                        class="disabled btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
+                                        class="btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
                                     <span class="icon"><i class="bi bi-pencil-square text-primary"></i></span>
                                 </button>
                             </div>
@@ -1610,12 +1607,16 @@ function LoadDetailPayment(option) {
                         </td>
                     </tr>`);
 
-                    count_row(tableLineDetail, 1);
+                    loadExpenseType(`row-${i+1}`, data_row?.['expense_type'])
+                    loadProductTaxList(`row-${i+1}`, data_row?.['expense_tax'])
+                    count_row(tableLineDetail);
                 }
 
                 $.fn.initMaskMoney2();
 
                 Disable(option);
+                quotation_mapped_select.attr('disabled', true).attr('readonly', true);
+                sale_order_mapped_select.attr('disabled', true).attr('readonly', true);
             }
         })
 }
@@ -1676,7 +1677,7 @@ class PaymentHandle {
             }
         }
     }
-    combinesData(frmEle) {
+    combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $('#title').val();
@@ -1721,10 +1722,12 @@ class PaymentHandle {
                 let expense_unit_price = parseFloat(tableLineDetail.find(row_id + ' .expense-unit-price-input').attr('value'));
                 let expense_subtotal_price = parseFloat(tableLineDetail.find(row_id + ' .expense-subtotal-price').attr('value'));
                 let expense_after_tax_price = parseFloat(tableLineDetail.find(row_id + ' .expense-subtotal-price-after-tax').attr('value'));
+
+                let row_tax_ELe = tableLineDetail.find(row_id + ' .expense-tax-select-box')
+                let tax_selected = SelectDDControl.get_data_from_idx(row_tax_ELe, row_tax_ELe.val())
                 let tax_rate = 0;
-                if (tableLineDetail.find(row_id + ' .expense-tax-select-box').val()) {
-                    let tax_selected = JSON.parse($('#' + tableLineDetail.find(row_id + ' .expense-tax-select-box').attr('data-idx-data-loaded')).text())[tableLineDetail.find(row_id + ' .expense-tax-select-box').val()];
-                    tax_rate = parseFloat(tax_selected.rate);
+                if (Object.keys(tax_selected).length !== 0) {
+                    tax_rate = tax_selected?.['rate']
                 }
                 let document_number = tableLineDetail.find(row_id + ' .expense-document-number').val();
 
@@ -1820,6 +1823,15 @@ class PaymentHandle {
 
         frm.dataForm['employee_payment'] = employeeEle.val();
 
+        if (for_update) {
+            let pk = $.fn.getPkDetail();
+            return {
+                url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: frm.dataForm,
+                urlRedirect: frm.dataUrlRedirect,
+            };
+        }
         return {
             url: frm.dataUrl,
             method: frm.dataMethod,

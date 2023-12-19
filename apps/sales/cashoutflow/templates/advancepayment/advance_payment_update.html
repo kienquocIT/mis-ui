@@ -44,7 +44,8 @@
             data-url-payment-cost-list="{% url 'PaymentCostListAPI' %}">
     </script>
     {{ data.data.employee_current | json_script:"employee_current" }}
-    <form id="form-detail-advance" data-method="PUT" data-url-redirect="{% url "AdvancePaymentDetail" pk=0 %}"
+    <form id="form-detail-advance" data-method="PUT"
+          data-url-redirect="{% url "AdvancePaymentDetail" pk=0 %}"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url-detail="{% url 'AdvancePaymentDetailAPI' pk=0 %}"
           data-url="{% url "AdvancePaymentListAPI" %}">
@@ -264,7 +265,7 @@
                                     <div class="row mt-3 mb-3">
                                         <div class="col-12">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="money-gave" checked disabled>
+                                                <input type="checkbox" class="form-check-input" id="money-gave">
                                                 <label class="text-primary">{% trans "Money gave/transferred" %}</label>
                                             </div>
                                         </div>

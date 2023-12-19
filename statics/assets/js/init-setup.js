@@ -1454,13 +1454,35 @@ class WFRTControl {
         globeWFRuntimeID = runtime_id;
     }
 
+    static setWFInitialZone(app_code) {
+        if (app_code) {
+            let btn = $('#btnLogShow');
+            btn.removeClass('hidden');
+            let url = btn.attr('data-url-current-wf');
+            $.fn.callAjax2({
+                'url': url,
+                'method': 'GET',
+                'data': {'code': app_code},
+            }).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data?.['app_list'].length === 1) {
+                    if ($.fn.hasOwnProperties(data?.['app_list'][0], ['workflow_currently'])) {
+                        let workflow_current = data?.['app_list'][0]['workflow_currently'];
+                        // zones handler
+                        WFRTControl.activeButtonOpenZone(workflow_current['initial_zones']);
+                    }
+                }
+            })
+        }
+    }
+
     static getWFRuntimeID() {
         return globeWFRuntimeID;
     }
 
     static getActionsList() {
         let itemEle = $('#idxWFActionsData');
-        if (itemEle) return JSON.parse(itemEle.text());
+        if (itemEle && itemEle.length > 0) return JSON.parse(itemEle.text());
         return [];
     }
 
@@ -1481,48 +1503,6 @@ class WFRTControl {
         if (Array.isArray(zonesData)) {
             let pageEle = DocumentControl.getElePageContent();
             let input_mapping_properties = WFRTControl.getInputMappingProperties();
-
-            // disable + readonly field (chỉ disabled các field trong form)
-            pageEle.find('.required').removeClass('required');
-            pageEle.find('input, select, textarea').each(function (event) {
-
-                let inputMapProperties = input_mapping_properties[$(this).attr('name')];
-                if (!inputMapProperties)
-                    inputMapProperties = input_mapping_properties[$(this).attr('data-zone')];
-                if (inputMapProperties && typeof inputMapProperties === 'object') {
-                    let arrTmpFind = [];
-                    inputMapProperties['name'].map((nameFind) => {
-                        arrTmpFind.push("[name=" + nameFind + "]");
-                        // cho các field trong table or list
-                        if ($(this).attr('data-zone')) arrTmpFind.push("[data-zone=" + nameFind + "]");
-                    })
-                    inputMapProperties['id'].map((idFind) => {
-                        arrTmpFind.push("[id=" + idFind + "]");
-                    })
-                    inputMapProperties['id_border_zones'].map((item) => {
-                        arrTmpFind.push('#' + item)
-                    })
-                    inputMapProperties['cls_border_zones'].map((item) => {
-                        arrTmpFind.push('.' + item);
-                    })
-                    arrTmpFind.map((item) => {
-                        pageEle.find(item).each(function (event) {
-                            $(this).changePropertiesElementIsZone({
-                                add_disable: true,
-                                add_readonly: true,
-                                remove_required: true,
-                            });
-                        });
-                    })
-                }
-                else {
-                    $(this).changePropertiesElementIsZone({
-                        add_disable: true,
-                        add_readonly: true,
-                        remove_required: true,
-                    });
-                }
-            });
 
             // apply zones config
             if (zonesData.length > 0) {
@@ -1554,6 +1534,7 @@ class WFRTControl {
                                             'remove_disable': true,
                                             'add_readonly': true,
                                             'add_border': true,
+                                            'add_class_active': true,
                                         });
                                     }
                                     else {
@@ -1563,6 +1544,7 @@ class WFRTControl {
                                             'remove_disable': true,
                                             'remove_readonly': true,
                                             'add_border': true,
+                                            'add_class_active': true,
                                         });
                                     }
                                 })
@@ -1583,6 +1565,50 @@ class WFRTControl {
                     }
                 })
             }
+
+            // disable + readonly field (chỉ disabled các field trong form)
+            pageEle.find('.required').removeClass('required');
+            pageEle.find('input, select, textarea, button, span.mask-money').each(function (event) {
+
+                let inputMapProperties = input_mapping_properties[$(this).attr('name')];
+                if (!inputMapProperties)
+                    inputMapProperties = input_mapping_properties[$(this).attr('data-zone')];
+                if (inputMapProperties && typeof inputMapProperties === 'object') {
+                    let arrTmpFind = [];
+                    inputMapProperties['name'].map((nameFind) => {
+                        arrTmpFind.push("[name=" + nameFind + "]");
+                        // cho các field trong table or list
+                        if ($(this).attr('data-zone')) arrTmpFind.push("[data-zone=" + nameFind + "]");
+                    })
+                    inputMapProperties['id'].map((idFind) => {
+                        arrTmpFind.push("[id=" + idFind + "]");
+                    })
+                    inputMapProperties['id_border_zones'].map((item) => {
+                        arrTmpFind.push('#' + item)
+                    })
+                    inputMapProperties['cls_border_zones'].map((item) => {
+                        arrTmpFind.push('.' + item);
+                    })
+                    arrTmpFind.map((item) => {
+                        pageEle.find(item).each(function (event) {
+                            $(this).changePropertiesElementIsZone({
+                                add_disable: true,
+                                add_readonly: true,
+                                remove_required: true,
+                                add_empty_value: true,
+                            });
+                        });
+                    })
+                }
+                else {
+                    $(this).changePropertiesElementIsZone({
+                        add_disable: true,
+                        add_readonly: true,
+                        remove_required: true,
+                        add_empty_value: true,
+                    });
+                }
+            });
 
             // add button save at zones
             // idFormID
@@ -1606,10 +1632,11 @@ class WFRTControl {
     }
 
     static activeButtonOpenZone(zonesData) {
-        if (window.location.href.includes('/update/')) {
+        if (window.location.href.includes('/update/') || window.location.href.includes('/create')) {
             WFRTControl.setZoneData(zonesData);
             if (zonesData && Array.isArray(zonesData)) {
                 $('#btn-active-edit-zone-wf').removeClass('hidden');
+                $('#btn-active-edit-zone-wf').click();
             }
         }
     }
@@ -1679,16 +1706,20 @@ class WFRTControl {
             'add_disable': false,
             'remove_readonly': false,
             'add_readonly': false,
-            'add_border': false, ...opts
+            'add_border': false,
+            'add_class_active': false,  // flag to know element is active zone
+            'add_empty_value': false, ...opts
         }
         if (config.add_require_label === true) {
             $(ele$).closest('.form-group').find('.form-label').addClass('required');
         }
         if (config.add_disable === true) {
-            $(ele$).attr('disabled', 'disabled');
-            if ($(ele$).is('div')) {
-                $(ele$).css('cursor', 'no-drop')
-                $(ele$).addClass('bg-light');
+            if (!$(ele$).hasClass('zone-active')) {
+                $(ele$).attr('disabled', 'disabled');
+                if ($(ele$).is('div')) {
+                    $(ele$).css('cursor', 'no-drop')
+                    $(ele$).addClass('bg-light');
+                }
             }
         }
         if (config.remove_required === true) {
@@ -1698,10 +1729,12 @@ class WFRTControl {
             $(ele$).removeAttr('disabled');
         }
         if (config.add_readonly === true) {
-            if ($(ele$).is('div')) {
-                $(ele$).addClass('bg-light');
-            } else {
-                $(ele$).attr('readonly', 'readonly');
+            if (!$(ele$).hasClass('zone-active')) {
+                if ($(ele$).is('div')) {
+                    $(ele$).addClass('bg-light');
+                } else {
+                    $(ele$).attr('readonly', 'readonly');
+                }
             }
         }
         if (config.remove_readonly === true) {
@@ -1713,6 +1746,26 @@ class WFRTControl {
         if (config.add_border === true) {
             $(ele$).addClass('border-warning');
         }
+
+        if (config.add_class_active === true) {  // flag to know which fields are active by WF zones
+            $(ele$).addClass('zone-active');
+        }
+        // if (config.add_empty_value === true) {  // set value to empty
+        //     if (!$(ele$).hasClass('zone-active')) {
+        //         if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
+        //             $(ele$).html(`<option value="" selected></option>`);
+        //         }
+        //         if ($(ele$).is('input')) {  // if input
+        //             $(ele$).val('');
+        //             if ($(ele$).hasClass('mask-money')) {  // if input mask-money
+        //                 $(ele$).attr('value', '');
+        //             }
+        //         }
+        //         if ($(ele$).is('span') && $(ele$).hasClass('mask-money')) {
+        //             $(ele$).attr('data-init-money', '').html(``);
+        //         }
+        //     }
+        // }
 
         // active border for select2
         if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible"))

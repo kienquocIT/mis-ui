@@ -51,6 +51,8 @@ class QuotationCreate(View):
                 'employee_current': json.dumps(request.user.employee_current_data),
                 'opportunity': opportunity,
             },
+            'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
+            'form_id': 'frm_quotation_create',
             'list_from_app': 'quotation.quotation.create',
         }
         return ctx, status.HTTP_200_OK

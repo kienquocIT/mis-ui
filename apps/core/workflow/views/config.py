@@ -71,7 +71,8 @@ class WorkflowOfAppListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APPS).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APPS).get(data)
         return resp.auto_return(key_success='app_list')
 
 

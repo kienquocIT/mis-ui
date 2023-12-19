@@ -201,7 +201,7 @@
                                         <tr>
                                             <th colspan="2" class="align-text-top">
                                                 <div class="row mb-5">
-                                                    <button type="button" class="btn btn-outline-primary" id="btn-add-product-quotation-create">
+                                                    <button type="button" class="btn btn-outline-primary" id="btn-add-product-quotation-create" data-zone="quotation_products_data">
                                                         <span><span>{% trans 'Add Product' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                                     </button>
                                                 </div>
@@ -212,6 +212,7 @@
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#shippingFeeModalCenter"
                                                         id="btn-add-shipping"
+                                                        data-zone="quotation_products_data"
                                                     >
                                                         <span>
                                                             <span>{% trans 'Add Shipping Fee' %}</span>
@@ -232,6 +233,7 @@
                                                                     <button
                                                                             type="button" class="btn-close"
                                                                             data-bs-dismiss="modal" aria-label="Close"
+                                                                            data-zone="quotation_products_data"
                                                                     >
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>
@@ -256,6 +258,7 @@
                                                                     <button
                                                                             type="button" class="btn btn-secondary"
                                                                             data-bs-dismiss="modal"
+                                                                            data-zone="quotation_products_data"
                                                                     >{% trans 'Close' %}</button>
                                                                 </div>
                                                             </div>
@@ -323,6 +326,7 @@
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#promotionModalCenter"
                                                             id="btn-check-promotion"
+                                                            data-zone="quotation_products_data"
                                                         >
                                                             <span>
                                                                 <span>{% trans 'Check available promotion' %}</span>
@@ -537,12 +541,12 @@
                                         <tr>
                                             <th colspan="2" class="align-text-top">
                                                 <div class="row mb-2">
-                                                    <button type="button" class="btn btn-outline-primary" id="btn-add-expense-quotation-create">
+                                                    <button type="button" class="btn btn-outline-primary" id="btn-add-expense-quotation-create" data-zone="quotation_expenses_data">
                                                         <span><span>{% trans 'Add Expense' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                                     </button>
                                                 </div>
                                                 <div class="row">
-                                                    <button type="button" class="btn btn-outline-primary" id="btn-add-labor-quotation-create">
+                                                    <button type="button" class="btn btn-outline-primary" id="btn-add-labor-quotation-create" data-zone="quotation_expenses_data">
                                                         <span><span>{% trans 'Add Labor' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                                     </button>
                                                 </div>

@@ -1,6 +1,5 @@
 let promotionClass = new promotionHandle();
 let shippingClass = new shippingHandle();
-let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-before-tax');
 
 // Load data
 class QuotationLoadDataHandle {
@@ -11,6 +10,7 @@ class QuotationLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
     static transEle = $('#app-trans-factory');
+    static finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-before-tax');
 
     static loadInformationSelectBox(ele, is_expense = false) {
         let optionSelected;
@@ -730,7 +730,7 @@ class QuotationLoadDataHandle {
                 totalRaw.value = data.total_expense
             }
             // load total revenue before tax for tab product
-            finalRevenueBeforeTax.value = data.total_product_revenue_before_tax;
+            QuotationLoadDataHandle.finalRevenueBeforeTax.value = data.total_product_revenue_before_tax;
         }
     };
 
@@ -2185,12 +2185,12 @@ class QuotationCalculateCaseHandle {
             $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
             if (is_product === true) {
-                finalRevenueBeforeTax.value = pretaxAmount;
+                QuotationLoadDataHandle.finalRevenueBeforeTax.value = pretaxAmount;
             }
             if (eleDiscount) {
                 $(eleDiscount).attr('data-init-money', String(discountAmount));
                 eleDiscountRaw.value = discountAmount;
-                finalRevenueBeforeTax.value = (pretaxAmount - discountAmount);
+                QuotationLoadDataHandle.finalRevenueBeforeTax.value = (pretaxAmount - discountAmount);
             }
             $(eleTaxes).attr('data-init-money', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
@@ -2531,7 +2531,7 @@ class QuotationCheckConfigHandle {
             }
         }
         return is_make_price_change
-    }
+    };
 
 }
 
@@ -3053,7 +3053,7 @@ class QuotationSubmitHandle {
         _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
         _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
         _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
-        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(QuotationLoadDataHandle.finalRevenueBeforeTax.value);
         _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
         _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
         _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());

@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, PermCheck
+from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, PermCheck, InputMappingProperties
 
 
 class AdvancePaymentList(View):
@@ -94,13 +94,16 @@ class AdvancePaymentUpdate(View):
         perm_check=PermCheck(url=ApiURL.ADVANCE_PAYMENT_DETAIL, method='PUT', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
         resp1 = ServerAPI(
             user=request.user,
             url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
         ).get()
         return {
-                   'data': {'employee_current': resp1.result}
-               }, status.HTTP_200_OK
+            'data': {'employee_current': resp1.result},
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-detail-advance'
+        }, status.HTTP_200_OK
 
 
 class AdvancePaymentDetailAPI(APIView):

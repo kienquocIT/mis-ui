@@ -67,17 +67,17 @@ class SelectDDControl {
         return state;
     }
 
-    get __auto_selected_data_onload(){
+    get __auto_selected_data_onload() {
         let configKey = this.opts?.['selectedDataOnload'];
         let configAttr = this.ele.attr('data-selectedDataOnload');
 
-        if (configKey === undefined || configAttr === undefined){
+        if (configKey === undefined || configAttr === undefined) {
             return true
-        } else if (typeof configKey === "boolean"){
+        } else if (typeof configKey === "boolean") {
             return configKey
-        } else if (configAttr === 'true'){
+        } else if (configAttr === 'true') {
             return true;
-        } else if (configAttr === 'false'){
+        } else if (configAttr === 'false') {
             return false;
         }
         return true;
@@ -294,7 +294,7 @@ class SelectDDControl {
 
         params = this.ele.attr('data-params');
         if (params) {
-            let temp = params.replaceAll("'",'"')
+            let temp = params.replaceAll("'", '"')
             try {
                 temp = JSON.parse(temp)
             } catch (e) {
@@ -322,15 +322,15 @@ class SelectDDControl {
         }
     }
 
-    get placeholder(){
-        return this.opts?.['placeholder'] ? this.opts.placeholder : this.ele.attr('data-placeholder') ? this.ele.attr('data-placeholder') :  $.fn.transEle.attr('data-select-placeholder');
+    get placeholder() {
+        return this.opts?.['placeholder'] ? this.opts.placeholder : this.ele.attr('data-placeholder') ? this.ele.attr('data-placeholder') : $.fn.transEle.attr('data-select-placeholder');
     }
 
-    get width(){
+    get width() {
         return this.opts?.width ? this.opts?.width : this.ele.attr('data-width') ? this.ele.attr('data-width') : '100%';
     }
 
-    get theme(){
+    get theme() {
         return this.opts?.theme ? this.opts?.theme : this.ele.attr('data-theme') ? this.ele.attr('data-theme') : 'bootstrap4';
     }
 
@@ -420,14 +420,15 @@ class SelectDDControl {
         //  3. {default}
         let isDisabled = this.disabled;
         let isMultiple = this.opts?.multiple ? true : !!this.ele.attr('multiple');
+        let isCloseSelect = this.ele.attr('data-closeOnSelect') !== 'false';
         let isAllowClear = this.opts?.allowClear ? true : (this.ele.attr('data-allowClear') === 'true');
         if (!isMultiple && isAllowClear && this.__has_option_empty !== true) {
             this.ele.prepend(`<option selected></option>`);
         }
         return {
             'multiple': isMultiple,
-            'closeOnSelect': !isMultiple,
-            'allowClear': isDisabled === true ? false: isAllowClear,
+            'closeOnSelect': isCloseSelect,
+            'allowClear': isDisabled === true ? false : isAllowClear,
         }
     }
 
@@ -606,14 +607,14 @@ class SelectDDControl {
         let dataOnload = this.initData;
         if (this.ele && this.ele.length > 0 && Array.isArray(dataOnload) && Array.isArray(dataSelected)) {
             let sumData = this.initData.concat(dataSelected);
-            if (!hasAjax){
+            if (!hasAjax) {
                 config['ajax'] = null;
                 config['data'] = sumData.map(
-                    (item)=>{
+                    (item) => {
                         return {
                             ...item,
                             // prepare text to title for templateResult callback
-                            'title': item?.['text'] ? item?.['text']: item?.['title'] ? item['title'] : '',
+                            'title': item?.['text'] ? item?.['text'] : item?.['title'] ? item['title'] : '',
                         }
                     }
                 );
@@ -626,7 +627,7 @@ class SelectDDControl {
                     && (
                         item.selected === true || sumData.length === 1
                     )
-                ){
+                ) {
                     selectLoaded = true;
                     let dataIDx = this.callbackValueId(item, this._data_keyId);
                     clsThis.loadInfoMore(
@@ -669,14 +670,14 @@ class SelectDDControl {
         }
     }
 
-    loadInfoMore(eleThis, detailIdx = null, detailData = null){
+    loadInfoMore(eleThis, detailIdx = null, detailData = null) {
         let nextHasInfoBtnMore = $(eleThis).siblings('.info-btn-more');
         let nextHasInfoBtnMore__Detail = $(eleThis).siblings('.info-btn-more-detail');
         if (nextHasInfoBtnMore.length > 0 && nextHasInfoBtnMore__Detail.length > 0) {
             let selectVal = detailIdx && detailData ? detailIdx : $(eleThis).val();
             let urlInfoDetail = $(eleThis).attr('data-url-info-detail');
             if (urlInfoDetail) {
-                if (selectVal){
+                if (selectVal) {
                     urlInfoDetail = urlInfoDetail.replaceAll('__pk__', selectVal);
                     nextHasInfoBtnMore.attr('data-id', selectVal);
                     nextHasInfoBtnMore__Detail.find('.link-detail-more').attr('href', urlInfoDetail);
@@ -700,13 +701,13 @@ class SelectDDControl {
 
     init() {
         // call this for init select with options
-        if (this.ele.length > 0){
+        if (this.ele.length > 0) {
             let clsThis = this;
 
             if (!this._config) this._config = this.config();
             this.renderDataOnload(this._config);
             return this.ele.select2(this._config).on('change', function (e) {
-                if ($(this).closest('form').length > 0){
+                if ($(this).closest('form').length > 0) {
                     if ($(this).valid()) $(this).closest(".form-group").removeClass("has-error");
                     else $(this).closest(".form-group").addClass("has-error");
                 }

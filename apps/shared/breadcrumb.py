@@ -274,6 +274,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Final acceptance
     FINAL_ACCEPTANCE_LIST_PAGE = BreadcrumbChildren(_('Final acceptance'), 'FinalAcceptanceList')
 
+    # Calendar
+    CALENDAR_LIST_PAGE = BreadcrumbChildren(_('Calendar'), 'ProgrammeList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -701,3 +704,6 @@ class BreadcrumbView:
 
     # Final acceptance
     FINAL_ACCEPTANCE_LIST_PAGE = [BreadcrumbItem.FINAL_ACCEPTANCE_LIST_PAGE]
+
+    # Calendar
+    CALENDAR_LIST_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.CALENDAR_LIST_PAGE]

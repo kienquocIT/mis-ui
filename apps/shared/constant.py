@@ -12,7 +12,8 @@ __all__ = [
     'TYPE_CUSTOMER',
     'ROLE_CUSTOMER',
     'PAID_BY',
-    'SYSTEM_STATUS'
+    'SYSTEM_STATUS',
+    'LEAVE_ACTION'
 ]
 
 CUSTOMER_REVENUE = [

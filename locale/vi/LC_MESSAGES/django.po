@@ -5610,4 +5610,60 @@ msgstr "Thông báo khi số lượng khả dụng ít hơn"
 
 #
 msgid "Unplanned expenses"
-msgstr "Chi phí ngoài kế hoạch"
+msgstr "Các khoản đã chi ngoài kế hoạch"
+
+#
+msgid "Calendar"
+msgstr "Lịch sự kiện"
+
+#
+msgid "Upcoming Events"
+msgstr "Sự kiện sắp tới"
+
+#
+msgid "Input subject"
+msgstr "Nhập tiêu đề"
+
+#
+msgid "Input date"
+msgstr "Nhập ngày"
+
+#
+msgid "From time"
+msgstr "Từ ngày"
+
+#
+msgid "To time"
+msgstr "Đến ngày"
+
+#
+msgid "Meeting address"
+msgstr "Địa điểm họp"
+
+#
+msgid "Input address"
+msgstr "Nhập địa điểm"
+
+#
+msgid "Room location"
+msgstr "Vị trí phòng"
+
+#
+msgid "Employee attended"
+msgstr "Nhân viên tham dự"
+
+#
+msgid "Customer member"
+msgstr "Thành viên khách hàng"
+
+#
+msgid "Input result"
+msgstr "Nhập nội dung chi tiết"
+
+#
+msgid "Input location"
+msgstr "Nhập vị trí"
+
+#
+msgid "Create meeting"
+msgstr "Tạo cuộc họp"

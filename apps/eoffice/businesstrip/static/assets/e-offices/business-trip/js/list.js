@@ -55,14 +55,15 @@ $(document).ready(function(){
                 data: 'system_status',
                 render: (row, type, data) => {
                     if (!row) row = 1
-                    const status_data = [
-                        {txt: "Draft", cls: "soft-light"},
-                        {txt: "Created", cls: "soft-primary"},
-                        {txt: "Added", cls: "soft-info"},
-                        {txt: "Finish", cls: "soft-success"},
-                        {txt: "Cancel", cls: "soft-danger"},
+                    let sttTxt = JSON.parse($('#stt_sys').text())
+                    const sttData = [
+                        "soft-light",
+                        "soft-primary",
+                        "soft-info",
+                        "soft-success",
+                        "soft-danger",
                     ]
-                    return `<span class="badge badge-${status_data[row]['cls']}">${status_data[row]['txt']}</span>`;
+                    return `<span class="badge badge-${sttData[row]}">${sttTxt[row][1]}</span>`;
                 }
             },
         ]

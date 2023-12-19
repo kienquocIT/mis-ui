@@ -473,12 +473,11 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
                 let data_payment_mapped_item = results[2];
-                console.log(data_payment_mapped_item)
-
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
-                let others = 0;
+                let planned_ap_id = [];
+                let planned_payment_id = [];
                 for (let i = 0; i < data_expense.length; i++) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
@@ -488,26 +487,24 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
+                            planned_ap_id.push(data_ap_mapped_item[j]?.['expense_type']?.['id'])
                         }
                     }
                     for (let j = 0; j < data_payment_mapped_item.length; j++) {
                         if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             sum_real_value += data_payment_mapped_item[j]?.['real_value'];
                             sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
-                        }
-                        else {
-                            others += data_payment_mapped_item[j]?.['real_value'] + data_payment_mapped_item[j]?.['converted_value'];
+                            planned_payment_id.push(data_payment_mapped_item[j]?.['expense_type']?.['id'])
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
                         sum_available = 0;
                     }
-
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${i+1}</td>
-                            <td class="expense_item_title" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td class="expense_item_title text-primary" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
                             <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
                             <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
@@ -517,12 +514,99 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                         </tr>
                     `)
                 }
-                $('#tab_plan_datatable tbody').append(`
-                    <tr>
-                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
-                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
-                    </tr>
-                `)
+
+                let unplanned_ap = [];
+                let unplanned_payment = [];
+                for (let j = 0; j < data_ap_mapped_item.length; j++) {
+                    if (!planned_ap_id.includes(data_ap_mapped_item[j]?.['expense_type']?.['id'])) {
+                        unplanned_ap.push(data_ap_mapped_item[j])
+                    }
+                }
+                for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                    if (!planned_payment_id.includes(data_payment_mapped_item[j]?.['expense_type']?.['id'])) {
+                        unplanned_payment.push(data_payment_mapped_item[j])
+                    }
+                }
+
+                let unplanned_ap_merged = {};
+                $.each(unplanned_ap, function(index, element) {
+                    const typeId = element.expense_type.id;
+                    if (!unplanned_ap_merged[typeId]) {
+                        unplanned_ap_merged[typeId] = $.extend(true, {}, element);
+                    } else {
+                        unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
+                        unplanned_ap_merged[typeId].expense_name = null;
+                        unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
+                        unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
+                        unplanned_ap_merged[typeId].expense_tax = null;
+                        unplanned_ap_merged[typeId].expense_tax_price += element.expense_tax_price;
+                        unplanned_ap_merged[typeId].expense_unit_price = null;
+                        unplanned_ap_merged[typeId].expense_uom_name = null;
+                        unplanned_ap_merged[typeId].sum_converted_value += element.sum_converted_value;
+                        unplanned_ap_merged[typeId].sum_return_value += element.sum_return_value;
+                    }
+                });
+                unplanned_ap_merged = $.map(unplanned_ap_merged, function(value) {
+                    return value;
+                });
+
+                let unplanned_payment_merged = {};
+                $.each(unplanned_payment, function(index, element) {
+                    const typeId = element.expense_type.id;
+                    if (!unplanned_payment_merged[typeId]) {
+                        unplanned_payment_merged[typeId] = $.extend(true, {}, element);
+                    } else {
+                        unplanned_payment_merged[typeId].converted_value += element.converted_value;
+                        unplanned_payment_merged[typeId].real_value += element.real_value;
+                    }
+                });
+                unplanned_payment_merged = $.map(unplanned_payment_merged, function(value) {
+                    return value;
+                });
+
+                if (unplanned_ap_merged.length !== 0 || unplanned_payment_merged.length !== 0) {
+                    $('#tab_plan_datatable tbody').append(`<tr><td colspan="8" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}</b></td></tr>`)
+                    let unplanned_payment_merged_has_ap = [];
+                    for (let i = 0; i < unplanned_ap_merged.length; i++) {
+                        let unplanned_sum_converted_value = 0;
+                        let unplanned_sum_real_value = 0;
+                        for (let j = 0; j < unplanned_payment_merged.length; j++) {
+                            if (unplanned_payment_merged[j]?.['expense_type']?.['id'] === unplanned_ap_merged[i]?.['expense_type']?.['id']) {
+                                unplanned_sum_converted_value += unplanned_payment_merged[j]?.['converted_value']
+                                unplanned_sum_real_value += unplanned_payment_merged[j]?.['real_value']
+                                unplanned_payment_merged_has_ap.push(unplanned_payment_merged[j]?.['expense_type']?.['id'])
+                            }
+                        }
+                        $('#tab_plan_datatable tbody').append(`
+                            <tr>
+                                <td>${$('#tab_plan_datatable tbody tr').length}</td>
+                                <td class="text-danger" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
+                                <td></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['expense_after_tax_price']}"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['sum_return_value']}"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_converted_value}"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_real_value}"></span></td>
+                                <td><i class="bi bi-dash"></i></td>
+                            </tr>
+                        `)
+                    }
+                    for (let i = 0; i < unplanned_payment_merged.length; i++) {
+                        if (!unplanned_payment_merged_has_ap.includes(unplanned_payment_merged[i]?.['expense_type']?.['id'])) {
+                            $('#tab_plan_datatable tbody').append(`
+                                <tr>
+                                    <td>${$('#tab_plan_datatable tbody tr').length}</td>
+                                    <td class="text-danger" data-expense-id="${unplanned_payment_merged[i]?.['expense_type']?.['id']}">${unplanned_payment_merged[i]?.['expense_type']?.['title']}</td>
+                                    <td><i class="bi bi-dash"></i></td>
+                                    <td><span class="mask-money text-danger" data-init-money="0"></span></td>
+                                    <td><span class="mask-money text-danger" data-init-money="0"></span></td>
+                                    <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['converted_value']}"></span></td>
+                                    <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['real_value']}"></span></td>
+                                    <td><i class="bi bi-dash"></i></td>
+                                </tr>
+                            `)
+                        }
+                    }
+                }
                 $.fn.initMaskMoney2();
             })
     }
@@ -593,7 +677,8 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
-                let others = 0;
+                let planned_ap_id = [];
+                let planned_payment_id = [];
                 for (let i = 0; i < data_expense.length; i++) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
@@ -603,26 +688,24 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
+                            planned_ap_id.push(data_ap_mapped_item[j]?.['expense_type']?.['id'])
                         }
                     }
                     for (let j = 0; j < data_payment_mapped_item.length; j++) {
                         if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             sum_real_value += data_payment_mapped_item[j]?.['real_value'];
                             sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
-                        }
-                        else {
-                            others += data_payment_mapped_item[j]?.['real_value'] + data_payment_mapped_item[j]?.['converted_value'];
+                            planned_payment_id.push(data_payment_mapped_item[j]?.['expense_type']?.['id'])
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
                         sum_available = 0;
                     }
-
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${i+1}</td>
-                            <td class="expense_item_title" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td class="expense_item_title text-primary" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
                             <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
                             <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
@@ -632,12 +715,99 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                         </tr>
                     `)
                 }
-                $('#tab_plan_datatable tbody').append(`
-                    <tr>
-                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
-                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
-                    </tr>
-                `)
+
+                let unplanned_ap = [];
+                let unplanned_payment = [];
+                for (let j = 0; j < data_ap_mapped_item.length; j++) {
+                    if (!planned_ap_id.includes(data_ap_mapped_item[j]?.['expense_type']?.['id'])) {
+                        unplanned_ap.push(data_ap_mapped_item[j])
+                    }
+                }
+                for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                    if (!planned_payment_id.includes(data_payment_mapped_item[j]?.['expense_type']?.['id'])) {
+                        unplanned_payment.push(data_payment_mapped_item[j])
+                    }
+                }
+
+                let unplanned_ap_merged = {};
+                $.each(unplanned_ap, function(index, element) {
+                    const typeId = element.expense_type.id;
+                    if (!unplanned_ap_merged[typeId]) {
+                        unplanned_ap_merged[typeId] = $.extend(true, {}, element);
+                    } else {
+                        unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
+                        unplanned_ap_merged[typeId].expense_name = null;
+                        unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
+                        unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
+                        unplanned_ap_merged[typeId].expense_tax = null;
+                        unplanned_ap_merged[typeId].expense_tax_price += element.expense_tax_price;
+                        unplanned_ap_merged[typeId].expense_unit_price = null;
+                        unplanned_ap_merged[typeId].expense_uom_name = null;
+                        unplanned_ap_merged[typeId].sum_converted_value += element.sum_converted_value;
+                        unplanned_ap_merged[typeId].sum_return_value += element.sum_return_value;
+                    }
+                });
+                unplanned_ap_merged = $.map(unplanned_ap_merged, function(value) {
+                    return value;
+                });
+
+                let unplanned_payment_merged = {};
+                $.each(unplanned_payment, function(index, element) {
+                    const typeId = element.expense_type.id;
+                    if (!unplanned_payment_merged[typeId]) {
+                        unplanned_payment_merged[typeId] = $.extend(true, {}, element);
+                    } else {
+                        unplanned_payment_merged[typeId].converted_value += element.converted_value;
+                        unplanned_payment_merged[typeId].real_value += element.real_value;
+                    }
+                });
+                unplanned_payment_merged = $.map(unplanned_payment_merged, function(value) {
+                    return value;
+                });
+
+                if (unplanned_ap_merged.length !== 0 || unplanned_payment_merged.length !== 0) {
+                    $('#tab_plan_datatable tbody').append(`<tr><td colspan="8" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}</b></td></tr>`)
+                    let unplanned_payment_merged_has_ap = [];
+                    for (let i = 0; i < unplanned_ap_merged.length; i++) {
+                        let unplanned_sum_converted_value = 0;
+                        let unplanned_sum_real_value = 0;
+                        for (let j = 0; j < unplanned_payment_merged.length; j++) {
+                            if (unplanned_payment_merged[j]?.['expense_type']?.['id'] === unplanned_ap_merged[i]?.['expense_type']?.['id']) {
+                                unplanned_sum_converted_value += unplanned_payment_merged[j]?.['converted_value']
+                                unplanned_sum_real_value += unplanned_payment_merged[j]?.['real_value']
+                                unplanned_payment_merged_has_ap.push(unplanned_payment_merged[j]?.['expense_type']?.['id'])
+                            }
+                        }
+                        $('#tab_plan_datatable tbody').append(`
+                        <tr>
+                            <td>${$('#tab_plan_datatable tbody tr').length}</td>
+                            <td class="text-danger" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
+                            <td><i class="bi bi-dash"></i></td>
+                            <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['expense_after_tax_price']}"></span></td>
+                            <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['sum_return_value']}"></span></td>
+                            <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_converted_value}"></span></td>
+                            <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_real_value}"></span></td>
+                            <td><i class="bi bi-dash"></i></td>
+                        </tr>
+                    `)
+                    }
+                    for (let i = 0; i < unplanned_payment_merged.length; i++) {
+                        if (!unplanned_payment_merged_has_ap.includes(unplanned_payment_merged[i]?.['expense_type']?.['id'])) {
+                            $('#tab_plan_datatable tbody').append(`
+                            <tr>
+                                <td>${$('#tab_plan_datatable tbody tr').length}</td>
+                                <td class="text-danger" data-expense-id="${unplanned_payment_merged[i]?.['expense_type']?.['id']}">${unplanned_payment_merged[i]?.['expense_type']?.['title']}</td>
+                                <td><i class="bi bi-dash"></i></td>
+                                <td><span class="mask-money text-danger" data-init-money="0"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="0"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['converted_value']}"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['real_value']}"></span></td>
+                                <td><i class="bi bi-dash"></i></td>
+                            </tr>
+                        `)
+                        }
+                    }
+                }
                 $.fn.initMaskMoney2();
             })
     }
@@ -704,11 +874,11 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                 let data_expense = results[0];
                 let data_ap_mapped_item = results[1];
                 let data_payment_mapped_item = results[2];
-
                 $('#notify-none-sale-code').prop('hidden', true);
                 tab_plan_datatable.prop('hidden', false);
                 tab_plan_datatable.find('tbody').html(``);
-                let others = 0;
+                let planned_ap_id = [];
+                let planned_payment_id = [];
                 for (let i = 0; i < data_expense.length; i++) {
                     let ap_approved_value = 0;
                     let sum_return_value = 0;
@@ -718,26 +888,24 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
+                            planned_ap_id.push(data_ap_mapped_item[j]?.['expense_type']?.['id'])
                         }
                     }
                     for (let j = 0; j < data_payment_mapped_item.length; j++) {
                         if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             sum_real_value += data_payment_mapped_item[j]?.['real_value'];
                             sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
-                        }
-                        else {
-                            others += data_payment_mapped_item[j]?.['real_value'] + data_payment_mapped_item[j]?.['converted_value'];
+                            planned_payment_id.push(data_payment_mapped_item[j]?.['expense_type']?.['id'])
                         }
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
                         sum_available = 0;
                     }
-
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
                             <td>${i+1}</td>
-                            <td class="expense_item_title" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td class="expense_item_title text-primary" data-id="${data_expense[i]?.['id']}" data-expense-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
                             <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
                             <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
@@ -747,12 +915,99 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                         </tr>
                     `)
                 }
-                $('#tab_plan_datatable tbody').append(`
-                    <tr>
-                        <td>${$('#tab_plan_datatable tbody tr').length + 1}</td>
-                        <td colspan="7" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}: <span class="mask-money text-danger" data-init-money="${others}"></span></b></td>
-                    </tr>
-                `)
+
+                let unplanned_ap = [];
+                let unplanned_payment = [];
+                for (let j = 0; j < data_ap_mapped_item.length; j++) {
+                    if (!planned_ap_id.includes(data_ap_mapped_item[j]?.['expense_type']?.['id'])) {
+                        unplanned_ap.push(data_ap_mapped_item[j])
+                    }
+                }
+                for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                    if (!planned_payment_id.includes(data_payment_mapped_item[j]?.['expense_type']?.['id'])) {
+                        unplanned_payment.push(data_payment_mapped_item[j])
+                    }
+                }
+
+                let unplanned_ap_merged = {};
+                $.each(unplanned_ap, function(index, element) {
+                    const typeId = element.expense_type.id;
+                    if (!unplanned_ap_merged[typeId]) {
+                        unplanned_ap_merged[typeId] = $.extend(true, {}, element);
+                    } else {
+                        unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
+                        unplanned_ap_merged[typeId].expense_name = null;
+                        unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
+                        unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
+                        unplanned_ap_merged[typeId].expense_tax = null;
+                        unplanned_ap_merged[typeId].expense_tax_price += element.expense_tax_price;
+                        unplanned_ap_merged[typeId].expense_unit_price = null;
+                        unplanned_ap_merged[typeId].expense_uom_name = null;
+                        unplanned_ap_merged[typeId].sum_converted_value += element.sum_converted_value;
+                        unplanned_ap_merged[typeId].sum_return_value += element.sum_return_value;
+                    }
+                });
+                unplanned_ap_merged = $.map(unplanned_ap_merged, function(value) {
+                    return value;
+                });
+
+                let unplanned_payment_merged = {};
+                $.each(unplanned_payment, function(index, element) {
+                    const typeId = element.expense_type.id;
+                    if (!unplanned_payment_merged[typeId]) {
+                        unplanned_payment_merged[typeId] = $.extend(true, {}, element);
+                    } else {
+                        unplanned_payment_merged[typeId].converted_value += element.converted_value;
+                        unplanned_payment_merged[typeId].real_value += element.real_value;
+                    }
+                });
+                unplanned_payment_merged = $.map(unplanned_payment_merged, function(value) {
+                    return value;
+                });
+
+                if (unplanned_ap_merged.length !== 0 || unplanned_payment_merged.length !== 0) {
+                    $('#tab_plan_datatable tbody').append(`<tr><td colspan="8" class="text-secondary"><b>${script_url.attr("data-trans-unplanned")}</b></td></tr>`)
+                    let unplanned_payment_merged_has_ap = [];
+                    for (let i = 0; i < unplanned_ap_merged.length; i++) {
+                        let unplanned_sum_converted_value = 0;
+                        let unplanned_sum_real_value = 0;
+                        for (let j = 0; j < unplanned_payment_merged.length; j++) {
+                            if (unplanned_payment_merged[j]?.['expense_type']?.['id'] === unplanned_ap_merged[i]?.['expense_type']?.['id']) {
+                                unplanned_sum_converted_value += unplanned_payment_merged[j]?.['converted_value']
+                                unplanned_sum_real_value += unplanned_payment_merged[j]?.['real_value']
+                                unplanned_payment_merged_has_ap.push(unplanned_payment_merged[j]?.['expense_type']?.['id'])
+                            }
+                        }
+                        $('#tab_plan_datatable tbody').append(`
+                        <tr>
+                            <td>${$('#tab_plan_datatable tbody tr').length}</td>
+                            <td class="text-danger" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
+                            <td><i class="bi bi-dash"></i></td>
+                            <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['expense_after_tax_price']}"></span></td>
+                            <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['sum_return_value']}"></span></td>
+                            <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_converted_value}"></span></td>
+                            <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_real_value}"></span></td>
+                            <td><i class="bi bi-dash"></i></td>
+                        </tr>
+                    `)
+                    }
+                    for (let i = 0; i < unplanned_payment_merged.length; i++) {
+                        if (!unplanned_payment_merged_has_ap.includes(unplanned_payment_merged[i]?.['expense_type']?.['id'])) {
+                            $('#tab_plan_datatable tbody').append(`
+                            <tr>
+                                <td>${$('#tab_plan_datatable tbody tr').length}</td>
+                                <td class="text-danger" data-expense-id="${unplanned_payment_merged[i]?.['expense_type']?.['id']}">${unplanned_payment_merged[i]?.['expense_type']?.['title']}</td>
+                                <td><i class="bi bi-dash"></i></td>
+                                <td><span class="mask-money text-danger" data-init-money="0"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="0"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['converted_value']}"></span></td>
+                                <td><span class="mask-money text-danger" data-init-money="${unplanned_payment_merged[i]?.['real_value']}"></span></td>
+                                <td><i class="bi bi-dash"></i></td>
+                            </tr>
+                        `)
+                        }
+                    }
+                }
                 $.fn.initMaskMoney2();
             })
     }
@@ -929,12 +1184,12 @@ function LoadDetailAP(option) {
                 for (let i = 0; i < data?.['expense_items'].length; i++) {
                     table_body.append(`<tr id="" class="row-number">
                         <td class="number text-center"></td>
-                        <td><input class="form-control expense-name-input"></td>
-                        <td><select class="form-select expense-type-select-box"></select></td>
-                        <td><input class="form-control expense-uom-input"></td>
-                        <td><input type="number" min="1" class="form-control expense_quantity" value="1"></td>
-                        <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money"></td>
-                        <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
+                        <td><input class="form-control expense-name-input" name="expense_name"></td>
+                        <td><select class="form-select expense-type-select-box" name="expense_type"></select></td>
+                        <td><input class="form-control expense-uom-input" name="expense_uom"></td>
+                        <td><input type="number" min="1" class="form-control expense_quantity" value="1" name="expense_quantity"></td>
+                        <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money" name="expense_unit_price"></td>
+                        <td><select class="form-select expense-tax-select-box" data-method="GET" name="expense_tax"><option selected></option></select></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" disabled></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" disabled></td>
                         <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
@@ -1127,6 +1382,7 @@ class AdvancePaymentHandle {
 
         frm.dataForm['money_gave'] = money_gave.is(':checked');
         frm.dataForm['status'] = frm.dataForm['money_gave'];
+        frm.dataForm['system_status'] = 1;
 
         return {
             url: frm.dataUrl,

@@ -17,6 +17,7 @@ let employee_label = $('#employee-label')
 let employee_detail_span = $('#employee-detail-span')
 let supplier_detail_span = $('#supplier-detail-span')
 let AP_filter = null
+let DETAIL_DATA = null
 
 checkbox_internal.on('change', function () {
     if ($(this).prop('checked')) {
@@ -450,7 +451,46 @@ function get_ap_product_items() {
 
 function loadAPList() {
     AP_db.DataTable().clear().destroy();
-    let current_sale_code = [].concat(opp_mapped_select.val()).concat(quotation_mapped_select.val()).concat(sale_order_mapped_select.val())
+    let current_sale_code = []
+    if (DETAIL_DATA) {
+        if (DETAIL_DATA?.['opportunity_mapped']) {
+            current_sale_code.push(DETAIL_DATA?.['opportunity_mapped']?.['id'])
+        } else if (DETAIL_DATA?.['quotation_mapped']) {
+            current_sale_code.push(DETAIL_DATA?.['quotation_mapped']?.['id'])
+        } else if (DETAIL_DATA?.['sale_order_mapped']) {
+            current_sale_code.push(DETAIL_DATA?.['sale_order_mapped']?.['id'])
+        }
+    }
+    else {
+        let opportunity_mapped = opp_mapped_select.val();
+        let quotation_mapped = quotation_mapped_select.val();
+        let sale_order_mapped = sale_order_mapped_select.val();
+        if (opp_mapped_select.prop('disabled') && quotation_mapped_select.prop('disabled') && sale_order_mapped_select.prop('disabled')) {
+            const urlParams = new URLSearchParams(window.location.search);
+            let type = urlParams.get('type');
+            if (type) {
+                if (opportunity_mapped && type === '0') {
+                    frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+                } else if (quotation_mapped && type === '1') {
+                    frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
+                } else if (sale_order_mapped && type === '2') {
+                    frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
+                } else {
+                    $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
+                    return false;
+                }
+            }
+        } else {
+            if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
+                current_sale_code.push(opportunity_mapped);
+            } else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
+                current_sale_code.push(quotation_mapped);
+            } else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
+                current_sale_code.push(sale_order_mapped);
+            }
+        }
+    }
+
     AP_db.DataTableDefault({
         reloadCurrency: true,
         dom: "",
@@ -469,7 +509,7 @@ function loadAPList() {
                                 let this_sale_code = [].concat(item?.['opportunity_mapped']).concat(item?.['quotation_mapped']).concat(item?.['sale_order_mapped'])
                                 if (item?.['remain_value'] > 0 && item?.['employee_inherit_id'] === initEmployee.id) {
                                     if (current_sale_code.length > 0 && this_sale_code.length > 0) {
-                                        if (current_sale_code[0] === this_sale_code[0]?.['id']) {
+                                        if (current_sale_code[0] === this_sale_code[0]?.['id'] && item?.['system_status'] === 3) {
                                             result.push(item)
                                         }
                                     }
@@ -482,7 +522,7 @@ function loadAPList() {
                                 let this_sale_code = [].concat(item?.['opportunity_mapped']).concat(item?.['quotation_mapped']).concat(item?.['sale_order_mapped'])
                                 if (item?.['remain_value'] > 0 && item?.['employee_inherit_id'] === initEmployee.id && item?.['id'] === AP_filter) {
                                     if (current_sale_code.length > 0 && this_sale_code.length > 0) {
-                                        if (current_sale_code[0] === this_sale_code[0]?.['id']) {
+                                        if (current_sale_code[0] === this_sale_code[0]?.['id'] && item?.['system_status'] === 3) {
                                             result.push(item)
                                             break
                                         }
@@ -1458,6 +1498,7 @@ function LoadDetailPayment(option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['payment_detail']?.['workflow_runtime_id']);
                 data = data['payment_detail'];
+                DETAIL_DATA = data;
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
                 console.log(data)
@@ -1702,12 +1743,6 @@ class PaymentHandle {
             return false;
         }
 
-        frm.dataForm['employee_inherit'] = $('#employee_inherit_id').val();
-        if (frm.dataForm['employee_inherit'] === '') {
-            $.fn.notifyB({description: 'Employee Inherit name must not be NULL'}, 'failure');
-            return false;
-        }
-
         let payment_expense_valid_list = [];
         if (tableLineDetail.find('tr').length > 0) {
             let row_count = tableLineDetail.find('.row-number').length;
@@ -1775,41 +1810,41 @@ class PaymentHandle {
             }
         }
 
-        let opportunity_mapped = opp_mapped_select.val();
-        let quotation_mapped = quotation_mapped_select.val();
-        let sale_order_mapped = sale_order_mapped_select.val();
-        if (opp_mapped_select.prop('disabled') && quotation_mapped_select.prop('disabled') && sale_order_mapped_select.prop('disabled')) {
-            const urlParams = new URLSearchParams(window.location.search);
-            let type = urlParams.get('type');
-            if (type) {
-                if (opportunity_mapped && type === '0') {
+        if (!for_update) {
+            frm.dataForm['employee_inherit'] = $('#employee_inherit_id').val();
+            if (frm.dataForm['employee_inherit'] === '') {
+                $.fn.notifyB({description: 'Employee Inherit name must not be NULL'}, 'failure');
+                return false;
+            }
+            let opportunity_mapped = opp_mapped_select.val();
+            let quotation_mapped = quotation_mapped_select.val();
+            let sale_order_mapped = sale_order_mapped_select.val();
+            if (opp_mapped_select.prop('disabled') && quotation_mapped_select.prop('disabled') && sale_order_mapped_select.prop('disabled')) {
+                const urlParams = new URLSearchParams(window.location.search);
+                let type = urlParams.get('type');
+                if (type) {
+                    if (opportunity_mapped && type === '0') {
+                        frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
+                    } else if (quotation_mapped && type === '1') {
+                        frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
+                    } else if (sale_order_mapped && type === '2') {
+                        frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
+                    } else {
+                        $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
+                        return false;
+                    }
+                }
+            } else {
+                if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
                     frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
-                }
-                else if (quotation_mapped && type === '1') {
+                } else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
                     frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
-                }
-                else if (sale_order_mapped && type === '2') {
+                } else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
                     frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
-                }
-                else {
+                } else {
                     $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
                     return false;
                 }
-            }
-        }
-        else {
-            if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
-                frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
-            }
-            else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
-                frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
-            }
-            else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
-                frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
-            }
-            else {
-                $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
-                return false;
             }
         }
 

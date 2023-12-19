@@ -218,6 +218,7 @@ class NodeLoadDataHandle {
         $(newRow).detach().insertBefore(approvedRow);
         // Load zone DD
         NodeLoadDataHandle.loadZoneDD(newRow, true);
+        NodeLoadDataHandle.loadZoneHiddenDD(newRow, true);
         return true;
     };
 
@@ -432,20 +433,191 @@ class NodeLoadDataHandle {
         }
     };
 
+    static loadZoneHiddenDD(row, is_created = false) {
+        let result = ``;
+        if (is_created === false) { // Case Update Exist Nodes
+            let eleCheckBox = row?.querySelector('.table-row-checkbox');
+            if (eleCheckBox) {
+                let dataRowRaw = eleCheckBox.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    let zone_list = [];
+                    for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
+                        zone_list.push(parseInt($(eleChecked).attr('data-id')));
+                    }
+                    if (dataRow?.['is_system'] === true) { // SYSTEM NODES
+                        if (dataRow?.['code'] === 'initial') {
+                            result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="media d-flex align-items-center">
+                                            <div class="media-body">
+                                                <div>
+                                                    <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                                </div>
+                                            </div>  
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input checkbox-node-zone-hidden-all">
+                                        </div>
+                                    </li>`;
+                            let table = document.getElementById('table_workflow_zone');
+                            if (!table.querySelector('.dataTables_empty')) {
+                                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                                    let row = table.tBodies[0].rows[i];
+                                    let title = row.children[1].children[0].innerHTML;
+                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                                    <div class="media d-flex align-items-center">
+                                                        <div class="media-body">
+                                                            <div>
+                                                                <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                            </div>
+                                                        </div>  
+                                                    </div>
+                                                    <div class="form-check form-check-theme ms-3">
+                                                        <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
+                                                    </div>
+                                                </li>`;
+                                }
+                                for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
+                                    if ($(eleZoneList).empty()) {
+                                        $(eleZoneList).append(result);
+                                    }
+                                }
+                            }
+                            return true;
+                        }
+                    } else { // COLLAB NODES
+                        result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="media-body">
+                                            <div>
+                                                <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                    <div class="form-check form-check-theme ms-3">
+                                        <input type="checkbox" class="form-check-input checkbox-node-zone-hidden-all">
+                                    </div>
+                                </li>`;
+                        let table = document.getElementById('table_workflow_zone');
+                        if (!table.querySelector('.dataTables_empty')) {
+                            for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                                let row = table.tBodies[0].rows[i];
+                                let title = row.children[1].children[0].innerHTML;
+                                if (zone_list.includes(i + 1)) {
+                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                                <div class="media d-flex align-items-center">
+                                                    <div class="media-body">
+                                                        <div>
+                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                                <div class="form-check form-check-theme ms-3">
+                                                    <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}" checked>
+                                                </div>
+                                            </li>`;
+                                } else {
+                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                                <div class="media d-flex align-items-center">
+                                                    <div class="media-body">
+                                                        <div>
+                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                                <div class="form-check form-check-theme ms-3">
+                                                    <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
+                                                </div>
+                                            </li>`;
+                                }
+                            }
+                            for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
+                                if ($(eleZoneList).empty()) {
+                                    $(eleZoneList).append(result);
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                }
+            }
+        } else { // Case Create New Node
+            result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="media d-flex align-items-center">
+                                    <div class="media-body">
+                                        <div>
+                                            <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="checkbox" class="form-check-input checkbox-node-zone-hidden-all">
+                                </div>
+                            </li>`;
+            let table = document.getElementById('table_workflow_zone');
+            if (!table.querySelector('.dataTables_empty')) {
+                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                    let row = table.tBodies[0].rows[i];
+                    let title = row.children[1].children[0].innerHTML;
+                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="media d-flex align-items-center">
+                                    <div class="media-body">
+                                        <div>
+                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
+                                </div>
+                            </li>`;
+                }
+                for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
+                    if ($(eleZoneList).empty()) {
+                        $(eleZoneList).append(result);
+                    }
+                }
+            }
+            return true;
+        }
+    };
+
     static loadZoneDDAllTable() {
         for (let i = 0; i < NodeDataTableHandle.tableNode[0].tBodies[0].rows.length; i++) {
             let row = NodeDataTableHandle.tableNode[0].tBodies[0].rows[i];
             NodeLoadDataHandle.loadZoneDD(row);
+            NodeLoadDataHandle.loadZoneHiddenDD(row);
         }
     };
 
     static loadZoneShow(ele) {
         let zone_list = [];
         let zone_json_list = [];
-        let eleZoneSubmit = ele?.closest('.collab-area')?.querySelector('.node-zone-submit');
-        let eleZoneJSonSubmit = ele?.closest('.collab-area')?.querySelector('.node-zone-json-submit');
-        let eleZoneDD = ele?.closest('.dropdown-zone');
-        for (let eleChecked of eleZoneDD?.querySelectorAll('.checkbox-node-zone:checked')) {
+        let collabArea = ele?.closest('.collab-area');
+        let eleZoneSubmit = collabArea?.querySelector('.node-zone-submit');
+        let eleZoneJSonSubmit = collabArea?.querySelector('.node-zone-json-submit');
+        for (let eleChecked of collabArea?.querySelectorAll('.checkbox-node-zone:checked')) {
+            zone_list.push(parseInt($(eleChecked).attr('data-id')));
+            zone_json_list.push({
+                'id': parseInt($(eleChecked).attr('data-id')),
+                'title': $(eleChecked).attr('data-title')
+            });
+        }
+        if (eleZoneSubmit) {
+            $(eleZoneSubmit).val(JSON.stringify(zone_list));
+        }
+        if (eleZoneJSonSubmit) {
+            $(eleZoneJSonSubmit).val(JSON.stringify(zone_json_list));
+        }
+    };
+
+    static loadZoneHiddenShow(ele) {
+        let zone_list = [];
+        let zone_json_list = [];
+        let collabArea = ele?.closest('.collab-area');
+        let eleZoneSubmit = collabArea?.querySelector('.node-zone-hidden-submit');
+        let eleZoneJSonSubmit = collabArea?.querySelector('.node-zone-hidden-json-submit');
+        for (let eleChecked of collabArea?.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
             zone_list.push(parseInt($(eleChecked).attr('data-id')));
             zone_json_list.push({
                 'id': parseInt($(eleChecked).attr('data-id')),
@@ -473,6 +645,7 @@ class NodeLoadDataHandle {
             row.querySelector('.collab-in-workflow-area').removeAttribute('hidden');
         }
         NodeLoadDataHandle.loadZoneDD(row, true); // reset zones
+        NodeLoadDataHandle.loadZoneHiddenDD(row, true); // reset hidden zones
     };
 
     static loadOutFormEmployeeShow(ele) {
@@ -518,6 +691,7 @@ class NodeLoadDataHandle {
         let table = ele.closest('.collab-in-workflow-area').querySelector('.table-in-workflow-employee');
         let eleBoxOption = ele.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-option');
         let eleZoneJSonSubmit = ele.closest('.collab-in-workflow-area').querySelector('.node-zone-json-submit');
+        let eleZoneHiddenJSonSubmit = ele.closest('.collab-in-workflow-area').querySelector('.node-zone-hidden-json-submit');
         if ($(eleBoxOption).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(eleBoxOption), $(eleBoxOption).val());
             if (dataSelected?.['id'] === 1) {
@@ -528,11 +702,16 @@ class NodeLoadDataHandle {
                     if ($(eleZoneJSonSubmit).val()) {
                         zone = JSON.parse($(eleZoneJSonSubmit).val());
                     }
+                    let zoneHidden = [];
+                    if ($(eleZoneHiddenJSonSubmit).val()) {
+                        zoneHidden = JSON.parse($(eleZoneHiddenJSonSubmit).val());
+                    }
                     let data = {
                         'in_wf_option': 1,
                         'position_choice': dataPosition,
                         'employee': {},
-                        'zone': zone
+                        'zone': zone,
+                        'zone_hidden': zoneHidden,
                     }
                     $(table).DataTable().row.add(data).draw().node();
                 }
@@ -545,11 +724,16 @@ class NodeLoadDataHandle {
                     if ($(eleZoneJSonSubmit).val()) {
                         zone = JSON.parse($(eleZoneJSonSubmit).val());
                     }
+                    let zoneHidden = [];
+                    if ($(eleZoneHiddenJSonSubmit).val()) {
+                        zoneHidden = JSON.parse($(eleZoneHiddenJSonSubmit).val());
+                    }
                     let data = {
                         'in_wf_option': 2,
                         'position_choice': {},
                         'employee': dataEmployee,
-                        'zone': zone
+                        'zone': zone,
+                        'zone_hidden': zoneHidden,
                     }
                     $(table).DataTable().row.add(data).draw().node();
                 }
@@ -644,6 +828,7 @@ class NodeLoadDataHandle {
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
                 NodeLoadDataHandle.loadZoneDD(row);
+                NodeLoadDataHandle.loadZoneHiddenDD(row);
                 NodeLoadDataHandle.loadDoneActionAndCollab(row);
                 // Action
                 for (let eleCheck of row.querySelectorAll('.check-action-node')) {
@@ -659,11 +844,6 @@ class NodeLoadDataHandle {
 
     static loadDetailNodeCollab(row, dataRow) {
         let modalCollab = row.querySelector('.modal-collab');
-        let dataSource = {
-            2: {'id': 3, 'title': 'In workflow'},
-            1: {'id': 2, 'title': 'Out form'},
-            0: {'id': 1, 'title': 'In form'},
-        };
         if (dataRow?.['is_system'] === true) { // SYSTEM NODES
             if (dataRow?.['code'] === 'initial') {
                 let zone_initial_node = [];
@@ -676,6 +856,7 @@ class NodeLoadDataHandle {
                 for (let t = 0; t < tableInitial.tBodies[0].rows.length; t++) {
                     let rowInit = tableInitial.tBodies[0].rows[t];
                     NodeLoadDataHandle.loadZoneDD(rowInit);
+                    NodeLoadDataHandle.loadZoneHiddenDD(rowInit);
                     for (let eleCheck of rowInit.querySelectorAll('.checkbox-node-zone')) {
                         if (zone_initial_node.includes(parseInt($(eleCheck).attr('data-id')))) {
                             eleCheck.checked = true;
@@ -704,6 +885,8 @@ class NodeLoadDataHandle {
                 let boxProp = IFArea?.querySelector('.box-in-form-property');
                 let eleZoneSubmit = IFArea?.querySelector('.node-zone-submit');
                 let eleZoneJSonSubmit = IFArea?.querySelector('.node-zone-json-submit');
+                let eleZoneHiddenSubmit = IFArea?.querySelector('.node-zone-hidden-submit');
+                let eleZoneHiddenJSonSubmit = IFArea?.querySelector('.node-zone-hidden-json-submit');
                 let eleZoneDD = IFArea?.querySelector('.dropdown-zone');
                 $(boxProp).empty();
                 NodeLoadDataHandle.loadBoxPropertyEmployee($(boxProp), dataIF?.['app_property']);
@@ -724,11 +907,30 @@ class NodeLoadDataHandle {
                         NodeLoadDataHandle.loadZoneShow(eleCheck);
                     }
                 }
+                // zone hidden
+                if (eleZoneHiddenJSonSubmit) {
+                    $(eleZoneHiddenJSonSubmit).val(JSON.stringify(dataIF?.['zone_hidden']));
+                }
+                let zone_hidden_list = [];
+                for (let zone of dataIF?.['zone_hidden']) {
+                    zone_hidden_list.push(zone?.['order']);
+                }
+                if (eleZoneHiddenSubmit) {
+                    $(eleZoneHiddenSubmit).val(JSON.stringify(zone_hidden_list));
+                }
+                for (let eleCheck of IFArea.querySelectorAll('.checkbox-node-zone-hidden')) {
+                    if (zone_hidden_list.includes(parseInt($(eleCheck).attr('data-id')))) {
+                        eleCheck.checked = true;
+                        NodeLoadDataHandle.loadZoneHiddenShow(eleCheck);
+                    }
+                }
             } else if (dataRow?.['option_collaborator'] === 1) { // Out Form
                 let dataOF = dataRow['collab_out_form'];
                 let OFArea = modalCollab.querySelector('.collab-out-form-area');
                 let eleZoneSubmit = OFArea?.querySelector('.node-zone-submit');
                 let eleZoneJSonSubmit = OFArea?.querySelector('.node-zone-json-submit');
+                let eleZoneHiddenSubmit = OFArea?.querySelector('.node-zone-hidden-submit');
+                let eleZoneHiddenJSonSubmit = OFArea?.querySelector('.node-zone-hidden-json-submit');
                 let eleZoneDD = OFArea?.querySelector('.dropdown-zone');
                 let employee_id_list = [];
                 for (let emp of dataOF?.['employee_list']) {
@@ -784,6 +986,30 @@ class NodeLoadDataHandle {
                         NodeLoadDataHandle.loadZoneShow(eleCheck);
                     }
                 }
+                // zone hidden
+                if (eleZoneHiddenJSonSubmit) {
+                    if (dataOF?.['zone_hidden']) { // set id zone to zone's order
+                        for (let zone_detail of dataOF?.['zone_hidden']) {
+                            if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
+                                zone_detail['id'] = zone_detail?.['order'];
+                            }
+                        }
+                    }
+                    $(eleZoneHiddenJSonSubmit).val(JSON.stringify(dataOF?.['zone_hidden']));
+                }
+                let zone_hidden_list = [];
+                for (let zone of dataOF?.['zone_hidden']) {
+                    zone_hidden_list.push(zone?.['order']);
+                }
+                if (eleZoneHiddenSubmit) {
+                    $(eleZoneHiddenSubmit).val(JSON.stringify(zone_hidden_list));
+                }
+                for (let eleCheck of OFArea.querySelectorAll('.checkbox-node-zone-hidden')) {
+                    if (zone_hidden_list.includes(parseInt($(eleCheck).attr('data-id')))) {
+                        eleCheck.checked = true;
+                        NodeLoadDataHandle.loadZoneHiddenShow(eleCheck);
+                    }
+                }
             } else if (dataRow?.['option_collaborator'] === 2) { // In Workflow
                 let dataInWF = dataRow?.['collab_in_workflow'];
                 let InWFArea = modalCollab?.querySelector('.collab-in-workflow-area');
@@ -799,6 +1025,13 @@ class NodeLoadDataHandle {
                     }
                     if (inWF?.['zone']) { // set id zone to zone's order
                         for (let zone_detail of inWF?.['zone']) {
+                            if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
+                                zone_detail['id'] = zone_detail?.['order'];
+                            }
+                        }
+                    }
+                    if (inWF?.['zone_hidden']) { // set id zone to zone's order
+                        for (let zone_detail of inWF?.['zone_hidden']) {
                             if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
                                 zone_detail['id'] = zone_detail?.['order'];
                             }
@@ -986,13 +1219,29 @@ class NodeDataTableHandle {
                                                                     >
                                                                     </select>
                                                                 </div>
-                                                                <div class="form-group">
-                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
-                                                                    <input type="hidden" class="node-zone-submit">
-                                                                    <input type="hidden" class="node-zone-json-submit">
-                                                                    <div class="dropdown-zone">
-                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                            <ul class="node-zone-list p-0"></ul>
+                                                                <div class="row">
+                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
+                                                                            <input type="hidden" class="node-zone-submit">
+                                                                            <input type="hidden" class="node-zone-json-submit">
+                                                                            <div class="dropdown-zone">
+                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                    <ul class="node-zone-list p-0"></ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
+                                                                            <input type="hidden" class="node-zone-hidden-submit">
+                                                                            <input type="hidden" class="node-zone-hidden-json-submit">
+                                                                            <div class="dropdown-zone">
+                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                    <ul class="node-zone-hidden-list p-0"></ul>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1048,13 +1297,29 @@ class NodeDataTableHandle {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="form-group">
-                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
-                                                                    <input type="hidden" class="node-zone-submit">
-                                                                    <input type="hidden" class="node-zone-json-submit">
-                                                                    <div class="dropdown-zone">
-                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                            <ul class="node-zone-list p-0"></ul>
+                                                                <div class="row">
+                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
+                                                                            <input type="hidden" class="node-zone-submit">
+                                                                            <input type="hidden" class="node-zone-json-submit">
+                                                                            <div class="dropdown-zone">
+                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                    <ul class="node-zone-list p-0"></ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
+                                                                            <input type="hidden" class="node-zone-hidden-submit">
+                                                                            <input type="hidden" class="node-zone-hidden-json-submit">
+                                                                            <div class="dropdown-zone">
+                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                    <ul class="node-zone-hidden-list p-0"></ul>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1130,13 +1395,29 @@ class NodeDataTableHandle {
                                                                             >
                                                                             </select>
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
-                                                                            <input type="hidden" class="node-zone-submit">
-                                                                            <input type="hidden" class="node-zone-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-list p-0"></ul>
+                                                                        <div class="row">
+                                                                            <div class="col-12 col-md-6 col-lg-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
+                                                                                    <input type="hidden" class="node-zone-submit">
+                                                                                    <input type="hidden" class="node-zone-json-submit">
+                                                                                    <div class="dropdown-zone">
+                                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                            <ul class="node-zone-list p-0"></ul>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-6 col-lg-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
+                                                                                    <input type="hidden" class="node-zone-hidden-submit">
+                                                                                    <input type="hidden" class="node-zone-hidden-json-submit">
+                                                                                    <div class="dropdown-zone">
+                                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                            <ul class="node-zone-hidden-list p-0"></ul>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1172,7 +1453,8 @@ class NodeDataTableHandle {
                                                                         <th>${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
                                                                         <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
                                                                         <th>${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-actions')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
+                                                                        <th></th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -1225,7 +1507,8 @@ class NodeDataTableHandle {
                                                                     <thead>
                                                                     <tr>
                                                                         <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
-                                                                        <th class="w-80">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody></tbody>
@@ -1342,6 +1625,16 @@ class NodeDataTableHandle {
                                 </div>`;
                     }
                 },
+                {
+                    targets: 2,
+                    render: () => {
+                        return `<div class="dropdown-zone">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                        <ul class="node-zone-hidden-list p-0"></ul>
+                                    </div>
+                                </div>`;
+                    }
+                },
             ],
         });
     };
@@ -1447,13 +1740,21 @@ class NodeDataTableHandle {
                                 }
                             }
                             return `${resultZone}`;
-                            // return `<div class="d-flex justify-content-start">
-                            //             ${resultZone}
-                            //             <div class="dropdown dropdown-zone">
-                            //                 <button aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-link" type="button"><span class="icon"><i class="fas fa-caret-down"></i></span></button>
-                            //                 <ul role="menu" class="dropdown-menu node-zone-list"></ul>
-                            //             </div>
-                            //         </div>`;
+                        }
+                        return '';
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        if (row.hasOwnProperty('zone_hidden') && Array.isArray(row?.['zone_hidden'])) {
+                            let resultZone = ``;
+                            for (let zone of row?.['zone_hidden']) {
+                                if (zone?.['title']) {
+                                    resultZone += `<span class="badge badge-soft-success mb-1 mr-1">${zone?.['title']}</span>`;
+                                }
+                            }
+                            return `${resultZone}`;
                         }
                         return '';
                     }

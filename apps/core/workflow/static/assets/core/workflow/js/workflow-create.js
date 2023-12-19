@@ -145,8 +145,20 @@ $(function () {
             NodeLoadDataHandle.loadZoneShow(this);
         });
 
+        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden-all', function () {
+            let collabArea = this.closest('.collab-area');
+            for (let eleCheckbox of collabArea.querySelectorAll('.checkbox-node-zone-hidden')) {
+                eleCheckbox.checked = this.checked;
+            }
+            NodeLoadDataHandle.loadZoneHiddenShow(this);
+        });
+
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone', function () {
             NodeLoadDataHandle.loadZoneShow(this);
+        });
+
+        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden', function () {
+            NodeLoadDataHandle.loadZoneHiddenShow(this);
         });
 
         NodeDataTableHandle.tableNode.on('click', '.button-add-out-form-employee', function () {

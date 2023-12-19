@@ -451,7 +451,7 @@ class NodeLoadDataHandle {
                                         <div class="media d-flex align-items-center">
                                             <div class="media-body">
                                                 <div>
-                                                    <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                                    <span class="badge badge-soft-warning node-zone-title">Check all</span>
                                                 </div>
                                             </div>  
                                         </div>
@@ -468,7 +468,7 @@ class NodeLoadDataHandle {
                                                     <div class="media d-flex align-items-center">
                                                         <div class="media-body">
                                                             <div>
-                                                                <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                                <span class="badge badge-soft-warning node-zone-title">${title}</span>
                                                             </div>
                                                         </div>  
                                                     </div>
@@ -490,7 +490,7 @@ class NodeLoadDataHandle {
                                     <div class="media d-flex align-items-center">
                                         <div class="media-body">
                                             <div>
-                                                <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                                <span class="badge badge-soft-warning node-zone-title">Check all</span>
                                             </div>
                                         </div>  
                                     </div>
@@ -508,7 +508,7 @@ class NodeLoadDataHandle {
                                                 <div class="media d-flex align-items-center">
                                                     <div class="media-body">
                                                         <div>
-                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                            <span class="badge badge-soft-warning node-zone-title">${title}</span>
                                                         </div>
                                                     </div>  
                                                 </div>
@@ -521,7 +521,7 @@ class NodeLoadDataHandle {
                                                 <div class="media d-flex align-items-center">
                                                     <div class="media-body">
                                                         <div>
-                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                            <span class="badge badge-soft-warning node-zone-title">${title}</span>
                                                         </div>
                                                     </div>  
                                                 </div>
@@ -546,7 +546,7 @@ class NodeLoadDataHandle {
                                 <div class="media d-flex align-items-center">
                                     <div class="media-body">
                                         <div>
-                                            <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                            <span class="badge badge-soft-warning node-zone-title">Check all</span>
                                         </div>
                                     </div>
                                 </div>
@@ -563,7 +563,7 @@ class NodeLoadDataHandle {
                                 <div class="media d-flex align-items-center">
                                     <div class="media-body">
                                         <div>
-                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                            <span class="badge badge-soft-warning node-zone-title">${title}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1751,7 +1751,7 @@ class NodeDataTableHandle {
                             let resultZone = ``;
                             for (let zone of row?.['zone_hidden']) {
                                 if (zone?.['title']) {
-                                    resultZone += `<span class="badge badge-soft-success mb-1 mr-1">${zone?.['title']}</span>`;
+                                    resultZone += `<span class="badge badge-soft-warning mb-1 mr-1">${zone?.['title']}</span>`;
                                 }
                             }
                             return `${resultZone}`;

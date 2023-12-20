@@ -34,4 +34,7 @@ ADVANCE_DATA_MAP = {
     'expense_tax': FieldMapCommon(
         name_mapping=['expense_tax'],
     ).data,
+    'money_gave': FieldMapCommon(
+        name_mapping=['money_gave'],
+    ).data,
 }

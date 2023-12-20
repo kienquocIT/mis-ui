@@ -248,31 +248,40 @@
                             <tbody>
                             </tbody>
                             <tfoot>
-                                <td colspan="7"></td>
-                                <td colspan="2" class="text-primary">
-                                    <div class="row mt-3">
-                                        <div class="col-4">{% trans "Pretax price" %}</div>
-                                        <span class="col-8 text-right mask-money" id="pretax-value">0</span>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4">{% trans "Taxes" %}</div>
-                                        <span class="col-8 text-right mask-money" id="taxes-value">0</span>
-                                    </div>
-                                    <div class="dropdown-divider"></div>
-                                    <div class="row" style="font-weight: bold">
-                                        <div class="col-4">{% trans "Total" %}</div>
-                                        <span class="col-8 text-right mask-money" id="total-value">0</span>
-                                    </div>
-                                    <div class="row mt-3 mb-3">
-                                        <div class="col-12">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="money-gave" name="money_gave">
-                                                <label class="text-primary">{% trans "Money gave/transferred" %}</label>
+                                <tr>
+                                    <td colspan="1"></td>
+                                        <td colspan="1">
+                                            <button type="button" id="btn-add-row-line-detail" name="expense_valid_list" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-plus-circle"></i>
+                                                {% trans 'Add new row' %}
+                                            </button>
+                                        </td>
+                                    <td colspan="5"></td>
+                                    <td colspan="2" class="text-primary">
+                                        <div class="row mt-3">
+                                            <div class="col-4">{% trans "Pretax price" %}</div>
+                                            <span class="col-8 text-right mask-money" id="pretax-value">0</span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4">{% trans "Taxes" %}</div>
+                                            <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="row" style="font-weight: bold">
+                                            <div class="col-4">{% trans "Total" %}</div>
+                                            <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                        </div>
+                                        <div class="row mt-3 mb-3">
+                                            <div class="col-12">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="money-gave" name="money_gave">
+                                                    <label class="text-primary">{% trans "Money gave/transferred" %}</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td></td>
+                                    </td>
+                                    <td></td>
+                                </tr>
                             </tfoot>
                         </table>
                     </div>

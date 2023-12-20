@@ -16,25 +16,7 @@ PAYMENT_DATA_MAP = {
     'method': FieldMapCommon(
         name_mapping=['method'],
     ).data,
-    'expense_description': FieldMapCommon(
-        name_mapping=['expense_description'],
-    ).data,
-    'expense_type': FieldMapCommon(
-        name_mapping=['expense_type'],
-    ).data,
-    'expense_uom': FieldMapCommon(
-        name_mapping=['expense_uom'],
-    ).data,
-    'expense_quantity': FieldMapCommon(
-        name_mapping=['expense_quantity'],
-    ).data,
-    'expense_unit_price': FieldMapCommon(
-        name_mapping=['expense_unit_price'],
-    ).data,
-    'expense_tax': FieldMapCommon(
-        name_mapping=['expense_tax'],
-    ).data,
-    'document_number': FieldMapCommon(
-        name_mapping=['document_number'],
+    'payment_expense_valid_list': FieldMapCommon(
+        name_mapping=['payment_expense_valid_list'],
     ).data,
 }

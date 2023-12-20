@@ -29,15 +29,16 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}"><span class="text-primary">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
                             let sale_code_code = row.opportunity_mapped.code || row.quotation_mapped.code || row.sale_order_mapped.code || null
-                            return `<span class="ap_info" data-sale-code-code="${sale_code_code}" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span>`
+                            return `<a href="${link}"><span class="text-primary ap_info" data-sale-code-code="${sale_code_code}" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span></a>`
                         }
                     },
                     {
@@ -47,9 +48,9 @@ $(document).ready(function () {
                             let to_employee_trans = dtb.attr('data-type-translate-employee')
                             let to_supplier_trans = dtb.attr('data-type-translate-supplier')
                             if (row.advance_payment_type === 'To Employee') {
-                                return `<span class="badge badge-soft-danger">` + to_employee_trans + `</span>`
+                                return `<i class="bi bi-person"></i>${to_employee_trans}`
                             } else if (row.advance_payment_type === 'To Supplier') {
-                                return `<span class="badge badge-soft-blue">` + to_supplier_trans + `</span>`
+                                return `<i class="bi bi-truck"></i>${to_supplier_trans}`
                             }
                         }
                     },
@@ -107,63 +108,68 @@ $(document).ready(function () {
                             let text_color = ``
                             if (row.system_status === 0) {
                                 approved_trans = 'Draft'
-                                text_color = 'badge-soft-secondary'
+                                text_color = 'badge-secondary'
                             }
                             else if (row.system_status === 1) {
                                 approved_trans = 'Created'
-                                text_color = 'badge-soft-primary'
+                                text_color = 'badge-primary'
                             }
                             else if (row.system_status === 2) {
                                 approved_trans = 'Added'
-                                text_color = 'badge-soft-blue'
+                                text_color = 'badge-blue'
                             }
                             else if (row.system_status === 3) {
                                 approved_trans = 'Finish'
-                                text_color = 'badge-soft-success'
+                                text_color = 'badge-success'
                             }
                             else if (row.system_status ===4) {
                                 approved_trans = 'Cancel'
-                                text_color = 'badge-soft-danger'
+                                text_color = 'badge-danger'
                             }
-                            return `<span class="badge badge-outline ${text_color}">` + approved_trans + `</span>`
+                            return `<span class="badge ${text_color}">` + approved_trans + `</span>`
                         }
                     },
                     {
                         data: '',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            let sale_code_id = null;
-                            let sale_code_title = null;
-                            let sale_code_CODE = null;
-                            let is_close = false;
-                            let flag = null;
-                            if (Object.keys(row?.['opportunity_mapped']).length !== 0) {
-                                sale_code_id = row?.['opportunity_mapped'].id;
-                                sale_code_title = row?.['opportunity_mapped'].title;
-                                sale_code_CODE = row?.['opportunity_mapped'].code;
-                                is_close = row?.['opportunity_mapped']['is_close'];
-                                flag = 0;
+                            if (row.system_status !== 3) {
+                                return ``;
                             }
-                            else if (Object.keys(row?.['quotation_mapped']).length !== 0) {
-                                sale_code_id = row?.['quotation_mapped'].id;
-                                sale_code_title = row?.['quotation_mapped'].title;
-                                sale_code_CODE = row?.['quotation_mapped'].code;
-                                is_close = row?.['quotation_mapped']['is_close'];
-                                flag = 1;
-                            }
-                            else if (Object.keys(row?.['sale_order_mapped']).length !== 0) {
-                                sale_code_id = row?.['sale_order_mapped'].id;
-                                sale_code_title = row?.['sale_order_mapped'].title;
-                                sale_code_CODE = row?.['sale_order_mapped'].code;
-                                is_close = row?.['sale_order_mapped']['is_close'];
-                                flag = 2;
-                            }
+                            else {
+                                let sale_code_id = null;
+                                let sale_code_title = null;
+                                let sale_code_CODE = null;
+                                let is_close = false;
+                                let flag = null;
+                                if (Object.keys(row?.['opportunity_mapped']).length !== 0) {
+                                    sale_code_id = row?.['opportunity_mapped'].id;
+                                    sale_code_title = row?.['opportunity_mapped'].title;
+                                    sale_code_CODE = row?.['opportunity_mapped'].code;
+                                    is_close = row?.['opportunity_mapped']['is_close'];
+                                    flag = 0;
+                                }
+                                else if (Object.keys(row?.['quotation_mapped']).length !== 0) {
+                                    sale_code_id = row?.['quotation_mapped'].id;
+                                    sale_code_title = row?.['quotation_mapped'].title;
+                                    sale_code_CODE = row?.['quotation_mapped'].code;
+                                    is_close = row?.['quotation_mapped']['is_close'];
+                                    flag = 1;
+                                }
+                                else if (Object.keys(row?.['sale_order_mapped']).length !== 0) {
+                                    sale_code_id = row?.['sale_order_mapped'].id;
+                                    sale_code_title = row?.['sale_order_mapped'].title;
+                                    sale_code_CODE = row?.['sale_order_mapped'].code;
+                                    is_close = row?.['sale_order_mapped']['is_close'];
+                                    flag = 2;
+                                }
 
 
-                            return `<div class="dropdown ap-shortcut" data-ap-id="${row.id}" data-sale-code-id="${sale_code_id}" data-sale-code-title="${sale_code_title}" data-sale-code-CODE="${sale_code_CODE}" data-flag="${flag}">
-                                        <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
-                                        <div class="dropdown-menu"></div>
-                                    </div>`;
+                                return `<div class="dropdown ap-shortcut" data-ap-id="${row.id}" data-sale-code-id="${sale_code_id}" data-sale-code-title="${sale_code_title}" data-sale-code-CODE="${sale_code_CODE}" data-flag="${flag}">
+                                            <a type="button" data-bs-toggle="dropdown"><i class="fas fa-stream text-primary"></i></a>
+                                            <div class="dropdown-menu"></div>
+                                        </div>`;
+                            }
                         }
                     }
                 ],

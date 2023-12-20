@@ -118,10 +118,6 @@ $(function () {
 
 
         // NODE EVENTS
-        // NodeDataTableHandle.tableNode.on('click', '.btn-node-collab', function () {
-        //     NodeLoadDataHandle.loadZoneDD(this.closest('tr'));
-        // });
-
         NodeLoadDataHandle.btnAddNode.on('click', function () {
             NodeLoadDataHandle.loadAddRowTableNode();
             NodeLoadDataHandle.nodeModalTitleEle.val("");
@@ -138,25 +134,25 @@ $(function () {
         });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-all', function () {
-            if (this.checked === true) {
-                NodeValidateHandle.validateZoneEditAll(this);
-            }
-            let eleZoneDD = this.closest('.dropdown-zone');
-            for (let eleCheckbox of eleZoneDD.querySelectorAll('.checkbox-node-zone')) {
-                eleCheckbox.checked = this.checked;
-            }
-            NodeLoadDataHandle.loadZoneShow(this);
+            // if (this.checked === true) {
+            //     NodeValidateHandle.validateZoneEditAll(this);
+            // }
+            // let eleZoneDD = this.closest('.dropdown-zone');
+            // for (let eleCheckbox of eleZoneDD.querySelectorAll('.checkbox-node-zone')) {
+            //     eleCheckbox.checked = this.checked;
+            // }
+            // NodeLoadDataHandle.loadZoneShow(this);
         });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden-all', function () {
-            if (this.checked === true) {
-                NodeValidateHandle.validateZoneHiddenAll(this);
-            }
-            let collabArea = this.closest('.collab-area');
-            for (let eleCheckbox of collabArea.querySelectorAll('.checkbox-node-zone-hidden')) {
-                eleCheckbox.checked = this.checked;
-            }
-            NodeLoadDataHandle.loadZoneHiddenShow(this);
+            // if (this.checked === true) {
+            //     NodeValidateHandle.validateZoneHiddenAll(this);
+            // }
+            // let collabArea = this.closest('.collab-area');
+            // for (let eleCheckbox of collabArea.querySelectorAll('.checkbox-node-zone-hidden')) {
+            //     eleCheckbox.checked = this.checked;
+            // }
+            // NodeLoadDataHandle.loadZoneHiddenShow(this);
         });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone', function () {

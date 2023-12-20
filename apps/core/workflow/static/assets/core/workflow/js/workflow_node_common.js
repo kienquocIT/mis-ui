@@ -302,7 +302,7 @@ class NodeLoadDataHandle {
                                         <div class="media d-flex align-items-center">
                                             <div class="media-body">
                                                 <div>
-                                                    <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                                    <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
                                                 </div>
                                             </div>  
                                         </div>
@@ -341,7 +341,7 @@ class NodeLoadDataHandle {
                                     <div class="media d-flex align-items-center">
                                         <div class="media-body">
                                             <div>
-                                                <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                                <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
                                             </div>
                                         </div>  
                                     </div>
@@ -397,7 +397,7 @@ class NodeLoadDataHandle {
                                 <div class="media d-flex align-items-center">
                                     <div class="media-body">
                                         <div>
-                                            <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                            <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -451,7 +451,7 @@ class NodeLoadDataHandle {
                                         <div class="media d-flex align-items-center">
                                             <div class="media-body">
                                                 <div>
-                                                    <span class="badge badge-soft-warning node-zone-title">Check all</span>
+                                                    <span class="badge badge-soft-warning node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
                                                 </div>
                                             </div>  
                                         </div>
@@ -490,7 +490,7 @@ class NodeLoadDataHandle {
                                     <div class="media d-flex align-items-center">
                                         <div class="media-body">
                                             <div>
-                                                <span class="badge badge-soft-warning node-zone-title">Check all</span>
+                                                <span class="badge badge-soft-warning node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
                                             </div>
                                         </div>  
                                     </div>
@@ -546,7 +546,7 @@ class NodeLoadDataHandle {
                                 <div class="media d-flex align-items-center">
                                     <div class="media-body">
                                         <div>
-                                            <span class="badge badge-soft-warning node-zone-title">Check all</span>
+                                            <span class="badge badge-soft-warning node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
                                         </div>
                                     </div>
                                 </div>

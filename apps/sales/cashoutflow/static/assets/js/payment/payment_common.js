@@ -347,12 +347,6 @@ function loadExpenseType(row_id, data){
         keyResp: 'expense_item_list',
         keyId: 'id',
         keyText: 'title',
-    }).on('change', function () {
-        let parent_tr = $(this).closest('tr');
-        $('#' + parent_tr.attr('id') + ' .expense-unit-price-input').attr('value', '');
-        $('#' + parent_tr.attr('id') + ' .expense_quantity').val(1);
-        $('#' + parent_tr.attr('id') + ' .expense-subtotal-price').attr('value', '');
-        $('#' + parent_tr.attr('id') + ' .expense-subtotal-price-after-tax').attr('value', '');
     })
 }
 
@@ -496,7 +490,7 @@ function loadAPList() {
                                 if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
                                 if (item?.['remain_value'] > 0 && item?.['employee_inherit_id'] === initEmployee.id) {
                                     if (current_sale_code.length > 0 && this_sale_code.length > 0) {
-                                        if (current_sale_code[0] === this_sale_code[0]) {
+                                        if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                             result.push(item)
                                         }
                                     }
@@ -512,7 +506,7 @@ function loadAPList() {
                                 if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
                                 if (item?.['remain_value'] > 0 && item?.['employee_inherit_id'] === initEmployee.id && item?.['id'] === AP_filter) {
                                     if (current_sale_code.length > 0 && this_sale_code.length > 0) {
-                                        if (current_sale_code[0] === this_sale_code[0]) {
+                                        if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                             result.push(item)
                                             break
                                         }
@@ -1327,7 +1321,7 @@ $("#next-btn").on('click', function () {
     else {
         let selected_converted_value = []
         $('.detail-ap-items').each(function () {
-            if ($(this).text()) {
+            if ($(this).text() && $(this).closest('tr').attr('class') !== current_value_converted_from_ap.closest('tr').attr('class')) {
                 selected_converted_value = selected_converted_value.concat(JSON.parse($(this).text()))
             }
         })
@@ -1365,7 +1359,7 @@ $("#next-btn").on('click', function () {
                                     if (expense_item.remain_total > 0) {
                                         disabled = '';
                                     }
-                                    total_remain_value += expense_item.remain_total;
+                                    total_remain_value += expense_item.remain_total - findValueConvertedById(expense_item.id, selected_converted_value);
                                     product_table.find('tbody').append(`<tr>
                                         <td class="text-center"><input data-ap-title="${ap_item_detail?.['title']}" data-id="${expense_item.id}" class="product-selected" type="checkbox" ${disabled}></td>
                                         <td>${expense_item.expense_name}</td>
@@ -1458,6 +1452,7 @@ $("#finish-btn").on('click', function () {
     let result_total_value = calculate_sum_ap_product_items();
     current_value_converted_from_ap.closest('div').find('.value-converted-from-ap-inp').attr('value', result_total_value);
 
+    current_value_converted_from_ap.closest('tr').prev().find('.expense-type-select-box').prop('disabled', true).prop('readonly', true)
     let value_input_ap = parseFloat(current_value_converted_from_ap.closest('tr').find('.value-inp').attr('value'));
     if (isNaN(value_input_ap)) {
         value_input_ap = 0;
@@ -1470,6 +1465,7 @@ $("#finish-btn").on('click', function () {
     for (let x = 0; x < ap_product_items.length; x++) {
         detail_converted_html += `<span>${ap_product_items[x]?.['ap_title']}: <span class="mask-money text-secondary" data-init-money="${ap_product_items[x]?.['value_converted']}"></span></span><br>`
     }
+    current_value_converted_from_ap.closest('tr').next().remove()
     current_value_converted_from_ap.closest('tr').after(`
     <tr class="">
         <td colspan="1" class="bg-primary text-dark bg-opacity-10"></td>

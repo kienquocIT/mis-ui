@@ -1606,15 +1606,15 @@ function LoadDetailPayment(option) {
                     let data_row = data?.['expense_items'][i];
                     tableLineDetail.append(`<tr id="row-${i+1}" class="row-number">
                         <td class="number text-center">${i+1}</td>
-                        <td><select class="form-select expense-type-select-box" name="expense_type"></select></td>
-                        <td><input class="form-control expense-name-input" name="expense_description" value="${data_row?.['expense_description']}"></td>
-                        <td><input class="form-control expense-uom-input" name="expense_uom" value="${data_row?.['expense_uom_name']}"></td>
-                        <td><input type="number" min="1" class="form-control expense_quantity" name="expense_quantity" value="${data_row?.['expense_quantity']}"></td>
-                        <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money" name="expense_unit_price" value="${data_row?.['expense_unit_price']}"></td>
-                        <td><select class="form-select expense-tax-select-box" data-method="GET" name="expense_tax"></select></td>
+                        <td><select class="form-select expense-type-select-box" name="payment_expense_valid_list"></select></td>
+                        <td><input class="form-control expense-name-input" name="payment_expense_valid_list" value="${data_row?.['expense_description']}"></td>
+                        <td><input class="form-control expense-uom-input" name="payment_expense_valid_list" value="${data_row?.['expense_uom_name']}"></td>
+                        <td><input type="number" min="1" class="form-control expense_quantity" name="payment_expense_valid_list" value="${data_row?.['expense_quantity']}"></td>
+                        <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money" name="payment_expense_valid_list" value="${data_row?.['expense_unit_price']}"></td>
+                        <td><select class="form-select expense-tax-select-box" data-method="GET" name="payment_expense_valid_list"></select></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" value="${data_row?.['expense_subtotal_price']}" disabled></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" value="${data_row?.['expense_after_tax_price']}" disabled></td>
-                        <td><input type="text" class="form-control expense-document-number" value="${data_row?.['document_number']}" name="document_number"></td>
+                        <td><input type="text" class="form-control expense-document-number" value="${data_row?.['document_number']}" name="payment_expense_valid_list"></td>
                         <td>
                         <button class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button>
                         <button class="btn-row-toggle btn text-primary btn-link btn-animated" type="button" title="Collapse row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></button>
@@ -1628,13 +1628,13 @@ function LoadDetailPayment(option) {
                         <td colspan="1" class="bg-primary text-dark bg-opacity-10"></td>
                         <td colspan="2">
                             <span class="form-text text-muted">Payment value</span>
-                            <input data-return-type="number" class="value-inp form-control mask-money" value="${data_row?.['real_value']}">
+                            <input data-return-type="number" class="value-inp form-control mask-money" name="payment_expense_valid_list" value="${data_row?.['real_value']}">
                         </td>
                         <td colspan="3">
                             <span class="form-text text-muted">Converted value from advance payment</span>
                             <div class="input-group">
                                 <input data-return-type="number" class="value-converted-from-ap-inp form-control mask-money" value="${data_row?.['converted_value']}" disabled>
-                                <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" 
+                                <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" name="payment_expense_valid_list"
                                         data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
                                         class="btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
                                     <span class="icon"><i class="bi bi-pencil-square text-primary"></i></span>
@@ -1859,6 +1859,7 @@ class PaymentHandle {
         }
 
         frm.dataForm['payment_expense_valid_list'] = payment_expense_valid_list;
+        $('#payment_expense_valid_list').val(payment_expense_valid_list)
 
         frm.dataForm['status'] = true;
 

@@ -35,6 +35,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <input hidden id="payment_expense_valid_list" name="payment_expense_valid_list">
     <script id="script-url"
             data-trans-unplanned="{% trans 'Unplanned expenses' %}"
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"

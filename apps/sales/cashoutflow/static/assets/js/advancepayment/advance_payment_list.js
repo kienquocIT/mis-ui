@@ -103,11 +103,29 @@ $(document).ready(function () {
                         data: 'status',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            let approved_trans = dtb.attr('data-type-translate-approved')
-                            if (row.money_gave) {
-                                return `<span class="text-success">` + approved_trans + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
+                            let approved_trans = ``
+                            let text_color = ``
+                            if (row.system_status === 0) {
+                                approved_trans = 'Draft'
+                                text_color = 'badge-soft-secondary'
                             }
-                            return `<span class="text-success">` + approved_trans + `</span>`
+                            else if (row.system_status === 1) {
+                                approved_trans = 'Created'
+                                text_color = 'badge-soft-primary'
+                            }
+                            else if (row.system_status === 2) {
+                                approved_trans = 'Added'
+                                text_color = 'badge-soft-blue'
+                            }
+                            else if (row.system_status === 3) {
+                                approved_trans = 'Finish'
+                                text_color = 'badge-soft-success'
+                            }
+                            else if (row.system_status ===4) {
+                                approved_trans = 'Cancel'
+                                text_color = 'badge-soft-danger'
+                            }
+                            return `<span class="badge badge-outline ${text_color}">` + approved_trans + `</span>`
                         }
                     },
                     {

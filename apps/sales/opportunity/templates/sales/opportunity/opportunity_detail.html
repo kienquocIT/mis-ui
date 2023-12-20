@@ -375,6 +375,18 @@
                                     <input id="meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
                                 </div>
                             </div>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="InputFromTime" class="form-label">{% trans 'From time' %}</label>
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='meeting_from_time' id_select='InputFromTime' %}
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="InputToTime" class="form-label">{% trans 'To time' %}</label>
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='meeting_to_time' id_select='InputToTime' %}
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -478,6 +490,18 @@
                                 <label class="form-label required">{% trans 'Date' %}</label>
                                 <input disabled style="color: black" id="detail-meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 form-group">
+                            <label for="meeting-from-time" class="form-label required">{% trans 'From time' %}</label>
+                            <input disabled style="color: black" id="meeting-from-time"
+                                   placeholder="{% trans 'From time' %}" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-md-6 form-group">
+                            <label class="form-label required" for="meeting-to-time">{% trans 'To time' %}</label>
+                            <input disabled style="color: black" id="meeting-to-time"
+                                   placeholder="{% trans 'To time' %}" class="form-control">
                         </div>
                     </div>
                     <div class="row">

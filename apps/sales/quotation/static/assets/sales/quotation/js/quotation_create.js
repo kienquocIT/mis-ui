@@ -55,9 +55,9 @@ $(function () {
         $('.daterangepicker').remove();
 
         // get WF initial zones
-        // if (formSubmit.attr('data-method') === 'POST') {
-        //     WFRTControl.setWFInitialZone('quotation');
-        // }
+        if (formSubmit.attr('data-method') === 'POST') {
+            WFRTControl.setWFInitialZone('quotation');
+        }
 
 
 // Action on change dropdown opportunity

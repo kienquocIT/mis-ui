@@ -2662,6 +2662,8 @@ class QuotationSubmitHandle {
                 }
                 rowData['promotion'] = null;
                 rowData['shipping'] = null;
+
+                result.push(rowData);
             } else if (elePromotion) { // PROMOTION
                 let check_none_blank_list = ['', "", null, "undefined"];
                 rowData['is_promotion'] = true;
@@ -2722,6 +2724,8 @@ class QuotationSubmitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
+
+                result.push(rowData);
             } else if (eleShipping) { // SHIPPING
                 rowData['is_shipping'] = true;
                 rowData['product'] = null;
@@ -2772,8 +2776,10 @@ class QuotationSubmitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
+
+                result.push(rowData);
             }
-            result.push(rowData);
+            // result.push(rowData);
         }
         return result
     }
@@ -2842,6 +2848,8 @@ class QuotationSubmitHandle {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
                 rowData['shipping'] = null;
+
+                result.push(rowData);
             } else if (eleShipping) { // SHIPPING
                 rowData['is_shipping'] = true;
                 rowData['product'] = null;
@@ -2886,8 +2894,10 @@ class QuotationSubmitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
+
+                result.push(rowData);
             }
-            result.push(rowData);
+            // result.push(rowData);
         }
         return result
     }
@@ -3047,39 +3057,74 @@ class QuotationSubmitHandle {
         if (dateCreatedVal) {
             _form.dataForm['date_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
         }
-        _form.dataForm['total_product_pretax_amount'] = parseFloat($('#quotation-create-product-pretax-amount-raw').val());
-        let totalProductDiscountRate = $('#quotation-create-product-discount').val();
-        if (totalProductDiscountRate) {
-            _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
-        } else {
-            _form.dataForm['total_product_discount_rate'] = 0;
-        }
-        _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
-        _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
-        _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
-        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(QuotationLoadDataHandle.finalRevenueBeforeTax.value);
-        _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
-        _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
-        _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());
-        _form.dataForm['total_expense_pretax_amount'] = parseFloat($('#quotation-create-expense-pretax-amount-raw').val());
-        _form.dataForm['total_expense_tax'] = parseFloat($('#quotation-create-expense-taxes-raw').val());
-        _form.dataForm['total_expense'] = parseFloat($('#quotation-create-expense-total-raw').val());
-
         if (is_sale_order === false) {
             _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;
         }
 
         let quotation_products_data_setup = self.setupDataProduct();
         if (quotation_products_data_setup.length > 0) {
-            _form.dataForm[quotation_products_data] = quotation_products_data_setup
+            _form.dataForm[quotation_products_data] = quotation_products_data_setup;
+            // total product
+            _form.dataForm['total_product_pretax_amount'] = parseFloat($('#quotation-create-product-pretax-amount-raw').val());
+            if (!_form.dataForm['total_product_pretax_amount']) {
+                _form.dataForm['total_product_pretax_amount'] = 0;
+            }
+            let totalProductDiscountRate = $('#quotation-create-product-discount').val();
+            if (totalProductDiscountRate) {
+                _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
+            } else {
+                _form.dataForm['total_product_discount_rate'] = 0;
+            }
+            _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
+            if (!_form.dataForm['total_product_discount']) {
+                _form.dataForm['total_product_discount'] = 0;
+            }
+            _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
+            if (!_form.dataForm['total_product_tax']) {
+                _form.dataForm['total_product_tax'] = 0;
+            }
+            _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
+            if (!_form.dataForm['total_product']) {
+                _form.dataForm['total_product'] = 0;
+            }
+            _form.dataForm['total_product_revenue_before_tax'] = parseFloat(QuotationLoadDataHandle.finalRevenueBeforeTax.value);
+            if (!_form.dataForm['total_product_revenue_before_tax']) {
+                _form.dataForm['total_product_revenue_before_tax'] = 0;
+            }
         }
         let quotation_costs_data_setup = self.setupDataCost();
         if (quotation_costs_data_setup.length > 0) {
-            _form.dataForm[quotation_costs_data] = quotation_costs_data_setup
+            _form.dataForm[quotation_costs_data] = quotation_costs_data_setup;
+            // total cost
+            _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
+            if (!_form.dataForm['total_cost_pretax_amount']) {
+                _form.dataForm['total_cost_pretax_amount'] = 0;
+            }
+            _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
+            if (!_form.dataForm['total_cost_tax']) {
+                _form.dataForm['total_cost_tax'] = 0;
+            }
+            _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());
+            if (!_form.dataForm['total_cost']) {
+                _form.dataForm['total_cost'] = 0;
+            }
         }
         let quotation_expenses_data_setup = self.setupDataExpense();
         if (quotation_expenses_data_setup.length > 0) {
-            _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup
+            _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup;
+            // total expense
+            _form.dataForm['total_expense_pretax_amount'] = parseFloat($('#quotation-create-expense-pretax-amount-raw').val());
+            if (!_form.dataForm['total_expense_pretax_amount']) {
+                _form.dataForm['total_expense_pretax_amount'] = 0;
+            }
+            _form.dataForm['total_expense_tax'] = parseFloat($('#quotation-create-expense-taxes-raw').val());
+            if (!_form.dataForm['total_expense_tax']) {
+                _form.dataForm['total_expense_tax'] = 0;
+            }
+            _form.dataForm['total_expense'] = parseFloat($('#quotation-create-expense-total-raw').val());
+            if (!_form.dataForm['total_expense']) {
+                _form.dataForm['total_expense'] = 0;
+            }
         }
 
         _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();

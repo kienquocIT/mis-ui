@@ -1446,7 +1446,7 @@ class WFRTControl {
                         }
 
                         // zones handler
-                        WFRTControl.activeButtonOpenZone(actionMySelf['zones']);
+                        WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden']);
                     }
                 }
             })
@@ -1469,7 +1469,7 @@ class WFRTControl {
                     if ($.fn.hasOwnProperties(data?.['app_list'][0], ['workflow_currently'])) {
                         let workflow_current = data?.['app_list'][0]['workflow_currently'];
                         // zones handler
-                        WFRTControl.activeButtonOpenZone(workflow_current['initial_zones']);
+                        WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden']);
                     }
                 }
             })
@@ -1500,71 +1500,10 @@ class WFRTControl {
 
     static activeZoneInDoc() {
         let zonesData = WFRTControl.getZoneData();
+        let zonesHiddenData = WFRTControl.getZoneHiddenData();
         if (Array.isArray(zonesData)) {
             let pageEle = DocumentControl.getElePageContent();
             let input_mapping_properties = WFRTControl.getInputMappingProperties();
-
-            // apply zones config
-            if (zonesData.length > 0) {
-                // $('#select-box-emp').prop('readonly', true);
-                zonesData.map((item) => {
-                    if (item.code) {
-                        let inputMapProperties = input_mapping_properties[item.code];
-                        if (inputMapProperties && typeof inputMapProperties === 'object') {
-                            let arrTmpFind = {};
-                            let arrTmpOfDataListFind = {}
-                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
-                            inputMapProperties['name'].map((nameFind) => {
-                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
-                                // cho trường hợp field là table or list
-                                arrTmpOfDataListFind[nameFind] = "[data-zone="+ nameFind +"]"
-                            })
-                            inputMapProperties['id'].map((idFind) => {
-                                arrTmpFind[idFind] = "[id=" + idFind + "]";
-                            })
-                            Object.keys(arrTmpFind).map((key) => {
-                                let findText = arrTmpFind[key];
-                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
-                                    findText = arrTmpOfDataListFind[key]
-                                pageEle.find(findText).each(function () {
-                                    if (readonly_not_disable.includes(key)) {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_require_label': true,
-                                            'add_require': false,
-                                            'remove_disable': true,
-                                            'add_readonly': true,
-                                            'add_border': true,
-                                            'add_class_active': true,
-                                        });
-                                    }
-                                    else {
-                                        $(this).changePropertiesElementIsZone({
-                                            'add_require_label': true,
-                                            'add_require': false,
-                                            'remove_disable': true,
-                                            'remove_readonly': true,
-                                            'add_border': true,
-                                            'add_class_active': true,
-                                        });
-                                    }
-                                })
-                            });
-                            inputMapProperties['id_border_zones'].map((item) => {
-                                pageEle.find('#' + item).changePropertiesElementIsZone({
-                                    add_border: true,
-                                    add_readonly: true,
-                                });
-                            })
-                            inputMapProperties['cls_border_zones'].map((item) => {
-                                pageEle.find('.' + item).changePropertiesElementIsZone({
-                                    add_border: true,
-                                    add_readonly: true,
-                                });
-                            })
-                        }
-                    }
-                })
-            }
 
             // disable + readonly field (chỉ disabled các field trong form)
             pageEle.find('.required').removeClass('required');
@@ -1595,46 +1534,146 @@ class WFRTControl {
                                 add_disable: true,
                                 add_readonly: true,
                                 remove_required: true,
-                                add_empty_value: true,
                             });
                         });
                     })
-                }
-                else {
+                } else {
                     $(this).changePropertiesElementIsZone({
                         add_disable: true,
                         add_readonly: true,
                         remove_required: true,
-                        add_empty_value: true,
                     });
                 }
             });
 
+            // apply zones editable config
+            if (zonesData.length > 0) {
+                // $('#select-box-emp').prop('readonly', true);
+                zonesData.map((item) => {
+                    if (item.code) {
+                        let inputMapProperties = input_mapping_properties[item.code];
+                        if (inputMapProperties && typeof inputMapProperties === 'object') {
+                            let arrTmpFind = {};
+                            let arrTmpOfDataListFind = {}
+                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                            inputMapProperties['name'].map((nameFind) => {
+                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
+                                // cho trường hợp field là table or list
+                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                            })
+                            inputMapProperties['id'].map((idFind) => {
+                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                            })
+                            Object.keys(arrTmpFind).map((key) => {
+                                let findText = arrTmpFind[key];
+                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
+                                    findText = arrTmpOfDataListFind[key]
+                                pageEle.find(findText).each(function () {
+                                    if (readonly_not_disable.includes(key)) {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_require_label': true,
+                                            'add_require': false,
+                                            'remove_disable': true,
+                                            'add_readonly': true,
+                                            'add_border': true,
+                                            'add_class_active': true,
+                                        });
+                                    } else {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_require_label': true,
+                                            'add_require': false,
+                                            'remove_disable': true,
+                                            'remove_readonly': true,
+                                            'add_border': true,
+                                            'add_class_active': true,
+                                        });
+                                    }
+                                })
+                            });
+                            inputMapProperties['id_border_zones'].map((item) => {
+                                pageEle.find('#' + item).changePropertiesElementIsZone({
+                                    add_border: true,
+                                    add_readonly: true,
+                                });
+                            })
+                            inputMapProperties['cls_border_zones'].map((item) => {
+                                pageEle.find('.' + item).changePropertiesElementIsZone({
+                                    add_border: true,
+                                    add_readonly: true,
+                                });
+                            })
+                        }
+                    }
+                })
+            }
+
+            // apply zones hidden config
+            if (zonesHiddenData.length > 0) {
+                // $('#select-box-emp').prop('readonly', true);
+                zonesHiddenData.map((item) => {
+                    if (item.code) {
+                        let inputMapProperties = input_mapping_properties[item.code];
+                        if (inputMapProperties && typeof inputMapProperties === 'object') {
+                            let arrTmpFind = {};
+                            let arrTmpOfDataListFind = {}
+                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                            inputMapProperties['name'].map((nameFind) => {
+                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
+                                // cho trường hợp field là table or list
+                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                            })
+                            inputMapProperties['id'].map((idFind) => {
+                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                            })
+                            Object.keys(arrTmpFind).map((key) => {
+                                let findText = arrTmpFind[key];
+                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
+                                    findText = arrTmpOfDataListFind[key]
+                                pageEle.find(findText).each(function () {
+                                    if (readonly_not_disable.includes(key)) {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_empty_value': true,
+                                        });
+                                    } else {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_empty_value': true,
+                                        });
+                                    }
+                                })
+                            });
+                        }
+                    }
+                })
+            }
+
             // add button save at zones
             // idFormID
-            let idFormID = globeFormMappedZone;
-            if (idFormID) {
-                DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+            if (window.location.href.includes('/update/')) {
+                let idFormID = globeFormMappedZone;
+                if (idFormID) {
+                    DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
+                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
 
-                let actionList = WFRTControl.getActionsList();
-                let actionBubble = null;
-                if (actionList.includes(1)) {
-                    actionBubble = 1;
-                } else if (actionList.includes(4)) {
-                    actionBubble = 4;
-                }
-                if (actionBubble) {
-                    $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
+                    let actionList = WFRTControl.getActionsList();
+                    let actionBubble = null;
+                    if (actionList.includes(1)) {
+                        actionBubble = 1;
+                    } else if (actionList.includes(4)) {
+                        actionBubble = 4;
+                    }
+                    if (actionBubble) {
+                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
+                    }
                 }
             }
         }
     }
 
-    static activeButtonOpenZone(zonesData) {
+    static activeButtonOpenZone(zonesData, zonesHiddenData) {
         if (window.location.href.includes('/update/') || window.location.href.includes('/create')) {
             WFRTControl.setZoneData(zonesData);
-            if (zonesData && Array.isArray(zonesData)) {
+            WFRTControl.setZoneHiddenData(zonesHiddenData);
+            if (zonesData && Array.isArray(zonesData) && zonesHiddenData && Array.isArray(zonesHiddenData)) {
                 $('#btn-active-edit-zone-wf').removeClass('hidden');
                 $('#btn-active-edit-zone-wf').click();
             }
@@ -1649,9 +1688,25 @@ class WFRTControl {
         return [];
     }
 
+    static getZoneHiddenData() {
+        let itemEle = $('#idxZonesHiddenData');
+        if (itemEle && itemEle.length > 0) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }
+
     static getZoneKeyData() {
         let itemEle = $('#idxZonesKeyData');
         if (itemEle) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }
+
+    static getZoneHiddenKeyData() {
+        let itemEle = $('#idxZonesHiddenKeyData');
+        if (itemEle && itemEle.length > 0) {
             return JSON.parse(itemEle.text());
         }
         return [];
@@ -1665,6 +1720,16 @@ class WFRTControl {
             });
         }
         $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` + `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`);
+    }
+
+    static setZoneHiddenData(zonesHiddenData) {
+        let body_fields = [];
+        if (zonesHiddenData && Array.isArray(zonesHiddenData)) {
+            zonesHiddenData.map((item) => {
+                body_fields.push(item.code);
+            });
+        }
+        $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>` + `<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
     }
 
     static getInputMappingProperties() {
@@ -1750,22 +1815,22 @@ class WFRTControl {
         if (config.add_class_active === true) {  // flag to know which fields are active by WF zones
             $(ele$).addClass('zone-active');
         }
-        // if (config.add_empty_value === true) {  // set value to empty
-        //     if (!$(ele$).hasClass('zone-active')) {
-        //         if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
-        //             $(ele$).html(`<option value="" selected></option>`);
-        //         }
-        //         if ($(ele$).is('input')) {  // if input
-        //             $(ele$).val('');
-        //             if ($(ele$).hasClass('mask-money')) {  // if input mask-money
-        //                 $(ele$).attr('value', '');
-        //             }
-        //         }
-        //         if ($(ele$).is('span') && $(ele$).hasClass('mask-money')) {
-        //             $(ele$).attr('data-init-money', '').html(``);
-        //         }
-        //     }
-        // }
+        if (config.add_empty_value === true) {  // set value to empty
+            if (!$(ele$).hasClass('zone-active')) {
+                if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
+                    $(ele$).html(`<option value="" selected></option>`);
+                }
+                if ($(ele$).is('input')) {  // if input
+                    $(ele$).val('');
+                    if ($(ele$).hasClass('mask-money')) {  // if input mask-money
+                        $(ele$).attr('value', '');
+                    }
+                }
+                if ($(ele$).is('span') && $(ele$).hasClass('mask-money')) {
+                    $(ele$).attr('data-init-money', '').html(``);
+                }
+            }
+        }
 
         // active border for select2
         if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible"))

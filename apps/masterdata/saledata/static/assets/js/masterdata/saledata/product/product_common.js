@@ -1133,6 +1133,13 @@ function LoadDetailProduct(option) {
 
                 $('#data-detail-page').val(JSON.stringify(product_detail));
 
+                let readonly = '';
+                let disabled = '';
+                if (option === 'detail') {
+                    readonly = 'readonly';
+                    disabled = 'disabled';
+                }
+
                 for (let i = 0; i < product_detail['product_variant_attribute_list'].length; i++) {
                      let item = product_detail['product_variant_attribute_list'][i];
                      let attribute_config_list = [
@@ -1152,16 +1159,16 @@ function LoadDetailProduct(option) {
                          <td class="w-15"><input readonly class="form-control variant-attribute" value="${item.attribute_title}"></td>
                          <td class="w-50">
                              <span class="variant-attributes-span">${variant_attributes_select_html}</span>
-                             <button type="button" disabled data-bs-toggle="modal" data-bs-target="#modal-variant-attributes" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-values"><span class="icon"><i class="fas fa-plus-circle"></i></span></button>
+                             <button type="button" ${disabled} data-bs-toggle="modal" data-bs-target="#modal-variant-attributes" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-values"><span class="icon"><i class="fas fa-plus-circle"></i></span></button>
                          </td>
                          <td class="w-5"></td>
                          <td class="w-20">
                              <label class="config-selection" data-value="${item.attribute_config}">${attribute_config_list[item.attribute_config]}</label>
-                             <button type="button" disabled data-bs-toggle="modal" data-bs-target="#modal-attribute-display" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-configs"><span class="icon"><i class="fas fa-stream"></i></span></button>
+                             <button type="button" ${disabled} data-bs-toggle="modal" data-bs-target="#modal-attribute-display" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-configs"><span class="icon"><i class="fas fa-stream"></i></span></button>
                              <script class="attribute_value_list_span" hidden></script>
                          </td>
                          <td class="w-5">
-                             <button type="button" class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs delete-attribute-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
+                             <button type="button" disabled class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs delete-attribute-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                          </td>
                      </tr>`)
 
@@ -1210,17 +1217,12 @@ function LoadDetailProduct(option) {
                  //     </tr>
                  // `)
                 }
-                let readonly = '';
-                let disabled = '';
-                if (option === 'detail') {
-                 readonly = 'readonly';
-                 disabled = 'disabled';
-                }
                 table_Variant_Items.DataTableDefault({
-                 reloadCurrency: true,
-                 paging: false,
-                 data: data_table_Variant_Items,
-                 columns: [
+                    scrollX: true,
+                    reloadCurrency: true,
+                    paging: false,
+                    data: data_table_Variant_Items ? data_table_Variant_Items : [],
+                    columns: [
                      {
                         data: '',
                         className: 'wrap-text text-center w-5',
@@ -1267,11 +1269,11 @@ function LoadDetailProduct(option) {
                              </div>`;
                         }
                     }
-                ],
-                 createdRow: (row, data, dataIndex) => {
-                     $(row).attr('id', `variant-item-row-${dataIndex+1}`);
-                     $(row).attr('data-variant-value-id', data.id);
-                 }
+                    ],
+                    createdRow: (row, data, dataIndex) => {
+                        $(row).attr('id', `variant-item-row-${dataIndex+1}`);
+                        $(row).attr('data-variant-value-id', data.id);
+                    }
                 });
 
                 if (product_detail['product_variant_item_list'].length > 0) {

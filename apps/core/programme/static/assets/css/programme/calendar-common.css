@@ -88,3 +88,6 @@ text-transform: uppercase;
     margin-right: 4px;
     font-size: .75rem;
 }
+.fc-event-time{
+    text-transform: uppercase;
+}

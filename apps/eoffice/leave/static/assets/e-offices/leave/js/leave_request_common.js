@@ -487,6 +487,10 @@ function submitHandleFunc() {
                 break
             }
         }
+        if (value.morning_shift_f) value.date_from += ' 00:00:00'
+        else value.date_from += ' 12:00:00'
+        if (value.morning_shift_t) value.date_to += ' 12:00:00'
+        else value.date_to += ' 23:59:59'
     }
     formData.request_date = moment($('#inputRequestDate').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
 

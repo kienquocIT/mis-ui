@@ -1316,7 +1316,7 @@ $("#next-btn").on('click', function () {
         }
     })
     if (selected_ap_list.length === 0) {
-            $.fn.notifyB({description: 'Warning: Select at least 1 Advance Payment Item for next step.'}, 'warning');
+        $.fn.notifyB({description: 'Warning: Select at least 1 Advance Payment Item for next step.'}, 'warning');
     }
     else {
         let selected_converted_value = []

@@ -1449,12 +1449,12 @@ class NodeDataTableHandle {
                                                                 >
                                                                     <thead>
                                                                     <tr>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
-                                                                        <th></th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
+                                                                        <th class="w-10"></th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -1945,6 +1945,60 @@ class NodeSubmitHandle {
         }
         return result;
     };
+}
+
+// Validate
+class NodeValidateHandle {
+    static validateZoneEdit(ele) {
+        let zoneID = ele.getAttribute('data-id');
+        if (zoneID) {
+            let collabArea = ele.closest('.collab-area');
+            let checkboxNodeZoneHidden = collabArea.querySelector(`.checkbox-node-zone-hidden[data-id="${zoneID}"]:checked`);
+            if (checkboxNodeZoneHidden) {
+                ele.checked = false;
+                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-edit')}, 'failure');
+                return false
+            }
+        }
+        return true;
+    };
+
+    static validateZoneEditAll(ele) {
+        let collabArea = ele.closest('.collab-area');
+        let checkboxNodeZoneHiddenAll = collabArea.querySelector(`.checkbox-node-zone-hidden-all:checked`);
+        if (checkboxNodeZoneHiddenAll) {
+            ele.checked = false;
+            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-edit-all')}, 'failure');
+            return false
+        }
+        return true;
+    };
+
+    static validateZoneHidden(ele) {
+        let zoneID = ele.getAttribute('data-id');
+        if (zoneID) {
+            let collabArea = ele.closest('.collab-area');
+            let checkboxNodeZoneEdit = collabArea.querySelector(`.checkbox-node-zone[data-id="${zoneID}"]:checked`);
+            if (checkboxNodeZoneEdit) {
+                ele.checked = false;
+                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-hidden')}, 'failure');
+                return false
+            }
+        }
+        return true;
+    };
+
+    static validateZoneHiddenAll(ele) {
+        let collabArea = ele.closest('.collab-area');
+        let checkboxNodeZoneEditAll = collabArea.querySelector(`.checkbox-node-zone-all:checked`);
+        if (checkboxNodeZoneEditAll) {
+            ele.checked = false;
+            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-hidden-all')}, 'failure');
+            return false
+        }
+        return true;
+    };
+
 }
 
 // COMMON FUNCTION

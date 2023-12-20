@@ -138,6 +138,9 @@ $(function () {
         });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-all', function () {
+            if (this.checked === true) {
+                NodeValidateHandle.validateZoneEditAll(this);
+            }
             let eleZoneDD = this.closest('.dropdown-zone');
             for (let eleCheckbox of eleZoneDD.querySelectorAll('.checkbox-node-zone')) {
                 eleCheckbox.checked = this.checked;
@@ -146,6 +149,9 @@ $(function () {
         });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden-all', function () {
+            if (this.checked === true) {
+                NodeValidateHandle.validateZoneHiddenAll(this);
+            }
             let collabArea = this.closest('.collab-area');
             for (let eleCheckbox of collabArea.querySelectorAll('.checkbox-node-zone-hidden')) {
                 eleCheckbox.checked = this.checked;
@@ -154,10 +160,16 @@ $(function () {
         });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone', function () {
+            if (this.checked === true) {
+                NodeValidateHandle.validateZoneEdit(this);
+            }
             NodeLoadDataHandle.loadZoneShow(this);
         });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden', function () {
+            if (this.checked === true) {
+                NodeValidateHandle.validateZoneHidden(this);
+            }
             NodeLoadDataHandle.loadZoneHiddenShow(this);
         });
 

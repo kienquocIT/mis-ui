@@ -1448,7 +1448,7 @@ class WFRTControl {
                         // zones handler
                         WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden']);
                         if (window.location.href.includes('/detail/')) {
-                            WFRTControl.setZoneHiddenData(actionMySelf['zones_hidden']);
+                            WFRTControl.setZoneHiddenData(data['runtime_detail']['zones_hidden_myself']);
                             WFRTControl.activeZoneInDocDetail();
                         }
                     }

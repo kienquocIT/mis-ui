@@ -694,7 +694,7 @@ class NodeLoadDataHandle {
         let eleZoneHiddenJSonSubmit = ele.closest('.collab-in-workflow-area').querySelector('.node-zone-hidden-json-submit');
         if ($(eleBoxOption).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(eleBoxOption), $(eleBoxOption).val());
-            if (dataSelected?.['id'] === 1) {
+            if (dataSelected?.['id'] === 1) {  // by position
                 let eleBoxPosition = ele.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-position');
                 if ($(eleBoxPosition).val()) {
                     let dataPosition = SelectDDControl.get_data_from_idx($(eleBoxPosition), $(eleBoxPosition).val());
@@ -716,7 +716,7 @@ class NodeLoadDataHandle {
                     $(table).DataTable().row.add(data).draw().node();
                 }
             }
-            if (dataSelected?.['id'] === 2) {
+            if (dataSelected?.['id'] === 2) {  // by employee
                 let eleBoxEmployee = ele.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-employee');
                 if ($(eleBoxEmployee).val()) {
                     let dataEmployee = SelectDDControl.get_data_from_idx($(eleBoxEmployee), $(eleBoxEmployee).val());
@@ -736,6 +736,8 @@ class NodeLoadDataHandle {
                         'zone_hidden': zoneHidden,
                     }
                     $(table).DataTable().row.add(data).draw().node();
+                    // update zoneHiddenEmployee for validate zone hidden
+                    // NodeValidateHandle.validateZoneHiddenEmployeeSetup(dataEmployee?.['id'], zoneHidden);
                 }
             }
         }
@@ -1949,6 +1951,8 @@ class NodeSubmitHandle {
 
 // Validate
 class NodeValidateHandle {
+    static zoneHiddenEmployee = {};
+
     static validateZoneEdit(ele) {
         let zoneID = ele.getAttribute('data-id');
         if (zoneID) {
@@ -1997,6 +2001,32 @@ class NodeValidateHandle {
             return false
         }
         return true;
+    };
+
+    static validateZoneHiddenEmployeeSetup(employeeID, zoneHiddenList) {
+        if (!NodeValidateHandle.zoneHiddenEmployee.hasOwnProperty(employeeID)) {
+            NodeValidateHandle.zoneHiddenEmployee[employeeID] = zoneHiddenList;
+        } else {
+            NodeValidateHandle.zoneHiddenEmployee[employeeID] = NodeValidateHandle.zoneHiddenEmployee[employeeID].concat(zoneHiddenList);
+        }
+    };
+
+    static validateZoneHiddenEmployee(ele) {
+        let zoneID = ele.getAttribute('data-id');
+        if (zoneID) {
+            let collabArea = ele.closest('.collab-area');
+            if (collabArea.classList.contains('collab-in-workflow-area')) {
+                let eleBoxEmployee = collabArea.querySelector('.box-in-workflow-employee');
+                if ($(eleBoxEmployee).val()) {
+                    let dataEmployee = SelectDDControl.get_data_from_idx($(eleBoxEmployee), $(eleBoxEmployee).val());
+                    if (NodeValidateHandle.zoneHiddenEmployee.hasOwnProperty(dataEmployee?.['id'])) {
+                        if (NodeValidateHandle.zoneHiddenEmployee[dataEmployee?.['id']].includes(zoneID)) {
+
+                        }
+                    }
+                }
+            }
+        }
     };
 
 }

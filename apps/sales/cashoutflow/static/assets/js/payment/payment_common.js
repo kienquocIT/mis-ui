@@ -371,7 +371,7 @@ function count_row(table_body, option) {
         $(this).text(count);
         $(this).closest('tr').attr('id', 'row-' + count.toString());
         let sale_code_length = [].concat(opp_mapped_select.val()).length;
-        let detail_product_element = $(this).closest('tr').nextAll().slice(0, sale_code_length + 1)
+        let detail_product_element = $(this).closest('tr').nextAll().slice(0, sale_code_length)
         detail_product_element.each(function () {
             $(this).attr('class', 'row-detail-product-' + count.toString());
         });
@@ -1460,21 +1460,29 @@ $("#finish-btn").on('click', function () {
     current_value_converted_from_ap.closest('tr').find('.total-value-salecode-item').attr('value', result_total_value + value_input_ap);
     let ap_product_items = get_ap_product_items()
     current_value_converted_from_ap.closest('tr').find('.detail-ap-items').text(JSON.stringify(ap_product_items));
-
-    let detail_converted_html = ``;
-    for (let x = 0; x < ap_product_items.length; x++) {
-        detail_converted_html += `<span>${ap_product_items[x]?.['ap_title']}: <span class="mask-money text-secondary" data-init-money="${ap_product_items[x]?.['value_converted']}"></span></span><br>`
+    if (result_total_value > 0) {
+        let detail_converted_html = ``;
+        for (let x = 0; x < ap_product_items.length; x++) {
+            detail_converted_html += `<a class="dropdown-item" href="#">${ap_product_items[x]?.['ap_title']}: <span class="mask-money text-secondary" data-init-money="${ap_product_items[x]?.['value_converted']}"></span></a>`
+        }
+        let detail_converted_html_full = ``
+        if (detail_converted_html) {
+            detail_converted_html_full = `<div class="btn-group" role="group">
+                <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        class="btn btn-icon btn-flush-primary flush-soft-hover" type="button">
+                    <span class="icon"><i class="bi bi-chevron-down text-primary"></i></span>
+                </button>
+                <div class="dropdown-menu">
+                    ${detail_converted_html}
+                </div>
+            </div>`;
+        }
+        current_value_converted_from_ap.closest('tr').find('.input-group').append(detail_converted_html_full)
     }
-    current_value_converted_from_ap.closest('tr').next().remove()
-    current_value_converted_from_ap.closest('tr').after(`
-    <tr class="">
-        <td colspan="1" class="bg-primary text-dark bg-opacity-10"></td>
-        <td colspan="2"></td>
-        <td colspan="3">${detail_converted_html}</td>
-        <td colspan="2"></td>
-    </tr>
-    `)
-    count_row(tableLineDetail);
+    else {
+        current_value_converted_from_ap.closest('tr').find('.input-group .btn-group').remove()
+    }
+
     $.fn.initMaskMoney2();
 })
 
@@ -1624,6 +1632,22 @@ function LoadDetailPayment(option) {
                     for (let j = 0; j < data_row?.['ap_cost_converted_list'].length; j++) {
                         data_row_detail.push(data_row?.['ap_cost_converted_list'][j]);
                     }
+                    let detail_converted_html = ``;
+                    for (let x = 0; x < data_row?.['ap_cost_converted_list'].length; x++) {
+                        detail_converted_html += `<a class="dropdown-item" href="#">${data_row?.['ap_cost_converted_list'][x]?.['ap_title']}: <span class="mask-money text-secondary" data-init-money="${data_row?.['ap_cost_converted_list'][x]?.['value_converted']}"></span></a>`
+                    }
+                    let detail_converted_html_full = ``
+                    if (detail_converted_html) {
+                        detail_converted_html_full = `<div class="btn-group" role="group">
+                            <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    class="btn btn-icon btn-flush-primary flush-soft-hover" type="button">
+                                <span class="icon"><i class="bi bi-chevron-down text-primary"></i></span>
+                            </button>
+                            <div class="dropdown-menu">
+                                ${detail_converted_html}
+                            </div>
+                        </div>`;
+                    }
                     tableLineDetail.append(`<tr class="" hidden>
                         <td colspan="1" class="bg-primary text-dark bg-opacity-10"></td>
                         <td colspan="2">
@@ -1639,6 +1663,7 @@ function LoadDetailPayment(option) {
                                         class="btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
                                     <span class="icon"><i class="bi bi-pencil-square text-primary"></i></span>
                                 </button>
+                                ${detail_converted_html_full}
                             </div>
                         </td>
                         <td colspan="2">
@@ -1646,16 +1671,6 @@ function LoadDetailPayment(option) {
                             <input readonly disabled data-return-type="number" class="total-value-salecode-item form-control mask-money" value="${data_row?.['sum_value']}">
                             <script type="application/json" class="detail-ap-items">${JSON.stringify(data_row_detail)}</script>
                         </td>
-                    </tr>`);
-                    let detail_converted_html = ``;
-                    for (let x = 0; x < data_row?.['ap_cost_converted_list'].length; x++) {
-                        detail_converted_html += `<span>${data_row?.['ap_cost_converted_list'][x]?.['ap_title']}: <span class="mask-money text-secondary" data-init-money="${data_row?.['ap_cost_converted_list'][x]?.['value_converted']}"></span></span><br>`
-                    }
-                    tableLineDetail.append(`<tr class="" hidden>
-                        <td colspan="1" class="bg-primary text-dark bg-opacity-10"></td>
-                        <td colspan="2"></td>
-                        <td colspan="3">${detail_converted_html}</td>
-                        <td colspan="2"></td>
                     </tr>`);
 
                     loadExpenseType(`row-${i+1}`, data_row?.['expense_type'])

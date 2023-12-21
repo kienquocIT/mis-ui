@@ -1446,7 +1446,7 @@ class WFRTControl {
                         }
 
                         // zones handler
-                        WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden']);
+                        WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.setZoneHiddenData(data['runtime_detail']['zones_hidden_myself']);
                             WFRTControl.activeZoneInDocDetail();
@@ -1473,7 +1473,7 @@ class WFRTControl {
                     if ($.fn.hasOwnProperties(data?.['app_list'][0], ['workflow_currently'])) {
                         let workflow_current = data?.['app_list'][0]['workflow_currently'];
                         // zones handler
-                        WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden']);
+                        WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                     }
                 }
             })
@@ -1505,6 +1505,10 @@ class WFRTControl {
     static activeZoneInDoc() {
         let zonesData = WFRTControl.getZoneData();
         let zonesHiddenData = WFRTControl.getZoneHiddenData();
+        let isEditAllZone = WFRTControl.getIsEditAllZone();
+        if (isEditAllZone === 'true') {
+            return true;
+        }
         if (Array.isArray(zonesData) && Array.isArray(zonesHiddenData)) {
             let pageEle = DocumentControl.getElePageContent();
             let input_mapping_properties = WFRTControl.getInputMappingProperties();
@@ -1720,10 +1724,11 @@ class WFRTControl {
         }
     }
 
-    static activeButtonOpenZone(zonesData, zonesHiddenData) {
+    static activeButtonOpenZone(zonesData, zonesHiddenData, isEditAllZone) {
         if (window.location.href.includes('/update/') || window.location.href.includes('/create')) {
             WFRTControl.setZoneData(zonesData);
             WFRTControl.setZoneHiddenData(zonesHiddenData);
+            WFRTControl.setIsEditAllZoneData(isEditAllZone);
             if (zonesData && Array.isArray(zonesData) && zonesHiddenData && Array.isArray(zonesHiddenData)) {
                 $('#btn-active-edit-zone-wf').removeClass('hidden');
                 $('#btn-active-edit-zone-wf').click();
@@ -1745,6 +1750,14 @@ class WFRTControl {
             return JSON.parse(itemEle.text());
         }
         return [];
+    }
+
+    static getIsEditAllZone() {
+        let itemEle = $('#idxIsEditAllZone');
+        if (itemEle && itemEle.length > 0) {
+            return itemEle.text();
+        }
+        return 'true';
     }
 
     static getZoneKeyData() {
@@ -1781,6 +1794,10 @@ class WFRTControl {
             });
         }
         $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>` + `<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+    }
+
+    static setIsEditAllZoneData(isEditAllZone) {
+        $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
     }
 
     static getInputMappingProperties() {

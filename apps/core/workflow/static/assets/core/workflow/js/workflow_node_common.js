@@ -276,7 +276,7 @@ class NodeLoadDataHandle {
     static loadRowTableInitialNode(row) {
         let tableInitial = row.querySelector('.collab-initial-area')?.querySelector('.table-initial-node-collaborator');
         let dataInitial = {
-            'title': 'Document creator',
+            'title': NodeLoadDataHandle.transEle.attr('data-creator'),
             'group': {},
             'role': [],
         }
@@ -291,7 +291,6 @@ class NodeLoadDataHandle {
             if (eleCheckBox) {
                 let dataRowRaw = eleCheckBox.getAttribute('data-row');
                 if (dataRowRaw) {
-                    let dataRow = JSON.parse(dataRowRaw);
                     let is_edit_all_zone = false;
                     if (row.querySelector('.checkbox-node-zone-all:checked')) {
                         is_edit_all_zone = true;
@@ -300,115 +299,73 @@ class NodeLoadDataHandle {
                     for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone:checked')) {
                         zone_list.push(parseInt($(eleChecked).attr('data-id')));
                     }
-                    if (dataRow?.['is_system'] === true) { // SYSTEM NODES
-                        if (dataRow?.['code'] === 'initial') {
-                            if (is_edit_all_zone === true) {
+                    if (is_edit_all_zone === true) {
+                        result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="media d-flex align-items-center">
+                                            <div class="media-body">
+                                                <div>
+                                                    <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
+                                                </div>
+                                            </div>  
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input checkbox-node-zone-all" checked>
+                                        </div>
+                                    </li>`;
+                    } else {
+                        result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="media d-flex align-items-center">
+                                            <div class="media-body">
+                                                <div>
+                                                    <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
+                                                </div>
+                                            </div>  
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input checkbox-node-zone-all">
+                                        </div>
+                                    </li>`;
+                    }
+                    let table = document.getElementById('table_workflow_zone');
+                    if (!table.querySelector('.dataTables_empty')) {
+                        for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                            let row = table.tBodies[0].rows[i];
+                            let title = row.children[1].children[0].innerHTML;
+                            if (zone_list.includes(i + 1)) {
                                 result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                <div class="media d-flex align-items-center">
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
-                                                        </div>
-                                                    </div>  
-                                                </div>
-                                                <div class="form-check form-check-theme ms-3">
-                                                    <input type="checkbox" class="form-check-input checkbox-node-zone-all" checked>
-                                                </div>
-                                            </li>`;
+                                            <div class="media d-flex align-items-center">
+                                                <div class="media-body">
+                                                    <div>
+                                                        <span class="badge badge-soft-success node-zone-title">${title}</span>
+                                                    </div>
+                                                </div>  
+                                            </div>
+                                            <div class="form-check form-check-theme ms-3">
+                                                <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}" checked>
+                                            </div>
+                                        </li>`;
                             } else {
                                 result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                <div class="media d-flex align-items-center">
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
-                                                        </div>
-                                                    </div>  
-                                                </div>
-                                                <div class="form-check form-check-theme ms-3">
-                                                    <input type="checkbox" class="form-check-input checkbox-node-zone-all">
-                                                </div>
-                                            </li>`;
-                            }
-                            let table = document.getElementById('table_workflow_zone');
-                            if (!table.querySelector('.dataTables_empty')) {
-                                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                                    let row = table.tBodies[0].rows[i];
-                                    let title = row.children[1].children[0].innerHTML;
-                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                    <div class="media d-flex align-items-center">
-                                                        <div class="media-body">
-                                                            <div>
-                                                                <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                                            </div>
-                                                        </div>  
+                                            <div class="media d-flex align-items-center">
+                                                <div class="media-body">
+                                                    <div>
+                                                        <span class="badge badge-soft-success node-zone-title">${title}</span>
                                                     </div>
-                                                    <div class="form-check form-check-theme ms-3">
-                                                        <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
-                                                    </div>
-                                                </li>`;
-                                }
-                                for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
-                                    if ($(eleZoneList).empty()) {
-                                        $(eleZoneList).append(result);
-                                    }
-                                }
-                            }
-                            return true;
-                        }
-                    } else { // COLLAB NODES
-                        result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="media d-flex align-items-center">
-                                        <div class="media-body">
-                                            <div>
-                                                <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
+                                                </div>  
                                             </div>
-                                        </div>  
-                                    </div>
-                                    <div class="form-check form-check-theme ms-3">
-                                        <input type="checkbox" class="form-check-input checkbox-node-zone-all">
-                                    </div>
-                                </li>`;
-                        let table = document.getElementById('table_workflow_zone');
-                        if (!table.querySelector('.dataTables_empty')) {
-                            for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                                let row = table.tBodies[0].rows[i];
-                                let title = row.children[1].children[0].innerHTML;
-                                if (zone_list.includes(i + 1)) {
-                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                <div class="media d-flex align-items-center">
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                                        </div>
-                                                    </div>  
-                                                </div>
-                                                <div class="form-check form-check-theme ms-3">
-                                                    <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}" checked>
-                                                </div>
-                                            </li>`;
-                                } else {
-                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                <div class="media d-flex align-items-center">
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                                        </div>
-                                                    </div>  
-                                                </div>
-                                                <div class="form-check form-check-theme ms-3">
-                                                    <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
-                                                </div>
-                                            </li>`;
-                                }
-                            }
-                            for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
-                                if ($(eleZoneList).empty()) {
-                                    $(eleZoneList).append(result);
-                                }
+                                            <div class="form-check form-check-theme ms-3">
+                                                <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
+                                            </div>
+                                        </li>`;
                             }
                         }
-                        return true;
+                        for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
+                            if ($(eleZoneList).empty()) {
+                                $(eleZoneList).append(result);
+                            }
+                        }
                     }
+                    return true;
                 }
             }
         } else { // Case Create New Node
@@ -459,120 +416,53 @@ class NodeLoadDataHandle {
             if (eleCheckBox) {
                 let dataRowRaw = eleCheckBox.getAttribute('data-row');
                 if (dataRowRaw) {
-                    let dataRow = JSON.parse(dataRowRaw);
                     let zone_list = [];
                     for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
                         zone_list.push(parseInt($(eleChecked).attr('data-id')));
                     }
-                    if (dataRow?.['is_system'] === true) { // SYSTEM NODES
-                        if (dataRow?.['code'] === 'initial') {
-                            // result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                            //             <div class="media d-flex align-items-center">
-                            //                 <div class="media-body">
-                            //                     <div>
-                            //                         <span class="badge badge-soft-warning node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
-                            //                     </div>
-                            //                 </div>
-                            //             </div>
-                            //             <div class="form-check form-check-theme ms-3">
-                            //                 <input type="checkbox" class="form-check-input checkbox-node-zone-hidden-all">
-                            //             </div>
-                            //         </li>`;
-                            let table = document.getElementById('table_workflow_zone');
-                            if (!table.querySelector('.dataTables_empty')) {
-                                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                                    let row = table.tBodies[0].rows[i];
-                                    let title = row.children[1].children[0].innerHTML;
-                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                    <div class="media d-flex align-items-center">
-                                                        <div class="media-body">
-                                                            <div>
-                                                                <span class="badge badge-soft-warning node-zone-title">${title}</span>
-                                                            </div>
-                                                        </div>  
+                    let table = document.getElementById('table_workflow_zone');
+                    if (!table.querySelector('.dataTables_empty')) {
+                        for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                            let row = table.tBodies[0].rows[i];
+                            let title = row.children[1].children[0].innerHTML;
+                            if (zone_list.includes(i + 1)) {
+                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="media d-flex align-items-center">
+                                                <div class="media-body">
+                                                    <div>
+                                                        <span class="badge badge-soft-warning node-zone-title">${title}</span>
                                                     </div>
-                                                    <div class="form-check form-check-theme ms-3">
-                                                        <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
+                                                </div>  
+                                            </div>
+                                            <div class="form-check form-check-theme ms-3">
+                                                <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}" checked>
+                                            </div>
+                                        </li>`;
+                            } else {
+                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="media d-flex align-items-center">
+                                                <div class="media-body">
+                                                    <div>
+                                                        <span class="badge badge-soft-warning node-zone-title">${title}</span>
                                                     </div>
-                                                </li>`;
-                                }
-                                for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
-                                    if ($(eleZoneList).empty()) {
-                                        $(eleZoneList).append(result);
-                                    }
-                                }
-                            }
-                            return true;
-                        }
-                    } else { // COLLAB NODES
-                        // result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                        //             <div class="media d-flex align-items-center">
-                        //                 <div class="media-body">
-                        //                     <div>
-                        //                         <span class="badge badge-soft-warning node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
-                        //                     </div>
-                        //                 </div>
-                        //             </div>
-                        //             <div class="form-check form-check-theme ms-3">
-                        //                 <input type="checkbox" class="form-check-input checkbox-node-zone-hidden-all">
-                        //             </div>
-                        //         </li>`;
-                        let table = document.getElementById('table_workflow_zone');
-                        if (!table.querySelector('.dataTables_empty')) {
-                            for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                                let row = table.tBodies[0].rows[i];
-                                let title = row.children[1].children[0].innerHTML;
-                                if (zone_list.includes(i + 1)) {
-                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                <div class="media d-flex align-items-center">
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <span class="badge badge-soft-warning node-zone-title">${title}</span>
-                                                        </div>
-                                                    </div>  
-                                                </div>
-                                                <div class="form-check form-check-theme ms-3">
-                                                    <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}" checked>
-                                                </div>
-                                            </li>`;
-                                } else {
-                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                <div class="media d-flex align-items-center">
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <span class="badge badge-soft-warning node-zone-title">${title}</span>
-                                                        </div>
-                                                    </div>  
-                                                </div>
-                                                <div class="form-check form-check-theme ms-3">
-                                                    <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
-                                                </div>
-                                            </li>`;
-                                }
-                            }
-                            for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
-                                if ($(eleZoneList).empty()) {
-                                    $(eleZoneList).append(result);
-                                }
+                                                </div>  
+                                            </div>
+                                            <div class="form-check form-check-theme ms-3">
+                                                <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
+                                            </div>
+                                        </li>`;
                             }
                         }
-                        return true;
+                        for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
+                            if ($(eleZoneList).empty()) {
+                                $(eleZoneList).append(result);
+                            }
+                        }
                     }
+                    return true;
                 }
             }
         } else { // Case Create New Node
-            // result += `<li class="d-flex align-items-center justify-content-between mb-3">
-            //                     <div class="media d-flex align-items-center">
-            //                         <div class="media-body">
-            //                             <div>
-            //                                 <span class="badge badge-soft-warning node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
-            //                             </div>
-            //                         </div>
-            //                     </div>
-            //                     <div class="form-check form-check-theme ms-3">
-            //                         <input type="checkbox" class="form-check-input checkbox-node-zone-hidden-all">
-            //                     </div>
-            //                 </li>`;
             let table = document.getElementById('table_workflow_zone');
             if (!table.querySelector('.dataTables_empty')) {
                 for (let i = 0; i < table.tBodies[0].rows.length; i++) {
@@ -877,21 +767,28 @@ class NodeLoadDataHandle {
         let modalCollab = row.querySelector('.modal-collab');
         if (dataRow?.['is_system'] === true) { // SYSTEM NODES
             if (dataRow?.['code'] === 'initial') {
+                let initialArea = modalCollab.querySelector('.collab-initial-area');
                 let zone_initial_node = [];
                 for (let zone of dataRow?.['zone_initial_node']) {
                     zone_initial_node.push(zone?.['order']);
                 }
-                let tableInitial = modalCollab.querySelector('.table-initial-node-collaborator');
+                let zone_hidden_initial_node = [];
+                for (let zone of dataRow?.['zone_hidden_initial_node']) {
+                    zone_hidden_initial_node.push(zone?.['order']);
+                }
+                let tableInitial = initialArea.querySelector('.table-initial-node-collaborator');
                 NodeDataTableHandle.dataTableInitial($(tableInitial));
                 NodeLoadDataHandle.loadRowTableInitialNode(row);
-                for (let t = 0; t < tableInitial.tBodies[0].rows.length; t++) {
-                    let rowInit = tableInitial.tBodies[0].rows[t];
-                    NodeLoadDataHandle.loadZoneDD(rowInit);
-                    NodeLoadDataHandle.loadZoneHiddenDD(rowInit);
-                    for (let eleCheck of rowInit.querySelectorAll('.checkbox-node-zone')) {
-                        if (zone_initial_node.includes(parseInt($(eleCheck).attr('data-id')))) {
-                            eleCheck.checked = true;
-                        }
+                NodeLoadDataHandle.loadZoneDD(row);
+                NodeLoadDataHandle.loadZoneHiddenDD(row);
+                for (let eleCheck of initialArea.querySelectorAll('.checkbox-node-zone')) {
+                    if (zone_initial_node.includes(parseInt($(eleCheck).attr('data-id')))) {
+                        eleCheck.checked = true;
+                    }
+                }
+                for (let eleCheck of initialArea.querySelectorAll('.checkbox-node-zone-hidden')) {
+                    if (zone_hidden_initial_node.includes(parseInt($(eleCheck).attr('data-id')))) {
+                        eleCheck.checked = true;
                     }
                 }
             }
@@ -1827,6 +1724,7 @@ class NodeSubmitHandle {
             'actions',
             'option_collaborator',
             'zone_initial_node',
+            'zone_hidden_initial_node',
             'order',
             'is_system',
             'code_node_system',
@@ -1835,6 +1733,7 @@ class NodeSubmitHandle {
             'collab_out_form',
             'collab_in_workflow',
             'coordinates',
+            'is_edit_all_zone',
         ];
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let total_in_runtime = 1;
@@ -1855,36 +1754,31 @@ class NodeSubmitHandle {
                     let modalCollab = row.querySelector('.modal-collab');
                     if (dataRow?.['is_system'] === true) { // SYSTEM NODES
                         if (dataRow?.['code'] === 'initial') {
+                            let initialArea = modalCollab.querySelector('.collab-initial-area');
                             // check data actions
                             if (dataRow['actions'].length <= 0) {
                                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
                                 return false
                             }
-                            let tableInitial = modalCollab.querySelector('.table-initial-node-collaborator');
-                            if (!tableInitial.querySelector('.dataTables_empty')) {
-                                for (let t = 0; t < tableInitial.tBodies[0].rows.length; t++) {
-                                    let rowInit = tableInitial.tBodies[0].rows[t];
-                                    let zoneAllData = rowInit.querySelector('.checkbox-node-zone-all');
-                                    if (zoneAllData) {
-                                        if (zoneAllData.checked === true) {
-                                            dataRow['is_edit_all_zone'] = true;
-                                            dataRow['zone_initial_node'] = [];
-                                        } else {
-                                            dataRow['is_edit_all_zone'] = false;
-                                            let zone_initial_node = [];
-                                            for (let eleChecked of rowInit.querySelectorAll('.checkbox-node-zone:checked')) {
-                                                zone_initial_node.push(parseInt($(eleChecked).attr('data-id')));
-                                            }
-                                            dataRow['zone_initial_node'] = zone_initial_node;
-                                        }
+                            let zoneAllData = initialArea.querySelector('.checkbox-node-zone-all');
+                            if (zoneAllData) {
+                                if (zoneAllData.checked === true) {
+                                    dataRow['is_edit_all_zone'] = true;
+                                    dataRow['zone_initial_node'] = [];
+                                } else {
+                                    dataRow['is_edit_all_zone'] = false;
+                                    let zone_initial_node = [];
+                                    for (let eleChecked of initialArea.querySelectorAll('.checkbox-node-zone:checked')) {
+                                        zone_initial_node.push(parseInt($(eleChecked).attr('data-id')));
                                     }
-                                    let zone_hidden_initial_node = [];
-                                    for (let eleChecked of rowInit.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
-                                        zone_hidden_initial_node.push(parseInt($(eleChecked).attr('data-id')));
-                                    }
-                                    dataRow['zone_hidden_initial_node'] = zone_hidden_initial_node;
+                                    dataRow['zone_initial_node'] = zone_initial_node;
                                 }
                             }
+                            let zone_hidden_initial_node = [];
+                            for (let eleChecked of initialArea.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
+                                zone_hidden_initial_node.push(parseInt($(eleChecked).attr('data-id')));
+                            }
+                            dataRow['zone_hidden_initial_node'] = zone_hidden_initial_node;
                         } else if (dataRow?.['code'] === 'approved') {
                             dataRow['order'] = (table[0].tBodies[0].rows.length - 1);
                         } else if (dataRow?.['code'] === 'completed') {

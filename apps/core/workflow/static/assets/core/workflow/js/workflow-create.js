@@ -134,26 +134,31 @@ $(function () {
         });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-all', function () {
-            // if (this.checked === true) {
-            //     NodeValidateHandle.validateZoneEditAll(this);
-            // }
-            // let eleZoneDD = this.closest('.dropdown-zone');
-            // for (let eleCheckbox of eleZoneDD.querySelectorAll('.checkbox-node-zone')) {
-            //     eleCheckbox.checked = this.checked;
-            // }
+            if (this.checked === true) {
+                NodeValidateHandle.validateZoneEditAll(this);
+            }
+            if (this.checked === true) {
+                let eleZoneDD = this.closest('.dropdown-zone');
+                for (let eleCheckbox of eleZoneDD.querySelectorAll('.checkbox-node-zone')) {
+                    eleCheckbox.checked = false;
+                }
+            }
+
             // NodeLoadDataHandle.loadZoneShow(this);
         });
 
-        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden-all', function () {
-            // if (this.checked === true) {
-            //     NodeValidateHandle.validateZoneHiddenAll(this);
-            // }
-            // let collabArea = this.closest('.collab-area');
-            // for (let eleCheckbox of collabArea.querySelectorAll('.checkbox-node-zone-hidden')) {
-            //     eleCheckbox.checked = this.checked;
-            // }
-            // NodeLoadDataHandle.loadZoneHiddenShow(this);
-        });
+        // NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden-all', function () {
+        //     if (this.checked === true) {
+        //         NodeValidateHandle.validateZoneHiddenAll(this);
+        //     }
+        //     if (this.checked === true) {
+        //         let collabArea = this.closest('.collab-area');
+        //         for (let eleCheckbox of collabArea.querySelectorAll('.checkbox-node-zone-hidden')) {
+        //             eleCheckbox.checked = false;
+        //         }
+        //     }
+        //     NodeLoadDataHandle.loadZoneHiddenShow(this);
+        // });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone', function () {
             if (this.checked === true) {

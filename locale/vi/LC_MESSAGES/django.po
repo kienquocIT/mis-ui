@@ -5580,3 +5580,55 @@ msgstr "Nhập kho một phần"
 #
 msgid "Received"
 msgstr "Đã nhập kho"
+
+#
+msgid "Allows uploading multiple files"
+msgstr "Cho phép tải lên nhiều tệp"
+
+#
+msgid "No files uploaded"
+msgstr "Không có tệp được tải lên"
+
+#
+msgid "Drag & drop Files here"
+msgstr "Kéo và thả tệp ở đây"
+
+#
+msgid "Open the file Browser"
+msgstr "Chọn tệp trên máy tính"
+
+#
+msgid "Open the file Cloud"
+msgstr "Chọn tệp trên kho tệp"
+
+#
+msgid "File upload size exceeds the limit."
+msgstr "Kích thước tệp tải lên vượt quá giới hạn."
+
+#
+msgid "File upload type is not support."
+msgstr "Kiểu tập tin tải lên không hỗ trợ."
+
+#
+msgid "Allow uploading files of"
+msgstr "Cho phép tải lên các tập tin của"
+
+#
+msgid "The file size must be smaller than"
+msgstr "Kích thước tập tin phải nhỏ hơn"
+
+#
+msgid "All changes will not be saved until the document is saved."
+msgstr "Tất cả các thay đổi sẽ không được lưu cho đến khi tài liệu được lưu."
+
+#
+msgid "Has exception in upload progress"
+msgstr "Xảy ra lỗi trong quá trình tải tập tin lên"
+
+#
+msgid "Skip add exist file"
+msgstr "Bỏ qua thêm tập tin vì đã sẵn sàng"
+
+#
+msgid "Descriptions of file"
+msgstr "Mô tả của tập tin"

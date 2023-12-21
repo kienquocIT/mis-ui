@@ -137,6 +137,14 @@ $(document).ready(function(){
                 },
             })
             if (data.system_status >= 2) $('#idxRealAction').remove()
+
+            // load attachments
+            new $x.cls.file(
+                $('#attachment')
+            ).init({
+                enable_edit: false,
+                data: data.attachment,
+            })
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )

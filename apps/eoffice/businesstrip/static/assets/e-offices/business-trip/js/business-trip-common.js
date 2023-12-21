@@ -21,6 +21,7 @@ class expenseItemTable {
         if ($tbl.hasClass('dataTable')) $tbl.DataTable().clear().rows.add(dataList).draw()
         else
             $tbl.DataTableDefault({
+                styleDom: 'hide-foot',
                 data: dataList,
                 ordering: false,
                 paginate: false,
@@ -283,10 +284,9 @@ $(document).ready(function () {
             'pretax_amount': parseInt(formData.pretax_amount),
             'taxes': parseInt(formData.taxes),
             'total_amount': parseInt(formData.total_amount),
-            'expense_items': formData.expense_items
+            'expense_items': formData.expense_items,
+            'attachment': $x.cls.file.get_val(formData.attachment, []),
         }
-        const $attElm = $('[name="attachment"]').val()
-        if ($attElm) data.attachment = [...$attElm]
         if (frm.dataMethod.toLowerCase() === 'post') data.system_status = 1
 
         $.fn.callAjax2({

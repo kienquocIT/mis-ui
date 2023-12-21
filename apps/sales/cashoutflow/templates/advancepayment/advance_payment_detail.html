@@ -38,6 +38,7 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
+            data-trans-unplanned="{% trans 'Unplanned expenses' %}"
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
             data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
             data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"
@@ -266,7 +267,7 @@
                                     <div class="row mt-3 mb-3">
                                         <div class="col-12">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="money-gave" checked disabled>
+                                                <input type="checkbox" class="form-check-input" id="money-gave">
                                                 <label class="text-primary">{% trans "Money gave/transferred" %}</label>
                                             </div>
                                         </div>
@@ -279,7 +280,8 @@
                     </div>
                     <div class="tab-pane fade" id="tab_plan">
                         <div class="row" style="position: relative; overflow: auto; width: 100%;">
-                            <table id="tab_plan_datatable" hidden class="table nowrap w-100" data-method="GET"
+                            <div class="col-12">
+                                <table id="tab_plan_datatable" hidden class="table nowrap w-100" data-method="GET"
                                    data-url-payment-cost-items="{% url 'PaymentCostItemsListAPI' %}"
                                    data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
                                    data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
@@ -305,6 +307,7 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-12">

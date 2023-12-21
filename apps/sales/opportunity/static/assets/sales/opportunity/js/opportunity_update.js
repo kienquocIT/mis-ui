@@ -58,6 +58,7 @@ $(document).ready(function () {
         },
         (errs) => {}
     )
+
     let list_stage_condition = []
     let config_is_input_rate = null;
     $x.fn.showLoadingPage()
@@ -65,7 +66,7 @@ $(document).ready(function () {
         (results) => {
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
-            console.log(opportunity_detail_data)
+
             const config = results[1];
             const config_is_select_stage = config.is_select_stage;
             const config_is_AM_create = config.is_account_manager_create;
@@ -75,6 +76,7 @@ $(document).ready(function () {
             }
             let paramString = {}
 
+            console.log(opportunity_detail_data)
             async function loadDetail(opportunity_detail) {
                 $x.fn.renderCodeBreadcrumb(opportunity_detail);
 
@@ -159,7 +161,19 @@ $(document).ready(function () {
                 $.fn.initMaskMoney2();
             }
 
-            loadDetail(opportunity_detail_data).then();
+            loadDetail(opportunity_detail_data).then(function () {
+                autoLoadStage(
+                    true,
+                    false,
+                    list_stage_condition,
+                    list_stage,
+                    condition_sale_oder_approved,
+                    condition_is_quotation_confirm,
+                    condition_sale_oder_delivery_status,
+                    config_is_input_rate,
+                    dict_stage
+                )
+            });
 
             // even in tab product
 
@@ -661,7 +675,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-new-call-log').hide();
-                                    callAjaxToLoadTimeLineList();
+                                    loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
@@ -712,7 +726,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
-                            callAjaxToLoadTimeLineList();
+                            loadDblActivityLogs();
                         }
                     },
                     (errs) => {
@@ -805,7 +819,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#send-email').hide();
-                                    callAjaxToLoadTimeLineList();
+                                    loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
@@ -862,7 +876,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
-                            callAjaxToLoadTimeLineList();
+                            loadDblActivityLogs();
                         }
                     },
                     (errs) => {
@@ -1003,6 +1017,8 @@ $(document).ready(function () {
 
                 frm.dataForm['employee_attended_list'] = employee_attended_list;
                 frm.dataForm['customer_member_list'] = customer_member_list;
+                frm.dataForm['meeting_from_time'] = frm.dataForm['meeting_from_time'].split(' ')[0]+':00';
+                frm.dataForm['meeting_to_time'] = frm.dataForm['meeting_to_time'].split(' ')[0]+':00';
 
                 return {
                     url: frm.dataUrl,
@@ -1023,7 +1039,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     $('#create-meeting').hide();
-                                    callAjaxToLoadTimeLineList();
+                                    loadDblActivityLogs();
                                 }
                             },
                             (errs) => {
@@ -1076,7 +1092,10 @@ $(document).ready(function () {
                         }
                         detail_meeting_customer_member_slb.prop('disabled', true);
 
-                        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
+                        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]).prop('readonly', true);
+                        moment.locale('en')
+                        $('#detail-meeting #meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
+                        $('#detail-meeting #meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
 
                         $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
@@ -1091,7 +1110,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
-                            callAjaxToLoadTimeLineList();
+                            loadDblActivityLogs();
                         }
                     },
                     (errs) => {
@@ -1577,7 +1596,7 @@ $(document).ready(function () {
                                     $('body').append(elm)
                                 }
                                 if ($('.current-create-task').length) $('.cancel-task').trigger('click')
-                                callAjaxToLoadTimeLineList();
+                                loadDblActivityLogs();
                             }
                         },
                         (error) => {
@@ -1719,276 +1738,6 @@ $(document).ready(function () {
                         })
             }
 
-            function loadTimelineList(data_timeline_list) {
-
-        let ap_mapped_opp = $.fn.callAjax2({
-            url: $('#script-url').attr('data-url-ap-list') + `?opportunity_mapped_id=${pk}`,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_list')) {
-                    return data?.['advance_payment_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        let payment_mapped_opp = $.fn.callAjax2({
-            url: $('#script-url').attr('data-url-payment-list') + `?opportunity_mapped_id=${pk}`,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('payment_list')) {
-                    return data?.['payment_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([ap_mapped_opp, payment_mapped_opp]).then(
-            async (results) => {
-                let ap_id_list = []
-                for (let i = 0; i < results[0].length; i++) {
-                    let temp = results[0][i];
-                    ap_id_list.push(temp?.['id'])
-                    data_timeline_list.push(
-                        {
-                            "id": temp?.['id'],
-                            "type": "ap",
-                            "title": "Advance payment",
-                            "subject": temp?.['title'],
-                            "date": temp?.['date_created']
-                        }
-                    )
-                }
-
-                if (ap_id_list.length > 0) {
-                    let payment_mapped_opp = await $.fn.callAjax2({
-                        url: $('#script-url').attr('data-url-return-list') + `?advance_payment_id_list=${ap_id_list}`,
-                        method: 'GET'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && typeof data === 'object' && data.hasOwnProperty('return_advances')) {
-                                return data?.['return_advances'];
-                            }
-                            return {};
-                        },
-                        (errs) => {
-                            console.log(errs);
-                        }
-                    )
-
-                    for (let i = 0; i < payment_mapped_opp.length; i++) {
-                        let temp = payment_mapped_opp[i];
-                        data_timeline_list.push(
-                            {
-                                "id": temp?.['id'],
-                                "type": "ra",
-                                "title": "Return advance",
-                                "subject": temp?.['title'],
-                                "date": temp?.['date_created']
-                            }
-                        )
-                    }
-                }
-
-                for (let i = 0; i < results[1].length; i++) {
-                    let temp = results[1][i];
-                    data_timeline_list.push(
-                        {
-                            "id": temp?.['id'],
-                            "type": "pm",
-                            "title": "Payment",
-                            "subject": temp?.['title'],
-                            "date": temp?.['date_created']
-                        }
-                    )
-                }
-                data_timeline_list.sort((a, b) => new Date(b.date) - new Date(a.date));
-                let dtb = $('#table-timeline');
-                dtb.DataTable().clear().destroy();
-                dtb.DataTableDefault({
-                    pageLength: 5,
-                    dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
-                    data: data_timeline_list,
-                    columns: [
-                        {
-                            data: 'activity',
-                            className: 'wrap-text w-25',
-                            render: (data, type, row, meta) => {
-                                let txt = '';
-                                if (row.type === 'task') {
-                                    txt = `<i class="fa-solid fa-list-check"></i>`
-                                } else if (row.type === 'call') {
-                                    txt = `<i class="bi bi-telephone-fill"></i>`
-                                } else if (row.type === 'email') {
-                                    txt = `<i class="bi bi-envelope-fill"></i>`
-                                } else if (row.type === 'meeting') {
-                                    txt = `<i class="bi bi-person-workspace"></i>`
-                                } else if (row.type === 'document') {
-                                    txt = `<i class="bi bi-file-earmark-fill"></i>`
-                                } else if (row.type === 'ap') {
-                                    txt = `<i class="bi bi-piggy-bank-fill"></i>`
-                                } else if (row.type === 'pm') {
-                                    txt = `<i class="bi bi-credit-card-fill"></i>`
-                                } else if (row.type === 'ra') {
-                                    txt = `<i class="bi bi-piggy-bank"></i>`
-                                }
-                                return `<span>${txt}&nbsp;&nbsp;${row.title}</span>`;
-                            }
-                        },
-                        {
-                            data: 'subject',
-                            className: 'wrap-text w-40',
-                            render: (data, type, row, meta) => {
-                                let modal_detail_target = '';
-                                let modal_detail_class = '';
-                                if (row.type === 'call') {
-                                    modal_detail_target = '#detail-call-log';
-                                    modal_detail_class = 'detail-call-log-button';
-                                } else if (row.type === 'email') {
-                                    modal_detail_target = '#detail-send-email';
-                                    modal_detail_class = 'detail-email-button';
-                                } else if (row.type === 'meeting') {
-                                    modal_detail_target = '#detail-meeting';
-                                    modal_detail_class = 'detail-meeting-button';
-                                }
-                                if (['call', 'email', 'meeting', 'task'].includes(row.type)) {
-                                    return `<a data-type="${row.type}" class="${modal_detail_class} text-primary link-primary underline_hover"
-                                       href="" data-bs-toggle="modal" data-id="${row.id}" data-bs-target="${modal_detail_target}">
-                                        <span><b>${row.subject}</b></span>
-                                    </a>`
-                                }
-                                else {
-                                    if (row.type === 'ap') {
-                                        const link = $('#script-url').attr('data-url-ap-detail').format_url_with_uuid(row.id)
-                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
-                                            <span><b>${row.subject}</b></span>
-                                        </a>`
-                                    }
-                                    if (row.type === 'pm') {
-                                        const link = $('#script-url').attr('data-url-payment-detail').format_url_with_uuid(row.id)
-                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
-                                            <span><b>${row.subject}</b></span>
-                                        </a>`
-                                    }
-                                    if (row.type === 'ra') {
-                                        const link = $('#script-url').attr('data-url-return-detail').format_url_with_uuid(row.id)
-                                        return `<a data-type="${row.type}" target="_blank" class="text-primary link-primary underline_hover" href="${link}">
-                                            <span><b>${row.subject}</b></span>
-                                        </a>`
-                                    }
-                                    return ``
-                                }
-                            }
-                        },
-                        {
-                            data: 'date',
-                            className: 'wrap-text w-15',
-                            render: (data, type, row, meta) => {
-                                return row.date.split(' ')[0]
-                            }
-                        },
-                        {
-                            data: 'action',
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                let delete_btn_class = '';
-                                if (row.type === 'call') {
-                                    delete_btn_class = 'delete-call-log-button';
-                                } else if (row.type === 'email') {
-                                    delete_btn_class = 'delete-email-button';
-                                } else if (row.type === 'meeting') {
-                                    delete_btn_class = 'delete-meeting-button';
-                                }
-
-                                if (delete_btn_class) {
-                                    return `<button type="button" data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-danger btn-xs flush-soft-hover ${delete_btn_class}"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
-                                }
-                                else {
-                                    return `<button type="button" class="btn btn-icon btn-rounded btn-flush-secondary btn-xs flush-soft-hover disabled"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
-                                }
-                            }
-                        },
-                    ],
-                    rowCallback: function (row, data) {
-                        // click show task
-                        $('.view_task_log', row).off().on('click', function (e) {
-                            e.stopPropagation();
-                            displayTaskView(this.dataset.url)
-                        })
-                    },
-                });
-            })
-    }
-
-            function callAjaxToLoadTimeLineList() {
-                $.fn.callAjax($('#table-timeline').attr('data-url-logs_list'), 'GET', {'opportunity': pk})
-                    .then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let activity_logs_list = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('activity_logs_list')) {
-                                data?.['activity_logs_list'].map(function (item) {
-                                    if (Object.keys(item?.['task']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['task']?.['id'],
-                                            'type': item?.['task']?.['activity_type'],
-                                            'title': item?.['task']?.['activity_name'],
-                                            'subject': item?.['task']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    } else if (Object.keys(item?.['call_log']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['call_log']?.['id'],
-                                            'type': item?.['call_log']?.['activity_type'],
-                                            'title': item?.['call_log']?.['activity_name'],
-                                            'subject': item?.['call_log']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    } else if (Object.keys(item?.['email']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['email']?.['id'],
-                                            'type': item?.['email']?.['activity_type'],
-                                            'title': item?.['email']?.['activity_name'],
-                                            'subject': item?.['email']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    } else if (Object.keys(item?.['meeting']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['meeting']?.['id'],
-                                            'type': item?.['meeting']?.['activity_type'],
-                                            'title': item?.['meeting']?.['activity_name'],
-                                            'subject': item?.['meeting']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    } else if (Object.keys(item?.['document']).length > 0) {
-                                        activity_logs_list.push({
-                                            'id': item?.['document']?.['id'],
-                                            'type': item?.['document']?.['activity_type'],
-                                            'title': item?.['document']?.['activity_name'],
-                                            'subject': item?.['document']?.['subject'],
-                                            'date': item?.['date_created'].split(' ')[0],
-                                        })
-                                    }
-                                });
-                            }
-                            loadTimelineList(activity_logs_list)
-                        }
-                    })
-            }
-
-            // callAjaxToLoadTimeLineList();
-
             function loadDblActivityLogs() {
                 let $table = table_timeline;
                 let urlMapApp = {
@@ -2018,7 +1767,9 @@ $(document).ready(function () {
                     3: `<i class="far fa-envelope"></i>`,
                     4: `<i class="fas fa-users"></i>`,
                 }
+                $table.DataTable().clear().destroy()
                 $table.DataTableDefault({
+                    rowIdx: true,
                     ajax: {
                         url: $table.attr('data-url-logs_list'),
                         type: 'GET',
@@ -2035,6 +1786,12 @@ $(document).ready(function () {
                     columns: [
                         {
                             targets: 0,
+                            render: () => {
+                                return ``
+                            }
+                        },
+                        {
+                            targets: 1,
                             render: (data, type, row) => {
                                 if (row?.['log_type'] === 0) {
                                     if (row?.['app_code']) {
@@ -2061,33 +1818,38 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            targets: 1,
+                            targets: 2,
                             render: (data, type, row) => {
                                 let link = '';
+                                let title = '';
                                 if (row?.['app_code'] && row?.['doc_id']) {
                                     link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
+                                    title = row?.['title'];
+                                    return `<a href="${link}" target="_blank"><p>${title}</p></a>`;
                                 }
-                                let title = row?.['title'] ? row?.['title'] : '';
                                 if (row?.['log_type'] === 1) {
                                     title = row?.['task']?.['subject'];
+                                    return `<a><p>${title}</p></a>`;
                                 } else if (row?.['log_type'] === 2) {
                                     title = row?.['call_log']?.['subject'];
+                                    return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-call-log" class="detail-call-log-button text-primary" data-id="${row?.['call_log']['id']}"><p>${title}</p></a>`;
                                 } else if (row?.['log_type'] === 3) {
                                     title = row?.['email']?.['subject'];
+                                    return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-send-email" class="detail-email-button text-primary" data-id="${row?.['email']['id']}"><p>${title}</p></a>`;
                                 } else if (row?.['log_type'] === 4) {
                                     title = row?.['meeting']?.['subject'];
+                                    return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-meeting" class="detail-meeting-button text-primary" data-id="${row?.['meeting']['id']}"><p>${title}</p></a>`;
                                 }
-                                return `<a href="${link}" target="_blank"><p>${title}</p></a>`;
                             }
                         },
                         {
-                            targets: 2,
+                            targets: 3,
                             render: (data, type, row) => {
                                 return typeMapIcon[row?.['log_type']];
                             }
                         },
                         {
-                            targets: 3,
+                            targets: 4,
                             render: (data, type, row) => {
                                 return $x.fn.displayRelativeTime(row?.['date_created'], {
                                     'outputFormat': 'DD-MM-YYYY',
@@ -2095,9 +1857,18 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            targets: 4,
-                            render: () => {
-                                return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                            targets: 5,
+                            render: (data, type, row) => {
+                                if (row?.['log_type'] === 2) {
+                                    return `<button type="button" data-id="${row?.['call_log']['id']}" class="btn btn-icon btn-rounded flush-soft-hover delete-call-log-button"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                                } else if (row?.['log_type'] === 3) {
+                                    return `<button type="button" data-id="${row?.['email']['id']}" class="btn btn-icon btn-rounded flush-soft-hover delete-email-button"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                                } else if (row?.['log_type'] === 4) {
+                                    return `<button type="button" data-id="${row?.['meeting']['id']}" class="btn btn-icon btn-rounded flush-soft-hover delete-meeting-button"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                                }
+                                else {
+                                    return ``
+                                }
                             }
                         },
                     ],

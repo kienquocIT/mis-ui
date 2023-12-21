@@ -1,10 +1,12 @@
-let check_tab_inventory =  $('#check-tab-inventory');
-let check_tab_sale =  $('#check-tab-sale');
-let check_tab_purchase =  $('#check-tab-purchase');
+let check_tab_inventory = $('#check-tab-inventory');
+let check_tab_sale = $('#check-tab-sale');
+let check_tab_purchase = $('#check-tab-purchase');
 let generalUomGroupEle = $('#general-select-box-uom-group');
 let generalProductTypeEle = $('#general-select-box-product-type');
 let generalProductCateEle = $('#general-select-box-product-category');
 let saleDefaultUomEle = $('#sale-select-box-default-uom');
+let public_website_Ele = $('#is_publish_website')
+let price_list_for_online_sale_Ele = $('#price_list_for_sale_online')
 let purchaseDefaultUomEle = $('#purchase-select-box-default-uom');
 let inventoryDefaultUomEle = $('#inventory-select-box-uom-name');
 let saleProductTaxEle = $('#sale-select-box-tax-code');
@@ -16,6 +18,7 @@ let heightEle = $('#height');
 let volumeEle = $('#volume');
 let weightEle = $('#weight');
 let productImageEle = $('#product-image');
+let available_notify_checkboxEle = $('#available_notify_checkbox')
 const currency_list = JSON.parse($('#currency_list').text());
 let currency_primary = null;
 for (let i = 0; i < currency_list.length; i++) {
@@ -59,8 +62,7 @@ check_tab_inventory.change(function () {
     $('#tab_inventory input, #tab_inventory select').val('');
     if (check_tab_inventory.is(':checked')) {
         $('#label-dimension').addClass('required');
-    }
-    else {
+    } else {
         $('#label-dimension').removeClass('required');
     }
 });
@@ -74,6 +76,10 @@ check_tab_purchase.change(function () {
     disabledTab(this.checked, '#link-tab-purchase', '#tab_purchase');
     $('#tab_purchase input, #tab_purchase select').val('');
 });
+
+available_notify_checkboxEle.on('change', function () {
+    $('#less_than_number').val('').prop('disabled', !$(this).prop('checked'))
+})
 
 $(document).on("change", '#length', function () {
     let length = lengthEle.val();
@@ -101,26 +107,34 @@ $(document).on("change", '#height', function () {
 
 $(document).on('change', '.select_price_list', function () {
     if ($(this).is(':checked') === true) {
-        $(this).closest('.select_price_list_row').find('.input_price_list').attr('disabled', false);
-    }
-    else {
-        $(this).closest('.select_price_list_row').find('.input_price_list').attr('disabled', true);
-        $(this).closest('.select_price_list_row').find('.input_price_list').attr('value', '');
-        $(this).closest('.select_price_list_row').find('.input_price_list').val('');
+        $(this).closest('tr').find('.input_price_list').attr('disabled', false);
+    } else {
+        $(this).closest('tr').find('.input_price_list').attr('disabled', true);
+        $(this).closest('tr').find('.input_price_list').attr('value', '');
+        $(this).closest('tr').find('.input_price_list').val('');
     }
 })
 
 $(document).on('change', '.input_price_list', function () {
     let this_data_id = $(this).attr('data-id');
     let this_data_value = $(this).attr('value');
+    let sale_product_price_list = []
     $('.ul-price-list').find('.input_price_list').each(function () {
         if ($(this).attr('data-source') === this_data_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
             let value = parseFloat(this_data_value) * parseFloat($(this).attr('data-factor'));
             $(this).attr('value', value);
             loadPriceForChild($(this).attr('data-id'), value);
         }
+
+        let price_list_id = $(this).attr('data-id');
+        let price_list_value = $(this).attr('value');
+        if (price_list_id && price_list_value) {
+            sale_product_price_list.push(price_list_id);
+        }
     })
     $.fn.initMaskMoney2();
+
+    loadSalePriceListForSaleOnline(null, sale_product_price_list)
 })
 
 function disabledTab(check, link_tab, id_tab) {
@@ -199,45 +213,135 @@ function loadSaleTaxCode(tax_list) {
     })
 }
 
-async function loadPriceList() {
-    let ele = $('#sale-select-price-list');
-    await $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                let html = ``
-                for (let i = 0; i < data.price_list.length; i++) {
-                    let item = data.price_list[i];
-                    let checked = '';
-                    let disabled = '';
-                    let is_default = 'disabled';
-                    let required = '';
-                    if (item.is_default) {
-                        is_default = '';
-                        required = 'required';
-                    }
-                    if (item.is_default || (item?.['price_list_mapped'] !== null && item.auto_update === true)) {
-                        checked = 'checked';
-                        disabled = 'disabled';
-                    }
-                    html += `<div class="row select_price_list_row">
-                        <div class="col-6">
-                            <div class="form-check mt-2">
-                                <input class="form-check-input select_price_list" type="checkbox" data-id="${item.id}" ${checked} ${disabled}>
-                                <label class="${required}">` + item.title + `</label>
-                            </div>
-                        </div>
-                        <div class="col-6 form-group">
-                            <input data-is-default="${item.is_default}" ${is_default} data-source="${item?.['price_list_mapped']}" data-auto-update="${item.auto_update}" data-factor="${item.factor}" data-id="${item.id}" data-return-type="number" type="text" class="form-control mask-money input_price_list">
-                        </div>
-                    </div>`;
+public_website_Ele.on('change', function () {
+    if (!$(this).prop('checked')) {
+        price_list_for_online_sale_Ele.val('').trigger('change')
+        price_list_for_online_sale_Ele.prop('disabled', true)
+    } else {
+        price_list_for_online_sale_Ele.prop('disabled', false)
+    }
+})
+
+function loadSalePriceListForSaleOnline(data, filter = []) {
+    price_list_for_online_sale_Ele.initSelect2({
+        allowClear: true,
+        ajax: {
+            url: price_list_for_online_sale_Ele.attr('data-url'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (filter.includes(resp.data[keyResp][i].id)) {
+                    result.push(resp.data[keyResp][i])
                 }
-                ele.find('.ul-price-list').html(html);
             }
+            return result;
+        },
+        data: (data ? data : null),
+        keyResp: 'price_list',
+        keyId: 'id',
+        keyText: 'title',
+    })
+}
+
+function findObjectById(data, targetId) {
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].id === targetId) {
+            return data[i]?.['price'];
         }
-    }, (errs) => {
-        console.log(errs)
-    },)
+    }
+    return '';
+}
+
+function loadPriceList(price_list_from_detail, option) {
+    let disabled_all_input = ''
+    if (option === 'detail') {
+        disabled_all_input = 'disabled readonly'
+    }
+    let tbl = $('#table_price_list');
+    tbl.DataTableDefault({
+        paging: false,
+        useDataServer: true,
+        reloadCurrency: true,
+        rowIdx: true,
+        ajax: {
+            url: tbl.attr('data-url'),
+            type: tbl.attr('data-method'),
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let price_list_data = []
+                    let resp_price_list = resp.data['price_list'] ? resp.data['price_list'] : []
+                    let general_price_list_id = null;
+                    for (let i = 0; i < resp_price_list.length; i++) {
+                        let item = resp_price_list[i];
+                        let price_value = findObjectById(price_list_from_detail, item?.['id'])
+                        let checked = '';
+                        let disabled = '';
+                        let disabled_input = 'disabled';
+                        let is_default = false;
+                        let required = '';
+                        if (item.is_default) {
+                            general_price_list_id = item.id
+                            disabled_input = ''
+                            is_default = true;
+                            required = 'required';
+                        }
+                        if (item.is_default || (item?.['price_list_mapped'] === general_price_list_id && item?.['auto_update'] === true)) {
+                            checked = 'checked';
+                            disabled = 'disabled';
+                        }
+                        let hidden = '';
+                        if (item?.['price_list_mapped'] !== null) {
+                            hidden = 'hidden';
+                        }
+                        if (price_value) {
+                            checked = 'checked';
+                        }
+                        price_list_data.push({
+                            'hidden': hidden,
+                            'checked': checked,
+                            'disabled': disabled,
+                            'is_default': is_default,
+                            'disabled_input': disabled_input,
+                            'required': required,
+                            'id': item?.['id'],
+                            'title': item?.['title'],
+                            'price_value': price_value,
+                            'price_list_mapped': item?.['price_list_mapped'],
+                            'auto_update': item?.['auto_update'],
+                            'factor': item?.['factor']
+                        })
+                    }
+                    return price_list_data;
+                }
+            }
+        },
+        columns: [
+            {
+                className: 'wrap-text w-10',
+                'render': () => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text w-10',
+                render: (data, type, row) => {
+                    return `<input ${disabled_all_input} ${row.hidden} class="select_price_list" type="checkbox" data-id="${row.id}" ${row.checked} ${row.disabled}>`
+                }
+            }, {
+                className: 'wrap-text w-40',
+                render: (data, type, row) => {
+                    return `<label class="${row.required} form-label">${row.title}</label>`
+                }
+            }, {
+                className: 'wrap-text w-40',
+                render: (data, type, row) => {
+                    return `<input ${disabled_all_input} value="${row.price_value}" data-is-default="${row.is_default}" ${row.disabled_input} data-source="${row?.['price_list_mapped']}" data-auto-update="${row.auto_update}" data-factor="${row.factor}" data-id="${row.id}" data-return-type="number" type="text" class="form-control mask-money input_price_list">`
+                }
+            }
+        ],
+    })
 }
 
 function loadSaleDefaultUom(data) {
@@ -407,8 +511,7 @@ function loadWareHouseListDetail(product_warehouse_detail) {
                         } else {
                             return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
                         }
-                    }
-                    else {
+                    } else {
                         return `<span>0</span>`;
                     }
                 }
@@ -530,8 +633,7 @@ function loadWareHouseOverViewDetail(data_overview) {
                 render: (data, type, row) => {
                     if (row.sum_stock > 0) {
                         return `<span style="font-weight: bolder" class="text-primary">${row.sum_stock}</span>`
-                    }
-                    else {
+                    } else {
                         return `<span style="font-weight: bolder" class="text-danger">${row.sum_stock}</span>`
                     }
                 }
@@ -542,8 +644,7 @@ function loadWareHouseOverViewDetail(data_overview) {
                 render: (data, type, row) => {
                     if (row.sum_wait_for_delivery > 0) {
                         return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_delivery}</span>`
-                    }
-                    else {
+                    } else {
                         return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_delivery}</span>`
                     }
                 }
@@ -554,8 +655,7 @@ function loadWareHouseOverViewDetail(data_overview) {
                 render: (data, type, row) => {
                     if (row.sum_wait_for_receipt > 0) {
                         return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_receipt}</span>`
-                    }
-                    else {
+                    } else {
                         return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_receipt}</span>`
                     }
                 }
@@ -566,8 +666,7 @@ function loadWareHouseOverViewDetail(data_overview) {
                 render: (data, type, row) => {
                     if (row.sum_available_value > 0) {
                         return `<span style="font-weight: bolder" class="text-primary">${row.sum_available_value}</span>`
-                    }
-                    else {
+                    } else {
                         return `<span style="font-weight: bolder" class="text-danger">${row.sum_available_value}</span>`
                     }
                 }
@@ -634,32 +733,32 @@ function dataTableSerial(data) {
                 targets: 2,
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['expire_date'], {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
                 }
             },
             {
                 targets: 3,
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['manufacture_date'], {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
                 }
             },
             {
                 targets: 4,
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['warranty_start'], {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
                 }
             },
             {
                 targets: 5,
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['warranty_end'], {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
                 }
             },
         ],
@@ -698,19 +797,16 @@ function getDataForm() {
     if (check_tab_sale.is(':checked') === true) {
         data['product_choice'].push(0)
         let sale_product_price_list = [];
-        $('.ul-price-list').find('.select_price_list').each(function () {
-            let selected = $(this).is(':checked');
-            if (selected) {
-                let price_list_id = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-id');
-                let price_list_value = $(this).closest('.select_price_list_row').find('.input_price_list').attr('value');
-                let is_auto_update = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-auto-update');
-                if (price_list_id && price_list_value) {
-                    sale_product_price_list.push({
-                        'price_list_id': price_list_id,
-                        'price_list_value': price_list_value,
-                        'is_auto_update': is_auto_update
-                    });
-                }
+        $('.input_price_list').each(function () {
+            let price_list_id = $(this).attr('data-id');
+            let price_list_value = $(this).attr('value');
+            let is_auto_update = $(this).attr('data-auto-update');
+            if (price_list_id && price_list_value) {
+                sale_product_price_list.push({
+                    'price_list_id': price_list_id,
+                    'price_list_value': price_list_value,
+                    'is_auto_update': is_auto_update
+                });
             }
         })
         data['sale_default_uom'] = $('#sale-select-box-default-uom option:selected').attr('value');
@@ -718,8 +814,14 @@ function getDataForm() {
         data['sale_cost'] = parseFloat($('#sale-cost').attr('value'));
         data['sale_price_list'] = sale_product_price_list;
         data['sale_currency_using'] = currency_primary;
-    }
-    else {
+
+        data['is_public_website'] = public_website_Ele.prop('checked');
+        if (public_website_Ele.prop('checked')) {
+            data['online_price_list'] = price_list_for_online_sale_Ele.val();
+        }
+        data['available_notify'] = available_notify_checkboxEle.prop('checked');
+        data['available_notify_quantity'] = $('#less_than_number').val();
+    } else {
         data['sale_default_uom'] = null;
         data['sale_tax'] = null;
         data['sale_cost'] = null;
@@ -732,8 +834,7 @@ function getDataForm() {
         data['inventory_uom'] = $('#inventory-select-box-uom-name option:selected').attr('value');
         data['inventory_level_min'] = parseFloat($('#inventory-level-min').val());
         data['inventory_level_max'] = parseFloat($('#inventory-level-max').val());
-    }
-    else {
+    } else {
         data['inventory_uom'] = null;
         data['inventory_level_min'] = null;
         data['inventory_level_max'] = null;
@@ -743,8 +844,7 @@ function getDataForm() {
         data['product_choice'].push(2)
         data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
         data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
-    }
-    else {
+    } else {
         data['purchase_default_uom'] = null;
         data['purchase_tax'] = null;
     }
@@ -755,6 +855,10 @@ function getDataForm() {
     }
 
     if (data['product_choice'].includes(0)) {
+        if (data['is_public_website'] && Object.keys(data).includes('price_list_for_sale_online')) {
+            $.fn.notifyB({description: 'Missing Price list for Sale online'}, 'failure');
+            return false
+        }
         if (!data['sale_default_uom'] || !data['sale_currency_using'] || !data['sale_tax'] || data['sale_price_list'].length < 1) {
             $.fn.notifyB({description: 'Some fields in Sale tab is missing'}, 'failure');
             return false
@@ -785,26 +889,25 @@ function getDataForm() {
         return false
     }
 
-    data['is_public_website'] = $('#is_publish_website').prop('checked');
-
     return data
 }
 
 class ProductHandle {
-    async load() {
+    load() {
         loadGeneralProductType();
         loadGeneralProductCategory();
         loadGeneralUoMGroup();
         loadSaleTaxCode();
         loadPurchaseTaxCode();
         loadSaleDefaultUom();
+        loadSalePriceListForSaleOnline(null, []);
         loadInventoryDefaultUom();
         loadPurchaseDefaultUom();
         loadBaseItemUnit();
         loadWareHouseOverView();
-        await loadPriceList();
     }
-    combinesData(frmEle, for_update=false) {
+
+    combinesData(frmEle, for_update = false) {
         let dataForm = getDataForm();
         if (dataForm) {
             let frm = new SetupFormSubmit($(frmEle));
@@ -829,95 +932,115 @@ class ProductHandle {
 function LoadDetailProduct(option) {
     let pk = $.fn.getPkDetail()
     $.fn.callAjax($('#form-update-product').data('url').format_url_with_uuid(pk), 'GET').then(
-         async (resp) => {
-             let data = $.fn.switcherResp(resp);
-             if (data) {
-                 WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
-                 let product_detail = data['product'];
-                 $.fn.compareStatusShowPageAction(data);
-                 $x.fn.renderCodeBreadcrumb(product_detail);
-                 console.log(product_detail)
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
+                let product_detail = data['product'];
+                $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(product_detail);
+                console.log(product_detail)
 
-                 $('#code').val(product_detail['code']);
-                 $('#title').val(product_detail['title']);
-                 $('#description').val(product_detail['description']);
+                $('#code').val(product_detail['code']);
+                $('#title').val(product_detail['title']);
+                $('#description').val(product_detail['description']);
 
-                 if (product_detail['product_choice'].includes(0)) {
-                     $('#check-tab-sale').attr('checked', true);
-                     $('#link-tab-sale').removeClass('disabled');
-                 }
+                if (product_detail['product_choice'].includes(0)) {
+                    $('#check-tab-sale').attr('checked', true);
+                    $('#link-tab-sale').removeClass('disabled');
+                }
 
-                 if (product_detail['product_choice'].includes(1)) {
-                     $('#check-tab-inventory').attr('checked', true);
-                     $('#link-tab-inventory').removeClass('disabled');
-                 }
+                if (product_detail['product_choice'].includes(1)) {
+                    $('#check-tab-inventory').attr('checked', true);
+                    $('#link-tab-inventory').removeClass('disabled');
+                }
 
-                 if (product_detail['product_choice'].includes(2)) {
-                     $('#check-tab-purchase').attr('checked', true);
-                     $('#link-tab-purchase').removeClass('disabled');
-                 }
+                if (product_detail['product_choice'].includes(2)) {
+                    $('#check-tab-purchase').attr('checked', true);
+                    $('#link-tab-purchase').removeClass('disabled');
+                }
 
-                 if (Object.keys(product_detail['general_information']).length !== 0) {
-                     let general_information = product_detail['general_information'];
-                     loadGeneralProductType(general_information['general_product_types_mapped']);
-                     loadGeneralProductCategory(general_information['product_category']);
-                     loadGeneralUoMGroup(general_information['uom_group']);
-                     $('#general-select-box-traceability-method').val(general_information['traceability_method']);
-                     if (Object.keys(general_information['product_size']).length !== 0) {
-                         lengthEle.val(general_information['product_size']['length']);
-                         widthEle.val(general_information['product_size']['width']);
-                         heightEle.val(general_information['product_size']['height']);
-                         volumeEle.val(general_information['product_size']['volume']['value']);
-                         weightEle.val(general_information['product_size']['weight']['value']);
-                     }
-                     loadBaseItemUnit();
-                 }
+                if (Object.keys(product_detail['general_information']).length !== 0) {
+                    let general_information = product_detail['general_information'];
+                    loadGeneralProductType(general_information['general_product_types_mapped']);
+                    loadGeneralProductCategory(general_information['product_category']);
+                    loadGeneralUoMGroup(general_information['uom_group']);
+                    $('#general-select-box-traceability-method').val(general_information['traceability_method']);
+                    if (Object.keys(general_information['product_size']).length !== 0) {
+                        lengthEle.val(general_information['product_size']['length']);
+                        widthEle.val(general_information['product_size']['width']);
+                        heightEle.val(general_information['product_size']['height']);
+                        volumeEle.val(general_information['product_size']['volume']['value']);
+                        weightEle.val(general_information['product_size']['weight']['value']);
+                    }
+                    loadBaseItemUnit();
+                }
 
-                 if (Object.keys(product_detail['sale_information']).length !== 0) {
-                     let sale_information = product_detail['sale_information'];
-                     loadSaleDefaultUom(sale_information['default_uom']);
-                     loadSaleTaxCode(sale_information['tax']);
-                     $('#sale-cost').attr('value', sale_information['sale_product_cost']);
-                     for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
-                         let item = sale_information['sale_product_price_list'][i];
-                         $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
-                     }
-                     $.fn.initMaskMoney2();
-                 }
+                if (Object.keys(product_detail['sale_information']).length !== 0) {
+                    let sale_information = product_detail['sale_information'];
+                    loadSaleDefaultUom(sale_information['default_uom']);
+                    loadSaleTaxCode(sale_information['tax']);
+                    $('#sale-cost').attr('value', sale_information['sale_product_cost']);
 
-                 if (Object.keys(product_detail['inventory_information']).length !== 0) {
-                     let inventory_information = product_detail['inventory_information'];
-                     loadInventoryDefaultUom(inventory_information['uom']);
-                     $('#inventory-level-min').val(inventory_information['inventory_level_min']);
-                     $('#inventory-level-max').val(inventory_information['inventory_level_max']);
+                    let price_list_filter = []
+                    for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
+                        let item = sale_information['sale_product_price_list'][i];
+                        price_list_filter.push(item.id)
+                    }
 
-                     loadWareHouseListDetail(product_detail['product_warehouse_detail']);
-                     let data_overview = [];
-                     let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
-                     let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
-                     let sum_wait_for_receipt = product_detail?.['wait_receipt_amount'] ? product_detail?.['wait_receipt_amount'] : 0;
-                     let sum_available_value = product_detail?.['available_amount'] ? product_detail?.['available_amount'] : 0;
-                     data_overview.push({
-                         'sum_stock': sum_stock,
-                         'sum_wait_for_delivery': sum_wait_for_delivery,
-                         'sum_wait_for_receipt': sum_wait_for_receipt,
-                         'sum_available_value': sum_available_value
-                     })
-                     loadWareHouseOverViewDetail(data_overview);
-                 }
+                    loadPriceList(sale_information['sale_product_price_list'], option);
 
-                 if (Object.keys(product_detail['purchase_information']).length !== 0) {
-                     let purchase_information = product_detail['purchase_information'];
-                     loadPurchaseDefaultUom(purchase_information['default_uom']);
-                     loadPurchaseTaxCode(purchase_information['tax']);
-                 }
+                    loadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
 
-                 $('#is_publish_website').prop('checked', product_detail['is_public_website'])
+                    public_website_Ele.prop('checked', product_detail['is_public_website'])
+                    if (product_detail['is_public_website']) {
+                        price_list_for_online_sale_Ele.prop('disabled', false)
+                    }
+                    else {
+                        price_list_for_online_sale_Ele.prop('disabled', true)
+                    }
 
-                 $('#data-detail-page').val(JSON.stringify(product_detail));
-                 $.fn.initMaskMoney2();
+                    available_notify_checkboxEle.prop('checked', sale_information?.['available_notify']);
+                    if (sale_information?.['available_notify']) {
+                        $('#less_than_number').prop('disabled', false).val(sale_information?.['available_notify_quantity']);
+                    }
+                    else {
+                        $('#less_than_number').prop('disabled', true).val('')
+                    }
+                    $.fn.initMaskMoney2();
+                }
 
-                 Disable(option);
-             }
-         })
+                if (Object.keys(product_detail['inventory_information']).length !== 0) {
+                    let inventory_information = product_detail['inventory_information'];
+                    loadInventoryDefaultUom(inventory_information['uom']);
+                    $('#inventory-level-min').val(inventory_information['inventory_level_min']);
+                    $('#inventory-level-max').val(inventory_information['inventory_level_max']);
+
+                    loadWareHouseListDetail(product_detail['product_warehouse_detail']);
+                    let data_overview = [];
+                    let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
+                    let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
+                    let sum_wait_for_receipt = product_detail?.['wait_receipt_amount'] ? product_detail?.['wait_receipt_amount'] : 0;
+                    let sum_available_value = product_detail?.['available_amount'] ? product_detail?.['available_amount'] : 0;
+                    data_overview.push({
+                        'sum_stock': sum_stock,
+                        'sum_wait_for_delivery': sum_wait_for_delivery,
+                        'sum_wait_for_receipt': sum_wait_for_receipt,
+                        'sum_available_value': sum_available_value
+                    })
+                    loadWareHouseOverViewDetail(data_overview);
+                }
+
+                if (Object.keys(product_detail['purchase_information']).length !== 0) {
+                    let purchase_information = product_detail['purchase_information'];
+                    loadPurchaseDefaultUom(purchase_information['default_uom']);
+                    loadPurchaseTaxCode(purchase_information['tax']);
+                }
+
+                $('#data-detail-page').val(JSON.stringify(product_detail));
+                $.fn.initMaskMoney2();
+
+                Disable(option);
+            }
+        })
 }

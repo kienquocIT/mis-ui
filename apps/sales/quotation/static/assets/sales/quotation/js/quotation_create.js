@@ -379,7 +379,7 @@ $(function () {
                     }
                     $(this).addClass('option-btn-checked');
                     // load data expense selected
-                    QuotationLoadDataHandle.loadDataProductSelect($(eleExpenseDropdown), true, true);
+                    QuotationLoadDataHandle.loadDataProductSelect($(eleExpenseDropdown));
                 }
             }
         });
@@ -738,7 +738,7 @@ $(function () {
             }
         });
 
-// Load data quotation COPY TO sale order when sale order page loaded
+// Load data quotation COPY TO sale order when sale order page CREATE loaded
         function prepareDataCopyTo() {
             let eleDataCopy = $('#data-init-quotation-copy-to');
             if (eleDataCopy) {
@@ -1034,6 +1034,13 @@ $(function () {
                 setTimeout(submitCheckPromotion, 1000);  // call again after 1s if condition not pass yet
             }
         }
+
+// WORKFLOW
+
+        // events on btn action WF zone (depend on business rule)
+        $('#btn-active-edit-zone-wf').on('click', function () {
+            QuotationCheckConfigHandle.checkConfig(true);
+        });
 
 // Main Function Submit
         function submitForm(formSubmit) {

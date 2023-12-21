@@ -7,8 +7,17 @@ function modalFormSubmit($form) {
         e.preventDefault();
         let _form = new FormData($form[0])
         let form_order = parseInt(_form.get("order"))
+
+        // setup order
+        let order = 1;
+        if (!$('#table_workflow_zone')[0].querySelector('.dataTables_empty')) {
+            let tableLen = $('#table_workflow_zone')[0].tBodies[0].rows.length;
+            order = (tableLen + 1);
+        }
+
         let temp = {
-            "order": form_order ? form_order : ZONE_INDEX + 1,
+            // "order": form_order ? form_order : ZONE_INDEX + 1,
+            "order": order,
             "title": _form.get("title"),
             "remark": _form.get("remark"),
             "property_list": _form.getAll("property_list")
@@ -16,7 +25,8 @@ function modalFormSubmit($form) {
         if (_form.get('zone_id'))
             temp['id'] = _form.get('zone_id')
         if (_form.get("order") && _form.get("order") !== undefined) {
-            let rowIdx = form_order - 1
+            // let rowIdx = form_order - 1
+            let rowIdx = form_order - 2
             $('#table_workflow_zone').DataTable().row(rowIdx).data(temp).draw()
         } else $('#table_workflow_zone').DataTable().row.add(temp).draw()
         $form[0].reset();

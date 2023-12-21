@@ -1,0 +1,93 @@
+.blog-body .nicescroll-bar {
+    padding: 0 !important;
+}
+
+.btn-LGBT {
+    border: 3px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(130deg, #ff7a18, #af002d 41.07%, #319197 76.05%);
+    clip-path: inset(0 round 4px);
+}
+
+.hk-wrapper .hk-drawer.calendar-drawer.drawer-right {
+    top: 65px;
+}
+
+.fc-daygrid-event-harness:hover {
+    cursor: pointer;
+}
+
+.fc-prev-button, .fc-next-button {
+    color: #555;
+}
+
+.fc-prev-button:hover, .fc-next-button:hover {
+    color: #8d8d8d;
+}
+
+.separator {
+    margin: 0.5rem 0 1.15rem;
+}
+
+.content-wrap {
+    margin-bottom: 2.5rem;
+}
+.title-x-scaret {
+text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: -0.35px;
+    font-size: 1rem;
+}
+
+.title-x-scaret .wrap-btn {
+    margin-left: auto;
+    height: 100%;
+    padding: 11px;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+}
+
+.wrap-btn span {
+    content: "";
+    border: solid 1px #555;
+    border-right: 0;
+    border-bottom: 0;
+    width: 8px;
+    height: 8px;
+    display: block;
+    transition: all .20s ease-in;
+    transform: rotate(45deg) translate3d(1px, 1px, 0);
+}
+
+.wrap-btn:hover span, .wrap-btn.is_active span {
+    transform: rotate(-135deg) translate3d(1px, 1px, 0);
+}
+.wrap-btn.is_active:hover span{
+    transform: rotate(45deg) translate3d(1px, 1px, 0);
+}
+.fc-header-toolbar{
+    padding:15px!important;
+}
+.filter-emp{
+    background: #000;
+    color:#fff;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 0.80rem;
+    padding: 4px 14px;
+    border:solid 1px #000;
+    margin-top: 1.3rem;
+}
+.filter-emp:hover{
+    background: #fff;
+    color:#000;
+    border-color:#000
+}
+.filter-emp i{
+    margin-right: 4px;
+    font-size: .75rem;
+}
+.fc-event-time{
+    text-transform: uppercase;
+}

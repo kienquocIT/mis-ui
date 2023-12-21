@@ -70,7 +70,7 @@ a.dropdown-item.table-row-price-option:hover {
 }
 
 .option-btn-checked {
-    background-color: #f7f7f7;
+    background-color: #ebfcf5;
 }
 
 .expired-price {
@@ -84,4 +84,13 @@ a.dropdown-item.table-row-price-option:hover {
 .fa-angle-down {
     font-size: x-small;
     color: #c7c7c7;
+}
+
+.overflow-x-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.overflow-x-scroll::-webkit-scrollbar-thumb {
+    background-color: #d6d9da;
+    border-radius: 4px;
 }

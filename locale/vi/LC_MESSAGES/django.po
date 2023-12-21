@@ -5580,6 +5580,93 @@ msgstr "Nhập kho một phần"
 #
 msgid "Received"
 msgstr "Đã nhập kho"
+#
+msgid "From Price List in left side"
+msgstr "Chọn theo danh sách giá bên trái"
+
+#
+msgid "For Inventory"
+msgstr "Quản lý tồn kho"
+
+#
+msgid "Price list for sale online"
+msgstr "Bảng giá bán hàng online"
+
+#
+msgid "Sale online"
+msgstr "Bán hàng online"
+
+#
+msgid "Please complete associations data"
+msgstr "Vui lòng hoàn thành dữ liệu liên kết trạm"
+
+#
+msgid "Stage"
+msgstr "Giai đoạn"
+
+#
+msgid "Notify when available quantity is less than"
+msgstr "Thông báo khi số lượng khả dụng ít hơn"
+
+#
+msgid "Unplanned expenses"
+msgstr "Các khoản đã chi ngoài kế hoạch"
+
+#
+msgid "Calendar"
+msgstr "Lịch sự kiện"
+
+#
+msgid "Upcoming Events"
+msgstr "Sự kiện sắp tới"
+
+#
+msgid "Input subject"
+msgstr "Nhập tiêu đề"
+
+#
+msgid "Input date"
+msgstr "Nhập ngày"
+
+#
+msgid "From time"
+msgstr "Từ ngày"
+
+#
+msgid "To time"
+msgstr "Đến ngày"
+
+#
+msgid "Meeting address"
+msgstr "Địa điểm họp"
+
+#
+msgid "Input address"
+msgstr "Nhập địa điểm"
+
+#
+msgid "Room location"
+msgstr "Vị trí phòng"
+
+#
+msgid "Employee attended"
+msgstr "Nhân viên tham dự"
+
+#
+msgid "Customer member"
+msgstr "Thành viên khách hàng"
+
+#
+msgid "Input result"
+msgstr "Nhập nội dung chi tiết"
+
+#
+msgid "Input location"
+msgstr "Nhập vị trí"
+
+#
+msgid "Create meeting"
+msgstr "Tạo cuộc họp"
 
 #
 msgid "Allows uploading multiple files"

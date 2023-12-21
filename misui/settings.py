@@ -66,7 +66,8 @@ INSTALLED_APPS = \
         'apps.core.company',
         'apps.core.base',
         'apps.core.workflow',
-        'apps.core.process'
+        'apps.core.process',
+        'apps.core.programme',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',

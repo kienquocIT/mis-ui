@@ -46,6 +46,8 @@ $(function () {
                 if (dataSelected) {
                     POLoadDataHandle.contactSelectEle.empty();
                     POLoadDataHandle.loadBoxContact(dataSelected.owner, dataSelected.id);
+                    document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
+                    POLoadDataHandle.loadDataProductAll();
                 }
             } else { // No Value => load again dropdowns
                 POLoadDataHandle.contactSelectEle.empty();
@@ -174,6 +176,27 @@ $(function () {
                 POLoadDataHandle.loadDataProductSelect($(this));
             } else {
                 POCalculateHandle.calculateMain(tablePurchaseOrderProductAdd, row);
+            }
+        });
+
+        tablePurchaseOrderProductAdd.on('click', '.table-row-price-option', function () {
+            if (!$(this)[0].querySelector('.expired-price')) { // Check if price not expired
+                let priceValRaw = $(this)[0].getAttribute('data-value');
+                if (priceValRaw) {
+                    let row = $(this)[0].closest('tr');
+                    let elePrice = row.querySelector('.table-row-price');
+                    if (elePrice) {
+                        $(elePrice).attr('value', String(priceValRaw));
+                        $.fn.initMaskMoney2();
+                        POCalculateHandle.calculateMain(tablePurchaseOrderProductAdd, row);
+                    }
+                    // make button option checked
+                    let allOption = $(row).find('.table-row-price-option');
+                    if (allOption) {
+                        allOption.removeClass('option-btn-checked');
+                    }
+                    $(this).addClass('option-btn-checked');
+                }
             }
         });
 

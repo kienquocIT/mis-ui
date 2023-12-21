@@ -27,20 +27,19 @@ $(function () {
                     for (let item of dataZone) {
                         let property_temp = []
                         for (let val of item.property_list) {
-                            property_temp.push(val.id)
+                            if (val !== null) {
+                                if (typeof val === 'object') {
+                                    property_temp.push(val?.['id']);
+                                } else {
+                                    property_temp.push(val);
+                                }
+                            }
                         }
                         item.property_list = property_temp
                     }
                 _form.dataForm['zone'] = dataZone
             }
             let nodeData = NodeSubmitHandle.setupDataSubmit();
-            // check status Node before submit
-            // if (nodeData === false) {
-            //     $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-check-complete-node')}, 'failure');
-            //     return false
-            // }
-            // get exit node condition for node list
-            // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode
             for (let item of nodeData) {
                 if (flowNode.hasOwnProperty(item.order)) {
@@ -63,7 +62,6 @@ $(function () {
             if (associate_temp) {
                 let associate_data_submit = [];
                 let associate_data_json = JSON.parse(associate_temp);
-                if (formSubmit.attr('data-method') === 'POST') {
                     for (let key in associate_data_json) {
                         let item = associate_data_json[key]
                         if (typeof item.node_in === "object") {
@@ -71,18 +69,13 @@ $(function () {
                             item.node_in = item.node_in.order
                             item.node_out = item.node_out.order
                         }
-                        associate_data_submit.push(item);
-                    }
-                }
-                if (formSubmit.attr('data-method') === 'PUT') {
-                    for (let item of associate_data_json) {
-                        if (typeof item.node_in === "object") {
-                            // case from detail page update workflow if node_in is not order number
-                            item.node_in = item.node_in.order
-                            item.node_out = item.node_out.order
+                        if (item?.['node_in'] && item?.['node_out']) {
+                            associate_data_submit.push(item);
                         }
-                        associate_data_submit.push(item);
                     }
+                if (associate_data_submit.length <= 0) {  // check required data association
+                    $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-association')}, 'failure');
+                    return false
                 }
                 _form.dataForm['association'] = associate_data_submit;
             }

@@ -91,7 +91,7 @@
                 <br>
                 <div class="row">
                     <div class="col-12 mb-1">
-                        <div class="form-check">
+                        <div class="form-check" hidden>
                             <input type="checkbox" class="form-check-input"
                                    id="id-dhtmlefine_zone" name="define_zone"
                                    disabled
@@ -327,7 +327,8 @@
     <input
         type="hidden"
         id="node-trans-factory"
-        data-check-complete-node="{% trans 'Please complete nodes data' %}"
+        data-complete-node="{% trans 'Please complete nodes data' %}"
+        data-complete-association="{% trans 'Please complete associations data' %}"
         data-btn-close="{% trans 'Close' %}"
         data-btn-save="{% trans 'Save' %}"
         data-add-employee="{% trans 'Add Employee' %}"

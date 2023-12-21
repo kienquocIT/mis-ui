@@ -694,7 +694,7 @@
                        data-url="{% url "ContactListNotMapAccountAPI" %}"
                        data-method="GET">
                     <thead>
-                    <th>#</th>
+                    <th></th>
                     <th>{% trans "Name" %}</th>
                     <th>{% trans "Job title" %}</th>
                     <th>{% trans "Contact owner" %}</th>
@@ -729,11 +729,9 @@
                     <form data-url="{% url "ContactCreateAPI" %}" data-method="POST" id="frm-create-new-contact">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Contact Owner" %}
-                                    <span class="field-required">*</span>
-                                </label>
+                                <label class="form-label required">{% trans "Contact Owner" %}</label>
                                 <select class="form-control select2" id="select-box-contact-owner"
-                                        data-method="GET"
+                                        data-method="GET" required
                                         data-url="{% url 'EmployeeListAPI' %}">
                                 </select>
                             </div>
@@ -747,10 +745,8 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Full Name" %}
-                                        <span class="field-required">*</span>
-                                    </label>
-                                    <input type="text" class="form-control" id="inp-fullname">
+                                    <label class="form-label required">{% trans "Full Name" %}</label>
+                                    <input type="text" class="form-control" required id="inp-fullname">
                                 </div>
                             </div>
                         </div>

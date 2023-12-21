@@ -1,5 +1,5 @@
 {% load i18n %}
-<select name="{{ class_name }}" class="form-select">
+<select name="{{ class_name }}" class="form-select" id="{{ id_select }}">
     <option value="" selected></option>
     <option value="12:00 AM" {% if select_val == '12:00 AM' %}selected{% endif %}>12:00 AM</option>
     <option value="12:30 AM" {% if select_val == '12:30 AM' %}selected{% endif %}>12:30 AM</option>

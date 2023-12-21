@@ -2,10 +2,12 @@ const $urlElm = $('#url-factory')
 let $tbl = $('#expense_detail_tbl')
 class expenseItemTable {
     static calcSubtotal(data, index) {
-        if (data.price > 0 && data.quantity > 0 && data.tax_data) {
+        if (data.price > 0 && data.quantity > 0) {
             let total = parseInt(data.price) * parseInt(data.quantity)
-            let tax = data?.tax_data?.rate > 0 ? total / 100 * data.tax_data.rate : 0
-            total += tax
+            if (data.tax_data){
+                let tax = data?.tax_data?.rate > 0 ? total / 100 * data.tax_data.rate : 0
+                total += tax
+            }
             data.subtotal = total
         } else data.subtotal = 0
         $tbl.DataTable().cell(index, 6).data(data.subtotal).draw(false)
@@ -150,7 +152,7 @@ class expenseItemTable {
 
                     //delete row
                     $('.btn-remove-row', row).off().on('click', () => {
-                        detailTab.$tableElm.DataTable().row(row).remove().draw(false)
+                        $tbl.DataTable().row(row).remove().draw(false)
                     })
                 },
                 footerCallback: function () {
@@ -188,7 +190,6 @@ class expenseItemTable {
                 'uom_txt': '',
                 'quantity': 0,
                 'price': 0,
-                'tax': {},
                 'subtotal': 0,
             }
             $tbl.DataTable().row.add(newData).draw()
@@ -263,11 +264,17 @@ $(document).ready(function () {
         formData.expense_items.map(function (item) {
             if (!item?.['expense_item'] && item?.['expense_item_data'])
                 item['expense_item'] = item['expense_item_data']['id']
-            if (!item?.['tax']) item['tax'] = item['tax_data']['id']
+            if (item?.['tax_data']?.['id']) item['tax'] = item['tax_data']['id']
             item['price'] = parseInt(item['price'])
             return item
         })
-
+        let OriginalList = $.map($empTripElm.select2('data'), (item)=> {return item.data.id});
+        let dateF = formData.date_f, $morF = $('[name="morning_f"]:checked'), $morT = $('[name="morning_t"]:checked');
+        if ($morF.val() === 'true') dateF += ' 00:00:00'
+        else dateF += ' 12:00:00'
+        let dateT = formData.date_t
+        if ($morT.val() === 'true') dateT += ' 12:00:00'
+        else dateT += ' 23:59:59'
         let data = {
             'title': formData.title,
             'remark': formData.remark,
@@ -275,11 +282,11 @@ $(document).ready(function () {
             'date_created': $x.fn.reformatData(formData.date_created, 'DD/MM/YYYY', 'YYYY-MM-DD'),
             'departure': formData.departure,
             'destination': formData.destination,
-            'employee_on_trip': $empTripElm.val(),
-            'date_f': $x.fn.reformatData(formData.date_f, 'DD/MM/YYYY', 'YYYY-MM-DD'),
-            'morning_f': formData.morning_f === 'true',
-            'date_t': $x.fn.reformatData(formData.date_t, 'DD/MM/YYYY', 'YYYY-MM-DD'),
-            'morning_t': formData.morning_t === 'true',
+            'employee_on_trip': OriginalList,
+            'date_f': $x.fn.reformatData(dateF, 'DD/MM/YYYY HH:mm:ss', 'YYYY-MM-DD HH:mm:ss'),
+            'morning_f': $morF.val(),
+            'date_t': $x.fn.reformatData(dateT, 'DD/MM/YYYY HH:mm:ss', 'YYYY-MM-DD HH:mm:ss'),
+            'morning_t': $morT.val(),
             'total_day': parseFloat(formData.total_day),
             'pretax_amount': parseInt(formData.pretax_amount),
             'taxes': parseInt(formData.taxes),

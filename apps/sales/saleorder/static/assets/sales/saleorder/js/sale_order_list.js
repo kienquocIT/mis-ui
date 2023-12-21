@@ -138,8 +138,8 @@ $(function () {
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
                                         <a class="dropdown-item" href="${link}">${$elmTrans.attr('data-change')}</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">${$('#base-trans-factory').attr('data-cancel')}</a>
+                                        <div class="dropdown-divider" hidden></div>
+                                        <a class="dropdown-item" href="#" hidden>${$('#base-trans-factory').attr('data-cancel')}</a>
                                         ${isDelivery}
                                     </div>
                                 </div>`;

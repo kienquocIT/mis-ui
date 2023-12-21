@@ -243,9 +243,9 @@ class PriceListLoadPage {
 
                     if (price_list_detail.valid_time_start && price_list_detail.valid_time_start) {
                         if (price_list_detail.is_default) {
-                            timeValidEle.html(`<span>${price_list_detail.valid_time_start} - ${transEle.data('trans-now')}</span>`)
+                            timeValidEle.html(`<span>${price_list_detail.valid_time_start.split(' ')[0]} - ${transEle.data('trans-now')}</span>`)
                         } else {
-                            timeValidEle.html(`<span>${price_list_detail.valid_time_start} - ${price_list_detail.valid_time_end}</span>`)
+                            timeValidEle.html(`<span>${price_list_detail.valid_time_start.split(' ')[0]} - ${price_list_detail.valid_time_end.split(' ')[0]}</span>`)
                         }
                     }
 

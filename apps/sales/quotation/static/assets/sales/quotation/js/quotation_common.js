@@ -456,24 +456,13 @@ class QuotationLoadDataHandle {
         )
     };
 
-    static loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
-        let self = this;
-        let optionSelected = ele;
-        let productData = SelectDDControl.get_data_from_idx(optionSelected, optionSelected.val());
-        if (is_expense === true) { // EXPENSE
-            optionSelected = ele[0].querySelector('.option-btn-checked');
-            productData = optionSelected.querySelector('.data-default');
-        }
+    static loadDataProductSelect(ele) {
+        let productData = SelectDDControl.get_data_from_idx(ele, ele.val());
         if (productData) {
             let data = productData;
-            if (is_expense === false) {
-                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
-                data['uom_group'] = data?.['general_information']?.['uom_group'];
-                data['tax'] = data?.['sale_information']?.['tax_code'];
-            }
-            if (is_expense === true) {
-                data = JSON.parse(productData.value);
-            }
+            data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
+            data['uom_group'] = data?.['general_information']?.['uom_group'];
+            data['tax'] = data?.['sale_information']?.['tax_code'];
             let description = ele[0].closest('tr').querySelector('.table-row-description');
             let uom = ele[0].closest('tr').querySelector('.table-row-uom');
             let price = ele[0].closest('tr').querySelector('.table-row-price');
@@ -486,24 +475,24 @@ class QuotationLoadDataHandle {
             // load UOM
             if (uom && data.unit_of_measure && data.uom_group) {
                 $(uom).empty();
-                self.loadBoxQuotationUOM($(uom), data.unit_of_measure, data.uom_group.id);
+                QuotationLoadDataHandle.loadBoxQuotationUOM($(uom), data.unit_of_measure, data.uom_group.id);
             } else {
-                self.loadBoxQuotationUOM($(uom));
+                QuotationLoadDataHandle.loadBoxQuotationUOM($(uom));
             }
             // load PRICE
             if (price && priceList) {
-                loadPriceProduct(ele[0], is_change_item, is_expense);
+                QuotationLoadDataHandle.loadPriceProduct(ele[0], true);
             }
             // load TAX
             if (tax && data.tax) {
                 $(tax).empty();
-                self.loadBoxQuotationTax($(tax), data.tax);
+                QuotationLoadDataHandle.loadBoxQuotationTax($(tax), data.tax);
             } else {
-                self.loadBoxQuotationTax($(tax));
+                QuotationLoadDataHandle.loadBoxQuotationTax($(tax));
             }
         }
         $.fn.initMaskMoney2();
-    }
+    };
 
     static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
         let ele = $('#data-init-copy-quotation');
@@ -652,7 +641,13 @@ class QuotationLoadDataHandle {
         let ele = $('#data-init-copy-quotation');
         let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2(
+            {
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -760,6 +755,84 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadPriceProduct(eleProduct, is_change_item = false) {
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        let is_change_price = false;
+        if (productData) {
+            let data = productData;
+            let price = eleProduct.closest('tr').querySelector('.table-row-price');
+            let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
+            // load PRICE
+            if (price && priceList) {
+                let account_price_id = document.getElementById('customer-price-list').value;
+                let general_price_id = null;
+                let general_price = 0;
+                let customer_price = null;
+                let current_price_checked = price.getAttribute('value');
+                let transJSON = {};
+                transJSON['Valid'] = QuotationLoadDataHandle.transEle.attr('data-valid');
+                $(priceList).empty();
+                if (Array.isArray(data.price_list) && data.price_list.length > 0) {
+                    for (let i = 0; i < data.price_list.length; i++) {
+                        if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
+                            if (data.price_list[i].is_default === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
+                                general_price_id = data.price_list[i].id;
+                                general_price = parseFloat(data.price_list[i].value);
+                            }
+                            if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // If Valid Price
+                                if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
+                                    customer_price = parseFloat(data.price_list[i].value);
+                                    $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
+                                                            <div class="d-flex">
+                                                                <span class="mr-2">${data.price_list[i].title}</span>
+                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            </div>
+                                                        </a>`);
+                                } else {
+                                    $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                                            <div class="d-flex">
+                                                                <span class="mr-2">${data.price_list[i].title}</span>
+                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            </div>
+                                                        </a>`);
+                                }
+                            }
+                        } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
+                            general_price = parseFloat(data.price_list[i].value);
+                            $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                                    <div class="d-flex">
+                                                        <span class="mr-2">${data.price_list[i].title}</span>
+                                                        <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                                                        <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                    </div>
+                                                </a>`);
+                        }
+                    }
+                }
+                // get Price to display
+                if (is_change_item === true) {
+                    if (customer_price) {
+                        $(price).attr('value', String(customer_price));
+                    } else {
+                        $(price).attr('value', String(general_price));
+                    }
+                }
+                if (current_price_checked !== price.getAttribute('value')) {
+                    is_change_price = true;
+                }
+            }
+        }
+        $.fn.initMaskMoney2();
+        // If change price then remove promotion & shipping
+        if (is_change_price === true) {
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            deletePromotionRows($(tableProduct), true, false);
+            deletePromotionRows($(tableProduct), false, true);
+        }
+    };
+
     // Load detail
     static loadDetailQuotation(data, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
@@ -787,10 +860,14 @@ class QuotationLoadDataHandle {
                 }]
             }).init();
         }
-        if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {
-            let btnCopy = document.getElementById('btn-copy-quotation');
-            if (btnCopy) {
-                btnCopy.setAttribute('disabled', 'true');
+        if (Object.keys(data?.['opportunity']).length > 0) {
+            if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
+                if (form.getAttribute('data-method') === 'GET') {
+                    let btnCopy = document.getElementById('btn-copy-quotation');
+                    if (btnCopy) {
+                        btnCopy.setAttribute('disabled', 'true');
+                    }
+                }
             }
         }
         if (data?.['customer']) {
@@ -808,7 +885,6 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term'])
         }
         if (data?.['quotation'] && data?.['sale_person']) {
-            // QuotationLoadDataHandle.loadBoxSaleOrderQuotation('select-box-quotation', data?.['quotation']?.['id'], null, data?.['sale_person']?.['id']);
             QuotationLoadDataHandle.loadBoxSOQuotation(data?.['quotation']);
         }
         if (data?.['date_created']) {
@@ -849,17 +925,12 @@ class QuotationLoadDataHandle {
             }
         }
         if (is_copy === true) {
-            let boxQuotation = $('#select-box-quotation');
-            let dataStr = JSON.stringify({
-                'id': data.id,
-                'title': data.title,
-                'code': data.code,
-            }).replace(/"/g, "&quot;");
-            boxQuotation.append(`<option value="${data.id}" selected>
-                                    <span class="quotation-title">${data.title}</span>
-                                    <input type="hidden" class="data-info" value="${dataStr}">
-                                </option>`)
-            QuotationLoadDataHandle.loadInformationSelectBox(boxQuotation);
+            let dataQuotationCopy = {
+                'id': data?.['id'],
+                'title': data?.['title'],
+                'code': data?.['code'],
+            }
+            QuotationLoadDataHandle.loadBoxSOQuotation(dataQuotationCopy);
         }
         if (data?.['quotation_logistic_data']) {
             document.getElementById('quotation-create-shipping-address').value = data?.['quotation_logistic_data']?.['shipping_address'];
@@ -882,12 +953,12 @@ class QuotationLoadDataHandle {
             let row = table.tBodies[0].rows[i];
             let eleItem = row.querySelector('.table-row-item');
             if (eleItem) {
-                loadPriceProduct(eleItem);
+                QuotationLoadDataHandle.loadPriceProduct(eleItem);
                 // Re Calculate all data of rows & total
                 QuotationCalculateCaseHandle.commonCalculate($(table), row, true, false, false);
             }
         }
-    }
+    };
 
     static loadInitQuotationConfig(page_method) {
         let ele = $('#quotation-config-data');
@@ -1198,7 +1269,7 @@ class QuotationDataTableHandle {
                                             <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
                                         </div>
                                         </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                        <div role="menu" class="dropdown-menu table-row-price-list w-650p">
                                         <a class="dropdown-item" data-value=""></a>
                                         </div>
                                     </div>
@@ -2292,8 +2363,10 @@ class QuotationCheckConfigHandle {
                         if (config.short_sale_config.is_discount_on_total === false) {
                             eleDiscountTotal.setAttribute('disabled', 'true');
                             eleDiscountTotal.classList.add('disabled-custom-show');
-                            eleDiscountTotal.value = "0";
-                            is_make_price_change = true;
+                            if (eleDiscountTotal.value !== "0") {
+                                eleDiscountTotal.value = "0";
+                                is_make_price_change = true;
+                            }
                         } else {
                             if (eleDiscountTotal.hasAttribute('disabled')) {
                                 eleDiscountTotal.removeAttribute('disabled');
@@ -2347,8 +2420,10 @@ class QuotationCheckConfigHandle {
                         } else {
                             eleDiscountTotal.setAttribute('disabled', 'true');
                             eleDiscountTotal.classList.add('disabled-custom-show');
-                            eleDiscountTotal.value = "0";
-                            is_make_price_change = true;
+                            if (eleDiscountTotal.value !== "0") {
+                                eleDiscountTotal.value = "0";
+                                is_make_price_change = true;
+                            }
                         }
                     }
                     // ReCalculate Total
@@ -2378,7 +2453,7 @@ class QuotationCheckConfigHandle {
             'is_short_sale': false,
             'is_long_sale': false,
         }
-    }
+    };
 
     static reCheckTable(config, row, is_short_sale = false, is_long_sale = false, is_make_price_change = false) {
         if (row) {
@@ -2391,7 +2466,7 @@ class QuotationCheckConfigHandle {
                     if (config.short_sale_config.is_choose_price_list === false) {
                         if (elePriceList.hasAttribute('data-bs-toggle')) {
                             elePriceList.removeAttribute('data-bs-toggle');
-                            loadPriceProduct(eleProduct);
+                            QuotationLoadDataHandle.loadPriceProduct(eleProduct);
                         }
                     } else {
                         if (!elePriceList.hasAttribute('data-bs-toggle')) {
@@ -2401,7 +2476,7 @@ class QuotationCheckConfigHandle {
                     if (config.short_sale_config.is_input_price === false) {
                         elePrice.setAttribute('disabled', 'true');
                         elePrice.classList.add('disabled-custom-show');
-                        loadPriceProduct(eleProduct);
+                        QuotationLoadDataHandle.loadPriceProduct(eleProduct);
                     } else {
                         if (elePrice.hasAttribute('disabled')) {
                             elePrice.removeAttribute('disabled');
@@ -2412,8 +2487,10 @@ class QuotationCheckConfigHandle {
                         if (config.short_sale_config.is_discount_on_product === false) {
                             eleDiscount.setAttribute('disabled', 'true');
                             eleDiscount.classList.add('disabled-custom-show');
-                            eleDiscount.value = "0";
-                            is_make_price_change = true;
+                            if (eleDiscount.value !== "0") {
+                                eleDiscount.value = "0";
+                                is_make_price_change = true;
+                            }
                         } else {
                             if (eleDiscount.hasAttribute('disabled')) {
                                 eleDiscount.removeAttribute('disabled');
@@ -2433,7 +2510,7 @@ class QuotationCheckConfigHandle {
                     } else {
                         elePrice.setAttribute('disabled', 'true');
                         elePrice.classList.add('disabled-custom-show');
-                        loadPriceProduct(eleProduct);
+                        QuotationLoadDataHandle.loadPriceProduct(eleProduct);
                     }
                     if (eleDiscount) {
                         if (config.long_sale_config.is_not_discount_on_product === false) {
@@ -2444,8 +2521,10 @@ class QuotationCheckConfigHandle {
                         } else {
                             eleDiscount.setAttribute('disabled', 'true');
                             eleDiscount.classList.add('disabled-custom-show');
-                            eleDiscount.value = "0";
-                            is_make_price_change = true;
+                            if (eleDiscount.value !== "0") {
+                                eleDiscount.value = "0";
+                                is_make_price_change = true;
+                            }
                         }
                     }
                 }
@@ -3074,98 +3153,6 @@ function filterDataProductNotPromotion(data_products) {
         }
     }
     return finalList
-}
-
-function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false) {
-    let optionSelected = eleProduct;
-    let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-    if (is_expense === true) { // EXPENSE
-        optionSelected = eleProduct.closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
-        productData = optionSelected.querySelector('.data-default');
-    }
-    let is_change_price = false;
-    if (productData) {
-        let data = productData;
-        if (is_expense === true) {
-            data = JSON.parse(productData.value);
-        }
-        let price = eleProduct.closest('tr').querySelector('.table-row-price');
-        let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
-        // load PRICE
-        if (price && priceList) {
-            let account_price_id = document.getElementById('customer-price-list').value;
-            let general_price_id = null;
-            let general_price = 0;
-            let customer_price = null;
-            let current_price_checked = price.getAttribute('value');
-            $(priceList).empty();
-            if (Array.isArray(data.price_list) && data.price_list.length > 0) {
-                for (let i = 0; i < data.price_list.length; i++) {
-                    if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
-                        if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
-                            general_price_id = data.price_list[i].id;
-                            general_price = parseFloat(data.price_list[i].value);
-                            $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                    </div>
-                                                </button>`);
-                        }
-                        if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                            if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
-                                customer_price = parseFloat(data.price_list[i].value);
-                                $(priceList).empty();
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                        </div>
-                                                    </button>`);
-                            } else { // Customer price invalid, expired
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                        </div>
-                                                    </button>`);
-                            }
-                        }
-                    } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
-                        general_price = parseFloat(data.price_list[i].value);
-                        $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                    </div>
-                                                </button>`);
-                    }
-                }
-            }
-            // get Price to display
-            if (is_change_item === true) {
-                if (customer_price) {
-                    $(price).attr('value', String(customer_price));
-                } else {
-                    $(price).attr('value', String(general_price));
-                }
-            }
-            if (current_price_checked !== price.getAttribute('value')) {
-                is_change_price = true;
-            }
-        }
-    }
-    $.fn.initMaskMoney2();
-    // If change price then remove promotion & shipping
-    if (is_change_price === true) {
-        let tableProduct = document.getElementById('datable-quotation-create-product');
-        deletePromotionRows($(tableProduct), true, false);
-        deletePromotionRows($(tableProduct), false, true);
-    }
 }
 
 function getDataByProductID(product_id) {

@@ -173,6 +173,10 @@ class MenusCRM:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
+    CALENDAR = MenuCommon(
+        name='Calendar', code='menu_calendar', view_name='ProgrammeList',
+        icon='<i class="fa-regular fa-calendar-days"></i>',
+    )
     CONTACT = MenuCommon(
         name='Contact', code='id_menu_contact', view_name='ContactList',
         icon='<i class="bi bi-journal-bookmark-fill"></i>',
@@ -354,6 +358,12 @@ class MenusPurchase:
 
 
 class MenuEOffice:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    CALENDAR = MenuCommon(
+        name='Calendar', code='menu_calendar', view_name='ProgrammeList', icon='<i class="fa-regular fa-calendar-days"></i>',
+    )
     LEAVE = MenuCommon(
         name='Leave', code='menu_leave', icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',
         child=[
@@ -397,6 +407,17 @@ class MenusReport:
                 code='menu_report_customer_list',
                 view_name='ReportCustomerList',
                 icon='<i class="fas fa-user-tie"></i>',
+            ),
+        ],
+    )
+    INVENTORY_REPORT = MenuCommon(
+        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-chart-bar"></i>',
+        child=[
+            MenuCommon(
+                name='Items detail report',
+                code='menu_items_detail_report',
+                view_name='ItemsDetailReportList',
+                icon='<i class="far fa-file"></i>',
             ),
         ],
     )
@@ -447,9 +468,10 @@ class SpaceItem:
             icon='<i class="fa-solid fa-users-gear"></i>',
             menus=[
                 MenusCRM.HOME,
+                MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,
-                MenusCRM.LEAD,
+                # MenusCRM.LEAD,
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
                 MenusCRM.SALE_ORDER,
@@ -483,6 +505,8 @@ class SpaceItem:
             'e-office',
             icon='<i class="fa-solid fa-laptop-file"></i>',
             menus=[
+                MenuEOffice.HOME,
+                MenuEOffice.CALENDAR,
                 MenuEOffice.LEAVE,
                 MenuEOffice.BUSINESS_TRIP,
             ],
@@ -494,6 +518,7 @@ class SpaceItem:
             menus=[
                 MenusReport.HOME,
                 MenusReport.SALE_REPORT,
+                MenusReport.INVENTORY_REPORT,
             ],
         ),
         'company-system': SpaceCommon(

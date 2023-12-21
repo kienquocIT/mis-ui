@@ -33,7 +33,7 @@ $(document).ready(function () {
             }, {
                 'data': 'owner',
                 'render': (data, type, row, meta) => {
-                    return `<span style="min-width: max-content; width: 100%" class="badge badge-soft-indigo">${row.owner.fullname}</span>`
+                    return `<span style="min-width: max-content; width: 100%" class="badge badge-soft-indigo">${row.owner.fullname ? row.owner.fullname : ''}</span>`
                 }
             }, {
                 'data': 'account_name',

@@ -137,55 +137,57 @@ class POLoadDataHandle {
         }
     };
 
-    static loadPriceProduct(eleProduct, is_change_item = true) {
-        let data = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-        let is_change_price = false;
-        if (data) {
+    static loadPriceProduct(eleProduct, is_change_item = false) {
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        if (productData) {
+            let data = productData;
             let price = eleProduct.closest('tr').querySelector('.table-row-price');
             let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
             // load PRICE
             if (price && priceList) {
-                let account_price_id = document.getElementById('customer-price-list')?.value;
+                let account_price_id = document.getElementById('customer-price-list').value;
                 let general_price_id = null;
                 let general_price = 0;
                 let customer_price = null;
-                let current_price_checked = price.getAttribute('value');
+                let transJSON = {};
+                transJSON['Valid'] = POLoadDataHandle.transEle.attr('data-valid');
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i]?.['price_type'] === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
-                            if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
+                        if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
+                            if (data.price_list[i].is_default === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
                                 general_price_id = data.price_list[i].id;
                                 general_price = parseFloat(data.price_list[i].value);
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                    </div>
-                                                </button>`);
                             }
-                            if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                                if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
+                            if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // If Valid Price
+                                if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
-                                    $(priceList).empty();
-                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                        </div>
-                                                    </button>`);
-                                } else { // Customer price invalid, expired
-                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                        </div>
-                                                    </button>`);
+                                    $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
+                                                            <div class="d-flex">
+                                                                <span class="mr-2">${data.price_list[i].title}</span>
+                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            </div>
+                                                        </a>`);
+                                } else {
+                                    $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                                            <div class="d-flex">
+                                                                <span class="mr-2">${data.price_list[i].title}</span>
+                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            </div>
+                                                        </a>`);
                                 }
                             }
+                        } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
+                            general_price = parseFloat(data.price_list[i].value);
+                            $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                                    <div class="d-flex">
+                                                        <span class="mr-2">${data.price_list[i].title}</span>
+                                                        <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
+                                                        <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                    </div>
+                                                </a>`);
                         }
                     }
                 }
@@ -197,18 +199,9 @@ class POLoadDataHandle {
                         $(price).attr('value', String(general_price));
                     }
                 }
-                if (current_price_checked !== price.getAttribute('value')) {
-                    is_change_price = true;
-                }
             }
         }
         $.fn.initMaskMoney2();
-        // If change price then remove promotion & shipping
-        if (is_change_price === true) {
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            deletePromotionRows($(tableProduct), true, false);
-            deletePromotionRows($(tableProduct), false, true);
-        }
     };
 
     static loadBoxUOM(ele, dataUOM = {}, uom_group_id = null) {
@@ -1074,6 +1067,19 @@ class POLoadDataHandle {
         }
         for (let ele of table[0].querySelectorAll('.del-row')) {
             ele.setAttribute('disabled', 'true');
+        }
+    };
+
+    static loadDataProductAll() {
+        let table = document.getElementById('datable-purchase-order-product-add');
+        for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+            let row = table.tBodies[0].rows[i];
+            let eleItem = row.querySelector('.table-row-item');
+            if (eleItem) {
+                POLoadDataHandle.loadPriceProduct(eleItem);
+                // Re Calculate all data of rows & total
+                POCalculateHandle.calculateMain($(table), row);
+            }
         }
     };
 

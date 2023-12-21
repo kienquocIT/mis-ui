@@ -35,7 +35,7 @@
         </div>
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-soft-primary ml-3" id="printButton"><span><span>{% trans 'Print' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-print"></i></span></span></span></button>
+                <button type="button" class="btn btn-soft-primary ml-3" id="print_document"><span><span>{% trans 'Print' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-print"></i></span></span></span></button>
             </div>
         </div>
     </div>
@@ -130,7 +130,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-3 col-lg-3">
                                 <div class="form-group">
                                     <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
                                     <div class="input-group">
@@ -144,6 +144,12 @@
                                             >
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <div class="form-check mt-5">
+                                    <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" disabled>
+                                    <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
                                 </div>
                             </div>
                         </div>
@@ -179,11 +185,7 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
-                                <div class="d-flex justify-content-end">
-                                    <div class="form-check mr-3">
-                                        <input type="checkbox" class="form-check-input" id="quotation-customer-confirm" disabled>
-                                        <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
-                                    </div>
+                                <div class="d-flex justify-content-start mt-5">
                                     <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="{% trans 'Copy to sale order' %}">
                                     <button
                                             type="button"
@@ -214,7 +216,7 @@
                                             <div class="modal-body">
                                                 <div class="form-check" id="copy-quotation-option">
                                                     <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
-                                                    <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation to sale order' %}</label>
+                                                    <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
                                                 </div>
                                                 <table
                                                         id="datable-copy-quotation-product"
@@ -295,7 +297,7 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">STT</th>
+                                            <th class="w-5">#</th>
                                             <th class="w-10">{% trans 'Product' %}<span class="required"></span></th>
                                             <th class="w-10">{% trans 'Description' %}</th>
                                             <th class="w-5">{% trans 'Unit Of Measure' %}<span class="required"></span></th>
@@ -304,7 +306,7 @@
                                             <th class="w-10">{% trans 'Discount' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-10">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5">{% trans 'Actions' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -315,7 +317,7 @@
                                             <th colspan="4">
                                                 <div class="row">
                                                     <div class="col-5">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                     </div>
                                                     <div class="col-3"></div>
                                                     <div class="col-4">
@@ -326,7 +328,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-5">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Discount' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Discount' %}:</p>
                                                     </div>
                                                     <div class="col-3">
                                                         <div class="input-group">
@@ -343,7 +345,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-5">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
                                                     </div>
                                                     <div class="col-3"></div>
                                                     <div class="col-4">
@@ -354,7 +356,7 @@
                                                 <hr class="bg-teal">
                                                 <div class="row">
                                                     <div class="col-5">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
                                                     </div>
                                                     <div class="col-3"></div>
                                                     <div class="col-4">
@@ -446,14 +448,14 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">STT</th>
+                                            <th class="w-5">#</th>
                                             <th class="w-5">{% trans 'Product' %}</th>
                                             <th class="w-5">{% trans 'Unit Of Measure' %}</th>
                                             <th class="w-15">{% trans 'Quantity' %}</th>
                                             <th class="w-30">{% trans 'Cost Price' %}<span class="required"></span></th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-30">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5">{% trans 'Actions' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -464,7 +466,7 @@
                                             <th colspan="3">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -474,7 +476,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -485,7 +487,7 @@
                                                 <hr class="bg-teal">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -507,7 +509,7 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">STT</th>
+                                            <th class="w-5">#</th>
                                             <th class="w-15 required">{% trans 'Expense name' %}</th>
                                             <th class="w-15 required">{% trans 'Expense items' %}</th>
                                             <th class="w-5 required">{% trans 'Unit Of Measure' %}</th>
@@ -515,7 +517,7 @@
                                             <th class="w-30 required">{% trans 'Expense Price' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-10">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5">{% trans 'Actions' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -526,7 +528,7 @@
                                             <th colspan="3">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -536,7 +538,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -547,7 +549,7 @@
                                                 <hr class="bg-teal">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
@@ -675,7 +677,7 @@
                     >
                         <thead>
                         <tr>
-                            <th class="w-10">STT</th>
+                            <th class="w-10">#</th>
                             <th class="w-40">{% trans 'Indicator name' %}</th>
                             <th class="w-30">{% trans 'Indicator value' %}</th>
                             <th class="w-20">{% trans 'Indicator rate' %}</th>
@@ -706,6 +708,7 @@
             data-opp-closed="{% trans 'Opportunity was closed' %}"
             data-opp-had-sale-order="{% trans 'Opportunity had sale order' %}"
             data-not-allow-use="{% trans 'Quotation is not finished' %}"
+            data-valid="{% trans "Valid" %}"
         >
     </form>
 {% endblock %}

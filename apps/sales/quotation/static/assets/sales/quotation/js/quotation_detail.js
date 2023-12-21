@@ -25,12 +25,8 @@ $(function () {
                         QuotationLoadDataHandle.loadDataTablesAndDropDowns(data, false);
                     }
                     // prepare for copy quotation to sale order
-                    if (!$form.hasClass('sale-order')) {
+                    if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
                         $('#data-copy-quotation-detail').val(JSON.stringify(data))
-                    } else {
-                        if (Object.keys(data.quotation).length > 0) {
-                            QuotationLoadDataHandle.loadAPIDetailQuotation(data.quotation.id);
-                        }
                     }
 
                     if ($form.attr('data-method') === 'PUT') {

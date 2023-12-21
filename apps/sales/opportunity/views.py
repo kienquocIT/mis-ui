@@ -108,7 +108,7 @@ class OpportunityDetailAPI(APIView):
 class OpportunityDetailGetByCreateFromOppAPI(APIView):
     @classmethod
     def callback_success(cls, result):
-        if result and isinstance(result, dict) and 'id'in result:
+        if result and isinstance(result, dict) and 'id' in result:
             return {
                 'opportunity_list': [
                     {
@@ -423,6 +423,10 @@ class OpportunityMeetingListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
+        if 'self_employee' in params:
+            del params['self_employee']
+            employee_current_data = getattr(request.user, 'employee_current_data', {})
+            params['employee_in_list'] = employee_current_data.get("id", None)
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).get(params)
         return resp.auto_return(key_success='meeting_list')
 
@@ -615,4 +619,3 @@ class OpportunityMeetingDetailAPI(APIView):
     def get(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='opportunity_meeting_detail')
-

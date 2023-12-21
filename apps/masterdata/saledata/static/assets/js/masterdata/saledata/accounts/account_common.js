@@ -73,7 +73,7 @@ function loadAccountManager(accountManagerData) {
         templateResult: function(data) {
             let ele = $('<div class="row col-12"></div>');
             ele.append('<div class="col-8">' + data.data?.['full_name'] + '</div>');
-            if (data.data?.['group']['title'] !== undefined) {
+            if (data.data?.['group']?.['title'] !== undefined) {
                 ele.append('<div class="col-4">(' + data.data?.['group']['title'] + ')</div>');
             }
             return ele;
@@ -184,9 +184,9 @@ function loadTableSelectContact(selected_contact_list=[], selected_contact_list_
                             <td>${i+1}</td>
                             <td><span class="text-primary"><b>${data[i].fullname}</b></span></td>
                             <td>${data[i].job_title}</td>
-                            <td>${data[i].owner.fullname}</td>
-                            <td>${data[i].mobile}</td>
-                            <td>${data[i].email}</td>
+                            <td>${data[i].owner.fullname ? data[i].owner.fullname : ''}</td>
+                            <td>${data[i].mobile ? data[i].mobile : ''}</td>
+                            <td>${data[i].email ? data[i].email : ''}</td>
                             <td>
                                 <span class="form-check">
                                     <input type="checkbox" class="form-check-input selected_contact"
@@ -239,27 +239,21 @@ function loadTableSelectedContact(data, option='') {
                 data: 'job_title',
                 className: 'w-20',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary">${row.job_title}</span>`
+                    return `<span class="text-secondary">${row.job_title ? row.job_title : ''}</span>`
                 }
             },
             {
                 data: 'mobile',
                 className: 'w-25',
                 render: (data, type, row) => {
-                    if (row.mobile !== null && row.mobile !== 'null') {
-                        return `<span class="text-secondary">${row.mobile}</span>`
-                    }
-                    return ``
+                    return `<span class="text-secondary">${row.mobile ? row.mobile : ''}</span>`
                 }
             },
             {
                 data: 'email',
                 className: 'w-20',
                 render: (data, type, row) => {
-                    if (row.email !== null && row.email !== 'null') {
-                        return `<span class="text-secondary">${row.email}</span>`
-                    }
-                    return ``
+                    return `<span class="text-secondary">${row.email ? row.email : ''}</span>`
                 }
             },
         ],
@@ -431,7 +425,7 @@ function LoadDetail(option) {
                 WFRTControl.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 data = data['account_detail'];
-                // console.log(data)
+                console.log(data)
 
                 accountName.val(data.name);
                 accountCode.val(data.code);

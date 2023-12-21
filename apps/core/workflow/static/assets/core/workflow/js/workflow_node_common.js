@@ -38,6 +38,11 @@ class NodeLoadDataHandle {
         {'id': 2, 'title': 'Out form'},
         {'id': 1, 'title': 'In form'},
     ];
+    static dataSourceJSON = {
+        1: {'id': 1, 'title': 'In form'},
+        2: {'id': 2, 'title': 'Out form'},
+        3: {'id': 3, 'title': 'In workflow'},
+    };
     static dataInWFOption = [
         {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-employee')},
         {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-position')},
@@ -461,12 +466,13 @@ class NodeLoadDataHandle {
             area.setAttribute('hidden', 'true');
         }
         if ($(ele).val() === '1') {
-            row.querySelector('.collab-in-form-area').removeAttribute('hidden')
+            row.querySelector('.collab-in-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '2') {
-            row.querySelector('.collab-out-form-area').removeAttribute('hidden')
+            row.querySelector('.collab-out-form-area').removeAttribute('hidden');
         } else if ($(ele).val() === '3') {
-            row.querySelector('.collab-in-workflow-area').removeAttribute('hidden')
+            row.querySelector('.collab-in-workflow-area').removeAttribute('hidden');
         }
+        NodeLoadDataHandle.loadZoneDD(row, true); // reset zones
     };
 
     static loadOutFormEmployeeShow(ele) {
@@ -679,11 +685,19 @@ class NodeLoadDataHandle {
             }
         } else { // COLLAB NODES
             NodeLoadDataHandle.loadInitDataRow(row);
+            // Load boxListSource
             let boxListSource = modalCollab.querySelector('.box-list-source');
             $(boxListSource).empty();
-            NodeLoadDataHandle.loadBoxListSource($(boxListSource), dataSource[dataRow?.['option_collaborator']]);
-            NodeLoadDataHandle.loadAreaByListSource(boxListSource);
             NodeLoadDataHandle.loadBoxListSource($(boxListSource));
+            let optionCollab = dataRow?.['option_collaborator'] + 1;
+            $(boxListSource).val(optionCollab);
+            let boxRender = row?.querySelector('.form-group-data-source')?.querySelector('.select2-selection__rendered');
+            if (boxRender) {
+                boxRender.innerHTML = NodeLoadDataHandle.dataSourceJSON[optionCollab]?.['title'];
+                boxRender.setAttribute('title', NodeLoadDataHandle.dataSourceJSON[optionCollab]?.['title']);
+            }
+            NodeLoadDataHandle.loadAreaByListSource(boxListSource);
+            // Load detail collab depend on option_collaborator
             if (dataRow?.['option_collaborator'] === 0) { // In Form
                 let dataIF = dataRow?.['collab_in_form'];
                 let IFArea = modalCollab.querySelector('.collab-in-form-area');
@@ -733,7 +747,6 @@ class NodeLoadDataHandle {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
                                 if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                                    // NodeDataTableHandle.dataTableCollabOutFormEmployee($(tableOutFormEmployee));
                                     for (let item of data.employee_list) {
                                         if (employee_id_list.includes(item?.['id'])) {
                                             item['is_checked'] = true;
@@ -749,6 +762,13 @@ class NodeLoadDataHandle {
                 }
                 // zone
                 if (eleZoneJSonSubmit) {
+                    if (dataOF?.['zone']) { // set id zone to zone's order
+                        for (let zone_detail of dataOF?.['zone']) {
+                            if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
+                                zone_detail['id'] = zone_detail?.['order'];
+                            }
+                        }
+                    }
                     $(eleZoneJSonSubmit).val(JSON.stringify(dataOF?.['zone']));
                 }
                 let zone_list = [];
@@ -769,12 +789,20 @@ class NodeLoadDataHandle {
                 let InWFArea = modalCollab?.querySelector('.collab-in-workflow-area');
                 let tableInWF = InWFArea?.querySelector('.table-in-workflow-employee');
                 let dataPosition = {
-                    1: {'id': 1, 'title': '1st manager'},
-                    2: {'id': 2, 'title': '2nd manager'},
+                    1: {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-1st-manager')},
+                    2: {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-2nd-manager')},
+                    3: {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-select-beneficiary')},
                 }
                 for (let inWF of dataInWF) {
                     if (inWF?.['position_choice']) {
                         inWF['position_choice'] = dataPosition[inWF['position_choice']];
+                    }
+                    if (inWF?.['zone']) { // set id zone to zone's order
+                        for (let zone_detail of inWF?.['zone']) {
+                            if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
+                                zone_detail['id'] = zone_detail?.['order'];
+                            }
+                        }
                     }
                 }
                 $(tableInWF).DataTable().rows.add(dataInWF).draw();
@@ -933,7 +961,7 @@ class NodeDataTableHandle {
                                                         </div>
                                                         <div class="modal-body modal-body-collab">
                                                             <div class="row collab-common-area">
-                                                                <div class="form-group">
+                                                                <div class="form-group form-group-data-source">
                                                                     <label class="form-label required">${NodeLoadDataHandle.transEle.attr('data-list-source')}</label>
                                                                     <select
                                                                         class="form-select box-list-source"
@@ -1477,6 +1505,7 @@ class NodeSubmitHandle {
                 let dataRowRaw = eleCheckBox.getAttribute('data-row');
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
+                    // setup data actions on Node
                     let actions = [];
                     for (let eleChecked of row.querySelectorAll('.check-action-node:checked')) {
                         actions.push(parseInt($(eleChecked).attr('data-id')));
@@ -1485,6 +1514,11 @@ class NodeSubmitHandle {
                     let modalCollab = row.querySelector('.modal-collab');
                     if (dataRow?.['is_system'] === true) { // SYSTEM NODES
                         if (dataRow?.['code'] === 'initial') {
+                            // check data actions
+                            if (dataRow['actions'].length <= 0) {
+                                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                                return false
+                            }
                             let tableInitial = modalCollab.querySelector('.table-initial-node-collaborator');
                             if (!tableInitial.querySelector('.dataTables_empty')) {
                                 for (let t = 0; t < tableInitial.tBodies[0].rows.length; t++) {
@@ -1502,12 +1536,27 @@ class NodeSubmitHandle {
                             dataRow['order'] = table[0].tBodies[0].rows.length;
                         }
                     } else { // COLLAB NODES
+                        // check data actions
+                        if (dataRow['actions'].length <= 0) {
+                            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                            return false
+                        }
+                        // reset data collab_in_form, collab_out_form, collab_in_workflow when update
+                        dataRow['collab_in_form'] = {};
+                        dataRow['collab_out_form'] = {};
+                        dataRow['collab_in_workflow'] = [];
+                        // setup data collab depend on option_collaborator
                         let boxListSource = modalCollab.querySelector('.box-list-source');
                         if ($(boxListSource).val() === '1') { // In Form
                             dataRow['option_collaborator'] = 0;
                             let dataInForm = {};
                             let IFArea = modalCollab.querySelector('.collab-in-form-area');
-                            dataInForm['app_property'] = $(IFArea?.querySelector('.box-in-form-property')).val();
+                            if ($(IFArea?.querySelector('.box-in-form-property')).val()) {
+                                dataInForm['app_property'] = $(IFArea?.querySelector('.box-in-form-property')).val();
+                            } else {
+                                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                                return false
+                            }
                             if ($(IFArea?.querySelector('.node-zone-submit')).val()) {
                                 dataInForm['zone'] = JSON.parse($(IFArea?.querySelector('.node-zone-submit')).val());
                             }
@@ -1516,7 +1565,12 @@ class NodeSubmitHandle {
                             dataRow['option_collaborator'] = 1;
                             let dataOutForm = {};
                             let OFArea = modalCollab.querySelector('.collab-out-form-area');
-                            dataOutForm['employee_list'] = JSON.parse($(OFArea?.querySelector('.node-out-form-employee-submit')).val());
+                            if ($(OFArea?.querySelector('.node-out-form-employee-submit')).val()) {
+                                dataOutForm['employee_list'] = JSON.parse($(OFArea?.querySelector('.node-out-form-employee-submit')).val());
+                            } else {
+                                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                                return false
+                            }
                             if ($(OFArea?.querySelector('.node-zone-submit')).val()) {
                                 dataOutForm['zone'] = JSON.parse($(OFArea?.querySelector('.node-zone-submit')).val());
                             }
@@ -1539,12 +1593,17 @@ class NodeSubmitHandle {
                                         zone.push(parseInt(zoneData?.['id']));
                                     }
                                     if (dataRowInWF?.['in_wf_option']) {
-                                        dataInWF.push({
-                                            'in_wf_option': dataRowInWF?.['in_wf_option'],
-                                            'employee': dataRowInWF?.['employee']?.['id'] ? dataRowInWF?.['employee']?.['id'] : null,
-                                            'position_choice': dataRowInWF?.['position_choice']?.['id'] ? dataRowInWF?.['position_choice']?.['id'] : null,
-                                            'zone': zone,
-                                        })
+                                        if (dataRowInWF?.['employee']?.['id'] || dataRowInWF?.['position_choice']?.['id']) {
+                                            dataInWF.push({
+                                                'in_wf_option': dataRowInWF?.['in_wf_option'],
+                                                'employee': dataRowInWF?.['employee']?.['id'] ? dataRowInWF?.['employee']?.['id'] : null,
+                                                'position_choice': dataRowInWF?.['position_choice']?.['id'] ? dataRowInWF?.['position_choice']?.['id'] : null,
+                                                'zone': zone,
+                                            })
+                                        } else {
+                                            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                                            return false
+                                        }
                                     }
                                 }
                             });

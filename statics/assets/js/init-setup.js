@@ -8,7 +8,7 @@ class SetupFormSubmit {
     }
 
     static serializerObject(formSelected) {
-        return formSelected.serializeArray().reduce((o, kv) => ({
+        return formSelected.find(':not([dont_serialize]):not([name^="DataTables_"])').serializeArray().reduce((o, kv) => ({
             ...o,
             [kv.name]: kv.value
         }), {});
@@ -486,11 +486,16 @@ class FileUtils {
     static keyInputTextName = 'data-f-input-name';
     static keyInputTextRequired = 'data-f-input-required';
     static keyInputTextDisabled = 'data-f-input-disabled';
+    static keyInputMultiple = 'data-f-multiple';
     static keyEleFileNameID = 'data-f-name-ele-id';
     static clsNameInputFile = 'input-file-upload';
 
     static _getMaxSizeDisplay() {
         return globeMaxFileSize.replaceAll("{size}", FileUtils.numberFileSizeMiBMax);
+    }
+
+    static _getAllowMultiple() {
+        return globeAllowMultiple;
     }
 
     static _checkTypeFileAllow(file_type, accept_list) {
@@ -549,7 +554,7 @@ class FileUtils {
         return '0 KiB';
     }
 
-    static createInputText(mainEle, name, required, disabled) {
+    static createInputText(mainEle, name, required, disabled, multiple = false) {
         let idRandom = UtilControl.generateRandomString(32);
         $(mainEle).attr(FileUtils.keyInputTextID, '#' + idRandom);
         let ele = $(`<input 
@@ -559,39 +564,45 @@ class FileUtils {
                 ${required === true ? "required" : ""}
                 ${disabled === true ? "disabled" : ""}
                 id="${idRandom}"
+                ${multiple === true ? 'multiple' : ''}
             />`);
         ele.val("");
         ele.insertAfter(mainEle);
         return ele;
     }
 
-    static updateInputText(inputText, required, disabled) {
+    static updateInputText(inputText, required, disabled, multiple) {
         $(inputText).prop('required', required);
         $(inputText).prop('disabled', disabled);
+        $(inputText).prop('multiple', multiple);
     }
 
-    static createInputFile(mainEle) {
+    static createInputFile(mainEle, required, disabled, multiple) {
         let idRandom = UtilControl.generateRandomString(32);
         $(mainEle).attr(FileUtils.keyInputFileID, '#' + idRandom);
 
         let accept = $(mainEle).attr(FileUtils.keyTypeAccept);
 
         let ele = $(`
-                <input 
-                    type="file" 
-                    class="hidden ${FileUtils.clsNameInputFile}" id="${idRandom}"
-                    accept="${accept ? accept : '*'}"
-                />
-                <small><i>${FileUtils._getMaxSizeDisplay()}</i></small>
-            `);
-        ele.val("");
+            <input 
+                type="file" 
+                value=""
+                class="hidden ${FileUtils.clsNameInputFile}" id="${idRandom}"
+                accept="${accept ? accept : '*'}"
+                ${required ? "required" : ""}
+                ${disabled ? "disabled" : ""}
+                ${multiple ? "multiple" : ""}
+            />
+            <small><i>${multiple === true ? FileUtils._getAllowMultiple() : ""} ${FileUtils._getMaxSizeDisplay()}</i></small>
+        `);
         ele.insertAfter(mainEle);
         return ele;
     }
 
-    static updateInputFile(inputFile, required, disabled) {
+    static updateInputFile(inputFile, required, disabled, multiple) {
         $(inputFile).prop('required', required);
         $(inputFile).prop('disabled', disabled);
+        $(inputFile).prop('multiple', multiple);
     }
 
     static enableButtonFakeUpload(btnFakeEle, disabled) {
@@ -603,22 +614,55 @@ class FileUtils {
             let idInputText = $(eleSelect$).attr(FileUtils.keyInputTextID);
             let idInputFile = $(eleSelect$).attr(FileUtils.keyInputFileID);
             let idInputTextName = $(eleSelect$).attr(FileUtils.keyInputTextName);
-            let idInputTextRequired = $(eleSelect$).attr(FileUtils.keyInputTextRequired);
-            let idInputTextDisabled = $(eleSelect$).attr(FileUtils.keyInputTextDisabled);
+            let idInputTextRequired = $.fn.parseBoolean($(eleSelect$).attr(FileUtils.keyInputTextRequired), true) === true;
+            let idInputTextDisabled = $.fn.parseBoolean($(eleSelect$).attr(FileUtils.keyInputTextDisabled), true) === true;
+            let idInputMultipleUpload = $.fn.parseBoolean($(eleSelect$).attr(FileUtils.keyInputMultiple), false) === true;
 
             if (idInputText && idInputFile) {
                 let eleInputText = $(idInputText);
                 let eleInputFile = $(idInputFile);
                 if (!(eleInputText.length > 0 && eleInputFile.length > 0)) {
-                    FileUtils.createInputText($(eleSelect$), idInputTextName, $.fn.parseBoolean(idInputTextRequired, true) === true, $.fn.parseBoolean(idInputTextDisabled, true) === true,);
-                    FileUtils.createInputFile($(eleSelect$));
+                    FileUtils.createInputText(
+                        $(eleSelect$),
+                        idInputTextName,
+                        idInputTextRequired,
+                        idInputTextDisabled,
+                        idInputMultipleUpload,
+                    );
+                    FileUtils.createInputFile(
+                        $(eleSelect$),
+                        idInputTextRequired,
+                        idInputTextDisabled,
+                        idInputMultipleUpload,
+                    );
                 } else {
-                    FileUtils.updateInputText($(eleInputText[0]), $.fn.parseBoolean(idInputTextRequired, true) === true, $.fn.parseBoolean(idInputTextDisabled, true) === true,)
-                    FileUtils.updateInputFile($(eleInputFile[0]), $.fn.parseBoolean(idInputTextRequired, true) === true, $.fn.parseBoolean(idInputTextDisabled, true) === true,)
+                    FileUtils.updateInputText(
+                        $(eleInputText[0]),
+                        idInputTextRequired,
+                        idInputTextDisabled,
+                        idInputMultipleUpload
+                    )
+                    FileUtils.updateInputFile(
+                        $(eleInputFile[0]),
+                        idInputTextRequired,
+                        idInputTextDisabled,
+                        idInputMultipleUpload,
+                    )
                 }
             } else {
-                FileUtils.createInputText($(eleSelect$), idInputTextName, $.fn.parseBoolean(idInputTextRequired, false) === true, $.fn.parseBoolean(idInputTextDisabled, false) === true,);
-                FileUtils.createInputFile($(eleSelect$));
+                FileUtils.createInputText(
+                    $(eleSelect$),
+                    idInputTextName,
+                    $.fn.parseBoolean(idInputTextRequired, false) === true,
+                    idInputTextDisabled,
+                    idInputMultipleUpload,
+                );
+                FileUtils.createInputFile(
+                    $(eleSelect$),
+                    idInputTextRequired,
+                    idInputTextDisabled,
+                    idInputMultipleUpload,
+                );
             }
 
             FileUtils.enableButtonFakeUpload($(eleSelect$), $.fn.parseBoolean(idInputTextDisabled, true) === true,)
@@ -697,12 +741,12 @@ class FileUtils {
         formData.append('file', file);
 
         let progressBarEle = $(`<div class="progress">
-                <div
-                        class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar"
-                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-                ></div>
-            </div>
-            `)
+            <div
+                class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar"
+                aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+            ></div>
+        </div>
+        `)
         $(btnMainEle).parent().append(progressBarEle);
 
         return $.fn.callAjax2({
@@ -939,17 +983,17 @@ class ListeningEventController {
                     else statusInputEle = frmEle.find('input[name="system_status"]');
 
                     // on submit push status to form
-                    $(frmEle).on('submit', function (event){
+                    $(frmEle).on('submit', function (event) {
                         let submitterEle = $(event.originalEvent.submitter);
-                        if (submitterEle && submitterEle.length > 0){
+                        if (submitterEle && submitterEle.length > 0) {
                             let systemStatus = submitterEle.attr('data-status-submit');
                             let statusCode = statusInputEle.val();
-                            if (statusCode === "" || statusCode === null || statusCode === undefined || statusCode === '0' || statusCode === 0){
+                            if (statusCode === "" || statusCode === null || statusCode === undefined || statusCode === '0' || statusCode === 0) {
                                 statusInputEle.val(Number.parseInt(systemStatus));
                             } else if (
                                 (statusCode === '0' || statusCode === 0)
                                 && (systemStatus === '1' || systemStatus === 1)
-                            ){
+                            ) {
                                 event.preventDefault();
                                 return false;
                             }
@@ -2189,15 +2233,15 @@ class UtilControl {
         return '_';
     }
 
-    static checkNumber(dataStr){
+    static checkNumber(dataStr) {
         return !isNaN(Number(dataStr))
     }
 
     static convertToSlug(Text) {
-            return Text.toLowerCase()
-                .replace(/[^\w ]+/g, "")
-                .replace(/ +/g, "-");
-        }
+        return Text.toLowerCase()
+            .replace(/[^\w ]+/g, "")
+            .replace(/ +/g, "-");
+    }
 }
 
 class DTBControl {
@@ -2844,8 +2888,10 @@ class DTBControl {
         // style 1
         let styleDom = opts?.['styleDom'] || 'full';
         let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt';
-        if (styleDom === 'small'){
+        if (styleDom === 'small') {
             domDTL += `<'row tbl-footer-toolbar' <'cus-page-info'<'col-12 d-flex justify-content-center py-1'l><'col-12  d-flex justify-content-center py-1'i><'col-12  d-flex justify-content-center py-1'p>>>`;
+        } else if (styleDom === 'hide-foot') {
+            domDTL += ``;
         } else {
             domDTL += `<'row tbl-footer-toolbar' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
         }
@@ -3788,9 +3834,9 @@ class DocumentControl {
                     "Finish": "badge badge-soft-success",
                     "Cancel": "badge badge-soft-danger",
                 }
-                if ($x.fn.checkNumber(system_status)){
-                   const key = Object.keys(status_class);
-                   system_status = key[system_status]
+                if ($x.fn.checkNumber(system_status)) {
+                    const key = Object.keys(status_class);
+                    system_status = key[system_status]
                 }
                 $('#idx-breadcrumb-current-code').append(
                     `<span class="${status_class[system_status]}">${system_status}</span>`
@@ -3860,61 +3906,62 @@ class DateTimeControl {
         return moment(data, fromFormat).format(toFormat ? toFormat : DateTimeControl.defaultFormatDate);
     }
 
-    static parseToMoment(data, format){
+    static parseToMoment(data, format) {
         return moment(data, format);
     }
 
-    static convertEleDate(ele$, opts = {}){
+    static convertEleDate(ele$, opts = {}) {
         let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDate;
         let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
 
         let data = $(ele$).val();
-        if (data){
+        if (data) {
             let fromFormat = $(ele$).attr('data-locale-format');
             return DateTimeControl.convertData(data, fromFormat, toFormat);
         }
         return defaultIsEmpty;
     }
 
-    static convertEleDatetime(ele$, opts = {}){
+    static convertEleDatetime(ele$, opts = {}) {
         let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDatetime;
         let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
 
         let data = $(ele$).val();
-        if (data){
+        if (data) {
             let fromFormat = $(ele$).attr('data-locale-format');
             return DateTimeControl.convertData(data, fromFormat, toFormat);
         }
         return defaultIsEmpty;
     }
 
-    static convertDateToMoment(data, opts = {}){
+    static convertDateToMoment(data, opts = {}) {
         let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDate;
         let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
-        if (data){
+        if (data) {
             return moment(data, toFormat);
         }
         return defaultIsEmpty;
     }
 
-    static convertDatetimeToMoment(data, opts = {}){
+    static convertDatetimeToMoment(data, opts = {}) {
         let toFormat = opts?.['toFormat'] || DateTimeControl.defaultFormatDatetime;
         let defaultIsEmpty = opts?.['defaultIsEmpty'] !== undefined ? opts?.['defaultIsEmpty'] : '';
-        if (data){
+        if (data) {
             return moment(data, toFormat);
         }
         return defaultIsEmpty;
     }
 
-    static reformatData(data, fromFormat, toFormat, defaultIsEmpty = ''){
-        if (data){
+    static reformatData(data, fromFormat, toFormat, defaultIsEmpty = '') {
+        if (data) {
             return moment(data, fromFormat).format(toFormat);
         }
         return defaultIsEmpty;
     }
 }
+
 class Beautiful {
-    static randomColorClass(){
+    static randomColorClass() {
         const randomColor = [
             "primary", "success", "warning", "danger", "info", "red", "green", "pink", "purple",
             "violet", "indigo", "blue", "sky", "cyan", "teal", "neon", "lime", "sun", "yellow", "orange", "pumpkin",
@@ -3924,11 +3971,619 @@ class Beautiful {
     }
 }
 
+class FileControl {
+    static get_val(input_val, default_empty=null){
+        if (input_val){
+            let result = [];
+            input_val.split(",").map(
+                (item) => {if (item && UtilControl.checkUUID4(item)) result.push(item);}
+            )
+            return result;
+        }
+        return default_empty
+    }
+
+    static convert_size_to_simple_display(value, typeCode) {
+        function upto_level(_typeCode) {
+            if (_typeCode === '') {
+                return 'KB';
+            }
+            if (_typeCode === 'KB') {
+                return 'MB';
+            }
+            if (_typeCode === 'MB') {
+                return 'GB';
+            }
+            return 'TB';
+        }
+
+        if (value > 1024) {
+            if (typeCode === 'TB') {
+                return {
+                    value,
+                    typeCode
+                }
+            }
+            return FileControl.convert_size_to_simple_display(
+                value / 1024,
+                upto_level(typeCode)
+            )
+        }
+        return {
+            value,
+            typeCode
+        }
+    }
+
+    static parse_size(value, round = 2) {
+        let data = FileControl.convert_size_to_simple_display(value, "")
+        return `${data.value.toFixed(round)} ${data.typeCode}`;
+    }
+
+    static resolve_ids(ids){
+        let result = [];
+        ids.split(",").map(
+            (item) => {
+                if (item){
+                    result.push(item.trim());
+                }
+            }
+        )
+        return result.join(",");
+    }
+
+    ui_multi_add_file(id, file) {
+        // Creates a new file and add it to our list
+        let base64Capture = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzVweCIgaGVpZ2h0PSIzNXB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGc+CiAgICA8cGF0aCBkPSJNMTkgOVYxNy44QzE5IDE4LjkyMDEgMTkgMTkuNDgwMiAxOC43ODIgMTkuOTA4QzE4LjU5MDMgMjAuMjg0MyAxOC4yODQzIDIwLjU5MDMgMTcuOTA4IDIwLjc4MkMxNy40ODAyIDIxIDE2LjkyMDEgMjEgMTUuOCAyMUg4LjJDNy4wNzk4OSAyMSA2LjUxOTg0IDIxIDYuMDkyMDIgMjAuNzgyQzUuNzE1NjkgMjAuNTkwMyA1LjQwOTczIDIwLjI4NDMgNS4yMTc5OSAxOS45MDhDNSAxOS40ODAyIDUgMTguOTIwMSA1IDE3LjhWNi4yQzUgNS4wNzk4OSA1IDQuNTE5ODQgNS4yMTc5OSA0LjA5MjAyQzUuNDA5NzMgMy43MTU2OSA1LjcxNTY5IDMuNDA5NzMgNi4wOTIwMiAzLjIxNzk5QzYuNTE5ODQgMyA3LjA3OTkgMyA4LjIgM0gxM00xOSA5TDEzIDNNMTkgOUgxNEMxMy40NDc3IDkgMTMgOC41NTIyOCAxMyA4VjMiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8L2c+Cjwvc3ZnPgo=';
+        let template = this.ele$.find('.pattern-file-text-plain').text()
+            .replace('%%filename%%', file.name)
+            .replace('%%fileid%%', id)
+            .replace('%%fileinfo%%', FileControl.parse_size(file.size))
+            .replace('%%filecapture%%', base64Capture)
+            .replace('%%fileremark%%', file.remarks || '')
+        ;
+
+        this.ele$.find('.dm-uploader-no-files').hide();
+
+        this.ele$.find('.dm-uploader-result-list').prepend(template).fadeIn();
+    }
+
+    ui_multi_update_file_progress(id, percent, class_state) {
+        let ele = this.ele$.find(`[data-file-id="${id}"]`);
+        if (ele.length > 0) {
+            ele.alterClass('state-f-*').addClass(class_state);
+            if (percent) {
+                ele.find('.btn-percent-upload').addClass('show').text(percent + '%');
+                if (percent === 100) {
+                    setTimeout(
+                        () => {
+                            ele.find('.btn-percent-upload').fadeOut().removeClass('show');
+                        },
+                        1000
+                    )
+                }
+            }
+        }
+    }
+
+    ui_update_input_file(config) {
+        // resolve type
+        let acceptData = [];
+        let acceptDataTxt = 'ALL';
+        let allowType = config.allowedTypes;
+        if (allowType && allowType !== '*') {
+            let inputFileEle = this.ele$.find('.dm-uploader input[type="file"]');
+            if (inputFileEle.length > 0){
+                if (allowType.endsWith("/*")) {
+                    acceptData.push(allowType);
+                } else {
+                    let extFile = config.extFilter;
+                    if (extFile && Array.isArray(extFile)) extFile.map(
+                        (item) => {
+                            acceptData.push(
+                                `${allowType}/${item}`
+                            )
+                        }
+                    );
+                    else acceptData.push(`${allowType}/*`);
+                }
+
+                acceptDataTxt = acceptData.join(", ");
+                inputFileEle.attr('accept', acceptDataTxt);
+            } else {
+                acceptDataTxt = allowType;
+            }
+        }
+
+
+        // resolve size
+        let sizeLimitTxt = FileControl.parse_size(config.maxFileSize);
+
+        // show instruction
+        let htmlOfType = acceptDataTxt === 'ALL' ? '' : this.ele$.find('.template-data-error-type').text().replace('%%fileaccept%%', acceptDataTxt);
+        let htmlOfSize = this.ele$.find('.template-data-error-size').text().replace('%%filesizelimit%%', sizeLimitTxt);
+        this.ele$.find('.instruction-upload-file-text').append(htmlOfType, htmlOfSize);
+    }
+
+    ui_check_id_exist(id){
+        let inputEle = this.ele$.find('.dm-uploader-ids');
+        return inputEle.val().indexOf(id) !== -1;
+    }
+
+    ui_add_id(id) {
+        let inputEle = this.ele$.find('.dm-uploader-ids');
+        let ids = inputEle.val();
+        if (typeof ids === 'string' && ids.indexOf(id) === -1) {
+            ids = FileControl.resolve_ids(ids + ',' + id)
+            inputEle.val(ids);
+        }
+    }
+
+    ui_remove_id(id){
+        if (this.init_opts.enable_remove === true){
+            let inputEle = this.ele$.find('.dm-uploader-ids');
+            let ids = inputEle.val();
+            if (typeof ids === 'string' && ids.indexOf(id) !== -1) {
+                inputEle.val(
+                    FileControl.resolve_ids(
+                        ids.replace(id, '')
+                    )
+                );
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Remove was not support!',
+            });
+        }
+    }
+
+    ui_remove_line_file_by_id(id) {
+        let itemEle = this.ele$.find(`.dm-uploader-result-list .dm-uploader-result-item[data-file-id="${id}"]`);
+        if (itemEle.length > 0){
+            this.ui_remove_id(itemEle.attr('data-file-id'));
+            itemEle.remove();
+        }
+
+        let resultItem = this.ele$.find('.dm-uploader-result-list .dm-uploader-result-item');
+        if (resultItem.length === 0) {
+            this.ele$.find('.dm-uploader-no-files').fadeIn();
+            this.ele$.find('.dm-uploader-result-list').fadeOut();
+        }
+    }
+
+    ui_on_click_remove(parentEle = null) {
+        if (this.init_opts.enable_remove === true) {
+            let clsThis = this;
+            let itemEle = parentEle ? parentEle : clsThis.ele$.find('.dm-uploader-result-item');
+            itemEle.find('.btn-destroy-file').on('click', function () {
+                let itemEle = $(this).closest('.dm-uploader-result-item');
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-sure-delete'),
+                    icon: 'question',
+                    html: `
+                        <p>${itemEle.find('.f-item-name').text()}</p>
+                        <small class="text-warning">${$.fn.transEle.attr('data-change-not-save-until-doc-save')}</small>
+                    `,
+                    confirmButtonText: $.fn.transEle.attr('data-msg-yes-delete-it'),
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    showCancelButton: true,
+                }).then(
+                    (results) => {
+                        if (results.isConfirmed) {
+                            clsThis.ui_remove_line_file_by_id(itemEle.attr('data-file-id'));
+                        }
+                    }
+                )
+            })
+        }
+    }
+
+    ui_on_show_file_cloud() {
+        // Call ajax (DTB) when fist open modal
+        let clsThis = this;
+        let modalEle = this.ele$.find('.modal.modal-file-cloud');
+        let selectedGroup = modalEle.find('.selected-file-cloud');
+        let tblEle = modalEle.find('table.select-file-cloud');
+
+        function refresh_dtb(){
+            tblEle.DataTable().rows().clear();
+            selectedGroup.empty().closest('.selected-file-cloud-group').fadeOut();
+        }
+
+        modalEle.on('show.bs.modal', function () {
+            if (tblEle.length === 1) {
+                if($.fn.DataTable.isDataTable(tblEle)){
+                    refresh_dtb();
+                    tblEle.DataTable().ajax.reload();
+                } else {
+                    tblEle.DataTableDefault({
+                        useDataServer: true,
+                        styleDom: 'small',
+                        ajax: {
+                            url: tblEle.attr('data-url'),
+                            type: 'GET',
+                            dataSrc: function (resp) {
+                                let data = $.fn.switcherResp(resp);
+                                if (data && resp.data.hasOwnProperty('file_list')) {
+                                    return resp.data['file_list'] ? resp.data['file_list'] : [];
+                                }
+                                throw Error('Call data raise errors.')
+                            },
+                        },
+                        columns: [
+                            {
+                                width: '10%',
+                                render: (data, type, row) => {
+                                    return `<div class="form-check"><input type="checkbox" class="form-check-input row-select"></div>`;
+                                }
+                            },
+                            {
+                                width: '25%',
+                                className: 'wrap-text',
+                                data: 'file_name',
+                                render: (data, type, row) => {
+                                    return data;
+                                }
+                            },
+                            {
+                                width: '15%',
+                                className: 'wrap-text',
+                                data: 'file_size',
+                                render: (data, type, row) => {
+                                    if (data) {
+                                        return FileControl.parse_size(data)
+                                    }
+                                    return data;
+                                }
+                            },
+                            {
+                                width: '25%',
+                                className: 'wrap-text',
+                                data: 'remarks',
+                                render: (data, type, row) => {
+                                    return data || '';
+                                }
+                            },
+                            {
+                                width: '25%',
+                                className: 'wrap-text',
+                                data: 'date_created',
+                                render: (data, type, row) => {
+                                    if (data) {
+                                        return $x.fn.displayRelativeTime(data);
+                                    }
+                                    return data;
+                                }
+                            },
+                        ],
+                        rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
+                            $(row).find('input[type="checkbox"].row-select').on('change', function () {
+                                if ($(this).prop('checked') === true) {
+                                    selectedGroup.closest('.selected-file-cloud-group').fadeIn();
+                                    selectedGroup.append(
+                                        $(`
+                                        <span 
+                                            class="selected-file-cloud-item badge badge-soft-primary mr-1 mb-1" 
+                                            data-id="${data.id}"
+                                        >
+                                            ${data.file_name}
+                                            <script type="application/json" class="d-none">
+                                                ${JSON.stringify(data)}
+                                            </script>
+                                        </span>
+                                    `)
+                                    )
+                                } else {
+                                    selectedGroup.find(`.selected-file-cloud-item[data-id="${data.id}"]`).remove();
+                                    if (selectedGroup.find('.selected-file-cloud-item').length === 0) {
+                                        selectedGroup.closest('.selected-file-cloud-group').fadeOut();
+                                    }
+                                }
+                            })
+                        },
+                        initComplete: function (settings, json){
+                            modalEle.find('button.save-change-file-cloud').on('click', function (){
+                                let ids = {};
+                                selectedGroup.find('.selected-file-cloud-item').each(function (){
+                                    ids[$(this).attr('data-id')] = JSON.parse($(this).find('script').text());
+                                })
+                                let skipFileName = [];
+                                Object.keys(ids).map(
+                                    (key) => {
+                                        let file_id = ids[key]?.['id'];
+                                        if (file_id && clsThis.ui_check_id_exist(file_id)) skipFileName.push(ids[key].file_name);
+                                        else clsThis.ui_load_file_data(ids[key]);
+                                    }
+                                )
+                                if (skipFileName.length > 0){
+                                    Swal.fire({
+                                        position: "top-end",
+                                        icon: "info",
+                                        html: `<p>${clsThis.ele$.attr('data-msg-skip-exist-file')}</p> <b>${skipFileName.join(", ")}</b>`,
+                                        showConfirmButton: false,
+                                        timer: 1000,
+                                    });
+                                }
+                            })
+                        },
+                    });
+                }
+            }
+        })
+    }
+
+    ui_load_file_data(fileData) {
+        let file_id = fileData?.['id'];
+        if (file_id){
+            if (!this.ui_check_id_exist(file_id)){
+                let f_obj = new File([""], fileData.file_name, {
+                    name: fileData.file_name,
+                    type: fileData.file_type,
+                    lastModified: $x.fn.parseDateTime(fileData.date_created),
+                });
+                Object.defineProperty(f_obj, 'remarks', {value: fileData.remarks});
+                Object.defineProperty(f_obj, 'size', {value: fileData.file_size})
+                this.ui_multi_add_file(fileData.id, f_obj);
+                this.ui_multi_update_file_progress(fileData.id, null, 'state-f-success');
+                this.ui_on_click_remove(
+                    this.ele$.find(`.dm-uploader-result-item[data-file-id="${fileData.id}"]`)
+                )
+                this.ui_add_id(fileData.id);
+            } else {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "info",
+                    html: `<p>${this.ele$.attr('data-msg-skip-exist-file')}</p> <b>${fileData.file_name}</b>`,
+                    showConfirmButton: false,
+                    timer: 1000,
+                });
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: this.ele$.attr('data-msg-upload-exception'),
+            });
+        }
+    }
+
+    _config() {
+        let clsThis = this;
+        return {
+            url: '#',
+            maxFileSize: 3 * 1024 * 1024, // 3 Megs (MB)
+            allowedTypes: "*",
+            extFilter: null,
+            onDragEnter: function () {
+                // Happens when dragging something over the DnD area
+                this.addClass('active');
+            },
+            onDragLeave: function () {
+                // Happens when dragging something OUT of the DnD area
+                this.removeClass('active');
+            },
+            onInit: function () {
+                // Plugin is ready to use
+            },
+            onComplete: function () {
+                // All files in the queue are processed (success or error)
+            },
+            onNewFile: function (id, file) {
+                // When a new file is added using the file selector or the DnD area
+                clsThis.ui_multi_add_file(id, file);
+            },
+            onBeforeUpload: function (id) {
+                // about tho start uploading a file
+                clsThis.ui_multi_update_file_progress(id, 0, 'state-f-wait');
+            },
+            onUploadCanceled: function (id) {
+                // Happens when a file is directly canceled by the user.
+                clsThis.ui_multi_update_file_progress(id, 0, 'state-f-cancel');
+            },
+            onUploadProgress: function (id, percent) {
+                // Updating file progress
+                clsThis.ui_multi_update_file_progress(id, percent, 'state-f-progress');
+            },
+            onUploadSuccess: function (id, data) {
+                // A file was successfully uploaded
+                clsThis.ui_multi_update_file_progress(id, 100, 'state-f-success');
+            },
+            onUploadError: function (id, xhr, status, message) {
+                clsThis.ui_multi_update_file_progress(id, 0, 'state-f-error');
+            },
+            onFallbackMode: function () {},
+            onFileTypeError: function (file) {},
+            onFileSizeError: function (file) {},
+            onFileExtError: function (file) {},
+        }
+    }
+
+    constructor(ele$, opts = {}) {
+        this.ele$ = ele$;
+        this.config = {
+            ...this._config(),
+            ...opts,
+        }
+        this.init_opts = {};
+    }
+
+    init(opts = {}) {
+        let clsThis = this;
+        const config = this.config;
+
+        if (!this.ele$.hasClass('dad-file-control-group')){
+            this.ele$.find('.dad-file-control-group').each(function (){
+                new FileControl(
+                    $(this),
+                    config,
+                ).init(opts);
+            });
+            return;
+        } else {
+            opts = {
+                'name': '',
+                'data': [],
+                ...(
+                    (opts?.['enable_edit'] || true) === true ? {
+                        'readonly': false,
+                        'disabled': false,
+                        'enable_choose_file': true,
+                        'enable_remove': true,
+                    }: {
+                        'readonly': true,
+                        'disabled': true,
+                        'enable_choose_file': false,
+                        'enable_remove': false,
+                    }
+                ),
+                'required': false,
+                ...opts
+            }
+            this.init_opts = opts;
+            this.ele$.each(function () {
+                let groupEle = $(this);
+                let dmUploaderEle = $(groupEle).find('.dm-uploader');
+                let dmResults = $(groupEle).find('.dm-uploader-results')
+
+                if (dmUploaderEle.length > 0 && dmResults.length > 0) {
+                    dmUploaderEle.dmUploader({
+                        ...config,
+                        extraData: async function(fileId, fileData){
+                            return await Swal.fire({
+                                input: "text",
+                                title: groupEle.attr('data-msg-description-file'),
+                                html: fileData.name,
+                                inputAttributes: {
+                                    autocapitalize: "off"
+                                },
+                                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                                showCancelButton: true,
+                                allowOutsideClick: false,
+                                preConfirm: (remark) => {
+                                    return {'remarks': remark}
+                                },
+                            }).then(
+                                async (result) => {
+                                    if (result.isConfirmed) {
+                                        return {
+                                            'state': true,
+                                            'data': result.value,
+                                        }
+                                    } else {
+                                        clsThis.ui_remove_line_file_by_id(fileId);
+                                        return {
+                                            'state': false,
+                                            'data': 'CANCEL',
+                                        }
+                                    }
+                                }
+                            )
+                        },
+                        url: $(clsThis.ele$).attr('data-url'),
+                        headers: {
+                            'X-CSRFToken': clsThis.ele$.find('input[name="csrfmiddlewaretoken"]').val()
+                        },
+                        onUploadSuccess: function (id, data){
+                            let fileData = data?.['data']?.['file_detail'] || null;
+                            if (typeof fileData === 'object' && fileData.hasOwnProperty('id')){
+                                config.onUploadSuccess(id, data);
+                                let eleItem = clsThis.ele$.find(`.dm-uploader-result-item[data-file-id="${id}"]`);
+                                eleItem.attr('data-file-id', data);
+                                eleItem.find('input.file-txt-remark').val(fileData.remarks);
+                                clsThis.ui_on_click_remove(eleItem);
+                                clsThis.ui_add_id(fileData.id);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: clsThis.ele$.attr('data-msg-upload-exception'),
+                                });
+                            }
+                        },
+                        onUploadError: function (id, xhr, status, message) {
+                            config.onUploadError(id, xhr, status, message);
+                            Swal.fire({
+                                icon: 'error',
+                                title: clsThis.ele$.attr('data-msg-upload-exception'),
+                            });
+                            clsThis.ui_remove_line_file_by_id(id);
+                        },
+                        onInit: function () {
+                            // append input file ids storages
+                            $(dmResults).append(`
+                                <input 
+                                    type="text" 
+                                    ${opts.name ? 'name="' + opts.name + '"' : ''} 
+                                    value="" 
+                                    class="dm-uploader-ids hidden" 
+                                    ${opts.readonly ? "readonly": ""}
+                                    ${opts.disabled ? "disabled": ""}
+                                    ${opts.required ? "required": "" }
+                                />
+                            `);
+
+                            // init table file cloud
+                            clsThis.ui_on_show_file_cloud();
+
+                            // update input file
+                            clsThis.ui_update_input_file(config);
+
+                            // resolve exist data
+                            if (Array.isArray(opts.data) && opts.data.length > 0){
+                                opts.data.map((item) => clsThis.ui_load_file_data(item))
+                            } else {
+                                clsThis.ele$.find('.dm-uploader-no-files').show();
+                            }
+
+                            // show choose file
+                            if (!opts.enable_choose_file){
+                                dmUploaderEle.remove();
+                            }
+                            // show remove file exist
+                            if (!opts.enable_remove){
+                                clsThis.ele$.find('button.btn-destroy-file').remove()
+                            }
+                        },
+                        onFileTypeError: function (file) {
+                            let templateTitle = clsThis.ele$.find('.template-title-error-type').html();
+                            let templateData = clsThis.ele$.find('.instruction-upload-file-text').html();
+
+                            Swal.fire({
+                                title: templateTitle,
+                                icon: "error",
+                                html: templateData,
+                            });
+                        },
+                        onFileSizeError: function (file) {
+                            let templateTitle = clsThis.ele$.find('.template-title-error-size').html();
+                            let templateData = clsThis.ele$.find('.instruction-upload-file-text').html();
+
+                            Swal.fire({
+                                title: templateTitle,
+                                icon: "error",
+                                html: templateData,
+                            });
+                        },
+                        onFileExtError: function (file) {
+                            let templateTitle = clsThis.ele$.find('.template-title-error-type').html();
+                            let templateData = clsThis.ele$.find('.instruction-upload-file-text').html();
+
+                            Swal.fire({
+                                title: templateTitle,
+                                icon: "error",
+                                html: templateData,
+                            });
+                        },
+                    });
+                }
+            });
+        }
+    }
+}
+
 let $x = {
     cls: {
         frm: SetupFormSubmit,
         window: WindowControl,
-        file: FileUtils,
         wf: WFRTControl,
         util: UtilControl,
         dtb: DTBControl,
@@ -3937,6 +4592,7 @@ let $x = {
         bastionField: BastionFieldControl,
         excelToJSON: ExcelToJSON,
         datetime: DateTimeControl,
+        file: FileControl,
     },
     fn: {
         fileInit: FileUtils.init,

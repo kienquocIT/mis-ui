@@ -42,6 +42,7 @@
         <link href="{% static 'assets/css/plugins/datatable/dist/css/table-advance-1.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'vendors/timeline-me/jquery.timelineMe.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'vendors/timeline-me/timelineMe.custom.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'vendors/dm-uploader/dist/css/jquery.dm-uploader.min.css' %}" rel="stylesheet" type="text/css">
 
         <style>
             html, body {
@@ -444,6 +445,7 @@
         const globeUrlAttachmentUpload = "{% url 'AttachmentUpload' %}";
         const globeUrlAvatarUpload = "{% url 'EmployeeUploadAvatarAPI' %}";
         const globeMaxFileSize = "{% trans 'Maximum size {size}MiB' %}.";
+        const globeAllowMultiple = "{% trans 'Allows uploading multiple files' %}.";
         const globeFileDeny = "{% trans 'File type not allowed for uploading' %}";
         const globeFileAccept = "{% trans 'It must be one of the following file types:' %}";
 
@@ -489,6 +491,8 @@
     <script src="{% static 'assets/js/init-setup.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
     <script src="{% static 'assets/js/plugins/card-tools.js' %}"></script>
+{#    <script src="{% static 'vendors/dm-uploader/dist/js/jquery.dm-uploader.min.js' %}"></script>#}
+    <script src="{% static 'vendors/dm-uploader/src/js/jquery.dm-uploader.js' %}"></script>
     <!-- // Init JS -->
 
     <script type="application/javascript">

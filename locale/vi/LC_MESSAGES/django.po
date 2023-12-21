@@ -514,7 +514,7 @@ msgstr "Thêm Nhân Viên, Quản Lý"
 
 #
 msgid "Select Group Level"
-msgstr "Chọn cấp nhóm"
+msgstr "Chọn Cấp Nhóm"
 
 #
 msgid "Level link to this group"
@@ -522,7 +522,7 @@ msgstr "Cấp được liên kết với nhóm này"
 
 #
 msgid "Select Parent Group"
-msgstr "Lựa chọn nhóm cha"
+msgstr "Lựa chọn Nhóm cha"
 
 #
 msgid "Group parent of this group"
@@ -530,23 +530,23 @@ msgstr "Nhóm cha của nhóm này"
 
 #
 msgid "Reference Group Title"
-msgstr "Tên nhóm Liên Kết"
+msgstr "Tên Nhóm Liên Kết"
 
 #
 msgid "Input Display Group Title"
-msgstr "Nhập tên hiển thị của nhóm"
+msgstr "Nhập Tên Hiển Thị Của Nhóm"
 
 #
 msgid "Name of Group"
-msgstr "Tên của nhóm"
+msgstr "Tên của Nhóm"
 
 #
 msgid "Input Group Code"
-msgstr "Nhập mã nhóm"
+msgstr "Nhập Mã Nhóm"
 
 #
 msgid "Code of Group"
-msgstr "Mã của nhóm"
+msgstr "Mã của Nhóm"
 
 #
 msgid "Description"
@@ -554,7 +554,7 @@ msgstr "Mô Tả"
 
 #
 msgid "Desciption of Group"
-msgstr "Mô Tả của nhóm"
+msgstr "Mô Tả của Nhóm"
 
 #
 msgid "Add Employee to group"
@@ -618,7 +618,7 @@ msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Hai"
 
 #
 msgid "Name of Reference Group"
-msgstr "Tên của nhóm liên quan"
+msgstr "Tên Của Nhóm Liên Quan"
 
 #
 msgid "System title of 1st manager"
@@ -1066,7 +1066,7 @@ msgstr "Tên khách hàng"
 
 #
 msgid "Group"
-msgstr "Nhóm"
+msgstr "Phòng ban"
 
 #
 msgid "Industry"
@@ -1478,7 +1478,7 @@ msgstr "Tỉnh"
 
 #
 msgid "Inventory"
-msgstr "Kho"
+msgstr "Kho - giao hàng"
 
 #
 msgid "Sale"
@@ -1506,7 +1506,7 @@ msgstr "Nhóm Đơn vị tính"
 
 #
 msgid "UoM"
-msgstr "Đơn vị"
+msgstr "Đơn vị tính"
 
 #
 msgid "Good receipt create"
@@ -1747,11 +1747,11 @@ msgstr "Danh mục sản phẩm"
 
 #
 msgid "Unit Of Measure"
-msgstr "Đơn vị"
+msgstr "Đơn vị tính"
 
 #
 msgid "Unit Of Measure Group"
-msgstr "Nhóm Đơn vị"
+msgstr "Nhóm Đơn vị tính"
 
 #
 msgid "Is referenced unit"
@@ -2255,8 +2255,8 @@ msgid "Select Quotation"
 msgstr "Chọn báo giá"
 
 #
-msgid "Copy all from quotation"
-msgstr "Sao chép tất cả từ báo giá"
+msgid "Copy all from quotation to sale order"
+msgstr "Sao chép tất cả từ báo giá sang đơn hàng"
 
 #
 msgid "Input"
@@ -4866,27 +4866,27 @@ msgstr "Nghiệm thu"
 
 #
 msgid "Group level"
-msgstr "Cấp nhóm"
+msgstr "Cấp phòng"
 
 #
 msgid "Group reference title"
-msgstr "Tên nhóm tham chiếu"
+msgstr "Tên phòng tham chiếu"
 
 #
 msgid "Group display title"
-msgstr "Tên nhóm hiển thị"
+msgstr "Tên phòng hiển thị"
 
 #
 msgid "Group code"
-msgstr "Mã nhóm"
+msgstr "Mã phòng"
 
 #
 msgid "Upper group"
-msgstr "Nhóm cấp trên"
+msgstr "Phòng cấp trên"
 
 #
 msgid "Manager"
-msgstr "Trưởng nhóm"
+msgstr "Trưởng phòng"
 
 
 #
@@ -4923,7 +4923,7 @@ msgstr "Thời hạn đặt lại"
 
 #
 msgid "Minimum char number"
-msgstr "Số kí tự của Number"
+msgstr "Số kí tự tối thiểu (Number)"
 
 #
 msgid "Schema"
@@ -5367,7 +5367,7 @@ msgstr "Đến ngày"
 
 #
 msgid "Group description"
-msgstr "Mô tả nhóm"
+msgstr "Mô tả phòng ban"
 
 #
 msgid "1st manager title"
@@ -5379,7 +5379,7 @@ msgstr "Tên quản lý thứ hai"
 
 #
 msgid "Add group level"
-msgstr "Thêm cấp nhóm"
+msgstr "Thêm cấp phòng ban"
 
 #
 msgid "Expense items"
@@ -5667,3 +5667,55 @@ msgstr "Nhập vị trí"
 #
 msgid "Create meeting"
 msgstr "Tạo cuộc họp"
+
+#
+msgid "Allows uploading multiple files"
+msgstr "Cho phép tải lên nhiều tệp"
+
+#
+msgid "No files uploaded"
+msgstr "Không có tệp được tải lên"
+
+#
+msgid "Drag & drop Files here"
+msgstr "Kéo và thả tệp ở đây"
+
+#
+msgid "Open the file Browser"
+msgstr "Chọn tệp trên máy tính"
+
+#
+msgid "Open the file Cloud"
+msgstr "Chọn tệp trên kho tệp"
+
+#
+msgid "File upload size exceeds the limit."
+msgstr "Kích thước tệp tải lên vượt quá giới hạn."
+
+#
+msgid "File upload type is not support."
+msgstr "Kiểu tập tin tải lên không hỗ trợ."
+
+#
+msgid "Allow uploading files of"
+msgstr "Cho phép tải lên các tập tin của"
+
+#
+msgid "The file size must be smaller than"
+msgstr "Kích thước tập tin phải nhỏ hơn"
+
+#
+msgid "All changes will not be saved until the document is saved."
+msgstr "Tất cả các thay đổi sẽ không được lưu cho đến khi tài liệu được lưu."
+
+#
+msgid "Has exception in upload progress"
+msgstr "Xảy ra lỗi trong quá trình tải tập tin lên"
+
+#
+msgid "Skip add exist file"
+msgstr "Bỏ qua thêm tập tin vì đã sẵn sàng"
+
+#
+msgid "Descriptions of file"
+msgstr "Mô tả của tập tin"

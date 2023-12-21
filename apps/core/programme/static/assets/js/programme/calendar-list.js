@@ -26,7 +26,7 @@ class programmeHandle {
                         'second': item?.source['meeting_from_time'].split(':')[2][2],
                     })
                 else if (item?.source.calendar_type === 2)
-                    time = item['date_f']
+                    time = item['start']
                 html.find('.event-time').html($x.fn.displayRelativeTime(time, {'outputFormat': 'DD/MM/YYYY hh:mm:ss'}))
                 html.find('.event-name').html(item.title)
                 itemList += html.prop('outerHTML')
@@ -50,10 +50,16 @@ class programmeHandle {
         moment.locale('en')
         if (data.calendar_type === 1) { // this case meeting
             afterPrepare.title = data.subject
-            afterPrepare.date = String.format("{0} - {1}", moment(data.meeting_date, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY'),
-                moment(data.meeting_date, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY'))
-            afterPrepare.time = String.format("{0} - {1}", moment(data.meeting_from_time, 'hh:mm:ss.ssssss').format('hh:mm A'),
-                moment(data.meeting_date, 'hh:mm:ss.ssssss').format('hh:mm A'))
+            afterPrepare.date = String.format(
+                "{0} - {1}",
+                moment(data.meeting_date, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY'),
+                moment(data.meeting_date, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY')
+            )
+            afterPrepare.time = String.format(
+                "{0} - {1}",
+                moment(data.meeting_from_time, 'hh:mm:ss.ssssss').format('hh:mm A'),
+                moment(data.meeting_to_time, 'hh:mm:ss.ssssss').format('hh:mm A')
+            )
             afterPrepare.location = String.format("{0}, {1}", data.room_location, data.meeting_address)
             afterPrepare.type = $trans.attr('data-meet')
             for (let item of data.employee_attended_list) {
@@ -76,10 +82,14 @@ class programmeHandle {
                 afterPrepare.member += tempHTML.prop('outerHTML')
             }
         } else { // this case leave
-            afterPrepare.date = String.format("{0} - {1}", moment(data.date_from, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY'),
-                moment(data.date_to, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY'))
-            afterPrepare.time = String.format("{0} - {1}", moment(data.date_from, 'YYYY-MM-DD hh:mm:ss').format('hh:mm A'),
-                moment(data.date_to, 'YYYY-MM-DD hh:mm:ss').format('hh:mm A'))
+            afterPrepare.date = String.format("{0} - {1}",
+                moment(data.date_from, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY'),
+                moment(data.date_to, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY')
+            )
+            afterPrepare.time = String.format("{0} - {1}",
+                moment(data.date_from, 'YYYY-MM-DD hh:mm:ss').format('hh:mm A'),
+                moment(data.date_to, 'YYYY-MM-DD hh:mm:ss').format('hh:mm A')
+            )
             afterPrepare.type = $trans.attr('data-leave')
             let tempHTML = $($('.temp-chip').html())
             tempHTML.find('.chip-text').text(data.employee_inherit.full_name)
@@ -141,7 +151,7 @@ class programmeHandle {
                             borderColor: '#da82f8',
                             title: item.title,
                             start: item.date_f,
-                            end: item.date_t,
+                            end: moment(item.date_t).add(1, 'days').format('YYYY-MM-DD'),
                             allDay: true,
                             source: item
                         }
@@ -173,10 +183,12 @@ class programmeHandle {
                     let nextDay = {}
                     for (let item of data) {
                         item.calendar_type = 3
+                        let endD = item.date_to
+                        if (!item.morning_shift_t) endD = moment(endD).add(1, 'days').format('YYYY-MM-DD')
                         let temp = {
                             title: item.title,
                             start: item.date_from,
-                            end: item.date_to,
+                            end: endD,
                             allDay: item.morning_shift_f && !item.morning_shift_t,
                             source: item
                         }
@@ -249,7 +261,8 @@ class programmeHandle {
                     programmeHandle.callBusiness(calendar, params);
                     break;
                 default:
-                    if (emp.length > 0) params.leave__employee_inherit__in = emp.join(',')
+                    if (emp.length > 0) params.leave_employee_list = emp.join(',')
+                    else params.self_employee = true
                     if (group) params.leave__employee_inherit__group = group
                     params.leave_date = moment().format('YYYY-MM-DD')
                     programmeHandle.callLeave(calendar, params);
@@ -268,11 +281,13 @@ $(document).ready(function () {
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         initialDate: moment().format('YYYY-MM-DD'),
-        locale: 'en',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        titleFormat:{
+            weekday: 'long'
         },
         themeSystem: 'bootstrap5',
         dayMaxEventRows: 5,
@@ -283,6 +298,11 @@ $(document).ready(function () {
         },
         eventClick: function (info) {
             window.targetEvent = info.event;
+        },
+        eventTimeFormat: {
+            hour: '2-digit',
+            minute: '2-digit',
+            meridiem: 'short'
         },
     });
     programmeHandle.init(calendar);

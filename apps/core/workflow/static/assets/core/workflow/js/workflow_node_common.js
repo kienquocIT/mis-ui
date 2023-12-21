@@ -781,6 +781,9 @@ class NodeLoadDataHandle {
                 NodeLoadDataHandle.loadRowTableInitialNode(row);
                 NodeLoadDataHandle.loadZoneDD(row);
                 NodeLoadDataHandle.loadZoneHiddenDD(row);
+                if (dataRow?.['is_edit_all_zone'] === true) {
+                    initialArea.querySelector('.checkbox-node-zone-all').checked = true;
+                }
                 for (let eleCheck of initialArea.querySelectorAll('.checkbox-node-zone')) {
                     if (zone_initial_node.includes(parseInt($(eleCheck).attr('data-id')))) {
                         eleCheck.checked = true;

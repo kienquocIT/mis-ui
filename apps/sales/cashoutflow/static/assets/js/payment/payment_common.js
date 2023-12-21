@@ -1931,8 +1931,6 @@ class PaymentHandle {
         frm.dataForm['payment_expense_valid_list'] = payment_expense_valid_list;
         $('#payment_expense_valid_list').val(payment_expense_valid_list)
 
-        frm.dataForm['status'] = true;
-
         frm.dataForm['system_status'] = 1;
 
         frm.dataForm['is_internal_payment'] = checkbox_internal.prop('checked');

@@ -48,9 +48,9 @@ $(document).ready(function () {
                             let to_employee_trans = dtb.attr('data-type-translate-employee')
                             let to_supplier_trans = dtb.attr('data-type-translate-supplier')
                             if (row.advance_payment_type === 'To Employee') {
-                                return `<i class="bi bi-person"></i>${to_employee_trans}`
+                                return `<i class="bi bi-person"></i>&nbsp;${to_employee_trans}`
                             } else if (row.advance_payment_type === 'To Supplier') {
-                                return `<i class="bi bi-truck"></i>${to_supplier_trans}`
+                                return `<i class="bi bi-truck"></i>&nbsp;${to_supplier_trans}`
                             }
                         }
                     },
@@ -98,6 +98,28 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<span class="mask-money text-primary" data-init-money="${row?.['remain_value']}"></span>`
+                        }
+                    },
+                    {
+                        data: 'ap_status',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            if (row.money_gave) {
+                                return `<div>
+                                        <span class="badge-status">
+                                            <span class="badge badge-primary badge-indicator"></span>
+                                            <span class="badge-label">Money gave/transferred</span>
+                                        </span>
+                                    </div>`
+                            }
+                            else {
+                                return `<div>
+                                        <span class="badge-status">
+                                            <span class="badge badge-primary badge-indicator"></span>
+                                            <span class="badge-label">Waiting</span>
+                                        </span>
+                                    </div>`
+                            }
                         }
                     },
                     {

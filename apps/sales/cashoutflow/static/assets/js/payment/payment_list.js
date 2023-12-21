@@ -28,14 +28,15 @@ $(document).ready(function () {
                         className: 'wrap-text w-15',
                         render: (data, type, row, meta) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}" class="text-primary">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span><b>` + row.title + `</b></span>`;
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
                         }
                     },
                     {

@@ -497,6 +497,13 @@ class NodeLoadDataHandle {
             NodeLoadDataHandle.loadZoneDD(row);
             NodeLoadDataHandle.loadZoneHiddenDD(row);
         }
+        // set zoneAllData = True for initial node if not zone or hidden zone checked
+        let initialArea = NodeDataTableHandle.tableNode[0].querySelector('.collab-initial-area');
+        if (initialArea) {
+            if (initialArea.querySelectorAll('.checkbox-node-zone:checked').length === 0 && initialArea.querySelectorAll('.checkbox-node-zone-hidden:checked').length === 0) {
+                initialArea.querySelector('.checkbox-node-zone-all').checked = true;
+            }
+        }
     };
 
     static loadZoneShow(ele) {

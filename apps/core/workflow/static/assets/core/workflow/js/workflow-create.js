@@ -143,26 +143,15 @@ $(function () {
                     eleCheckbox.checked = false;
                 }
             }
-
-            // NodeLoadDataHandle.loadZoneShow(this);
         });
-
-        // NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden-all', function () {
-        //     if (this.checked === true) {
-        //         NodeValidateHandle.validateZoneHiddenAll(this);
-        //     }
-        //     if (this.checked === true) {
-        //         let collabArea = this.closest('.collab-area');
-        //         for (let eleCheckbox of collabArea.querySelectorAll('.checkbox-node-zone-hidden')) {
-        //             eleCheckbox.checked = false;
-        //         }
-        //     }
-        //     NodeLoadDataHandle.loadZoneHiddenShow(this);
-        // });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone', function () {
             if (this.checked === true) {
                 NodeValidateHandle.validateZoneEdit(this);
+                let zoneAllData = this.closest('.collab-area').querySelector('.checkbox-node-zone-all');
+                if (zoneAllData) {
+                    zoneAllData.checked = false;
+                }
             }
             NodeLoadDataHandle.loadZoneShow(this);
         });

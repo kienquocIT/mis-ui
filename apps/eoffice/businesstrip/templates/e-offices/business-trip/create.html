@@ -191,9 +191,7 @@
                         </button>
                     </div>
                     <div class="tab-pane fade"  id="attachment">
-                        <div class="row"  id="attachment-box">
-                            {% include 'extends/files/all.html' %}
-                        </div>
+                        {% include 'extends/files/all.html' %}
                     </div>
                 </div>
             </div>
@@ -219,10 +217,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/e-offices/business-trip/js/business-trip-common.js' %}"></script>
     <script>
-        new $x.cls.file(
-            $('#attachment-box'),
-        ).init({
-            'name': 'attachment',
-        });
+        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
     </script>
 {% endblock %}

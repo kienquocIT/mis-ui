@@ -4236,7 +4236,7 @@ class FileControl {
                 'name': '',
                 'data': [],
                 ...(
-                    opts?.['enable_edit'] === true ? {
+                    (opts?.['enable_edit'] || true) === true ? {
                         'readonly': false,
                         'disabled': false,
                         'enable_choose_file': true,

@@ -23,6 +23,7 @@ class expenseItemTable {
         if ($tbl.hasClass('dataTable')) $tbl.DataTable().clear().rows.add(dataList).draw()
         else
             $tbl.DataTableDefault({
+                styleDom: 'hide-foot',
                 data: dataList,
                 ordering: false,
                 paginate: false,
@@ -268,6 +269,12 @@ $(document).ready(function () {
             return item
         })
         let OriginalList = $.map($empTripElm.select2('data'), (item)=> {return item.data.id});
+        let dateF = formData.date_f, $morF = $('[name="morning_f"]:checked'), $morT = $('[name="morning_t"]:checked');
+        if ($morF.val() === 'true') dateF += ' 00:00:00'
+        else dateF += ' 12:00:00'
+        let dateT = formData.date_t
+        if ($morT.val() === 'true') dateT += ' 12:00:00'
+        else dateT += ' 23:59:59'
         let data = {
             'title': formData.title,
             'remark': formData.remark,
@@ -276,18 +283,17 @@ $(document).ready(function () {
             'departure': formData.departure,
             'destination': formData.destination,
             'employee_on_trip': OriginalList,
-            'date_f': $x.fn.reformatData(formData.date_f, 'DD/MM/YYYY', 'YYYY-MM-DD'),
-            'morning_f': formData.morning_f === 'true',
-            'date_t': $x.fn.reformatData(formData.date_t, 'DD/MM/YYYY', 'YYYY-MM-DD'),
-            'morning_t': formData.morning_t === 'true',
+            'date_f': $x.fn.reformatData(dateF, 'DD/MM/YYYY HH:mm:ss', 'YYYY-MM-DD HH:mm:ss'),
+            'morning_f': $morF.val(),
+            'date_t': $x.fn.reformatData(dateT, 'DD/MM/YYYY HH:mm:ss', 'YYYY-MM-DD HH:mm:ss'),
+            'morning_t': $morT.val(),
             'total_day': parseFloat(formData.total_day),
             'pretax_amount': parseInt(formData.pretax_amount),
             'taxes': parseInt(formData.taxes),
             'total_amount': parseInt(formData.total_amount),
-            'expense_items': formData.expense_items
+            'expense_items': formData.expense_items,
+            'attachment': $x.cls.file.get_val(formData.attachment, []),
         }
-        const $attElm = $('[name="attachment"]').val()
-        if ($attElm) data.attachment = [...$attElm]
         if (frm.dataMethod.toLowerCase() === 'post') data.system_status = 1
 
         $.fn.callAjax2({

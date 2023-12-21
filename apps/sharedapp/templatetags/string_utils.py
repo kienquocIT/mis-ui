@@ -34,7 +34,13 @@ def random_int(to_number: int) -> int:
 
 
 @register.simple_tag
-def random_str(length: int = 32):
+def random_str(length: int = 32, start_with_character: bool = False):
+    if start_with_character:
+        return random.choice(string.ascii_letters) + "".join(
+            [
+                random.choice(string.digits + string.ascii_letters) for _x in range(0, length - 1)
+            ]
+        )
     return "".join(
         [
             random.choice(string.digits + string.ascii_letters) for _x in range(0, length)

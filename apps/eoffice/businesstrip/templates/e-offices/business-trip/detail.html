@@ -149,8 +149,8 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="expense_items">
-                        <div class="overflow-x-scroll">
-                            <table id="expense_detail_tbl" class="table nowrap mb-5">
+                        <div class="overflow-x-auto">
+                            <table id="expense_detail_tbl" class="table nowrap w-100 mb-5">
                                 <thead>
                                 <tr>
                                     <th>{% trans 'Expense name' %}</th>
@@ -197,18 +197,7 @@
                         </button>
                     </div>
                     <div class="tab-pane fade" id="attachment">
-                        <div class="form-group">
-                            <button
-                                    type="button"
-                                    class="form-control btn btn-outline-primary btn-file-upload"
-                                    data-f-input-name="attachment"
-                                    data-f-input-required="false"
-                                    data-f-input-disabled="false"
-                                    data-f-name-ele-id="#fileNameTestDisplay"
-                            >{% trans 'Click here to upload image' %}</button>
-                            <p id="fileNameTestDisplay"></p>
-
-                        </div>
+                        {% include 'extends/files/all.html' %}
                     </div>
                 </div>
             </div>
@@ -219,9 +208,9 @@
     {{ data.system_status|json_script:'sys_stt' }}
     <div class="delete_btn">
         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row">
-                    <span class="btn-icon-wrap">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </span>
+            <span class="btn-icon-wrap">
+                <i class="fa-solid fa-trash-can"></i>
+            </span>
         </a>
     </div>
 {% endblock %}

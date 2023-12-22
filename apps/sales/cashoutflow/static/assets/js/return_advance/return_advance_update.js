@@ -27,6 +27,7 @@ $(function () {
             },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
+                frm.dataForm['system_status'] = 1;
                 frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
                 let tbProduct = $('#dtbProduct');
                 let cost_list = []
@@ -40,7 +41,7 @@ $(function () {
                     })
                 })
                 frm.dataForm['cost'] = cost_list;
-                frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
+                $('#cost').val(cost_list)
                 $.fn.callAjax2({
                     url: frm.getUrlDetail(id),
                     method: frm.dataMethod,

@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck, SaleMsg
+from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck, SaleMsg, InputMappingProperties
 
 
 class ReturnAdvanceList(View):
@@ -12,7 +12,6 @@ class ReturnAdvanceList(View):
         template='return_advance/return_advance_list.html',
         breadcrumb='RETURN_ADVANCE_LIST_PAGE',
         menu_active='id_menu_return_advance',
-        perm_check=PermCheck(url=ApiURL.RETURN_ADVANCE_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -25,7 +24,6 @@ class ReturnAdvanceCreate(View):
         template='return_advance/return_advance_create.html',
         breadcrumb='RETURN_ADVANCE_CREATE_PAGE',
         menu_active='menu_return_advance_list',
-        perm_check=PermCheck(url=ApiURL.RETURN_ADVANCE_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -61,8 +59,7 @@ class ReturnAdvanceDetail(View):
         auth_require=True,
         template='return_advance/return_advance_detail.html',
         breadcrumb='RETURN_ADVANCE_DETAIL_PAGE',
-        menu_active='menu_return_advance_list',
-        perm_check=PermCheck(url=ApiURL.RETURN_ADVANCE_DETAIL, method='GET', fill_key=['pk']),
+        menu_active='menu_return_advance_list'
     )
     def get(self, request, *args, **kwargs):
         result = {
@@ -76,14 +73,15 @@ class ReturnAdvanceUpdate(View):
         auth_require=True,
         template='return_advance/return_advance_update.html',
         breadcrumb='RETURN_ADVANCE_UPDATE_PAGE',
-        menu_active='menu_return_advance_list',
-        perm_check=PermCheck(url=ApiURL.RETURN_ADVANCE_DETAIL, method='PUT', fill_key=['pk']),
+        menu_active='menu_return_advance_list'
     )
     def get(self, request, *args, **kwargs):
-        result = {
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_RETURN_ADVANCE
+        return {
             'employee_current_id': request.user.employee_current_data.get('id', None),
-        }
-        return result, status.HTTP_200_OK
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'frmUpdate'
+        }, status.HTTP_200_OK
 
 
 class ReturnAdvanceDetailAPI(APIView):

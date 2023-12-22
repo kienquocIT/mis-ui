@@ -5630,11 +5630,11 @@ msgstr "Nhập ngày"
 
 #
 msgid "From time"
-msgstr "Từ ngày"
+msgstr "Từ lúc"
 
 #
 msgid "To time"
-msgstr "Đến ngày"
+msgstr "Đến lúc"
 
 #
 msgid "Meeting address"
@@ -5719,3 +5719,8 @@ msgstr "Bỏ qua thêm tập tin vì đã sẵn sàng"
 #
 msgid "Descriptions of file"
 msgstr "Mô tả của tập tin"
+
+#
+msgid "AP Status"
+msgstr "Trạng thái tạm ứng"
+

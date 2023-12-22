@@ -7,7 +7,7 @@ class NodeLoadDataHandle {
     static dataSystemNode = [
         {
             'id': 'abccf657-7dce-4a14-9601-f6c4c4f2722a',
-            'title': 'Initial Node',
+            'title': NodeLoadDataHandle.transEle.attr('data-node-initial'),
             'code': 'initial',
             'code_node_system': 'initial',
             'is_system': true,
@@ -16,7 +16,7 @@ class NodeLoadDataHandle {
         },
         {
             'id': '1fbb680e-3521-424a-8523-9f7a34ce867e',
-            'title': 'Approved Node',
+            'title': NodeLoadDataHandle.transEle.attr('data-node-approved'),
             'code': 'approved',
             'code_node_system': 'approved',
             'is_system': true,
@@ -25,7 +25,7 @@ class NodeLoadDataHandle {
         },
         {
             'id': '580f887c-1280-44ea-b275-8cb916543b10',
-            'title': 'Completed Node',
+            'title': NodeLoadDataHandle.transEle.attr('data-node-completed'),
             'code': 'completed',
             'code_node_system': 'completed',
             'is_system': true,
@@ -214,7 +214,7 @@ class NodeLoadDataHandle {
         };
         let newRow = dataTable.row.add(data).node();
         NodeLoadDataHandle.loadInitDataRow(newRow);
-        let approvedRow = NodeDataTableHandle.tableNode[0].querySelector('.node-approved').closest('tr');
+        let approvedRow = NodeDataTableHandle.tableNode[0].querySelector('[data-node-code="approved"]').closest('tr');
         $(newRow).detach().insertBefore(approvedRow);
         // Load zone DD
         NodeLoadDataHandle.loadZoneDD(newRow, true);
@@ -287,9 +287,9 @@ class NodeLoadDataHandle {
     static loadZoneDD(row, is_created = false) {
         let result = ``;
         if (is_created === false) { // Case Update Exist Nodes
-            let eleCheckBox = row?.querySelector('.table-row-checkbox');
-            if (eleCheckBox) {
-                let dataRowRaw = eleCheckBox.getAttribute('data-row');
+            let eleTitle = row?.querySelector('.table-row-title');
+            if (eleTitle) {
+                let dataRowRaw = eleTitle.getAttribute('data-row');
                 if (dataRowRaw) {
                     let is_edit_all_zone = false;
                     if (row.querySelector('.checkbox-node-zone-all:checked')) {
@@ -412,9 +412,9 @@ class NodeLoadDataHandle {
     static loadZoneHiddenDD(row, is_created = false) {
         let result = ``;
         if (is_created === false) { // Case Update Exist Nodes
-            let eleCheckBox = row?.querySelector('.table-row-checkbox');
-            if (eleCheckBox) {
-                let dataRowRaw = eleCheckBox.getAttribute('data-row');
+            let eleTitle = row?.querySelector('.table-row-title');
+            if (eleTitle) {
+                let dataRowRaw = eleTitle.getAttribute('data-row');
                 if (dataRowRaw) {
                     let zone_list = [];
                     for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
@@ -752,7 +752,7 @@ class NodeLoadDataHandle {
     static loadDetailNodeActionAndCollab() {
         NodeDataTableHandle.tableNode.DataTable().rows().every(function () {
             let row = this.node();
-            let dataRowRaw = row?.querySelector('.table-row-checkbox')?.getAttribute('data-row');
+            let dataRowRaw = row?.querySelector('.table-row-title')?.getAttribute('data-row');
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
                 NodeLoadDataHandle.loadZoneDD(row);
@@ -1017,35 +1017,21 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        let attrClass = "form-check-input table-row-checkbox"
                         if (row?.['is_system'] === true) {
-                            attrClass += " node-";
-                            attrClass += row?.['code'];
+                            return `<b><span class="table-row-title text-primary" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b>`;
+                        } else {
+                            return `<span class="table-row-title" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span>`;
                         }
-                        return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="${attrClass}" 
-                                        data-id=""
-                                        data-row="${dataRow}"
-                                    >
-                                </div>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row?.['title']}</span>`
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
                         return `<span class="table-row-remark">${row?.['remark'] ? row?.['remark'] : ''}</span>`;
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         let is_approved_complete = false;
                         let actionEle = NodeLoadDataHandle.loadHTMLAction();
@@ -1104,7 +1090,7 @@ class NodeDataTableHandle {
                     },
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         let idModal = "collabModalWFNode" + String(row?.['order']);
                         let idOutFormCanvas = "outFormCanvas" + String(row?.['order']);
@@ -1531,12 +1517,13 @@ class NodeDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
-                    render: () => {
-                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit" style="color: #cccccc"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="color: #cccccc"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
-                        let actionData = bt2 + bt3;
-                        return `${actionData}`;
+                    targets: 4,
+                    render: (data, type, row) => {
+                        if (row?.['is_system'] === true) {
+                            return ``;
+                        } else {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                        }
                     }
                 },
             ],
@@ -1750,9 +1737,8 @@ class NodeSubmitHandle {
             let total_config = 1;
             let row = table[0].tBodies[0].rows[i];
             let eleTitle = row?.querySelector('.table-row-title');
-            let eleCheckBox = row?.querySelector('.table-row-checkbox');
-            if (eleTitle && eleCheckBox) {
-                let dataRowRaw = eleCheckBox.getAttribute('data-row');
+            if (eleTitle) {
+                let dataRowRaw = eleTitle.getAttribute('data-row');
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
                     // setup data actions on Node

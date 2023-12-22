@@ -151,7 +151,7 @@ class programmeHandle {
                             borderColor: '#da82f8',
                             title: item.title,
                             start: item.date_f,
-                            end: item.date_t,
+                            end: moment(item.date_t).add(1, 'days').format('YYYY-MM-DD'),
                             allDay: true,
                             source: item
                         }
@@ -183,10 +183,12 @@ class programmeHandle {
                     let nextDay = {}
                     for (let item of data) {
                         item.calendar_type = 3
+                        let endD = item.date_to
+                        if (!item.morning_shift_t) endD = moment(endD).add(1, 'days').format('YYYY-MM-DD')
                         let temp = {
                             title: item.title,
                             start: item.date_from,
-                            end: item.date_to,
+                            end: endD,
                             allDay: item.morning_shift_f && !item.morning_shift_t,
                             source: item
                         }
@@ -259,7 +261,8 @@ class programmeHandle {
                     programmeHandle.callBusiness(calendar, params);
                     break;
                 default:
-                    if (emp.length > 0) params.leave__employee_inherit__in = emp.join(',')
+                    if (emp.length > 0) params.leave_employee_list = emp.join(',')
+                    else params.self_employee = true
                     if (group) params.leave__employee_inherit__group = group
                     params.leave_date = moment().format('YYYY-MM-DD')
                     programmeHandle.callLeave(calendar, params);

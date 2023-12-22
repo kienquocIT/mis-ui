@@ -193,7 +193,12 @@ class LeaveRequestCalendarListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_REQUEST_CALENDAR).get(request.query_params.dict())
+        params = request.query_params.dict()
+        if 'self_employee' in params:
+            del params['self_employee']
+            employee_current_data = getattr(request.user, 'employee_current_data', {})
+            params['leave_employee_list'] = employee_current_data.get('id', None)
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_REQUEST_CALENDAR).get(params)
         return resp.auto_return(key_success='leave_request_calendar')
 
 

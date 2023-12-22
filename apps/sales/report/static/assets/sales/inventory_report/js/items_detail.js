@@ -46,115 +46,118 @@ $(document).ready(function () {
         ele.DataTable().clear().destroy()
         ele.DataTableDefault({
             scrollX: true,
-            scrollCollapse: true,
-            fixedColumns: true,
-            data: data,
+            data: data ? data : [],
             columns: [
                 {
+                    target: 0,
                     render: (data, type, row) => {
                         return ``;
                     }
                 },
                 {
+                    target: 1,
                     render: (data, type, row) => {
                         return `<span data-id="${row.items_id}" class="badge badge-soft-secondary">${row.items_code}</span>`;
                     }
                 },
                 {
+                    target: 2,
                     render: (data, type, row) => {
                         return `<div><span class="badge-label text-primary">${row.items_title}</span></div>`;
                     }
                 },
                 {
+                    target: 3,
                     render: (data, type, row) => {
                         return `<span class="text-muted">${row.description}</span>`;
                     }
                 },
                 {
+                    target: 4,
                     render: (data, type, row) => {
                         return `<span class="badge badge-primary">${row.valuation_method}</span>`;
                     }
                 },
                 {
-
+                    target: 5,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 6,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 7,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 8,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 9,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 10,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 11,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 12,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 13,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 14,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 15,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 16,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 17,
                     render: (data, type, row) => {
                         return `-`;
                     }
                 },
                 {
-
+                    target: 18,
                     render: (data, type, row) => {
                         return `-`;
                     }
@@ -204,7 +207,12 @@ $(document).ready(function () {
 
     $('#btn-view').on('click', function () {
         let item_list_text = $(`#${items_select_Ele.attr('data-idx-data-loaded')}`).text();
-        let item_list = JSON.parse(item_list_text ? item_list_text : [])
-        InitialDB(items_detail_report_table_Ele, CombineDataItems(item_list, items_select_Ele.val()))
+        if (item_list_text) {
+            let item_list = JSON.parse(item_list_text ? item_list_text : [])
+            InitialDB(items_detail_report_table_Ele, CombineDataItems(item_list, items_select_Ele.val()))
+        }
+        else {
+            $.fn.notifyB({"description": 'No item to view.', "timeout": 3500}, 'warning')
+        }
     })
 })

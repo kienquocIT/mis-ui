@@ -48,7 +48,7 @@ $(document).ready(function () {
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
             frm.dataForm['employee_created_id'] = $('[name="employee_created_id"]').attr('data-id');
-            frm.dataForm['status'] = 0;
+            frm.dataForm['system_status'] = 1;
             frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
             let tbProduct = $('#dtbProduct');
             let cost_list = []
@@ -62,12 +62,9 @@ $(document).ready(function () {
                 })
             })
             frm.dataForm['cost'] = cost_list;
-            frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
 
             frm.dataForm['advance_payment'] = $('#chooseAdvancePayment').val();
             frm.dataForm['employee_inherit'] = $('#chooseBeneficiary').val();
-
-            console.log(frm.dataForm)
 
             $.fn.callAjax2({
                 'url': frm.dataUrl,

@@ -471,6 +471,24 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
         Promise.all([expense_quotation, ap_mapped_item, payment_mapped_item]).then(
             (results) => {
                 let data_expense = results[0];
+                let data_expense_merge = {};
+                data_expense.forEach(function (item) {
+                    let expenseItemId = item?.['expense_item']?.['id'];
+
+                    if (data_expense_merge[expenseItemId] === undefined) {
+                        data_expense_merge[expenseItemId] = {
+                            id: item?.['id'],
+                            expense_title: item?.['expense_title'],
+                            expense_item: item?.['expense_item'],
+                            tax: item?.['tax'],
+                            plan_after_tax: item?.['plan_after_tax']
+                        };
+                    } else {
+                        data_expense_merge[expenseItemId].plan_after_tax += item?.['plan_after_tax'];
+                        data_expense_merge[expenseItemId].expense_title += ' (merge) ' + item?.['expense_title'];
+                    }
+                });
+                data_expense = Object.values(data_expense_merge);
                 let data_ap_mapped_item = results[1];
                 let data_payment_mapped_item = results[2];
                 $('#notify-none-sale-code').prop('hidden', true);
@@ -581,7 +599,7 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                             <tr>
                                 <td>${$('#tab_plan_datatable tbody tr').length}</td>
                                 <td class="text-danger" data-expense-id="${unplanned_ap_merged[i]?.['expense_type']?.['id']}">${unplanned_ap_merged[i]?.['expense_type']?.['title']}</td>
-                                <td></td>
+                                <td><i class="bi bi-dash"></i></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['expense_after_tax_price']}"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_ap_merged[i]?.['sum_return_value']}"></span></td>
                                 <td><span class="mask-money text-danger" data-init-money="${unplanned_sum_converted_value}"></span></td>
@@ -671,6 +689,24 @@ function LoadPlanQuotationNoOPP(quotation_id) {
         Promise.all([expense_quotation, ap_mapped_item, payment_mapped_item]).then(
             (results) => {
                 let data_expense = results[0];
+                let data_expense_merge = {};
+                data_expense.forEach(function (item) {
+                    let expenseItemId = item?.['expense_item']?.['id'];
+
+                    if (data_expense_merge[expenseItemId] === undefined) {
+                        data_expense_merge[expenseItemId] = {
+                            id: item?.['id'],
+                            expense_title: item?.['expense_title'],
+                            expense_item: item?.['expense_item'],
+                            tax: item?.['tax'],
+                            plan_after_tax: item?.['plan_after_tax']
+                        };
+                    } else {
+                        data_expense_merge[expenseItemId].plan_after_tax += item?.['plan_after_tax'];
+                        data_expense_merge[expenseItemId].expense_title += ' (merge) ' + item?.['expense_title'];
+                    }
+                });
+                data_expense = Object.values(data_expense_merge);
                 let data_ap_mapped_item = results[1];
                 let data_payment_mapped_item = results[2];
 
@@ -872,6 +908,25 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
         Promise.all([expense_sale_order, ap_mapped_item, payment_mapped_item]).then(
             (results) => {
                 let data_expense = results[0];
+                let data_expense_merge = {};
+                data_expense.forEach(function (item) {
+                    let expenseItemId = item?.['expense_item']?.['id'];
+
+                    if (data_expense_merge[expenseItemId] === undefined) {
+                        data_expense_merge[expenseItemId] = {
+                            id: item?.['id'],
+                            expense_title: item?.['expense_title'],
+                            expense_item: item?.['expense_item'],
+                            tax: item?.['tax'],
+                            plan_after_tax: item?.['plan_after_tax']
+                        };
+                    } else {
+                        data_expense_merge[expenseItemId].plan_after_tax += item?.['plan_after_tax'];
+                        data_expense_merge[expenseItemId].expense_title += ' (merge) ' + item?.['expense_title'];
+                    }
+                });
+                data_expense = Object.values(data_expense_merge);
+
                 let data_ap_mapped_item = results[1];
                 let data_payment_mapped_item = results[2];
                 $('#notify-none-sale-code').prop('hidden', true);

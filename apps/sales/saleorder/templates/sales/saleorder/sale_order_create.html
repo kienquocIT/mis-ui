@@ -207,7 +207,7 @@
                                                 >{% trans 'Close' %}</button>
                                                 <button type="button" class="btn btn-primary" id="btn-select-quotation-copy">{% trans 'Select' %}</button>
                                                 <button type="button" class="btn btn-primary" id="btn-quotation-copy-confirm" data-copy-type="copy-from" data-bs-dismiss="modal" hidden>{% trans 'Copy' %}</button>
-                                                <input type="hidden" id="data-copy-quotation-detail">
+                                                <input type="text" id="data-copy-quotation-detail" hidden>
                                             </div>
                                         </div>
                                     </div>
@@ -264,7 +264,7 @@
                                             <th class="w-5">#</th>
                                             <th class="w-10 required">{% trans 'Product' %}</th>
                                             <th class="w-10">{% trans 'Description' %}</th>
-                                            <th class="w-5 required">{% trans 'Unit Of Measure' %}</th>
+                                            <th class="w-5 required">{% trans 'UoM' %}</th>
                                             <th class="w-10 required">{% trans 'Quantity' %}</th>
                                             <th class="w-30 required">{% trans 'Unit Price' %}</th>
                                             <th class="w-10">{% trans 'Discount' %}</th>
@@ -352,9 +352,9 @@
                                                     </div>
                                                     <div class="col-3"></div>
                                                     <div class="col-4">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-pretax-amount"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-pretax-amount" data-zone="sale_order_products_data"></span></h6>
                                                         <input id="quotation-create-product-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
-                                                        <input type="hidden" id="quotation-final-revenue-before-tax">
+                                                        <input type="text" id="quotation-final-revenue-before-tax" hidden>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -364,13 +364,13 @@
                                                     <div class="col-3">
                                                         <div class="input-group">
                                                             <span class="input-affix-wrapper">
-                                                                <input type="text" class="form-control validated-number" id="quotation-create-product-discount" value="0" disabled>
+                                                                <input type="text" class="form-control validated-number" id="quotation-create-product-discount" value="0" data-zone="sale_order_products_data" disabled>
                                                                 <span class="input-suffix"><i class="fas fa-percentage"></i></span>
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <div class="col-4">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-discount-amount"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-discount-amount" data-zone="sale_order_products_data"></span></h6>
                                                         <input id="quotation-create-product-discount-amount-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -380,7 +380,7 @@
                                                     </div>
                                                     <div class="col-3"></div>
                                                     <div class="col-4">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-taxes"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-taxes" data-zone="sale_order_products_data"></span></h6>
                                                         <input id="quotation-create-product-taxes-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -391,7 +391,7 @@
                                                     </div>
                                                     <div class="col-3"></div>
                                                     <div class="col-4">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-total"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-total" data-zone="sale_order_products_data"></span></h6>
                                                         <input id="quotation-create-product-total-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -469,10 +469,10 @@
                                 <div class="row logistics-body">
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Shipping Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
                                         <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address" disabled></textarea>
-                                        <input type="hidden" id="quotation-create-customer-shipping">
+                                        <input type="text" id="quotation-create-customer-shipping" hidden>
                                     </div>
                                     <div
                                             class="modal fade" id="shippingModalCenter" tabindex="-1"
@@ -502,10 +502,10 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Billing Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
                                         <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address" disabled></textarea>
-                                        <input type="hidden" id="quotation-create-customer-billing">
+                                        <input type="text" id="quotation-create-customer-billing" hidden>
                                     </div>
                                     <div
                                             class="modal fade" id="billingModalCenter" tabindex="-1"
@@ -545,7 +545,7 @@
                                         <tr>
                                             <th class="w-5">#</th>
                                             <th class="w-5">{% trans 'Product' %}</th>
-                                            <th class="w-5">{% trans 'Unit Of Measure' %}</th>
+                                            <th class="w-5">{% trans 'UoM' %}</th>
                                             <th class="w-15">{% trans 'Quantity' %}</th>
                                             <th class="w-30 required">{% trans 'Cost Price' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
@@ -565,7 +565,7 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-cost-pretax-amount"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-cost-pretax-amount" data-zone="sale_order_costs_data"></span></h6>
                                                         <input id="quotation-create-cost-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -575,7 +575,7 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-cost-taxes"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-cost-taxes" data-zone="sale_order_costs_data"></span></h6>
                                                         <input id="quotation-create-cost-taxes-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -586,7 +586,7 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-cost-total"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-cost-total" data-zone="sale_order_costs_data"></span></h6>
                                                         <input id="quotation-create-cost-total-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -607,7 +607,7 @@
                                             <th class="w-5">#</th>
                                             <th class="w-15 required">{% trans 'Expense name' %}</th>
                                             <th class="w-15 required">{% trans 'Expense items' %}</th>
-                                            <th class="w-5 required">{% trans 'Unit Of Measure' %}</th>
+                                            <th class="w-5 required">{% trans 'UoM' %}</th>
                                             <th class="w-10 required">{% trans 'Quantity' %}</th>
                                             <th class="w-30 required">{% trans 'Expense Price' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
@@ -639,7 +639,7 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-expense-pretax-amount"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-expense-pretax-amount" data-zone="sale_order_expenses_data"></span></h6>
                                                         <input id="quotation-create-expense-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -649,7 +649,7 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-expense-taxes"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-expense-taxes" data-zone="sale_order_expenses_data"></span></h6>
                                                         <input id="quotation-create-expense-taxes-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -660,7 +660,7 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-expense-total"></span></h6>
+                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-expense-total" data-zone="sale_order_expenses_data"></span></h6>
                                                         <input id="quotation-create-expense-total-raw" type="text" class="form-control" value="0" hidden>
                                                     </div>
                                                 </div>
@@ -671,104 +671,6 @@
                                 </div>
                             </div>
                         </div>
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-product"
-                                data-url="{% url "ProductForSaleListAPI" %}"
-                                data-link-detail="{% url "ProductDetail" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-expense"
-                                data-url="{% url "ExpenseListAPI" %}"
-                                data-link-detail="{% url "ExpenseDetail" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-expense-item"
-                                data-url="{% url "ExpenseItemListAPI" %}"
-                                data-link-detail="{% url "ExpenseItemDetailAPI" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-uom"
-                                data-url="{% url "UnitOfMeasureListAPI" %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-tables-tax"
-                                data-url="{% url "TaxListAPI" %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-request-employee"
-                                value="{{ data.data.employee_current }}"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-company-currency-config"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-quotation"
-                                value="[]"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-promotion"
-                                data-url="{% url "PromotionCheckListAPI" %}"
-                                data-link-detail="{% url "PromotionDetail" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-create-shipping"
-                                data-url="{% url "ShippingCheckListAPI" %}"
-                                data-link-detail="{% url "ShippingDetail" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-copy-quotation"
-                                data-url="{% url "QuotationListAPI" %}"
-                                data-url-detail="{% url "QuotationDetailAPI" 1 %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-quotation-copy-to"
-                                value="{{ data.data.data_copy_to }}"
-                        >
-                        <input
-                                type="hidden"
-                                id="data-init-opportunity"
-                                value="{{ data.data.opportunity }}"
-                        >
-                        <input
-                                type="hidden"
-                                id="customer-price-list"
-                        >
-                        <input
-                                type="hidden"
-                                id="quotation-config-data"
-                                class="quotation-config"
-                                data-url="{% url "QuotationConfigDetailAPI" %}"
-                                data-method="GET"
-                        >
-                        <input
-                                type="hidden"
-                                id="quotation-check-promotion"
-                        >
-                        <input
-                                type="hidden"
-                                id="quotation-copy-discount-on-total"
-                                value="0"
-                        >
                     </div>
                 </div>
 
@@ -830,28 +732,131 @@
                     </table>
                 </div>
                 <input
-                        type="hidden"
+                        type="text"
                         id="quotation-indicator-data"
                         data-url="{% url 'QuotationIndicatorListAPI' %}"
                         data-method="get"
+                        hidden
                 >
             </div>
         </div>
-        <input
-            type="hidden"
-            id="app-trans-factory"
-            data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
-            data-select-address="{% trans 'Select this address' %}"
-            data-view-detail-info="{% trans 'View detail' %}"
-            data-btn-close="{% trans 'Close' %}"
-            data-more-information="{% trans 'More information' %}"
-            data-apply="{% trans 'Apply' %}"
-            data-refreshed="{% trans 'Data is refreshed.' %}"
-            data-valid="{% trans "Valid" %}"
-        >
     </form>
 {% endblock %}
 
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
+        data-select-address="{% trans 'Select this address' %}"
+        data-view-detail-info="{% trans 'View detail' %}"
+        data-btn-close="{% trans 'Close' %}"
+        data-more-information="{% trans 'More information' %}"
+        data-apply="{% trans 'Apply' %}"
+        data-refreshed="{% trans 'Data is refreshed.' %}"
+        data-valid="{% trans "Valid" %}"
+    >
+
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-product"
+            data-url="{% url "ProductForSaleListAPI" %}"
+            data-link-detail="{% url "ProductDetail" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-expense"
+            data-url="{% url "ExpenseListAPI" %}"
+            data-link-detail="{% url "ExpenseDetail" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-expense-item"
+            data-url="{% url "ExpenseItemListAPI" %}"
+            data-link-detail="{% url "ExpenseItemDetailAPI" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-uom"
+            data-url="{% url "UnitOfMeasureListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-tables-tax"
+            data-url="{% url "TaxListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-request-employee"
+            value="{{ data.data.employee_current }}"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-company-currency-config"
+    >
+    <input
+            type="text"
+            id="data-quotation"
+            value="[]"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-promotion"
+            data-url="{% url "PromotionCheckListAPI" %}"
+            data-link-detail="{% url "PromotionDetail" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-create-shipping"
+            data-url="{% url "ShippingCheckListAPI" %}"
+            data-link-detail="{% url "ShippingDetail" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-copy-quotation"
+            data-url="{% url "QuotationListAPI" %}"
+            data-url-detail="{% url "QuotationDetailAPI" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-quotation-copy-to"
+            value="{{ data.data.data_copy_to }}"
+    >
+    <input
+            type="text"
+            id="data-init-opportunity"
+            value="{{ data.data.opportunity }}"
+    >
+    <input
+            type="text"
+            id="customer-price-list"
+    >
+    <input
+            type="text"
+            id="quotation-config-data"
+            class="quotation-config"
+            data-url="{% url "QuotationConfigDetailAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="quotation-check-promotion"
+    >
+    <input
+            type="text"
+            id="quotation-copy-discount-on-total"
+            value="0"
+    >
+
+{% endblock %}
 
 {% block jsFooter %}
     <!-- Select2 -->

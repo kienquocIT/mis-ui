@@ -1392,7 +1392,12 @@ class QuotationDataTableHandle {
                 {
                     targets: 9,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_products_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_products_data";
+                        }
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -1604,8 +1609,12 @@ class QuotationDataTableHandle {
                 {
                     targets: 7,
                     render: () => {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        return `${bt3}`
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_costs_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_costs_data";
+                        }
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -1797,7 +1806,12 @@ class QuotationDataTableHandle {
                 {
                     targets: 8,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_expenses_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_expenses_data";
+                        }
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],

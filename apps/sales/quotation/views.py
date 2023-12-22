@@ -92,7 +92,7 @@ class QuotationDetail(View):
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk},
                 'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
-                'form_id': 'frm_quotation_create'
+                'form_id': 'frm_quotation_create',
                 }, status.HTTP_200_OK
 
 

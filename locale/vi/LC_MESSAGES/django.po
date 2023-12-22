@@ -1506,7 +1506,7 @@ msgstr "Nhóm Đơn vị tính"
 
 #
 msgid "UoM"
-msgstr "Đơn vị tính"
+msgstr "Đơn vị"
 
 #
 msgid "Good receipt create"
@@ -5383,7 +5383,7 @@ msgstr "Thêm cấp phòng ban"
 
 #
 msgid "Expense items"
-msgstr "Danh mục chi phí"
+msgstr "Danh mục phí"
 
 #
 msgid "Select position"

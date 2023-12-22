@@ -52,6 +52,8 @@ class SaleOrderCreate(View):
                 'data_copy_to': data_copy_to,
                 'opportunity': opportunity,
             },
+            'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
+            'form_id': 'frm_quotation_create',
             'list_from_app': 'saleorder.saleorder.create',
         }
         return result, status.HTTP_200_OK
@@ -99,7 +101,10 @@ class SaleOrderDetail(View):
         breadcrumb='SALE_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+        return {'data': {'doc_id': pk},
+                'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
+                'form_id': 'frm_quotation_create',
+                }, status.HTTP_200_OK
 
 
 class SaleOrderUpdate(View):

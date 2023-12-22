@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Item' %}{% endblock %}
+{% block title %}{% trans 'Items detail report' %}{% endblock %}
 {% block cssHeader %}
-    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -78,7 +77,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
     <script src="{% static 'assets/sales/inventory_report/js/items_detail.js' %}"></script>
 {% endblock %}

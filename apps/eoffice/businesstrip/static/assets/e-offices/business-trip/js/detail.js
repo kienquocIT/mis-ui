@@ -41,18 +41,19 @@ $(document).ready(function(){
                 ordering: false,
                 paginate: false,
                 info: false,
-                width: 'auto',
+                autoWidth: true,
+                scrollX: true,
                 columns: [
                     {
                         data: 'title',
-                        width: '250px',
+                        width: '16.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control" name="title_${meta.row}" value="${row}" readonly>`
                         }
                     },
                     {
                         data: 'expense_item_data',
-                        width: '250px',
+                        width: '16.66%',
                         render: (row, type, data, meta) => {
                             let html = $(`<select>`).addClass('form-select row_expense-item')
                                 .attr('name', `expense_item_${meta.row}`).attr('disabled', true)
@@ -63,28 +64,28 @@ $(document).ready(function(){
                     },
                     {
                         data: 'uom_txt',
-                        width: '100px',
+                        width: '6.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control" name="uom_txt_${meta.row}" value="${row}" readonly>`
                         }
                     },
                     {
                         data: 'quantity',
-                        width: '100px',
+                        width: '6.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control" name="quantity_${meta.row}" value="${row}" readonly>`
                         }
                     },
                     {
                         data: 'price',
-                        width: '250px',
+                        width: '16.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control mask-money-price" name="price_${meta.row}" value="${row}" readonly>`
                         }
                     },
                     {
                         data: 'tax_data',
-                        width: '180px',
+                        width: '12%',
                         render: (row, type, data, meta) => {
                             let html = $(`<select>`).addClass('form-select row_tax')
                                 .attr('name', `tax_${meta.row}`).attr('disabled', true)
@@ -95,14 +96,14 @@ $(document).ready(function(){
                     },
                     {
                         data: 'subtotal',
-                        width: '250px',
+                        width: '16.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control mask-money-subtotal" name="subtotal_${meta.row}" readonly value="${row}">`
                         }
                     },
                     {
                         targets: 6,
-                        width: '50px',
+                        width: '3.33%',
                         render: () => {
                             return $('.delete_btn').html()
                         }

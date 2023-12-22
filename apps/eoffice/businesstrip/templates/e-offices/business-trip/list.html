@@ -22,9 +22,13 @@
 {% block pageContent %}
     <div class="row">
         <div class="col-md-12 col-xs-12">
-            <table class="table nowrap w-100" id="business_trip_request_tbl" data-method="get"
-            data-url="{% url 'BusinessTripRequestListAPI' %}"
-            data-detail="{% url 'BusinessTripRequestDetail' 1 %}">
+            <table
+                class="table nowrap min-w-1500p w-100"
+                id="business_trip_request_tbl"
+                data-method="get"
+                data-url="{% url 'BusinessTripRequestListAPI' %}"
+                data-detail="{% url 'BusinessTripRequestDetail' 1 %}"
+            >
                 <thead>
                     <tr>
                         <td>#</td>

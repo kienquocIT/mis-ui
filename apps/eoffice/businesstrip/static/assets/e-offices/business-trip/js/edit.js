@@ -29,7 +29,6 @@ $(document).ready(function(){
             $('#dateTInput').val($x.fn.reformatData(data.date_t, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#totalDayInput').val(data.total_day)
             expenseItemTable.init(data.expense_items)
-            console.log('data.employee_inherit.id:', data.employee_inherit.id);
             $('[name="employee_inherit_id"]').val(data.employee_inherit.id)
             if (data.system_status >= 2) $('#idxRealAction').remove()
 

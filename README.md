@@ -729,9 +729,46 @@ VII. DataTable
 1. Tài liệu tại statics/assets/js/init-setup.js
 2. Hướng dẫn
 ```html
+# Kiểu mặc định
 <table
                 id="table_districts_list"
                 class="table nowrap w-100"
+                data-url="{% url 'CityListAPI' %}"
+                data-url-city="{% url 'CityListAPI' %}"
+>
+   <tr class="row-custom-filter">
+      <td colspan="3">
+         <div class="row">
+            <div class="col-3">
+               <div class="form-group">
+                  <label for="CustomSelect2" class="form-label">{% trans 'Country' %}</label>
+                  <select id="CustomSelect2"
+                          data-url="{% url 'CountryListAPI' %}"
+                          data-keyResp="countries"
+                          data-keyParam="country_id__in" multiple
+                  ></select>
+               </div>
+            </div>
+      </td>
+   </tr>
+   <tr>
+      <th>#</th>
+      <th>{% trans 'Name' %}</th>
+      <th>{% trans 'Zip Code' %}</th>
+   </tr>
+   </thead>
+</table>
+
+# Kiểu có độ dài tối thiểu và thanh trượt cho phần nội dung table
+#   -- cần set class cho table: w-100 (luôn resize 100%) và min-w-1500p (sử dụng bao nhiêu px thì viết class ra)
+#   -- table.DataTableDefault({
+#         autoWidth: true,
+#         scrollX: true,
+#         columns: [{width: "20%", ...}]
+#      })
+<table
+                id="table_districts_list"
+                class="table nowrap w-100 min-w-1500p"
                 data-url="{% url 'CityListAPI' %}"
                 data-url-city="{% url 'CityListAPI' %}"
 >

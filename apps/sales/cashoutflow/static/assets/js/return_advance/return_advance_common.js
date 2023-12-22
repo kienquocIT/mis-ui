@@ -132,9 +132,9 @@ function loadDataTableCost(data, is_detail = false) {
                     render: (data, type, row) => {
                         let value = data !== undefined ? data : '';
                         if (is_detail) {
-                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}" disabled>`
+                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}" name="cost" disabled>`
                         } else {
-                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}">`
+                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}" name="cost">`
                         }
                     }
                 },
@@ -182,18 +182,22 @@ class ReturnAdvanceLoadPage {
                 let list_result = []
                 if (params?.['advance_payment']) {
                     resp.data[keyResp].map(function (item) {
-                        if (item.id === params?.['advance_payment'].id) {
+                        if (item.id === params?.['advance_payment'].id && item?.['system_status'] === 3) {
                             list_result.push(item)
                         }
                     })
                 } else if (params?.['opportunity']) {
                     resp.data[keyResp].map(function (item) {
-                        if (item?.['opportunity_id'] === params?.['opportunity'].id) {
+                        if (item?.['opportunity_id'] === params?.['opportunity'].id && item?.['system_status'] === 3) {
                             list_result.push(item)
                         }
                     })
                 } else {
-                    list_result = resp.data[keyResp]
+                    resp.data[keyResp].map(function (item) {
+                        if (item?.['system_status'] === 3) {
+                            list_result.push(item)
+                        }
+                    })
                 }
                 return list_result
             }
@@ -254,7 +258,9 @@ function loadDetail(id, frmDetail) {
     }).then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
+            WFRTControl.setWFRuntimeID(data?.['return_advance']?.['workflow_runtime_id'])
             let return_advance_detail = data?.['return_advance'];
+            console.log(data?.['return_advance'])
             $x.fn.renderCodeBreadcrumb(return_advance_detail);
             $.fn.compareStatusShowPageAction(return_advance_detail);
             $('.header-code').text(return_advance_detail.code);
@@ -286,12 +292,11 @@ function loadDetail(id, frmDetail) {
                 dict_cost[item?.['id']] = item;
             })
             script_costs.text(JSON.stringify(dict_cost));
-            $('#total-value').attr('data-init-money', return_advance_detail.return_total);
+            $('#total-value').attr('data-init-money', return_advance_detail?.['return_total']);
             if (return_advance_detail.money_received) {
                 let money_received_ele = $('#money-received')
                 money_received_ele.prop('checked', true);
             }
-
         }
     }, (errs) => {
     },)

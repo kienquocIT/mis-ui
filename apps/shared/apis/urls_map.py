@@ -146,6 +146,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORKFLOW_LIST = StringUrl('workflow/lists')
     WORKFLOW_CREATE = StringUrl('workflow/create')
     WORKFLOW_NODE_SYSTEM_LIST = StringUrl('workflow/nodes-system')
+    WORKFLOW_CURRENT_OF_APPS = StringUrl('workflow/currents')
 
     # WORKFLOW RUNTIME
     RUNTIME_LIST = StringUrl('workflow/runtimes')

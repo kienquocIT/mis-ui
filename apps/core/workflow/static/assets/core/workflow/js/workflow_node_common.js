@@ -1020,14 +1020,18 @@ class NodeDataTableHandle {
                         if (row?.['is_system'] === true) {
                             return `<b><span class="table-row-title text-primary" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b>`;
                         } else {
-                            return `<span class="table-row-title" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span>`;
+                            return `<input type="text" class="form-control table-row-title" value="${row?.['title']}" data-row="${dataRow}" data-node-code="${row?.['code']}">`;
                         }
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remark">${row?.['remark'] ? row?.['remark'] : ''}</span>`;
+                        if (row?.['is_system'] === true) {
+                            return ``;
+                        } else {
+                            return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                        }
                     }
                 },
                 {
@@ -1781,6 +1785,17 @@ class NodeSubmitHandle {
                             dataRow['order'] = table[0].tBodies[0].rows.length;
                         }
                     } else { // COLLAB NODES
+                        // setup title & remark node collab
+                        if (eleTitle.value) {
+                            dataRow['title'] = eleTitle.value;
+                        } else {
+                            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                            return false
+                        }
+                        let eleRemark = row?.querySelector('.table-row-remark');
+                        if (eleRemark) {
+                            dataRow['remark'] = eleRemark.value;
+                        }
                         // check data actions
                         if (dataRow['actions'].length <= 0) {
                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');

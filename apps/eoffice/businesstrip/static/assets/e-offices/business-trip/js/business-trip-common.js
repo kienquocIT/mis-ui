@@ -28,18 +28,19 @@ class expenseItemTable {
                 ordering: false,
                 paginate: false,
                 info: false,
-                width: 'auto',
+                autoWidth: true,
+                scrollX: true,
                 columns: [
                     {
                         data: 'title',
-                        width: '250px',
+                        width: '16.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control" data-zone="expense_items" name="title_${meta.row}" value="${row}">`
                         }
                     },
                     {
                         data: 'expense_item',
-                        width: '250px',
+                        width: '16.66%',
                         render: (row, type, data, meta) => {
                             let dataLoad = []
                             if (!row && data?.['expense_item_data']) row = data['expense_item_data']
@@ -52,28 +53,28 @@ class expenseItemTable {
                     },
                     {
                         data: 'uom_txt',
-                        width: '100px',
+                        width: '6.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control" data-zone="expense_items" name="uom_txt_${meta.row}" value="${row}">`
                         }
                     },
                     {
                         data: 'quantity',
-                        width: '100px',
+                        width: '6.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control" data-zone="expense_items" name="quantity_${meta.row}" value="${row}">`
                         }
                     },
                     {
                         data: 'price',
-                        width: '250px',
+                        width: '16.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control mask-money" data-zone="expense_items" name="price_${meta.row}" value="${row}">`
                         }
                     },
                     {
                         data: 'tax',
-                        width: '180px',
+                        width: '12%',
                         render: (row, type, data, meta) => {
                             let dataLoad = []
                             if (!row && data?.['tax_data']) row = data['tax_data']
@@ -86,14 +87,14 @@ class expenseItemTable {
                     },
                     {
                         data: 'subtotal',
-                        width: '250px',
+                        width: '16.66%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control" data-zone="expense_items" name="subtotal_${meta.row}" readonly value="${row}">`
                         }
                     },
                     {
                         targets: 6,
-                        width: '50px',
+                        width: '3.33%',
                         render: () => {
                             return $('.delete_btn').html()
                         }

@@ -2383,14 +2383,14 @@ class DTBControl {
     }
 
     static parseFilter2(dtb, settings, json) {
-        let groupCustomEle = dtb.parent().find('.util-btn');
-        let filterEle = dtb.parent().find('.dataTables_filter');
         let wrapperEle = dtb.closest('.dataTables_wrapper');
+        let groupCustomEle = wrapperEle.find('.util-btn');
+        let filterEle = wrapperEle.find('.dataTables_filter');
 
         // handle customize filter
-        let btnFilterEle = dtb.parent().find('.btnAddFilter');
-        let textFilterEle = dtb.parent().find('.textFilter');
-        let manualFilterEle = dtb.parent().find('.manualFilter');
+        let btnFilterEle = wrapperEle.find('.btnAddFilter');
+        let textFilterEle = wrapperEle.find('.textFilter');
+        let manualFilterEle = wrapperEle.find('.manualFilter');
         let cusFilterArr = [];
         let initTextFilter = [];
         let cusFilter = settings.oInit?.['cusFilter'] || [];
@@ -4236,7 +4236,7 @@ class FileControl {
                 'name': '',
                 'data': [],
                 ...(
-                    (opts?.['enable_edit'] || true) === true ? {
+                    opts?.['enable_edit'] === true || opts?.['enable_edit'] === undefined ? {
                         'readonly': false,
                         'disabled': false,
                         'enable_choose_file': true,

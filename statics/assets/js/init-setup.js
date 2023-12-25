@@ -1417,6 +1417,10 @@ class WFRTControl {
         let taskID = $('#idxGroupAction').attr('data-wf-task-id');
         let urlBase = globeTaskDetail;
         if (actionSelected !== undefined && taskID && urlBase) {
+            // check return need remark before submit
+            if (actionSelected === '3') {
+                WFRTControl.customCallActionReturn(ele$);
+            } else {
             let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
             WindowControl.showLoading();
             return $.fn.callAjax2({
@@ -1442,6 +1446,56 @@ class WFRTControl {
                 setTimeout(() => {
                     WindowControl.hideLoading();
                 }, 500)
+            });
+        }
+        }
+    }
+
+    static customCallActionReturn(ele$) {
+        let actionSelected = $(ele$).attr('data-value');
+        let taskID = $('#idxGroupAction').attr('data-wf-task-id');
+        let urlBase = globeTaskDetail;
+        if (actionSelected !== undefined && taskID && urlBase) {
+            Swal.fire({
+                input: "textarea",
+                inputLabel: "Message",
+                inputPlaceholder: "Type your message here...",
+                inputAttributes: {
+                    "aria-label": "Type your message here"
+                },
+                showConfirmButton: true,
+                confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                allowOutsideClick: false,
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                    let remark = result.value;
+                    let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
+                    WindowControl.showLoading();
+                    return $.fn.callAjax2({
+                        'url': urlData,
+                        'method': 'PUT',
+                        'data': {'action': actionSelected, 'remark': remark},
+                    }).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data?.['status'] === 200) {
+                            $.fn.notifyB({
+                                'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
+                            }, 'success');
+                            if (!($(ele$).attr('data-success-reload') === 'false' || $(ele$).attr('data-success-reload') === false)) {
+                                setTimeout(() => {
+                                    window.location.reload()
+                                }, 1000)
+                            }
+                        }
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 1000)
+                    }, (errs) => {
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 500)
+                    });
+                }
             });
         }
     }

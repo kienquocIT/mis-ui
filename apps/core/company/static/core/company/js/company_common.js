@@ -511,7 +511,6 @@ function LoadDetailCompany(frm, option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['company_detail']?.['workflow_runtime_id']);
                 data = data['company_detail'];
-                console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 

@@ -1565,6 +1565,12 @@ class WFRTControl {
                         remove_required: true,
                     });
                 }
+
+                // case: input is Files
+                if ($(this).hasClass('dm-uploader-ids')){
+                    let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                    uploaderEle.dmUploader('disable');
+                }
             });
 
             // apply zones config
@@ -1598,6 +1604,12 @@ class WFRTControl {
                                             'add_readonly': true,
                                             'add_border': true,
                                         });
+
+                                        // case: input is Files
+                                        if ($(this).hasClass('dm-uploader-ids')){
+                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                                            uploaderEle.dmUploader('disable');
+                                        }
                                     } else {
                                         $(this).changePropertiesElementIsZone({
                                             'add_require_label': true,
@@ -1606,6 +1618,12 @@ class WFRTControl {
                                             'remove_readonly': true,
                                             'add_border': true,
                                         });
+
+                                        // case: input is Files
+                                        if ($(this).hasClass('dm-uploader-ids')){
+                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                                            uploaderEle.dmUploader('enable');
+                                        }
                                     }
                                 })
                             });
@@ -4125,6 +4143,17 @@ class FileControl {
         })
     }
 
+    event_for_destroy(element, hide_or_show){
+        let itemEle = $(element).closest('.dad-file-control-group').find('.dm-uploader-result-list').find('button.btn-destroy-file').addClass('d-none');
+        if (itemEle.length > 0){
+            if (hide_or_show === 'hide') {
+                itemEle.addClass('d-none')
+            } else if (hide_or_show === 'show'){
+                itemEle.removeClass('d-none')
+            }
+        }
+    }
+
     ui_load_file_data(fileData) {
         let file_id = fileData?.['id'];
         if (file_id){
@@ -4207,6 +4236,20 @@ class FileControl {
             onFileTypeError: function (file) {},
             onFileSizeError: function (file) {},
             onFileExtError: function (file) {},
+            onDestroy: function (){
+                $(element).addClass('d-none');
+                this.onDisableDaD();
+            },
+            onDisableDaD: function (){
+                $(this).find('input[type="file"]').prop('disabled', true).prop('readonly', true);
+                $(this).find('button.btn-select-cloud').prop('disabled', true).prop('readonly', true);
+                clsThis.event_for_destroy(this, 'hide');
+            },
+            onEnableDaD: function (){
+                $(this).find('input[type="file"]').prop('disabled', false).prop('readonly', false);
+                $(this).find('button.btn-select-cloud').prop('disabled', false).prop('readonly', false);
+                clsThis.event_for_destroy(this, 'show');
+            },
         }
     }
 

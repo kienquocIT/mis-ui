@@ -1513,11 +1513,14 @@ class WFRTControl {
                 'data': {'code': app_code},
             }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data?.['app_list'].length === 1) {
-                    if ($.fn.hasOwnProperties(data?.['app_list'][0], ['workflow_currently'])) {
-                        let workflow_current = data?.['app_list'][0]['workflow_currently'];
-                        // zones handler
-                        WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
+                    let WFconfig = data?.['app_list'][0];
+                    if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (0)
+                        let workflow_current = WFconfig?.['workflow_currently'];
+                        if (workflow_current) {
+                            // zones handler
+                            WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                        }
                     }
                 }
             })

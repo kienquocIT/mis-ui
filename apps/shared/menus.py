@@ -166,7 +166,7 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-shopping-cart"></i>',
             ),
             MenuCommon(
-                name='Asset tools config', code='menu_asset_tools_config', view_name='AssetToolsConfigView',
+                name='Asset, Tools', code='menu_asset_tools_config', view_name='AssetToolsConfigView',
                 icon='<i class="fa-solid fa-pen-ruler"></i>',
             ),
         ]

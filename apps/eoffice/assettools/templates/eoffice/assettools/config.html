@@ -1,43 +1,56 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Asset tools config' %}
+    {% trans 'Asset, Tools config' %}
 {% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <style>
     </style>
 {% endblock %}
 
 {% block pageAction %}
-    <a href="#" class="open-modal-btn">
-        <button class="btn btn-outline-primary">
+    <button class="btn btn-outline-primary" type="submit" form="form_asset_tools">
             <span>
-                <span>{% trans 'Add' %}</span>
+                <span>{% trans 'Save' %}</span>
                 <span class="icon">
                     <i class="fa-solid fa-plus"></i>
                 </span>
             </span>
-        </button>
-    </a>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
-    <div class="row">
-        Long live the king
-    </div>
+    <form data-url="{% url 'AssetToolsConfigViewAPI' %}" data-method="PUT" id="form_asset_tools"
+          method="post"
+          autocomplete="off">
+        {% csrf_token %}
+        <div class="row">
+            <div class="form-group col-xs-12 col-md-6">
+                <label for="select_prod_type"
+                       class="form-label">{% trans 'Choose product type is referred as an asset or tool' %}</label>
+                <select name="product_type" id="select_prod_type" class="form-select"
+                        data-url="{% url 'ProductTypeListAPI' %}" data-keyResp="product_type_list" data-method="GET"
+                ></select>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group col-xs-12 col-md-6">
+                <label for="select_warehouse" class="form-label">
+                    {% trans 'Which warehouse is used for an asset or tool' %}</label>
+                <select name="warehouse" id="select_warehouse" class="form-select" multiple data-closeOnSelect="false"
+                        data-url="{% url 'WareHouseListAPI' %}" data-keyResp="warehouse_list" data-method="GET"></select>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group col-xs-12 col-md-6">
+                <label for="select_warehouse" class="form-label">
+                    {% trans 'Select employee who can view all tools list' %}</label>
+                <select name="employee_tools_list_access" id="select_employee" class="form-select" multiple data-closeOnSelect="false"
+                        data-url="{% url 'EmployeeListAPI' %}" data-keyResp="employee_list" data-keyText="full_name"
+                        data-method="GET" data-keyId="id"></select>
+            </div>
+        </div>
+    </form>
 
 {% endblock %}
-{% block dataHiddenGroup %}
-    <input type="text" id="url-factory"
-    >
-    <input type="text" id="trans-factory"
-    >
-    <div class="hidden">
-    </div>
-{% endblock %}
-
 {% block jsFooter %}
-    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'assets/e-offices/leave/js/config.js' %}"></script>
+    <script src="{% static 'assets/js/eoffice/assettools/config.js' %}"></script>
 {% endblock %}

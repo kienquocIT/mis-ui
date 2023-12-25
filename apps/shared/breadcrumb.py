@@ -277,6 +277,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Calendar
     CALENDAR_LIST_PAGE = BreadcrumbChildren(_('Calendar'), 'ProgrammeList')
 
+    # Asset tools
+    ASSET_TOOLS_CONFIG = BreadcrumbChildren(_('Asset, Tools config'), 'AssetToolsConfigView')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -541,9 +544,11 @@ class BreadcrumbView:
     INVENTORY_ADJUSTMENT_LIST_PAGE = [
         BreadcrumbItem.INVENTORY_ADJUSTMENT_LIST_PAGE
     ]
-    INVENTORY_ADJUSTMENT_CREATE_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.INVENTORY_ADJUSTMENT_CREATE_PAGE]
+    INVENTORY_ADJUSTMENT_CREATE_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [
+        BreadcrumbItem.INVENTORY_ADJUSTMENT_CREATE_PAGE]
     INVENTORY_ADJUSTMENT_EDIT_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.INVENTORY_ADJUSTMENT_EDIT_PAGE]
-    INVENTORY_ADJUSTMENT_DETAIL_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.INVENTORY_ADJUSTMENT_DETAIL_PAGE]
+    INVENTORY_ADJUSTMENT_DETAIL_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [
+        BreadcrumbItem.INVENTORY_ADJUSTMENT_DETAIL_PAGE]
 
     # Return Advance
     RETURN_ADVANCE_LIST_PAGE = [
@@ -707,3 +712,9 @@ class BreadcrumbView:
 
     # Calendar
     CALENDAR_LIST_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.CALENDAR_LIST_PAGE]
+
+    # Asset tools
+    ASSET_TOOLS_CONFIG_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.ASSET_TOOLS_CONFIG
+    ]

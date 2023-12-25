@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Asset tools config' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+    </style>
+{% endblock %}
+
+{% block pageAction %}
+    <a href="#" class="open-modal-btn">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        Long live the king
+    </div>
+
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+    >
+    <input type="text" id="trans-factory"
+    >
+    <div class="hidden">
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/e-offices/leave/js/config.js' %}"></script>
+{% endblock %}

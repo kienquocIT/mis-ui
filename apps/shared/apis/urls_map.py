@@ -114,6 +114,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     COMPANY_CONFIG = StringUrl('company/config')
     COMPANY_LIST = StringUrl('company/list')
     COMPANY_DETAIL = StringUrl('company')
+    COMPANY_DETAIL_LOGO = StringUrl('company/{pk}/logo')
     COMPANY_OVERVIEW = StringUrl('company/overview/list')
     COMPANY_USER_NOT_MAP_EMPLOYEE = StringUrl('company/user/available')
     COMPANY_USER_COMPANY = StringUrl('company/user-company')

@@ -223,7 +223,7 @@ function loadTabTodo() {
                     }
                 }, {
                     className: 'wrap-text',
-                    with: "25%",
+                    width: "25%",
                     data: "date_created",
                     render: (data, type, row)=>{
                         return $x.fn.displayRelativeTime(data);

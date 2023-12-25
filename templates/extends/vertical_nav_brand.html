@@ -3,18 +3,28 @@
 <div class="menu-header">
     <span>
         <a class="navbar-brand" href="/">
-            <img
-                    class="brand-img img-fluid"
-                    src="{% static 'assets/images/logo/logo-55x32.png' %}" alt="brand"
-                    style="width: 32px;"
-            />
             {% if base.company_current_data %}
+                <img
+                    class="brand-img img-fluid"
+                    {% if base.company_current_data.logo %}
+                        src="{{base.company_current_data.logo}}" alt="brand"
+                    {% else %}
+                        src="{% static 'assets/images/logo/logo-55x32.png' %}" alt="brand"
+                    {% endif %}
+                    style="width: 50px;"
+                />
                 <span
                         id="span-code-company"
                         data-bs-toggle="tooltip"
                         data-bs-placement="bottom"
                         title="{{ base.company_current_data.title }}"
                 >{{ base.company_current_data.code|upper }}</span>
+            {% else %}
+                <img
+                    class="brand-img img-fluid"
+                    src="{% static 'assets/images/logo/logo-55x32.png' %}" alt="brand"
+                    style="width: 32px;"
+                />
             {% endif %}
             <span class="brand-img img-fluid"></span>
         </a>

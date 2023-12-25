@@ -37,6 +37,19 @@
     ></script>
 
     <div class="collapse multi-collapse show" id="collapse-area">
+        <div class="row">
+            <div class="form-group">
+                <label for="company_logo" class="form-label">{% trans 'Logo' %}</label>
+                <input
+                        class="form-control"
+                        type="file"
+                        name="file"
+                        id="company_logo"
+                        data-url="{% url 'CompanyLogoUpload' pk=pk %}"
+                        data-method="PUT"
+                />
+            </div>
+        </div>
         <form id="frm-update-company"
           data-url-detail="{% url "CompanyDetailAPI" pk=0 %}"
           data-url-redirect="{% url "CompanyDetail" pk=0 %}"

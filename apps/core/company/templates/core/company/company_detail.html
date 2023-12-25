@@ -37,7 +37,19 @@
             data-trans-numbering0="{% trans 'System' %}"
             data-trans-numbering1="{% trans 'User defined' %}"
     ></script>
-    
+
+    <div class="row">
+        <div class="form-group">
+            <label for="company_logo" class="form-label">{% trans 'Logo' %}</label>
+            <img
+                    src="#"
+                    alt="Company Logo"
+                    style="width: 100px; height: 100px"
+                    id="company_logo_preview"
+            >
+        </div>
+    </div>
+
     <form id="frm-detail-company"
           data-url-detail="{% url "CompanyDetailAPI" '0' %}"
           data-url-redirect="{% url "CompanyList" %}"

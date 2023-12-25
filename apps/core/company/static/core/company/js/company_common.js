@@ -522,6 +522,10 @@ function LoadDetailCompany(frm, option) {
                 $('#phone').val(data.phone);
                 $('#fax').val(data.fax);
 
+                if (data.logo){
+                    $('#company_logo_preview').attr('src', data.logo);
+                }
+
                 loadFunctionNumberTableDetail(option, data?.['company_function_number'])
 
                 $.fn.initMaskMoney2();

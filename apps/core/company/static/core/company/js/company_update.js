@@ -2,16 +2,48 @@ $(document).ready(function () {
     new CompanyHandle().load();
     LoadDetailCompany($('#frm-update-company'), 'update');
 
+    let logoFiles = null;
+    let eleLogo = $('#company_logo')
+
+    eleLogo.on('change', event => {
+        logoFiles = event.target.files[0];
+    })
+
     let pk = $.fn.getPkDetail();
     $("#frm-update-company").submit(function (event) {
         event.preventDefault();
         let combinesData = new CompanyHandle().combinesData($(this), true);
         if (combinesData) {
-            $.fn.callAjax2(combinesData)
+            let waitResp = [];
+
+            let updateInfo = $.fn.callAjax2(combinesData)
                 .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
+                    (resp) => $.fn.switcherResp(resp),
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+            waitResp.push(updateInfo);
+
+            if (logoFiles){
+                let formData = new FormData();
+                formData.append('file', logoFiles);
+                let uploadLogo = $.fn.callAjax2({
+                    url: eleLogo.attr('data-url'),
+                    method: eleLogo.attr('data-method'),
+                    data: formData,
+                    contentType: 'multipart/form-data',
+                }).then(
+                    (resp) => $.fn.switcherResp(resp),
+                    (errs) => {}
+                )
+                waitResp.push(uploadLogo)
+            }
+
+
+            Promise.all(waitResp).then((results) => {
+                let data = results[0];
+                if (data) {
                             let frm = new SetupFormSubmit($('#tblCompanyConfig'));
                             let dataBody = frm.dataForm
                             dataBody['currency_rule'] = SetupFormSubmit.groupDataFromPrefix(dataBody, 'currency_rule__');
@@ -62,11 +94,7 @@ $(document).ready(function () {
                                 location.reload.bind(location);
                             }, 1000);
                         }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
+            })
         }
     })
 });

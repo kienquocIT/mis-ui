@@ -1520,6 +1520,8 @@ class WFRTControl {
                         if (workflow_current) {
                             // zones handler
                             WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                            // collab out form handler
+                            // WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
                         }
                     }
                 }
@@ -1807,6 +1809,14 @@ class WFRTControl {
         return 'true';
     }
 
+    static getCollabOutFormData() {
+        let itemEle = $('#idxCollabOutFormData');
+        if (itemEle && itemEle.length > 0) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }
+
     static getZoneKeyData() {
         let itemEle = $('#idxZonesKeyData');
         if (itemEle) {
@@ -1839,12 +1849,18 @@ class WFRTControl {
             zonesHiddenData.map((item) => {
                 body_fields.push(item.code);
             });
+            $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>` + `<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
         }
-        $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>` + `<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
     }
 
     static setIsEditAllZoneData(isEditAllZone) {
         $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
+    }
+
+    static setCollabOutFormData(collabOutFormData) {
+        if (collabOutFormData && Array.isArray(collabOutFormData)) {
+            $('html').append(`<script class="hidden" id="idxCollabOutFormData">${JSON.stringify(collabOutFormData)}</script>`);
+        }
     }
 
     static getInputMappingProperties() {

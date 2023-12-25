@@ -1020,7 +1020,12 @@ class NodeDataTableHandle {
                         if (row?.['is_system'] === true) {
                             return `<b><span class="table-row-title text-primary" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b>`;
                         } else {
-                            return `<input type="text" class="form-control table-row-title" value="${row?.['title']}" data-row="${dataRow}" data-node-code="${row?.['code']}">`;
+                            let form = $('#form-create_workflow');
+                            if (form.attr('data-method') !== 'GET') {
+                                return `<input type="text" class="form-control table-row-title" value="${row?.['title']}" data-row="${dataRow}" data-node-code="${row?.['code']}">`;
+                            } else {
+                                return `<span class="table-row-title" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span>`;
+                            }
                         }
                     }
                 },
@@ -1030,7 +1035,12 @@ class NodeDataTableHandle {
                         if (row?.['is_system'] === true) {
                             return ``;
                         } else {
-                            return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                            let form = $('#form-create_workflow');
+                            if (form.attr('data-method') !== 'GET') {
+                               return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                            } else {
+                               return `<span class="table-row-remark">${row?.['remark'] ? row?.['remark'] : ''}</span>`;
+                            }
                         }
                     }
                 },

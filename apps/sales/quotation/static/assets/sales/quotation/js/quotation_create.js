@@ -56,7 +56,11 @@ $(function () {
 
         // get WF initial zones
         if (formSubmit.attr('data-method') === 'POST') {
-            WFRTControl.setWFInitialZone('quotation');
+            if (!formSubmit[0].classList.contains('sale-order')) {
+                WFRTControl.setWFInitialZone('quotation');
+            } else {
+                WFRTControl.setWFInitialZone('saleorder');
+            }
         }
 
 
@@ -1055,10 +1059,8 @@ $(function () {
                 is_sale_order = true;
             }
             let _form = new SetupFormSubmit(formSubmit);
-
             // Load again indicator when Submit
             indicatorClass.loadQuotationIndicator('quotation-indicator-data');
-
             QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
@@ -1157,19 +1159,78 @@ $(function () {
             }
 
             let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
+
+
+            // let collabOutForm = WFRTControl.getCollabOutFormData();
+            // if (collabOutForm && collabOutForm.length > 0) {
+            //     const inputOptions = new Promise((resolve) => {
+            //         let dataOptions = {}
+            //         for (let collab of collabOutForm) {
+            //             dataOptions[collab?.['id']] = collab?.['full_name'];
+            //         }
+            //         setTimeout(() => {
+            //             resolve(dataOptions);
+            //         }, 1000);
+            //     });
+            //     let htmlCustom = ``;
+            //     for (let collab of collabOutForm) {
+            //             // htmlCustom += `<div class="row mb-2">
+            //             //             <div class="d-flex">
+            //             //                 <span class="mr-2">${collab?.['full_name']}</span>
+            //             //                 <span class="badge badge-soft-primary mr-5">Truong phong</span>
+            //             //                 <div class="form-check d-flex justify-content-end">
+            //             //                     <input
+            //             //                         type="radio"
+            //             //                         class="form-check-input"
+            //             //                         data-id="${collab?.['id']}"
+            //             //                         value="${collab?.['id']}"
+            //             //                     >
+            //             //                 </div>
+            //             //             </div>
+            //             //         </div>`
+            //         }
+            //     Swal.fire({
+            //         title: "Select collaborator at next node",
+            //         input: "radio",
+            //         inputOptions,
+            //         // html: String(htmlCustom),
+            //         allowOutsideClick: false,
+            //         inputValidator: (value) => {
+            //             if (!value) {
+            //                 return "You need to select one person!";
+            //             }
+            //         }
+            //     }).then((result) => {
+            //         if (result.dismiss === Swal.DismissReason.timer || result.value) {
+            //             let employeeID = result.value;
+            //             Swal.fire({html: `You selected: ${employeeID}`});
+            //         }
+            //     });
+            // }
+
+
+
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': _form.dataUrl,
+                    'method': _form.dataMethod,
+                    'data': _form.dataForm,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: data.message}, 'success')
+                        $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
                     }
-                )
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err.data.errors}, 'failure');
+                }
+            )
         }
 
         $('#btn-remove-promotion').on('click', function() {

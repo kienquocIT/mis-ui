@@ -1575,7 +1575,7 @@ class WFRTControl {
                             // zones handler
                             WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                             // collab out form handler
-                            // WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
+                            WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
                         }
                     }
                 }

@@ -1430,37 +1430,17 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="row more-information-group">
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                        class="fas fa-info-circle more-information"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                    >
-                                                    </i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
-                                            <select
-                                                class="form-select table-row-item"
-                                                data-product-id="${row?.['product']?.['id']}"
-                                                data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
-                                                data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
-                                                data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
-                                                data-keyResp="product_sale_list"
-                                                required
-                                                disabled
-                                            >
-                                            </select>
-                                        </span>
-                                    </div>
-                                </div>`;
+                        return `<select
+                                    class="form-select table-row-item"
+                                    data-product-id="${row?.['product']?.['id']}"
+                                    data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
+                                    data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
+                                    data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
+                                    data-keyResp="product_sale_list"
+                                    required
+                                    disabled
+                                >
+                                </select>`;
                     },
                 },
                 {
@@ -1597,35 +1577,15 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: () => {
-                            return `<div class="row more-information-group">
-                                        <div class="input-group">
-                                            <span class="input-affix-wrapper">
-                                                <span class="input-prefix">
-                                                    <div class="btn-group dropstart">
-                                                        <i
-                                                            class="fas fa-info-circle more-information"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                        >
-                                                        </i>
-                                                        <div class="dropdown-menu w-210p mt-4"></div>
-                                                    </div>
-                                                </span>
-                                                <select
-                                                    class="form-select table-row-item"
-                                                    data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
-                                                    data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
-                                                    data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
-                                                    data-keyResp="product_sale_list"
-                                                    required
-                                                >
-                                                </select>
-                                            </span>
-                                        </div>
-                                    </div>`;
+                            return `<select
+                                        class="form-select table-row-item"
+                                        data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
+                                        data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
+                                        data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
+                                        data-keyResp="product_sale_list"
+                                        required
+                                    >
+                                    </select>`;
                     },
                 },
                 {
@@ -2077,16 +2037,8 @@ class POSubmitHandle {
 
 // COMMON FUNCTION
 function clickCheckBoxAll(ele, table) {
-    if (ele[0].checked === true) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            row.querySelector('.table-row-checkbox').checked = true;
-        }
-    } else {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            row.querySelector('.table-row-checkbox').checked = false;
-        }
+    for (let eleCheck of table[0].querySelectorAll('.table-row-checkbox')) {
+        eleCheck.checked = ele[0].checked;
     }
 }
 

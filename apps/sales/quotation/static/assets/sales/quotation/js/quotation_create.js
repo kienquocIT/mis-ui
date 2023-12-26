@@ -1161,76 +1161,102 @@ $(function () {
             let csr = $("[name=csrfmiddlewaretoken]").val();
 
 
-            // let collabOutForm = WFRTControl.getCollabOutFormData();
-            // if (collabOutForm && collabOutForm.length > 0) {
-            //     const inputOptions = new Promise((resolve) => {
-            //         let dataOptions = {}
-            //         for (let collab of collabOutForm) {
-            //             dataOptions[collab?.['id']] = collab?.['full_name'];
-            //         }
-            //         setTimeout(() => {
-            //             resolve(dataOptions);
-            //         }, 1000);
-            //     });
-            //     let htmlCustom = ``;
-            //     for (let collab of collabOutForm) {
-            //             // htmlCustom += `<div class="row mb-2">
-            //             //             <div class="d-flex">
-            //             //                 <span class="mr-2">${collab?.['full_name']}</span>
-            //             //                 <span class="badge badge-soft-primary mr-5">Truong phong</span>
-            //             //                 <div class="form-check d-flex justify-content-end">
-            //             //                     <input
-            //             //                         type="radio"
-            //             //                         class="form-check-input"
-            //             //                         data-id="${collab?.['id']}"
-            //             //                         value="${collab?.['id']}"
-            //             //                     >
-            //             //                 </div>
-            //             //             </div>
-            //             //         </div>`
-            //         }
-            //     Swal.fire({
-            //         title: "Select collaborator at next node",
-            //         input: "radio",
-            //         inputOptions,
-            //         // html: String(htmlCustom),
-            //         allowOutsideClick: false,
-            //         inputValidator: (value) => {
-            //             if (!value) {
-            //                 return "You need to select one person!";
-            //             }
-            //         }
-            //     }).then((result) => {
-            //         if (result.dismiss === Swal.DismissReason.timer || result.value) {
-            //             let employeeID = result.value;
-            //             Swal.fire({html: `You selected: ${employeeID}`});
-            //         }
-            //     });
-            // }
-
-
-
-            WindowControl.showLoading();
-            $.fn.callAjax2(
-                {
-                    'url': _form.dataUrl,
-                    'method': _form.dataMethod,
-                    'data': _form.dataForm,
+            let collabOutForm = WFRTControl.getCollabOutFormData();
+            if (collabOutForm && collabOutForm.length > 0) {
+                let htmlCustom = ``;
+                for (let collab of collabOutForm) {
+                    htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <span class="mr-2">${collab?.['full_name']}</span>
+                                            <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
+                                        </div>
+                                    </div><hr class="bg-teal">`;
                 }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: data.message}, 'success')
-                        $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
+                Swal.fire({
+                    title: "Select collaborator at next step",
+                    html: String(htmlCustom),
+                    allowOutsideClick: false,
+                    showConfirmButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    preConfirm: () => {
+                        let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                        if (eleChecked) {
+                            _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                        } else {
+                            return "You need to select one person!";
+                        }
+                    },
+                    didOpen: () => {
+                        // Add event listener after the modal is shown
+                        let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                        checkboxes.forEach((checkbox) => {
+                            checkbox.addEventListener('click', function() {
+                                let checked = checkbox.checked;
+                                for (let eleCheck of checkboxes) {
+                                    eleCheck.checked = false;
+                                }
+                                checkbox.checked = checked;
+                            });
+                        });
                     }
-                }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err.data.errors}, 'failure');
-                }
-            )
+                })
+                //     .then((result) => {
+                //     if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                //         let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                //         if (eleChecked) {
+                //             _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                //             WindowControl.showLoading();
+                //             $.fn.callAjax2(
+                //                 {
+                //                     'url': _form.dataUrl,
+                //                     'method': _form.dataMethod,
+                //                     'data': _form.dataForm,
+                //                 }
+                //             ).then(
+                //                 (resp) => {
+                //                     let data = $.fn.switcherResp(resp);
+                //                     if (data) {
+                //                         $.fn.notifyB({description: data.message}, 'success')
+                //                         $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
+                //                     }
+                //                 }, (err) => {
+                //                     setTimeout(() => {
+                //                         WindowControl.hideLoading();
+                //                     }, 1000)
+                //                     $.fn.notifyB({description: err.data.errors}, 'failure');
+                //                 }
+                //             )
+                //         }
+                //     }
+                // });
+            }
+
+
+
+            // WindowControl.showLoading();
+            // $.fn.callAjax2(
+            //     {
+            //         'url': _form.dataUrl,
+            //         'method': _form.dataMethod,
+            //         'data': _form.dataForm,
+            //     }
+            // ).then(
+            //     (resp) => {
+            //         let data = $.fn.switcherResp(resp);
+            //         if (data) {
+            //             $.fn.notifyB({description: data.message}, 'success')
+            //             $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
+            //         }
+            //     }, (err) => {
+            //         setTimeout(() => {
+            //             WindowControl.hideLoading();
+            //         }, 1000)
+            //         $.fn.notifyB({description: err.data.errors}, 'failure');
+            //     }
+            // )
         }
 
         $('#btn-remove-promotion').on('click', function() {

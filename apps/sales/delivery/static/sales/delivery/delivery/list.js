@@ -16,7 +16,7 @@ $(document).ready(function () {
                     let html = '--';
                     let url = $('#url-factory').attr('data-page-detail');
                     if (row) html = row
-                    html = `<a href="${url.format_url_with_uuid(data.id)}" target="_blank">${html}</a>`
+                    html = `<a href="${url.format_url_with_uuid(data.id)}">${html}</a>`
                     return html
                 },
             }, {

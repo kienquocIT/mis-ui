@@ -301,12 +301,8 @@ class NodeLoadDataHandle {
                     }
                     if (is_edit_all_zone === true) {
                         result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                        <div class="media d-flex align-items-center">
-                                            <div class="media-body">
-                                                <div>
-                                                    <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
-                                                </div>
-                                            </div>  
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span> 
                                         </div>
                                         <div class="form-check form-check-theme ms-3">
                                             <input type="checkbox" class="form-check-input checkbox-node-zone-all" checked>
@@ -314,12 +310,8 @@ class NodeLoadDataHandle {
                                     </li>`;
                     } else {
                         result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                        <div class="media d-flex align-items-center">
-                                            <div class="media-body">
-                                                <div>
-                                                    <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
-                                                </div>
-                                            </div>  
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span> 
                                         </div>
                                         <div class="form-check form-check-theme ms-3">
                                             <input type="checkbox" class="form-check-input checkbox-node-zone-all">
@@ -333,12 +325,8 @@ class NodeLoadDataHandle {
                             let title = row.children[1].children[0].innerHTML;
                             if (zone_list.includes(i + 1)) {
                                 result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                            <div class="media d-flex align-items-center">
-                                                <div class="media-body">
-                                                    <div>
-                                                        <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                                    </div>
-                                                </div>  
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge badge-soft-success node-zone-title">${title}</span> 
                                             </div>
                                             <div class="form-check form-check-theme ms-3">
                                                 <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}" checked>
@@ -346,12 +334,8 @@ class NodeLoadDataHandle {
                                         </li>`;
                             } else {
                                 result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                            <div class="media d-flex align-items-center">
-                                                <div class="media-body">
-                                                    <div>
-                                                        <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                                    </div>
-                                                </div>  
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge badge-soft-success node-zone-title">${title}</span> 
                                             </div>
                                             <div class="form-check form-check-theme ms-3">
                                                 <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
@@ -370,12 +354,8 @@ class NodeLoadDataHandle {
             }
         } else { // Case Create New Node
             result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="media d-flex align-items-center">
-                                    <div class="media-body">
-                                        <div>
-                                            <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
-                                        </div>
-                                    </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="checkbox" class="form-check-input checkbox-node-zone-all">
@@ -387,12 +367,8 @@ class NodeLoadDataHandle {
                     let row = table.tBodies[0].rows[i];
                     let title = row.children[1].children[0].innerHTML;
                     result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="media d-flex align-items-center">
-                                    <div class="media-body">
-                                        <div>
-                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                        </div>
-                                    </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-soft-success node-zone-title">${title}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
@@ -427,12 +403,8 @@ class NodeLoadDataHandle {
                             let title = row.children[1].children[0].innerHTML;
                             if (zone_list.includes(i + 1)) {
                                 result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                            <div class="media d-flex align-items-center">
-                                                <div class="media-body">
-                                                    <div>
-                                                        <span class="badge badge-soft-warning node-zone-title">${title}</span>
-                                                    </div>
-                                                </div>  
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge badge-soft-warning node-zone-title">${title}</span> 
                                             </div>
                                             <div class="form-check form-check-theme ms-3">
                                                 <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}" checked>
@@ -440,12 +412,8 @@ class NodeLoadDataHandle {
                                         </li>`;
                             } else {
                                 result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                            <div class="media d-flex align-items-center">
-                                                <div class="media-body">
-                                                    <div>
-                                                        <span class="badge badge-soft-warning node-zone-title">${title}</span>
-                                                    </div>
-                                                </div>  
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge badge-soft-warning node-zone-title">${title}</span>  
                                             </div>
                                             <div class="form-check form-check-theme ms-3">
                                                 <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
@@ -469,12 +437,8 @@ class NodeLoadDataHandle {
                     let row = table.tBodies[0].rows[i];
                     let title = row.children[1].children[0].innerHTML;
                     result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="media d-flex align-items-center">
-                                    <div class="media-body">
-                                        <div>
-                                            <span class="badge badge-soft-warning node-zone-title">${title}</span>
-                                        </div>
-                                    </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-soft-warning node-zone-title">${title}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">

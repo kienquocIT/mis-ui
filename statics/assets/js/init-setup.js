@@ -1616,8 +1616,16 @@ class WFRTControl {
                         }
 
                         // zones handler
-                        WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
-                        WFRTControl.activeZoneHiddenDocDetail(data['runtime_detail']['zones_hidden_myself']);
+                        if (window.location.href.includes('/update/')) {
+                            if (actionMySelf.hasOwnProperty('zones') && actionMySelf.hasOwnProperty('zones_hidden') && actionMySelf.hasOwnProperty('is_edit_all_zone')) {
+                                WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
+                            } else {
+                                WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                            }
+                        }
+                        if (window.location.href.includes('/detail/')) {
+                            WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                        }
                         // collab out form handler
                         WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);
                     }
@@ -1871,7 +1879,7 @@ class WFRTControl {
         }
     }
 
-    static activeZoneInDocDetail() {
+    static activeZoneHiddenMySelf() {
         let zonesHiddenData = WFRTControl.getZoneHiddenData();
         if (Array.isArray(zonesHiddenData)) {
             let pageEle = DocumentControl.getElePageContent();
@@ -1930,10 +1938,10 @@ class WFRTControl {
         }
     }
 
-    static activeZoneHiddenDocDetail(zonesHiddenData) {
-        if (window.location.href.includes('/detail/')) {
+    static activeDataZoneHiddenMySelf(zonesHiddenData) {
+        if (window.location.href.includes('/detail/') || window.location.href.includes('/update/')) {
             WFRTControl.setZoneHiddenData(zonesHiddenData);
-            WFRTControl.activeZoneInDocDetail();
+            WFRTControl.activeZoneHiddenMySelf();
         }
     }
 

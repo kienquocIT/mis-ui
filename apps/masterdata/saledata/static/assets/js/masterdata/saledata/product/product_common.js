@@ -913,7 +913,7 @@ function getDataForm() {
             data['online_price_list'] = price_list_for_online_sale_Ele.val();
         }
         data['available_notify'] = available_notify_checkboxEle.prop('checked');
-        data['available_notify_quantity'] = $('#less_than_number').val();
+        data['available_notify_quantity'] = parseFloat($('#less_than_number').val());
     } else {
         data['sale_default_uom'] = null;
         data['sale_tax'] = null;
@@ -1218,7 +1218,6 @@ function LoadDetailProduct(option) {
                  // `)
                 }
                 table_Variant_Items.DataTableDefault({
-                    scrollX: true,
                     reloadCurrency: true,
                     paging: false,
                     data: data_table_Variant_Items ? data_table_Variant_Items : [],

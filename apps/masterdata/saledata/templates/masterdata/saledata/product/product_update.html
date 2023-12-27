@@ -488,15 +488,17 @@
                 <div class="row" id="table-variant-items-div" hidden>
                     <table id="table-variant-items" class="table nowrap w-100">
                         <thead class="thead-primary">
-                        <th></th>
-                        <th>
+                        <tr>
+                        <th class="w-5"></th>
+                        <th class="w-45">
                             {% trans 'Variant' %}
                             <span class="badge-label text-white"><span class="badge badge-soft-primary" id="table-variant-items-label">0</span></span>
                         </th>
-                        <th></th>
-                        <th>{% trans 'SKU' %}</th>
-                        <th>{% trans 'Extra Price' %}</th>
-                        <th>{% trans 'Active' %}</th>
+                        <th class="w-5"></th>
+                        <th class="w-20">{% trans 'SKU' %}</th>
+                        <th class="w-20">{% trans 'Extra Price' %}</th>
+                        <th class="w-5">{% trans 'Active' %}</th>
+                        </tr>
                         </thead>
                         <tbody></tbody>
                     </table>

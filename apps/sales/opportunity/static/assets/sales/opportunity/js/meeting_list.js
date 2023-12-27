@@ -311,6 +311,10 @@ class MeetingHandle {
         frm.dataForm['customer_member_list'] = customer_member_list;
         frm.dataForm['meeting_from_time'] = convert12hto24h(frm.dataForm['meeting_from_time']);
         frm.dataForm['meeting_to_time'] = convert12hto24h(frm.dataForm['meeting_to_time']);
+        if (frm.dataForm['meeting_to_time'].split(':')[0] < frm.dataForm['meeting_from_time'].split(':')[0])
+            $.fn.notifyB({'description': $('#trans-factory').attr('data-time-valid')}, 'failure')
+            return false
+
 
         return {
             url: frm.dataUrl,

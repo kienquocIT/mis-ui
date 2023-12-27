@@ -5737,12 +5737,16 @@ msgid "AP Status"
 msgstr "Trạng thái tạm ứng"
 
 #
+msgid "Asset, Tools"
+msgstr "Công cụ, Dụng cụ"
+
+#
 msgid "Asset, Tools config"
 msgstr "Cấu hình Công cụ, Dụng cụ"
 
 #
 msgid "Choose product type is referred as an asset or tool"
-msgstr "Chọn loại sản phầm là tài sản công cụ, dụng cụ"
+msgstr "Chọn loại sản phẩm là tài sản công cụ, dụng cụ"
 
 #
 msgid "Which warehouse is used for an asset or tool"
@@ -5751,4 +5755,8 @@ msgstr "Chọn những kho chứa công cụ, dụng cụ"
 #
 msgid "Select employee who can view all tools list"
 msgstr "Chọn những nhân viên có thể xem toàn bộ danh sách công cụ, dụng cụ"
+
+#
+msgid "To time need larger than From time"
+msgstr "Giờ kết thúc phải lớn hơn giờ bắt đầu"
 

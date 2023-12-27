@@ -85,6 +85,7 @@ INSTALLED_APPS = \
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',
+        'apps.eoffice.meeting',
     ] + [  # external
         'apps.web_builder',
     ]

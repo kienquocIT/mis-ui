@@ -168,6 +168,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALUTATION_DETAIL_PK = StringUrl('saledata/salutation/{pk}')
     INTEREST_DETAIL = StringUrl('saledata/interest/{pk}')
 
+    MEETING_ROOM_LIST = StringUrl('meeting-schedule/meetingrooms')
+    MEETING_ROOM_DETAIL = StringUrl('meeting-schedule/meetingroom/{pk}')
+    MEETING_ZOOM_CONFIG_LIST = StringUrl('meeting-schedule/zoom-configs')
+    MEETING_ZOOM_CONFIG_DETAIL = StringUrl('meeting-schedule/zoom-config/{pk}')
+
     # masterdata/lookup/account
     INDUSTRY_LIST = StringUrl('saledata/industries')
     ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')

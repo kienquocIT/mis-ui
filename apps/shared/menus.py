@@ -165,6 +165,10 @@ class MenusCoreConfigurations:
                 name='Purchase Request Config', code='menu_purchase_request_config', view_name='PurchaseRequestConfig',
                 icon='<i class="fas fa-shopping-cart"></i>',
             ),
+            MenuCommon(
+                name='Meeting', code='id_menu_master_data_meeting_config', view_name='MeetingConfigList',
+                icon='<i class="fas fa-chalkboard-teacher"></i>',
+            ),
         ]
     )
 
@@ -381,6 +385,10 @@ class MenuEOffice:
         name='Business trip', code='menu_business', view_name='BusinessTripRequestList',
         icon='<i class="fa-solid fa-business-time"></i>',
     )
+    MEETING = MenuCommon(
+        name='Meeting', code='menu_meeting_list', view_name='MeetingScheduleList',
+        icon='<i class="fas fa-chalkboard-teacher"></i>',
+    )
 
 
 class MenusReport:
@@ -509,6 +517,7 @@ class SpaceItem:
                 MenuEOffice.CALENDAR,
                 MenuEOffice.LEAVE,
                 MenuEOffice.BUSINESS_TRIP,
+                MenuEOffice.MEETING,
             ],
         ),
         'report': SpaceCommon(

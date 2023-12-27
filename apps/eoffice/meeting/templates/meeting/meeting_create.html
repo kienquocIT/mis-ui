@@ -1,0 +1,621 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Advance Payment Create' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+        .dropdown-menu { !important;
+            width: max-content;
+            border: solid 1px #d8d8d8;
+        }
+        .table td, .table th {
+            padding: 0.5rem;
+        }
+        #tab_line_detail_datatable input[disabled] {
+            cursor: text;
+        }
+        #tab_line_detail_datatable tbody .dropdown-toggle::after {
+            content: none;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-online-meeting">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    {{ data.zoom_config | json_script:"zoom_config" }}
+    <div class="collapse multi-collapse mb-3 show" id="collapse-area">
+        <form id="form-create-meeting"
+          data-method="POST"
+          data-url="{% url "MeetingScheduleListAPI" %}"
+          data-url-redirect="{% url "MeetingScheduleList" %}"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-lg-6 col-md-6">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label required" for="name">{% trans "Name" %}</label>
+                            <input class="form-control" id="name" placeholder="Meeting with customer ...">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="content">{% trans "Meeting content" %}</label>
+                            <textarea class="form-control" id="content"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-4 col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="meeting-type" id="online-meeting" value="0" checked>
+                            <label class="form-check-label" for="online-meeting">{% trans 'Online meeting' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4 col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="meeting-type" id="offline-meeting" value="1">
+                            <label class="form-check-label" for="offline-meeting">{% trans 'Offline meeting' %}</label>
+                        </div>
+                    </div>
+                </div>
+                <div hidden class="row row-for-offline-meeting mt-2">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="room">{% trans "Room" %}</label>
+                            <select class="form-select select2" id="room"
+                                    data-method="GET"
+                                    data-url="{% url 'MeetingRoomListAPI' %}"
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+                <div hidden class="row row-for-offline-meeting">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="room-des">{% trans "Room description" %}</label>
+                            <textarea disabled readonly class="form-control" id="room-des"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 col-md-6">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="internal-participants">{% trans "Internal participants" %}</label>
+                                    <select multiple class="form-select select2"
+                                            id="internal-participants"
+                                            data-method="GET"
+                                            data-url="{% url 'EmployeeListAPI' %}"
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+{#                            <div class="col-12 col-lg-4 col-md-4">#}
+{#                                <div class="form-group">#}
+{#                                    <label class="form-label" for="external-participants-account">{% trans "Account" %}</label>#}
+{#                                    <select class="form-select select2" id="external-participants-account"></select>#}
+{#                                </div>#}
+{#                            </div>#}
+                            <div class="col-12 col-lg-12 col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="external-participants">{% trans "External participants" %}</label>
+                                    <select multiple class="form-select select2"
+                                            id="external-participants"
+                                            data-method="GET"
+                                            data-url="{% url 'EmployeeListAPI' %}"
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+    <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+            <span class="icon">
+                <i class="fas fa-angle-double-up text-primary"></i>
+            </span>
+        </button>
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_app_meeting">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-window-fullscreen"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Onlime app meeting' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-file-earmark-arrow-up"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_app_meeting">
+                    <div class="row row-1">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group" hidden>
+                                        <script id="data_meeting_payload"></script>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="meeting-password">Your meeting link:</label><a target="blank" href="#" id="meeting-link"><p></p></a>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="meeting-password">Your meeting password:</label>
+                                        <p class="text-grey" id="meeting-password"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button"
+                                    id="btn-add-app-meeting-schedule"
+                                    class="btn btn-outline-primary btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modal_add_meeting_app_schedule"
+                            >
+                                <i class="fas fa-plus-circle"></i>
+                                {% trans 'Create meeting schedule' %}
+                            </button>
+                            <div class="modal fade" id="modal_add_meeting_app_schedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalForms" aria-hidden="true">
+                                <div class="modal-dialog modal-lg mt-10" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{% trans 'Create meeting schedule' %}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="form-create-online-meeting"
+                                                  data-method="POST"
+                                                  data-url="{% url "MeetingScheduleListAPI" %}"
+                                                  data-url-redirect="{% url "MeetingScheduleList" %}"
+                                            >
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label" for="select-app">{% trans "Select app" %}</label>
+                                                                    <select class="form-select" id="modal-select-app">
+                                                                        <option value="0">{% trans 'Zoom' %}</option>
+                                                                        <option value="1" disabled>{% trans 'Google meet' %}</option>
+                                                                        <option value="2" disabled>{% trans 'Bflow meeting' %}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label" for="modal-meeting-title">{% trans "Topic" %}</label>
+                                                                    <input class="form-control" id="modal-meeting-title" value="Meeting1" placeholder="The title of your zoom meeting">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr class="bg-teal">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="row">
+                                                                    <div class="col-12 col-lg-6 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label required" for="modal-start-date">{% trans 'Start date' %}</label>
+                                                                            <div class="input-group">
+                                                                                <input class="form-control" id="modal-start-date">
+                                                                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-lg-6 col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label required" for="modal-start-time">{% trans 'Start time' %}</label>
+                                                                            <div class="input-group">
+                                                                                <input class="form-control" id="modal-start-time">
+                                                                                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label required" for="modal-duration-hour">{% trans 'Duration' %}</label>
+                                                                    <div class="row">
+                                                                        <div class="col-6">
+                                                                            <span class="input-affix-wrapper affix-wth-text">
+                                                                                <select type="number" class="form-control" id="modal-duration-hour">
+                                                                                    <option value="0">0</option>
+                                                                                    <option value="1">1</option>
+                                                                                    <option value="2">2</option>
+                                                                                    <option value="3">3</option>
+                                                                                    <option value="4">4</option>
+                                                                                    <option value="5">5</option>
+                                                                                    <option value="6">6</option>
+                                                                                    <option value="7">7</option>
+                                                                                    <option value="8">8</option>
+                                                                                    <option value="9">9</option>
+                                                                                    <option value="10">10</option>
+                                                                                    <option value="11">11</option>
+                                                                                    <option value="12">12</option>
+                                                                                </select>
+                                                                                <span class="input-suffix">{% trans 'hour(s)' %}</span>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <span class="input-affix-wrapper affix-wth-text">
+                                                                                <select class="form-select" id="modal-duration-min">
+                                                                                    <option value="0">0</option>
+                                                                                    <option value="15">15</option>
+                                                                                    <option value="30">30</option>
+                                                                                    <option value="45">45</option>
+                                                                                </select>
+                                                                                <span class="input-suffix">{% trans 'min(s)' %}</span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label" for="modal-time-zone">{% trans "Time zone" %}</label>
+                                                                    <select class="select2 form-select" id="modal-time-zone">
+                                                                        <option value="Asia/Saigon">{% trans '(GMT+7:00) Vietnam' %}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-check form-switch">
+                                                                    <input disabled class="form-check-input" type="checkbox" id="modal-recurring-meeting">
+                                                                    <label class="form-check-label" for="modal-recurring-meeting">{% trans 'Recurring meeting' %}</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr hidden class="bg-teal row-for-recurring">
+                                                        <div hidden class="row row-for-recurring">
+                                                            <div class="col-12 col-lg-6 col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label" for="modal-recurrence">{% trans "Recurrence" %}</label>
+                                                                    <select class="select2 form-select" id="modal-recurrence">
+                                                                        <option value="0">{% trans 'Daily' %}</option>
+                                                                        <option value="1">{% trans 'Weekly' %}</option>
+                                                                        <option value="2">{% trans 'Monthly' %}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12 col-lg-6 col-md-6">
+                                                                <div class="form-group" id="modal-repeat-every-day-div">
+                                                                    <label class="form-label" for="modal-repeat-every-day">{% trans "Repeat every" %}</label>
+                                                                    <span class="input-affix-wrapper affix-wth-text">
+                                                                        <select class="form-select" id="modal-repeat-every-day">
+                                                                            <option value="1" selected>1</option>
+                                                                            <option value="2">2</option>
+                                                                            <option value="3">3</option>
+                                                                            <option value="4">4</option>
+                                                                            <option value="5">5</option>
+                                                                            <option value="6">6</option>
+                                                                            <option value="7">7</option>
+                                                                            <option value="8">8</option>
+                                                                            <option value="9">9</option>
+                                                                            <option value="10">10</option>
+                                                                        </select>
+                                                                        <span class="input-suffix">{% trans 'day(s)' %}</span>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="form-group" hidden id="modal-repeat-every-week-div">
+                                                                    <label class="form-label" for="modal-repeat-every-week">{% trans "Repeat every" %}</label>
+                                                                    <span class="input-affix-wrapper affix-wth-text">
+                                                                        <select class="form-select" id="modal-repeat-every-week">
+                                                                            <option value="1" selected>1</option>
+                                                                            <option value="2">2</option>
+                                                                            <option value="3">3</option>
+                                                                            <option value="4">4</option>
+                                                                            <option value="5">5</option>
+                                                                            <option value="6">6</option>
+                                                                            <option value="7">7</option>
+                                                                            <option value="8">8</option>
+                                                                            <option value="9">9</option>
+                                                                            <option value="10">10</option>
+                                                                            <option value="11">11</option>
+                                                                            <option value="12">12</option>
+                                                                        </select>
+                                                                        <span class="input-suffix">{% trans 'week(s)' %}</span>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="form-group" hidden id="modal-repeat-every-month-div">
+                                                                    <label class="form-label" for="modal-repeat-every-month">{% trans "Repeat every" %}</label>
+                                                                    <span class="input-affix-wrapper affix-wth-text">
+                                                                        <select class="form-select" id="modal-repeat-every-month">
+                                                                            <option value="1" selected>1</option>
+                                                                            <option value="2">2</option>
+                                                                            <option value="3">3</option>
+                                                                        </select>
+                                                                        <span class="input-suffix">{% trans 'month(s)' %}</span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div hidden class="row row-for-recurring">
+                                                            <div class="col-12">
+                                                                <div class="form-group" hidden id="modal-repeat-every-week-option-div">
+                                                                    <label class="form-label">{% trans "Occurs on" %}</label>
+                                                                    <div class="row">
+                                                                        <div class="col-4 col-lg-1 col-md-4 mb-1">
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox" class="form-check-input" id="sun">
+                                                                                <label class="form-check-label badge badge-soft-danger" for="sun">{% trans 'Sun' %}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox" class="form-check-input" id="mon">
+                                                                                <label class="form-check-label badge badge-soft-primary" for="mon">{% trans 'Mon' %}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox" class="form-check-input" id="tue">
+                                                                                <label class="form-check-label badge badge-soft-primary" for="tue">{% trans 'Tue' %}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox" class="form-check-input" id="wed">
+                                                                                <label class="form-check-label badge badge-soft-primary" for="wed">{% trans 'Wed' %}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox" class="form-check-input" id="thu">
+                                                                                <label class="form-check-label badge badge-soft-primary" for="thu">{% trans 'Thu' %}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox" class="form-check-input" id="fri">
+                                                                                <label class="form-check-label badge badge-soft-primary" for="fri">{% trans 'Fri' %}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox" class="form-check-input" id="sat">
+                                                                                <label class="form-check-label badge badge-soft-orange" for="sat">{% trans 'Sat' %}</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group" hidden id="modal-repeat-every-month-option-div">
+                                                                    <label class="form-label">{% trans "Occurs on" %}</label>
+                                                                    <div class="row">
+                                                                        <div class="col-12">
+                                                                            <div class="form-check">
+                                                                                <div class="row">
+                                                                                    <div class="col-12 col-md-5 col-lg-5">
+                                                                                        <input type="radio" id="modal-day-x-of-month-input" name="month-occurs-on" class="form-check-input" checked>
+                                                                                        <div class="input-group">
+                                                                                            <span class="input-group-text">{% trans 'Day' %}</span>
+                                                                                            <select class="form-select" id="modal-day-x-of-month-select">
+                                                                                                <option value="1" selected>1</option>
+                                                                                                <option value="2">2</option>
+                                                                                                <option value="3">3</option>
+                                                                                                <option value="4">4</option>
+                                                                                                <option value="5">5</option>
+                                                                                                <option value="6">6</option>
+                                                                                                <option value="7">7</option>
+                                                                                                <option value="8">8</option>
+                                                                                            </select>
+                                                                                            <span class="input-group-text">{% trans 'of the month' %}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-12 col-md-1 col-lg-1"></div>
+                                                                                    <div class="col-12 col-md-5 col-lg-5">
+                                                                                        <input type="radio" id="modal-date-x-of-month-input" name="month-occurs-on" class="form-check-input">
+                                                                                        <div class="input-group">
+                                                                                            <select class="form-select" id="modal-date-x-of-the-month-select-1">
+                                                                                                <option value="1" selected>{% trans 'First' %}</option>
+                                                                                                <option value="2">{% trans 'Second' %}</option>
+                                                                                                <option value="3">{% trans 'Third' %}</option>
+                                                                                                <option value="4">{% trans 'Fourth' %}</option>
+                                                                                                <option value="5">{% trans 'Last' %}</option>
+                                                                                            </select>
+                                                                                            <select class="form-select" id="modal-date-x-of-the-month-select-2">
+                                                                                                <option value="0">{% trans 'Sunday' %}</option>
+                                                                                                <option value="1" selected>{% trans 'Monday' %}</option>
+                                                                                                <option value="2">{% trans 'Tuesday' %}</option>
+                                                                                                <option value="3">{% trans 'Wednesday' %}</option>
+                                                                                                <option value="4">{% trans 'Thursday' %}</option>
+                                                                                                <option value="5">{% trans 'Friday' %}</option>
+                                                                                                <option value="6">{% trans 'Saturday' %}</option>
+                                                                                            </select>
+                                                                                            <span class="input-group-text">{% trans 'of the month' %}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div hidden class="row row-for-recurring">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label" for="end-date">{% trans "End date" %}</label>
+                                                                    <div class="row">
+                                                                        <div class="col-12">
+                                                                            <div class="form-check">
+                                                                                <div class="row">
+                                                                                    <div class="col-12 col-md-5 col-lg-5">
+                                                                                        <input type="radio" id="end-date-by-input" name="end-date" class="form-check-input" checked>
+                                                                                        <div class="input-group">
+                                                                                            <span class="input-group-text">{% trans 'By' %}</span>
+                                                                                            <input class="form-control" id="end-date-by-select">
+                                                                                            <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-12 col-md-1 col-lg-1"></div>
+                                                                                    <div class="col-12 col-md-5 col-lg-5">
+                                                                                        <input type="radio" id="end-date-after-input" name="end-date" class="form-check-input">
+                                                                                        <div class="input-group">
+                                                                                            <span class="input-group-text">{% trans 'After' %}</span>
+                                                                                            <input type="number" min="1" class="form-control" id="end-date-after-select">
+                                                                                            <span class="input-group-text">{% trans 'occurrences' %}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="enable-continuous-meeting-chat-row" class="row">
+                                                            <div class="col-12">
+                                                                <hr class="bg-teal">
+                                                                <div class="form-group">
+                                                                    <label class="form-label" for="modal-attendees">{% trans "Attendees" %}</label>
+                                                                    <select multiple class="select2 form-select"
+                                                                            id="modal-attendees"
+                                                                            data-method="GET"
+                                                                            data-url="{% url 'EmployeeListAPI' %}"
+                                                                    ></select>
+                                                                </div>
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" id="modal-enable-continuous-meeting-chat" checked>
+                                                                    <label class="form-check-label" for="modal-enable-continuous-meeting-chat"
+                                                                            data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Chat with participants any time and access in-meeting chat in the same place. External users must be manually added to the Meeting Group Chat.' %}"
+                                                                    >{% trans 'Enable continuous meeting chat' %}</label>
+                                                                    <br><label class="text-muted">{% trans 'Added attendees will have access to the Meeting Group Chat before and after the meeting' %}</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr class="bg-teal">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label required" for="modal-meeting-id">{% trans 'Meeting ID' %}</label>
+                                                                    <div class="row">
+                                                                        <div class="col-12">
+                                                                            <div class="form-check">
+                                                                                <div class="row">
+                                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                                        <input type="radio" id="meeting-id-autogen" name="meeting-id" class="form-check-input" checked>
+                                                                                        <label for="meeting-id-autogen">{% trans 'Generate automatically' %}</label>
+                                                                                    </div>
+                                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                                        <input type="radio" id="meeting-id-personal" name="meeting-id" class="form-check-input">
+                                                                                        <label for="meeting-id-personal">{% trans 'Personal meeting' %} <span class="badge badge-blue" id="pmi"></span></label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="form-group">
+                                                                    <label class="form-label" for="modal-security-group">{% trans "Security" %}</label>
+                                                                    <div class="row">
+                                                                        <div class="col-12">
+                                                                            <div class="form-check">
+                                                                                <div class="row">
+                                                                                    <div class="col-12">
+                                                                                        <input type="checkbox" id="meeting-passcode-checkbox" name="meeting-passcode-checkbox" class="mt-2 form-check-input" checked disabled>
+                                                                                        <div class="row">
+                                                                                            <label for="meeting-passcode" class="col-2 col-form-label">{% trans 'Passcode' %}</label>
+                                                                                            <div class="col-5">
+                                                                                                <input class="form-control" id="meeting-passcode-input"
+                                                                                                       data-bs-toggle="tooltip" data-bs-placement="right"
+                                                                                                       title="{% trans 'The passcode will be embedded in the invite link. Users joining with the invite link will not have to enter the passcode manually. A numeric passcode will be generated for users who dial in from a phone or a room system' %}"
+                                                                                                >
+                                                                                            </div>
+                                                                                            <label class="text-muted">{% trans 'Only users who have the invite link OR passcode can join the meeting' %}</label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-12 mt-2">
+                                                                                        <input type="checkbox" id="meeting-waiting-room" name="meeting-waiting-room" class="form-check-input">
+                                                                                        <label for="meeting-waiting-room">{% trans 'Waiting room' %}</label>
+                                                                                        <br><label class="text-muted">{% trans 'Only users admitted by the host can join the meeting' %}</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button id='btn-save-meeting-info-payload' data-bs-dismiss="modal" class="btn btn-gradient-primary">
+                                                <span>
+                                                    <span>{% trans 'Save meeting config' %}</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-2" hidden>
+                        <div class="col-12">
+                            <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
+                                <span class="alert-icon-wrap"><i class="fas fa-exclamation-circle"></i></span>
+                                {% trans 'Only available with online meeting!' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tab_attachment">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static "assets/js/meeting/meeting_common.js" %}"></script>
+    <script src="{% static "assets/js/meeting/meeting_create.js" %}"></script>
+{% endblock %}

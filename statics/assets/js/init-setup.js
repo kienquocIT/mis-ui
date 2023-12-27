@@ -1497,13 +1497,20 @@ class WFRTControl {
         Swal.fire({
             input: "textarea",
             inputLabel: "Message",
-            inputPlaceholder: "Type your message here...",
+            inputPlaceholder: "Type your message here... (max 255 characters)",
             inputAttributes: {
                 "aria-label": "Type your message here"
             },
+            allowOutsideClick: false,
             showConfirmButton: true,
             confirmButtonText: $.fn.transEle.attr('data-confirm'),
-            allowOutsideClick: false,
+            showCancelButton: true,
+            cancelButtonText: $.fn.transEle.attr('data-cancel'),
+            inputValidator: (value) => {
+                if (value.length > 255) {
+                    return 'Maximum length exceeded (255 characters)';
+                }
+            },
         }).then((result) => {
             if (result.dismiss === Swal.DismissReason.timer || result.value) {
                 dataSubmit['remark'] = result.value;
@@ -1533,14 +1540,8 @@ class WFRTControl {
                 allowOutsideClick: false,
                 showConfirmButton: true,
                 confirmButtonText: $.fn.transEle.attr('data-confirm'),
-                // preConfirm: () => {
-                //     let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
-                //     if (eleChecked) {
-                //         _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                //     } else {
-                //         return "You need to select one person!";
-                //     }
-                // },
+                showCancelButton: true,
+                cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 didOpen: () => {
                     // Add event listener after the modal is shown
                     let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
@@ -1566,6 +1567,7 @@ class WFRTControl {
                 }
             });
         } else {
+            dataSubmit['next_node_collab_id'] = null;
             return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
         }
     }
@@ -1615,7 +1617,7 @@ class WFRTControl {
 
                         // zones handler
                         WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
-                        WFRTControl.activeZoneHiddenPageDetail(data['runtime_detail']['zones_hidden_myself']);
+                        WFRTControl.activeZoneHiddenDocDetail(data['runtime_detail']['zones_hidden_myself']);
                         // collab out form handler
                         WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);
                     }
@@ -1679,6 +1681,26 @@ class WFRTControl {
         let zonesHiddenData = WFRTControl.getZoneHiddenData();
         let isEditAllZone = WFRTControl.getIsEditAllZone();
         if (isEditAllZone === 'true') {
+            // add button save at zones
+            // idFormID
+            if (window.location.href.includes('/update/')) {
+                let idFormID = globeFormMappedZone;
+                if (idFormID) {
+                    DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
+                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+
+                    let actionList = WFRTControl.getActionsList();
+                    let actionBubble = null;
+                    if (actionList.includes(1)) {
+                        actionBubble = 1;
+                    } else if (actionList.includes(4)) {
+                        actionBubble = 4;
+                    }
+                    if (actionBubble) {
+                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
+                    }
+                }
+            }
             return true;
         }
         if (Array.isArray(zonesData) && Array.isArray(zonesHiddenData)) {
@@ -1908,7 +1930,7 @@ class WFRTControl {
         }
     }
 
-    static activeZoneHiddenPageDetail(zonesHiddenData) {
+    static activeZoneHiddenDocDetail(zonesHiddenData) {
         if (window.location.href.includes('/detail/')) {
             WFRTControl.setZoneHiddenData(zonesHiddenData);
             WFRTControl.activeZoneInDocDetail();

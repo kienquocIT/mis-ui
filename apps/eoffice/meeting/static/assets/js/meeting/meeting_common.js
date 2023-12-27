@@ -250,7 +250,7 @@ save_meeting_payload.on('click', function () {
                 <div class="card meeting-card">
                     <script id="meeting-payload-script">${JSON.stringify(data_meeting_payload)}</script>
                     <div class="card-header">
-                        <span class="meeting-schedule-title badge badge-blue"><b>Zoom Meeting</b></span>
+                        <span class="meeting-schedule-title badge badge-blue"><b><i class="fas fa-video"></i>&nbsp;Zoom Meeting</b></span>
                         <button type="button" class="card-close btn-close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -422,7 +422,7 @@ function LoadDetailMeetingSchedule() {
                             <div class="card meeting-card card-selected">
                                 <script id="meeting-payload-script"></script>
                                 <div class="card-header">
-                                    <span class="meeting-schedule-title badge badge-blue"><b>Zoom Meeting</b></span>
+                                    <span class="meeting-schedule-title badge badge-blue"><b><i class="fas fa-video"></i>&nbsp;Zoom Meeting</b></span>
                                     ${isToday(online_meeting_data?.['meeting_create_payload']?.['start_time'])}
                                 </div>
                                 <div class="card-body">

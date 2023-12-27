@@ -2885,14 +2885,23 @@ class DTBControl {
                     this.opts['ajax'],
                     {
                         data: function (d) {
-                            let dataCallbackFromConfig = {}
-                            if (ajaxDataCallback instanceof Function) dataCallbackFromConfig = ajaxDataCallback(Object.assign({}, d));
+                            // re-configure (assign other config) to d
+                            if (ajaxDataCallback instanceof Function) {
+                                Object.assign(d, ajaxDataCallback(d));
+                            } else if (ajaxDataCallback instanceof Object){
+                                Object.assign(d, ajaxDataCallback)
+                            }
+
+                            // get wrapper element
                             let wrapperEle = clsThis.dtb$.closest('.dataTables_wrapper');
 
+                            // setup ordering
                             let sortKey = wrapperEle.find('.custom-order-dtb').val();
                             let sortASC = wrapperEle.find('.custom-order-asc-dtb i').hasClass('fa-arrow-down-z-a');   // DESC
-                            let orderTxt = sortKey ? `${sortASC ? '-' : ''}${sortKey}` : '';
+                            let orderingManual = d?.['ordering'] || null;
+                            let orderTxt = sortKey ? `${sortASC ? '-' : ''}${sortKey}` : orderingManual ? orderingManual : '';
 
+                            // setup another filtering
                             let keyKeepEmpty = [];
                             let customFilter = {};
 
@@ -2938,14 +2947,14 @@ class DTBControl {
                             }
 
                             return DTBControl.cleanParamBeforeCall({
-                                ...DTBControl.cleanBaseKeyOfDataAjax(dataCallbackFromConfig),
+                                ...DTBControl.cleanBaseKeyOfDataAjax(d),
                                 'page': Math.ceil(d.start / d.length) + 1,
                                 'pageSize': d.length,
                                 'search': d?.search?.value ? d.search.value : '',
                                 'ordering': orderTxt, ...customFilter, ...customFilterData,
                             }, keyKeepEmpty);
                         },
-                        dataFilter: function (data) {
+                        dataFilter: (data) => {
                             let json = JSON.parse(data);
                             json.recordsTotal = json?.data?.['page_count']
                             json.recordsFiltered = json?.data?.['page_count']
@@ -3220,6 +3229,27 @@ class WindowControl {
     }
 
     static showLoading(opts) {
+        // loadingTitleAction: GET (default), CREATE, UPDATE, DELETE
+        function resolve_title(){
+            let title = '';
+            let loadingTitleKeepDefault = opts?.['loadingTitleKeepDefault'] || true;
+            if (loadingTitleKeepDefault === true){
+                let loadingTitleAction = opts?.['loadingTitleAction'] || 'GET';
+                if (loadingTitleAction === 'GET'){
+                    title += $.fn.transEle.attr('data-loading');
+                } else if (loadingTitleAction === 'CREATE'){
+                    title += $.fn.transEle.attr('data-loading-creating');
+                } else if (loadingTitleAction === 'UPDATE'){
+                    title += $.fn.transEle.attr('data-loading-updating');
+                } else if (loadingTitleAction === "DELETE") {
+                    title += $.fn.transEle.attr('data-loading-deleting');
+                }
+            }
+            let loadingTitleMore = opts?.['loadingTitleMore'] || '';
+            if (loadingTitleMore) title += ' ' + loadingTitleMore;
+            return title;
+        }
+
         let didOpenStartSetup = opts?.['didOpenStart'] || null;
         if (didOpenStartSetup) delete opts['didOpenStart'];
 
@@ -3233,7 +3263,7 @@ class WindowControl {
         if (didDestroyEndSetup) delete opts['didDestroyEnd'];
         Swal.fire({
             icon: 'info',
-            title: `${$.fn.transEle.attr('data-loading')}`,
+            title: resolve_title(),
             text: `${$.fn.transEle.attr('data-wait')}...`,
             allowOutsideClick: false,
             showConfirmButton: false,
@@ -3442,15 +3472,14 @@ class PersonControl {
     }
 
     static renderAvatar(personData, clsName = "", appendHtml = "", shortNameKey = null) {
-        let avatar = personData?.['avatar'];
+        let avatar = personData?.['avatar_img'];
         let htmlTooltipFullname = `data-bs-toggle="tooltip" data-bs-placement="bottom" title="${personData?.['full_name']}"`;
         let shortName = PersonControl.shortNameGlobe(personData, shortNameKey);
         if (avatar && avatar !== 'None' && avatar !== 'none') {
-            let avatarFullUrl = globeMediaDomain + globePrefixAvatar + avatar + '?alt=' + shortName;
-            return `<div class="avatar ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}><img src="${avatarFullUrl}" alt="${shortName}" class="avatar-img">${appendHtml}</div>`;
+            return `<div class="avatar ${clsName ? clsName : 'avatar-xs avatar-primary avatar-rounded'}" ${htmlTooltipFullname}><img src="${avatar}" alt="${shortName}" class="avatar-img">${appendHtml}</div>`;
         }
         return `
-            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}>
+            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary avatar-rounded'}" ${htmlTooltipFullname}>
                 <span class="initial-wrap" >${shortName}</span>
                 ${appendHtml}
             </div>

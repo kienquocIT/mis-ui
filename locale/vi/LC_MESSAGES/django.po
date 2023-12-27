@@ -409,7 +409,7 @@ msgid "Avatar"
 msgstr "Ảnh Đại Diện"
 
 #
-msgid "Avatar of emloyee"
+msgid "Avatar of employee"
 msgstr "Ảnh đại diện của nhân viên"
 
 #
@@ -2858,6 +2858,18 @@ msgstr "Hoàn thành"
 #
 msgid "Loading"
 msgstr "Đang tải"
+
+#
+msgid "Creating"
+msgstr "Đang tạo"
+
+#
+msgid "Updating"
+msgstr "Đang cập nhật"
+
+#
+msgid "Deleting"
+msgstr "Đang xoá"
 
 #
 msgid "Please wait"

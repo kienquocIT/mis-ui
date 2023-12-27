@@ -219,7 +219,7 @@ function loadTabTodo() {
                     width: "25%",
                     data: 'employee',
                     render: (data, type, row) => {
-                        return $x.fn.renderAvatar(data, 'avatar-xs');
+                        return $x.fn.renderAvatar(data);
                     }
                 }, {
                     className: 'wrap-text',

@@ -87,7 +87,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
 
     # employee
-    EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/upload-avatar')
+    EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/{pk}/upload-avatar')
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')

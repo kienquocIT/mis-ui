@@ -781,3 +781,18 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
 }
 
 /* -- File upload */
+
+/* Collapse Area */
+[data-bs-toggle="collapse"].collapsed > .icon:has(.fa-angle-double-down):has(.fa-angle-double-up) > i.fa-angle-double-up {
+    display: none!important;
+}
+[data-bs-toggle="collapse"]:not(.collapsed) > .icon:has(.fa-angle-double-down):has(.fa-angle-double-up) > i.fa-angle-double-up {
+    display: block!important;
+}
+[data-bs-toggle="collapse"].collapsed > .icon:has(.fa-angle-double-down):has(.fa-angle-double-up) > i.fa-angle-double-down {
+    display: block!important;
+}
+[data-bs-toggle="collapse"]:not(.collapsed) > .icon:has(.fa-angle-double-down):has(.fa-angle-double-up) > i.fa-angle-double-down {
+    display: none!important;
+}
+/* -- Collapse Area */

@@ -27,6 +27,15 @@ $(function () {
                     return '';
                 },
             }, {
+                width: "10%",
+                data: 'logo',
+                render: (data, type, row, meta) => {
+                    if (data){
+                        return `<img src="${data}" style="width: 100px;"/>`
+                    }
+                    return ``;
+                }
+            },{
                 width: '10%',
                 data: 'code',
                 className: 'wrap-text',
@@ -34,7 +43,7 @@ $(function () {
                     return `<a href="/company/detail/` + row.id + `">${data}</a>`
                 }
             }, {
-                width: '30%',
+                width: '20%',
                 data: 'title',
                 className: 'wrap-text',
                 'render': (data, type, row, meta) => {

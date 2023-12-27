@@ -1501,7 +1501,8 @@ class WFRTControl {
             inputLabel: "Message",
             inputPlaceholder: "Type your message here... (max 255 characters)",
             inputAttributes: {
-                "aria-label": "Type your message here"
+                "aria-label": "Type your message here",
+                "maxlength": "255" // Set the maximum length attribute
             },
             allowOutsideClick: false,
             showConfirmButton: true,

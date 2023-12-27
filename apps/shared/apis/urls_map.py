@@ -420,6 +420,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEAVE_AVAILABLE_UPDATE = StringUrl('leave/available/edit/{pk}')
     LEAVE_AVAILABLE_HISTORY = StringUrl('leave/available/history/{pk}')
 
+    # meeting schedule
+    MEETING_SCHEDULE_LIST = StringUrl('meeting-schedule/meetings-schedule')
+    MEETING_SCHEDULE_DETAIL = StringUrl('meeting-schedule/meeting-schedule/{pk}')
+
     #  Goods transfer
     GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')
     GOODS_TRANSFER_DETAIL = StringUrl('inventory/goods-transfer/{pk}')

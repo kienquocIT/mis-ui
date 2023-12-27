@@ -283,6 +283,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     MEETING_SCHEDULE_LIST_PAGE = BreadcrumbChildren(_('Meeting schedule list'), 'MeetingScheduleList')
     MEETING_SCHEDULE_CREATE_PAGE = BreadcrumbChildren(_('Meeting schedule create'), 'MeetingScheduleCreate')
+    MEETING_SCHEDULE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
 
 class BreadcrumbView:
@@ -729,4 +730,4 @@ class BreadcrumbView:
 
     MEETING_SCHEDULE_LIST_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE]
     MEETING_SCHEDULE_CREATE_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE, BreadcrumbItem.MEETING_SCHEDULE_CREATE_PAGE]
-
+    MEETING_SCHEDULE_DETAIL_PAGE = MEETING_SCHEDULE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]

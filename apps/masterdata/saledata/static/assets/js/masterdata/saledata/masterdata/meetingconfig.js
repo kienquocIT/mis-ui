@@ -144,12 +144,8 @@ $(document).ready(function () {
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(() => {
-                                WindowControl.hideLoading();
-                                loadMeetingRoomList()
-                                $('input').val('');
-                                $('textarea').val('');
-                                // window.location.replace($(this).attr('data-url-redirect'));
-                                // location.reload.bind(location);
+                                window.location.replace($(this).attr('data-url-redirect'));
+                                location.reload.bind(location);
                             }, 1000);
                         }
                     },
@@ -178,10 +174,8 @@ $(document).ready(function () {
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(() => {
-                                WindowControl.hideLoading();
-                                loadMeetingRoomList()
-                                // window.location.replace($(this).attr('data-url-redirect'));
-                                // location.reload.bind(location);
+                                window.location.replace($(this).attr('data-url-redirect'));
+                                location.reload.bind(location);
                             }, 1000);
                         }
                     },

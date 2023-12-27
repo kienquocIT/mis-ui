@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Meeting Schedule Create' %}{% endblock %}
+{% block title %}{% trans 'Meeting Schedule Detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
@@ -26,14 +26,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-create-meeting">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
+{#    <button class="btn btn-outline-primary" type="submit" form="form-create-meeting">#}
+{#        <span>#}
+{#            <span>{% trans 'Save' %}</span>#}
+{#            <span class="icon">#}
+{#                <i class="fa-regular fa-floppy-disk"></i>#}
+{#            </span>#}
+{#        </span>#}
+{#    </button>#}
 {% endblock %}
 {% block pageContent %}
     {{ data.zoom_config | json_script:"zoom_config" }}
@@ -43,13 +43,25 @@
             data-start-time="{% trans 'Start time' %}"
             data-duration="{% trans 'Duration' %}"
             data-minute="{% trans 'minute(s)' %}"
+            data-meeting-id="{% trans 'Meeting ID' %}"
+            data-meeting-passcode="{% trans 'Passcode' %}"
+            data-meeting-url="{% trans 'Join Zoom meeting' %}"
+            data-see-invitation="{% trans 'See meeting invitation' %}"
+            data-today="{% trans 'Today' %}"
+            data-day="{% trans 'D ' %}"
+            data-month="{% trans 'M ' %}"
+            data-year="{% trans 'Y ' %}"
+            data-hour="{% trans 'h ' %}"
+            data-min="{% trans 'm' %}"
+            data-remain="{% trans 'remaining' %}"
     ></script>
     <div class="collapse multi-collapse mb-3 show" id="collapse-area">
-        <form id="form-create-meeting"
-          data-method="POST"
-          data-url="{% url "MeetingScheduleListAPI" %}"
-          data-url-redirect="{% url "MeetingScheduleList" %}"
-    >
+        <form id="form-detail-meeting"
+              data-method="POST"
+              data-url="{% url "MeetingScheduleListAPI" %}"
+              data-url-redirect="{% url "MeetingScheduleList" %}"
+              data-url-detail="{% url 'MeetingScheduleDetailAPI' '0' %}"
+        >
         {% csrf_token %}
         <div class="row">
             <div class="col-12 col-lg-6 col-md-6">
@@ -241,8 +253,8 @@
                                             data-bs-toggle="modal"
                                             data-bs-target="#modal_add_meeting_app_schedule"
                                     >
-                                        <i class="fas fa-plus-circle"></i>
-                                        {% trans 'Create meeting schedule' %}
+                                        <i class="far fa-edit"></i>
+                                        {% trans 'Update meeting schedule' %}
                                     </button>
                                     <div class="modal fade" id="modal_add_meeting_app_schedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalForms" aria-hidden="true">
                                         <div class="modal-dialog modal-lg mt-10" role="document">
@@ -565,7 +577,7 @@
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div class="col-12 mt-2">
-                                                                                                <input checked type="checkbox" id="meeting-waiting-room" name="meeting-waiting-room" class="form-check-input">
+                                                                                                <input type="checkbox" id="meeting-waiting-room" name="meeting-waiting-room" class="form-check-input">
                                                                                                 <label for="meeting-waiting-room">{% trans 'Waiting room' %}</label>
                                                                                                 <br><label class="text-muted">{% trans 'Only users admitted by the host can join the meeting' %}</label>
                                                                                             </div>
@@ -616,5 +628,5 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static "assets/js/meeting/meeting_common.js" %}"></script>
-    <script src="{% static "assets/js/meeting/meeting_create.js" %}"></script>
+    <script src="{% static "assets/js/meeting/meeting_detail.js" %}"></script>
 {% endblock %}

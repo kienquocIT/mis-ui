@@ -19,7 +19,7 @@ class MeetingConfigList(View):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_LIST).get()
         return {
-            'zoom_config': resp.result[0] if len(resp.result) > 0 else None
+            'zoom_config': resp.result[0] if len(resp.result) > 0 else ''
         }, status.HTTP_200_OK
 
 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Advance Payment List' %}{% endblock %}
+{% block title %}{% trans 'Meeting Schedule List' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block jsHeader %}
@@ -19,7 +19,21 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-
+    <table class="table w-100 nowrap"
+           id="meeting-schedule-list"
+           data-method="GET"
+           data-url="{% url 'MeetingScheduleListAPI' %}"
+           data-url-detail="{% url 'MeetingScheduleDetail' '0' %}"
+    >
+    <thead>
+    <tr>
+        <td></td>
+        <td>{% trans 'Name' %}</td>
+        <td>{% trans 'Type' %}</td>
+    </tr>
+    </thead>
+    <tbody></tbody>
+    </table>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/meeting/meeting_list.js' %}"></script>

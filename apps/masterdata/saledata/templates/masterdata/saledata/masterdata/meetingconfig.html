@@ -67,6 +67,7 @@
                 <div class="tab-pane fade" id="tab_block_meeting_zoom_setting">
                     <form id="form-create-zoom-config"
                           data-url="{% url 'MeetingZoomConfigListAPI' %}"
+                          data-url-redirect="{% url 'MeetingConfigList' %}"
                           data-method="POST">
                         {% csrf_token %}
                         <div class="row">
@@ -189,6 +190,7 @@
                 <div class="modal-body">
                     <form id="form-create-meeting-room"
                           data-url="{% url 'MeetingRoomListAPI' %}"
+                          data-url-redirect="{% url 'MeetingConfigList' %}"
                           data-method="POST">
                         {% csrf_token %}
                         <div class="row">

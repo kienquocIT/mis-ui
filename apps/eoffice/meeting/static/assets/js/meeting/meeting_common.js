@@ -1,6 +1,8 @@
-const modalStartTimeEle = $('#modal-start-time')
-const modalStartDateEle = $('#modal-start-date')
+const startTimeEle = $('#start-time')
+const startDateEle = $('#start-date')
 const endDateBySelectEle = $('#end-date-by-select')
+const modalMeetingSelectAppEle = $('#modal-select-app')
+const modalMeetingTitleEle = $('#modal-meeting-title')
 const modalRecurringMeetingEle = $('#modal-recurring-meeting')
 const modalRecurrenceEle = $('#modal-recurrence')
 const modalAttendeesEle = $('#modal-attendees')
@@ -11,10 +13,13 @@ const externalParticipantsEle = $('#external-participants')
 const btn_add_app_meeting_schedule = $('#btn-add-app-meeting-schedule')
 const roomEle = $('#room')
 const save_meeting_payload = $('#btn-save-meeting-info-payload')
-let zoomConfigEle = $('#zoom_config')
+const translateScriptEle = $('#translate-script')
+const zoomConfigEle = $('#zoom_config')
 const zoom_config = zoomConfigEle.text() ? JSON.parse(zoomConfigEle.text()) : {};
+const currentEmployeeEle = $('#employee_current')
+const current_employee = currentEmployeeEle.text() ? JSON.parse(currentEmployeeEle.text()) : {};
 
-modalStartTimeEle.daterangepicker({
+startTimeEle.daterangepicker({
     timePicker: true,
     singleDatePicker: true,
     timePicker24Hour: false,
@@ -27,7 +32,7 @@ modalStartTimeEle.daterangepicker({
     picker.container.find(".calendar-table").hide();
 })
 
-modalStartDateEle.daterangepicker({
+startDateEle.daterangepicker({
     singleDatePicker: true,
     timePicker: false,
     showDropdowns: true,
@@ -87,6 +92,7 @@ meetingTypeEle.on('change', function () {
 
 meetingIDEle.on('change', function () {
     $('#enable-continuous-meeting-chat-row').prop('hidden', $('#meeting-id-personal').prop('checked'))
+    $('#modal-enable-continuous-meeting-chat').prop('checked', !$('#meeting-id-personal').prop('checked')).prop('disabled', $('#meeting-id-personal').prop('checked'))
 })
 
 function loadInternalParticipants(data) {
@@ -191,27 +197,119 @@ function generateRandomString() {
     return randomString;
 }
 
+modalMeetingSelectAppEle.on('change', function () {
+    let meeting_type = modalMeetingSelectAppEle.find(`option[value="${modalMeetingSelectAppEle.val()}"]`).text()
+    modalMeetingTitleEle.val(`${current_employee?.['full_name']}'s ${meeting_type} meeting`)
+})
+
 btn_add_app_meeting_schedule.on('click', function () {
+    let meeting_type = modalMeetingSelectAppEle.find(`option[value="${modalMeetingSelectAppEle.val()}"]`).text()
+    modalMeetingTitleEle.val(`${current_employee?.['full_name']}'s ${meeting_type} meeting`)
     let meeting_password_autogen = generateRandomString()
     $('#meeting-passcode-input').val(meeting_password_autogen)
     $('#pmi').text(zoom_config?.['personal_meeting_id'])
 })
 
 save_meeting_payload.on('click', function () {
+    let flag = true;
     let data_meeting_payload = {}
-    data_meeting_payload['topic'] = $('#modal-meeting-title').val()
-    data_meeting_payload['start_time'] = modalStartDateEle.val() + 'T' + modalStartTimeEle.val()
-    data_meeting_payload['duration'] = parseInt($('#modal-duration-hour').val()) * 60 + parseInt($('#modal-duration-min').val());
+    data_meeting_payload['topic'] = modalMeetingTitleEle.val()
+    data_meeting_payload['start_time'] = startDateEle.val() + 'T' + startTimeEle.val()
+    data_meeting_payload['duration'] = parseInt($('#duration-hour').val()) * 60 + parseInt($('#duration-min').val());
     data_meeting_payload['password'] = $('#meeting-passcode-input').val()
     data_meeting_payload['timezone'] = $('#modal-time-zone').val()
-    data_meeting_payload['use_pmi'] = $('#meeting-id-personal').prop('checked')
-    data_meeting_payload['continuous_meeting_chat'] = {}
-    if (data_meeting_payload['use_pmi']) {
+    data_meeting_payload['settings'] = {'use_pmi': $('#meeting-id-personal').prop('checked')}
+    data_meeting_payload['continuous_meeting_chat'] = {'enable': false}
+    if (data_meeting_payload['settings']['use_pmi']) {
         data_meeting_payload['continuous_meeting_chat']['enable'] = $('#modal-enable-continuous-meeting-chat').prop('checked')
     }
     data_meeting_payload['waiting_room'] = $('#meeting-waiting-room').prop('checked')
-    $('#data_meeting_payload').text(JSON.stringify(data_meeting_payload))
+
+    if (data_meeting_payload['topic'] === '') {
+        $.fn.notifyB({description: 'Meeting topic is required.'}, 'warning');
+        flag = false;
+    }
+    if (data_meeting_payload['duration'] <= 0) {
+        $.fn.notifyB({description: 'Meeting duration must be greater than 0 minute.'}, 'warning');
+        flag = false;
+    }
+    if (startDateEle.val() === '') {
+        $.fn.notifyB({description: 'Meeting start date is required.'}, 'warning');
+        flag = false;
+    }
+    if (startTimeEle.val() === '') {
+        $.fn.notifyB({description: 'Meeting start time is required.'}, 'warning');
+        flag = false;
+    }
+
+    if (flag) {
+        $('#modal_add_meeting_app_schedule').modal('hide')
+
+        $('#meeting-card-div').html(`
+            <div class="col-12 col-lg-4 col-md-4">
+                <div class="card meeting-card">
+                    <script id="meeting-payload-script">${JSON.stringify(data_meeting_payload)}</script>
+                    <div class="card-header">
+                        <span class="meeting-schedule-title badge badge-blue"><b>Zoom Meeting</b></span>
+                        <button type="button" class="card-close btn-close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="mb-3"><b>${data_meeting_payload['topic']}</b></h4>
+                        <p class="card-text"><i class="fas fa-calendar"></i>&nbsp;${translateScriptEle.attr('data-start-time')}: ${startTimeEle.val()} ${startDateEle.val()}</p>
+                        <p class="card-text"><i class="fas fa-clock"></i>&nbsp;${translateScriptEle.attr('data-duration')}: ${data_meeting_payload['duration']} ${translateScriptEle.attr('data-minute')}</p>
+                    </div>
+                </div>
+            </div>
+        `)
+    }
 })
+
+function formatDateTime(inputDateTimeString) {
+    const inputDate = new Date(inputDateTimeString);
+
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true,
+        timeZone: 'Asia/Saigon',
+    };
+
+    return inputDate.toLocaleString('en-US', options);
+}
+
+function isToday(targetDateTimeString) {
+    const targetDateTime = new Date(targetDateTimeString);
+    const today = new Date();
+    const is_today = targetDateTime.getDate() === today.getDate() &&
+                    targetDateTime.getMonth() === today.getMonth() &&
+                    targetDateTime.getFullYear() === today.getFullYear();
+    if (is_today) {
+        return `<span class="badge badge-success">${translateScriptEle.attr('data-today')}</span>`
+    }
+    else {
+        let time_rm = ''
+        let year_rm = targetDateTime.getFullYear() - today.getFullYear()
+        let month_rm = targetDateTime.getMonth() - today.getMonth()
+        let day_rm = targetDateTime.getDate() - today.getDate()
+        let hour_rm = targetDateTime.getHours() - today.getHours()
+        if (hour_rm < 0) {
+            hour_rm = hour_rm * -1
+        }
+        let min_rm = targetDateTime.getMinutes() - today.getMinutes()
+        if (year_rm > 0) {time_rm += year_rm + translateScriptEle.attr('data-year')}
+        if (month_rm > 0) {time_rm += month_rm + translateScriptEle.attr('data-month')}
+        if (day_rm > 0) {time_rm += day_rm + translateScriptEle.attr('data-day')}
+        if (hour_rm > 0) {time_rm += hour_rm + translateScriptEle.attr('data-hour')}
+        if (min_rm > 0) {time_rm += min_rm + translateScriptEle.attr('data-min')}
+        return `<span class="text-muted">${time_rm} ${translateScriptEle.attr('data-remain')}</span>`
+    }
+}
 
 class MeetingScheduleHandle {
     load() {
@@ -221,28 +319,155 @@ class MeetingScheduleHandle {
         loadModalAttendees()
     }
     combinesData(frmEle) {
+        let meeting_name = $('#name').val()
+        let meeting_content = $('#content').val()
+        let meeting_type = $('#offline-meeting').prop('checked')
+        let meeting_room = roomEle.val()
+        let meeting_start_date = startDateEle.val()
+        let meeting_start_time = startTimeEle.val()
+        let meeting_duration = parseInt($('#duration-hour').val()) * 60 + parseInt($('#duration-min').val());
+
         let frm = new SetupFormSubmit($(frmEle));
+        frm.dataForm['title'] = meeting_name
+        frm.dataForm['meeting_content'] = meeting_content
+        frm.dataForm['meeting_type'] = meeting_type
+        frm.dataForm['meeting_room_mapped'] = meeting_room
+        frm.dataForm['meeting_start_date'] = meeting_start_date
+        frm.dataForm['meeting_start_time'] = meeting_start_time
+        frm.dataForm['meeting_duration'] = meeting_duration
+        frm.dataForm['participants'] = []
+        for (let i = 0; i < internalParticipantsEle.val().length; i++) {
+            frm.dataForm['participants'].push({
+                'participant_id': internalParticipantsEle.val()[i],
+                'is_external': false
+            })
+        }
+        for (let i = 0; i < externalParticipantsEle.val().length; i++) {
+            frm.dataForm['participants'].push({
+                'participant_id': externalParticipantsEle.val()[i],
+                'is_external': true
+            })
+        }
+        if (frm.dataForm['participants'].length <= 0) {
+            $.fn.notifyB({description: 'Participants have not selected yet.'}, 'failure');
+            return false
+        }
+
         if ($('#online-meeting').prop('checked')) {
-            let data_meeting_payload = $('#data_meeting_payload').text()
-            if (data_meeting_payload) {
-                frm.dataForm['payload'] = data_meeting_payload ? JSON.parse(data_meeting_payload) : {}
+            let data_online_meeting_payload = $('#meeting-payload-script').text()
+            if (data_online_meeting_payload) {
+                frm.dataForm['payload'] = data_online_meeting_payload ? JSON.parse(data_online_meeting_payload) : {}
                 if (frm.dataForm['payload']?.['duration'] <= 0) {
-                    $.fn.notifyB({description: 'Meeting duration must be greater than 0 minute.'}, 'warning');
+                    $.fn.notifyB({description: 'Meeting duration must be greater than 0 minute.'}, 'failure');
                     return false
                 }
-                return {
-                    url: frm.dataUrl,
-                    method: frm.dataMethod,
-                    data: frm.dataForm,
-                    urlRedirect: frm.dataUrlRedirect,
-                };
+                let data_online_meeting_payload_JSON = JSON.parse(data_online_meeting_payload)
+                frm.dataForm['online_meeting_data'] = {
+                    'meeting_app': 0,
+                    'meeting_topic': data_online_meeting_payload_JSON?.['topic'],
+                    'meeting_recurring': false,
+                    'meeting_recurring_data': [],
+                    'meeting_timezone_text': data_online_meeting_payload_JSON?.['timezone'],
+                    'meeting_enable_continuous_meeting_chat': data_online_meeting_payload_JSON?.['continuous_meeting_chat']?.['enable'],
+                    'meeting_ID_type': data_online_meeting_payload_JSON?.['use_pmi'],
+                    'meeting_waiting_room': data_online_meeting_payload_JSON?.['waiting_room'],
+                    'meeting_create_payload': data_online_meeting_payload_JSON
+                }
             }
             else {
-                $.fn.notifyB({description: 'You have not set up a online meeting schedule yet.'}, 'failure');
+                $.fn.notifyB({description: 'You have not set up a online meeting schedule yet.'}, 'warning');
+                return false
             }
         }
-        else {
-            $.fn.notifyB({description: 'You have just select offline meeting.'}, 'warning');
-        }
+        return {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
     }
+}
+
+function LoadDetailMeetingSchedule() {
+    let pk = $.fn.getPkDetail()
+    let url_loaded = $('#form-detail-meeting').attr('data-url-detail').replace(0, pk);
+    $.fn.callAjax(url_loaded, 'GET').then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                data = data['meeting_schedule_detail'];
+                console.log(data)
+                $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(data);
+
+                $('#name').val(data?.['title'])
+                $('#content').val(data?.['meeting_content'])
+                startDateEle.val(data?.['meeting_start_date'])
+                startTimeEle.val(data?.['meeting_start_time'])
+                $('#duration-hour').val(parseInt(data?.['meeting_duration']/60))
+                $('#duration-min').val(parseInt(data?.['meeting_duration']%60))
+                loadInternalParticipants(data?.['participants'].filter(item => item?.['is_external'] === false))
+                loadExternalParticipants(data?.['participants'].filter(item => item?.['is_external'] === true))
+                $('#offline-meeting').prop('checked', data?.['meeting_type'])
+                $('.row-for-offline-meeting').prop('hidden', !data?.['meeting_type'])
+                $('#tab_app_meeting .row-1').prop('hidden', data?.['meeting_type'])
+                $('#tab_app_meeting .row-2').prop('hidden', !data?.['meeting_type'])
+                loadMeetingRoom(data?.['meeting_room_mapped'])
+                $('#room-des').val(data?.['meeting_room_mapped']?.['description'])
+                if (data?.['online_meeting_data'].length > 0) {
+                    let online_meeting_data = data?.['online_meeting_data'][0]
+                    let formatted_start_time = formatDateTime(online_meeting_data?.['meeting_create_payload']?.['start_time'])
+                    $('#meeting-card-div').html(`
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <div class="card meeting-card card-selected">
+                                <script id="meeting-payload-script"></script>
+                                <div class="card-header">
+                                    <span class="meeting-schedule-title badge badge-blue"><b>Zoom Meeting</b></span>
+                                    ${isToday(online_meeting_data?.['meeting_create_payload']?.['start_time'])}
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="mb-3"><b>${online_meeting_data['meeting_topic']}</b></h4>
+                                    <p class="card-text"><i class="fas fa-calendar"></i>&nbsp;${translateScriptEle.attr('data-start-time')}: ${formatted_start_time}</p>
+                                    <p class="card-text"><i class="fas fa-clock"></i>&nbsp;${translateScriptEle.attr('data-duration')}: ${data?.['meeting_duration']} ${translateScriptEle.attr('data-minute')}</p>
+                                    <hr class="bg-teal">
+                                    <p class="card-text"><i class="fas fa-fingerprint"></i>&nbsp;${translateScriptEle.attr('data-meeting-id')}: <span class="text-primary"><b>${online_meeting_data?.['meeting_ID']}</b></span></p>
+                                    <p class="card-text"><i class="fas fa-link"></i>&nbsp;${translateScriptEle.attr('data-meeting-url')}: <a class="bg-dark-hover" target="_blank" href="${online_meeting_data?.['meeting_link']}">${online_meeting_data?.['meeting_link']}</a></p>
+                                    <p class="card-text"><i class="fas fa-key"></i>&nbsp;${translateScriptEle.attr('data-meeting-passcode')}: <span class="text-muted">${online_meeting_data?.['meeting_passcode']}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <span class="badge badge-primary badge-indicator"></span>
+                            <a class="btn btn-sm btn-link btn-animated" data-bs-toggle="collapse" href="#see-meeting-invitation" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">${translateScriptEle.attr('data-see-invitation')}</a>
+                            <div class="collapse multi-collapse" id="see-meeting-invitation">
+                                <div class="card card-body">
+                                    <p class="card-text">${current_employee.full_name} is inviting you to a scheduled Zoom meeting.</p>
+                                    <p class="card-text">
+                                        Topic: ${online_meeting_data['meeting_topic']}
+                                        <br>
+                                        Time: ${formatted_start_time}
+                                    </p>
+                                    <p class="card-text">
+                                        Join Zoom Meeting
+                                        <br>
+                                        ${online_meeting_data?.['meeting_link']}
+                                    </p>
+                                    <p class="card-text">
+                                        Meeting ID: ${online_meeting_data?.['meeting_ID']}
+                                        <br>
+                                        Passcode: ${online_meeting_data?.['meeting_passcode']}
+                                    </p>
+                                </div>              
+                            </div>
+                        </div>
+                    `)
+                    $('#meeting-payload-script').text(JSON.stringify(online_meeting_data))
+                }
+
+                $('input').attr('disabled', true).attr('readonly', true)
+                $('select').attr('disabled', true).attr('readonly', true)
+                $('textarea').attr('disabled', true).attr('readonly', true)
+                $('#btn-add-app-meeting-schedule').attr('disabled', true).attr('readonly', true)
+            }
+        })
 }

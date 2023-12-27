@@ -446,3 +446,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Business Trip
     BUSINESS_TRIP_LIST = StringUrl('business-trip/list')
     BUSINESS_TRIP_DETAIL = StringUrl('business-trip/detail')
+
+    # Asset, Tools
+    ASSET_TOOLS_CONFIG = StringUrl('asset-tools/config')

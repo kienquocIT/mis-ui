@@ -149,8 +149,7 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="expense_items">
-                        <div class="overflow-x-auto">
-                            <table id="expense_detail_tbl" class="table nowrap w-100 mb-5">
+                        <table id="expense_detail_tbl" class="table nowrap min-w-1500p w-100 mb-5">
                                 <thead>
                                 <tr>
                                     <th>{% trans 'Expense name' %}</th>
@@ -185,16 +184,16 @@
                                 </tr>
                                 </tfoot>
                             </table>
+                        <div class="w-100">
+                            <button class="btn btn-outline-primary" type="button" id="add_new_line">
+                                <span>
+                                    <span>{% trans 'Add date' %}</span>
+                                    <span class="icon">
+                                        <i class="fa-regular fa-plus"></i>
+                                    </span>
+                                </span>
+                            </button>
                         </div>
-                        <br>
-                        <button class="btn btn-outline-primary" type="button" id="add_new_line">
-                        <span>
-                            <span>{% trans 'Add date' %}</span>
-                            <span class="icon">
-                                <i class="fa-regular fa-plus"></i>
-                            </span>
-                        </span>
-                        </button>
                     </div>
                     <div class="tab-pane fade" id="attachment">
                         {% include 'extends/files/all.html' %}

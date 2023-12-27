@@ -166,6 +166,10 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-shopping-cart"></i>',
             ),
             MenuCommon(
+                name='Asset, Tools', code='menu_asset_tools_config', view_name='AssetToolsConfigView',
+                icon='<i class="fa-solid fa-pen-ruler"></i>',
+            ),
+            MenuCommon(
                 name='Meeting', code='id_menu_master_data_meeting_config', view_name='MeetingConfigList',
                 icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),

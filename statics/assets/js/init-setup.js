@@ -1458,6 +1458,8 @@ class WFRTControl {
                 return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload);
             } else if (actionSelected === '3') {  // check return need remark before submit
                 return WFRTControl.callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
+            } else if (actionSelected === '4') {  // check receive if next node is out form need select person before submit
+                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload);
             } else {
                 return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
             }
@@ -1567,8 +1569,99 @@ class WFRTControl {
                 }
             });
         } else {
-            dataSubmit['next_node_collab_id'] = null;
             return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+        }
+    }
+
+    static callWFSubmitForm(_form, urlRedirect) {
+        let collabOutForm = WFRTControl.getCollabOutFormData();
+        if (collabOutForm && collabOutForm.length > 0) {
+            let htmlCustom = ``;
+            for (let collab of collabOutForm) {
+                htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <span class="mr-2">${collab?.['full_name']}</span>
+                                        <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
+                                    </div>
+                                    <div class="form-check form-check-theme ms-3">
+                                        <input type="checkbox" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
+                                    </div>
+                                </div><hr class="bg-teal">`;
+            }
+            Swal.fire({
+                title: "Select collaborator at next step",
+                html: String(htmlCustom),
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                showCancelButton: true,
+                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                didOpen: () => {
+                    // Add event listener after the modal is shown
+                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.addEventListener('click', function () {
+                            let checked = checkbox.checked;
+                            for (let eleCheck of checkboxes) {
+                                eleCheck.checked = false;
+                            }
+                            checkbox.checked = checked;
+                        });
+                    });
+                }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                    let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                    if (eleChecked) {
+                        _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                    } else {
+                        return "You need to select one person!";
+                    }
+                    WindowControl.showLoading();
+                    $.fn.callAjax2(
+                        {
+                            'url': _form.dataUrl,
+                            'method': _form.dataMethod,
+                            'data': _form.dataForm,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyB({description: data.message}, 'success')
+                                $.fn.redirectUrl(urlRedirect, 1000);
+                            }
+                        }, (err) => {
+                            setTimeout(() => {
+                                WindowControl.hideLoading();
+                            }, 1000)
+                            $.fn.notifyB({description: err.data.errors}, 'failure');
+                        }
+                    )
+                }
+            });
+        } else {
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': _form.dataUrl,
+                    'method': _form.dataMethod,
+                    'data': _form.dataForm,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: data.message}, 'success')
+                        $.fn.redirectUrl(urlRedirect, 1000);
+                    }
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err.data.errors}, 'failure');
+                }
+            )
         }
     }
 

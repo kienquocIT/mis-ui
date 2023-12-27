@@ -1157,77 +1157,9 @@ $(function () {
                     }
                 }
             }
-
             let csr = $("[name=csrfmiddlewaretoken]").val();
 
-
-            let collabOutForm = WFRTControl.getCollabOutFormData();
-            if (collabOutForm && collabOutForm.length > 0) {
-                let htmlCustom = ``;
-                for (let collab of collabOutForm) {
-                    htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-2">${collab?.['full_name']}</span>
-                                            <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
-                                        </div>
-                                        <div class="form-check form-check-theme ms-3">
-                                            <input type="checkbox" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
-                                        </div>
-                                    </div><hr class="bg-teal">`;
-                }
-                Swal.fire({
-                    title: "Select collaborator at next step",
-                    html: String(htmlCustom),
-                    allowOutsideClick: false,
-                    showConfirmButton: true,
-                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
-                    preConfirm: () => {
-                        let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
-                        if (eleChecked) {
-                            _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                        } else {
-                            return "You need to select one person!";
-                        }
-                    },
-                    didOpen: () => {
-                        // Add event listener after the modal is shown
-                        let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-                        checkboxes.forEach((checkbox) => {
-                            checkbox.addEventListener('click', function () {
-                                let checked = checkbox.checked;
-                                for (let eleCheck of checkboxes) {
-                                    eleCheck.checked = false;
-                                }
-                                checkbox.checked = checked;
-                            });
-                        });
-                    }
-                }).then((result) => {
-                    if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                        WindowControl.showLoading();
-                        $.fn.callAjax2(
-                            {
-                                'url': _form.dataUrl,
-                                'method': _form.dataMethod,
-                                'data': _form.dataForm,
-                            }
-                        ).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyB({description: data.message}, 'success')
-                                    $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-                                }
-                            }, (err) => {
-                                setTimeout(() => {
-                                    WindowControl.hideLoading();
-                                }, 1000)
-                                $.fn.notifyB({description: err.data.errors}, 'failure');
-                            }
-                        )
-                    }
-                });
-            }
+            WFRTControl.callWFSubmitForm(_form, formSubmit.attr('data-url-redirect'));
 
 
 
@@ -1252,6 +1184,7 @@ $(function () {
             //         $.fn.notifyB({description: err.data.errors}, 'failure');
             //     }
             // )
+
         }
 
         $('#btn-remove-promotion').on('click', function() {

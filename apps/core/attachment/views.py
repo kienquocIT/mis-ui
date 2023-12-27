@@ -14,26 +14,25 @@ class AttachmentUpload(APIView):
 
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(ApiURL.MEDIA_ACCESS_TOKEN, user=request.user).get()
-        if resp.state:
-            access_token = resp.result['access_token']
-            print('access_token: ', access_token)
-            if access_token:
-                uploaded_file = request.FILES.get('file')
-                m = MultipartEncoder(fields={'file': (uploaded_file.name, uploaded_file, uploaded_file.content_type)})
-                # call post to cloud API
-                resp_media = ServerAPI(
-                    url=ApiURL.MEDIA_UPLOAD_FILE,
-                    api_domain=settings.MEDIA_DOMAIN,
-                    cus_headers={
-                        'content-type': m.content_type,
-                        'Accept-Language': 'vi',
-                        'Authorization': 'Bearer ' + access_token
-                    },
-                    is_secret_ui=True,
-                ).post(data=m)
-                if resp_media.state:
-                    return {'detail': resp_media.result}, status.HTTP_200_OK
-                return {'errors': resp_media.errors}, status.HTTP_400_BAD_REQUEST
-            return {'detail': resp.result}, status.HTTP_200_OK
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        uploaded_file = request.FILES.get('file')
+        m = MultipartEncoder(
+            fields={
+                'file': (uploaded_file.name, uploaded_file, uploaded_file.content_type),
+                'remarks': request.data.get('remarks', ''),
+            }
+        )
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.FILE_UPLOAD,
+            cus_headers={
+                'content-type': m.content_type,
+            }
+        ).post(data=m)
+        return resp.auto_return(key_success='file_detail')
+
+
+class FilesUnusedAPI(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.FILE_UNUSED).get(data=data)
+        return resp.auto_return(key_success='file_list')

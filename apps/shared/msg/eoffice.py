@@ -22,3 +22,7 @@ class LeaveMsg:
 
 class BusinessTripMsg:
     BUSINESS_TRIP = _('Business trip')
+
+
+class AssetToolsMsg:
+    ASSET_TOOLS = _('Asset, Tools')

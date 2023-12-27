@@ -329,7 +329,8 @@ div.inline {
     justify-content: center;
     align-items: center;
 }
-a.disabled{
+
+a.disabled {
     cursor: not-allowed;
     filter: grayscale(1);
 }
@@ -458,14 +459,325 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 #idxNotifyShowData .notifications-info {
     flex-direction: column;
     justify-content: flex-start;
-    align-items: self-start!important;
+    align-items: self-start !important;
 }
+
 .noti-custom {
     border: solid 1px #def1e9;
     box-shadow: 3px 3px 4px 3px #efefef;
     -webkit-box-shadow: 3px 3px 4px 3px #efefef;
 }
-#idxNotifyShowData > a:hover .noti-custom{
+
+#idxNotifyShowData > a:hover .noti-custom {
     box-shadow: 3px 3px 4px 3px #e7e7e7;
     -webkit-box-shadow: 3px 3px 4px 3px #e7e7e7;
 }
+
+/* Extend Bootstrap Advance */
+.min-h-25p {
+    min-height: 25px;
+}
+
+.min-h-30p {
+    min-height: 30px;
+}
+
+.min-h-35p {
+    min-height: 35px;
+}
+
+.min-h-40p {
+    min-height: 40px;
+}
+
+.min-h-45p {
+    min-height: 45px;
+}
+
+.min-h-50p {
+    min-height: 50px;
+}
+
+.min-h-55p {
+    min-height: 55px;
+}
+
+.min-h-60p {
+    min-height: 60px;
+}
+
+.min-h-65p {
+    min-height: 65px;
+}
+
+.min-h-70p {
+    min-height: 70px;
+}
+
+.min-h-75p {
+    min-height: 75px;
+}
+
+.min-h-80p {
+    min-height: 80px;
+}
+
+.min-h-85p {
+    min-height: 85px;
+}
+
+.min-h-90p {
+    min-height: 90px;
+}
+
+.min-h-95p {
+    min-height: 95px;
+}
+
+.min-h-100p {
+    min-height: 100px;
+}
+
+.min-h-125p {
+    min-height: 125px;
+}
+
+.min-h-150p {
+    min-height: 150px;
+}
+
+.min-h-175p {
+    min-height: 175px;
+}
+
+.min-h-200p {
+    min-height: 200px;
+}
+
+.min-h-250p {
+    min-height: 250px;
+}
+
+.min-h-300p {
+    min-height: 300px;
+}
+
+.min-h-350p {
+    min-height: 350px;
+}
+
+.min-h-400p {
+    min-height: 400px;
+}
+
+.min-h-500p {
+    min-height: 500px;
+}
+
+.mh-50p {
+    max-height: 50px;
+}
+
+.mh-10vh {
+    max-height: 10vh;
+}
+
+.mh-20vh {
+    max-height: 20vh;
+}
+
+.mh-30vh {
+    max-height: 30vh;
+}
+
+.mh-40vh {
+    max-height: 40vh;
+}
+
+.mh-50vh {
+    max-height: 50vh;
+}
+
+.mh-60vh {
+    max-height: 60vh;
+}
+
+.mh-70vh {
+    max-height: 70vh;
+}
+
+.mh-80vh {
+    max-height: 80vh;
+}
+
+.mh-90vh {
+    max-height: 90vh;
+}
+
+.mh-100vh {
+    max-height: 100vh;
+}
+
+.overflow-x-auto {
+    overflow-x: auto;
+}
+
+.overflow-x-scroll {
+    overflow-x: scroll;
+}
+
+.overflow-x-hidden {
+    overflow-x: hidden;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+
+.overflow-y-scroll {
+    overflow-y: scroll;
+}
+
+.overflow-y-hidden {
+    overflow-y: hidden;
+}
+
+.min-w-300p {
+    min-width: 300px;
+}
+
+.min-w-400p {
+    min-width: 400px;
+}
+
+.min-w-1000p {
+    min-width: 1000px;
+}
+
+.min-w-1500p {
+    min-width: 1500px;
+}
+/* -- Extend Bootstrap Advance */
+
+/* File upload */
+.dm-uploader {
+    border-radius: 0.25rem;
+    border: 2px dashed #A5A5C7;
+    text-align: center;
+}
+
+.dm-uploader.active {
+    border-color: #0ebd0f;
+    border-style: solid;
+}
+
+ul.dm-uploader-result-list li {
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border-left: 3px solid #f1f1f1;
+    border-right: 3px solid #f1f1f1;
+    background-color: #fcfcfc;
+}
+
+ul.dm-uploader-result-list li:hover {
+    background-color: #f1f1f1;
+}
+
+ul.dm-uploader-result-list li.state-f-wait, ul.dm-uploader-result-list li.state-f-wait .btn-percent-upload {
+    border-color: #f1f1f1;
+}
+
+ul.dm-uploader-result-list li.state-f-cancel, ul.dm-uploader-result-list li.state-f-cancel .btn-percent-upload {
+    border-color: #969696;
+}
+
+ul.dm-uploader-result-list li.state-f-progress, ul.dm-uploader-result-list li.state-f-progress .btn-percent-upload {
+    border-color: #fcf127;
+}
+
+ul.dm-uploader-result-list li.state-f-success, ul.dm-uploader-result-list li.state-f-success .btn-percent-upload {
+    border-color: #02e835;
+}
+
+ul.dm-uploader-result-list li.state-f-error, ul.dm-uploader-result-list li.state-f-error .btn-percent-upload {
+    border-color: #e81313;
+}
+
+ul.dm-uploader-result-list li .btn-percent-upload, ul.dm-uploader-result-list li .btn-percent-upload .btn-percent-upload {
+    font-size: 0.8rem;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+
+    max-height: 0;
+    max-width: 0;
+    overflow: hidden;
+
+    transition: opacity 0.1s ease-in, visibility 0.1s ease-in, transform 0.35s ease-in-out;
+}
+
+ul.dm-uploader-result-list li .btn-percent-upload.show {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    max-height: unset;
+    max-width: unset;
+}
+
+ul.dm-uploader-result-list li.state-f-success .btn-percent-upload {
+    animation: shakeZoom 1s cubic-bezier(.36, .07, .19, .97) both;
+    animation-iteration-count: infinite;
+}
+
+ul.dm-uploader-result-list li .btn-destroy-file {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+
+    max-height: 0;
+    max-width: 0;
+    overflow: hidden;
+
+    transition: opacity 0.1s ease-in, visibility 0.1s ease-in, transform 0.35s ease-in-out;
+}
+
+ul.dm-uploader-result-list li:hover .btn-destroy-file {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    max-height: unset;
+    max-width: unset;
+}
+
+@keyframes shakeZoom {
+    0% {
+        transform: scale(1);
+    }
+
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(0.8);
+    }
+}
+
+/* -- File upload */

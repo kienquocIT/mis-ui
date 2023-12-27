@@ -50,6 +50,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BUILDER_PAGE_TEMPLATE =  StringUrl('site/config/templates')
     BUILDER_PAGE_TEMPLATE_DETAIL =  StringUrl('site/config/template/{pk}')
 
+    # files
+    FILE_UPLOAD = StringUrl('attachment/upload')
+    FILE_UNUSED = StringUrl('attachment/unused')
+
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
     MEDIA_UPLOAD_FILE = StringUrl('f/files')
@@ -437,3 +441,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Business Trip
     BUSINESS_TRIP_LIST = StringUrl('business-trip/list')
     BUSINESS_TRIP_DETAIL = StringUrl('business-trip/detail')
+
+    # Asset, Tools
+    ASSET_TOOLS_CONFIG = StringUrl('asset-tools/config')

@@ -7,7 +7,7 @@ $(document).ready(function(){
         'method': 'GET',
     }).then(
         (resp) => {
-            let data = $.fn.switcherResp(resp)
+            let data = $.fn.switcherResp(resp);
             WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
             $x.fn.renderCodeBreadcrumb(data);
             $('#titleInput').val(data.title)
@@ -28,13 +28,18 @@ $(document).ready(function(){
             $('#dateFInput').val($x.fn.reformatData(data.date_f, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#dateTInput').val($x.fn.reformatData(data.date_t, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#totalDayInput').val(data.total_day)
-            if (data.attachment) {
-                const fileDetail = data.attachment[0]?.['files']
-                FileUtils.init($(`[name="attachment"]`).siblings('button'), fileDetail);
-            }
             expenseItemTable.init(data.expense_items)
             $('[name="employee_inherit_id"]').val(data.employee_inherit.id)
             if (data.system_status >= 2) $('#idxRealAction').remove()
+
+            // load attachments
+            new $x.cls.file(
+                $('#attachment')
+            ).init({
+                name: 'attachment',
+                enable_edit: true,
+                data: data.attachment,
+            })
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )

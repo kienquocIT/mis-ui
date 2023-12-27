@@ -1193,7 +1193,7 @@ $(function () {
                         // Add event listener after the modal is shown
                         let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
                         checkboxes.forEach((checkbox) => {
-                            checkbox.addEventListener('click', function() {
+                            checkbox.addEventListener('click', function () {
                                 let checked = checkbox.checked;
                                 for (let eleCheck of checkboxes) {
                                     eleCheck.checked = false;
@@ -1202,36 +1202,31 @@ $(function () {
                             });
                         });
                     }
-                })
-                //     .then((result) => {
-                //     if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                //         let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
-                //         if (eleChecked) {
-                //             _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                //             WindowControl.showLoading();
-                //             $.fn.callAjax2(
-                //                 {
-                //                     'url': _form.dataUrl,
-                //                     'method': _form.dataMethod,
-                //                     'data': _form.dataForm,
-                //                 }
-                //             ).then(
-                //                 (resp) => {
-                //                     let data = $.fn.switcherResp(resp);
-                //                     if (data) {
-                //                         $.fn.notifyB({description: data.message}, 'success')
-                //                         $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-                //                     }
-                //                 }, (err) => {
-                //                     setTimeout(() => {
-                //                         WindowControl.hideLoading();
-                //                     }, 1000)
-                //                     $.fn.notifyB({description: err.data.errors}, 'failure');
-                //                 }
-                //             )
-                //         }
-                //     }
-                // });
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                        WindowControl.showLoading();
+                        $.fn.callAjax2(
+                            {
+                                'url': _form.dataUrl,
+                                'method': _form.dataMethod,
+                                'data': _form.dataForm,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: data.message}, 'success')
+                                    $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
+                                }
+                            }, (err) => {
+                                setTimeout(() => {
+                                    WindowControl.hideLoading();
+                                }, 1000)
+                                $.fn.notifyB({description: err.data.errors}, 'failure');
+                            }
+                        )
+                    }
+                });
             }
 
 

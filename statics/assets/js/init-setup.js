@@ -1397,16 +1397,18 @@ class WFRTControl {
         let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
         if ((btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext')
             && WFRTControl.getWFRuntimeID() && WFRTControl.getTaskWF() && pk && url.includes(pk) && method.toLowerCase() === 'put') {
-            let taskID = WFRTControl.getTaskWF();
-            let keyOk = WFRTControl.getZoneKeyData();
-            let newData = {};
-            for (let key in reqBodyData) {
-                if (keyOk.includes(key)) {
-                    newData[key] = reqBodyData[key];
-                }
-            }
-            newData['task_id'] = taskID;
-            reqBodyData = newData;
+            // let taskID = WFRTControl.getTaskWF();
+            // let keyOk = WFRTControl.getZoneKeyData();
+            // let newData = {};
+            // for (let key in reqBodyData) {
+            //     if (keyOk.includes(key)) {
+            //         newData[key] = reqBodyData[key];
+            //     }
+            // }
+            // newData['task_id'] = taskID;
+            // reqBodyData = newData;
+
+            reqBodyData['task_id'] = WFRTControl.getTaskWF();
         }
         return reqBodyData;
     }
@@ -1642,6 +1644,9 @@ class WFRTControl {
                 }
             });
         } else {
+            if (_form.dataForm.hasOwnProperty('system_status')) {
+                _form.dataForm['system_status'] = 1;
+            }
             WindowControl.showLoading();
             $.fn.callAjax2(
                 {

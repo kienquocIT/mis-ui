@@ -283,10 +283,10 @@
                                                         <span><span>{% trans 'Add Product' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                                     </button>
                                                 </div>
-                                                <div class="row">
+                                                <div class="row mb-3">
                                                     <button
                                                         type="button"
-                                                        class="btn btn-primary"
+                                                        class="btn btn-soft-primary"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#shippingFeeModalCenter"
                                                         id="btn-add-shipping"
@@ -343,9 +343,70 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-soft-primary"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#promotionModalCenter"
+                                                        id="btn-check-promotion"
+                                                        data-zone="sale_order_products_data"
+                                                    >
+                                                        <span>
+                                                            <span>{% trans 'Check available promotion' %}</span>
+                                                            <span class="icon">
+                                                                <i class="fas fa-gift"></i>
+                                                            </span>
+                                                        </span>
+                                                    </button>
+                                                    <div
+                                                            class="modal fade" id="promotionModalCenter" tabindex="-1"
+                                                            role="dialog" aria-labelledby="promotionModalCenter"
+                                                            aria-hidden="true"
+                                                    >
+                                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">{% trans 'Promotion' %}</h5>
+                                                                    <button
+                                                                            type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                                            data-zone="sale_order_products_data"
+                                                                    >
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <table
+                                                                            id="datable-quotation-create-promotion"
+                                                                            class="table nowrap w-100 mb-5"
+                                                                    >
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th class="w-10">#</th>
+                                                                            <th class="w-60">{% trans 'Title' %}</th>
+                                                                            <th class="w-30">{% trans 'Actions' %}</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button
+                                                                            type="button" class="btn btn-secondary"
+                                                                            data-bs-dismiss="modal"
+                                                                            data-zone="sale_order_products_data"
+                                                                    >{% trans 'Close' %}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </th>
-                                            <th colspan="4"></th>
-                                            <th colspan="4">
+                                            <th colspan="3"></th>
+                                            <th colspan="5">
                                                 <div class="row">
                                                     <div class="col-5">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
@@ -393,70 +454,6 @@
                                                     <div class="col-4">
                                                         <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-total" data-zone="sale_order_products_data"></span></h6>
                                                         <input id="quotation-create-product-total-raw" type="text" class="form-control" value="0" hidden>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-5"></div>
-                                                    <div class="col-7">
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-primary"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#promotionModalCenter"
-                                                            id="btn-check-promotion"
-                                                            data-zone="sale_order_products_data"
-                                                        >
-                                                            <span>
-                                                                <span>{% trans 'Check available promotion' %}</span>
-                                                                <span class="icon">
-                                                                    <i class="fas fa-gift"></i>
-                                                                </span>
-                                                            </span>
-                                                        </button>
-                                                        <div
-                                                                class="modal fade" id="promotionModalCenter" tabindex="-1"
-                                                                role="dialog" aria-labelledby="promotionModalCenter"
-                                                                aria-hidden="true"
-                                                        >
-                                                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">{% trans 'Promotion' %}</h5>
-                                                                        <button
-                                                                                type="button" class="btn-close"
-                                                                                data-bs-dismiss="modal" aria-label="Close"
-                                                                                data-zone="sale_order_products_data"
-                                                                        >
-                                                                            <span aria-hidden="true">&times;</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <table
-                                                                                id="datable-quotation-create-promotion"
-                                                                                class="table nowrap w-100 mb-5"
-                                                                        >
-                                                                            <thead>
-                                                                            <tr>
-                                                                                <th class="w-10">#</th>
-                                                                                <th class="w-60">{% trans 'Title' %}</th>
-                                                                                <th class="w-30">{% trans 'Actions' %}</th>
-                                                                            </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button
-                                                                                type="button" class="btn btn-secondary"
-                                                                                data-bs-dismiss="modal"
-                                                                                data-zone="sale_order_products_data"
-                                                                        >{% trans 'Close' %}
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </th>
@@ -557,8 +554,8 @@
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <th colspan="5"></th>
-                                            <th colspan="3">
+                                            <th colspan="4"></th>
+                                            <th colspan="4">
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
@@ -631,8 +628,8 @@
                                                     </button>
                                                 </div>
                                             </th>
-                                            <th colspan="4"></th>
-                                            <th colspan="3">
+                                            <th colspan="3"></th>
+                                            <th colspan="4">
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>

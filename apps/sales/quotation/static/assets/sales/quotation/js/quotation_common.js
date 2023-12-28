@@ -1198,8 +1198,13 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_products_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_products_data";
+                        }
                         return `<div class="row">
-                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
+                                    <p><span class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
                                 </div>`;
                     }
                 },

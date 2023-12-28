@@ -1455,13 +1455,14 @@ class WFRTControl {
         let urlBase = globeTaskDetail;
         let dataSuccessReload = $(ele$).attr('data-success-reload');
         let dataSubmit = {'action': actionSelected};
+        let nextNodeCollab = ele$.attr('data-next-node-collab');
         if (actionSelected !== undefined && taskID && urlBase) {
             if (actionSelected === '1') {  // check approve if next node is out form need select person before submit
-                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload);
+                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, nextNodeCollab);
             } else if (actionSelected === '3') {  // check return need remark before submit
                 return WFRTControl.callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
             } else if (actionSelected === '4') {  // check receive if next node is out form need select person before submit
-                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload);
+                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, nextNodeCollab);
             } else {
                 return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
             }
@@ -1524,7 +1525,11 @@ class WFRTControl {
         });
     }
 
-    static callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload) {
+    static callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, nextNodeCollab) {
+        if (nextNodeCollab) {
+            dataSubmit['next_node_collab_id'] = nextNodeCollab;
+            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+        }
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
             let htmlCustom = ``;
@@ -1578,7 +1583,7 @@ class WFRTControl {
 
     static callWFSubmitForm(_form, urlRedirect) {
         let collabOutForm = WFRTControl.getCollabOutFormData();
-        if (collabOutForm && collabOutForm.length > 0 && _form.dataMethod.toLowerCase() === 'post') {
+        if (collabOutForm && collabOutForm.length > 0) {
             let htmlCustom = ``;
             for (let collab of collabOutForm) {
                 htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
@@ -1616,7 +1621,18 @@ class WFRTControl {
                 if (result.dismiss === Swal.DismissReason.timer || result.value) {
                     let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
                     if (eleChecked) {
-                        _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                        if (_form.dataMethod.toLowerCase() === 'post') {
+                            _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                        }
+                        if (_form.dataMethod.toLowerCase() === 'put') {
+                            let btnWF = document.querySelector('.btn-action-wf');
+                            if (btnWF) {
+                                btnWF.setAttribute('data-next-node-collab', eleChecked.getAttribute('data-id'));
+                            }
+                            if (_form.dataForm.hasOwnProperty('system_status')) {
+                                _form.dataForm['system_status'] = 1;
+                            }
+                        }
                     } else {
                         return "You need to select one person!";
                     }
@@ -1816,7 +1832,7 @@ class WFRTControl {
 
             // disable + readonly field (chỉ disabled các field trong form)
             pageEle.find('.required').removeClass('required');
-            pageEle.find('input, select, textarea, button, span.mask-money').each(function (event) {
+            pageEle.find('input, select, textarea, button, span[data-zone]').each(function (event) {
 
                 let inputMapProperties = input_mapping_properties[$(this).attr('name')];
                 if (!inputMapProperties)
@@ -2236,8 +2252,14 @@ class WFRTControl {
                         $(ele$).attr('value', '');
                     }
                 }
-                if ($(ele$).is('span') && $(ele$).hasClass('mask-money')) {
-                    $(ele$).attr('data-init-money', '').html(``);
+                if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)
+                    if ($(ele$).attr('data-zone')) {
+                        if ($(ele$).hasClass('mask-money')) {
+                            $(ele$).attr('data-init-money', '').html(``);
+                        } else {
+                            $(ele$).html(``);
+                        }
+                    }
                 }
             }
         }

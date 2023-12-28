@@ -85,6 +85,7 @@ INSTALLED_APPS = \
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',
+        'apps.eoffice.assettools',
     ] + [  # external
         'apps.web_builder',
     ]
@@ -222,6 +223,7 @@ API_URL_PREFIX = 'api'
 protocol = "https" if API_USE_SSL else "http"
 domain = f'{API_IP_OR_ADDR}{f":{API_PORT}" if API_PORT else ""}'
 prefix = f"{API_URL_PREFIX}/" if API_URL_PREFIX else ""
+API_DOMAIN_SIMPLE = f'{protocol}://{domain}'
 API_DOMAIN = f'{protocol}://{domain}/{prefix}'
 
 # main UI domain

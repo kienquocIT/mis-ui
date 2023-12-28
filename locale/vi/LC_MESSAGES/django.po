@@ -409,7 +409,7 @@ msgid "Avatar"
 msgstr "Ảnh Đại Diện"
 
 #
-msgid "Avatar of emloyee"
+msgid "Avatar of employee"
 msgstr "Ảnh đại diện của nhân viên"
 
 #
@@ -2858,6 +2858,18 @@ msgstr "Hoàn thành"
 #
 msgid "Loading"
 msgstr "Đang tải"
+
+#
+msgid "Creating"
+msgstr "Đang tạo"
+
+#
+msgid "Updating"
+msgstr "Đang cập nhật"
+
+#
+msgid "Deleting"
+msgstr "Đang xoá"
 
 #
 msgid "Please wait"
@@ -5724,3 +5736,26 @@ msgstr "Mô tả của tập tin"
 msgid "AP Status"
 msgstr "Trạng thái tạm ứng"
 
+#
+msgid "Asset, Tools"
+msgstr "Công cụ, Dụng cụ"
+
+#
+msgid "Asset, Tools config"
+msgstr "Cấu hình Công cụ, Dụng cụ"
+
+#
+msgid "Choose product type is referred as an asset or tool"
+msgstr "Chọn loại sản phẩm là tài sản công cụ, dụng cụ"
+
+#
+msgid "Which warehouse is used for an asset or tool"
+msgstr "Chọn những kho chứa công cụ, dụng cụ"
+
+#
+msgid "Select employee who can view all tools list"
+msgstr "Chọn những nhân viên có thể xem toàn bộ danh sách công cụ, dụng cụ"
+
+#
+msgid "To time need larger than From time"
+msgstr "Giờ kết thúc phải lớn hơn giờ bắt đầu"

@@ -286,9 +286,6 @@ $(document).ready(function () {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
-        titleFormat:{
-            weekday: 'long'
-        },
         themeSystem: 'bootstrap5',
         dayMaxEventRows: 5,
         eventContent: function (arg) {

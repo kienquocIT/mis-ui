@@ -86,31 +86,37 @@
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-hashtag"></i></span></span>
-                        <span class="nav-link-text">{% trans 'General' %}</span>
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-hashtag"></i></span></span>
+                            <span class="nav-link-text">{% trans 'General' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-up"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Sale' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-boxes"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Inventory' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-down"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Purchase' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" id="link-tab-variants" href="#tab_variants">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-splotch"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Variants' %}</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-up"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Sale' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-boxes"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Inventory' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-down"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Purchase' %}</span>
-                    </a>
-                </li>
-            </ul>
+                </ul>
             </div>
         </div>
         <div class="tab-content">
@@ -119,7 +125,8 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label required">{% trans "Product Type" %}</label>
-                            <select id="general-select-box-product-type" class="form-select select2 select-multiple" data-method="GET"
+                            <select id="general-select-box-product-type" class="form-select select2 select-multiple"
+                                    data-method="GET"
                                     multiple
                                     data-url="{% url 'ProductTypeListAPI' %}"></select>
                         </div>
@@ -335,11 +342,169 @@
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label class="col-3 col-form-label required">{% trans "Tax Code" %}</label>
+                            <label class="form-label required">{% trans "Tax Code" %}</label>
                             <select id="purchase-select-box-tax-code" class="form-select" data-method="GET"
                                     data-url="{% url "TaxListAPI" %}"></select>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_variants">
+                <table class="table nowrap w-100" id="table-variant-attributes">
+                    <thead>
+                    <th></th>
+                    <th>{% trans 'Attributes' %}</th>
+                    <th>{% trans 'Values' %}</th>
+                    <th></th>
+                    <th>{% trans 'Configurations' %}</th>
+                    <th></th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div class="row">
+                    <div class="col-12">
+                        <button id="btn-add-row-variant-attributes" class="btn btn-sm btn-soft-primary mb-3" type="button">
+                            <span>
+                                <span>{% trans "Add new attributes" %}</span>
+                                <span class="icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="modal-variant-attributes" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{% trans 'Add Variant Value' %}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row form-group">
+                                    <label class="col-4 col-form-label">{% trans 'Attribute name' %}</label>
+                                    <div class="col-8">
+                                        <input readonly class="form-control" id="attribute-name-modal-input">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-4 col-form-label required">{% trans 'Value name' %}</label>
+                                    <div class="col-8">
+                                        <input class="form-control" id="value-name-modal-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="add-variant-value-item" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">{% trans 'Add' %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="modal-attribute-display" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{% trans 'Attribute display' %}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row form-group">
+                                    <label class="col-3 col-form-label">{% trans 'Select by' %}</label>
+                                    <div class="col-9">
+                                        <select class="select2 form-select" id="attribute-display-select-by"></select>
+                                    </div>
+                                </div>
+                                <div class="row form-group" hidden id="select-selection-preview">
+                                    <div class="col-3"></div>
+                                    <div class="col-3">
+                                        <div class="form-check">
+                                            <input type="radio" id="radio-fill-by-text" name="radio-type-2" class="form-check-input fill-by-selection" checked>
+                                            <label class="form-check-label" for="radio4">{% trans 'Fill by text' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-check">
+                                            <input type="radio" id="radio-fill-by-color" name="radio-type-2" class="form-check-input fill-by-selection">
+                                            <label class="form-check-label" for="radio5">{% trans 'Fill by color' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-check">
+                                            <input type="radio" id="radio-fill-by-photo" name="radio-type-2" class="form-check-input fill-by-selection">
+                                            <label class="form-check-label" for="radio6">{% trans 'Fill by photo' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="w-25 mb-3 mt-5 text-primary">{% trans 'Preview' %}</label>
+                                <div class="row form-group" hidden id="dropdown-list-selection-preview">
+                                    <select class="select2 form-select" id="dropdown-list-preview"></select>
+                                </div>
+                                <div class="row form-group" hidden id="radio-selection-preview"></div>
+                                <div class="row form-group" hidden id="fill-by-text-preview"></div>
+                                <div class="row form-group" hidden id="fill-by-color-preview"></div>
+                                <div class="row form-group" hidden id="fill-by-photo-preview"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="add-attribute-display-item" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">{% trans 'Select' %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="modal-variant-item-des" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{% trans 'Variant Description' %}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row form-group">
+                                    <label class="col-3 col-form-label">{% trans 'Variant name' %}</label>
+                                    <div class="col-9">
+                                        <input class="form-control" id="variant-name">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-3 col-form-label">{% trans 'Description' %}</label>
+                                    <div class="col-9">
+                                        <input class="form-control" id="variant-des">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="add-variant-des" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">{% trans 'Save' %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="table-variant-items-div" hidden>
+                    <table id="table-variant-items" class="table nowrap w-100">
+                        <thead class="thead-primary">
+                        <tr>
+                        <th class="w-5"></th>
+                        <th class="w-45">
+                            {% trans 'Variant' %}
+                            <span class="badge-label text-white"><span class="badge badge-soft-primary" id="table-variant-items-label">0</span></span>
+                        </th>
+                        <th class="w-5"></th>
+                        <th class="w-20">{% trans 'SKU' %}</th>
+                        <th class="w-20">{% trans 'Extra Price' %}</th>
+                        <th class="w-5">{% trans 'Active' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>

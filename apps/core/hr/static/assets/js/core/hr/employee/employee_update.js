@@ -1,4 +1,6 @@
 $(function () {
+    let avatarFiles = null;
+
     function renderDetailForUpdate(employeeData) {
         if (employeeData && typeof employeeData === 'object') {
             $x.fn.renderCodeBreadcrumb(employeeData);
@@ -14,6 +16,21 @@ $(function () {
             EmployeeLoadPage.loadDateJoined(employeeData.date_joined, false);
 
             EmployeeLoadPage.isAdminEle.prop('checked', employeeData.is_admin_company ? employeeData.is_admin_company : false);
+
+            let avatarEle = $('#employee-avatar-img-input');
+            if (employeeData.avatar_img) {
+                avatarEle.attr('data-default-file', employeeData.avatar_img)
+            }
+            avatarEle.dropify({
+                messages: {
+                    'default': '',
+                }
+            })
+            avatarEle.on('change', function (event){
+                avatarFiles = event.target.files[0];
+                console.log('avatarFiles:', avatarFiles);
+            })
+            avatarEle.fadeIn();
         }
     }
 
@@ -54,18 +71,47 @@ $(function () {
             $.fn.callAjax2({
                 ...ajaxConfig,
                 isLoading: true,
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: data.message}, 'success');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000)
-                    // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                }
-            }, (errs) => {
-                $.fn.switcherResp(errs);
-            })
+                'loadingOpts': {
+                    'loadingTitleAction': 'UPDATE',
+                    'loadingTitleMore': 'General information',
+                },
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({'title': 'INFO', 'description': $.fn.transEle.attr('data-success')}, 'success');
+
+                        if (avatarFiles){
+                            let eleInputAvatar = $('#employee-avatar-img-input');
+                            let formData = new FormData();
+                            formData.append('file', avatarFiles);
+                            $.fn.callAjax2({
+                                url: eleInputAvatar.attr('data-url'),
+                                method: eleInputAvatar.attr('data-method'),
+                                data: formData,
+                                contentType: 'multipart/form-data',
+                                isLoading: true,
+                                'loadingOpts': {
+                                    'loadingTitleAction': 'UPDATE',
+                                    'loadingTitleMore': 'Avatar',
+                                },
+                            }).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data){
+                                        $.fn.notifyB({'title': 'Avatar', 'description': $.fn.transEle.attr('data-success')}, 'success');
+                                        setTimeout(() => window.location.reload(), 1000)
+                                    }
+                                },
+                                (errs) => $.fn.switcherResp(errs),
+                            )
+                        } else {
+                            setTimeout(() => window.location.reload(), 1000)
+                        }
+                    }
+                },
+                (errs) => $.fn.switcherResp(errs),
+            )
         }
     }
 

@@ -165,6 +165,10 @@ class MenusCoreConfigurations:
                 name='Purchase Request Config', code='menu_purchase_request_config', view_name='PurchaseRequestConfig',
                 icon='<i class="fas fa-shopping-cart"></i>',
             ),
+            MenuCommon(
+                name='Asset, Tools', code='menu_asset_tools_config', view_name='AssetToolsConfigView',
+                icon='<i class="fa-solid fa-pen-ruler"></i>',
+            ),
         ]
     )
 

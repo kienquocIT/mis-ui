@@ -1848,6 +1848,12 @@ class WFRTControl {
                         remove_required: true,
                     });
                 }
+
+                // case: input is Files
+                if ($(this).hasClass('dm-uploader-ids')){
+                    let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                    uploaderEle.dmUploader('disable');
+                }
             });
 
             // apply zones editable config
@@ -1882,6 +1888,12 @@ class WFRTControl {
                                             'add_border': true,
                                             'add_class_active': true,
                                         });
+
+                                        // case: input is Files
+                                        if ($(this).hasClass('dm-uploader-ids')){
+                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                                            uploaderEle.dmUploader('disable');
+                                        }
                                     } else {
                                         $(this).changePropertiesElementIsZone({
                                             'add_require_label': true,
@@ -1891,6 +1903,12 @@ class WFRTControl {
                                             'add_border': true,
                                             'add_class_active': true,
                                         });
+
+                                        // case: input is Files
+                                        if ($(this).hasClass('dm-uploader-ids')){
+                                            let uploaderEle = $(this).closest('.dad-file-control-group').find('.dm-uploader');
+                                            uploaderEle.dmUploader('enable');
+                                        }
                                     }
                                 })
                             });
@@ -3328,14 +3346,23 @@ class DTBControl {
                     this.opts['ajax'],
                     {
                         data: function (d) {
-                            let dataCallbackFromConfig = {}
-                            if (ajaxDataCallback instanceof Function) dataCallbackFromConfig = ajaxDataCallback(Object.assign({}, d));
+                            // re-configure (assign other config) to d
+                            if (ajaxDataCallback instanceof Function) {
+                                Object.assign(d, ajaxDataCallback(d));
+                            } else if (ajaxDataCallback instanceof Object){
+                                Object.assign(d, ajaxDataCallback)
+                            }
+
+                            // get wrapper element
                             let wrapperEle = clsThis.dtb$.closest('.dataTables_wrapper');
 
+                            // setup ordering
                             let sortKey = wrapperEle.find('.custom-order-dtb').val();
                             let sortASC = wrapperEle.find('.custom-order-asc-dtb i').hasClass('fa-arrow-down-z-a');   // DESC
-                            let orderTxt = sortKey ? `${sortASC ? '-' : ''}${sortKey}` : '';
+                            let orderingManual = d?.['ordering'] || null;
+                            let orderTxt = sortKey ? `${sortASC ? '-' : ''}${sortKey}` : orderingManual ? orderingManual : '';
 
+                            // setup another filtering
                             let keyKeepEmpty = [];
                             let customFilter = {};
 
@@ -3381,14 +3408,14 @@ class DTBControl {
                             }
 
                             return DTBControl.cleanParamBeforeCall({
-                                ...DTBControl.cleanBaseKeyOfDataAjax(dataCallbackFromConfig),
+                                ...DTBControl.cleanBaseKeyOfDataAjax(d),
                                 'page': Math.ceil(d.start / d.length) + 1,
                                 'pageSize': d.length,
                                 'search': d?.search?.value ? d.search.value : '',
                                 'ordering': orderTxt, ...customFilter, ...customFilterData,
                             }, keyKeepEmpty);
                         },
-                        dataFilter: function (data) {
+                        dataFilter: (data) => {
                             let json = JSON.parse(data);
                             json.recordsTotal = json?.data?.['page_count']
                             json.recordsFiltered = json?.data?.['page_count']
@@ -3663,6 +3690,27 @@ class WindowControl {
     }
 
     static showLoading(opts) {
+        // loadingTitleAction: GET (default), CREATE, UPDATE, DELETE
+        function resolve_title(){
+            let title = '';
+            let loadingTitleKeepDefault = opts?.['loadingTitleKeepDefault'] || true;
+            if (loadingTitleKeepDefault === true){
+                let loadingTitleAction = opts?.['loadingTitleAction'] || 'GET';
+                if (loadingTitleAction === 'GET'){
+                    title += $.fn.transEle.attr('data-loading');
+                } else if (loadingTitleAction === 'CREATE'){
+                    title += $.fn.transEle.attr('data-loading-creating');
+                } else if (loadingTitleAction === 'UPDATE'){
+                    title += $.fn.transEle.attr('data-loading-updating');
+                } else if (loadingTitleAction === "DELETE") {
+                    title += $.fn.transEle.attr('data-loading-deleting');
+                }
+            }
+            let loadingTitleMore = opts?.['loadingTitleMore'] || '';
+            if (loadingTitleMore) title += ' ' + loadingTitleMore;
+            return title;
+        }
+
         let didOpenStartSetup = opts?.['didOpenStart'] || null;
         if (didOpenStartSetup) delete opts['didOpenStart'];
 
@@ -3676,7 +3724,7 @@ class WindowControl {
         if (didDestroyEndSetup) delete opts['didDestroyEnd'];
         Swal.fire({
             icon: 'info',
-            title: `${$.fn.transEle.attr('data-loading')}`,
+            title: resolve_title(),
             text: `${$.fn.transEle.attr('data-wait')}...`,
             allowOutsideClick: false,
             showConfirmButton: false,
@@ -3885,15 +3933,14 @@ class PersonControl {
     }
 
     static renderAvatar(personData, clsName = "", appendHtml = "", shortNameKey = null) {
-        let avatar = personData?.['avatar'];
+        let avatar = personData?.['avatar_img'];
         let htmlTooltipFullname = `data-bs-toggle="tooltip" data-bs-placement="bottom" title="${personData?.['full_name']}"`;
         let shortName = PersonControl.shortNameGlobe(personData, shortNameKey);
         if (avatar && avatar !== 'None' && avatar !== 'none') {
-            let avatarFullUrl = globeMediaDomain + globePrefixAvatar + avatar + '?alt=' + shortName;
-            return `<div class="avatar ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}><img src="${avatarFullUrl}" alt="${shortName}" class="avatar-img">${appendHtml}</div>`;
+            return `<div class="avatar ${clsName ? clsName : 'avatar-xs avatar-primary avatar-rounded'}" ${htmlTooltipFullname}><img src="${avatar}" alt="${shortName}" class="avatar-img">${appendHtml}</div>`;
         }
         return `
-            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}>
+            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary avatar-rounded'}" ${htmlTooltipFullname}>
                 <span class="initial-wrap" >${shortName}</span>
                 ${appendHtml}
             </div>
@@ -4586,6 +4633,17 @@ class FileControl {
         })
     }
 
+    event_for_destroy(element, hide_or_show){
+        let itemEle = $(element).closest('.dad-file-control-group').find('.dm-uploader-result-list').find('button.btn-destroy-file').addClass('d-none');
+        if (itemEle.length > 0){
+            if (hide_or_show === 'hide') {
+                itemEle.addClass('d-none')
+            } else if (hide_or_show === 'show'){
+                itemEle.removeClass('d-none')
+            }
+        }
+    }
+
     ui_load_file_data(fileData) {
         let file_id = fileData?.['id'];
         if (file_id){
@@ -4668,6 +4726,20 @@ class FileControl {
             onFileTypeError: function (file) {},
             onFileSizeError: function (file) {},
             onFileExtError: function (file) {},
+            onDestroy: function (){
+                $(element).addClass('d-none');
+                this.onDisableDaD();
+            },
+            onDisableDaD: function (){
+                $(this).find('input[type="file"]').prop('disabled', true).prop('readonly', true);
+                $(this).find('button.btn-select-cloud').prop('disabled', true).prop('readonly', true);
+                clsThis.event_for_destroy(this, 'hide');
+            },
+            onEnableDaD: function (){
+                $(this).find('input[type="file"]').prop('disabled', false).prop('readonly', false);
+                $(this).find('button.btn-select-cloud').prop('disabled', false).prop('readonly', false);
+                clsThis.event_for_destroy(this, 'show');
+            },
         }
     }
 

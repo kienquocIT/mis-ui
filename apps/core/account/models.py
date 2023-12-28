@@ -100,7 +100,8 @@ class User(AuthUser):
 
     @property
     def avatar_url(self):
-        return f'{settings.MEDIA_PUBLIC_DOMAIN}p/f/avatar/{self.avatar}' if self.avatar else None
+        # return f'{settings.MEDIA_PUBLIC_DOMAIN}p/f/avatar/{self.avatar}' if self.avatar else None
+        return self.avatar if self.avatar else None
 
     class Meta:
         verbose_name = 'Account User'
@@ -136,7 +137,7 @@ class User(AuthUser):
                     dob=api_result.get('dob', None),
                     gender=api_result.get('gender', None),
                     language=api_result.get('language', settings.LANGUAGE_CODE),
-                    avatar=api_result.get('media_avatar_hash', None),
+                    avatar=api_result.get('employee_current', {}).get('avatar_img', None),
                     is_admin_tenant=api_result.get('is_admin_tenant', False),
                 )
             except Exception as err:
@@ -157,7 +158,7 @@ class User(AuthUser):
             user.company_current_data = api_result.get('company_current', {})
             user.space_current_data = api_result.get('space_current', {})
             user.employee_current_data = api_result.get('employee_current', {})
-            user.avatar = user.employee_current_data.get('media_avatar_hash', None)
+            user.avatar = api_result.get('employee_current', {}).get('avatar_img', None)
             user.companies_data = api_result.get('companies', [])
             user.access_token = api_result['token']['access_token']
             user.refresh_token = api_result['token']['refresh_token']

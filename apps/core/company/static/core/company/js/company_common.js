@@ -446,6 +446,7 @@ class CompanyHandle {
         frm.dataForm['email'] = $('#email').val();
         frm.dataForm['phone'] = $('#phone').val();
         frm.dataForm['fax'] = $('#fax').val();
+        frm.dataForm['email_app_password'] = $('#email-app-password').val();
 
         frm.dataForm['company_function_number_data'] = []
         $('#function_number_table tbody tr').each(function (index) {
@@ -490,6 +491,17 @@ class CompanyHandle {
             };
         }
     }
+
+    combinesDataTestEmailConnection() {
+        let data = {}
+        data['email'] = $('#email').val();
+        data['app_password'] = $('#email-app-password').val();
+        return {
+            url: $("#btn-test-email-connection").attr('data-url'),
+            method: 'GET',
+            data: data,
+        };
+    }
 }
 
 function Disable(option) {
@@ -522,6 +534,7 @@ function LoadDetailCompany(frm, option) {
                 $('#email').val(data.email);
                 $('#phone').val(data.phone);
                 $('#fax').val(data.fax);
+                $('#email-app-password').val(data.email_app_password);
 
                 loadFunctionNumberTableDetail(option, data?.['company_function_number'])
 
@@ -611,3 +624,22 @@ $("tbody").on("click", "#del-company-button", function (event){
             )
     }
 });
+
+$("#btn-test-email-connection").on('click', function (event) {
+    event.preventDefault();
+    let combinesData = new CompanyHandle().combinesDataTestEmailConnection();
+    if (combinesData) {
+        $.fn.callAjax2(combinesData)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Connect successfully"}, 'success')
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: 'Can not connect to mail server'}, 'failure');
+                }
+            )
+    }
+})

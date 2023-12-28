@@ -38,6 +38,7 @@
 {% block pageContent %}
     {{ data.zoom_config | json_script:"zoom_config" }}
     {{ data.employee_current | json_script:"employee_current" }}
+    {{ data.company_current | json_script:"company_current" }}
 
     <script id="translate-script"
             data-start-time="{% trans 'Start time' %}"
@@ -47,13 +48,12 @@
             data-meeting-passcode="{% trans 'Passcode' %}"
             data-meeting-url="{% trans 'Join Zoom meeting' %}"
             data-see-invitation="{% trans 'See meeting invitation' %}"
+            data-copy-invitation="{% trans 'Copy invitation' %}"
+            data-edit-meeting="{% trans 'Edit meeting' %}"
+            data-delete-meeting="{% trans 'Delete meeting' %}"
             data-today="{% trans 'Today' %}"
-            data-day="{% trans 'D ' %}"
-            data-month="{% trans 'M ' %}"
-            data-year="{% trans 'Y ' %}"
-            data-hour="{% trans 'h ' %}"
-            data-min="{% trans 'm' %}"
-            data-remain="{% trans 'remaining' %}"
+            data-occurred="{% trans 'Occurred' %}"
+            data-upcoming="{% trans 'Upcoming' %}"
     ></script>
     <div class="collapse multi-collapse mb-3 show" id="collapse-area">
         <form id="form-detail-meeting"
@@ -246,15 +246,19 @@
                             <div id="meeting-card-div" class="row"></div>
                             <div class="row">
                                 <div class="col-12">
-                                    <p class="mt-3 mb-3 text-muted">{% trans 'Online meeting will be created after saving this page' %}</p>
                                     <button type="button"
-                                            id="btn-add-app-meeting-schedule"
+                                            id="btn-edit-meeting"
                                             class="btn btn-outline-primary btn-sm"
                                             data-bs-toggle="modal"
-                                            data-bs-target="#modal_add_meeting_app_schedule"
-                                    >
+                                            data-bs-target="#modal_add_meeting_app_schedule">
                                         <i class="far fa-edit"></i>
-                                        {% trans 'Update meeting schedule' %}
+                                        {% trans 'Edit meeting' %}
+                                    </button>
+                                    <button type="button"
+                                            id="btn-delete-meeting"
+                                            class="btn btn-outline-danger btn-sm">
+                                        <i class="far fa-trash-alt"></i>
+                                        {% trans 'Delete meeting' %}
                                     </button>
                                     <div class="modal fade" id="modal_add_meeting_app_schedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalForms" aria-hidden="true">
                                         <div class="modal-dialog modal-lg mt-10" role="document">
@@ -603,6 +607,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <p class="mt-3 mb-3 text-muted">{% trans 'Online meeting changes will be updated after saving this page' %}</p>
                                 </div>
                             </div>
                         </div>
@@ -627,6 +632,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
     <script src="{% static "assets/js/meeting/meeting_common.js" %}"></script>
     <script src="{% static "assets/js/meeting/meeting_detail.js" %}"></script>
 {% endblock %}

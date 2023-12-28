@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.views import View
 from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.mail import get_connection
 
 from apps.core.account.models import Company
 from apps.shared import mask_view, ApiURL, ServerAPI, TypeCheck
@@ -212,3 +214,19 @@ class CompanyConfigDetailAPI(APIView):
                     except Company.DoesNotExist:
                         pass
         return resp.auto_return()
+
+
+class TestEmailConnection(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        try:
+            connection = get_connection(
+                username=request.GET.get('email'),
+                password=request.GET.get('app_password'),
+                fail_silently=False,
+            )
+            if connection.open():
+                return {}, status.HTTP_200_OK
+        except Exception as e:
+            print(e)
+            return {}, status.HTTP_502_BAD_GATEWAY

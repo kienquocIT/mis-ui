@@ -38,11 +38,22 @@
 {% block pageContent %}
     {{ data.zoom_config | json_script:"zoom_config" }}
     {{ data.employee_current | json_script:"employee_current" }}
+    {{ data.company_current | json_script:"company_current" }}
 
     <script id="translate-script"
             data-start-time="{% trans 'Start time' %}"
             data-duration="{% trans 'Duration' %}"
             data-minute="{% trans 'minute(s)' %}"
+            data-meeting-id="{% trans 'Meeting ID' %}"
+            data-meeting-passcode="{% trans 'Passcode' %}"
+            data-meeting-url="{% trans 'Join Zoom meeting' %}"
+            data-see-invitation="{% trans 'See meeting invitation' %}"
+            data-copy-invitation="{% trans 'Copy invitation' %}"
+            data-edit-meeting="{% trans 'Edit meeting' %}"
+            data-delete-meeting="{% trans 'Delete meeting' %}"
+            data-today="{% trans 'Today' %}"
+            data-occurred="{% trans 'Occurred' %}"
+            data-upcoming="{% trans 'Upcoming' %}"
     ></script>
     <div class="collapse multi-collapse mb-3 show" id="collapse-area">
         <form id="form-create-meeting"
@@ -615,6 +626,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
     <script src="{% static "assets/js/meeting/meeting_common.js" %}"></script>
     <script src="{% static "assets/js/meeting/meeting_create.js" %}"></script>
 {% endblock %}

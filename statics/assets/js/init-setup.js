@@ -1576,7 +1576,7 @@ class WFRTControl {
 
     static callWFSubmitForm(_form, urlRedirect) {
         let collabOutForm = WFRTControl.getCollabOutFormData();
-        if (collabOutForm && collabOutForm.length > 0) {
+        if (collabOutForm && collabOutForm.length > 0 && _form.dataMethod.toLowerCase() === 'post') {
             let htmlCustom = ``;
             for (let collab of collabOutForm) {
                 htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
@@ -1970,6 +1970,7 @@ class WFRTControl {
 
             // add button save at zones
             // idFormID
+            if (zonesData.length > 0) {  // check if user has zone edit then show button save at zones
             if (window.location.href.includes('/update/')) {
                 let idFormID = globeFormMappedZone;
                 if (idFormID) {
@@ -1987,6 +1988,7 @@ class WFRTControl {
                         $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
                     }
                 }
+            }
             }
         }
     }

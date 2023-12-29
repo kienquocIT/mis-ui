@@ -2247,6 +2247,10 @@ class WFRTControl {
                     if ($(ele$).hasClass('mask-money')) {  // if input mask-money
                         $(ele$).attr('value', '');
                     }
+                    // $(ele$).css({
+                    //     'font-style': 'italic',
+                    //     'color': 'red'
+                    // });
                 }
                 if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {
@@ -2255,6 +2259,11 @@ class WFRTControl {
                         } else {
                             $(ele$).html(``);
                         }
+                    }
+                }
+                if ($(ele$).is('button')) {  // if button (only button that have attr data-zone)
+                    if ($(ele$).attr('data-zone')) {
+                        $(ele$).attr('hidden', 'true');
                     }
                 }
             }

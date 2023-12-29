@@ -2241,16 +2241,16 @@ class WFRTControl {
             if (!$(ele$).hasClass('zone-active')) {
                 if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
                     $(ele$).html(`<option value="" selected></option>`);
+                    //
+                    $(ele$).next('.select2-container').addClass('hidden-zone');
                 }
                 if ($(ele$).is('input')) {  // if input
                     $(ele$).val('');
                     if ($(ele$).hasClass('mask-money')) {  // if input mask-money
                         $(ele$).attr('value', '');
                     }
-                    // $(ele$).css({
-                    //     'font-style': 'italic',
-                    //     'color': 'red'
-                    // });
+                    //
+                    $(ele$).addClass('hidden-zone');
                 }
                 if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {

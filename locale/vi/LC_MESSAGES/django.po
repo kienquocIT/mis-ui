@@ -5748,3 +5748,10 @@ msgstr "Chọn những nhân viên có thể xem toàn bộ danh sách công c�
 msgid "To time need larger than From time"
 msgstr "Giờ kết thúc phải lớn hơn giờ bắt đầu"
 
+#
+msgid "Provide request"
+msgstr "Yêu cầu cấp phát"
+
+#
+msgid "Asset, Tools provide list"
+msgstr "Danh sách yêu cầu cấp phát"

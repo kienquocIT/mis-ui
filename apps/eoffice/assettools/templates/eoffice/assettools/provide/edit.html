@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Asset, Tools Provide request edit' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+    {#this is css style for table footer#}
+    @media screen and (max-width: 1024px){
+        .dataTables_scrollFootInner{width: 100%!important;}
+        .dataTables_scrollFootInner > .min-w-1500p{min-width: 100%!important;}
+    }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="asset_provide_form">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
+            </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form class="container-fluid mt-4" id="asset_provide_form" method="post" data-method="PUT" autocomplete="off"
+          data-url-redirect="{% url 'AssetToolsProvideRequestList' %}" data-url="{% url 'AssetToolsProvideRequestEditAPI' data.pk%}">
+        {% csrf_token %}
+        <input type="hidden" name="employee_inherit_id">
+        <div class="row">
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
+                <input type="text" name="title" id="titleInput" class="form-control" required>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="dateCreatedInput" class="form-label">{% trans 'Date' %}</label>
+                <div class="input-affix-wrapper">
+                    <input type="text" id="dateCreatedInput" name="date_created" class="form-control date-picker"
+                           autocomplete="off">
+                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="selectEmployeeInherit" class="form-label required">{% trans 'Beneficiary' %}</label>
+                <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
+                        data-url="{% url 'EmployeeListAPI' %}"
+                        data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                        data-params="{'list_from_app':'{{data.list_from_app|escape}}'}"
+                >
+                </select>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="SystemStatusInput" class="form-label">{% trans 'Status' %}</label>
+                <input type="text" name="system_status" id="SystemStatusInput" class="form-control" disabled>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="remarkInput" class="form-label">{% trans 'Note' %}</label>
+                <textarea name="remark" id="remarkInput" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-12 col-xs-12">
+                <ul class="nav nav-line nav-light nav-tabs">
+                    <li class="nav-item">
+                        <a href="#products" class="nav-link active" data-bs-toggle="tab">
+                            <span class="nav-link-text">{% trans 'Request' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#attachment" class="nav-link" data-bs-toggle="tab">
+                        <span class="nav-link-text">
+                            {% trans 'Attachment' %}
+                        </span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="products">
+                        <table id="products_detail_tbl" class="table nowrap w-100 mb-5 min-w-1500p">
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'Product' %}</th>
+                                    <th>{% trans 'Remarks' %}</th>
+                                    <th>{% trans 'UoM' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'Unit price' %}</th>
+                                    <th>{% trans 'Tax' %}</th>
+                                    <th>{% trans 'Subtotal price' %}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                <tr>
+                                    <th colspan="5" class="border-0"></th>
+                                    <th class="border-0"><p style="text-align:right">{% trans 'Pretax Amount' %}:</p></th>
+                                    <th colspan="2" class="border-0"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="5" class="border-0"></th>
+                                    <th class="border-0"><p style="text-align:right">{% trans 'Taxes' %}:</p></th>
+                                    <th colspan="2" class="border-0"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="5" class="border-0"></th>
+                                    <th class="border-bottom-0 border-dark"><p style="text-align:right">{% trans 'Total' %}:</p></th>
+                                    <th colspan="2" class="border-bottom-0 border-dark"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        <div>
+                            <button class="btn btn-outline-primary" type="button" id="add_new_line">
+                                <span>
+                                    <span>{% trans 'Add new' %}</span>
+                                    <span class="icon">
+                                        <i class="fa-regular fa-plus"></i>
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="attachment">
+                        {% include 'extends/files/all.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <div class="delete_btn">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row">
+            <span class="btn-icon-wrap">
+                <i class="fa-solid fa-trash-can"></i>
+            </span>
+        </a>
+    </div>
+    <input type="text" id="url-factory"
+           data-detail-url="{% url 'AssetToolsProvideRequestDetailAPI' data.pk %}"
+           data-prod-url="{% url 'ProductListAPI' %}"
+           data-tax-url="{% url 'TaxListAPI' %}"
+           data-uom-url="{% url 'UnitOfMeasureListAPI' %}"
+    >
+    <input type="text" id="trans-factory" data-products="{% trans 'List of Asset, Tools request is empty' %}">
+    {{ data.system_status|json_script:'sys_stt' }}
+    {{ data.product_type|json_script:'prod_filter'}}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/eoffice/assettools/provide/provide-common.js' %}"></script>
+    <script src="{% static 'assets/js/eoffice/assettools/provide/edit.js' %}"></script>
+{% endblock %}

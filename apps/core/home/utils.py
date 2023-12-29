@@ -153,6 +153,11 @@ PLAN_APP_OF_E_OFFICE = {
             list_view_name='BusinessTripRequestList', detail_view_name='BusinessTripRequestDetail'
         ).data,
     },
+    'assettools': {
+        'assettoolsprovide': ReverseUrlCommon(
+            list_view_name='AssetToolsProvideRequestList', detail_view_name='AssetToolsProvideRequestDetail'
+        ).data,
+    }
 }
 
 PLAN_APP_MAP_VIEW = {

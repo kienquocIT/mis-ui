@@ -11,6 +11,7 @@ from .sale_data_account import SALE_DATA_ACCOUNT_MAP
 from .saleorder_sale_order import SALE_ORDER_DATA_MAP
 from .eoffice_leave_request import LEAVE_DATA_MAP
 from .eoffice_business_trip import BUSINESS_TRIP_DATA_MAP
+from .eoffice_asset_tools import ASSET_PROVIDE_DATA_MAP
 
 __all__ = [
     'InputMappingProperties',
@@ -31,3 +32,4 @@ class InputMappingProperties:
     CASHOUTFLOW_PAYMENT = PAYMENT_DATA_MAP
     CASHOUTFLOW_RETURN_ADVANCE = RETURN_ADVANCE_DATA_MAP
     BUSINESS_TRIP_DATA_MAP = BUSINESS_TRIP_DATA_MAP
+    ASSET_PROVIDE_DATA_MAP = ASSET_PROVIDE_DATA_MAP

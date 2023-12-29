@@ -1746,7 +1746,7 @@ class WFRTControl {
         globeWFRuntimeID = runtime_id;
     }
 
-    static setWFInitialZone(app_code) {
+    static setWFInitialData(app_code) {
         if (app_code) {
             let btn = $('#btnLogShow');
             btn.removeClass('hidden');

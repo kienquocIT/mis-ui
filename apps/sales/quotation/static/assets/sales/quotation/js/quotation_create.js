@@ -55,11 +55,11 @@ $(function () {
         $('.daterangepicker').remove();
 
         // get WF initial zones
-        if (formSubmit.attr('data-method') === 'POST') {
+        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
             if (!formSubmit[0].classList.contains('sale-order')) {
-                WFRTControl.setWFInitialZone('quotation');
+                WFRTControl.setWFInitialData('quotation');
             } else {
-                WFRTControl.setWFInitialZone('saleorder');
+                WFRTControl.setWFInitialData('saleorder');
             }
         }
 
@@ -1159,7 +1159,7 @@ $(function () {
             }
             let csr = $("[name=csrfmiddlewaretoken]").val();
 
-            WFRTControl.callWFSubmitForm(_form, formSubmit.attr('data-url-redirect'));
+            WFRTControl.callWFSubmitForm(_form);
 
 
 

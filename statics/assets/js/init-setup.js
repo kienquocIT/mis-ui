@@ -1569,7 +1569,7 @@ class WFRTControl {
         }
     }
 
-    static callWFSubmitForm(_form, urlRedirect) {
+    static callWFSubmitForm(_form) {
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
             Swal.fire({
@@ -1622,15 +1622,17 @@ class WFRTControl {
                     ).then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: data.message}, 'success')
-                                $.fn.redirectUrl(urlRedirect, 1000);
+                            if (data && (data['status'] === 201 || data['status'] === 200)) {
+                                $.fn.notifyB({description: data.message}, 'success');
+                                setTimeout(() => {
+                                    window.location.replace(_form.dataUrlRedirect);
+                                }, 1000);
                             }
                         }, (err) => {
                             setTimeout(() => {
                                 WindowControl.hideLoading();
                             }, 1000)
-                            $.fn.notifyB({description: err.data.errors}, 'failure');
+                            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                         }
                     )
                 }
@@ -1649,15 +1651,17 @@ class WFRTControl {
             ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: data.message}, 'success')
-                        $.fn.redirectUrl(urlRedirect, 1000);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
+                            window.location.replace(_form.dataUrlRedirect);
+                        }, 1000);
                     }
                 }, (err) => {
                     setTimeout(() => {
                         WindowControl.hideLoading();
                     }, 1000)
-                    $.fn.notifyB({description: err.data.errors}, 'failure');
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                 }
             )
         }

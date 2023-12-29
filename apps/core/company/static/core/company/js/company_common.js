@@ -488,11 +488,16 @@ class CompanyHandle {
         let data = {}
         data['email'] = $('#email').val();
         data['app_password'] = $('#email-app-password').val();
-        return {
-            url: $("#btn-test-email-connection").attr('data-url'),
-            method: 'GET',
-            data: data,
-        };
+        if (data['email'] !== '' && data['app_password'] !== '') {
+            return {
+                url: $("#btn-test-email-connection").attr('data-url'),
+                method: 'GET',
+                data: data,
+            };
+        }
+        else {
+            $.fn.notifyB({description: "Missing email or App Password"}, 'warning')
+        }
     }
 }
 

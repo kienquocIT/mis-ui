@@ -14,6 +14,14 @@ $(function () {
             EmployeeLoadPage.loadRoleList(employeeData.role);
             EmployeeLoadPage.loadDob(employeeData.dob);
             EmployeeLoadPage.loadDateJoined(employeeData.date_joined, false);
+
+            let avatarEle = $('#employee-avatar-img-input');
+            if (employeeData.avatar_img) {
+                $(`
+                    <img src="${employeeData.avatar_img}" style="width: 90%; object-fit: cover;"/>
+                `).insertAfter(avatarEle);
+            }
+            avatarEle.remove();
         }
     }
 

@@ -31,6 +31,9 @@
 
         <!-- Tour -->
         <link href="{% static 'vendors/hopscotch/dist/css/hopscotch.min.css' %}" rel="stylesheet" type="text/css">
+
+        <!-- Dropify -->
+        <link href="{% static 'vendors/dropify/dist/css/dropify.min.css' %}" rel="stylesheet" type="text/css">
     {% endcompress %}
 
     {% compress css %}
@@ -442,7 +445,7 @@
 
         // attachment
         const globeUrlAttachmentUpload = "{% url 'AttachmentUpload' %}";
-        const globeUrlAvatarUpload = "{% url 'EmployeeUploadAvatarAPI' %}";
+        {#const globeUrlAvatarUpload = "{% url 'EmployeeUploadAvatarAPI' %}";#}
         const globeMaxFileSize = "{% trans 'Maximum size {size}MiB' %}.";
         const globeAllowMultiple = "{% trans 'Allows uploading multiple files' %}.";
         const globeFileDeny = "{% trans 'File type not allowed for uploading' %}";
@@ -492,6 +495,8 @@
     <script src="{% static 'assets/js/plugins/card-tools.js' %}"></script>
 {#    <script src="{% static 'vendors/dm-uploader/dist/js/jquery.dm-uploader.min.js' %}"></script>#}
     <script src="{% static 'vendors/dm-uploader/src/js/jquery.dm-uploader.js' %}"></script>
+
+    <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <!-- // Init JS -->
 
     <script type="application/javascript">

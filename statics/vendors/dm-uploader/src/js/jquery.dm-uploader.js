@@ -84,7 +84,11 @@
         onDocumentDragEnter: function () {
         },
         onDocumentDragLeave: function () {
-        }
+        },
+        onDestroy: function (element){
+        },
+        onDisableDaD: function (element){},
+        onEnableDaD: function (element){},
     };
 
     var DmUploaderFile = function (file, widget) {
@@ -168,6 +172,10 @@
 
         return true;
     };
+
+    DmUploaderFile.prototype.onDestroy = function (element) {
+        this.widget.settings.onDestroy.call(this.widget.element);
+    }
 
     DmUploaderFile.prototype.onSuccess = function (data) {
         this.status = FileStatus.COMPLETED;
@@ -294,6 +302,7 @@
         this.activeFiles = 0;
         this.draggingOver = 0;
         this.draggingOverDoc = 0;
+        this.active = true;
 
         var input = widget.element.is("input[type=file]") ?
             widget.element : widget.element.find("input[type=file]");
@@ -304,15 +313,17 @@
 
             // Or does it has the input as a child
             input.on("change." + pluginName, function (evt) {
-                var files = evt.target && evt.target.files;
+                if (widget.active === true){
+                    var files = evt.target && evt.target.files;
 
-                if (!files || !files.length) {
-                    return;
+                    if (!files || !files.length) {
+                        return;
+                    }
+
+                    widget.addFiles(files);
+
+                    $(this).val("");
                 }
-
-                widget.addFiles(files);
-
-                $(this).val("");
             });
         }
 
@@ -333,53 +344,74 @@
         return this;
     };
 
-    DmUploader.prototype.initDnD = function () {
+    DmUploader.prototype.disableDaD = function (){
         var widget = this;
+        widget.active = false;
+        widget.element.addClass('d-none');
+        widget.settings.onDisableDaD.call(widget.element);
+    }
+
+    DmUploader.prototype.enableDaD = function (){
+        var widget = this;
+        widget.active = true;
+        widget.element.removeClass('d-none');
+        widget.settings.onEnableDaD.call(widget.element);
+    }
+
+    DmUploader.prototype.initDnD = function () {
+        this.enableDaD();
+
+        let widget = this;
 
         // -- Now our own Drop
         widget.element.on("drop." + pluginName, function (evt) {
             evt.preventDefault();
+            if (widget.active === true){
+                if (widget.draggingOver > 0) {
+                    widget.draggingOver = 0;
+                    widget.settings.onDragLeave.call(widget.element);
+                }
 
-            if (widget.draggingOver > 0) {
-                widget.draggingOver = 0;
-                widget.settings.onDragLeave.call(widget.element);
+                var dataTransfer = evt.originalEvent && evt.originalEvent.dataTransfer;
+                if (!dataTransfer || !dataTransfer.files || !dataTransfer.files.length) {
+                    return;
+                }
+
+                // Take only the first file if not acepting multiple, this is kinda ugly. Needs Review ?
+                var files = [];
+
+                if (widget.settings.multiple) {
+                    files = dataTransfer.files;
+                } else {
+                    files.push(dataTransfer.files[0]);
+                }
+
+                widget.addFiles(files);
             }
-
-            var dataTransfer = evt.originalEvent && evt.originalEvent.dataTransfer;
-            if (!dataTransfer || !dataTransfer.files || !dataTransfer.files.length) {
-                return;
-            }
-
-            // Take only the first file if not acepting multiple, this is kinda ugly. Needs Review ?
-            var files = [];
-
-            if (widget.settings.multiple) {
-                files = dataTransfer.files;
-            } else {
-                files.push(dataTransfer.files[0]);
-            }
-
-            widget.addFiles(files);
         });
 
         //-- These two events/callbacks are onlt to maybe do some fancy visual stuff
         widget.element.on("dragenter." + pluginName, function (evt) {
             evt.preventDefault();
 
-            if (widget.draggingOver === 0) {
-                widget.settings.onDragEnter.call(widget.element);
-            }
+            if (widget.active === true){
+                if (widget.draggingOver === 0) {
+                    widget.settings.onDragEnter.call(widget.element);
+                }
 
-            widget.draggingOver++;
+                widget.draggingOver++;
+            }
         });
 
         widget.element.on("dragleave." + pluginName, function (evt) {
             evt.preventDefault();
 
-            widget.draggingOver--;
+            if (widget.active === true){
+                widget.draggingOver--;
 
-            if (widget.draggingOver === 0) {
-                widget.settings.onDragLeave.call(widget.element);
+                if (widget.draggingOver === 0) {
+                    widget.settings.onDragLeave.call(widget.element);
+                }
             }
         });
 
@@ -391,29 +423,35 @@
         $(document).off("drop." + pluginName).on("drop." + pluginName, function (evt) {
             evt.preventDefault();
 
-            if (widget.draggingOverDoc > 0) {
-                widget.draggingOverDoc = 0;
-                widget.settings.onDocumentDragLeave.call(widget.element);
+            if (widget.active === true){
+                if (widget.draggingOverDoc > 0) {
+                    widget.draggingOverDoc = 0;
+                    widget.settings.onDocumentDragLeave.call(widget.element);
+                }
             }
         });
 
         $(document).off("dragenter." + pluginName).on("dragenter." + pluginName, function (evt) {
             evt.preventDefault();
 
-            if (widget.draggingOverDoc === 0) {
-                widget.settings.onDocumentDragEnter.call(widget.element);
-            }
+            if (widget.active === true) {
+                if (widget.draggingOverDoc === 0) {
+                    widget.settings.onDocumentDragEnter.call(widget.element);
+                }
 
-            widget.draggingOverDoc++;
+                widget.draggingOverDoc++;
+            }
         });
 
         $(document).off("dragleave." + pluginName).on("dragleave." + pluginName, function (evt) {
             evt.preventDefault();
 
-            widget.draggingOverDoc--;
+            if (widget.active === true) {
+                widget.draggingOverDoc--;
 
-            if (widget.draggingOverDoc === 0) {
-                widget.settings.onDocumentDragLeave.call(widget.element);
+                if (widget.draggingOverDoc === 0) {
+                    widget.settings.onDocumentDragLeave.call(widget.element);
+                }
             }
         });
 
@@ -642,12 +680,20 @@
             return true;
         },
         destroy: function () {
+            this.settings.onDestroy(this.element);
+
             this.cancelAll();
 
             this.releaseEvents();
 
             this.element.removeData(pluginName);
-        }
+        },
+        disable: function (){
+            this.disableDaD();
+        },
+        enable: function (){
+            this.enableDaD();
+        },
     };
 
     $.fn.dmUploader = function (options) {

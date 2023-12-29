@@ -389,6 +389,15 @@ class MenuEOffice:
         name='Business trip', code='menu_business', view_name='BusinessTripRequestList',
         icon='<i class="fa-solid fa-business-time"></i>',
     )
+    ASSET_TOOLS = MenuCommon(
+        name='Asset, Tools', code='menu_asset_tools', icon='<i class="fa-solid fa-pen-ruler"></i>',
+        child=[
+            MenuCommon(
+                name='Provide request', code='menu_asset_provide', view_name='AssetToolsProvideRequestList',
+                icon='<i class="fa-solid fa-hand-holding"></i>',
+            ),
+        ]
+    )
     MEETING = MenuCommon(
         name='Meeting', code='menu_meeting_list', view_name='MeetingScheduleList',
         icon='<i class="fas fa-chalkboard-teacher"></i>',
@@ -521,6 +530,7 @@ class SpaceItem:
                 MenuEOffice.CALENDAR,
                 MenuEOffice.LEAVE,
                 MenuEOffice.BUSINESS_TRIP,
+                MenuEOffice.ASSET_TOOLS,
                 MenuEOffice.MEETING,
             ],
         ),

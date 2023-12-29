@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.views import View
+from requests_toolbelt import MultipartEncoder
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import get_connection
@@ -104,6 +106,26 @@ class CompanyDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL.push_id(pk)).put(request.data)
         return resp.auto_return()
+
+
+class CompanyLogoUpload(APIView):
+    parser_classes = [MultiPartParser]
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        uploaded_file = request.FILES.get('file')
+        m = MultipartEncoder(
+            fields={
+                'logo': (uploaded_file.name, uploaded_file, uploaded_file.content_type),
+            }
+        )
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.COMPANY_DETAIL_LOGO.fill_key(pk=pk),
+            cus_headers={
+                'content-type': m.content_type,
+            }
+        ).post(data=m)
+        return resp.auto_return(key_success='company_logo_detail')
 
 
 class CompanyDeleteAPI(APIView):

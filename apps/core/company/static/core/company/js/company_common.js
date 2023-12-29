@@ -94,13 +94,15 @@ const schema_item_list_value = [
 ]
 
 // Create a new Date object
-const currentDate= new Date();
-const fullYear= currentDate.getFullYear();
-const shortYear= fullYear.toString().slice(-2);
+const currentDate = new Date();
+const fullYear = currentDate.getFullYear();
+const shortYear = fullYear.toString().slice(-2);
+
 function getISOWeekNumber(date) {
-  const diff= date - new Date(date.getFullYear(), 0, 1) + 1;
-  return Math.ceil(diff / 604800000); // 604800000 is 7 days in milliseconds
+    const diff = date - new Date(date.getFullYear(), 0, 1) + 1;
+    return Math.ceil(diff / 604800000); // 604800000 is 7 days in milliseconds
 }
+
 const monthOfYear = currentDate.getMonth() + 1;
 const weekOfYear = getISOWeekNumber(currentDate);
 const dayOfYear = Math.floor((currentDate - new Date(fullYear, 0, 0)) / 86400000);
@@ -111,8 +113,8 @@ const schema_item_preview = [
     '#number',
     shortYear.toString(),
     fullYear.toString(),
-    currentDate.toLocaleString('default', { month: 'short' }),
-    currentDate.toLocaleString('default', { month: 'long' }),
+    currentDate.toLocaleString('default', {month: 'short'}),
+    currentDate.toLocaleString('default', {month: 'long'}),
     monthOfYear.toString(),
     weekOfYear.toString(),
     dayOfYear.toString(),
@@ -123,8 +125,7 @@ const schema_item_preview = [
 min_num_char_checkbox_ele.on('change', function () {
     if ($(this).is(':checked')) {
         min_num_char_ele.prop('disabled', false);
-    }
-    else {
+    } else {
         min_num_char_ele.val('').prop('disabled', true);
     }
     Preview()
@@ -159,8 +160,7 @@ function Preview() {
                     let min_char_number = parseInt(min_num_char_ele.val()) ? min_num_char_ele.val() : 0;
                     code_1 = code_1.replace(raw_schema_item_list[i], last_number_ele.val().padStart(min_char_number, '0'));
                     code_2 = code_2.replace(raw_schema_item_list[i], (parseInt(last_number_ele.val()) + 1).toString().padStart(min_char_number, '0'));
-                }
-                else {
+                } else {
                     code_1 = code_1.replace(raw_schema_item_list[i], schema_item_preview[format_value]);
                     code_2 = code_2.replace(raw_schema_item_list[i], schema_item_preview[format_value]);
                 }
@@ -174,8 +174,7 @@ $('.schema-item').on('click', function () {
     let old_content = schema_item_list.val();
     if (old_content === '') {
         schema_item_list.val(schema_item_list_value[parseInt($(this).attr('data-value'))])
-    }
-    else {
+    } else {
         schema_item_list.val(old_content + schema_item_list_value[parseInt($(this).attr('data-value'))])
     }
     Preview()
@@ -189,8 +188,7 @@ $(document).on("click", '.schema-custom', function () {
         first_number_ele.val(schema_show_ele.attr('data-first-number'));
         last_number_ele.val(schema_show_ele.attr('data-last-number'));
         reset_frequency_ele.val(schema_show_ele.attr('data-reset-frequency'));
-    }
-    else {
+    } else {
         schema_item_list.val('');
         first_number_ele.val('');
         last_number_ele.val('');
@@ -200,8 +198,7 @@ $(document).on("click", '.schema-custom', function () {
     if (schema_show_ele.attr('data-min-number-char') && schema_show_ele.attr('data-min-number-char') !== 'null') {
         min_num_char_ele.val(schema_show_ele.attr('data-min-number-char')).prop('disabled', false);
         min_num_char_checkbox_ele.prop('checked', true);
-    }
-    else {
+    } else {
         min_num_char_ele.val('').prop('disabled', true);
         min_num_char_checkbox_ele.prop('checked', false);
     }
@@ -213,8 +210,7 @@ $(document).on("click", '.numbering-by-selection', function () {
     if ($(this).val() === '0') {
         current_schema_row.find('.schema-custom').prop('hidden', true);
         current_schema_row.find('.schema-show').text('');
-    }
-    else {
+    } else {
         current_schema_row.find('.schema-custom').prop('hidden', false);
     }
 })
@@ -259,8 +255,7 @@ $('#save-changes-modal-function-number').on('click', function () {
 
         if (min_number_char < 2 && min_num_char_checkbox_ele.prop('checked')) {
             $.fn.notifyB({'description': 'Minimum char number must be > 2.'}, 'warning');
-        }
-        else {
+        } else {
             if (schema && first_number && last_number && reset_frequency) {
                 let schema_show_ele = current_schema_row.find('.schema-show');
                 schema_show_ele.text(schema);
@@ -270,8 +265,7 @@ $('#save-changes-modal-function-number').on('click', function () {
                 schema_show_ele.attr('data-reset-frequency', reset_frequency);
                 schema_show_ele.attr('data-min-number-char', min_number_char);
                 $('#modal-function-number').hide();
-            }
-            else {
+            } else {
                 $.fn.notifyB({description: "Missing information!"}, 'failure');
             }
         }
@@ -313,7 +307,7 @@ const FunctionNumberTableData = [
     }
 ]
 
-function loadFunctionNumberTable(table_data=[]) {
+function loadFunctionNumberTable(table_data = []) {
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
         paging: false,
@@ -358,8 +352,8 @@ function loadFunctionNumberTable(table_data=[]) {
     })
 }
 
-function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
-    table_detail_data.sort(function(a, b) {
+function loadFunctionNumberTableDetail(option = 'detail', table_detail_data = []) {
+    table_detail_data.sort(function (a, b) {
         return a.function - b.function;
     });
     $('#function_number_table').DataTableDefault({
@@ -393,8 +387,7 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                             <option value="0">${system}</option>
                             <option value="1" selected>${user_defined}</option>
                         </select>`;
-                    }
-                    else {
+                    } else {
                         return `<select ${disabled} class="form-select numbering-by-selection">
                             <option value="0" selected>${system}</option>
                             <option value="1">${user_defined}</option>
@@ -407,8 +400,7 @@ function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
                 render: (data, type, row) => {
                     if (row.schema) {
                         return `<span data-schema="${row.schema}" data-first-number="${row.first_number}" data-last-number="${row.last_number}" data-reset-frequency="${row.reset_frequency}" data-min-number-char="${row.min_number_char}" class="schema-show text-primary">${row.schema_text}</span>`;
-                    }
-                    else {
+                    } else {
                         return `<span class="schema-show text-primary"></span>`;
                     }
                 }
@@ -436,7 +428,8 @@ class CompanyHandle {
         loadCompanyDistrict();
         loadCompanyWard();
     }
-    combinesData(frmEle, for_update=false) {
+
+    combinesData(frmEle, for_update = false) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $('#title').val();
@@ -481,8 +474,7 @@ class CompanyHandle {
                 data: frm.dataForm,
                 urlRedirect: frm.dataUrlRedirect,
             };
-        }
-        else {
+        } else {
             return {
                 url: frm.dataUrl,
                 method: frm.dataMethod,
@@ -523,7 +515,6 @@ function LoadDetailCompany(frm, option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['company_detail']?.['workflow_runtime_id']);
                 data = data['company_detail'];
-                console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
@@ -535,6 +526,25 @@ function LoadDetailCompany(frm, option) {
                 $('#phone').val(data.phone);
                 $('#fax').val(data.fax);
                 $('#email-app-password').val(data.email_app_password);
+
+                let eleInputAvatar = $('#company_logo');
+                if (option === 'update') {
+                    if (data.logo) {
+                        eleInputAvatar.attr('data-default-file', data.logo);
+                    }
+                    eleInputAvatar.dropify({
+                        messages: {
+                            'default': '',
+                        }
+                    });
+                } else {
+                    if (data.logo) {
+                        $(`
+                            <img src="${data.logo}" style="width: 90%; max-height: 100px; object-fit: cover;"/>
+                        `).insertAfter(eleInputAvatar);
+                    }
+                    eleInputAvatar.attr('disabled', 'disabled').remove();
+                }
 
                 loadFunctionNumberTableDetail(option, data?.['company_function_number'])
 
@@ -578,8 +588,7 @@ function LoadDetailCompany(frm, option) {
         if (data1['config']) {
             if (!data1['config']?.['definition_inventory_valuation']) {
                 $('#perpetual-selection').prop('checked', true);
-            }
-            else {
+            } else {
                 $('#periodic-selection').prop('checked', true);
             }
 
@@ -604,7 +613,7 @@ function LoadDetailCompany(frm, option) {
     })
 }
 
-$("tbody").on("click", "#del-company-button", function (event){
+$("tbody").on("click", "#del-company-button", function (event) {
     event.preventDefault();
     if (confirm("Confirm delete ?") === true) {
         let csr = $("input[name=csrfmiddlewaretoken]").val();

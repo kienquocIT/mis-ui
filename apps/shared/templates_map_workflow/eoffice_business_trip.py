@@ -28,4 +28,8 @@ BUSINESS_TRIP_DATA_MAP = {
     'expense_items': FieldMapCommon(
         name_mapping=['expense_items'],
     ).data,
+    'attachment': FieldMapCommon(
+        name_mapping=['attachment'],
+        cls_border_zones=['dad-file-control-group']
+    ).data,
 }

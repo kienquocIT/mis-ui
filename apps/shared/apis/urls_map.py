@@ -87,7 +87,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
 
     # employee
-    EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/upload-avatar')
+    EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/{pk}/upload-avatar')
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')
@@ -114,6 +114,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     COMPANY_CONFIG = StringUrl('company/config')
     COMPANY_LIST = StringUrl('company/list')
     COMPANY_DETAIL = StringUrl('company')
+    COMPANY_DETAIL_LOGO = StringUrl('company/{pk}/logo')
     COMPANY_OVERVIEW = StringUrl('company/overview/list')
     COMPANY_USER_NOT_MAP_EMPLOYEE = StringUrl('company/user/available')
     COMPANY_USER_COMPANY = StringUrl('company/user-company')
@@ -453,3 +454,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Asset, Tools
     ASSET_TOOLS_CONFIG = StringUrl('asset-tools/config')
+    ASSET_TOOLS_PROVIDE = StringUrl('asset-tools/provide')
+    ASSET_TOOLS_PROVIDE_DETAIL = StringUrl('asset-tools/provide/detail')

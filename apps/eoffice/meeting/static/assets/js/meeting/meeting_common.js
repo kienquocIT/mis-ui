@@ -210,6 +210,19 @@ btn_add_app_meeting_schedule.on('click', function () {
     let meeting_password_autogen = generateRandomString()
     $('#meeting-passcode-input').val(meeting_password_autogen)
     $('#pmi').text(zoom_config?.['personal_meeting_id'])
+
+    let attendees = []
+    for (let i = 0; i < internalParticipantsEle.val().length; i++) {
+        attendees.push(
+            JSON.parse($('#' + internalParticipantsEle.attr('data-idx-data-loaded')).text())[internalParticipantsEle.val()[i]]
+        )
+    }
+    for (let i = 0; i < externalParticipantsEle.val().length; i++) {
+        attendees.push(
+            JSON.parse($('#' + externalParticipantsEle.attr('data-idx-data-loaded')).text())[externalParticipantsEle.val()[i]]
+        )
+    }
+    loadModalAttendees(attendees)
 })
 
 save_meeting_payload.on('click', function () {
@@ -221,15 +234,27 @@ save_meeting_payload.on('click', function () {
     data_meeting_payload['password'] = $('#meeting-passcode-input').val()
     data_meeting_payload['timezone'] = $('#modal-time-zone').val()
     data_meeting_payload['settings'] = {
+        'host_video': true,
+        'participant_video': true,
+        'join_before_host': true,
+        'mute_upon_entry': true,
+        'recording': {
+            'recording_enable': true,
+            'recording_type': "local",
+            'recording_settings': {
+                'allow_local_recording': true,
+                'allow_cloud_recording': true
+            }
+        },
         'use_pmi': $('#meeting-id-personal').prop('checked'),
-    }
-    data_meeting_payload['continuous_meeting_chat'] = {
-        'enable': false
+        'continuous_meeting_chat': {
+            'enable': true
+        },
+        'waiting_room': $('#meeting-waiting-room').prop('checked')
     }
     if (data_meeting_payload['settings']['use_pmi']) {
-        data_meeting_payload['continuous_meeting_chat']['enable'] = $('#modal-enable-continuous-meeting-chat').prop('checked')
+        data_meeting_payload['settings']['continuous_meeting_chat']['enable'] = $('#modal-enable-continuous-meeting-chat').prop('checked')
     }
-    data_meeting_payload['waiting_room'] = $('#meeting-waiting-room').prop('checked')
 
     if (data_meeting_payload['topic'] === '') {
         $.fn.notifyB({description: 'Meeting topic is required.'}, 'warning');
@@ -248,11 +273,14 @@ save_meeting_payload.on('click', function () {
         flag = false;
     }
 
+    let attendee_list = {'attendee_list': modalAttendeesEle.val()}
+
     if (flag) {
         $('#modal_add_meeting_app_schedule').modal('hide')
 
         $('#meeting-card-div').html(`<div class="col-12 col-lg-4 col-md-4">
             <div class="card meeting-card">
+                <script id="meeting-attendee-list-script">${JSON.stringify(attendee_list)}</script>
                 <script id="meeting-payload-script">${JSON.stringify(data_meeting_payload)}</script>
                 <div class="card-header">
                     <span class="meeting-schedule-title badge badge-blue"><b><i class="fas fa-video"></i>&nbsp;Zoom Meeting</b></span>
@@ -290,8 +318,15 @@ function formatDateTime(inputDateTimeString) {
 function isToday(targetDateTimeString) {
     const targetDateTime = new Date(targetDateTimeString);
     const today = new Date();
-    const targetDateTime_int = parseInt(targetDateTime.getFullYear().toString() + targetDateTime.getMonth().toString() + targetDateTime.getDate().toString())
-    const todayDateTime_int = parseInt(today.getFullYear().toString() + today.getMonth().toString() + today.getDate().toString())
+    let tg_year = targetDateTime.getFullYear()
+    let tg_month = ("0" + (targetDateTime.getMonth() + 1)).slice(-2)
+    let tg_day = ("0" + targetDateTime.getDate()).slice(-2)
+    let td_year = today.getFullYear()
+    let td_month = ("0" + (today.getMonth() + 1)).slice(-2)
+    let td_day = ("0" + today.getDate()).slice(-2)
+    const targetDateTime_int = tg_year + tg_month + tg_day
+    const todayDateTime_int = td_year + td_month + td_day
+
     if (targetDateTime_int === todayDateTime_int) {
         return `<span class="meeting-status text-secondary" data-value="0"><span class="badge badge-success badge-indicator"></span>&nbsp;${translateScriptEle.attr('data-today')}</span>`
     }
@@ -347,6 +382,10 @@ class MeetingScheduleHandle {
 
         if ($('#online-meeting').prop('checked')) {
             let data_online_meeting_payload = $('#meeting-payload-script').text()
+            let data_attendee_list = $('#meeting-attendee-list-script').text()
+            if (data_attendee_list) {
+                frm.dataForm['attendee_list'] = data_attendee_list ? JSON.parse(data_attendee_list) : {}
+            }
             if (data_online_meeting_payload) {
                 frm.dataForm['payload'] = data_online_meeting_payload ? JSON.parse(data_online_meeting_payload) : {}
                 if (frm.dataForm['payload']?.['duration'] <= 0) {

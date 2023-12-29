@@ -208,7 +208,7 @@
                                     <textarea type="text" class="form-control" id="room-location"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="room-description">{% trans 'Description' %}</label>
+                                    <label class="form-label required" for="room-description">{% trans 'Description' %}</label>
                                     <textarea type="text" class="form-control" id="room-description"></textarea>
                                 </div>
                             </div>
@@ -218,6 +218,51 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                     <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="form-create-meeting-room">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateMeetingRoomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Update meeting room' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-meeting-room"
+                          data-url-detail="{% url 'MeetingRoomDetailAPI' '0' %}"
+                          data-url-redirect="{% url 'MeetingConfigList' %}"
+                          data-method="PUT">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-title">{% trans 'Name' %}</label>
+                                    <input type="text" class="form-control" id="room-title">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-code">{% trans 'Code' %}</label>
+                                    <input disabled readonly type="text" class="form-control" id="room-code">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-location">{% trans 'Location' %}</label>
+                                    <textarea type="text" class="form-control" id="room-location"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-description">{% trans 'Description' %}</label>
+                                    <textarea type="text" class="form-control" id="room-description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="form-update-meeting-room">{% trans 'Update' %}</button>
                 </div>
             </div>
         </div>

@@ -279,6 +279,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Asset tools
     ASSET_TOOLS_CONFIG = BreadcrumbChildren(_('Asset, Tools config'), 'AssetToolsConfigView')
+    ASSET_TOOLS_PROVIDE_LIST = BreadcrumbChildren(_('Asset, Tools provide list'), 'AssetToolsProvideRequestList')
 
 
 class BreadcrumbView:
@@ -718,3 +719,10 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.ASSET_TOOLS_CONFIG
     ]
+    ASSET_TOOLS_PROVIDE_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.ASSET_TOOLS_PROVIDE_LIST
+    ]
+    ASSET_TOOLS_PROVIDE_CREATE = ASSET_TOOLS_PROVIDE_LIST + [BreadcrumbItem.BASTION_CREATE]
+    ASSET_TOOLS_PROVIDE_DETAIL = ASSET_TOOLS_PROVIDE_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    ASSET_TOOLS_PROVIDE_EDIT = ASSET_TOOLS_PROVIDE_LIST + [BreadcrumbItem.BASTION_UPDATE]

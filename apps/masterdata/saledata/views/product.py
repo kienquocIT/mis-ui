@@ -215,6 +215,9 @@ class ProductListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
+        if 'asset_tools_filter' in params:
+            prod_type = params.pop('asset_tools_filter', None)
+            params['general_product_types_mapped__id'] = prod_type
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get(params)
         return resp.auto_return(key_success='product_list')
 

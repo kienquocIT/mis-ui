@@ -74,14 +74,15 @@ $(function () {
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            let status_data = {
-                                "Draft": "badge badge-soft-light",
-                                "Created": "badge badge-soft-primary",
-                                "Added": "badge badge-soft-info",
-                                "Finish": "badge badge-soft-success",
-                                "Cancel": "badge badge-soft-danger",
-                            }
-                            return `<span class="${status_data[row?.['system_status']]}">${row?.['system_status']}</span>`;
+                            let sttTxt = JSON.parse($('#stt_sys').text())
+                            let sttData = [
+                                "soft-light",
+                                "soft-primary",
+                                "soft-info",
+                                "soft-success",
+                                "soft-danger",
+                            ]
+                            return `<span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                     {

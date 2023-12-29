@@ -41,6 +41,7 @@
         </tbody>
     </table>
 {% endblock %}
+
 {% block dataHiddenGroup %}
     <input type="hidden" id="trans-factory"
     data-change="{% trans 'Change' %}"
@@ -50,9 +51,9 @@
     data-status-partially="{% trans 'Partially delivered' %}"
     data-status-delivered="{% trans 'Delivered' %}"
     >
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
+
 {% block jsFooter %}
-
-
     <script src="{% static 'assets/sales/saleorder/js/sale_order_list.js' %}"></script>
 {% endblock %}

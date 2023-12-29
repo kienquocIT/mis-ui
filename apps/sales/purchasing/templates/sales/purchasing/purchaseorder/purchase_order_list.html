@@ -61,6 +61,7 @@
     data-status-partially="{% trans 'Partially received' %}"
     data-status-received="{% trans 'Received' %}"
     >
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
 

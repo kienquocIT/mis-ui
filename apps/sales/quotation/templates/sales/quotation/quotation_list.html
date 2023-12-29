@@ -56,8 +56,10 @@
     </table>
 {% endblock %}
 
+{% block dataHiddenGroup %}
+{{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+
 {% block jsFooter %}
-
-
     <script src="{% static 'assets/sales/quotation/js/quotation_list.js' %}"></script>
 {% endblock %}

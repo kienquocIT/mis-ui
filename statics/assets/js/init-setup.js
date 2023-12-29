@@ -1532,21 +1532,9 @@ class WFRTControl {
         }
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
-            let htmlCustom = ``;
-            for (let collab of collabOutForm) {
-                htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <span class="mr-2">${collab?.['full_name']}</span>
-                                        <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
-                                    </div>
-                                    <div class="form-check form-check-theme ms-3">
-                                        <input type="checkbox" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
-                                    </div>
-                                </div><hr class="bg-teal">`;
-            }
             Swal.fire({
                 title: "Select collaborator at next step",
-                html: String(htmlCustom),
+                html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
                 allowOutsideClick: false,
                 showConfirmButton: true,
                 confirmButtonText: $.fn.transEle.attr('data-confirm'),
@@ -1584,21 +1572,9 @@ class WFRTControl {
     static callWFSubmitForm(_form, urlRedirect) {
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
-            let htmlCustom = ``;
-            for (let collab of collabOutForm) {
-                htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <span class="mr-2">${collab?.['full_name']}</span>
-                                        <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
-                                    </div>
-                                    <div class="form-check form-check-theme ms-3">
-                                        <input type="checkbox" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
-                                    </div>
-                                </div><hr class="bg-teal">`;
-            }
             Swal.fire({
                 title: "Select collaborator at next step",
-                html: String(htmlCustom),
+                html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
                 allowOutsideClick: false,
                 showConfirmButton: true,
                 confirmButtonText: $.fn.transEle.attr('data-confirm'),
@@ -1685,6 +1661,22 @@ class WFRTControl {
                 }
             )
         }
+    }
+
+    static setupHTMLCollabNextNode(collabOutForm) {
+        let htmlCustom = ``;
+        for (let collab of collabOutForm) {
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="mr-2">${collab?.['full_name']}</span>
+                                    <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="checkbox" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
+                                </div>
+                            </div><hr class="bg-teal">`;
+        }
+        return htmlCustom;
     }
 
     static setWFRuntimeID(runtime_id) {

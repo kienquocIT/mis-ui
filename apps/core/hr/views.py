@@ -80,14 +80,13 @@ class EmployeeUploadAvatarAPI(APIView):
     parser_classes = [MultiPartParser]
 
     @mask_view(auth_require=True, login_require=True, is_api=True)
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, pk, **kwargs):
+        url = ApiURL.EMPLOYEE_UPLOAD_AVATAR.fill_key(pk=pk)
         uploaded_file = request.FILES.get('file')
-        m = MultipartEncoder(fields={'file': (uploaded_file.name, uploaded_file, uploaded_file.content_type)})
-        url = ApiURL.EMPLOYEE_UPLOAD_AVATAR
+        m = MultipartEncoder(fields={'avatar_img': (uploaded_file.name, uploaded_file, uploaded_file.content_type)})
         headers = {'content-type': m.content_type}
         resp = ServerAPI(request=request, user=request.user, url=url, cus_headers=headers).post(data=m)
         if resp.state:
-            request.user.update_avatar_hash(resp.result.get('media_path_hash', None))
             return {'detail': resp.result}, status.HTTP_200_OK
         return resp.auto_return()
 

@@ -146,8 +146,7 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="expense_items">
-                        <div class="overflow-x-scroll">
-                            <table id="expense_detail_tbl" class="table nowrap mb-5">
+                        <table id="expense_detail_tbl" class="table nowrap min-w-1500p w-100 mb-5">
                                 <thead>
                                 <tr>
                                     <th>{% trans 'Expense name' %}</th>
@@ -179,30 +178,19 @@
                                 </tr>
                                 </tfoot>
                             </table>
+                        <div>
+                            <button class="btn btn-outline-primary" type="button" id="add_new_line">
+                                <span>
+                                    <span>{% trans 'Add new' %}</span>
+                                    <span class="icon">
+                                        <i class="fa-regular fa-plus"></i>
+                                    </span>
+                                </span>
+                            </button>
                         </div>
-                        <br>
-                        <button class="btn btn-outline-primary" type="button" id="add_new_line">
-                        <span>
-                            <span>{% trans 'Add new' %}</span>
-                            <span class="icon">
-                                <i class="fa-regular fa-plus"></i>
-                            </span>
-                        </span>
-                        </button>
                     </div>
-                    <div class="tab-pane fade" id="attachment">
-                        <div class="form-group">
-                            <button
-                                    type="button"
-                                    class="form-control btn btn-outline-primary btn-file-upload"
-                                    data-f-input-name="attachment"
-                                    data-f-input-required="false"
-                                    data-f-input-disabled="false"
-                                    data-f-name-ele-id="#fileNameTestDisplay"
-                            >{% trans 'Click here to upload image' %}</button>
-                            <p id="fileNameTestDisplay"></p>
-
-                        </div>
+                    <div class="tab-pane fade"  id="attachment">
+                        {% include 'extends/files/all.html' %}
                     </div>
                 </div>
             </div>
@@ -227,4 +215,7 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/e-offices/business-trip/js/business-trip-common.js' %}"></script>
+    <script>
+        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+    </script>
 {% endblock %}

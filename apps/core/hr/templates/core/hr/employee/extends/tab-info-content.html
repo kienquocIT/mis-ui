@@ -1,86 +1,91 @@
 {% load i18n string_utils %}
 
 <div class="tab-pane fade show active" id="tab-info" data-disabled="{{li_content_head_disabled|parse_0_or_1}}">
-    <div class="container-fluid">
+    <div class="container-fluid mt-5">
         <div class="row">
-            <div class="col-12">
+            <div class="col-md-12 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Avatar' %}</label>
+                    <div class="w-100 mt-3 d-flex justify-content-center align-items-center overflow-hidden">
+                        <input
+                            id="employee-avatar-img-input"
+                            class="form-control"
+                            style="display: none;"
+                            type="file"
+                            data-url="{% url 'EmployeeUploadAvatarAPI' pk=pk %}"
+                            data-method="POST"
+                            data-max-file-size="3M"
+                            data-allowed-file-extensions="jpeg jpg png gif"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-10">
                 <div class="row">
-                    <div class="col-8">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-group">
-                                <label class="form-label">{% trans 'User' %}</label>
-                                <div class="input-group">
-                                    <select
-                                            class="form-select"
-                                            name="user"
-                                            id="select-box-user"
-                                            data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
-                                            data-keyResp="company_user_list"
-                                            data-template-format="[{'name':'Name', 'value': 'full_name'},{'name':'Code', 'value': 'code'}]"
-                                            {% if li_content_head_disabled == True %} disabled {% endif %}
+                    <div class="col-lg-4 col-12">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'User' %}</label>
+                            <div class="input-group">
+                                <select
+                                        class="form-select"
+                                        name="user"
+                                        id="select-box-user"
+                                        data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
+                                        data-keyResp="company_user_list"
+                                        data-template-format="[{'name':'Name', 'value': 'full_name'},{'name':'Code', 'value': 'code'}]"
+                                        {% if li_content_head_disabled == True %} disabled {% endif %}
 
-                                            data-url-info-detail="{% url 'UserDetail' pk='__pk__' %}"
-                                            data-on-load-info="onLoadDropdownUserDetail"
-                                    ></select>
-                                    {% include 'extends/the-documents/button_info.html' %}
-                                    {% include 'extends/the-documents/dropdown_info.html' with display_data_template="core/hr/employee/extends/user_detail_info.html" %}
-                                </div>
-                            </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="employee-code">{% trans 'Code' %}</label>
-                                    <input oninput="this.value=this.value.toUpperCase()"
-                                            type="text"
-                                            class="form-control"
-                                            name="code"
-                                            id="employee-code"
-                                            required
-                                    >
-                                    <span class="form-text text-muted">{% trans 'Employee Code' %}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        {% trans 'Last Name' %}
-                                    </label>
-                                    <input
-                                            type="text" placeholder=""
-                                            class="form-control"
-                                            name="last_name"
-                                            id="employee-last-name"
-                                            {% if li_content_head_disabled == True %} disabled readonly {% endif %}
-                                    >
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        {% trans 'First Name' %}
-                                    </label>
-                                    <input
-                                            type="text" class="form-control"
-                                            name="first_name"
-                                            id="employee-first-name"
-                                            {% if li_content_head_disabled == True %} disabled readonly {% endif %}
-                                    >
-                                </div>
+                                        data-url-info-detail="{% url 'UserDetail' pk='__pk__' %}"
+                                        data-on-load-info="onLoadDropdownUserDetail"
+                                ></select>
+                                {% include 'extends/the-documents/button_info.html' %}
+                                {% include 'extends/the-documents/dropdown_info.html' with display_data_template="core/hr/employee/extends/user_detail_info.html" %}
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-lg-4 col-md-6 col-12">
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Avatar' %}</label>
-                            <span class="form-text text-muted">{% trans 'Avatar of emloyee' %}</span>
+                            <label class="form-label">
+                                {% trans 'Last Name' %}
+                            </label>
+                            <input
+                                    type="text" placeholder=""
+                                    class="form-control"
+                                    name="last_name"
+                                    id="employee-last-name"
+                                    {% if li_content_head_disabled == True %} disabled readonly {% endif %}
+                            >
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-12">
+                        <div class="form-group">
+                            <label class="form-label">
+                                {% trans 'First Name' %}
+                            </label>
+                            <input
+                                    type="text" class="form-control"
+                                    name="first_name"
+                                    id="employee-first-name"
+                                    {% if li_content_head_disabled == True %} disabled readonly {% endif %}
+                            >
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-md-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label required" for="employee-code">{% trans 'Code' %}</label>
+                            <input oninput="this.value=this.value.toUpperCase()"
+                                    type="text"
+                                    class="form-control"
+                                    name="code"
+                                    id="employee-code"
+                                    required
+                            >
+                            <span class="form-text text-muted">{% trans 'Employee Code' %}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12">
                         <div class="form-group">
                             <label class="form-label">{% trans 'Email' %}</label>
                             <input
@@ -92,7 +97,7 @@
                             />
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-3 col-12">
 
                         <div class="form-group">
                             <label class="form-label">{% trans 'Phone' %}</label>
@@ -105,7 +110,20 @@
                             >
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-3 col-12">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Date of Birthday' %}</label>
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="employee-dob"
+                                    {% if li_content_head_disabled == True %} disabled readonly {% endif %}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-12">
                         <div class="form-group">
                             <label class="form-label">{% trans 'Department' %}</label>
                             <select
@@ -118,31 +136,7 @@
                             ></select>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-4">
-                        <div class="form-group">
-                            <label class="form-label">{% trans 'Date of Birthday' %}</label>
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    id="employee-dob"
-                                    {% if li_content_head_disabled == True %} disabled readonly {% endif %}
-                            />
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="form-group">
-                            <label class="form-label">{% trans 'Date Joined' %}</label>
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    id="employee-date-joined"
-                                    {% if li_content_head_disabled == True %} disabled readonly {% endif %}
-                            />
-                        </div>
-                    </div>
-                    <div class="col-4">
+                    <div class="col-md-4 col-12">
                         <div class="form-group">
                             <label class="form-label">{% trans 'Role' %}</label>
                             <select
@@ -156,41 +150,52 @@
                             ></select>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <div class="form-check form-switch">
-                        <input
-                                type="checkbox"
-                                class="form-check-input"
-                                name="is_admin_company"
-                                id="idx_is_admin_company"
-                                {% if li_content_head_disabled == True %} disabled readonly {% endif %}
-                        >
-                        <label class="form-check-label" for="idx_is_admin_company">
-                            {% trans 'Is admin' %}
-                        </label>
+                    <div class="col-md-4 col-12">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Date Joined' %}</label>
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="employee-date-joined"
+                                    {% if li_content_head_disabled == True %} disabled readonly {% endif %}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <div class="form-check form-switch">
-                        <input
-                                type="checkbox"
-                                class="form-check-input"
-                                name="is_active"
-                                id="is_active"
-                                {% if li_content_head_disabled == True %} disabled readonly {% endif %}
-                        >
-                        <label class="form-check-label" for="is_active">
-                            {% trans 'Active' %}
-                        </label>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="form-check form-switch">
+                                <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        name="is_admin_company"
+                                        id="idx_is_admin_company"
+                                        {% if li_content_head_disabled == True %} disabled readonly {% endif %}
+                                >
+                                <label class="form-check-label" for="idx_is_admin_company">
+                                    {% trans 'Is admin' %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="form-check form-switch">
+                                <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        name="is_active"
+                                        id="is_active"
+                                        {% if li_content_head_disabled == True %} disabled readonly {% endif %}
+                                >
+                                <label class="form-check-label" for="is_active">
+                                    {% trans 'Active' %}
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

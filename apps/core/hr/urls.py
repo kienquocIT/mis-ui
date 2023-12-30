@@ -14,9 +14,11 @@ from apps.core.hr.views import (
 urlpatterns = [
     path('employee', EmployeeList.as_view(), name='EmployeeList'),
     path('employee/api', EmployeeListAPI.as_view(), name='EmployeeListAPI'),
-    path('employee/upload-avatar/api', EmployeeUploadAvatarAPI.as_view(), name='EmployeeUploadAvatarAPI'),
     path('employee/create', EmployeeCreate.as_view(), name='EmployeeCreate'),
     path('employee/detail/<str:pk>', EmployeeDetail.as_view(), name='EmployeeDetail'),
+    path(
+        'employee/detail/<str:pk>/upload-avatar/api', EmployeeUploadAvatarAPI.as_view(), name='EmployeeUploadAvatarAPI'
+    ),
     path('employee/detail/<str:pk>/app/all', PlanAppGetAppListAPI.as_view(), name='PlanAppGetAppListAPI'),
     path('employee/detail/<str:pk>/app/summary', ApplicationSummaryListAPI.as_view(), name='ApplicationSummaryListAPI'),
     path('employee/detail/<str:pk>/plan/summary', PlanSummaryListAPI.as_view(), name='PlanSummaryListAPI'),

@@ -83,3 +83,16 @@ class ReportCustomerListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.REPORT_CUSTOMER_LIST).get(data)
         return resp.auto_return(key_success='report_customer_list')
+
+
+class ItemsDetailReportList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/inventory_report/items_detail_report.html',
+        menu_active='menu_items_detail_report',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

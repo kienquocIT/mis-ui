@@ -50,6 +50,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BUILDER_PAGE_TEMPLATE =  StringUrl('site/config/templates')
     BUILDER_PAGE_TEMPLATE_DETAIL =  StringUrl('site/config/template/{pk}')
 
+    # files
+    FILE_UPLOAD = StringUrl('attachment/upload')
+    FILE_UNUSED = StringUrl('attachment/unused')
+
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
     MEDIA_UPLOAD_FILE = StringUrl('f/files')
@@ -83,7 +87,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
 
     # employee
-    EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/upload-avatar')
+    EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/{pk}/upload-avatar')
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')
@@ -110,6 +114,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     COMPANY_CONFIG = StringUrl('company/config')
     COMPANY_LIST = StringUrl('company/list')
     COMPANY_DETAIL = StringUrl('company')
+    COMPANY_DETAIL_LOGO = StringUrl('company/{pk}/logo')
     COMPANY_OVERVIEW = StringUrl('company/overview/list')
     COMPANY_USER_NOT_MAP_EMPLOYEE = StringUrl('company/user/available')
     COMPANY_USER_COMPANY = StringUrl('company/user-company')
@@ -197,12 +202,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # advance payment
     ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
-    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments')
+    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments/{pk}')
     ADVANCE_PAYMENT_COST_LIST = StringUrl('cashoutflow/advances-payments-cost-list/lists')
 
     # payment
     PAYMENT_LIST = StringUrl('cashoutflow/payments')
-    PAYMENT_DETAIL = StringUrl('cashoutflow/payments')
+    PAYMENT_DETAIL = StringUrl('cashoutflow/payments/{pk}')
     PAYMENT_CONFIG_LIST = StringUrl('cashoutflow/payment-config')
     PAYMENT_COST_LIST = StringUrl('cashoutflow/payments-cost-list/lists')
 
@@ -437,3 +442,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Business Trip
     BUSINESS_TRIP_LIST = StringUrl('business-trip/list')
     BUSINESS_TRIP_DETAIL = StringUrl('business-trip/detail')
+
+    # Asset, Tools
+    ASSET_TOOLS_CONFIG = StringUrl('asset-tools/config')
+    ASSET_TOOLS_PROVIDE = StringUrl('asset-tools/provide')
+    ASSET_TOOLS_PROVIDE_DETAIL = StringUrl('asset-tools/provide/detail')

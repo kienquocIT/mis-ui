@@ -313,8 +313,9 @@ $.fn.extend({
             if (!$.fn.isBoolean(isNotify)) isNotify = false;
 
             let isLoading = UtilControl.popKey(opts, 'isLoading', false, true);
+            let loadingOpts = UtilControl.popKey(opts, 'loadingOpts', {}, true);
             if (!$.fn.isBoolean(isLoading)) isLoading = false;
-            if (isLoading) $x.fn.showLoadingPage();
+            if (isLoading) $x.fn.showLoadingPage(loadingOpts);
 
             let sweetAlertOpts = UtilControl.popKey(opts, 'sweetAlertOpts', {}, true);
 

@@ -993,6 +993,26 @@ $(document).ready(function () {
                 loadEmployeeAttended();
             })
 
+            function convert12hto24h(date) {
+                let strConvert = ''
+
+                function padZero(num) {
+                    return (num < 10 ? '0' : '') + num;
+                }
+
+                // Split the time into hours, minutes, and AM/PM
+                let timeArray = date.split(" ");
+                let hoursMinutes = timeArray[0].split(":");
+                let hours = parseInt(hoursMinutes[0]);
+                let minutes = parseInt(hoursMinutes[1]);
+
+                // Convert to 24-hour format
+                if (timeArray[1].toLowerCase() === "pm" && hours < 12) hours += 12;
+                else if (timeArray[1].toLowerCase() === "am" && hours === 12) hours = 0;
+                // Format the result
+                strConvert = padZero(hours) + ":" + padZero(minutes) + ":00";
+                return strConvert
+            }
             function combinesData_Meeting(frmEle) {
                 let frm = new SetupFormSubmit($(frmEle));
 
@@ -1033,6 +1053,8 @@ $(document).ready(function () {
 
                 frm.dataForm['employee_attended_list'] = employee_attended_list;
                 frm.dataForm['customer_member_list'] = customer_member_list;
+                frm.dataForm['meeting_from_time'] = convert12hto24h(frm.dataForm['meeting_from_time']);
+                frm.dataForm['meeting_to_time'] = convert12hto24h(frm.dataForm['meeting_to_time']);
 
                 return {
                     url: frm.dataUrl,
@@ -1106,7 +1128,10 @@ $(document).ready(function () {
                         }
                         detail_meeting_customer_member_slb.prop('disabled', true);
 
-                        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
+                        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]).prop('readonly', true);
+                        moment.locale('en')
+                        $('#detail-meeting #meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
+                        $('#detail-meeting #meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
 
                         $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 

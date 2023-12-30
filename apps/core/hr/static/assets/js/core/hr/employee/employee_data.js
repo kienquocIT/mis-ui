@@ -8,6 +8,9 @@ $(function () {
         ajax: {
             url: tb.attr('data-url'),
             type: tb.attr('data-method'),
+            data: {
+                "ordering": 'code'
+            },
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -36,16 +39,26 @@ $(function () {
                 'data': 'full_name',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof row.full_name === 'string') {
-                        return `<div class="media align-items-center">
-                                    <div class="media-head me-2">
-                                        <div class="avatar avatar-xs avatar-success avatar-rounded">
-                                            <span class="initial-wrap">` + row.first_name.charAt(0).toUpperCase() + `</span>
-                                        </div>
-                                    </div>
-                                    <div class="media-body">
-                                        <span class="d-block">` + row.full_name + `</span>
-                                    </div>
-                                </div>`;
+                        let avatarHTML = `
+                            <div class="avatar avatar-xs avatar-success avatar-rounded">
+                                <span class="initial-wrap">${row.first_name.charAt(0).toUpperCase()}</span>
+                            </div>
+                        `;
+                        if (row.avatar_img){
+                            avatarHTML = `
+                                <div class="avatar avatar-xs avatar-success avatar-rounded">
+                                    <img src="${row.avatar_img}" alt="Avatar" class="avatar-img">
+                                </div>
+                            `;
+                        }
+                        return `
+                            <div class="media align-items-center">
+                                <div class="media-head me-2">${avatarHTML}</div>
+                                <div class="media-body">
+                                    <span class="d-block">` + row.full_name + `</span>
+                                </div>
+                            </div>
+                        `;
                     }
                     return '';
                 }

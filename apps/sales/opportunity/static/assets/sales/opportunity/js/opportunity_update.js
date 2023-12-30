@@ -1017,6 +1017,8 @@ $(document).ready(function () {
 
                 frm.dataForm['employee_attended_list'] = employee_attended_list;
                 frm.dataForm['customer_member_list'] = customer_member_list;
+                frm.dataForm['meeting_from_time'] = frm.dataForm['meeting_from_time'].split(' ')[0]+':00';
+                frm.dataForm['meeting_to_time'] = frm.dataForm['meeting_to_time'].split(' ')[0]+':00';
 
                 return {
                     url: frm.dataUrl,
@@ -1090,7 +1092,10 @@ $(document).ready(function () {
                         }
                         detail_meeting_customer_member_slb.prop('disabled', true);
 
-                        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
+                        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]).prop('readonly', true);
+                        moment.locale('en')
+                        $('#detail-meeting #meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
+                        $('#detail-meeting #meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
 
                         $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 

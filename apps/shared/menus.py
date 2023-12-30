@@ -165,6 +165,10 @@ class MenusCoreConfigurations:
                 name='Purchase Request Config', code='menu_purchase_request_config', view_name='PurchaseRequestConfig',
                 icon='<i class="fas fa-shopping-cart"></i>',
             ),
+            MenuCommon(
+                name='Asset, Tools', code='menu_asset_tools_config', view_name='AssetToolsConfigView',
+                icon='<i class="fa-solid fa-pen-ruler"></i>',
+            ),
         ]
     )
 
@@ -381,6 +385,15 @@ class MenuEOffice:
         name='Business trip', code='menu_business', view_name='BusinessTripRequestList',
         icon='<i class="fa-solid fa-business-time"></i>',
     )
+    ASSET_TOOLS = MenuCommon(
+        name='Asset, Tools', code='menu_asset_tools', icon='<i class="fa-solid fa-pen-ruler"></i>',
+        child=[
+            MenuCommon(
+                name='Provide request', code='menu_asset_provide', view_name='AssetToolsProvideRequestList',
+                icon='<i class="fa-solid fa-hand-holding"></i>',
+            ),
+        ]
+    )
 
 
 class MenusReport:
@@ -407,6 +420,17 @@ class MenusReport:
                 code='menu_report_customer_list',
                 view_name='ReportCustomerList',
                 icon='<i class="fas fa-user-tie"></i>',
+            ),
+        ],
+    )
+    INVENTORY_REPORT = MenuCommon(
+        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-chart-bar"></i>',
+        child=[
+            MenuCommon(
+                name='Items detail report',
+                code='menu_items_detail_report',
+                view_name='ItemsDetailReportList',
+                icon='<i class="far fa-file"></i>',
             ),
         ],
     )
@@ -498,6 +522,7 @@ class SpaceItem:
                 MenuEOffice.CALENDAR,
                 MenuEOffice.LEAVE,
                 MenuEOffice.BUSINESS_TRIP,
+                MenuEOffice.ASSET_TOOLS,
             ],
         ),
         'report': SpaceCommon(
@@ -507,6 +532,7 @@ class SpaceItem:
             menus=[
                 MenusReport.HOME,
                 MenusReport.SALE_REPORT,
+                MenusReport.INVENTORY_REPORT,
             ],
         ),
         'company-system': SpaceCommon(

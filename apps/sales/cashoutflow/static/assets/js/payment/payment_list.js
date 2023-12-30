@@ -28,14 +28,15 @@ $(document).ready(function () {
                         className: 'wrap-text w-15',
                         render: (data, type, row, meta) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}" class="text-primary">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span><b>` + row.title + `</b></span>`;
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
                         }
                     },
                     {
@@ -67,9 +68,30 @@ $(document).ready(function () {
                     {
                         data: 'status',
                         className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            let approved_trans = $('#datatable_payment_list').attr('data-type-translate-approved')
-                            return `<span class="text-success">` + approved_trans + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
+                        render: (data, type, row) => {
+                            let approved_trans = ``
+                            let text_color = ``
+                            if (row.system_status === 0) {
+                                approved_trans = 'Draft'
+                                text_color = 'badge-secondary'
+                            }
+                            else if (row.system_status === 1) {
+                                approved_trans = 'Created'
+                                text_color = 'badge-primary'
+                            }
+                            else if (row.system_status === 2) {
+                                approved_trans = 'Added'
+                                text_color = 'badge-blue'
+                            }
+                            else if (row.system_status === 3) {
+                                approved_trans = 'Finish'
+                                text_color = 'badge-success'
+                            }
+                            else if (row.system_status ===4) {
+                                approved_trans = 'Cancel'
+                                text_color = 'badge-danger'
+                            }
+                            return `<span class="badge ${text_color}">` + approved_trans + `</span>`
                         }
                     }
                 ],

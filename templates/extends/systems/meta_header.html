@@ -6,5 +6,10 @@
     &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}</title>
 <meta name="description" content="Management Information System"/>
 
-<link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
-<link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+{% if base.company_current_data.logo %}
+    <link rel="shortcut icon" href="{{ base.company_current_data.logo }}">
+    <link rel="icon" href="{{ base.company_current_data.logo }}" type="image/x-icon">
+{% else %}
+    <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
+    <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+{% endif %}

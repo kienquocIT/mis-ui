@@ -229,6 +229,12 @@ class programmeHandle {
             return false;
         });
 
+        // click next btn
+        $(document).on("click", ".calendarapp-wrap .fc-next-button", function () {
+            console.log('consoel')
+            // to do here
+        })
+
         $('.categories-wrap input').on('change', function () {
             programmeHandle.triggerCallAPI(calendar)
         })
@@ -272,7 +278,6 @@ class programmeHandle {
     }
 }
 
-window.targetEvent = ''
 $(document).ready(function () {
     let $FiEmpElm = $('.filter-emp')
 

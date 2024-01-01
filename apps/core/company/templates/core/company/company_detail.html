@@ -2,11 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% block cssHeader %}
-    <style>
-        #offcanvasRight {
-            width: 50%;
-        }
-    </style>
+    <style></style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -40,7 +36,7 @@
     ></script>
     <div class="collapse multi-collapse show" id="collapse-area">
         <div class="row">
-            <div class="col-md-12 col-lg-2">
+            <div class="col-12 col-md-2 col-lg-2">
                 <div class="form-group">
                     <label for="company_logo" class="form-label">{% trans 'Logo' %}</label>
                     <div class="w-100 mt-3 d-flex justify-content-center align-items-center overflow-hidden">
@@ -56,7 +52,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 col-lg-10">
+            <div class="col-12 col-md-10 col-lg-10">
                 <form
                         id="frm-detail-company"
                         data-url-detail="{% url "CompanyDetailAPI" '0' %}"
@@ -132,15 +128,30 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="representative_fullname">
-                                    {% trans 'Representator fullname' %}
-                                </label>
-                                <input
-                                        type="text" class="form-control"
-                                        id="representative_fullname"
-                                        placeholder="Nguyen Van A" required
-                                />
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="representative_fullname">
+                                            {% trans 'Representator fullname' %}
+                                        </label>
+                                        <input
+                                                type="text" class="form-control"
+                                                id="representative_fullname"
+                                                placeholder="Nguyen Van A" required
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="phone">
+                                            {% trans 'Phone number' %}
+                                        </label>
+                                        <input
+                                                type="text" class="form-control"
+                                                id="phone" placeholder="+84987654321" required
+                                        />
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-6">
@@ -158,14 +169,26 @@
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-label required" for="phone">
-                                            {% trans 'Phone number' %}
+                                        <label class="form-label" for="email-app-password">
+                                            {% trans 'Email app password (include space)' %}
                                         </label>
-                                        <input
-                                                type="text" class="form-control"
-                                                id="phone" placeholder="+84987654321" required
-                                        />
+                                        <input type="password" class="form-control"
+                                               id="email-app-password"
+                                               placeholder="16-digits number">
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-right">
+                                    <button id="btn-test-email-connection"
+                                            type="button"
+                                            data-url="{% url 'TestEmailConnection' %}"
+                                            class="btn btn-custom btn-gradient-primary btn-xs">
+                                        <span>
+                                            <span class="icon"><i class="bi bi-gear-wide-connected"></i></span>
+                                            <span>{% trans 'Test email connection' %}</span>
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -169,6 +169,10 @@ class MenusCoreConfigurations:
                 name='Asset, Tools', code='menu_asset_tools_config', view_name='AssetToolsConfigView',
                 icon='<i class="fa-solid fa-pen-ruler"></i>',
             ),
+            MenuCommon(
+                name='Meeting', code='id_menu_master_data_meeting_config', view_name='MeetingConfigList',
+                icon='<i class="fas fa-chalkboard-teacher"></i>',
+            ),
         ]
     )
 
@@ -394,6 +398,10 @@ class MenuEOffice:
             ),
         ]
     )
+    MEETING = MenuCommon(
+        name='Meeting', code='menu_meeting_list', view_name='MeetingScheduleList',
+        icon='<i class="fas fa-chalkboard-teacher"></i>',
+    )
 
 
 class MenusReport:
@@ -523,6 +531,7 @@ class SpaceItem:
                 MenuEOffice.LEAVE,
                 MenuEOffice.BUSINESS_TRIP,
                 MenuEOffice.ASSET_TOOLS,
+                MenuEOffice.MEETING,
             ],
         ),
         'report': SpaceCommon(

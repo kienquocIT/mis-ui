@@ -35,6 +35,8 @@ from apps.masterdata.saledata.views.warehouse import (
     WareHouseCreate, WareHouseDetail, WareHouseUpdate, WarehouseGetProductsListAPI, WarehouseLotListAPI,
     WarehouseSerialListAPI,
 )
+from apps.masterdata.saledata.views.meeting_config import MeetingConfigList, MeetingRoomListAPI, \
+    MeetingRoomDetailAPI, MeetingZoomConfigListAPI, MeetingZoomConfigDetailAPI
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -65,6 +67,26 @@ urlpatterns = [
     path(
         'masterdata/account-group/api/<str:pk>', AccountGroupDetailAPI.as_view(),
         name='AccountGroupDetailAPI'
+    ),
+    path(
+        'masterdata/meetingconfig', MeetingConfigList.as_view(),
+        name='MeetingConfigList'
+    ),
+    path(
+        'masterdata/meetingroom/api', MeetingRoomListAPI.as_view(),
+        name='MeetingRoomListAPI'
+    ),
+    path(
+        'masterdata/meetingroom/api/<str:pk>', MeetingRoomDetailAPI.as_view(),
+        name='MeetingRoomDetailAPI'
+    ),
+    path(
+        'masterdata/meetingzoomconfig/api', MeetingZoomConfigListAPI.as_view(),
+        name='MeetingZoomConfigListAPI'
+    ),
+    path(
+        'masterdata/meetingzoomconfig/api/<str:pk>', MeetingZoomConfigDetailAPI.as_view(),
+        name='MeetingZoomConfigDetailAPI'
     ),
 ] + [
     path('contacts', ContactList.as_view(), name='ContactList'),

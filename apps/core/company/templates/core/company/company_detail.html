@@ -135,9 +135,19 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="form-label required" for="email">
-                                    {% trans 'Email' %}
-                                </label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="form-label required" for="email">
+                                            {% trans 'Email' %}
+                                        </label>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <span class="link-secondary" data-bs-toggle="modal" data-bs-target="#advance-setting-modal">
+                                            {% trans 'Verify' %}
+                                        </span>
+                                        <i id="verify-status" class=""></i>
+                                    </div>
+                                </div>
                                 <input
                                         type="text" class="form-control"
                                         id="email"
@@ -159,18 +169,6 @@
                                         type="text" class="form-control"
                                         id="phone" placeholder="+84987654321" required
                                 />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="email-app-password">
-                                    {% trans 'Email app password (include space)' %}
-                                </label>
-                                <input type="password" class="form-control"
-                                       id="email-app-password"
-                                       placeholder="16-digits number">
                             </div>
                         </div>
                     </div>

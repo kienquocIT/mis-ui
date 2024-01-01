@@ -232,18 +232,6 @@
                                 </select>
                             </div>
                                 </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label
-                                                class="form-label" for="idxCurrencyDefault"
-                                        >{% trans 'Primary currency' %}: </label>
-                                        <select
-                                                class="form-control select2" name="currency" id="idxCurrencyDefault"
-                                        >
-                                            <option value="1">VND</option>
-                                        </select>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-2 col-lg-2">
@@ -258,7 +246,23 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-3 col-lg-3"></div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label
+                                                class="form-label" for="idxCurrencyDefault"
+                                        >{% trans 'Primary currency' %}: </label>
+                                        <select
+                                                class="form-control select2" name="currency" id="idxCurrencyDefault"
+                                        >
+                                            <option value="1">VND</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-1 col-lg-1"></div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="row">
                                 <div class="col-12">
@@ -275,20 +279,6 @@
                                             <option value="2">{% trans 'Weighted average' %}</option>
                                             <option value="3">{% trans 'Specific identification method' %}</option>
                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-3">
-                                    <div class="form-check">
-                                        <input type="checkbox" id="cost-per-warehouse" class="form-check-input">
-                                        <label
-                                                class="form-check-label" for="cost-per-warehouse"
-                                        >{% trans 'Cost per warehouse management' %}</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" id="cost-per-lot-batch" class="form-check-input">
-                                        <label
-                                                class="form-check-label" for="cost-per-lot-batch"
-                                        >{% trans 'Cost per lot/batch management' %}</label>
                                     </div>
                                 </div>
                             </div>
@@ -337,7 +327,7 @@
                         >{% trans 'Currency Mask' %}: <i>{% trans 'Allow space' %}</i></label>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-md-1 col-lg-1">
+                        <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-group">
                                 <label
                                         for="idxCurrencyMaskPrefix" class="form-label"
@@ -348,7 +338,7 @@
                                 >
                             </div>
                         </div>
-                        <div class="col-12 col-md-1 col-lg-1">
+                        <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-group">
                                 <label
                                         for="idxCurrencyMaskSuffix" class="form-label"
@@ -359,7 +349,24 @@
                                 >
                             </div>
                         </div>
-                        <div class="col-12 col-md-1 col-lg-1">
+                        <div class="col-12 col-md-3 col-lg-3"></div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-check">
+                                <input type="checkbox" id="cost-per-warehouse" class="form-check-input">
+                                <label
+                                        class="form-check-label" for="cost-per-warehouse"
+                                >{% trans 'Cost per warehouse management' %}</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="cost-per-lot-batch" class="form-check-input">
+                                <label
+                                        class="form-check-label" for="cost-per-lot-batch"
+                                >{% trans 'Cost per lot/batch management' %}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-group">
                                 <label
                                         for="idxCurrencyMaskThousand" class="form-label"
@@ -370,7 +377,7 @@
                                 />
                             </div>
                         </div>
-                        <div class="col-12 col-md-1 col-lg-1">
+                        <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-group">
                                 <label
                                         for="idxCurrencyMaskDecimal" class="form-label"
@@ -381,7 +388,7 @@
                                 />
                             </div>
                         </div>
-                        <div class="col-12 col-md-1 col-lg-1">
+                        <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-group">
                                 <label
                                         for="idxCurrencyMaskPrecision" class="form-label"

@@ -2239,17 +2239,25 @@ class WFRTControl {
         }
         if (config.add_empty_value === true) {  // set value to empty
             if (!$(ele$).hasClass('zone-active')) {
-                if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
-                    $(ele$).html(`<option value="" selected></option>`);
-                    //
-                    $(ele$).next('.select2-container').addClass('hidden-zone');
-                }
                 if ($(ele$).is('input')) {  // if input
                     $(ele$).val('');
                     if ($(ele$).hasClass('mask-money')) {  // if input mask-money
                         $(ele$).attr('value', '');
                     }
-                    //
+                    // add class hidden-zone (for use css in my-style.css)
+                    $(ele$).attr('placeholder', 'hidden by workflow config');
+                    $(ele$).addClass('hidden-zone');
+                }
+                if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
+                    $(ele$).html(`<option value="" selected></option>`);
+                    // add class hidden-zone (for use css in my-style.css)
+                    $(ele$).initSelect2({placeholder: "hidden by workflow config",});
+                    $(ele$).next('.select2-container').addClass('hidden-zone');
+                }
+                if ($(ele$).is('textarea')) {  // if textarea
+                    $(ele$).val('');
+                    // add class hidden-zone (for use css in my-style.css)
+                    $(ele$).attr('placeholder', 'hidden by workflow config');
                     $(ele$).addClass('hidden-zone');
                 }
                 if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)

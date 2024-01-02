@@ -54,13 +54,13 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row) => {
                             if (Object.keys(row.opportunity_mapped).length !== 0) {
-                                return `Opp <span class="text-blue">${row.opportunity_mapped.title}</span>`
+                                return `Opp <span><a class="link-secondary underline_hover" href="${dtb.attr('data-url-opp-detail').replace('0', row.opportunity_mapped.id)}"><b>${row.opportunity_mapped.title}</b></a></span>`
                             }
                             else if (Object.keys(row.quotation_mapped).length !== 0) {
-                                return `Quo <span class="text-primary">${row.quotation_mapped.title}</span>`
+                                return `Quo <span><a class="link-secondary underline_hover" href="${dtb.attr('data-url-opp-detail').replace('0', row.quotation_mapped.id)}"><b>${row.quotation_mapped.title}</b></a></span>`
                             }
                             else if (Object.keys(row.sale_order_mapped).length !== 0) {
-                                return `SO <span class="text-success">${row.sale_order_mapped.title}</span>`
+                                return `SO <span><a class="link-secondary underline_hover" href="${dtb.attr('data-url-opp-detail').replace('0', row.sale_order_mapped.id)}"><b>${row.sale_order_mapped.title}</b></a></span>`
                             }
                             else {
                                 return ''

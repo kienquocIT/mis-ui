@@ -57,3 +57,87 @@ html {
 .my-small-modal .gjs-mdl-dialog {
     max-width: unset !important;
 }
+
+@keyframes circle {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.swing {
+    transform-origin: 50%;
+    animation-name: circle;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.cloud-toolbox {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.cloud-toolbox button {
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    border: 0;
+    border-radius: 0.2rem;
+    cursor: pointer;
+    background-color: white;
+    color: black;
+}
+
+.cloud-toolbox button:hover {
+    background-color: #0a58ca;
+    color: white;
+}
+
+body,
+html {
+    margin: 0;
+    height: 100%;
+}
+
+.grapesjs-fonts select {
+    background-color: #352d2f;
+    color: #b9a5a6;
+    padding: 5px;
+    border: none;
+}
+
+.grapesjs-fonts input,
+.grapesjs-fonts button {
+    background-color: #352d2f;
+    color: #b9a5a6;
+    padding: 5px;
+    border: none;
+}
+
+.grapesjs-fonts .silex-bar {
+    display: flex;
+}
+
+.grapesjs-fonts .silex-bar > * {
+    margin: 5px;
+}
+
+.grapesjs-fonts input {
+}
+
+.grapesjs-fonts button {
+    padding: 5px;
+    margin: 5px;
+    padding-top: 8px;
+}
+
+.grapesjs-fonts .silex-list__item__footer {
+    display: flex;
+    justify-content: flex-end;
+}

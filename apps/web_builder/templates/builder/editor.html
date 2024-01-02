@@ -18,7 +18,8 @@
     <script src="{% static 'builder/dist/js/toastr.min.js' %}"></script>
     <script src="{% static 'builder/dist/js/grapes.min.js' %}"></script>
     <script src="{% static 'builder/dist/cdn_download/grapesjs-preset-webpage@1.0.2.js' %}"></script>
-    <script src="{% static 'builder/dist/cdn_download/grapesjs-blocks-basic@1.0.1.js' %}"></script>
+{#    <script src="{% static 'builder/dist/cdn_download/grapesjs-blocks-basic@1.0.1.js' %}"></script>#}
+    <script src="{% static 'builder/dist/cdn_download/grapesjs-blocks-basic/index.js' %}"></script>
     <script src="{% static 'builder/dist/cdn_download/grapesjs-plugin-forms@2.0.5.js' %}"></script>
     <script src="{% static 'builder/dist/cdn_download/grapesjs-component-countdown@1.0.1.js' %}"></script>
     <script src="{% static 'builder/dist/cdn_download/grapesjs-plugin-export@1.0.11.js' %}"></script>
@@ -119,9 +120,14 @@
             background: url("{% static 'builder/dist/img/flex-al-center.png' %}") no-repeat center;
         }
     </style>
+
+    <script src="https://unpkg.com/grapesjs-parser-postcss@1.0.3/dist/index.js"></script>
+    <script src="https://unpkg.com/grapesjs-ui-suggest-classes@1.0.19/dist/index.js"></script>
+    <script src="https://unpkg.com/@silexlabs/grapesjs-fonts@1.0.13/dist/index.js"></script>
 </head>
 <body>
 
+<div id='basic-actions' class="panel__basic-actions" style="z-index: 9; left: 120px;"></div>
 <div id="gjs" style="height:0; overflow:hidden"></div>
 <form class="d-none" style="display: none" id="frm-save" data-url="{% url 'WebsiteDetailDesignSave' pk=pk %}">
     {% csrf_token %}
@@ -147,12 +153,18 @@
         data-msg-redo="{% trans 'Redo' %}"
         data-msg-import="{% trans 'Import' %}"
         data-msg-clear-canvas="{% trans 'Clear canvas' %}"
+        data-msg-back-to-home="{% trans 'Back to home' %}"
+        data-url-back-to-home="{% url 'MyCompanyWebsiteList' %}"
+        data-msg-are-u-sure="{% trans 'Are you sure?' %}"
 
         data-static-tui-image-editor-js-1="{% static 'builder/dist/cdn_download/plugins/grapesjs-tui-image-editor/js/tui-code-snippet.min.js' %}"
         data-static-tui-image-editor-js-2="{% static 'builder/dist/cdn_download/plugins/grapesjs-tui-image-editor/js/tui-color-picker.min.js' %}"
         data-static-tui-image-editor-js-3="{% static 'builder/dist/cdn_download/plugins/grapesjs-tui-image-editor/js/tui-image-editor.min.js' %}"
         data-static-tui-image-editor-css-1="{% static 'builder/dist/cdn_download/plugins/grapesjs-tui-image-editor/css/tui-color-picker.min.css' %}"
         data-static-tui-image-editor-css-2="{% static 'builder/dist/cdn_download/plugins/grapesjs-tui-image-editor/css/tui-image-editor.min.css' %}"
+
+        data-url-upload="{% url 'ImageWebBuilderUpload' %}"
+        data-url-image-cloud="{% url 'ImageWebBuilderList' %}"
 >
 {{ data.page_detail.menus|json_script:"idx-menus-data" }}
 <script src="{% static 'builder/i18n/locale/vi.js' %}"></script>

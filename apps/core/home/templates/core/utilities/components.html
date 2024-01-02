@@ -7,6 +7,14 @@
 {% endblock %}
 
 {% block pageContent %}
+    <div class="row my-10">
+        <input type="file" id="attachment" class="form-control mb-3"/>
+        <button
+                class="btn btn-primary" id="btn-attachment-upload"
+                data-url="{% url 'ImageWebBuilderUpload' %}"
+        >Upload photo</button>
+    </div>
+
     <div class="hidden">
         {% include 'plugins/condition/condition_component.html' %}
         <div class="row mb-5">
@@ -121,6 +129,31 @@
 {% endblock %}
 
 {% block jsFooter %}
+    <script>
+        let fObj = null;
+        $('#attachment').on('change', function (event){
+            fObj = event.target.files[0];
+        })
+        $('#btn-attachment-upload').on('click', function (){
+            let formData = new FormData();
+            formData.append('files', fObj);
+            $.fn.callAjax2({
+                url: $(this).attr('data-url'),
+                method: 'POST',
+                data: formData,
+                contentType: 'multipart/form-data',
+                'isLoading': true,
+                'loadingOpts': {
+                    'loadingTitleAction': 'CREATE',
+                    'loadingTitleMore': 'Attachment',
+                },
+            }).then(
+                (resp) => console.log(resp),
+                (errs) => console.log(errs),
+            )
+        })
+    </script>
+
     <!-- Customize JS -->
     <script>
         $('#btnReloadMaskMoney').click(function (event) {

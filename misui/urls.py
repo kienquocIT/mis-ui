@@ -7,6 +7,7 @@ from django.views.i18n import JavaScriptCatalog
 from django.views.generic.base import RedirectView
 from django.conf.urls.i18n import i18n_patterns
 from apps.shared import BreadcrumbView
+from misui import media_proxy
 
 urlpatterns = \
     [
@@ -26,12 +27,22 @@ urlpatterns += i18n_patterns(
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 )
 
-urlpatterns += [
-    re_path(
-        r'^media/(?P<path>.*)$',
-        RedirectView.as_view(url=f'{settings.API_DOMAIN_SIMPLE}/media/%(path)s', permanent=True)
-    ),
-]
+if not settings.USE_S3:
+    # urlpatterns += [
+    #     re_path(
+    #         r'^media/(?P<path>.*)$',
+    #         RedirectView.as_view(url=f'{settings.API_DOMAIN_SIMPLE}/media/%(path)s', permanent=True)
+    #     ),
+    # ]
+
+    urlpatterns += [
+        re_path(
+            r'^media/(?P<path>.*)$',
+            media_proxy.MediaProxyView.as_view(),
+            name='Media Proxy'
+        )
+    ]
+
 
 # check breadcrumb view exist and reverse successful.
 BreadcrumbView.check_view_name()

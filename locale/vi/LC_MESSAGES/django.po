@@ -5759,3 +5759,7 @@ msgstr "Chọn những nhân viên có thể xem toàn bộ danh sách công c�
 #
 msgid "To time need larger than From time"
 msgstr "Giờ kết thúc phải lớn hơn giờ bắt đầu"
+
+#
+msgid "Back to home"
+msgstr "Quay về trang danh sách"

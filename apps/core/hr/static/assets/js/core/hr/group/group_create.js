@@ -47,18 +47,26 @@ $(function () {
                     }
                 }
             }
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
+            $.fn.callAjax2(
+                {
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': frm.dataForm,
+                }
+            ).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        if (data && (data['status'] === 201 || data['status'] === 200)) {
+                            $.fn.notifyB({description: data.message}, 'success');
+                            setTimeout(() => {
+                                window.location.replace(frm.dataUrlRedirect);
+                            }, 1000);
                         }
-                    },
-                    (errs) => {
-                        console.log(errs)
+                    }, (err) => {
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 1000)
+                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                     }
                 )
         });

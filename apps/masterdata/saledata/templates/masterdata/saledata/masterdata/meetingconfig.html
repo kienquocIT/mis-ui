@@ -65,7 +65,11 @@
                     </button>
                 </div>
                 <div class="tab-pane fade" id="tab_block_meeting_zoom_setting">
-                    <form id="form-create-zoom-config"
+                    <span class="text-muted" id="1-existing-config" hidden><i class="fas fa-exclamation-circle"></i>&nbsp;{% trans '1 existing config' %}</span>
+                    <a class="btn btn-sm btn-gradient-primary" id="reset-config" data-bs-toggle="collapse" href="#form-create-zoom-config" role="button" aria-expanded="false">
+                        {% trans 'New config' %}
+                    </a>
+                    <form id="form-create-zoom-config" class="collapse mt-5"
                           data-url="{% url 'MeetingZoomConfigListAPI' %}"
                           data-url-redirect="{% url 'MeetingConfigList' %}"
                           data-method="POST">

@@ -111,7 +111,12 @@
                             </div>
                             <div class="col-12 col-md-1 col-lg-1"></div>
                             <div class="col-12 col-md-5 col-lg-5">
-                                <button type="button" id="zoom-app-instruction-hidden-btn" class="btn btn-soft-primary btn-sm"><span><span class="icon"><span class="feather-icon"><i class="far fa-question-circle"></i></span></span><span>{% trans 'See instructions here' %}</span></span></button>
+                                <a id="zoom-app-instruction-hidden-btn" class="link-secondary underline_hover" href="#">
+                                    <span>
+                                        <span>{% trans 'See instructions here' %}</span>&nbsp;
+                                        <span class="icon"><span class="feather-icon"><i class="bi bi-info-circle"></i></span></span>
+                                    </span>
+                                </a>
                                 <div id="zoom-app-instruction" hidden class="mt-5 hk-wizard hk-wizard-vertical">
                                     <div class="hk-wizard-item hk-wizard-item-process hk-wizard-item-active">
                                         <div class="hk-wizard-item-container">

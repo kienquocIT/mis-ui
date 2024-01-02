@@ -79,6 +79,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Master data config
     MASTER_DATA_PRICE_PAGE = BreadcrumbChildren(_('Master data price'), 'PriceMasterDataList')
+    MEETING_CONFIG_PAGE = BreadcrumbChildren(_('Meeting config'), 'MeetingConfigList')
 
     # Master Data
     CONTACT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Contact'), 'ContactMasterDataList')
@@ -279,6 +280,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Asset tools
     ASSET_TOOLS_CONFIG = BreadcrumbChildren(_('Asset, Tools config'), 'AssetToolsConfigView')
+    ASSET_TOOLS_PROVIDE_LIST = BreadcrumbChildren(_('Asset, Tools provide list'), 'AssetToolsProvideRequestList')
+
+    MEETING_SCHEDULE_LIST_PAGE = BreadcrumbChildren(_('Meeting schedule list'), 'MeetingScheduleList')
+    MEETING_SCHEDULE_CREATE_PAGE = BreadcrumbChildren(_('Meeting schedule create'), 'MeetingScheduleCreate')
+    MEETING_SCHEDULE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
 
 class BreadcrumbView:
@@ -441,6 +447,10 @@ class BreadcrumbView:
 
     MASTER_DATA_PRICE_PAGE = [
         BreadcrumbItem.MASTER_DATA_PRICE_PAGE
+    ]
+
+    MEETING_CONFIG_PAGE = [
+        BreadcrumbItem.MEETING_CONFIG_PAGE
     ]
 
     CONTACT_MASTER_DATA_LIST_PAGE = [
@@ -718,3 +728,15 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.ASSET_TOOLS_CONFIG
     ]
+    ASSET_TOOLS_PROVIDE_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.ASSET_TOOLS_PROVIDE_LIST
+    ]
+    ASSET_TOOLS_PROVIDE_CREATE = ASSET_TOOLS_PROVIDE_LIST + [BreadcrumbItem.BASTION_CREATE]
+    ASSET_TOOLS_PROVIDE_DETAIL = ASSET_TOOLS_PROVIDE_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    ASSET_TOOLS_PROVIDE_EDIT = ASSET_TOOLS_PROVIDE_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    MEETING_SCHEDULE_LIST_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE]
+    MEETING_SCHEDULE_CREATE_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE, BreadcrumbItem.MEETING_SCHEDULE_CREATE_PAGE]
+    MEETING_SCHEDULE_DETAIL_PAGE = MEETING_SCHEDULE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+

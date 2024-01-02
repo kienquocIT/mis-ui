@@ -26,3 +26,10 @@ class BusinessTripMsg:
 
 class AssetToolsMsg:
     ASSET_TOOLS = _('Asset, Tools')
+    PROVIDE = _('Provide')
+
+
+class MeetingScheduleMsg:
+    MEETING_CREATE = _('Meeting schedule create successfully')
+    MEETING_UPDATE = _('Meeting schedule update successfully')
+

@@ -1,5 +1,3 @@
-
-
 $(document).ready(function(){
     let $elm = $('#select_prod_type, #select_warehouse, #select_employee')
     let $FormElm = $('#form_asset_tools')

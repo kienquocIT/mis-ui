@@ -5763,3 +5763,11 @@ msgstr "Giờ kết thúc phải lớn hơn giờ bắt đầu"
 #
 msgid "Back to home"
 msgstr "Quay về trang danh sách"
+
+#
+msgid "Provide request"
+msgstr "Yêu cầu cấp phát"
+
+#
+msgid "Asset, Tools provide list"
+msgstr "Danh sách yêu cầu cấp phát"

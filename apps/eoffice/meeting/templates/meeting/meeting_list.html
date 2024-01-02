@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Meeting Schedule List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "MeetingScheduleCreate" %}">
+        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <script id="translate-script"
+            data-start-time="{% trans 'Start time' %}"
+            data-duration="{% trans 'Duration' %}"
+            data-h="{% trans 'h' %}"
+            data-m="{% trans 'm' %}"
+            data-minute="{% trans 'minute(s)' %}"
+            data-meeting-id="{% trans 'Meeting ID' %}"
+            data-meeting-passcode="{% trans 'Passcode' %}"
+            data-meeting-url="{% trans 'Join Zoom meeting' %}"
+            data-see-invitation="{% trans 'See meeting invitation' %}"
+            data-copy-invitation="{% trans 'Copy invitation' %}"
+            data-edit-meeting="{% trans 'Edit meeting' %}"
+            data-delete-meeting="{% trans 'Delete meeting' %}"
+            data-today="{% trans 'Today' %}"
+            data-occurred="{% trans 'Occurred' %}"
+            data-upcoming="{% trans 'Upcoming' %}"
+    ></script>
+    <table class="table w-100 nowrap"
+           id="meeting-schedule-list"
+           data-method="GET"
+           data-url="{% url 'MeetingScheduleListAPI' %}"
+           data-url-detail="{% url 'MeetingScheduleDetail' '0' %}"
+    >
+    <thead>
+    <tr>
+        <td></td>
+        <td>{% trans 'Name' %}</td>
+        <td>{% trans 'Type' %}</td>
+        <td>{% trans 'Date occur' %}</td>
+        <td>{% trans 'Duration' %}</td>
+    </tr>
+    </thead>
+    <tbody></tbody>
+    </table>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/meeting/meeting_list.js' %}"></script>
+{% endblock %}

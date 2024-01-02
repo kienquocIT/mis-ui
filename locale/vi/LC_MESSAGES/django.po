@@ -2255,8 +2255,8 @@ msgid "Select Quotation"
 msgstr "Chọn báo giá"
 
 #
-msgid "Copy all from quotation to sale order"
-msgstr "Sao chép tất cả từ báo giá sang đơn hàng"
+msgid "Copy all from quotation"
+msgstr "Sao chép tất cả từ báo giá"
 
 #
 msgid "Input"
@@ -5771,3 +5771,55 @@ msgstr "Yêu cầu cấp phát"
 #
 msgid "Asset, Tools provide list"
 msgstr "Danh sách yêu cầu cấp phát"
+
+#
+msgid "This zone is hidden zone"
+msgstr "Vùng này là vùng ẩn"
+
+#
+msgid "All zones are edit zones"
+msgstr "Tất cả vùng đều là vùng chỉnh sửa"
+
+#
+msgid "This zone is edit zone"
+msgstr "Vùng này là vùng chỉnh sửa"
+
+#
+msgid "There are zones hidden"
+msgstr "Có vùng ẩn"
+
+#
+msgid "All data"
+msgstr "Tất cả dữ liệu"
+
+#
+msgid "Document creator"
+msgstr "Người tạo phiếu"
+
+#
+msgid "Initial node"
+msgstr "Trạm khởi tạo"
+
+#
+msgid "Approved node"
+msgstr "Trạm chấp thuận"
+
+#
+msgid "Completed node"
+msgstr "Trạm hoàn thành"
+
+#
+msgid "Hidden zone"
+msgstr "Vùng bị ẩn"
+
+#
+msgid "Shipping fee"
+msgstr "Phí vận chuyển"
+
+#
+msgid "Promotion available"
+msgstr "Khuyến mãi"
+
+#
+msgid "Hidden by workflow config"
+msgstr "Bị ẩn theo cấu hình quy trình"

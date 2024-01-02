@@ -367,6 +367,9 @@ if os.environ.get('ENABLE_PROD', '0') in [1, '1']:
     # Replace API DOMAIN
     API_DOMAIN = os.environ.get('API_DOMAIN', None)
 
+#
+USE_S3 = os.getenv('USE_S3', '0') == '1'
+
 # compressor config
 # COMPRESS_OFFLINE = False
 # COMPRESS_ROOT_PARENT = os.path.join(STATIC_ROOT, 'compressor')

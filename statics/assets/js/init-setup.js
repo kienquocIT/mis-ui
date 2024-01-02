@@ -3376,7 +3376,7 @@ class DTBControl {
         // config server side processing
         if (this.opts['useDataServer']) {
             // server side v
-            let ajaxDataCallback = this.opts['ajax']['data'];
+            let ajaxDataCallback = this.opts?.['ajax']?.['data'] || {};
             let setupServerSide = {
                 processing: true,
                 serverSide: true,

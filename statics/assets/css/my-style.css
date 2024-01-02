@@ -796,3 +796,13 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     display: none!important;
 }
 /* -- Collapse Area */
+
+/* Workflow */
+.hidden-zone {
+    border-radius: 4px;
+    border: dashed 1px #ff0000;
+    background: rgb(247 247 247 / 30%);
+    font-style: italic;
+    color: #ff0000;
+}
+/* -- Workflow */

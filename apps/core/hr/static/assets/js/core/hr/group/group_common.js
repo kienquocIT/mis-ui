@@ -112,15 +112,18 @@ class GroupLoadDataHandle {
         let data_emp_show = [];
         let checked_id_list = [];
         let table = document.getElementById('datable_employee_list');
-        let rowsChecked = table.querySelectorAll('.table-row-checkbox:checked');
-        for (let item of rowsChecked) {
-            checked_id_list.push(item.id);
-            data_emp_show.push({
-                'id': item.id,
-                'full_name': item.getAttribute('data-title'),
-                'role': JSON.parse(item.getAttribute('data-role')),
-            });
-        }
+        $(table).DataTable().rows().every(function () {
+            let row = this.node();
+            let eleCheck = row.querySelector('.table-row-checkbox');
+            if (eleCheck.checked === true) {
+                checked_id_list.push(eleCheck.id);
+                data_emp_show.push({
+                    'id': eleCheck.id,
+                    'full_name': eleCheck.getAttribute('data-title'),
+                    'role': JSON.parse(eleCheck.getAttribute('data-role')),
+                });
+            }
+        });
         $('#data-group_employee').val(JSON.stringify(checked_id_list));
         tableShow.DataTable().clear().draw();
         tableShow.DataTable().rows.add(data_emp_show).draw();
@@ -147,7 +150,7 @@ function dataTableEmployee() {
     let $table = $('#datable_employee_list');
     let frm = new SetupFormSubmit($table);
     $table.DataTableDefault({
-        useDataServer: true,
+        // useDataServer: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -159,8 +162,8 @@ function dataTableEmployee() {
                 throw Error('Call data raise errors.')
             },
         },
-        paging: false,
-        info: false,
+        // paging: false,
+        // info: false,
         columnDefs: [],
         columns: [
             {

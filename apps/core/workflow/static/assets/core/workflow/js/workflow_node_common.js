@@ -534,10 +534,15 @@ class NodeLoadDataHandle {
         let table = ele.closest('.collab-out-form-area').querySelector('.table-out-form-employee');
         let eleEmpShow = ele.closest('.collab-out-form-area').querySelector('.node-out-form-employee-show');
         $(eleEmpShow).empty();
-        for (let eleChecked of table.querySelectorAll('.table-row-checkbox-out-form:checked')) {
-            $(eleEmpShow).append(`<span class="badge badge-soft-primary mr-1">${$(eleChecked).attr('data-title')}</span>`);
-            emp_list.push($(eleChecked).attr('data-id'));
-        }
+        $(table).DataTable().rows().every(function () {
+            let row = this.node();
+            let eleCheck = row.querySelector('.table-row-checkbox-out-form');
+            if (eleCheck.checked === true) {
+                $(eleEmpShow).append(`<span class="badge badge-soft-primary mr-1">${$(eleCheck).attr('data-title')}</span>`);
+                emp_list.push($(eleCheck).attr('data-id'));
+            }
+        });
+
         $(eleOFESubmit).val(JSON.stringify(emp_list));
     };
 
@@ -859,6 +864,7 @@ class NodeLoadDataHandle {
                                             item['is_checked'] = true;
                                         }
                                     }
+                                    $(tableOutFormEmployee).DataTable().clear().draw();
                                     $(tableOutFormEmployee).DataTable().rows.add(data.employee_list).draw();
                                     let btnAddEmpOF = OFArea?.querySelector('.button-add-out-form-employee');
                                     NodeLoadDataHandle.loadOutFormEmployeeShow(btnAddEmpOF);
@@ -988,7 +994,7 @@ class NodeDataTableHandle {
                             if (form.attr('data-method') !== 'GET') {
                                 return `<input type="text" class="form-control table-row-title" value="${row?.['title']}" data-row="${dataRow}" data-node-code="${row?.['code']}">`;
                             } else {
-                                return `<span class="table-row-title" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span>`;
+                                return `<input type="text" class="form-control table-row-title" value="${row?.['title']}" data-row="${dataRow}" data-node-code="${row?.['code']}" disabled>`;
                             }
                         }
                     }
@@ -1003,7 +1009,7 @@ class NodeDataTableHandle {
                             if (form.attr('data-method') !== 'GET') {
                                return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
                             } else {
-                               return `<span class="table-row-remark">${row?.['remark'] ? row?.['remark'] : ''}</span>`;
+                               return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}" disabled>`;
                             }
                         }
                     }
@@ -1551,8 +1557,8 @@ class NodeDataTableHandle {
     static dataTableCollabOutFormEmployee($table, data) {
         $table.DataTableDefault({
             data: data ? data : [],
-            paginate: false,
-            info: false,
+            // paginate: false,
+            // info: false,
             columns: [
                 {
                     targets: 0,

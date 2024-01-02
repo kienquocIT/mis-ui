@@ -3,18 +3,6 @@
 {% block cssHeader %}
     <link href="{% static 'assets/sales/quotation/css/quotation_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
-
-    <style>
-        .hidden-zone {
-            {#padding: 10px;#}
-            border-radius: 4px;
-            border: dashed 1px #ff0000;
-            background: rgb(247 247 247 / 30%);
-            font-style: italic;
-            color: #ff0000;
-        }
-        {#.hidden-zone:before{content: "hidden data"}#}
-    </style>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'QuotationUpdate' pk=pk %}">

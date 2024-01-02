@@ -9,7 +9,6 @@ $.fn.updateDesignWeb = function (opts) {
         if (url && data && data['csrfmiddlewaretoken'] && method) {
             let ctx = {
                 success: function (rest, textStatus, jqXHR) {
-                    console.log('success: ', rest, textStatus, jqXHR);
                     window.location.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -32,6 +31,14 @@ $.fn.updateDesignWeb = function (opts) {
 
 
 $(function () {
+    function _resolve_url_image(url) {
+        if (url.startsWith('http')) {
+            return url;
+        } else {
+            return window.location.origin + url;
+        }
+    }
+
     function addAndBeatifyTooltips(pn) {
         let optionsList = [
             ['sw-visibility', transEle.attr('data-msg-show-border')], ['preview', transEle.attr('data-msg-preview')], ['fullscreen', transEle.attr('data-msg-fullscreen')], ['export-template', transEle.attr('data-msg-export')], ['undo', transEle.attr('data-msg-undo')], ['redo', transEle.attr('data-msg-redo')], ['gjs-open-import-webpage', transEle.attr('data-msg-import')], ['canvas-clear', transEle.attr('data-msg-clear-canvas')]
@@ -123,6 +130,41 @@ $(function () {
         });
     }
 
+    function buttonBackToPageList(cmdm, pn, editor) {
+        cmdm.add('back-to-home', async function () {
+            let state = confirm(transEle.attr('data-msg-back-to-home') + '. ' + transEle.attr('data-msg-are-u-sure'))
+            if (state) {
+                window.location.href = transEle.attr('data-url-back-to-home');
+            }
+        })
+
+        pn.addButton('options', {
+            id: 'back-to-home',
+            label: '<i class="fa-solid fa-house"></i>',
+            command: function () {
+                editor.runCommand('back-to-home')
+            },
+            attributes: {
+                'title': transEle.attr('data-msg-back-to-home'),
+                'data-tooltip-pos': 'bottom',
+            },
+        });
+    }
+
+    function templateList(cmdm, pn, editor) {
+        editor.Panels.addButton('options', {
+            id: 'templates-list',
+            label: '<i class="fa fa-clock-o" aria-hidden="true"></i>',
+            command: function (editor) {
+                editor.runCommand('templates-list');
+            },
+            attributes: {
+                'title': 'Templates',
+                'data-tooltip-pos': 'bottom',
+            },
+        });
+    }
+
     function clearCanvas(cmdm) {
         cmdm.add('canvas-clear', function () {
             Swal.fire({
@@ -130,7 +172,7 @@ $(function () {
                 showCancelButton: true,
                 confirmButtonText: "Save",
             }).then((result) => {
-                if (result.isConfirmed){
+                if (result.isConfirmed) {
                     editor.runCommand('core:canvas-clear')
                     setTimeout(function () {
                         localStorage.clear()
@@ -146,6 +188,191 @@ $(function () {
         editor.on('storage:store', function (e) {
         });
         editor.on('storage:start', function (e) {
+        })
+    }
+
+    function assetListener(editor) {
+        // open modal asset
+        editor.on('asset:open', () => {
+            function resolve_item_page(data) {
+                let pageCount = data.page_count;
+                let pageSize = data.page_size;
+
+                let pagePrev = data.page_previous;
+                let pageNext = data.page_next;
+
+                let loadedSize = 0;
+                if (pageNext === 0 && pagePrev === 0) {
+                    loadedSize = pageCount;
+                } else if (pageNext === 0 && pagePrev > 0) {
+                    loadedSize = pageCount;
+                } else if (pageNext > 0 && pagePrev === 0) {
+                    loadedSize = (pageNext - 1) * pageSize;
+                } else if (pageNext - 1 === pagePrev + 1) {
+                    loadedSize = (pagePrev + 1) * pageSize
+                }
+
+                return {
+                    count: pageCount,
+                    size: pageSize,
+                    prev: pagePrev,
+                    next: pageNext,
+                    loaded: loadedSize,
+                }
+            }
+
+            function call_cloud_img(data, widget) {
+                let eleSyncState = $(widget).find('.sync-state');
+                $.ajax({
+                    url: transEle.attr('data-url-image-cloud'),
+                    type: 'GET',
+                    contentType: "application/json",
+                    data: data,
+                    success: function (rest, textStatus, jqXHR) {
+                        let data = rest?.['data'] || {};
+                        if (data) {
+                            let fileList = data?.['file_list'] || null;
+                            if (fileList && Array.isArray(fileList)) {
+                                let pageUtil = resolve_item_page(data);
+
+                                eleSyncState.text(`${pageUtil.loaded}/${pageUtil.count}`);
+
+                                $(widget).attr('data-page-next', pageUtil.loaded >= pageUtil.count ? 1 : pageUtil.next);
+
+                                editor.AssetManager.add(fileList.map((item) => {
+                                    return {
+                                        'src': item.url,
+                                        width: 100,
+                                    }
+                                }), {'at': editor.AssetManager.getAllVisible().length - 1})
+                                setTimeout(() => {
+                                    $(widget).prop('disabled', false);
+                                    $(widget).find('.sync-icon').removeClass('swing');
+                                }, 1000)
+                            }
+                        }
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('error: ', jqXHR, textStatus, errorThrown);
+                    },
+                })
+            }
+
+            let mdlContent = $('.gjs-mdl-content');
+            let assetHeaderEle = $('.gjs-am-assets-header');
+            let assetItemEle = $('.gjs-am-assets');
+
+            if (!assetHeaderEle.attr('data-cloud-loaded')) {
+                assetHeaderEle.attr('data-cloud-loaded', true);
+
+                let eleCallImgBtn = $(`
+                    <button data-page-next="1">
+                        Cloud image
+                        <i class="sync-state"></i>
+                        <i class="sync-icon fa-solid fa-arrows-rotate"></i>
+                    </button>
+                `);
+                let eleClearBtn = $(`<button>Clear asset storage</button>`);
+                let eleGroup = $(`<div class="cloud-toolbox"></div>`).append(eleCallImgBtn).append(eleClearBtn);
+                mdlContent.prepend(eleGroup);
+
+                eleCallImgBtn.on('click', function (event) {
+                    let widget = this;
+                    $(this).prop('disabled', true);
+                    $(this).find('.sync-icon').addClass('swing');
+
+                    let paramNext = Number.parseInt($(widget).attr('data-page-next'));
+
+                    call_cloud_img({
+                        'page': paramNext > 0 ? paramNext : 1,
+                        'pageSize': 5,
+                    }, widget)
+                })
+                eleClearBtn.on('click', function (event) {
+                    let state = confirm(transEle.attr('data-msg-are-u-sure'));
+                    if (state) {
+                        editor.AssetManager.getAll().models
+                            .map(item => item.id)
+                            .map((itemID) => {
+                                editor.AssetManager.remove(itemID)
+                            })
+                    }
+                })
+            }
+        })
+
+        // The upload is started
+        editor.on('asset:upload:start', () => {
+            console.log('asset:upload:start');
+        });
+
+        // The upload is ended (completed or not)
+        editor.on('asset:upload:end', () => {
+            console.log('asset:upload:end');
+        });
+
+        // Error handling
+        editor.on('asset:upload:error', (err) => {
+            alert('Upload was return errors');
+        });
+
+        // Do something on response
+        editor.on('asset:upload:response', (response) => {
+            let url = response?.['data']?.['file_detail']?.['url'];
+            if (url) {
+                editor.AssetManager.add([
+                    {src: _resolve_url_image(url)}
+                ])
+            } else {
+                alert("Server error due to possible deployment of incorrect or exceeded path for this function (default is 5GB).");
+            }
+        });
+    }
+
+    function addPanelAddFonts(pn) {
+        pn.addPanel({
+            id: "basic-actions",
+            el: ".panel__basic-actions",
+            buttons: [
+                {
+                    id: "create-button",
+                    label: "Open font dialog",
+                    command(editor) {
+                        editor.runCommand("open-fonts");
+                    }
+                }
+            ]
+        });
+    }
+
+    function addPanelCustomCss(cmdm, pn, modal, editor) {
+        pn.addButton('options', {
+            id: 'custom-css',
+            label: '<i class="fa-brands fa-css3-alt"></i>',
+            command: function (editor) {
+                editor.runCommand('customize-css');
+            },
+            attributes: {
+                'title': 'Customize CSS',
+                'data-tooltip-pos': 'bottom',
+            },
+        });
+
+        cmdm.add('customize-css', function () {
+            modal.open({
+                title: 'Customize CSS',
+                content: `
+                <textarea>
+                    <style>
+                        ${editor.getCss()}
+                    </style>
+                </textarea>
+            `,
+                attributes: {
+                    class: 'my-small-modal',
+                },
+            });
         })
     }
 
@@ -177,7 +404,13 @@ $(function () {
             },
         },
         assetManager: {
-            upload: false,
+            upload: transEle.attr('data-url-upload'),
+            uploadName: 'files',
+            headers: {
+                'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+            },
+            autoAdd: 0,
+
             embedAsBase64: false,
             assets: [],
             openAssetsOnDrop: false,
@@ -272,11 +505,14 @@ $(function () {
                     name: 'Decorations',
                     open: false,
                     properties: [
-                        'opacity', 'border-radius', 'border', 'box-shadow',
-                        {
-                            extend: 'background', name: 'Background Advance'
+                        'opacity', 'border-radius', 'border', 'box-shadow', {
+                            extend: 'background',
+                            name: 'Background Advance'
+                        }, {
+                            id: 'background-bg',
+                            property: 'background-color',
+                            type: 'color'
                         },
-                        { id: 'background-bg', property: 'background-color', type: 'color' },
                     ],
                 }, {
                     name: 'Extra',
@@ -461,27 +697,7 @@ $(function () {
             ],
         },
         plugins: [
-            'gjs-blocks-basic',
-            'grapesjs-preset-webpage',
-            'grapesjs-plugin-forms',
-            'grapesjs-component-countdown',
-            'grapesjs-plugin-export',
-            'grapesjs-tabs',
-            'grapesjs-custom-code',
-            'grapesjs-touch',
-            'grapesjs-parser-postcss',
-            'grapesjs-tooltip',
-            'grapesjs-tui-image-editor',
-            'grapesjs-typed',
-            'grapesjs-style-bg',
-            'grapesjs-style-filter',
-            'grapesjs-style-bg',
-            'grapesjs-plugin-bootstrap-carousel',
-            'grapesjs-plugin-bootstrap-navbar',
-            'grapesjs-plugin-my-products',
-            'grapesjs-plugin-bootstrap-breadcrumb',
-            'grapesjs-plugin-bootstrap-layout',
-            'grapesjs-plugin-page-template',
+            'gjs-blocks-basic', 'grapesjs-preset-webpage', 'grapesjs-plugin-forms', 'grapesjs-component-countdown', 'grapesjs-plugin-export', 'grapesjs-tabs', 'grapesjs-custom-code', 'grapesjs-touch', 'grapesjs-parser-postcss', 'grapesjs-tooltip', 'grapesjs-tui-image-editor', 'grapesjs-typed', 'grapesjs-style-bg', 'grapesjs-style-filter', 'grapesjs-style-bg', 'grapesjs-plugin-bootstrap-carousel', 'grapesjs-plugin-bootstrap-navbar', 'grapesjs-plugin-my-products', 'grapesjs-plugin-bootstrap-breadcrumb', 'grapesjs-plugin-bootstrap-layout', 'grapesjs-plugin-page-template', 'grapesjs-parser-postcss', 'grapesjs-ui-suggest-classes', "@silexlabs/grapesjs-fonts",
         ],
         pluginsOpts: {
             'grapesjs-plugin-page-template': {
@@ -538,6 +754,10 @@ $(function () {
                     label: "Basic",
                     order: 100,
                     open: false,
+                },
+                styleImage: {
+                    color: 'black',
+                    width: '100%',
                 }
             },
             'grapesjs-plugin-forms': {
@@ -586,11 +806,15 @@ $(function () {
             },
             'grapesjs-style-bg': { /* options */},
             'grapesjs-preset-webpage': {
-                // modalImportTitle: 'Import Template',
-                // modalImportLabel: '<div style="margin-bottom: 10px; font-size: 13px;">Paste here your HTML/CSS and click Import</div>',
-                // modalImportContent: function (editor) {
-                //     return editor.getHtml() + '<style>' + editor.getCss() + '</style>'; // + `<script>${editor.getJs()}</script>`;
-                // },
+                modalImportTitle: 'Import Template',
+                modalImportLabel: '<div style="margin-bottom: 10px; font-size: 13px;">Paste here your HTML/CSS and click Import</div>',
+                modalImportContent: function (editor) {
+                    return editor.getHtml() + '<style>' + editor.getCss() + '</style>'; // + `<script>${editor.getJs()}</script>`;
+                },
+            },
+            'grapesjs-ui-suggest-classes': {},
+            "@silexlabs/grapesjs-fonts": {
+                api_key: "AIzaSyBhWpuBLyO9kK1iCRzRZljUeVfpePWKmxI",
             },
         },
         i18n: {
@@ -629,8 +853,14 @@ $(function () {
     let modal = editor.Modal;
     let cmdm = editor.Commands;
 
+    // custom css
+    addPanelCustomCss(cmdm, pn, modal, editor);
+
     // Update canvas-clear command
     clearCanvas(cmdm);
+
+    // Add template list
+    templateList(cmdm, pn, editor);
 
     // Add save to api command
     buttonAndCommandSave(cmdm, pn);
@@ -638,12 +868,17 @@ $(function () {
     // Add load last store api command
     buttonAndCommandLoadStoreDataWhenDropEditor(cmdm, pn, editor);
 
+    // Add back to page list
+    buttonBackToPageList(cmdm, pn, editor);
+
     // Add and beautify tooltips
     addAndBeatifyTooltips(pn);
 
     // Store and load events
     storeAndLoadEvents(editor);
 
+    // asset
+    assetListener(editor)
 
     // Do stuff on load
     editor.on('load', function () {
@@ -661,6 +896,9 @@ $(function () {
         openBlocksBtn && openBlocksBtn.set('active', 1);
 
         // load data
-        editor.loadProjectData(JSON.parse($('#idx-project_data').text()))
+        editor.loadProjectData(JSON.parse($('#idx-project_data').text()));
+
+        // fonts
+        addPanelAddFonts(pn);
     });
 })

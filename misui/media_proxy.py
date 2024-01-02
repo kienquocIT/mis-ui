@@ -4,11 +4,8 @@ import requests
 
 from django.conf import settings
 from django.http import HttpResponse, StreamingHttpResponse
-from django.utils.six import StringIO
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.utils.mediatypes import media_type_matches
-from rest_framework.exceptions import UnsupportedMediaType
 from requests.exceptions import ConnectionError, SSLError, Timeout
 
 
@@ -53,34 +50,6 @@ class MediaProxyView(APIView):
             'Content-Type': request.META.get('CONTENT_TYPE', self.DEFAULT_CONTENT_TYPE),
         }
 
-    def parse_proxy_response(self, response):
-        """
-        Modified version of rest_framework.request.Request._parse(self)
-        """
-        parsers = self.get_parsers()
-        stream = StringIO(response._content)
-        content_type = response.headers.get('content-type', None)
-
-        if stream is None or content_type is None:
-            return {}
-
-        parser = None
-        for item in parsers:
-            if media_type_matches(item.media_type, content_type):
-                parser = item
-
-        if not parser:
-            raise UnsupportedMediaType(content_type)
-
-        parsed = parser.parse(stream, content_type)
-
-        # Parser classes may return the raw data, or a
-        # DataAndFiles object. Return only data.
-        try:
-            return parsed.data
-        except AttributeError:
-            return parsed
-
     def get_headers(self, request):
         # import re
         # regex = re.compile('^HTTP_')
@@ -112,7 +81,7 @@ class MediaProxyView(APIView):
                 'error': response.reason,
             }
         else:
-            body = self.parse_proxy_response(response)
+            return self.create_response_raw(response)
         return Response(body, status)
 
     def create_error_response(self, body, status):

@@ -55,6 +55,24 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        data: 'sale_code',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            if (Object.keys(row.opportunity_mapped).length !== 0) {
+                                return `Opp <span class="text-blue">${row.opportunity_mapped.title}</span>`
+                            }
+                            else if (Object.keys(row.quotation_mapped).length !== 0) {
+                                return `Quo <span class="text-primary">${row.quotation_mapped.title}</span>`
+                            }
+                            else if (Object.keys(row.sale_order_mapped).length !== 0) {
+                                return `SO <span class="text-success">${row.sale_order_mapped.title}</span>`
+                            }
+                            else {
+                                return ''
+                            }
+                        }
+                    },
+                    {
                         data: 'date_created',
                         className: 'wrap-text',
                         render: (data, type, row) => {

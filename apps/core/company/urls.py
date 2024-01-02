@@ -5,7 +5,7 @@ from apps.core.company.views import (
     CompanyList, CompanyListAPI, CompanyListOverviewList, CompanyListOverviewListAPI,
     EmployeeUserByCompanyListOverviewDetailAPI, EmployeeOfTenantListAPI,
     CompanyDetail, CompanyDetailAPI, CompanyDeleteAPI,
-    CompanyConfigDetailAPI, CompanyCreate, CompanyUpdate
+    CompanyConfigDetailAPI, CompanyCreate, CompanyUpdate, TestEmailConnection
 )
 
 urlpatterns = [
@@ -18,6 +18,7 @@ urlpatterns = [
     path('list/api', CompanyListAPI.as_view(), name='CompanyListAPI'),
     path('detail/api/<str:pk>', CompanyDetailAPI.as_view(), name='CompanyDetailAPI'),
     path('delete/api/<str:pk>', CompanyDeleteAPI.as_view(), name='CompanyDeleteAPI'),
+    path('test-email-connection', TestEmailConnection.as_view(), name='TestEmailConnection'),
 
     # view from tenant overview
     path('list/overview', CompanyListOverviewList.as_view(), name='CompanyListOverviewList'),

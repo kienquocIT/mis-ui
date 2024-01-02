@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Asset, Tools Provide request list' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'AssetToolsProvideRequestCreate' %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Create' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <table
+                class="table nowrap w-100"
+                id="asset_provide_tb"
+                data-method="get"
+                data-url="{% url 'AssetToolsProvideRequestListAPI' %}"
+                data-detail="{% url 'AssetToolsProvideRequestDetail' 1 %}"
+            >
+                <thead>
+                    <tr>
+                        <td>{% trans 'Name' %}</td>
+                        <td>{% trans 'Code' %}</td>
+                        <td>{% trans 'Employee inherit' %}</td>
+                        <td>{% trans 'Date Created' %}</td>
+                        <td>{% trans 'Status' %}</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+    >
+    <input type="text" id="trans-factory"
+    >
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/eoffice/assettools/provide/list.js' %}"></script>
+{% endblock %}

@@ -170,6 +170,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALUTATION_DETAIL_PK = StringUrl('saledata/salutation/{pk}')
     INTEREST_DETAIL = StringUrl('saledata/interest/{pk}')
 
+    MEETING_ROOM_LIST = StringUrl('meeting-schedule/meetingrooms')
+    MEETING_ROOM_DETAIL = StringUrl('meeting-schedule/meetingroom/{pk}')
+    MEETING_ZOOM_CONFIG_LIST = StringUrl('meeting-schedule/zoom-configs')
+    MEETING_ZOOM_CONFIG_DETAIL = StringUrl('meeting-schedule/zoom-config/{pk}')
+
     # masterdata/lookup/account
     INDUSTRY_LIST = StringUrl('saledata/industries')
     ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
@@ -417,6 +422,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEAVE_AVAILABLE_UPDATE = StringUrl('leave/available/edit/{pk}')
     LEAVE_AVAILABLE_HISTORY = StringUrl('leave/available/history/{pk}')
 
+    # meeting schedule
+    MEETING_SCHEDULE_LIST = StringUrl('meeting-schedule/meetings-schedule')
+    MEETING_SCHEDULE_DETAIL = StringUrl('meeting-schedule/meeting-schedule/{pk}')
+
     #  Goods transfer
     GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')
     GOODS_TRANSFER_DETAIL = StringUrl('inventory/goods-transfer/{pk}')
@@ -446,3 +455,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Asset, Tools
     ASSET_TOOLS_CONFIG = StringUrl('asset-tools/config')
+    ASSET_TOOLS_PROVIDE = StringUrl('asset-tools/provide')
+    ASSET_TOOLS_PROVIDE_DETAIL = StringUrl('asset-tools/provide/detail')

@@ -214,32 +214,39 @@
                                             <div>
                                                 {% csrf_token %}
                                                 {% for item in base.companies_data %}
-                                                    <div class="form-check">
-                                                        {% if item.id == base.company_current_data.id %}
-                                                            <input
-                                                                    id="company_switch_id_{{ item.id }}"
-                                                                    name="switch_current_company"
-                                                                    class="form-check-input"
-                                                                    value="{{ item.id }}"
-                                                                    checked="checked" type="radio"
-                                                            >
-                                                            <b><label
-                                                                    class="form-check-label"
-                                                                    for="company_switch_id_{{ item.id }}"
-                                                            >{{ item.code }} - {{ item.title }}</label></b>
-                                                        {% else %}
-                                                            <input
-                                                                    id="company_switch_id_{{ item.id }}"
-                                                                    name="switch_current_company"
-                                                                    class="form-check-input"
-                                                                    value="{{ item.id }}"
-                                                                    type="radio"
-                                                            >
-                                                            <label
-                                                                    class="form-check-label"
-                                                                    for="company_switch_id_{{ item.id }}"
-                                                            >{{ item.code }} - {{ item.title }}</label>
-                                                        {% endif %}
+                                                    <div class="company_switch_item p-3">
+                                                        <div class="form-check d-flex align-items-center">
+                                                            {% if item.id == base.company_current_data.id %}
+                                                                <input
+                                                                        id="company_switch_id_{{ item.id }}"
+                                                                        name="switch_current_company"
+                                                                        class="form-check-input"
+                                                                        value="{{ item.id }}"
+                                                                        checked="checked" type="radio"
+                                                                >
+                                                                <b><label
+                                                                        class="form-check-label"
+                                                                        for="company_switch_id_{{ item.id }}"
+                                                                >
+                                                                    {% if item.logo %}
+                                                                        <img class="brand-img img-fluid" src="{{ item.logo }}" alt="brand" style="height: 3rem; margin: 0 1rem;">
+                                                                    {% endif %}
+                                                                    {{ item.title }}
+                                                                </label></b>
+                                                            {% else %}
+                                                                <input
+                                                                        id="company_switch_id_{{ item.id }}"
+                                                                        name="switch_current_company"
+                                                                        class="form-check-input"
+                                                                        value="{{ item.id }}"
+                                                                        type="radio"
+                                                                >
+                                                                <label
+                                                                        class="form-check-label"
+                                                                        for="company_switch_id_{{ item.id }}"
+                                                                >{{ item.code }} - {{ item.title }}</label>
+                                                            {% endif %}
+                                                        </div>
                                                     </div>
                                                 {% endfor %}
                                             </div>

@@ -123,7 +123,8 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Employee attended' %}</label>
-                                    <select id="meeting-employee-attended-select-box" data-url="{% url 'EmployeeListAPI' %}" multiple class="select2 select-multiple"></select>
+                                    <select id="meeting-employee-attended-select-box" data-url="{% url 'EmployeeListAPI' %}"
+                                            multiple class="select2 select-multiple" data-closeOnSelect="false"></select>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +132,7 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Customer member' %}</label>
-                                    <select disabled id="meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
+                                    <select disabled id="meeting-customer-member-select-box" multiple data-closeOnSelect="false" class="select2 select-multiple"></select>
                                 </div>
                             </div>
                         </div>

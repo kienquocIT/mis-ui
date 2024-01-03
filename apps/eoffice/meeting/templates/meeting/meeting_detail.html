@@ -229,7 +229,7 @@
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_app_meeting">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-window-fullscreen"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Onlime app meeting' %}</span>
+                        <span class="nav-link-text">{% trans 'Online app meeting' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -627,12 +627,14 @@
         </div>
     </div>
 {% endblock %}
+{% block jsHeaderUnCompress %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+{% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
     <script src="{% static "assets/js/meeting/meeting_common.js" %}"></script>
     <script src="{% static "assets/js/meeting/meeting_detail.js" %}"></script>
 {% endblock %}

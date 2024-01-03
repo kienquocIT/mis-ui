@@ -150,6 +150,7 @@
         {% endif %}
         {% block jsHeader %}{% endblock %}
     {% endcompress %}
+    {% block jsHeaderUnCompress %}{% endblock %}
 </head>
 <body>
 
@@ -646,5 +647,6 @@
     {% block jsFooter %}{% endblock %}
     <!-- // Customize JS -->
 {% endcompress %}
+    {% block jsFooterUnCompress %}{% endblock %}
 </body>
 </html>

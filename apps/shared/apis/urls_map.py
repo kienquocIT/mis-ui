@@ -421,6 +421,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # leave available
     LEAVE_AVAILABLE = StringUrl('leave/available/list')
+    LEAVE_AVAILABLE_DDLIST = StringUrl('leave/available/dd-list')
     LEAVE_AVAILABLE_UPDATE = StringUrl('leave/available/edit/{pk}')
     LEAVE_AVAILABLE_HISTORY = StringUrl('leave/available/history/{pk}')
 

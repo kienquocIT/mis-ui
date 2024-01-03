@@ -30,7 +30,6 @@ const item_unit_dict = JSON.parse($('#id-unit-list').text()).reduce((obj, item) 
     obj[item.title] = item;
     return obj;
 }, {});
-let warehouse_list = [];
 
 // for variant
 let Detail_data = null;
@@ -43,19 +42,6 @@ let add_attribute_display_item = $('#add-attribute-display-item');
 let add_variant_des = $('#add-variant-des');
 let current_row_variant_attribute = null;
 let current_row_variant_item = null;
-
-async function loadWareHouseListAjax() {
-    await $.fn.callAjax(table_warehouse_list.attr('data-url'), table_warehouse_list.attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('warehouse_list')) {
-                warehouse_list = resp.data['warehouse_list'];
-            }
-        }
-    }, (errs) => {
-        console.log(errs)
-    },)
-}
 
 productImageEle.dropify({
     messages: {
@@ -453,79 +439,31 @@ function loadPriceForChild(element_id, element_value) {
     $.fn.initMaskMoney2();
 }
 
-function loadWareHouseList() {
-    table_warehouse_list.DataTableDefault({
-        dom: '',
-        paging: false,
-        data: warehouse_list,
-        columns: [
-            {
-                data: 'code',
-                className: 'wrap-text w-25',
-                render: (data, type, row) => {
-                    return `<span class="text-secondary">` + row.code + `</span>`
-                }
-            },
-            {
-                data: 'title',
-                className: 'wrap-text text-center w-50',
-                render: (data, type, row) => {
-                    return `<span class="text-secondary"><b>` + row.title + `</b></span>`
-                }
-            },
-            {
-                data: 'stock_value',
-                className: 'wrap-text text-center w-25',
-                render: () => {
-                    return `<span>0</span>`
-                }
-            },
-        ],
-    });
-}
-
 function loadWareHouseListDetail(product_warehouse_detail) {
     table_warehouse_list.DataTableDefault({
         dom: '',
         paging: false,
-        data: warehouse_list,
+        data: product_warehouse_detail,
         columns: [
             {
                 data: 'code',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary table-row-code" data-id="${row.id}">${row.code}</span>`;
+                    return `<span class="text-secondary table-row-code" data-id="${row.warehouse.id}">${row.warehouse.code}</span>`;
                 }
             },
             {
                 data: 'title',
                 className: 'wrap-text text-center w-25',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary"><b>${row.title}</b></span>`
+                    return `<span class="text-secondary"><b>${row.warehouse.title}</b></span>`
                 }
             },
             {
                 data: '',
                 className: 'wrap-text text-center w-15',
                 render: (data, type, row) => {
-                    let warehouse_data = product_warehouse_detail.filter(function (element) {
-                        return element.warehouse.id === row.id;
-                    })
-                    if (warehouse_data.length > 0) {
-                        // return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
-                        if ($('#form-update-product').attr('data-method') === 'GET') {
-                            return `<div class="row">
-                                        <div class="d-flex justify-content-center">
-                                            <span class="mr-2 mt-2">${warehouse_data[0]?.['stock_amount']}</span>
-                                            <button type="button" class="btn btn-icon btn-link btn-detail" data-bs-toggle="modal" data-bs-target="#detailProductWH"><span class="icon"><i class="fas fa-info-circle"></i></span></button>
-                                        </div>
-                                    </div>`;
-                        } else {
-                            return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
-                        }
-                    } else {
-                        return `<span>0</span>`;
-                    }
+                    return `<span>${row?.['stock_amount']}</span>`;
                 }
             },
         ],
@@ -812,7 +750,7 @@ function getDataForm() {
     data['product_variant_attribute_list'] = [];
     data['product_variant_item_list'] = [];
 
-    if (table_Variant_Attributes.prop('hidden') && table_Variant_Items.prop('hidden')) {
+    if (table_Variant_Attributes.find('tbody tr').length > 0) {
         table_Variant_Attributes.find('tbody tr').each(function (index) {
             let row = $(this);
             let attribute_title = row.find('.variant-attribute').val();

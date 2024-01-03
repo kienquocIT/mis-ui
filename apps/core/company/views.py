@@ -104,8 +104,25 @@ class CompanyDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL.push_id(pk)).put(request.data)
-        return resp.auto_return()
+        try:
+            connection = get_connection(
+                username=request.data.get('email'),
+                password=request.data.get('email_app_password'),
+                fail_silently=False,
+            )
+            if connection.open():
+                request.data['email_app_password_status'] = True
+                resp = ServerAPI(
+                    request=request, user=request.user, url=ApiURL.COMPANY_DETAIL.push_id(pk)
+                ).put(request.data)
+                return resp.auto_return()
+        except Exception as e:
+            print(e)
+            request.data['email_app_password_status'] = False
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.COMPANY_DETAIL.push_id(pk)
+            ).put(request.data)
+            return resp.auto_return()
 
 
 class CompanyLogoUpload(APIView):
@@ -244,7 +261,7 @@ class TestEmailConnection(APIView):
         try:
             connection = get_connection(
                 username=request.GET.get('email'),
-                password=request.GET.get('app_password'),
+                password=request.GET.get('email_app_password'),
                 fail_silently=False,
             )
             if connection.open():

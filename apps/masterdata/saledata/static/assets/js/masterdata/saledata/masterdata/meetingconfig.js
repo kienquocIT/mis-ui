@@ -2,16 +2,17 @@ $(document).ready(function () {
     let zoomConfigEle = $('#zoom_config')
     const zoom_config = zoomConfigEle.text() ? JSON.parse(zoomConfigEle.text()) : {};
 
-    function loadZoomConfigData() {
-        if (Object.keys(zoom_config).length !== 0) {
-            $('#zoom-account-email').val(zoom_config?.['account_email']);
-            $('#zoom-account-id').val(zoom_config?.['account_id']);
-            $('#zoom-client-id').val(zoom_config?.['client_id']);
-            $('#zoom-client-secret').val(zoom_config?.['client_secret']);
-            $('#zoom-personal-meeting-id').val(zoom_config?.['personal_meeting_id'])
-        }
+    if (Object.keys(zoom_config).length !== 0) {
+        $('#1-existing-config').prop('hidden', false)
     }
-    loadZoomConfigData()
+
+    $('#reset-config').on('click', function () {
+        $('#zoom-account-email').val('');
+        $('#zoom-account-id').val('');
+        $('#zoom-client-id').val('');
+        $('#zoom-client-secret').val('');
+        $('#zoom-personal-meeting-id').val('')
+    })
 
     function loadMeetingRoomList() {
         let tbl = $('#table-meeting-room');

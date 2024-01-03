@@ -65,7 +65,11 @@
                     </button>
                 </div>
                 <div class="tab-pane fade" id="tab_block_meeting_zoom_setting">
-                    <form id="form-create-zoom-config"
+                    <span class="text-muted" id="1-existing-config" hidden><i class="fas fa-exclamation-circle"></i>&nbsp;{% trans '1 existing config' %}</span>
+                    <a class="btn btn-sm btn-gradient-light" id="reset-config" data-bs-toggle="collapse" href="#form-create-zoom-config" role="button" aria-expanded="false">
+                        {% trans 'New config' %}
+                    </a>
+                    <form id="form-create-zoom-config" class="collapse mt-5"
                           data-url="{% url 'MeetingZoomConfigListAPI' %}"
                           data-url-redirect="{% url 'MeetingConfigList' %}"
                           data-method="POST">
@@ -109,10 +113,15 @@
                                 </div>
                                 <button type="submit" class="btn btn-gradient-primary w-100 mt-5" form="form-create-zoom-config">{% trans 'Save' %}</button>
                             </div>
-                            <div class="col-12 col-md-2 col-lg-2"></div>
-                            <div class="col-12 col-md-6 col-lg-6">
-                                <button type="button" id="zoom-app-instruction-hidden-btn" class="btn btn-soft-primary btn-sm"><span><span class="icon"><span class="feather-icon"><i class="far fa-question-circle"></i></span></span><span>{% trans 'See instructions here' %}</span></span></button>
-                                <div id="zoom-app-instruction" hidden class="mt-10 hk-wizard hk-wizard-vertical">
+                            <div class="col-12 col-md-1 col-lg-1"></div>
+                            <div class="col-12 col-md-5 col-lg-5">
+                                <a id="zoom-app-instruction-hidden-btn" class="link-secondary underline_hover" href="#">
+                                    <span>
+                                        <span>{% trans 'See instructions here' %}</span>&nbsp;
+                                        <span class="icon"><span class="feather-icon"><i class="bi bi-info-circle"></i></span></span>
+                                    </span>
+                                </a>
+                                <div id="zoom-app-instruction" hidden class="mt-5 hk-wizard hk-wizard-vertical">
                                     <div class="hk-wizard-item hk-wizard-item-process hk-wizard-item-active">
                                         <div class="hk-wizard-item-container">
                                             <div class="hk-wizard-item-tail"></div>
@@ -129,7 +138,7 @@
                                             <div class="hk-wizard-item-icon"><span class="hk-wizard-icon">2</span></div>
                                             <div class="hk-wizard-item-content">
                                                 <div class="hk-wizard-item-title"><b>{% trans 'Build app' %}</b></div>
-                                                <div class="hk-wizard-item-description">{% trans 'Go to ' %}<a href="https://marketplace.zoom.us/develop/apps/Kk9stf5OToWIKLYoLcjw8g/credentials">{% trans 'here' %}</a>{% trans '. Login your Zoom account with email in last step.' %}</div>
+                                                <div class="hk-wizard-item-description">{% trans 'Go to ' %}<a target="_blank" href="https://marketplace.zoom.us/develop/apps/Kk9stf5OToWIKLYoLcjw8g/credentials" class="link-danger underline_hover"><b>{% trans 'here' %}</b></a>{% trans '. Login your Zoom account with email in last step.' %}</div>
                                                 <div class="hk-wizard-item-description">{% trans 'Click "Develop" button > Select "Build Server-to-Server App" > Enter "App name".' %}</div>
                                                 <div class="hk-wizard-item-description">{% trans 'In tab "App Credentials": click "Next" button.' %}</div>
                                                 <div class="hk-wizard-item-description">{% trans 'In tab "Information": fill in all fields (required).' %}</div>
@@ -155,7 +164,7 @@
                                             <div class="hk-wizard-item-icon"><span class="hk-wizard-icon">4</span></div>
                                             <div class="hk-wizard-item-content">
                                                 <div class="hk-wizard-item-title"><b>{% trans 'Get Personal meeting ID' %}</b></div>
-                                                <div class="hk-wizard-item-description">{% trans 'Login to your Zoom Account ' %}<a href="https://us04web.zoom.us/profile">{% trans 'here' %}</a>{% trans '. Go to Profile tab, your Personal Meeting ID here.' %}</div>
+                                                <div class="hk-wizard-item-description">{% trans 'Login to your Zoom Account ' %}<a target="_blank" href="https://us04web.zoom.us/profile" class="link-danger underline_hover"><b>{% trans 'here' %}</b></a>{% trans '. Go to Profile tab, your Personal Meeting ID here.' %}</div>
                                             </div>
                                         </div>
                                     </div>

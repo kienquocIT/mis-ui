@@ -50,6 +50,24 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        data: 'sale_code',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            if (Object.keys(row.opportunity_mapped).length !== 0) {
+                                return `Opp <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row.opportunity_mapped.id)}"><b>${row.opportunity_mapped.title}</b></a></span>`
+                            }
+                            else if (Object.keys(row.quotation_mapped).length !== 0) {
+                                return `Quo <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row.quotation_mapped.id)}"><b>${row.quotation_mapped.title}</b></a></span>`
+                            }
+                            else if (Object.keys(row.sale_order_mapped).length !== 0) {
+                                return `SO <span><a class="link-secondary underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row.sale_order_mapped.id)}"><b>${row.sale_order_mapped.title}</b></a></span>`
+                            }
+                            else {
+                                return ''
+                            }
+                        }
+                    },
+                    {
                         data: 'date_created',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {

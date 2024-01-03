@@ -457,14 +457,16 @@ function loadAPList() {
         }
     }
     else {
+        const urlParams = new URLSearchParams(window.location.search);
+        let type= urlParams.get('type');
         let opportunity_mapped = opp_mapped_select.val();
         let quotation_mapped = quotation_mapped_select.val();
         let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped && !opp_mapped_select.prop('disabled')) {
+        if (opportunity_mapped && type === '0') {
             current_sale_code.push(opportunity_mapped);
-        } else if (quotation_mapped && !quotation_mapped_select.prop('disabled')) {
+        } else if (quotation_mapped && type === '1') {
             current_sale_code.push(quotation_mapped);
-        } else if (sale_order_mapped && !sale_order_mapped_select.prop('disabled')) {
+        } else if (sale_order_mapped && type === '2') {
             current_sale_code.push(sale_order_mapped);
         }
     }
@@ -489,6 +491,8 @@ function loadAPList() {
                                 if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                 if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
                                 if (item?.['remain_value'] > 0 && item?.['employee_inherit_id'] === initEmployee.id) {
+                                    console.log(current_sale_code[0])
+                                    console.log(this_sale_code[0])
                                     if (current_sale_code.length > 0 && this_sale_code.length > 0) {
                                         if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                             result.push(item)

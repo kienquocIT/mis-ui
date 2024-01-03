@@ -487,8 +487,8 @@ class CompanyHandle {
     combinesDataTestEmailConnection() {
         let data = {}
         data['email'] = $('#email').val();
-        data['app_password'] = $('#email-app-password').val();
-        if (data['email'] !== '' && data['app_password'] !== '') {
+        data['email_app_password'] = $('#email-app-password').val();
+        if (data['email'] !== '' && data['email_app_password'] !== '') {
             return {
                 url: $("#btn-test-email-connection").attr('data-url'),
                 method: 'GET',
@@ -531,6 +531,12 @@ function LoadDetailCompany(frm, option) {
                 $('#phone').val(data.phone);
                 $('#fax').val(data.fax);
                 $('#email-app-password').val(data.email_app_password);
+                if (data?.['email_app_password_status']) {
+                    $('#verify-status').attr('class', 'fas fa-check-circle text-success')
+                }
+                else {
+                    $('#verify-status').attr('class', 'fas fa-times-circle text-danger')
+                }
 
                 let eleInputAvatar = $('#company_logo');
                 if (option === 'update') {
@@ -649,10 +655,12 @@ $("#btn-test-email-connection").on('click', function (event) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Connect successfully"}, 'success')
+                        $('#verify-status').attr('class', 'fas fa-check-circle text-success')
                     }
                 },
                 (errs) => {
                     $.fn.notifyB({description: 'Can not connect to mail server'}, 'failure');
+                    $('#verify-status').attr('class', 'fas fa-times-circle text-danger')
                 }
             )
     }

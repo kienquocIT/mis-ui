@@ -12,7 +12,7 @@ __all__ = ['LeaveConfigDetail', 'LeaveTypeConfigAPI', 'WorkingCalendarConfig', '
            'WorkingHolidayConfig', 'WorkingCalendarConfigAPI', 'LeaveRequestList', 'LeaveRequestListAPI',
            'LeaveRequestCreate', 'LeaveRequestCreateAPI', 'LeaveAvailableList', 'LeaveAvailableListAPI',
            'LeaveRequestDetail', 'LeaveRequestDetailAPI', 'LeaveRequestEdit', 'LeaveRequestEditAPI',
-           'LeaveAvailableHistoryAPI', 'LeaveRequestCalendarListAPI'
+           'LeaveAvailableHistoryAPI', 'LeaveRequestCalendarListAPI', 'LeaveAvailableDDListAPI'
            ]
 
 
@@ -340,6 +340,35 @@ class LeaveAvailableListAPI(APIView):
         params['employee_inherit_id'] = params['employee']
         del params['employee']
         resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_AVAILABLE).get(params)
+        return resp.auto_return(key_success='leave_available')
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_AVAILABLE_UPDATE.fill_key(pk=data['id'])).put(
+            data
+        )
+        if resp.state:
+            resp.result['message'] = LeaveMsg.LEAVE_AVAILABLE_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class LeaveAvailableDDListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        params['employee_inherit_id'] = params['employee']
+        del params['employee']
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_AVAILABLE_DDLIST).get(params)
         return resp.auto_return(key_success='leave_available')
 
     @mask_view(

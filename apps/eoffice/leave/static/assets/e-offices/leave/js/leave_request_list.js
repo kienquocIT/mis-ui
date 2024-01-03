@@ -23,6 +23,14 @@ $(document).ready(function () {
                 }
             },
             {
+                data: 'employee_inherit',
+                render: (row, type, data)=>{
+                    let time = '--';
+                    if (Object.keys(row).length > 0) time = `${row.full_name}`
+                    return time
+                }
+            },
+            {
                 data: 'code',
                 render: (row, type, data) =>{
                     let html = '--'

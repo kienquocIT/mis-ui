@@ -2245,19 +2245,19 @@ class WFRTControl {
                         $(ele$).attr('value', '');
                     }
                     // add class hidden-zone (for use css in my-style.css)
-                    $(ele$).attr('placeholder', 'Hidden by workflow config');
+                    $(ele$).attr('placeholder', $.fn.transEle.attr('data-hidden-by-workflow-config'));
                     $(ele$).addClass('hidden-zone');
                 }
                 if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
                     $(ele$).html(`<option value="" selected></option>`);
                     // add class hidden-zone (for use css in my-style.css)
-                    $(ele$).initSelect2({placeholder: "Hidden by workflow config",});
+                    $(ele$).initSelect2({placeholder: $.fn.transEle.attr('data-hidden-by-workflow-config'),});
                     $(ele$).next('.select2-container').addClass('hidden-zone');
                 }
                 if ($(ele$).is('textarea')) {  // if textarea
                     $(ele$).val('');
                     // add class hidden-zone (for use css in my-style.css)
-                    $(ele$).attr('placeholder', 'hidden by workflow config');
+                    $(ele$).attr('placeholder', $.fn.transEle.attr('data-hidden-by-workflow-config'));
                     $(ele$).addClass('hidden-zone');
                 }
                 if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)

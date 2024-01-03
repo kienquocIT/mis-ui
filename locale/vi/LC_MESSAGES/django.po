@@ -5822,4 +5822,4 @@ msgstr "Khuyến mãi"
 
 #
 msgid "Hidden by workflow config"
-msgstr "Bị ẩn theo cấu hình quy trình"
+msgstr "Ẩn theo cấu hình quy trình"

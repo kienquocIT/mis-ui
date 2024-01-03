@@ -1162,7 +1162,7 @@ class NodeDataTableHandle {
                                                             </div>
                                                             <div class="row collab-area collab-out-form-area mb-5" hidden>
                                                                 <div class="form-group">
-                                                                    <label class="form-label">Employee list</label>
+                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-employee-list')}</label>
                                                                     <div 
                                                                         class="input-group input-group-out-form-employee mb-3" 
                                                                         data-bs-toggle="offcanvas" 

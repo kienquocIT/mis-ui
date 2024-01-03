@@ -1066,7 +1066,7 @@ msgstr "Tên khách hàng"
 
 #
 msgid "Group"
-msgstr "Phòng ban"
+msgstr "Nhóm"
 
 #
 msgid "Industry"
@@ -2336,8 +2336,8 @@ msgid "Home Page"
 msgstr "Trang chủ"
 
 #
-msgid "Employee List"
-msgstr "Danh Sách Nhân viên"
+msgid "Employee list"
+msgstr "Danh sách nhân viên"
 
 #
 msgid "HR"
@@ -4048,7 +4048,7 @@ msgstr "Của tôi"
 
 #
 msgid "Of Same Group"
-msgstr "Cùng phòng ban của tôi"
+msgstr "Cùng nhóm của tôi"
 
 #
 msgid "Of My Staff"
@@ -4291,7 +4291,7 @@ msgstr "Ẩn"
 
 #
 msgid "Member of Group"
-msgstr "Thành viên của phòng ban"
+msgstr "Thành viên của nhóm"
 
 #
 msgid "Empty"
@@ -4878,23 +4878,23 @@ msgstr "Nghiệm thu"
 
 #
 msgid "Group level"
-msgstr "Cấp phòng"
+msgstr "Cấp nhóm"
 
 #
 msgid "Group reference title"
-msgstr "Tên phòng tham chiếu"
+msgstr "Tên nhóm tham chiếu"
 
 #
 msgid "Group display title"
-msgstr "Tên phòng hiển thị"
+msgstr "Tên nhóm hiển thị"
 
 #
 msgid "Group code"
-msgstr "Mã phòng"
+msgstr "Mã nhóm"
 
 #
 msgid "Upper group"
-msgstr "Phòng cấp trên"
+msgstr "Nhóm cấp trên"
 
 #
 msgid "Manager"
@@ -5379,7 +5379,7 @@ msgstr "Đến ngày"
 
 #
 msgid "Group description"
-msgstr "Mô tả phòng ban"
+msgstr "Mô tả nhóm"
 
 #
 msgid "1st manager title"
@@ -5391,7 +5391,7 @@ msgstr "Tên quản lý thứ hai"
 
 #
 msgid "Add group level"
-msgstr "Thêm cấp phòng ban"
+msgstr "Thêm cấp nhóm"
 
 #
 msgid "Expense items"
@@ -5823,3 +5823,7 @@ msgstr "Khuyến mãi"
 #
 msgid "Hidden by workflow config"
 msgstr "Ẩn theo cấu hình quy trình"
+
+#
+msgid "Add node"
+msgstr "Thêm trạm"

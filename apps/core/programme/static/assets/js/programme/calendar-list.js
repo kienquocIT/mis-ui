@@ -97,7 +97,7 @@ class programmeHandle {
         }
         return afterPrepare
     }
-z
+
     static callMeeting(calendar, params = null) {
         $.fn.callAjax2({
             'url': $('#url-factory').attr('data-meet'),

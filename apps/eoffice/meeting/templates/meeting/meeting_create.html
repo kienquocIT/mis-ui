@@ -228,7 +228,7 @@
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_app_meeting">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-window-fullscreen"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Onlime app meeting' %}</span>
+                        <span class="nav-link-text">{% trans 'Online app meeting' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -307,7 +307,7 @@
                                                                 <div class="row">
                                                                     <div class="col-12">
                                                                         <div class="form-check form-switch">
-                                                                            <input disabled class="form-check-input" type="checkbox" id="modal-recurring-meeting">
+                                                                            <input class="form-check-input" type="checkbox" id="modal-recurring-meeting">
                                                                             <label class="form-check-label" for="modal-recurring-meeting">{% trans 'Recurring meeting' %}</label>
                                                                         </div>
                                                                     </div>
@@ -318,9 +318,9 @@
                                                                         <div class="form-group">
                                                                             <label class="form-label" for="modal-recurrence">{% trans "Recurrence" %}</label>
                                                                             <select class="select2 form-select" id="modal-recurrence">
-                                                                                <option value="0">{% trans 'Daily' %}</option>
-                                                                                <option value="1">{% trans 'Weekly' %}</option>
-                                                                                <option value="2">{% trans 'Monthly' %}</option>
+                                                                                <option value="1">{% trans 'Daily' %}</option>
+                                                                                <option value="2">{% trans 'Weekly' %}</option>
+                                                                                <option value="3">{% trans 'Monthly' %}</option>
                                                                             </select>
                                                                         </div>
                                                                     </div>
@@ -339,6 +339,11 @@
                                                                                     <option value="8">8</option>
                                                                                     <option value="9">9</option>
                                                                                     <option value="10">10</option>
+                                                                                    <option value="11">11</option>
+                                                                                    <option value="12">12</option>
+                                                                                    <option value="13">13</option>
+                                                                                    <option value="14">14</option>
+                                                                                    <option value="15">15</option>
                                                                                 </select>
                                                                                 <span class="input-suffix">{% trans 'day(s)' %}</span>
                                                                             </span>
@@ -387,37 +392,37 @@
                                                                                         <label class="form-check-label badge badge-soft-danger" for="sun">{% trans 'Sun' %}</label>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-5">
                                                                                     <div class="form-check">
                                                                                         <input type="checkbox" class="form-check-input" id="mon">
                                                                                         <label class="form-check-label badge badge-soft-primary" for="mon">{% trans 'Mon' %}</label>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-5">
                                                                                     <div class="form-check">
                                                                                         <input type="checkbox" class="form-check-input" id="tue">
                                                                                         <label class="form-check-label badge badge-soft-primary" for="tue">{% trans 'Tue' %}</label>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-5">
                                                                                     <div class="form-check">
                                                                                         <input type="checkbox" class="form-check-input" id="wed">
                                                                                         <label class="form-check-label badge badge-soft-primary" for="wed">{% trans 'Wed' %}</label>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-5">
                                                                                     <div class="form-check">
                                                                                         <input type="checkbox" class="form-check-input" id="thu">
                                                                                         <label class="form-check-label badge badge-soft-primary" for="thu">{% trans 'Thu' %}</label>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-5">
                                                                                     <div class="form-check">
                                                                                         <input type="checkbox" class="form-check-input" id="fri">
                                                                                         <label class="form-check-label badge badge-soft-primary" for="fri">{% trans 'Fri' %}</label>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-3">
+                                                                                <div class="col-4 col-lg-1 col-md-4 mb-1 ml-5">
                                                                                     <div class="form-check">
                                                                                         <input type="checkbox" class="form-check-input" id="sat">
                                                                                         <label class="form-check-label badge badge-soft-orange" for="sat">{% trans 'Sat' %}</label>
@@ -431,25 +436,32 @@
                                                                                 <div class="col-12">
                                                                                     <div class="form-check">
                                                                                         <div class="row">
-                                                                                            <div class="col-12 col-md-5 col-lg-5">
+                                                                                            <div class="col-12 col-md-8 col-lg-8">
                                                                                                 <input type="radio" id="modal-day-x-of-month-input" name="month-occurs-on" class="form-check-input" checked>
                                                                                                 <div class="input-group">
                                                                                                     <span class="input-group-text">{% trans 'Day' %}</span>
-                                                                                                    <select class="form-select" id="modal-day-x-of-month-select">
-                                                                                                        <option value="1" selected>1</option>
-                                                                                                        <option value="2">2</option>
-                                                                                                        <option value="3">3</option>
-                                                                                                        <option value="4">4</option>
-                                                                                                        <option value="5">5</option>
-                                                                                                        <option value="6">6</option>
-                                                                                                        <option value="7">7</option>
-                                                                                                        <option value="8">8</option>
-                                                                                                    </select>
+                                                                                                    <select class="form-select" id="modal-day-x-of-month-select"></select>
+                                                                                                    <script>
+                                                                                                        document.addEventListener('DOMContentLoaded', function () {
+                                                                                                            let selectElement = document.getElementById('modal-day-x-of-month-select');
+
+                                                                                                            for (let i = 1; i <= 31; i++) {
+                                                                                                                let option = document.createElement('option');
+                                                                                                                option.value = i;
+                                                                                                                option.text = i;
+                                                                                                                if (i === 1) {
+                                                                                                                    option.selected = true;
+                                                                                                                }
+                                                                                                                selectElement.add(option);
+                                                                                                            }
+                                                                                                        });
+                                                                                                    </script>
                                                                                                     <span class="input-group-text">{% trans 'of the month' %}</span>
                                                                                                 </div>
                                                                                             </div>
-                                                                                            <div class="col-12 col-md-1 col-lg-1"></div>
-                                                                                            <div class="col-12 col-md-5 col-lg-5">
+                                                                                        </div>
+                                                                                        <div class="row mt-3">
+                                                                                            <div class="col-12 col-md-8 col-lg-8">
                                                                                                 <input type="radio" id="modal-date-x-of-month-input" name="month-occurs-on" class="form-check-input">
                                                                                                 <div class="input-group">
                                                                                                     <select class="form-select" id="modal-date-x-of-the-month-select-1">
@@ -457,16 +469,16 @@
                                                                                                         <option value="2">{% trans 'Second' %}</option>
                                                                                                         <option value="3">{% trans 'Third' %}</option>
                                                                                                         <option value="4">{% trans 'Fourth' %}</option>
-                                                                                                        <option value="5">{% trans 'Last' %}</option>
+                                                                                                        <option value="-1">{% trans 'Last' %}</option>
                                                                                                     </select>
                                                                                                     <select class="form-select" id="modal-date-x-of-the-month-select-2">
-                                                                                                        <option value="0">{% trans 'Sunday' %}</option>
-                                                                                                        <option value="1" selected>{% trans 'Monday' %}</option>
-                                                                                                        <option value="2">{% trans 'Tuesday' %}</option>
-                                                                                                        <option value="3">{% trans 'Wednesday' %}</option>
-                                                                                                        <option value="4">{% trans 'Thursday' %}</option>
-                                                                                                        <option value="5">{% trans 'Friday' %}</option>
-                                                                                                        <option value="6">{% trans 'Saturday' %}</option>
+                                                                                                        <option value="1">{% trans 'Sunday' %}</option>
+                                                                                                        <option value="2" selected>{% trans 'Monday' %}</option>
+                                                                                                        <option value="3">{% trans 'Tuesday' %}</option>
+                                                                                                        <option value="4">{% trans 'Wednesday' %}</option>
+                                                                                                        <option value="5">{% trans 'Thursday' %}</option>
+                                                                                                        <option value="6">{% trans 'Friday' %}</option>
+                                                                                                        <option value="7">{% trans 'Saturday' %}</option>
                                                                                                     </select>
                                                                                                     <span class="input-group-text">{% trans 'of the month' %}</span>
                                                                                                 </div>
@@ -499,7 +511,7 @@
                                                                                                 <input type="radio" id="end-date-after-input" name="end-date" class="form-check-input">
                                                                                                 <div class="input-group">
                                                                                                     <span class="input-group-text">{% trans 'After' %}</span>
-                                                                                                    <input type="number" min="1" class="form-control" id="end-date-after-select">
+                                                                                                    <input type="number" min="1" max="20" class="form-control" id="end-date-after-select">
                                                                                                     <span class="input-group-text">{% trans 'occurrences' %}</span>
                                                                                                 </div>
                                                                                             </div>
@@ -545,7 +557,7 @@
                                                                                             </div>
                                                                                             <div class="col-12 col-md-6 col-lg-6">
                                                                                                 <input type="radio" id="meeting-id-personal" name="meeting-id" class="form-check-input">
-                                                                                                <label for="meeting-id-personal">{% trans 'Personal meeting' %} <span class="badge badge-blue" id="pmi"></span></label>
+                                                                                                <label for="meeting-id-personal">{% trans 'Personal meeting ID' %} <span class="badge badge-blue" id="pmi"></span></label>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>

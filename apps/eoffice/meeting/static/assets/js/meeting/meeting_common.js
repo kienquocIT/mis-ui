@@ -1,6 +1,7 @@
 const startTimeEle = $('#start-time')
 const startDateEle = $('#start-date')
 const endDateBySelectEle = $('#end-date-by-select')
+const endDateAfterSelectEle = $('#end-date-after-select')
 const modalMeetingSelectAppEle = $('#modal-select-app')
 const modalMeetingTitleEle = $('#modal-meeting-title')
 const modalRecurringMeetingEle = $('#modal-recurring-meeting')
@@ -20,7 +21,7 @@ const currentEmployeeEle = $('#employee_current')
 const current_employee = currentEmployeeEle.text() ? JSON.parse(currentEmployeeEle.text()) : {};
 const currentCompanyEle = $('#company_current')
 const current_company = currentCompanyEle.text() ? JSON.parse(currentCompanyEle.text()) : {};
-console.log(current_company)
+
 startTimeEle.daterangepicker({
     timePicker: true,
     singleDatePicker: true,
@@ -66,19 +67,21 @@ modalRecurringMeetingEle.on('change', function () {
 })
 
 modalRecurrenceEle.on('change', function () {
-    if ($(this).val() === '0') {
+    if ($(this).val() === '1') {
         $('#modal-repeat-every-day-div').prop('hidden', false)
         $('#modal-repeat-every-week-div').prop('hidden', true)
         $('#modal-repeat-every-month-div').prop('hidden', true)
+        $('#modal-repeat-every-week-option-div').prop('hidden', true)
+        $('#modal-repeat-every-month-option-div').prop('hidden', true)
     }
-    else if ($(this).val() === '1') {
+    else if ($(this).val() === '2') {
         $('#modal-repeat-every-day-div').prop('hidden', true)
         $('#modal-repeat-every-week-div').prop('hidden', false)
         $('#modal-repeat-every-month-div').prop('hidden', true)
         $('#modal-repeat-every-week-option-div').prop('hidden', false)
         $('#modal-repeat-every-month-option-div').prop('hidden', true)
     }
-    else if ($(this).val() === '2') {
+    else if ($(this).val() === '3') {
         $('#modal-repeat-every-day-div').prop('hidden', true)
         $('#modal-repeat-every-week-div').prop('hidden', true)
         $('#modal-repeat-every-month-div').prop('hidden', false)
@@ -97,6 +100,8 @@ meetingIDEle.on('change', function () {
     let bool = $('#meeting-id-personal').prop('checked')
     $('#enable-continuous-meeting-chat-row .form-switch').prop('hidden', bool)
     $('#modal-enable-continuous-meeting-chat').prop('checked', !bool).prop('disabled', bool)
+    modalRecurringMeetingEle.prop('checked', !bool)
+    modalRecurringMeetingEle.closest('.row').prop('hidden', bool)
 })
 
 function loadInternalParticipants(data) {
@@ -232,19 +237,68 @@ save_meeting_payload.on('click', function () {
     let data_meeting_payload = {}
     if (modalRecurringMeetingEle.prop('checked')) {
         data_meeting_payload['type'] = 8
-        // data_meeting_payload['recurrence'] = {
-        //     'end_date_time':,
-        //     'end_times':,
-        //     'monthly_day':,
-        //     'monthly_week':,
-        //     'monthly_week_day':,
-        //     'repeat_interval':,
-        //     'type':,
-        //     'weekly_days':,
-        // }
+        data_meeting_payload['recurrence'] = {}
     }
     else {
         data_meeting_payload['type'] = 2
+    }
+    if ($('#end-date-by-input').prop('checked')) {
+        data_meeting_payload['recurrence']['end_date_time'] = endDateBySelectEle.val() + 'T' + '00:00:00'
+    }
+    else {
+        if (parseInt(endDateAfterSelectEle.val()) > 20 || parseInt(endDateAfterSelectEle.val()) < 1) {
+            $.fn.notifyB({description: 'End times must be smaller than 20 and greater than 1.'}, 'warning');
+            flag = false;
+        }
+        else {
+            data_meeting_payload['recurrence']['end_times'] = parseInt(endDateAfterSelectEle.val())
+        }
+    }
+    data_meeting_payload['recurrence']['type'] = parseInt(modalRecurrenceEle.val())
+    if (data_meeting_payload['recurrence']['type'] === 1) {
+        data_meeting_payload['recurrence']['repeat_interval'] = parseInt($('#modal-repeat-every-day').val())
+    }
+    else if (data_meeting_payload['recurrence']['type'] === 2) {
+        data_meeting_payload['recurrence']['repeat_interval'] = parseInt($('#modal-repeat-every-week').val())
+        let weekly_days_param = []
+        if ($('#sun').prop('checked')) {
+            weekly_days_param.push(1)
+        }
+        if ($('#mon').prop('checked')) {
+            weekly_days_param.push(2)
+        }
+        if ($('#tue').prop('checked')) {
+            weekly_days_param.push(3)
+        }
+        if ($('#wed').prop('checked')) {
+            weekly_days_param.push(4)
+        }
+        if ($('#thu').prop('checked')) {
+            weekly_days_param.push(5)
+        }
+        if ($('#fri').prop('checked')) {
+            weekly_days_param.push(6)
+        }
+        if ($('#sat').prop('checked')) {
+            weekly_days_param.push(7)
+        }
+        if (weekly_days_param.length > 0) {
+            data_meeting_payload['recurrence']['weekly_days'] = weekly_days_param.join(',')
+        }
+        else {
+            $.fn.notifyB({description: 'Weekly days list must not empty'}, 'warning');
+            flag = false;
+        }
+    }
+    else if (data_meeting_payload['recurrence']['type'] === 3) {
+        data_meeting_payload['recurrence']['repeat_interval'] = parseInt($('#modal-repeat-every-month').val())
+        if ($('#modal-day-x-of-month-input').prop('checked')) {
+            data_meeting_payload['recurrence']['monthly_day'] = parseInt($('#modal-day-x-of-month-select').val())
+        }
+        else {
+            data_meeting_payload['recurrence']['monthly_week'] = parseInt($('#modal-date-x-of-the-month-select-1').val())
+            data_meeting_payload['recurrence']['monthly_week_day'] = parseInt($('#modal-date-x-of-the-month-select-2').val())
+        }
     }
     data_meeting_payload['topic'] = modalMeetingTitleEle.val()
     data_meeting_payload['start_time'] = startDateEle.val() + 'T' + startTimeEle.val()

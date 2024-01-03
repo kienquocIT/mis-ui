@@ -54,6 +54,11 @@
                             <input type="checkbox" class="form-check-input" id="customChecksc1" value="leave">
                             <label class="form-check-label" for="customChecksc1">{% trans 'Leave' %}</label>
                         </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="customChecksc4"
+                                   value="meeting-schedule">
+                            <label class="form-check-label" for="customChecksc4">{% trans 'Meeting schedule' %}</label>
+                        </div>
                     </div>
                     <div class="title-sm text-black mb-0 title-x-scaret">{% trans 'Group' %}
                         <div class="wrap-btn is_active"><span></span></div>
@@ -316,6 +321,7 @@
         </div>
     </dev>
     <input type="text" id="url-factory"
+           data-meeting-schedule="{% url 'MeetingScheduleListAPI' %}"
            data-leave="{% url 'LeaveRequestCalendarListAPI' %}"
            data-meet="{% url 'OpportunityMeetingListAPI' %}"
            data-business="{% url 'BusinessTripRequestListAPI' %}"

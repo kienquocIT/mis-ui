@@ -21,7 +21,7 @@ const currentEmployeeEle = $('#employee_current')
 const current_employee = currentEmployeeEle.text() ? JSON.parse(currentEmployeeEle.text()) : {};
 const currentCompanyEle = $('#company_current')
 const current_company = currentCompanyEle.text() ? JSON.parse(currentCompanyEle.text()) : {};
-console.log(current_company)
+
 startTimeEle.daterangepicker({
     timePicker: true,
     singleDatePicker: true,

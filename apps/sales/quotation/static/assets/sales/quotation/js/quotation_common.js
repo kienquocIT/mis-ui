@@ -1430,7 +1430,6 @@ class QuotationDataTableHandle {
                                         data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                         data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
                                         data-keyResp="product_sale_list"
-                                        data-zone="${dataZone}"
                                         disabled
                                     >
                                     </select>`;
@@ -1448,7 +1447,7 @@ class QuotationDataTableHandle {
                                                 <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" data-zone="${dataZone}" disabled>
+                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -1468,7 +1467,6 @@ class QuotationDataTableHandle {
                                     data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
-                                    data-zone="${dataZone}"
                                     disabled
                                 >
                                 </select>`;
@@ -1482,7 +1480,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
-                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" data-zone="${dataZone}" disabled>`;
+                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" disabled>`;
                     }
                 },
                 {

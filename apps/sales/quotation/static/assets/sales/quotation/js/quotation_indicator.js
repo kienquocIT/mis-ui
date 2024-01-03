@@ -120,6 +120,28 @@ function calculateIndicator(indicator_list) {
     }
     QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
     let data_form = _form.dataForm;
+    let dataDetailCopy = {};
+    let eleDetailCopy = $('#data-copy-quotation-detail');
+    if (eleDetailCopy && eleDetailCopy.length > 0) {
+        if (eleDetailCopy.val()) {
+            dataDetailCopy = JSON.parse(eleDetailCopy.val());
+        }
+    }
+    let dataDetail = {};
+    let dataDetailQuoIndicator = [];
+    let dataDetailSOIndicator = [];
+    let eleDetail = $('#quotation-detail-data');
+    if (eleDetail && eleDetail.length > 0) {
+        if (eleDetail.val()) {
+            dataDetail = JSON.parse(eleDetail.val());
+            if (dataDetail?.['quotation_indicators_data']) {
+                dataDetailQuoIndicator = dataDetail?.['quotation_indicators_data'];
+            }
+            if (dataDetail?.['sale_order_indicators_data']) {
+                dataDetailSOIndicator = dataDetail?.['sale_order_indicators_data'];
+            }
+        }
+    }
     // Check special case
     functionClass.checkSpecialCaseIndicator(data_form);
     for (let indicator of indicator_list) {
@@ -157,6 +179,18 @@ function calculateIndicator(indicator_list) {
         let value = evaluateFormula(parse_formula);
         if (!value || ['', "", "undefined", null].includes(value)) {
             value = 0;
+            for (let indicate of dataDetailQuoIndicator) {
+                if (indicate?.['indicator']?.['code'] === indicator?.['code']) {
+                    value = indicate?.['indicator_value'];
+                    break;
+                }
+            }
+            for (let indicate of dataDetailSOIndicator) {
+                if (indicate?.['indicator']?.['code'] === indicator?.['code']) {
+                    value = indicate?.['indicator_value'];
+                    break;
+                }
+            }
         }
         // rate value
         if (indicator?.['code'] === "IN0001") {
@@ -171,34 +205,22 @@ function calculateIndicator(indicator_list) {
         // check if sale order then get quotation value
         if (formSubmit[0].classList.contains('sale-order')) {
             if (formSubmit.attr('data-method') === 'POST') {
-                let eleDetail = $('#data-copy-quotation-detail');
-                if (eleDetail.length) {
-                    if (eleDetail.val()) {
-                        let dataDetail = JSON.parse(eleDetail.val());
-                        if (dataDetail?.['quotation_indicators_data']) {
-                            for (let quotation_indicator of dataDetail?.['quotation_indicators_data']) {
-                                if (indicator.title === quotation_indicator.indicator.title) {
-                                    quotationValue = quotation_indicator.indicator_value;
-                                    differenceValue = (value - quotation_indicator.indicator_value);
-                                    break;
-                                }
-                            }
+                if (dataDetailCopy?.['quotation_indicators_data']) {
+                    for (let quotation_indicator of dataDetailCopy?.['quotation_indicators_data']) {
+                        if (indicator.title === quotation_indicator.indicator.title) {
+                            quotationValue = quotation_indicator.indicator_value;
+                            differenceValue = (value - quotation_indicator.indicator_value);
+                            break;
                         }
                     }
                 }
             } else {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail.length) {
-                    if (eleDetail.val()) {
-                        let dataDetail = JSON.parse(eleDetail.val());
-                        if (dataDetail?.['quotation']?.['quotation_indicators_data']) {
-                            for (let quotation_indicator of dataDetail?.['quotation']?.['quotation_indicators_data']) {
-                                if (indicator.title === quotation_indicator.indicator.title) {
-                                    quotationValue = quotation_indicator.indicator_value;
-                                    differenceValue = (value - quotation_indicator.indicator_value);
-                                    break;
-                                }
-                            }
+                if (dataDetail?.['quotation']?.['quotation_indicators_data']) {
+                    for (let quotation_indicator of dataDetail?.['quotation']?.['quotation_indicators_data']) {
+                        if (indicator.title === quotation_indicator.indicator.title) {
+                            quotationValue = quotation_indicator.indicator_value;
+                            differenceValue = (value - quotation_indicator.indicator_value);
+                            break;
                         }
                     }
                 }

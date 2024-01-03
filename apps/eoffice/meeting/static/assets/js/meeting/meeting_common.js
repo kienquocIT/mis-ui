@@ -100,6 +100,8 @@ meetingIDEle.on('change', function () {
     let bool = $('#meeting-id-personal').prop('checked')
     $('#enable-continuous-meeting-chat-row .form-switch').prop('hidden', bool)
     $('#modal-enable-continuous-meeting-chat').prop('checked', !bool).prop('disabled', bool)
+    modalRecurringMeetingEle.prop('checked', !bool)
+    modalRecurringMeetingEle.closest('.row').prop('hidden', bool)
 })
 
 function loadInternalParticipants(data) {

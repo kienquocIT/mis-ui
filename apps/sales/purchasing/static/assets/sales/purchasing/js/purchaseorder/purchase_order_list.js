@@ -70,7 +70,7 @@ $(function () {
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            let $eleTrans = $('#trans-factory');
+                            let $eleTrans = $('#app-trans-factory');
                             let status_data = {};
                             status_data[$eleTrans.attr('data-status-none')] = "badge badge-soft-light";
                             status_data[$eleTrans.attr('data-status-wait')] = "badge badge-soft-warning";

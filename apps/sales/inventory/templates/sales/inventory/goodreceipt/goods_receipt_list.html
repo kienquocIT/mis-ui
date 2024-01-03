@@ -11,7 +11,7 @@
        title="{% trans 'Create Goods Receipt' %}"
        id="create_goods_receipt_button"
        data-bs-original-title="Add Goods Receipt">
-            <button class="btn btn-outline-primary">
+            <button type="button" class="btn btn-outline-primary">
                 <span>
                     <span>{% trans 'Add' %}</span>
                     <span class="icon">
@@ -23,16 +23,6 @@
 {% endblock %}
 
 {% block pageContent %}
-    <input type="hidden" id="goods-receipt-link"
-           data-link-update="{% url 'GoodsReceiptDetail' 1 %}"
-           data-link-list="{% url 'GoodsReceiptList' %}"
-    >
-    <input
-        type="hidden"
-        id="app-trans-factory"
-        data-change="{% trans 'Change' %}"
-        data-cancel="{% trans 'Cancel' %}"
-    >
     <table
             id="datable_goods_receipt_list"
             class="table nowrap w-100 mb-5"
@@ -56,6 +46,17 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
+    <input
+            type="text" id="goods-receipt-link"
+            data-link-update="{% url 'GoodsReceiptDetail' 1 %}"
+            data-link-list="{% url 'GoodsReceiptList' %}"
+    >
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-change="{% trans 'Change' %}"
+            data-cancel="{% trans 'Cancel' %}"
+    >
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 

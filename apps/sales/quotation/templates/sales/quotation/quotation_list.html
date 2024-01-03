@@ -11,7 +11,7 @@
        title="{% trans 'Create Quotation' %}"
        id="create_quotation_button"
        data-bs-original-title="Add Quotation">
-            <button class="btn btn-outline-primary">
+            <button type="button" class="btn btn-outline-primary">
                 <span>
                     <span>{% trans 'Add' %}</span>
                     <span class="icon">
@@ -23,16 +23,6 @@
 {% endblock %}
 
 {% block pageContent %}
-    <input type="hidden" id="quotation-link"
-           data-link-update="{% url 'QuotationDetail' 1 %}"
-           data-link-list="{% url 'QuotationList' %}"
-    >
-    <input
-        type="hidden"
-        id="app-trans-factory"
-        data-change="{% trans 'Change' %}"
-        data-cancel="{% trans 'Cancel' %}"
-    >
     <table
             id="table_quotation_list"
             class="table nowrap w-100 mb-5"
@@ -57,7 +47,18 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-{{ data.stt_sys|json_script:'stt_sys' }}
+    <input
+            type="text" id="quotation-link"
+            data-link-update="{% url 'QuotationDetail' 1 %}"
+            data-link-list="{% url 'QuotationList' %}"
+    >
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-change="{% trans 'Change' %}"
+            data-cancel="{% trans 'Cancel' %}"
+    >
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 
 {% block jsFooter %}

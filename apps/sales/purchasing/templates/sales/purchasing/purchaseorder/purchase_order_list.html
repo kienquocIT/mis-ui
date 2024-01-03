@@ -11,7 +11,7 @@
        title="{% trans 'Create Purchase Order' %}"
        id="create_purchase_order_button"
        data-bs-original-title="Add Purchase Order">
-            <button class="btn btn-outline-primary">
+            <button type="button" class="btn btn-outline-primary">
                 <span>
                     <span>{% trans 'Add' %}</span>
                     <span class="icon">
@@ -23,16 +23,6 @@
 {% endblock %}
 
 {% block pageContent %}
-    <input type="hidden" id="purchase-order-link"
-           data-link-update="{% url 'PurchaseOrderDetail' 1 %}"
-           data-link-list="{% url 'PurchaseOrderList' %}"
-    >
-    <input
-        type="hidden"
-        id="app-trans-factory"
-        data-change="{% trans 'Change' %}"
-        data-cancel="{% trans 'Cancel' %}"
-    >
     <table
             id="table_purchase_order_list"
             class="table nowrap w-100 mb-5"
@@ -55,11 +45,20 @@
     </table>
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="hidden" id="trans-factory"
-    data-status-none="{% trans 'None' %}"
-    data-status-wait="{% trans 'Wait' %}"
-    data-status-partially="{% trans 'Partially received' %}"
-    data-status-received="{% trans 'Received' %}"
+    <input
+            type="text" id="purchase-order-link"
+            data-link-update="{% url 'PurchaseOrderDetail' 1 %}"
+            data-link-list="{% url 'PurchaseOrderList' %}"
+    >
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-change="{% trans 'Change' %}"
+            data-cancel="{% trans 'Cancel' %}"
+            data-status-none="{% trans 'None' %}"
+            data-status-wait="{% trans 'Wait' %}"
+            data-status-partially="{% trans 'Partially received' %}"
+            data-status-received="{% trans 'Received' %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}

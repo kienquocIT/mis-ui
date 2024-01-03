@@ -15,9 +15,14 @@ function modalFormSubmit($form, is_edit=false) {
                 form_order = (tableLen + 1);
             }
         }
+        let title = _form.get("title");
+        if (!title) {
+            $.fn.notifyB({description: 'Title is required'}, 'failure');
+            return false
+        }
         let temp = {
             "order": form_order ? form_order : 1,
-            "title": _form.get("title"),
+            "title": title,
             "remark": _form.get("remark"),
             "property_list": _form.getAll("property_list")
         }

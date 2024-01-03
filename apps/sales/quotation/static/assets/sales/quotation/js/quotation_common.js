@@ -1,6 +1,5 @@
 let promotionClass = new promotionHandle();
 let shippingClass = new shippingHandle();
-let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-before-tax');
 
 // Load data
 class QuotationLoadDataHandle {
@@ -11,6 +10,7 @@ class QuotationLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
     static transEle = $('#app-trans-factory');
+    static finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-before-tax');
 
     static loadInformationSelectBox(ele, is_expense = false) {
         let optionSelected;
@@ -143,7 +143,11 @@ class QuotationLoadDataHandle {
         // Delete all shipping rows
         deletePromotionRows(tableProduct, false, true);
         // ReCheck Config when change Opportunity
-        QuotationCheckConfigHandle.checkConfig(true);
+        let check_config = QuotationCheckConfigHandle.checkConfig(true);
+        // load again total products if after check config the price change
+        if (check_config?.['is_make_price_change'] === true) {
+            QuotationCalculateCaseHandle.calculateAllRowsTableProduct($(tableProduct));
+        }
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}) {
@@ -195,7 +199,7 @@ class QuotationLoadDataHandle {
                 });
             }
         }
-        QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
+        // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
         if (form.attr('data-method') !== 'GET') {
             if (!dataCustomer?.['is_copy']) {
                 QuotationLoadDataHandle.loadDataProductAll();
@@ -256,7 +260,7 @@ class QuotationLoadDataHandle {
                 return item?.['fullname'] || '';
             },
         });
-        QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.contactSelectEle);
+        // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.contactSelectEle);
     };
 
     static loadBoxQuotationPaymentTerm(dataPayment = {}) {
@@ -273,7 +277,7 @@ class QuotationLoadDataHandle {
             data: dataPayment,
             disabled: !(QuotationLoadDataHandle.paymentSelectEle.attr('data-url')),
         });
-        QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.paymentSelectEle);
+        // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.paymentSelectEle);
     }
 
     static loadDataBySalePerson() {
@@ -629,7 +633,7 @@ class QuotationLoadDataHandle {
                                 }
                                 ele.append(option)
                             });
-                            self.loadInformationSelectBox(ele);
+                            // QuotationLoadDataHandle.loadInformationSelectBox(ele);
                         }
                     }
                 }
@@ -730,7 +734,7 @@ class QuotationLoadDataHandle {
                 totalRaw.value = data.total_expense
             }
             // load total revenue before tax for tab product
-            finalRevenueBeforeTax.value = data.total_product_revenue_before_tax;
+            QuotationLoadDataHandle.finalRevenueBeforeTax.value = data.total_product_revenue_before_tax;
         }
     };
 
@@ -1194,8 +1198,13 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_products_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_products_data";
+                        }
                         return `<div class="row">
-                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
+                                    <p><span class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
                                 </div>`;
                     }
                 },
@@ -1208,29 +1217,25 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
-                            return `<div class="row">
-                                        <select 
-                                            class="form-select table-row-uom"
-                                            data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                            data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
-                                            data-keyResp="unit_of_measure"
-                                            data-zone="${dataZone}"
-                                            required
-                                         >
-                                        </select>
-                                    </div>`;
+                            return `<select 
+                                        class="form-select table-row-uom"
+                                        data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                        data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                        data-keyResp="unit_of_measure"
+                                        data-zone="${dataZone}"
+                                        required
+                                     >
+                                    </select>`;
                         } else {
-                            return `<div class="row">
-                                        <select 
-                                            class="form-select table-row-uom"
-                                            data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                            data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
-                                            data-keyResp="unit_of_measure"
-                                            required
-                                            disabled
-                                         >
-                                        </select>
-                                    </div>`;
+                            return `<select 
+                                        class="form-select table-row-uom"
+                                        data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                        data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                        data-keyResp="unit_of_measure"
+                                        required
+                                        disabled
+                                     >
+                                    </select>`;
                         }
                     },
                 },
@@ -1242,9 +1247,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" required>
-                                </div>`;
+                        return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" required>`;
                     }
                 },
                 {
@@ -1321,56 +1324,57 @@ class QuotationDataTableHandle {
                             taxRate = row?.['tax']?.['value'];
                         }
                         if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
-                            return `<div class="row">
-                                <select 
-                                    class="form-select table-row-tax"
-                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
-                                    data-keyResp="tax_list"
-                                    data-zone="${dataZone}"
-                                 >
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row?.['product_tax_amount']}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row?.['product_tax_amount']}"
-                                    hidden
-                                >
-                            </div>`;
+                            return `<select 
+                                        class="form-select table-row-tax"
+                                        data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
+                                        data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                        data-keyResp="tax_list"
+                                        data-zone="${dataZone}"
+                                     >
+                                    </select>
+                                    <input
+                                        type="text"
+                                        class="form-control mask-money table-row-tax-amount"
+                                        value="${row?.['product_tax_amount']}"
+                                        data-return-type="number"
+                                        hidden
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control table-row-tax-amount-raw"
+                                        value="${row?.['product_tax_amount']}"
+                                        hidden
+                                    >`;
                         } else {
-                            return `<div class="row">
-                                <select class="form-select table-row-tax disabled-custom-show" disabled>
-                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row?.['product_tax_amount']}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row?.['product_tax_amount']}"
-                                    hidden
-                                >
-                            </div>`;
+                            return `<select class="form-select table-row-tax disabled-custom-show" disabled>
+                                        <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
+                                    </select>
+                                    <input
+                                        type="text"
+                                        class="form-control mask-money table-row-tax-amount"
+                                        value="${row?.['product_tax_amount']}"
+                                        data-return-type="number"
+                                        hidden
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control table-row-tax-amount-raw"
+                                        value="${row?.['product_tax_amount']}"
+                                        hidden
+                                    >`;
                         }
                     }
                 },
                 {
                     targets: 8,
                     render: (data, type, row) => {
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_products_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_products_data";
+                        }
                         return `<div class="row subtotal-area">
-                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
+                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -1383,7 +1387,12 @@ class QuotationDataTableHandle {
                 {
                     targets: 9,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_products_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_products_data";
+                        }
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -1409,6 +1418,11 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_costs_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_costs_data";
+                        }
                         if (row.is_shipping === false) {
                             return `<select
                                         class="form-select table-row-item disabled-custom-show"
@@ -1416,6 +1430,7 @@ class QuotationDataTableHandle {
                                         data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                         data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
                                         data-keyResp="product_sale_list"
+                                        data-zone="${dataZone}"
                                         disabled
                                     >
                                     </select>`;
@@ -1433,7 +1448,7 @@ class QuotationDataTableHandle {
                                                 <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
+                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" data-zone="${dataZone}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -1443,24 +1458,31 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: () => {
-                        return `<div class="row">
-                                <select 
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_costs_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_costs_data";
+                        }
+                        return `<select 
                                     class="form-select table-row-uom disabled-custom-show"
                                     data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
+                                    data-zone="${dataZone}"
                                     disabled
                                 >
-                                </select>
-                            </div>`;
+                                </select>`;
                     },
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" disabled>
-                            </div>`;
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_costs_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_costs_data";
+                        }
+                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
@@ -1472,27 +1494,24 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_costs_data";
                         }
                         if (row.is_shipping === false) {
-                            return `<div class="row">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-price" 
-                                    data-return-type="number"
-                                    value="${row.product_cost_price}"
-                                    data-zone="${dataZone}"
-                                    required
-                                >
-                            </div>`;
+                            return `<input 
+                                        type="text" 
+                                        class="form-control mask-money table-row-price" 
+                                        data-return-type="number"
+                                        value="${row.product_cost_price}"
+                                        data-zone="${dataZone}"
+                                        required
+                                    >`;
                         } else {
-                            return `<div class="row">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-price disabled-custom-show" 
-                                    data-return-type="number"
-                                    value="${row.product_cost_price}"
-                                    required
-                                    disabled
-                                >
-                            </div>`;
+                            return `<input 
+                                        type="text" 
+                                        class="form-control mask-money table-row-price disabled-custom-show" 
+                                        data-return-type="number"
+                                        value="${row.product_cost_price}"
+                                        data-zone="${dataZone}"
+                                        required
+                                        disabled
+                                    >`;
                         }
                     }
                 },
@@ -1505,61 +1524,62 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_costs_data";
                         }
                         if (row.is_shipping === false) {
-                            return `<div class="row">
-                                <select 
-                                    class="form-select table-row-tax"
-                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
-                                    data-keyResp="tax_list"
-                                    data-zone="${dataZone}"
-                                >
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
-                                    hidden
-                                >
-                            </div>`;
+                            return `<select 
+                                        class="form-select table-row-tax"
+                                        data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
+                                        data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                        data-keyResp="tax_list"
+                                        data-zone="${dataZone}"
+                                    >
+                                    </select>
+                                    <input
+                                        type="text"
+                                        class="form-control mask-money table-row-tax-amount"
+                                        value="${row.product_tax_amount}"
+                                        data-return-type="number"
+                                        hidden
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control table-row-tax-amount-raw"
+                                        value="${row.product_tax_amount}"
+                                        hidden
+                                    >`;
                         } else {
-                            return `<div class="row">
-                                <select 
-                                    class="form-select table-row-tax disabled-custom-show"
-                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
-                                    data-keyResp="tax_list"
-                                    disabled
-                                >
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
-                                    hidden
-                                >
-                            </div>`;
+                            return `<select 
+                                        class="form-select table-row-tax disabled-custom-show"
+                                        data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
+                                        data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                        data-keyResp="tax_list"
+                                        disabled
+                                    >
+                                    </select>
+                                    <input
+                                        type="text"
+                                        class="form-control mask-money table-row-tax-amount"
+                                        value="${row.product_tax_amount}"
+                                        data-return-type="number"
+                                        hidden
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control table-row-tax-amount-raw"
+                                        value="${row.product_tax_amount}"
+                                        hidden
+                                    >`;
                         }
                     }
                 },
                 {
                     targets: 6,
                     render: (data, type, row) => {
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_costs_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_costs_data";
+                        }
                         return `<div class="row subtotal-area">
-                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
+                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -1572,8 +1592,12 @@ class QuotationDataTableHandle {
                 {
                     targets: 7,
                     render: () => {
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
-                        return `${bt3}`
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_costs_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_costs_data";
+                        }
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -1643,6 +1667,7 @@ class QuotationDataTableHandle {
                                     data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
                                     data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
                                     data-keyResp="expense_item_list"
+                                    data-zone="${dataZone}"
                                     disabled>
                                     </select>`;
                         }
@@ -1673,6 +1698,7 @@ class QuotationDataTableHandle {
                                         data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                         data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                         data-keyResp="unit_of_measure"
+                                        data-zone="${dataZone}"
                                         required
                                         disabled
                                     >
@@ -1716,8 +1742,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
-                        return `<div class="row">
-                                <select 
+                        return `<select 
                                     class="form-select table-row-tax"
                                     data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
@@ -1737,15 +1762,19 @@ class QuotationDataTableHandle {
                                     class="form-control table-row-tax-amount-raw"
                                     value="${row.expense_tax_amount}"
                                     hidden
-                                >
-                            </div>`;
+                                >`;
                     }
                 },
                 {
                     targets: 7,
                     render: (data, type, row) => {
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_expenses_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_expenses_data";
+                        }
                         return `<div class="row subtotal-area">
-                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : '0')}"></span></p>
+                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -1758,7 +1787,12 @@ class QuotationDataTableHandle {
                 {
                     targets: 8,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_expenses_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_expenses_data";
+                        }
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -2185,12 +2219,12 @@ class QuotationCalculateCaseHandle {
             $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
             if (is_product === true) {
-                finalRevenueBeforeTax.value = pretaxAmount;
+                QuotationLoadDataHandle.finalRevenueBeforeTax.value = pretaxAmount;
             }
             if (eleDiscount) {
                 $(eleDiscount).attr('data-init-money', String(discountAmount));
                 eleDiscountRaw.value = discountAmount;
-                finalRevenueBeforeTax.value = (pretaxAmount - discountAmount);
+                QuotationLoadDataHandle.finalRevenueBeforeTax.value = (pretaxAmount - discountAmount);
             }
             $(eleTaxes).attr('data-init-money', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
@@ -2352,9 +2386,9 @@ class QuotationCheckConfigHandle {
                                 let row = tableProduct.tBodies[0].rows[i];
                                 is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, row, true, false, is_make_price_change);
                                 // Re Calculate all data of rows & total
-                                if (is_copy === false) {
-                                    QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
-                                }
+                                // if (is_copy === false) {
+                                //     QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
+                                // }
                             }
                         }
                     }
@@ -2375,9 +2409,9 @@ class QuotationCheckConfigHandle {
                         }
                     }
                     // ReCalculate Total
-                    if (is_first_time === false && is_copy === false) {
-                        QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
-                    }
+                    // if (is_first_time === false && is_copy === false) {
+                    //     QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
+                    // }
                 } else {
                     if (new_row) {
                         is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, new_row, true, false, is_make_price_change);
@@ -2404,9 +2438,9 @@ class QuotationCheckConfigHandle {
                                 let row = tableProduct.tBodies[0].rows[i];
                                 is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, row, false, true, is_make_price_change);
                                 // Re Calculate all data of rows & total
-                                if (is_copy === false) {
-                                    QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
-                                }
+                                // if (is_copy === false) {
+                                //     QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
+                                // }
                             }
                         }
                     }
@@ -2427,9 +2461,9 @@ class QuotationCheckConfigHandle {
                         }
                     }
                     // ReCalculate Total
-                    if (is_first_time === false && is_copy === false) {
-                        QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
-                    }
+                    // if (is_first_time === false && is_copy === false) {
+                    //     QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
+                    // }
                 } else {
                     if (new_row) {
                         is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, new_row, false, true, is_make_price_change);
@@ -2531,7 +2565,7 @@ class QuotationCheckConfigHandle {
             }
         }
         return is_make_price_change
-    }
+    };
 
 }
 
@@ -2658,6 +2692,8 @@ class QuotationSubmitHandle {
                 }
                 rowData['promotion'] = null;
                 rowData['shipping'] = null;
+
+                result.push(rowData);
             } else if (elePromotion) { // PROMOTION
                 let check_none_blank_list = ['', "", null, "undefined"];
                 rowData['is_promotion'] = true;
@@ -2718,6 +2754,8 @@ class QuotationSubmitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
+
+                result.push(rowData);
             } else if (eleShipping) { // SHIPPING
                 rowData['is_shipping'] = true;
                 rowData['product'] = null;
@@ -2768,8 +2806,10 @@ class QuotationSubmitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
+
+                result.push(rowData);
             }
-            result.push(rowData);
+            // result.push(rowData);
         }
         return result
     }
@@ -2838,6 +2878,8 @@ class QuotationSubmitHandle {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
                 rowData['shipping'] = null;
+
+                result.push(rowData);
             } else if (eleShipping) { // SHIPPING
                 rowData['is_shipping'] = true;
                 rowData['product'] = null;
@@ -2882,8 +2924,10 @@ class QuotationSubmitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
+
+                result.push(rowData);
             }
-            result.push(rowData);
+            // result.push(rowData);
         }
         return result
     }
@@ -3043,39 +3087,74 @@ class QuotationSubmitHandle {
         if (dateCreatedVal) {
             _form.dataForm['date_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
         }
-        _form.dataForm['total_product_pretax_amount'] = parseFloat($('#quotation-create-product-pretax-amount-raw').val());
-        let totalProductDiscountRate = $('#quotation-create-product-discount').val();
-        if (totalProductDiscountRate) {
-            _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
-        } else {
-            _form.dataForm['total_product_discount_rate'] = 0;
-        }
-        _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
-        _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
-        _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
-        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
-        _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
-        _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
-        _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());
-        _form.dataForm['total_expense_pretax_amount'] = parseFloat($('#quotation-create-expense-pretax-amount-raw').val());
-        _form.dataForm['total_expense_tax'] = parseFloat($('#quotation-create-expense-taxes-raw').val());
-        _form.dataForm['total_expense'] = parseFloat($('#quotation-create-expense-total-raw').val());
-
         if (is_sale_order === false) {
             _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;
         }
 
         let quotation_products_data_setup = self.setupDataProduct();
         if (quotation_products_data_setup.length > 0) {
-            _form.dataForm[quotation_products_data] = quotation_products_data_setup
+            _form.dataForm[quotation_products_data] = quotation_products_data_setup;
+            // total product
+            _form.dataForm['total_product_pretax_amount'] = parseFloat($('#quotation-create-product-pretax-amount-raw').val());
+            if (!_form.dataForm['total_product_pretax_amount']) {
+                _form.dataForm['total_product_pretax_amount'] = 0;
+            }
+            let totalProductDiscountRate = $('#quotation-create-product-discount').val();
+            if (totalProductDiscountRate) {
+                _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
+            } else {
+                _form.dataForm['total_product_discount_rate'] = 0;
+            }
+            _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
+            if (!_form.dataForm['total_product_discount']) {
+                _form.dataForm['total_product_discount'] = 0;
+            }
+            _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
+            if (!_form.dataForm['total_product_tax']) {
+                _form.dataForm['total_product_tax'] = 0;
+            }
+            _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
+            if (!_form.dataForm['total_product']) {
+                _form.dataForm['total_product'] = 0;
+            }
+            _form.dataForm['total_product_revenue_before_tax'] = parseFloat(QuotationLoadDataHandle.finalRevenueBeforeTax.value);
+            if (!_form.dataForm['total_product_revenue_before_tax']) {
+                _form.dataForm['total_product_revenue_before_tax'] = 0;
+            }
         }
         let quotation_costs_data_setup = self.setupDataCost();
         if (quotation_costs_data_setup.length > 0) {
-            _form.dataForm[quotation_costs_data] = quotation_costs_data_setup
+            _form.dataForm[quotation_costs_data] = quotation_costs_data_setup;
+            // total cost
+            _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
+            if (!_form.dataForm['total_cost_pretax_amount']) {
+                _form.dataForm['total_cost_pretax_amount'] = 0;
+            }
+            _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
+            if (!_form.dataForm['total_cost_tax']) {
+                _form.dataForm['total_cost_tax'] = 0;
+            }
+            _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());
+            if (!_form.dataForm['total_cost']) {
+                _form.dataForm['total_cost'] = 0;
+            }
         }
         let quotation_expenses_data_setup = self.setupDataExpense();
         if (quotation_expenses_data_setup.length > 0) {
-            _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup
+            _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup;
+            // total expense
+            _form.dataForm['total_expense_pretax_amount'] = parseFloat($('#quotation-create-expense-pretax-amount-raw').val());
+            if (!_form.dataForm['total_expense_pretax_amount']) {
+                _form.dataForm['total_expense_pretax_amount'] = 0;
+            }
+            _form.dataForm['total_expense_tax'] = parseFloat($('#quotation-create-expense-taxes-raw').val());
+            if (!_form.dataForm['total_expense_tax']) {
+                _form.dataForm['total_expense_tax'] = 0;
+            }
+            _form.dataForm['total_expense'] = parseFloat($('#quotation-create-expense-total-raw').val());
+            if (!_form.dataForm['total_expense']) {
+                _form.dataForm['total_expense'] = 0;
+            }
         }
 
         _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();

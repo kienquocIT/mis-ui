@@ -258,6 +258,11 @@ $(document).ready(function () {
 
     const $FormElm = $('#business_trip_form')
 
+    // // get WF initial zones
+    // if ($FormElm.attr('data-method').toLowerCase() === 'post') {
+    //     WFRTControl.setWFInitialData('businessrequest');
+    // }
+
     function submitHandleFunc() {
         const frm = new SetupFormSubmit($FormElm);
         let formData = frm.dataForm;
@@ -296,6 +301,8 @@ $(document).ready(function () {
             'attachment': $x.cls.file.get_val(formData.attachment, []),
         }
         if (frm.dataMethod.toLowerCase() === 'post') data.system_status = 1
+
+        // WFRTControl.callWFSubmitForm(frm);
 
         $.fn.callAjax2({
             'url': frm.dataUrl,

@@ -1066,7 +1066,7 @@ msgstr "Tên khách hàng"
 
 #
 msgid "Group"
-msgstr "Phòng ban"
+msgstr "Nhóm"
 
 #
 msgid "Industry"
@@ -1506,7 +1506,7 @@ msgstr "Nhóm Đơn vị tính"
 
 #
 msgid "UoM"
-msgstr "Đơn vị tính"
+msgstr "Đơn vị"
 
 #
 msgid "Good receipt create"
@@ -2255,8 +2255,8 @@ msgid "Select Quotation"
 msgstr "Chọn báo giá"
 
 #
-msgid "Copy all from quotation to sale order"
-msgstr "Sao chép tất cả từ báo giá sang đơn hàng"
+msgid "Copy all from quotation"
+msgstr "Sao chép tất cả từ báo giá"
 
 #
 msgid "Input"
@@ -2336,8 +2336,8 @@ msgid "Home Page"
 msgstr "Trang chủ"
 
 #
-msgid "Employee List"
-msgstr "Danh Sách Nhân viên"
+msgid "Employee list"
+msgstr "Danh sách nhân viên"
 
 #
 msgid "HR"
@@ -4048,7 +4048,7 @@ msgstr "Của tôi"
 
 #
 msgid "Of Same Group"
-msgstr "Cùng phòng ban của tôi"
+msgstr "Cùng nhóm của tôi"
 
 #
 msgid "Of My Staff"
@@ -4291,7 +4291,7 @@ msgstr "Ẩn"
 
 #
 msgid "Member of Group"
-msgstr "Thành viên của phòng ban"
+msgstr "Thành viên của nhóm"
 
 #
 msgid "Empty"
@@ -4878,23 +4878,23 @@ msgstr "Nghiệm thu"
 
 #
 msgid "Group level"
-msgstr "Cấp phòng"
+msgstr "Cấp nhóm"
 
 #
 msgid "Group reference title"
-msgstr "Tên phòng tham chiếu"
+msgstr "Tên nhóm tham chiếu"
 
 #
 msgid "Group display title"
-msgstr "Tên phòng hiển thị"
+msgstr "Tên nhóm hiển thị"
 
 #
 msgid "Group code"
-msgstr "Mã phòng"
+msgstr "Mã nhóm"
 
 #
 msgid "Upper group"
-msgstr "Phòng cấp trên"
+msgstr "Nhóm cấp trên"
 
 #
 msgid "Manager"
@@ -5379,7 +5379,7 @@ msgstr "Đến ngày"
 
 #
 msgid "Group description"
-msgstr "Mô tả phòng ban"
+msgstr "Mô tả nhóm"
 
 #
 msgid "1st manager title"
@@ -5391,11 +5391,11 @@ msgstr "Tên quản lý thứ hai"
 
 #
 msgid "Add group level"
-msgstr "Thêm cấp phòng ban"
+msgstr "Thêm cấp nhóm"
 
 #
 msgid "Expense items"
-msgstr "Danh mục chi phí"
+msgstr "Danh mục phí"
 
 #
 msgid "Select position"
@@ -5771,3 +5771,59 @@ msgstr "Yêu cầu cấp phát"
 #
 msgid "Asset, Tools provide list"
 msgstr "Danh sách yêu cầu cấp phát"
+
+#
+msgid "This zone is hidden zone"
+msgstr "Vùng này là vùng ẩn"
+
+#
+msgid "All zones are edit zones"
+msgstr "Tất cả vùng đều là vùng chỉnh sửa"
+
+#
+msgid "This zone is edit zone"
+msgstr "Vùng này là vùng chỉnh sửa"
+
+#
+msgid "There are zones hidden"
+msgstr "Có vùng ẩn"
+
+#
+msgid "All data"
+msgstr "Tất cả dữ liệu"
+
+#
+msgid "Document creator"
+msgstr "Người tạo phiếu"
+
+#
+msgid "Initial node"
+msgstr "Trạm khởi tạo"
+
+#
+msgid "Approved node"
+msgstr "Trạm chấp thuận"
+
+#
+msgid "Completed node"
+msgstr "Trạm hoàn thành"
+
+#
+msgid "Hidden zone"
+msgstr "Vùng bị ẩn"
+
+#
+msgid "Shipping fee"
+msgstr "Phí vận chuyển"
+
+#
+msgid "Promotion available"
+msgstr "Khuyến mãi"
+
+#
+msgid "Hidden by workflow config"
+msgstr "Ẩn theo cấu hình quy trình"
+
+#
+msgid "Add node"
+msgstr "Thêm trạm"

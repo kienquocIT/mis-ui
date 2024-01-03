@@ -54,6 +54,16 @@ $(function () {
         });
         $('.daterangepicker').remove();
 
+        // get WF initial zones
+        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
+            if (!formSubmit[0].classList.contains('sale-order')) {
+                WFRTControl.setWFInitialData('quotation');
+            } else {
+                WFRTControl.setWFInitialData('saleorder');
+            }
+        }
+
+
 // Action on change dropdown opportunity
         QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
             QuotationLoadDataHandle.loadDataByOpportunity(this);
@@ -1049,10 +1059,8 @@ $(function () {
                 is_sale_order = true;
             }
             let _form = new SetupFormSubmit(formSubmit);
-
             // Load again indicator when Submit
             indicatorClass.loadQuotationIndicator('quotation-indicator-data');
-
             QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
@@ -1149,21 +1157,34 @@ $(function () {
                     }
                 }
             }
-
             let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
-                    }
-                )
+
+            WFRTControl.callWFSubmitForm(_form);
+
+
+
+            // WindowControl.showLoading();
+            // $.fn.callAjax2(
+            //     {
+            //         'url': _form.dataUrl,
+            //         'method': _form.dataMethod,
+            //         'data': _form.dataForm,
+            //     }
+            // ).then(
+            //     (resp) => {
+            //         let data = $.fn.switcherResp(resp);
+            //         if (data) {
+            //             $.fn.notifyB({description: data.message}, 'success')
+            //             $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
+            //         }
+            //     }, (err) => {
+            //         setTimeout(() => {
+            //             WindowControl.hideLoading();
+            //         }, 1000)
+            //         $.fn.notifyB({description: err.data.errors}, 'failure');
+            //     }
+            // )
+
         }
 
         $('#btn-remove-promotion').on('click', function() {

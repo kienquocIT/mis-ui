@@ -110,32 +110,17 @@
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label required">{% trans 'Purchase order' %}</label>
-                                <div class="input-group more-information-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="dropstart input-prefix">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
-                                        <select
-                                                class="form-select"
-                                                id="box-good-receipt-purchase-order"
-                                                data-url="{% url "PurchaseOrderSaleListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url "PurchaseOrderDetail" 1 %}"
-                                                name="purchase_order"
-                                                data-keyResp="purchase_order_sale_list"
-                                                disabled
-                                        ></select>
-                                    </div>
-                                </div>
+                                <label class="form-label required" for="box-good-receipt-purchase-order">{% trans 'Purchase order' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-good-receipt-purchase-order"
+                                        data-url="{% url "PurchaseOrderSaleListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url "PurchaseOrderDetail" 1 %}"
+                                        name="purchase_order"
+                                        data-keyResp="purchase_order_sale_list"
+                                        disabled
+                                ></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
@@ -154,31 +139,16 @@
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label required" for="box-good-receipt-supplier">{% trans 'Supplier' %}</label>
-                                <div class="input-group more-information-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="dropstart input-prefix">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
-                                        <select
-                                                class="form-select"
-                                                id="box-good-receipt-supplier"
-                                                data-url="{% url "AccountForSaleListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url "AccountDetail" 1 %}"
-                                                name="supplier"
-                                                data-keyResp="account_sale_list"
-                                                disabled
-                                        ></select>
-                                    </div>
-                                </div>
+                                <select
+                                        class="form-select"
+                                        id="box-good-receipt-supplier"
+                                        data-url="{% url "AccountForSaleListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url "AccountDetail" 1 %}"
+                                        name="supplier"
+                                        data-keyResp="account_sale_list"
+                                        disabled
+                                ></select>
                             </div>
                         </div>
                     </div>
@@ -224,31 +194,16 @@
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Production report' %}</label>
-                                <div class="input-group more-information-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="dropstart input-prefix">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
-                                        <select
-                                                class="form-select"
-                                                id=""
-                                                data-url="{% url "ProductForSaleListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url "ProductDetail" 1 %}"
-                                                name="production_report"
-                                                data-keyResp=""
-                                                disabled
-                                        ></select>
-                                    </div>
-                                </div>
+                                <select
+                                        class="form-select"
+                                        id=""
+                                        data-url="{% url "ProductForSaleListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url "ProductDetail" 1 %}"
+                                        name="production_report"
+                                        data-keyResp=""
+                                        disabled
+                                ></select>
                             </div>
                         </div>
                     </div>
@@ -308,8 +263,8 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th colspan="6"></th>
-                                        <th colspan="3">
+                                        <th colspan="5"></th>
+                                        <th colspan="4">
                                             <div class="row">
                                                 <div class="col-6">
                                                     <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>

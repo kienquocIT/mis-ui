@@ -23,19 +23,19 @@ $(function () {
                 info: false,
                 columnDefs: [
                     {
-                        "width": "5%",
+                        "width": "10%",
                         "targets": 0
                     }, {
                         "width": "30%",
                         "targets": 1
                     }, {
-                        "width": "30%",
+                        "width": "25%",
                         "targets": 2
                     }, {
-                        "width": "30%",
+                        "width": "25%",
                         "targets": 3
                     }, {
-                        "width": "5%",
+                        "width": "10%",
                         "targets": 4
                     }
                 ],
@@ -119,20 +119,28 @@ $(function () {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
+            $.fn.callAjax2(
+                {
+                    'url': _form.dataUrl,
+                    'method': _form.dataMethod,
+                    'data': _form.dataForm,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
+                            window.location.replace(_form.dataUrlRedirect);
+                        }, 1000);
                     }
-                )
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
         });
 
 // submit edit on row
@@ -147,20 +155,28 @@ $(function () {
             data_submit['description'] = row.querySelector('.table-row-description').value;
             data_submit['first_manager_description'] = row.querySelector('.table-row-first-manager-description').value;
             data_submit['second_manager_description'] = row.querySelector('.table-row-second-manager-description').value;
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(url, method, data_submit, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl(url_redirect, 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
+            $.fn.callAjax2(
+                {
+                    'url': url,
+                    'method': method,
+                    'data': data_submit,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
+                            window.location.replace(url_redirect);
+                        }, 1000);
                     }
-                )
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
         });
 
 

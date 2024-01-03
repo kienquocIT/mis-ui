@@ -114,7 +114,7 @@ class GRLoadDataHandle {
                 return $(`<span>${state.text} ${codeHTML}</span>`);
             },
         });
-        GRLoadDataHandle.loadMoreInformation(ele);
+        // GRLoadDataHandle.loadMoreInformation(ele);
     };
 
     static loadBoxSupplier(dataCustomer = {}) {
@@ -126,7 +126,7 @@ class GRLoadDataHandle {
                 return item?.['name'] || '';
             },
         });
-        GRLoadDataHandle.loadMoreInformation(ele);
+        // GRLoadDataHandle.loadMoreInformation(ele);
     };
 
     static loadBoxIA(dataIA = {}) {
@@ -264,7 +264,7 @@ class GRLoadDataHandle {
     };
 
     static loadChangePO($ele) {
-        GRLoadDataHandle.loadMoreInformation($ele);
+        // GRLoadDataHandle.loadMoreInformation($ele);
         GRDataTableHandle.tableLineDetailPO.DataTable().clear().draw();
         GRCalculateHandle.calculateTotal(GRDataTableHandle.tableLineDetailPO[0]);
         GRDataTableHandle.tablePOProduct.DataTable().clear().draw();

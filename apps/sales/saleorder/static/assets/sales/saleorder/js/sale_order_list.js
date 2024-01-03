@@ -102,14 +102,15 @@ $(function () {
                     {
                         targets: 6,
                         render: (data, type, row) => {
-                            let status_data = {
-                                "Draft": "badge badge-soft-light",
-                                "Created": "badge badge-soft-primary",
-                                "Added": "badge badge-soft-info",
-                                "Finish": "badge badge-soft-success",
-                                "Cancel": "badge badge-soft-danger",
-                            }
-                            return `<span class="${status_data[row?.['system_status']]}">${row?.['system_status']}</span>`;
+                            let sttTxt = JSON.parse($('#stt_sys').text())
+                            let sttData = [
+                                "soft-light",
+                                "soft-primary",
+                                "soft-info",
+                                "soft-success",
+                                "soft-danger",
+                            ]
+                            return `<span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                     {
@@ -131,7 +132,7 @@ $(function () {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             const $elmTrans = $('#trans-factory')
                             let isDelivery = ''
-                            if (!row.delivery_call && ['Added', 'Finish'].includes(row?.['system_status']))
+                            if (!row.delivery_call && [2, 3].includes(row?.['system_status']))
                                 isDelivery = '<div class="dropdown-divider"></div>' +
                                     `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`
                             return `<div class="dropdown">

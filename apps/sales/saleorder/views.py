@@ -6,6 +6,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, ConditionFormset, SaleMsg, InputMappingProperties
+from apps.shared.msg import BaseMsg
+
+SYSTEM_STATUS = (
+    (0, BaseMsg.DRAFT),
+    (1, BaseMsg.CREATED),
+    (2, BaseMsg.ADDED),
+    (3, BaseMsg.FINISH),
+    (4, BaseMsg.CANCEL),
+)
 
 
 def create_sale_order(request, url, msg):
@@ -34,7 +43,7 @@ class SaleOrderList(View):
         breadcrumb='SALE_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
 
 
 class SaleOrderCreate(View):
@@ -52,6 +61,8 @@ class SaleOrderCreate(View):
                 'data_copy_to': data_copy_to,
                 'opportunity': opportunity,
             },
+            'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
+            'form_id': 'frm_quotation_create',
             'list_from_app': 'saleorder.saleorder.create',
         }
         return result, status.HTTP_200_OK
@@ -99,7 +110,10 @@ class SaleOrderDetail(View):
         breadcrumb='SALE_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+        return {'data': {'doc_id': pk},
+                'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
+                'form_id': 'frm_quotation_create',
+                }, status.HTTP_200_OK
 
 
 class SaleOrderUpdate(View):

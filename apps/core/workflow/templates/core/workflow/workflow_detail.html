@@ -28,7 +28,7 @@
     <form
             data-url="{% url 'WorkflowDetailAPI' data.data.doc_id %}"
             data-url-redirect="{% url 'WorkflowList' %}"
-            data-method="PUT"
+            data-method="GET"
             id="form-create_workflow"
             method="post"
             readonly
@@ -237,11 +237,10 @@
                         >
                             <thead>
                             <tr>
-                                <th class="w-10">#</th>
                                 <th class="w-20">{% trans 'Node name' %}</th>
-                                <th class="w-20">{% trans 'Description' %}</th>
-                                <th class="w-20">{% trans 'Node Actions' %}</th>
-                                <th class="w-20">{% trans 'Collaborators' %}</th>
+                                <th class="w-30">{% trans 'Description' %}</th>
+                                <th class="w-15">{% trans 'Node Actions' %}</th>
+                                <th class="w-15">{% trans 'Collaborators' %}</th>
                                 <th class="w-10">{% trans 'Actions' %}</th>
                             </tr>
                             </thead>
@@ -345,11 +344,22 @@
         data-select-1st-manager="{% trans '1st manager' %}"
         data-select-2nd-manager="{% trans '2nd manager' %}"
         data-editing-zone="{% trans 'Editing zone' %}"
+        data-hidden-zone="{% trans 'Hidden zone' %}"
         data-actions="{% trans 'Actions' %}"
         data-collaborators="{% trans 'Collaborators' %}"
         data-add-collaborators="{% trans 'Add Collaborators' %}"
         data-position-select="{% trans 'Select position' %}"
         data-list-source="{% trans 'List source' %}"
+        data-valid-zone-edit="{% trans 'This zone is hidden zone' %}"
+        data-valid-zone-edit-all="{% trans 'All zones are edit zones' %}"
+        data-valid-zone-hidden="{% trans 'This zone is edit zone' %}"
+        data-valid-zone-hidden-exist="{% trans 'There are zones hidden' %}"
+        data-zone-all-data="{% trans 'All data' %}"
+        data-creator="{% trans 'Document creator' %}"
+        data-node-initial="{% trans 'Initial node' %}"
+        data-node-approved="{% trans 'Approved node' %}"
+        data-node-completed="{% trans 'Completed node' %}"
+        data-employee-list="{% trans 'Employee list' %}"
     >
 
 

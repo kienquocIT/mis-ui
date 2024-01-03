@@ -7,7 +7,7 @@ class NodeLoadDataHandle {
     static dataSystemNode = [
         {
             'id': 'abccf657-7dce-4a14-9601-f6c4c4f2722a',
-            'title': 'Initial Node',
+            'title': NodeLoadDataHandle.transEle.attr('data-node-initial'),
             'code': 'initial',
             'code_node_system': 'initial',
             'is_system': true,
@@ -16,7 +16,7 @@ class NodeLoadDataHandle {
         },
         {
             'id': '1fbb680e-3521-424a-8523-9f7a34ce867e',
-            'title': 'Approved Node',
+            'title': NodeLoadDataHandle.transEle.attr('data-node-approved'),
             'code': 'approved',
             'code_node_system': 'approved',
             'is_system': true,
@@ -25,7 +25,7 @@ class NodeLoadDataHandle {
         },
         {
             'id': '580f887c-1280-44ea-b275-8cb916543b10',
-            'title': 'Completed Node',
+            'title': NodeLoadDataHandle.transEle.attr('data-node-completed'),
             'code': 'completed',
             'code_node_system': 'completed',
             'is_system': true,
@@ -214,10 +214,11 @@ class NodeLoadDataHandle {
         };
         let newRow = dataTable.row.add(data).node();
         NodeLoadDataHandle.loadInitDataRow(newRow);
-        let approvedRow = NodeDataTableHandle.tableNode[0].querySelector('.node-approved').closest('tr');
+        let approvedRow = NodeDataTableHandle.tableNode[0].querySelector('[data-node-code="approved"]').closest('tr');
         $(newRow).detach().insertBefore(approvedRow);
         // Load zone DD
         NodeLoadDataHandle.loadZoneDD(newRow, true);
+        NodeLoadDataHandle.loadZoneHiddenDD(newRow, true);
         return true;
     };
 
@@ -275,7 +276,7 @@ class NodeLoadDataHandle {
     static loadRowTableInitialNode(row) {
         let tableInitial = row.querySelector('.collab-initial-area')?.querySelector('.table-initial-node-collaborator');
         let dataInitial = {
-            'title': 'Document creator',
+            'title': NodeLoadDataHandle.transEle.attr('data-creator'),
             'group': {},
             'role': [],
         }
@@ -286,119 +287,75 @@ class NodeLoadDataHandle {
     static loadZoneDD(row, is_created = false) {
         let result = ``;
         if (is_created === false) { // Case Update Exist Nodes
-            let eleCheckBox = row?.querySelector('.table-row-checkbox');
-            if (eleCheckBox) {
-                let dataRowRaw = eleCheckBox.getAttribute('data-row');
+            let eleTitle = row?.querySelector('.table-row-title');
+            if (eleTitle) {
+                let dataRowRaw = eleTitle.getAttribute('data-row');
                 if (dataRowRaw) {
-                    let dataRow = JSON.parse(dataRowRaw);
+                    let is_edit_all_zone = false;
+                    if (row.querySelector('.checkbox-node-zone-all:checked')) {
+                        is_edit_all_zone = true;
+                    }
                     let zone_list = [];
                     for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone:checked')) {
                         zone_list.push(parseInt($(eleChecked).attr('data-id')));
                     }
-                    if (dataRow?.['is_system'] === true) { // SYSTEM NODES
-                        if (dataRow?.['code'] === 'initial') {
-                            result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                        <div class="media d-flex align-items-center">
-                                            <div class="media-body">
-                                                <div>
-                                                    <span class="badge badge-soft-success node-zone-title">Check all</span>
-                                                </div>
-                                            </div>  
+                    if (is_edit_all_zone === true) {
+                        result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span> 
                                         </div>
                                         <div class="form-check form-check-theme ms-3">
                                             <input type="checkbox" class="form-check-input checkbox-node-zone-all" checked>
                                         </div>
                                     </li>`;
-                            let table = document.getElementById('table_workflow_zone');
-                            if (!table.querySelector('.dataTables_empty')) {
-                                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                                    let row = table.tBodies[0].rows[i];
-                                    let title = row.children[1].children[0].innerHTML;
-                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                    <div class="media d-flex align-items-center">
-                                                        <div class="media-body">
-                                                            <div>
-                                                                <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                                            </div>
-                                                        </div>  
-                                                    </div>
-                                                    <div class="form-check form-check-theme ms-3">
-                                                        <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}" checked>
-                                                    </div>
-                                                </li>`;
-                                }
-                                for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
-                                    if ($(eleZoneList).empty()) {
-                                        $(eleZoneList).append(result);
-                                    }
-                                }
-                            }
-                            return true;
-                        }
-                    } else { // COLLAB NODES
+                    } else {
                         result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="media d-flex align-items-center">
-                                        <div class="media-body">
-                                            <div>
-                                                <span class="badge badge-soft-success node-zone-title">Check all</span>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span> 
+                                        </div>
+                                        <div class="form-check form-check-theme ms-3">
+                                            <input type="checkbox" class="form-check-input checkbox-node-zone-all">
+                                        </div>
+                                    </li>`;
+                    }
+                    let table = document.getElementById('table_workflow_zone');
+                    if (!table.querySelector('.dataTables_empty')) {
+                        for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                            let row = table.tBodies[0].rows[i];
+                            let title = row.children[1].children[0].innerHTML;
+                            if (zone_list.includes(i + 1)) {
+                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge badge-soft-success node-zone-title">${title}</span> 
                                             </div>
-                                        </div>  
-                                    </div>
-                                    <div class="form-check form-check-theme ms-3">
-                                        <input type="checkbox" class="form-check-input checkbox-node-zone-all">
-                                    </div>
-                                </li>`;
-                        let table = document.getElementById('table_workflow_zone');
-                        if (!table.querySelector('.dataTables_empty')) {
-                            for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                                let row = table.tBodies[0].rows[i];
-                                let title = row.children[1].children[0].innerHTML;
-                                if (zone_list.includes(i + 1)) {
-                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                <div class="media d-flex align-items-center">
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                                        </div>
-                                                    </div>  
-                                                </div>
-                                                <div class="form-check form-check-theme ms-3">
-                                                    <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}" checked>
-                                                </div>
-                                            </li>`;
-                                } else {
-                                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                                <div class="media d-flex align-items-center">
-                                                    <div class="media-body">
-                                                        <div>
-                                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                                        </div>
-                                                    </div>  
-                                                </div>
-                                                <div class="form-check form-check-theme ms-3">
-                                                    <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
-                                                </div>
-                                            </li>`;
-                                }
-                            }
-                            for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
-                                if ($(eleZoneList).empty()) {
-                                    $(eleZoneList).append(result);
-                                }
+                                            <div class="form-check form-check-theme ms-3">
+                                                <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}" checked>
+                                            </div>
+                                        </li>`;
+                            } else {
+                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge badge-soft-success node-zone-title">${title}</span> 
+                                            </div>
+                                            <div class="form-check form-check-theme ms-3">
+                                                <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
+                                            </div>
+                                        </li>`;
                             }
                         }
-                        return true;
+                        for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
+                            if ($(eleZoneList).empty()) {
+                                $(eleZoneList).append(result);
+                            }
+                        }
                     }
+                    return true;
                 }
             }
         } else { // Case Create New Node
             result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="media d-flex align-items-center">
-                                    <div class="media-body">
-                                        <div>
-                                            <span class="badge badge-soft-success node-zone-title">Check all</span>
-                                        </div>
-                                    </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-soft-success node-zone-title">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="checkbox" class="form-check-input checkbox-node-zone-all">
@@ -410,12 +367,8 @@ class NodeLoadDataHandle {
                     let row = table.tBodies[0].rows[i];
                     let title = row.children[1].children[0].innerHTML;
                     result += `<li class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="media d-flex align-items-center">
-                                    <div class="media-body">
-                                        <div>
-                                            <span class="badge badge-soft-success node-zone-title">${title}</span>
-                                        </div>
-                                    </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-soft-success node-zone-title">${title}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
@@ -432,20 +385,119 @@ class NodeLoadDataHandle {
         }
     };
 
+    static loadZoneHiddenDD(row, is_created = false) {
+        let result = ``;
+        if (is_created === false) { // Case Update Exist Nodes
+            let eleTitle = row?.querySelector('.table-row-title');
+            if (eleTitle) {
+                let dataRowRaw = eleTitle.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let zone_list = [];
+                    for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
+                        zone_list.push(parseInt($(eleChecked).attr('data-id')));
+                    }
+                    let table = document.getElementById('table_workflow_zone');
+                    if (!table.querySelector('.dataTables_empty')) {
+                        for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                            let row = table.tBodies[0].rows[i];
+                            let title = row.children[1].children[0].innerHTML;
+                            if (zone_list.includes(i + 1)) {
+                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge badge-soft-warning node-zone-title">${title}</span> 
+                                            </div>
+                                            <div class="form-check form-check-theme ms-3">
+                                                <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}" checked>
+                                            </div>
+                                        </li>`;
+                            } else {
+                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge badge-soft-warning node-zone-title">${title}</span>  
+                                            </div>
+                                            <div class="form-check form-check-theme ms-3">
+                                                <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
+                                            </div>
+                                        </li>`;
+                            }
+                        }
+                        for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
+                            if ($(eleZoneList).empty()) {
+                                $(eleZoneList).append(result);
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+        } else { // Case Create New Node
+            let table = document.getElementById('table_workflow_zone');
+            if (!table.querySelector('.dataTables_empty')) {
+                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
+                    let row = table.tBodies[0].rows[i];
+                    let title = row.children[1].children[0].innerHTML;
+                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-soft-warning node-zone-title">${title}</span>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
+                                </div>
+                            </li>`;
+                }
+                for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
+                    if ($(eleZoneList).empty()) {
+                        $(eleZoneList).append(result);
+                    }
+                }
+            }
+            return true;
+        }
+    };
+
     static loadZoneDDAllTable() {
         for (let i = 0; i < NodeDataTableHandle.tableNode[0].tBodies[0].rows.length; i++) {
             let row = NodeDataTableHandle.tableNode[0].tBodies[0].rows[i];
             NodeLoadDataHandle.loadZoneDD(row);
+            NodeLoadDataHandle.loadZoneHiddenDD(row);
+        }
+        // set zoneAllData = True for initial node if not zone or hidden zone checked
+        let initialArea = NodeDataTableHandle.tableNode[0].querySelector('.collab-initial-area');
+        if (initialArea) {
+            if (initialArea.querySelectorAll('.checkbox-node-zone:checked').length === 0 && initialArea.querySelectorAll('.checkbox-node-zone-hidden:checked').length === 0) {
+                initialArea.querySelector('.checkbox-node-zone-all').checked = true;
+            }
         }
     };
 
     static loadZoneShow(ele) {
         let zone_list = [];
         let zone_json_list = [];
-        let eleZoneSubmit = ele?.closest('.collab-area')?.querySelector('.node-zone-submit');
-        let eleZoneJSonSubmit = ele?.closest('.collab-area')?.querySelector('.node-zone-json-submit');
-        let eleZoneDD = ele?.closest('.dropdown-zone');
-        for (let eleChecked of eleZoneDD?.querySelectorAll('.checkbox-node-zone:checked')) {
+        let collabArea = ele?.closest('.collab-area');
+        let eleZoneSubmit = collabArea?.querySelector('.node-zone-submit');
+        let eleZoneJSonSubmit = collabArea?.querySelector('.node-zone-json-submit');
+        for (let eleChecked of collabArea?.querySelectorAll('.checkbox-node-zone:checked')) {
+            zone_list.push(parseInt($(eleChecked).attr('data-id')));
+            zone_json_list.push({
+                'id': parseInt($(eleChecked).attr('data-id')),
+                'title': $(eleChecked).attr('data-title')
+            });
+        }
+        if (eleZoneSubmit) {
+            $(eleZoneSubmit).val(JSON.stringify(zone_list));
+        }
+        if (eleZoneJSonSubmit) {
+            $(eleZoneJSonSubmit).val(JSON.stringify(zone_json_list));
+        }
+    };
+
+    static loadZoneHiddenShow(ele) {
+        let zone_list = [];
+        let zone_json_list = [];
+        let collabArea = ele?.closest('.collab-area');
+        let eleZoneSubmit = collabArea?.querySelector('.node-zone-hidden-submit');
+        let eleZoneJSonSubmit = collabArea?.querySelector('.node-zone-hidden-json-submit');
+        for (let eleChecked of collabArea?.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
             zone_list.push(parseInt($(eleChecked).attr('data-id')));
             zone_json_list.push({
                 'id': parseInt($(eleChecked).attr('data-id')),
@@ -473,6 +525,7 @@ class NodeLoadDataHandle {
             row.querySelector('.collab-in-workflow-area').removeAttribute('hidden');
         }
         NodeLoadDataHandle.loadZoneDD(row, true); // reset zones
+        NodeLoadDataHandle.loadZoneHiddenDD(row, true); // reset hidden zones
     };
 
     static loadOutFormEmployeeShow(ele) {
@@ -481,10 +534,15 @@ class NodeLoadDataHandle {
         let table = ele.closest('.collab-out-form-area').querySelector('.table-out-form-employee');
         let eleEmpShow = ele.closest('.collab-out-form-area').querySelector('.node-out-form-employee-show');
         $(eleEmpShow).empty();
-        for (let eleChecked of table.querySelectorAll('.table-row-checkbox-out-form:checked')) {
-            $(eleEmpShow).append(`<span class="badge badge-soft-primary mr-1">${$(eleChecked).attr('data-title')}</span>`);
-            emp_list.push($(eleChecked).attr('data-id'));
-        }
+        $(table).DataTable().rows().every(function () {
+            let row = this.node();
+            let eleCheck = row.querySelector('.table-row-checkbox-out-form');
+            if (eleCheck.checked === true) {
+                $(eleEmpShow).append(`<span class="badge badge-soft-primary mr-1">${$(eleCheck).attr('data-title')}</span>`);
+                emp_list.push($(eleCheck).attr('data-id'));
+            }
+        });
+
         $(eleOFESubmit).val(JSON.stringify(emp_list));
     };
 
@@ -518,40 +576,63 @@ class NodeLoadDataHandle {
         let table = ele.closest('.collab-in-workflow-area').querySelector('.table-in-workflow-employee');
         let eleBoxOption = ele.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-option');
         let eleZoneJSonSubmit = ele.closest('.collab-in-workflow-area').querySelector('.node-zone-json-submit');
+        let eleZoneHiddenJSonSubmit = ele.closest('.collab-in-workflow-area').querySelector('.node-zone-hidden-json-submit');
         if ($(eleBoxOption).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(eleBoxOption), $(eleBoxOption).val());
-            if (dataSelected?.['id'] === 1) {
+            if (dataSelected?.['id'] === 1) {  // by position
                 let eleBoxPosition = ele.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-position');
                 if ($(eleBoxPosition).val()) {
                     let dataPosition = SelectDDControl.get_data_from_idx($(eleBoxPosition), $(eleBoxPosition).val());
+                    let is_edit_all_zone = false;
+                    if (ele.closest('.collab-in-workflow-area').querySelector('.checkbox-node-zone-all:checked')) {
+                        is_edit_all_zone = true;
+                    }
                     let zone = [];
                     if ($(eleZoneJSonSubmit).val()) {
                         zone = JSON.parse($(eleZoneJSonSubmit).val());
+                    }
+                    let zoneHidden = [];
+                    if ($(eleZoneHiddenJSonSubmit).val()) {
+                        zoneHidden = JSON.parse($(eleZoneHiddenJSonSubmit).val());
                     }
                     let data = {
                         'in_wf_option': 1,
                         'position_choice': dataPosition,
                         'employee': {},
-                        'zone': zone
+                        'zone': zone,
+                        'zone_hidden': zoneHidden,
+                        'is_edit_all_zone': is_edit_all_zone,
                     }
                     $(table).DataTable().row.add(data).draw().node();
                 }
             }
-            if (dataSelected?.['id'] === 2) {
+            if (dataSelected?.['id'] === 2) {  // by employee
                 let eleBoxEmployee = ele.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-employee');
                 if ($(eleBoxEmployee).val()) {
                     let dataEmployee = SelectDDControl.get_data_from_idx($(eleBoxEmployee), $(eleBoxEmployee).val());
+                    let is_edit_all_zone = false;
+                    if (ele.closest('.collab-in-workflow-area').querySelector('.checkbox-node-zone-all:checked')) {
+                        is_edit_all_zone = true;
+                    }
                     let zone = [];
                     if ($(eleZoneJSonSubmit).val()) {
                         zone = JSON.parse($(eleZoneJSonSubmit).val());
+                    }
+                    let zoneHidden = [];
+                    if ($(eleZoneHiddenJSonSubmit).val()) {
+                        zoneHidden = JSON.parse($(eleZoneHiddenJSonSubmit).val());
                     }
                     let data = {
                         'in_wf_option': 2,
                         'position_choice': {},
                         'employee': dataEmployee,
-                        'zone': zone
+                        'zone': zone,
+                        'zone_hidden': zoneHidden,
+                        'is_edit_all_zone': is_edit_all_zone,
                     }
                     $(table).DataTable().row.add(data).draw().node();
+                    // update zoneHiddenEmployee for validate zone hidden
+                    // NodeValidateHandle.validateZoneHiddenEmployeeSetup(dataEmployee?.['id'], zoneHidden);
                 }
             }
         }
@@ -640,10 +721,11 @@ class NodeLoadDataHandle {
     static loadDetailNodeActionAndCollab() {
         NodeDataTableHandle.tableNode.DataTable().rows().every(function () {
             let row = this.node();
-            let dataRowRaw = row?.querySelector('.table-row-checkbox')?.getAttribute('data-row');
+            let dataRowRaw = row?.querySelector('.table-row-title')?.getAttribute('data-row');
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
                 NodeLoadDataHandle.loadZoneDD(row);
+                NodeLoadDataHandle.loadZoneHiddenDD(row);
                 NodeLoadDataHandle.loadDoneActionAndCollab(row);
                 // Action
                 for (let eleCheck of row.querySelectorAll('.check-action-node')) {
@@ -659,27 +741,33 @@ class NodeLoadDataHandle {
 
     static loadDetailNodeCollab(row, dataRow) {
         let modalCollab = row.querySelector('.modal-collab');
-        let dataSource = {
-            2: {'id': 3, 'title': 'In workflow'},
-            1: {'id': 2, 'title': 'Out form'},
-            0: {'id': 1, 'title': 'In form'},
-        };
         if (dataRow?.['is_system'] === true) { // SYSTEM NODES
             if (dataRow?.['code'] === 'initial') {
+                let initialArea = modalCollab.querySelector('.collab-initial-area');
                 let zone_initial_node = [];
                 for (let zone of dataRow?.['zone_initial_node']) {
                     zone_initial_node.push(zone?.['order']);
                 }
-                let tableInitial = modalCollab.querySelector('.table-initial-node-collaborator');
+                let zone_hidden_initial_node = [];
+                for (let zone of dataRow?.['zone_hidden_initial_node']) {
+                    zone_hidden_initial_node.push(zone?.['order']);
+                }
+                let tableInitial = initialArea.querySelector('.table-initial-node-collaborator');
                 NodeDataTableHandle.dataTableInitial($(tableInitial));
                 NodeLoadDataHandle.loadRowTableInitialNode(row);
-                for (let t = 0; t < tableInitial.tBodies[0].rows.length; t++) {
-                    let rowInit = tableInitial.tBodies[0].rows[t];
-                    NodeLoadDataHandle.loadZoneDD(rowInit);
-                    for (let eleCheck of rowInit.querySelectorAll('.checkbox-node-zone')) {
-                        if (zone_initial_node.includes(parseInt($(eleCheck).attr('data-id')))) {
-                            eleCheck.checked = true;
-                        }
+                NodeLoadDataHandle.loadZoneDD(row);
+                NodeLoadDataHandle.loadZoneHiddenDD(row);
+                if (dataRow?.['is_edit_all_zone'] === true) {
+                    initialArea.querySelector('.checkbox-node-zone-all').checked = true;
+                }
+                for (let eleCheck of initialArea.querySelectorAll('.checkbox-node-zone')) {
+                    if (zone_initial_node.includes(parseInt($(eleCheck).attr('data-id')))) {
+                        eleCheck.checked = true;
+                    }
+                }
+                for (let eleCheck of initialArea.querySelectorAll('.checkbox-node-zone-hidden')) {
+                    if (zone_hidden_initial_node.includes(parseInt($(eleCheck).attr('data-id')))) {
+                        eleCheck.checked = true;
                     }
                 }
             }
@@ -704,10 +792,15 @@ class NodeLoadDataHandle {
                 let boxProp = IFArea?.querySelector('.box-in-form-property');
                 let eleZoneSubmit = IFArea?.querySelector('.node-zone-submit');
                 let eleZoneJSonSubmit = IFArea?.querySelector('.node-zone-json-submit');
+                let eleZoneHiddenSubmit = IFArea?.querySelector('.node-zone-hidden-submit');
+                let eleZoneHiddenJSonSubmit = IFArea?.querySelector('.node-zone-hidden-json-submit');
                 let eleZoneDD = IFArea?.querySelector('.dropdown-zone');
                 $(boxProp).empty();
                 NodeLoadDataHandle.loadBoxPropertyEmployee($(boxProp), dataIF?.['app_property']);
                 // zone
+                if (dataIF?.['is_edit_all_zone'] === true) {
+                    IFArea.querySelector('.checkbox-node-zone-all').checked = true;
+                }
                 if (eleZoneJSonSubmit) {
                     $(eleZoneJSonSubmit).val(JSON.stringify(dataIF?.['zone']));
                 }
@@ -724,11 +817,30 @@ class NodeLoadDataHandle {
                         NodeLoadDataHandle.loadZoneShow(eleCheck);
                     }
                 }
+                // zone hidden
+                if (eleZoneHiddenJSonSubmit) {
+                    $(eleZoneHiddenJSonSubmit).val(JSON.stringify(dataIF?.['zone_hidden']));
+                }
+                let zone_hidden_list = [];
+                for (let zone of dataIF?.['zone_hidden']) {
+                    zone_hidden_list.push(zone?.['order']);
+                }
+                if (eleZoneHiddenSubmit) {
+                    $(eleZoneHiddenSubmit).val(JSON.stringify(zone_hidden_list));
+                }
+                for (let eleCheck of IFArea.querySelectorAll('.checkbox-node-zone-hidden')) {
+                    if (zone_hidden_list.includes(parseInt($(eleCheck).attr('data-id')))) {
+                        eleCheck.checked = true;
+                        NodeLoadDataHandle.loadZoneHiddenShow(eleCheck);
+                    }
+                }
             } else if (dataRow?.['option_collaborator'] === 1) { // Out Form
                 let dataOF = dataRow['collab_out_form'];
                 let OFArea = modalCollab.querySelector('.collab-out-form-area');
                 let eleZoneSubmit = OFArea?.querySelector('.node-zone-submit');
                 let eleZoneJSonSubmit = OFArea?.querySelector('.node-zone-json-submit');
+                let eleZoneHiddenSubmit = OFArea?.querySelector('.node-zone-hidden-submit');
+                let eleZoneHiddenJSonSubmit = OFArea?.querySelector('.node-zone-hidden-json-submit');
                 let eleZoneDD = OFArea?.querySelector('.dropdown-zone');
                 let employee_id_list = [];
                 for (let emp of dataOF?.['employee_list']) {
@@ -752,6 +864,7 @@ class NodeLoadDataHandle {
                                             item['is_checked'] = true;
                                         }
                                     }
+                                    $(tableOutFormEmployee).DataTable().clear().draw();
                                     $(tableOutFormEmployee).DataTable().rows.add(data.employee_list).draw();
                                     let btnAddEmpOF = OFArea?.querySelector('.button-add-out-form-employee');
                                     NodeLoadDataHandle.loadOutFormEmployeeShow(btnAddEmpOF);
@@ -761,6 +874,9 @@ class NodeLoadDataHandle {
                     )
                 }
                 // zone
+                if (dataOF?.['is_edit_all_zone'] === true) {
+                    OFArea.querySelector('.checkbox-node-zone-all').checked = true;
+                }
                 if (eleZoneJSonSubmit) {
                     if (dataOF?.['zone']) { // set id zone to zone's order
                         for (let zone_detail of dataOF?.['zone']) {
@@ -784,6 +900,30 @@ class NodeLoadDataHandle {
                         NodeLoadDataHandle.loadZoneShow(eleCheck);
                     }
                 }
+                // zone hidden
+                if (eleZoneHiddenJSonSubmit) {
+                    if (dataOF?.['zone_hidden']) { // set id zone to zone's order
+                        for (let zone_detail of dataOF?.['zone_hidden']) {
+                            if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
+                                zone_detail['id'] = zone_detail?.['order'];
+                            }
+                        }
+                    }
+                    $(eleZoneHiddenJSonSubmit).val(JSON.stringify(dataOF?.['zone_hidden']));
+                }
+                let zone_hidden_list = [];
+                for (let zone of dataOF?.['zone_hidden']) {
+                    zone_hidden_list.push(zone?.['order']);
+                }
+                if (eleZoneHiddenSubmit) {
+                    $(eleZoneHiddenSubmit).val(JSON.stringify(zone_hidden_list));
+                }
+                for (let eleCheck of OFArea.querySelectorAll('.checkbox-node-zone-hidden')) {
+                    if (zone_hidden_list.includes(parseInt($(eleCheck).attr('data-id')))) {
+                        eleCheck.checked = true;
+                        NodeLoadDataHandle.loadZoneHiddenShow(eleCheck);
+                    }
+                }
             } else if (dataRow?.['option_collaborator'] === 2) { // In Workflow
                 let dataInWF = dataRow?.['collab_in_workflow'];
                 let InWFArea = modalCollab?.querySelector('.collab-in-workflow-area');
@@ -799,6 +939,13 @@ class NodeLoadDataHandle {
                     }
                     if (inWF?.['zone']) { // set id zone to zone's order
                         for (let zone_detail of inWF?.['zone']) {
+                            if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
+                                zone_detail['id'] = zone_detail?.['order'];
+                            }
+                        }
+                    }
+                    if (inWF?.['zone_hidden']) { // set id zone to zone's order
+                        for (let zone_detail of inWF?.['zone_hidden']) {
                             if (zone_detail?.['order'] && Number.isInteger(zone_detail?.['order'])) {
                                 zone_detail['id'] = zone_detail?.['order'];
                             }
@@ -840,35 +987,35 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        let attrClass = "form-check-input table-row-checkbox"
                         if (row?.['is_system'] === true) {
-                            attrClass += " node-";
-                            attrClass += row?.['code'];
+                            return `<b><span class="table-row-title text-primary" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b>`;
+                        } else {
+                            let form = $('#form-create_workflow');
+                            if (form.attr('data-method') !== 'GET') {
+                                return `<input type="text" class="form-control table-row-title" value="${row?.['title']}" data-row="${dataRow}" data-node-code="${row?.['code']}">`;
+                            } else {
+                                return `<input type="text" class="form-control table-row-title" value="${row?.['title']}" data-row="${dataRow}" data-node-code="${row?.['code']}" disabled>`;
+                            }
                         }
-                        return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="${attrClass}" 
-                                        data-id=""
-                                        data-row="${dataRow}"
-                                    >
-                                </div>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row?.['title']}</span>`
+                        if (row?.['is_system'] === true) {
+                            return ``;
+                        } else {
+                            let form = $('#form-create_workflow');
+                            if (form.attr('data-method') !== 'GET') {
+                               return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                            } else {
+                               return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}" disabled>`;
+                            }
+                        }
                     }
                 },
                 {
                     targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-remark">${row?.['remark'] ? row?.['remark'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
                     render: (data, type, row) => {
                         let is_approved_complete = false;
                         let actionEle = NodeLoadDataHandle.loadHTMLAction();
@@ -927,7 +1074,7 @@ class NodeDataTableHandle {
                     },
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         let idModal = "collabModalWFNode" + String(row?.['order']);
                         let idOutFormCanvas = "outFormCanvas" + String(row?.['order']);
@@ -986,20 +1133,36 @@ class NodeDataTableHandle {
                                                                     >
                                                                     </select>
                                                                 </div>
-                                                                <div class="form-group">
-                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
-                                                                    <input type="hidden" class="node-zone-submit">
-                                                                    <input type="hidden" class="node-zone-json-submit">
-                                                                    <div class="dropdown-zone">
-                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                            <ul class="node-zone-list p-0"></ul>
+                                                                <div class="row">
+                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
+                                                                            <input type="hidden" class="node-zone-submit">
+                                                                            <input type="hidden" class="node-zone-json-submit">
+                                                                            <div class="dropdown-zone">
+                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                    <ul class="node-zone-list p-0"></ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
+                                                                            <input type="hidden" class="node-zone-hidden-submit">
+                                                                            <input type="hidden" class="node-zone-hidden-json-submit">
+                                                                            <div class="dropdown-zone">
+                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                    <ul class="node-zone-hidden-list p-0"></ul>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="row collab-area collab-out-form-area mb-5" hidden>
                                                                 <div class="form-group">
-                                                                    <label class="form-label">Employee list</label>
+                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-employee-list')}</label>
                                                                     <div 
                                                                         class="input-group input-group-out-form-employee mb-3" 
                                                                         data-bs-toggle="offcanvas" 
@@ -1048,13 +1211,29 @@ class NodeDataTableHandle {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="form-group">
-                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
-                                                                    <input type="hidden" class="node-zone-submit">
-                                                                    <input type="hidden" class="node-zone-json-submit">
-                                                                    <div class="dropdown-zone">
-                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                            <ul class="node-zone-list p-0"></ul>
+                                                                <div class="row">
+                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
+                                                                            <input type="hidden" class="node-zone-submit">
+                                                                            <input type="hidden" class="node-zone-json-submit">
+                                                                            <div class="dropdown-zone">
+                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                    <ul class="node-zone-list p-0"></ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6 col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
+                                                                            <input type="hidden" class="node-zone-hidden-submit">
+                                                                            <input type="hidden" class="node-zone-hidden-json-submit">
+                                                                            <div class="dropdown-zone">
+                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                    <ul class="node-zone-hidden-list p-0"></ul>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1130,13 +1309,29 @@ class NodeDataTableHandle {
                                                                             >
                                                                             </select>
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
-                                                                            <input type="hidden" class="node-zone-submit">
-                                                                            <input type="hidden" class="node-zone-json-submit">
-                                                                            <div class="dropdown-zone">
-                                                                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
-                                                                                    <ul class="node-zone-list p-0"></ul>
+                                                                        <div class="row">
+                                                                            <div class="col-12 col-md-6 col-lg-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</label>
+                                                                                    <input type="hidden" class="node-zone-submit">
+                                                                                    <input type="hidden" class="node-zone-json-submit">
+                                                                                    <div class="dropdown-zone">
+                                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                            <ul class="node-zone-list p-0"></ul>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-6 col-lg-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</label>
+                                                                                    <input type="hidden" class="node-zone-hidden-submit">
+                                                                                    <input type="hidden" class="node-zone-hidden-json-submit">
+                                                                                    <div class="dropdown-zone">
+                                                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                                                                            <ul class="node-zone-hidden-list p-0"></ul>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1168,11 +1363,12 @@ class NodeDataTableHandle {
                                                                 >
                                                                     <thead>
                                                                     <tr>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
-                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-actions')}</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-position')}</th>
+                                                                        <th class="w-15">${NodeLoadDataHandle.transEle.attr('data-select-role')}</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
+                                                                        <th class="w-10"></th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -1225,7 +1421,8 @@ class NodeDataTableHandle {
                                                                     <thead>
                                                                     <tr>
                                                                         <th class="w-20">${NodeLoadDataHandle.transEle.attr('data-collaborators')}</th>
-                                                                        <th class="w-80">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-editing-zone')}</th>
+                                                                        <th class="w-40">${NodeLoadDataHandle.transEle.attr('data-hidden-zone')}</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody></tbody>
@@ -1304,12 +1501,13 @@ class NodeDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
-                    render: () => {
-                        let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit" style="color: #cccccc"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span></span></a>`;
-                        let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="color: #cccccc"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a>`;
-                        let actionData = bt2 + bt3;
-                        return `${actionData}`;
+                    targets: 4,
+                    render: (data, type, row) => {
+                        if (row?.['is_system'] === true) {
+                            return ``;
+                        } else {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                        }
                     }
                 },
             ],
@@ -1342,6 +1540,16 @@ class NodeDataTableHandle {
                                 </div>`;
                     }
                 },
+                {
+                    targets: 2,
+                    render: () => {
+                        return `<div class="dropdown-zone">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">
+                                        <ul class="node-zone-hidden-list p-0"></ul>
+                                    </div>
+                                </div>`;
+                    }
+                },
             ],
         });
     };
@@ -1349,8 +1557,8 @@ class NodeDataTableHandle {
     static dataTableCollabOutFormEmployee($table, data) {
         $table.DataTableDefault({
             data: data ? data : [],
-            paginate: false,
-            info: false,
+            // paginate: false,
+            // info: false,
             columns: [
                 {
                     targets: 0,
@@ -1439,6 +1647,9 @@ class NodeDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
+                        if (row?.['is_edit_all_zone'] === true) {
+                            return `<span class="badge badge-soft-success mb-1 mr-1">${NodeLoadDataHandle.transEle.attr('data-zone-all-data')}</span>`;
+                        }
                         if (row.hasOwnProperty('zone') && Array.isArray(row?.['zone'])) {
                             let resultZone = ``;
                             for (let zone of row?.['zone']) {
@@ -1447,13 +1658,21 @@ class NodeDataTableHandle {
                                 }
                             }
                             return `${resultZone}`;
-                            // return `<div class="d-flex justify-content-start">
-                            //             ${resultZone}
-                            //             <div class="dropdown dropdown-zone">
-                            //                 <button aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-link" type="button"><span class="icon"><i class="fas fa-caret-down"></i></span></button>
-                            //                 <ul role="menu" class="dropdown-menu node-zone-list"></ul>
-                            //             </div>
-                            //         </div>`;
+                        }
+                        return '';
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        if (row.hasOwnProperty('zone_hidden') && Array.isArray(row?.['zone_hidden'])) {
+                            let resultZone = ``;
+                            for (let zone of row?.['zone_hidden']) {
+                                if (zone?.['title']) {
+                                    resultZone += `<span class="badge badge-soft-warning mb-1 mr-1">${zone?.['title']}</span>`;
+                                }
+                            }
+                            return `${resultZone}`;
                         }
                         return '';
                     }
@@ -1486,6 +1705,7 @@ class NodeSubmitHandle {
             'actions',
             'option_collaborator',
             'zone_initial_node',
+            'zone_hidden_initial_node',
             'order',
             'is_system',
             'code_node_system',
@@ -1494,15 +1714,15 @@ class NodeSubmitHandle {
             'collab_out_form',
             'collab_in_workflow',
             'coordinates',
+            'is_edit_all_zone',
         ];
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let total_in_runtime = 1;
             let total_config = 1;
             let row = table[0].tBodies[0].rows[i];
             let eleTitle = row?.querySelector('.table-row-title');
-            let eleCheckBox = row?.querySelector('.table-row-checkbox');
-            if (eleTitle && eleCheckBox) {
-                let dataRowRaw = eleCheckBox.getAttribute('data-row');
+            if (eleTitle) {
+                let dataRowRaw = eleTitle.getAttribute('data-row');
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
                     // setup data actions on Node
@@ -1514,28 +1734,48 @@ class NodeSubmitHandle {
                     let modalCollab = row.querySelector('.modal-collab');
                     if (dataRow?.['is_system'] === true) { // SYSTEM NODES
                         if (dataRow?.['code'] === 'initial') {
+                            let initialArea = modalCollab.querySelector('.collab-initial-area');
                             // check data actions
                             if (dataRow['actions'].length <= 0) {
                                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
                                 return false
                             }
-                            let tableInitial = modalCollab.querySelector('.table-initial-node-collaborator');
-                            if (!tableInitial.querySelector('.dataTables_empty')) {
-                                for (let t = 0; t < tableInitial.tBodies[0].rows.length; t++) {
-                                    let rowInit = tableInitial.tBodies[0].rows[t];
+                            let zoneAllData = initialArea.querySelector('.checkbox-node-zone-all');
+                            if (zoneAllData) {
+                                if (zoneAllData.checked === true) {
+                                    dataRow['is_edit_all_zone'] = true;
+                                    dataRow['zone_initial_node'] = [];
+                                } else {
+                                    dataRow['is_edit_all_zone'] = false;
                                     let zone_initial_node = [];
-                                    for (let eleChecked of rowInit.querySelectorAll('.checkbox-node-zone:checked')) {
+                                    for (let eleChecked of initialArea.querySelectorAll('.checkbox-node-zone:checked')) {
                                         zone_initial_node.push(parseInt($(eleChecked).attr('data-id')));
                                     }
                                     dataRow['zone_initial_node'] = zone_initial_node;
                                 }
                             }
+                            let zone_hidden_initial_node = [];
+                            for (let eleChecked of initialArea.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
+                                zone_hidden_initial_node.push(parseInt($(eleChecked).attr('data-id')));
+                            }
+                            dataRow['zone_hidden_initial_node'] = zone_hidden_initial_node;
                         } else if (dataRow?.['code'] === 'approved') {
                             dataRow['order'] = (table[0].tBodies[0].rows.length - 1);
                         } else if (dataRow?.['code'] === 'completed') {
                             dataRow['order'] = table[0].tBodies[0].rows.length;
                         }
                     } else { // COLLAB NODES
+                        // setup title & remark node collab
+                        if (eleTitle.value) {
+                            dataRow['title'] = eleTitle.value;
+                        } else {
+                            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
+                            return false
+                        }
+                        let eleRemark = row?.querySelector('.table-row-remark');
+                        if (eleRemark) {
+                            dataRow['remark'] = eleRemark.value;
+                        }
                         // check data actions
                         if (dataRow['actions'].length <= 0) {
                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
@@ -1557,8 +1797,20 @@ class NodeSubmitHandle {
                                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
                                 return false
                             }
-                            if ($(IFArea?.querySelector('.node-zone-submit')).val()) {
-                                dataInForm['zone'] = JSON.parse($(IFArea?.querySelector('.node-zone-submit')).val());
+                            let zoneAllData = IFArea.querySelector('.checkbox-node-zone-all');
+                            if (zoneAllData) {
+                                if (zoneAllData.checked === true) {
+                                    dataInForm['is_edit_all_zone'] = true;
+                                    dataInForm['zone'] = [];
+                                } else {
+                                    dataInForm['is_edit_all_zone'] = false;
+                                    if ($(IFArea?.querySelector('.node-zone-submit')).val()) {
+                                        dataInForm['zone'] = JSON.parse($(IFArea?.querySelector('.node-zone-submit')).val());
+                                    }
+                                }
+                            }
+                            if ($(IFArea?.querySelector('.node-zone-hidden-submit')).val()) {
+                                dataInForm['zone_hidden'] = JSON.parse($(IFArea?.querySelector('.node-zone-hidden-submit')).val());
                             }
                             dataRow['collab_in_form'] = dataInForm;
                         } else if ($(boxListSource).val() === '2') { // Out Form
@@ -1571,8 +1823,20 @@ class NodeSubmitHandle {
                                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
                                 return false
                             }
-                            if ($(OFArea?.querySelector('.node-zone-submit')).val()) {
-                                dataOutForm['zone'] = JSON.parse($(OFArea?.querySelector('.node-zone-submit')).val());
+                            let zoneAllData = OFArea.querySelector('.checkbox-node-zone-all');
+                            if (zoneAllData) {
+                                if (zoneAllData.checked === true) {
+                                    dataOutForm['is_edit_all_zone'] = true;
+                                    dataOutForm['zone'] = [];
+                                } else {
+                                    dataOutForm['is_edit_all_zone'] = false;
+                                    if ($(OFArea?.querySelector('.node-zone-submit')).val()) {
+                                        dataOutForm['zone'] = JSON.parse($(OFArea?.querySelector('.node-zone-submit')).val());
+                                    }
+                                }
+                            }
+                            if ($(OFArea?.querySelector('.node-zone-hidden-submit')).val()) {
+                                dataOutForm['zone_hidden'] = JSON.parse($(OFArea?.querySelector('.node-zone-hidden-submit')).val());
                             }
                             dataRow['collab_out_form'] = dataOutForm;
                             if (is_flowchart === true) {
@@ -1589,8 +1853,17 @@ class NodeSubmitHandle {
                                 if (dataRowInWFRaw) {
                                     let dataRowInWF = JSON.parse(dataRowInWFRaw);
                                     let zone = [];
-                                    for (let zoneData of dataRowInWF?.['zone']) {  // In WF employee has different zones => need to for every row to get zones
-                                        zone.push(parseInt(zoneData?.['id']));
+                                    let zone_hidden = [];
+                                    let is_edit_all_zone = false;
+                                    if (dataRowInWF?.['is_edit_all_zone'] === true) {
+                                        is_edit_all_zone = true;
+                                    } else {
+                                        for (let zoneData of dataRowInWF?.['zone']) {  // In WF employee has different zones => need to for every row to get zones
+                                            zone.push(parseInt(zoneData?.['id']));
+                                        }
+                                    }
+                                    for (let zoneData of dataRowInWF?.['zone_hidden']) {  // In WF employee has different zones => need to for every row to get zones
+                                        zone_hidden.push(parseInt(zoneData?.['id']));
                                     }
                                     if (dataRowInWF?.['in_wf_option']) {
                                         if (dataRowInWF?.['employee']?.['id'] || dataRowInWF?.['position_choice']?.['id']) {
@@ -1599,6 +1872,8 @@ class NodeSubmitHandle {
                                                 'employee': dataRowInWF?.['employee']?.['id'] ? dataRowInWF?.['employee']?.['id'] : null,
                                                 'position_choice': dataRowInWF?.['position_choice']?.['id'] ? dataRowInWF?.['position_choice']?.['id'] : null,
                                                 'zone': zone,
+                                                'zone_hidden': zone_hidden,
+                                                'is_edit_all_zone': is_edit_all_zone,
                                             })
                                         } else {
                                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
@@ -1628,6 +1903,94 @@ class NodeSubmitHandle {
         }
         return result;
     };
+}
+
+// Validate
+class NodeValidateHandle {
+    static zoneHiddenEmployee = {};
+
+    static validateZoneEdit(ele) {
+        let zoneID = ele.getAttribute('data-id');
+        if (zoneID) {
+            let collabArea = ele.closest('.collab-area');
+            let checkboxNodeZoneHiddenChecked = collabArea.querySelector(`.checkbox-node-zone-hidden[data-id="${zoneID}"]:checked`);
+            if (checkboxNodeZoneHiddenChecked) {
+                ele.checked = false;
+                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-edit')}, 'failure');
+                return false;
+            }
+        }
+        return true;
+    };
+
+    static validateZoneEditAll(ele) {
+        let collabArea = ele.closest('.collab-area');
+        let checkboxNodeZoneHiddenCheckedList = collabArea.querySelectorAll(`.checkbox-node-zone-hidden:checked`);
+        if (checkboxNodeZoneHiddenCheckedList.length > 0) {
+            ele.checked = false;
+            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-hidden-exist')}, 'failure');
+            return false;
+        }
+        return true;
+    };
+
+    static validateZoneHidden(ele) {
+        let collabArea = ele.closest('.collab-area');
+        let zoneAllDataChecked = collabArea.querySelector('.checkbox-node-zone-all:checked');
+        if (zoneAllDataChecked) {
+            ele.checked = false;
+            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-edit-all')}, 'failure');
+            return false;
+        }
+        let zoneID = ele.getAttribute('data-id');
+        if (zoneID) {
+            let checkboxNodeZoneEditChecked = collabArea.querySelector(`.checkbox-node-zone[data-id="${zoneID}"]:checked`);
+            if (checkboxNodeZoneEditChecked) {
+                ele.checked = false;
+                $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-hidden')}, 'failure');
+                return false;
+            }
+        }
+        return true;
+    };
+
+    static validateZoneHiddenAll(ele) {
+        let collabArea = ele.closest('.collab-area');
+        let checkboxNodeZoneEditAll = collabArea.querySelector(`.checkbox-node-zone-all:checked`);
+        if (checkboxNodeZoneEditAll) {
+            ele.checked = false;
+            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-hidden-all')}, 'failure');
+            return false
+        }
+        return true;
+    };
+
+    static validateZoneHiddenEmployeeSetup(employeeID, zoneHiddenList) {
+        if (!NodeValidateHandle.zoneHiddenEmployee.hasOwnProperty(employeeID)) {
+            NodeValidateHandle.zoneHiddenEmployee[employeeID] = zoneHiddenList;
+        } else {
+            NodeValidateHandle.zoneHiddenEmployee[employeeID] = NodeValidateHandle.zoneHiddenEmployee[employeeID].concat(zoneHiddenList);
+        }
+    };
+
+    static validateZoneHiddenEmployee(ele) {
+        let zoneID = ele.getAttribute('data-id');
+        if (zoneID) {
+            let collabArea = ele.closest('.collab-area');
+            if (collabArea.classList.contains('collab-in-workflow-area')) {
+                let eleBoxEmployee = collabArea.querySelector('.box-in-workflow-employee');
+                if ($(eleBoxEmployee).val()) {
+                    let dataEmployee = SelectDDControl.get_data_from_idx($(eleBoxEmployee), $(eleBoxEmployee).val());
+                    if (NodeValidateHandle.zoneHiddenEmployee.hasOwnProperty(dataEmployee?.['id'])) {
+                        if (NodeValidateHandle.zoneHiddenEmployee[dataEmployee?.['id']].includes(zoneID)) {
+
+                        }
+                    }
+                }
+            }
+        }
+    };
+
 }
 
 // COMMON FUNCTION

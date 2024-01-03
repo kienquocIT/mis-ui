@@ -118,10 +118,6 @@ $(function () {
 
 
         // NODE EVENTS
-        // NodeDataTableHandle.tableNode.on('click', '.btn-node-collab', function () {
-        //     NodeLoadDataHandle.loadZoneDD(this.closest('tr'));
-        // });
-
         NodeLoadDataHandle.btnAddNode.on('click', function () {
             NodeLoadDataHandle.loadAddRowTableNode();
             NodeLoadDataHandle.nodeModalTitleEle.val("");
@@ -138,15 +134,33 @@ $(function () {
         });
 
         NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-all', function () {
-            let eleZoneDD = this.closest('.dropdown-zone');
-            for (let eleCheckbox of eleZoneDD.querySelectorAll('.checkbox-node-zone')) {
-                eleCheckbox.checked = this.checked;
+            if (this.checked === true) {
+                NodeValidateHandle.validateZoneEditAll(this);
+            }
+            if (this.checked === true) {
+                let eleZoneDD = this.closest('.dropdown-zone');
+                for (let eleCheckbox of eleZoneDD.querySelectorAll('.checkbox-node-zone')) {
+                    eleCheckbox.checked = false;
+                }
+            }
+        });
+
+        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone', function () {
+            if (this.checked === true) {
+                NodeValidateHandle.validateZoneEdit(this);
+                let zoneAllData = this.closest('.collab-area').querySelector('.checkbox-node-zone-all');
+                if (zoneAllData) {
+                    zoneAllData.checked = false;
+                }
             }
             NodeLoadDataHandle.loadZoneShow(this);
         });
 
-        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone', function () {
-            NodeLoadDataHandle.loadZoneShow(this);
+        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden', function () {
+            if (this.checked === true) {
+                NodeValidateHandle.validateZoneHidden(this);
+            }
+            NodeLoadDataHandle.loadZoneHiddenShow(this);
         });
 
         NodeDataTableHandle.tableNode.on('click', '.button-add-out-form-employee', function () {

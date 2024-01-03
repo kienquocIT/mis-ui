@@ -71,7 +71,8 @@ class WorkflowOfAppListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APPS).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APPS).get(data)
         return resp.auto_return(key_success='app_list')
 
 
@@ -220,3 +221,15 @@ class NodeSystemListAPI(APIView):
     def get(self, request, *args, **kwargs):
         return {'node_system': Node_data}, status.HTTP_200_OK
 
+
+# workflow current of app
+class WorkflowCurrentOfAppListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_CURRENT_OF_APPS).get(data)
+        return resp.auto_return(key_success='app_list')

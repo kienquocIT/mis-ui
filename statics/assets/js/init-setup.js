@@ -1397,53 +1397,290 @@ class WFRTControl {
         let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
         if ((btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext')
             && WFRTControl.getWFRuntimeID() && WFRTControl.getTaskWF() && pk && url.includes(pk) && method.toLowerCase() === 'put') {
-            let taskID = WFRTControl.getTaskWF();
-            let keyOk = WFRTControl.getZoneKeyData();
-            let newData = {};
-            for (let key in reqBodyData) {
-                if (keyOk.includes(key)) {
-                    newData[key] = reqBodyData[key];
-                }
-            }
-            newData['task_id'] = taskID;
-            reqBodyData = newData;
+            // let taskID = WFRTControl.getTaskWF();
+            // let keyOk = WFRTControl.getZoneKeyData();
+            // let newData = {};
+            // for (let key in reqBodyData) {
+            //     if (keyOk.includes(key)) {
+            //         newData[key] = reqBodyData[key];
+            //     }
+            // }
+            // newData['task_id'] = taskID;
+            // reqBodyData = newData;
+
+            reqBodyData['task_id'] = WFRTControl.getTaskWF();
         }
         return reqBodyData;
     }
+
+    // static callActionWF(ele$) {
+    //     // -- wf call action
+    //     let actionSelected = $(ele$).attr('data-value');
+    //     let taskID = $('#idxGroupAction').attr('data-wf-task-id');
+    //     let urlBase = globeTaskDetail;
+    //     if (actionSelected !== undefined && taskID && urlBase) {
+    //         let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
+    //         WindowControl.showLoading();
+    //         return $.fn.callAjax2({
+    //             'url': urlData,
+    //             'method': 'PUT',
+    //             'data': {'action': actionSelected},
+    //         }).then((resp) => {
+    //             let data = $.fn.switcherResp(resp);
+    //             if (data?.['status'] === 200) {
+    //                 $.fn.notifyB({
+    //                     'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
+    //                 }, 'success');
+    //                 if (!($(ele$).attr('data-success-reload') === 'false' || $(ele$).attr('data-success-reload') === false)) {
+    //                     setTimeout(() => {
+    //                         window.location.reload()
+    //                     }, 1000)
+    //                 }
+    //             }
+    //             setTimeout(() => {
+    //                 WindowControl.hideLoading();
+    //             }, 1000)
+    //         }, (errs) => {
+    //             setTimeout(() => {
+    //                 WindowControl.hideLoading();
+    //             }, 500)
+    //         });
+    //     }
+    // }
 
     static callActionWF(ele$) {
         // -- wf call action
         let actionSelected = $(ele$).attr('data-value');
         let taskID = $('#idxGroupAction').attr('data-wf-task-id');
         let urlBase = globeTaskDetail;
+        let dataSuccessReload = $(ele$).attr('data-success-reload');
+        let dataSubmit = {'action': actionSelected};
+        let nextNodeCollab = ele$.attr('data-next-node-collab');
         if (actionSelected !== undefined && taskID && urlBase) {
-            let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
-            WindowControl.showLoading();
-            return $.fn.callAjax2({
-                'url': urlData,
-                'method': 'PUT',
-                'data': {'action': actionSelected},
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data?.['status'] === 200) {
-                    $.fn.notifyB({
-                        'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
-                    }, 'success');
-                    if (!($(ele$).attr('data-success-reload') === 'false' || $(ele$).attr('data-success-reload') === false)) {
-                        setTimeout(() => {
-                            window.location.reload()
-                        }, 1000)
+            if (actionSelected === '1') {  // check approve if next node is out form need select person before submit
+                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, nextNodeCollab);
+            } else if (actionSelected === '3') {  // check return need remark before submit
+                return WFRTControl.callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
+            } else if (actionSelected === '4') {  // check receive if next node is out form need select person before submit
+                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, nextNodeCollab);
+            } else {
+                return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+            }
+        }
+    }
+
+    static callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload) {
+        let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
+        WindowControl.showLoading();
+        return $.fn.callAjax2({
+            'url': urlData,
+            'method': 'PUT',
+            'data': dataSubmit,
+        }).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data?.['status'] === 200) {
+                $.fn.notifyB({
+                    'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
+                }, 'success');
+                if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1000)
+                }
+            }
+            setTimeout(() => {
+                WindowControl.hideLoading();
+            }, 1000)
+        }, (errs) => {
+            setTimeout(() => {
+                WindowControl.hideLoading();
+            }, 500)
+        });
+    }
+
+    static callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload) {
+        Swal.fire({
+            input: "textarea",
+            inputLabel: "Message",
+            inputPlaceholder: "Type your message here... (max 255 characters)",
+            inputAttributes: {
+                "aria-label": "Type your message here",
+                "maxlength": "255" // Set the maximum length attribute
+            },
+            allowOutsideClick: false,
+            showConfirmButton: true,
+            confirmButtonText: $.fn.transEle.attr('data-confirm'),
+            showCancelButton: true,
+            cancelButtonText: $.fn.transEle.attr('data-cancel'),
+            inputValidator: (value) => {
+                if (value.length > 255) {
+                    return 'Maximum length exceeded (255 characters)';
+                }
+            },
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                dataSubmit['remark'] = result.value;
+                return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+            }
+        });
+    }
+
+    static callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, nextNodeCollab) {
+        if (nextNodeCollab) {
+            dataSubmit['next_node_collab_id'] = nextNodeCollab;
+            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+        }
+        let collabOutForm = WFRTControl.getCollabOutFormData();
+        if (collabOutForm && collabOutForm.length > 0) {
+            Swal.fire({
+                title: "Select collaborator at next step",
+                html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                showCancelButton: true,
+                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                didOpen: () => {
+                    // Add event listener after the modal is shown
+                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.addEventListener('click', function () {
+                            let checked = checkbox.checked;
+                            for (let eleCheck of checkboxes) {
+                                eleCheck.checked = false;
+                            }
+                            checkbox.checked = checked;
+                        });
+                    });
+                }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                    let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                    if (eleChecked) {
+                        dataSubmit['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                        return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+                    } else {
+                        return "You need to select one person!";
                     }
                 }
-                setTimeout(() => {
-                    WindowControl.hideLoading();
-                }, 1000)
-            }, (errs) => {
-                setTimeout(() => {
-                    WindowControl.hideLoading();
-                }, 500)
             });
+        } else {
+            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
         }
+    }
+
+    static callWFSubmitForm(_form) {
+        let collabOutForm = WFRTControl.getCollabOutFormData();
+        if (collabOutForm && collabOutForm.length > 0) {
+            Swal.fire({
+                title: "Select collaborator at next step",
+                html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                showCancelButton: true,
+                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                didOpen: () => {
+                    // Add event listener after the modal is shown
+                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.addEventListener('click', function () {
+                            let checked = checkbox.checked;
+                            for (let eleCheck of checkboxes) {
+                                eleCheck.checked = false;
+                            }
+                            checkbox.checked = checked;
+                        });
+                    });
+                }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                    let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                    if (eleChecked) {
+                        if (_form.dataMethod.toLowerCase() === 'post') {
+                            _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                        }
+                        if (_form.dataMethod.toLowerCase() === 'put') {
+                            let btnWF = document.querySelector('.btn-action-wf');
+                            if (btnWF) {
+                                btnWF.setAttribute('data-next-node-collab', eleChecked.getAttribute('data-id'));
+                            }
+                            if (_form.dataForm.hasOwnProperty('system_status')) {
+                                _form.dataForm['system_status'] = 1;
+                            }
+                        }
+                    } else {
+                        return "You need to select one person!";
+                    }
+                    WindowControl.showLoading();
+                    $.fn.callAjax2(
+                        {
+                            'url': _form.dataUrl,
+                            'method': _form.dataMethod,
+                            'data': _form.dataForm,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && (data['status'] === 201 || data['status'] === 200)) {
+                                $.fn.notifyB({description: data.message}, 'success');
+                                setTimeout(() => {
+                                    window.location.replace(_form.dataUrlRedirect);
+                                }, 1000);
+                            }
+                        }, (err) => {
+                            setTimeout(() => {
+                                WindowControl.hideLoading();
+                            }, 1000)
+                            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                        }
+                    )
+                }
+            });
+        } else {
+            if (_form.dataForm.hasOwnProperty('system_status')) {
+                _form.dataForm['system_status'] = 1;
+            }
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': _form.dataUrl,
+                    'method': _form.dataMethod,
+                    'data': _form.dataForm,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
+                            window.location.replace(_form.dataUrlRedirect);
+                        }, 1000);
+                    }
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
+        }
+    }
+
+    static setupHTMLCollabNextNode(collabOutForm) {
+        let htmlCustom = ``;
+        for (let collab of collabOutForm) {
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="mr-2">${collab?.['full_name']}</span>
+                                    <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="checkbox" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
+                                </div>
+                            </div><hr class="bg-teal">`;
+        }
+        return htmlCustom;
     }
 
     static setWFRuntimeID(runtime_id) {
@@ -1490,12 +1727,50 @@ class WFRTControl {
                         }
 
                         // zones handler
-                        WFRTControl.activeButtonOpenZone(actionMySelf['zones']);
+                        if (window.location.href.includes('/update/')) {
+                            if (actionMySelf.hasOwnProperty('zones') && actionMySelf.hasOwnProperty('zones_hidden') && actionMySelf.hasOwnProperty('is_edit_all_zone')) {
+                                WFRTControl.activeButtonOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
+                            } else {
+                                WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                            }
+                        }
+                        if (window.location.href.includes('/detail/')) {
+                            WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                        }
+                        // collab out form handler
+                        WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);
                     }
                 }
             })
         }
         globeWFRuntimeID = runtime_id;
+    }
+
+    static setWFInitialData(app_code) {
+        if (app_code) {
+            let btn = $('#btnLogShow');
+            btn.removeClass('hidden');
+            let url = btn.attr('data-url-current-wf');
+            $.fn.callAjax2({
+                'url': url,
+                'method': 'GET',
+                'data': {'code': app_code},
+            }).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
+                    let WFconfig = data?.['app_list'][0];
+                    if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (0)
+                        let workflow_current = WFconfig?.['workflow_currently'];
+                        if (workflow_current) {
+                            // zones handler
+                            WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                            // collab out form handler
+                            WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
+                        }
+                    }
+                }
+            })
+        }
     }
 
     static getWFRuntimeID() {
@@ -1504,7 +1779,7 @@ class WFRTControl {
 
     static getActionsList() {
         let itemEle = $('#idxWFActionsData');
-        if (itemEle) return JSON.parse(itemEle.text());
+        if (itemEle && itemEle.length > 0) return JSON.parse(itemEle.text());
         return [];
     }
 
@@ -1522,13 +1797,38 @@ class WFRTControl {
 
     static activeZoneInDoc() {
         let zonesData = WFRTControl.getZoneData();
-        if (Array.isArray(zonesData)) {
+        let zonesHiddenData = WFRTControl.getZoneHiddenData();
+        let isEditAllZone = WFRTControl.getIsEditAllZone();
+        if (isEditAllZone === 'true') {
+            // add button save at zones
+            // idFormID
+            if (window.location.href.includes('/update/')) {
+                let idFormID = globeFormMappedZone;
+                if (idFormID) {
+                    DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
+                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+
+                    let actionList = WFRTControl.getActionsList();
+                    let actionBubble = null;
+                    if (actionList.includes(1)) {
+                        actionBubble = 1;
+                    } else if (actionList.includes(4)) {
+                        actionBubble = 4;
+                    }
+                    if (actionBubble) {
+                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
+                    }
+                }
+            }
+            return true;
+        }
+        if (Array.isArray(zonesData) && Array.isArray(zonesHiddenData)) {
             let pageEle = DocumentControl.getElePageContent();
             let input_mapping_properties = WFRTControl.getInputMappingProperties();
 
             // disable + readonly field (chỉ disabled các field trong form)
             pageEle.find('.required').removeClass('required');
-            pageEle.find('input, select, textarea').each(function (event) {
+            pageEle.find('input, select, textarea, button, span[data-zone]').each(function (event) {
 
                 let inputMapProperties = input_mapping_properties[$(this).attr('name')];
                 if (!inputMapProperties)
@@ -1573,7 +1873,7 @@ class WFRTControl {
                 }
             });
 
-            // apply zones config
+            // apply zones editable config
             if (zonesData.length > 0) {
                 // $('#select-box-emp').prop('readonly', true);
                 zonesData.map((item) => {
@@ -1603,6 +1903,7 @@ class WFRTControl {
                                             'remove_disable': true,
                                             'add_readonly': true,
                                             'add_border': true,
+                                            'add_class_active': true,
                                         });
 
                                         // case: input is Files
@@ -1617,6 +1918,7 @@ class WFRTControl {
                                             'remove_disable': true,
                                             'remove_readonly': true,
                                             'add_border': true,
+                                            'add_class_active': true,
                                         });
 
                                         // case: input is Files
@@ -1644,39 +1946,163 @@ class WFRTControl {
                 })
             }
 
+            // apply zones hidden config
+            if (zonesHiddenData.length > 0) {
+                // $('#select-box-emp').prop('readonly', true);
+                zonesHiddenData.map((item) => {
+                    if (item.code) {
+                        let inputMapProperties = input_mapping_properties[item.code];
+                        if (inputMapProperties && typeof inputMapProperties === 'object') {
+                            let arrTmpFind = {};
+                            let arrTmpOfDataListFind = {}
+                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                            inputMapProperties['name'].map((nameFind) => {
+                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
+                                // cho trường hợp field là table or list
+                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                            })
+                            inputMapProperties['id'].map((idFind) => {
+                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                            })
+                            Object.keys(arrTmpFind).map((key) => {
+                                let findText = arrTmpFind[key];
+                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
+                                    findText = arrTmpOfDataListFind[key]
+                                pageEle.find(findText).each(function () {
+                                    if (readonly_not_disable.includes(key)) {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_empty_value': true,
+                                        });
+                                    } else {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_empty_value': true,
+                                        });
+                                    }
+                                })
+                            });
+                        }
+                    }
+                })
+            }
+
             // add button save at zones
             // idFormID
-            let idFormID = globeFormMappedZone;
-            if (idFormID) {
-                DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+            if (zonesData.length > 0) {  // check if user has zone edit then show button save at zones
+            if (window.location.href.includes('/update/')) {
+                let idFormID = globeFormMappedZone;
+                if (idFormID) {
+                    DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
+                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
 
-                let actionList = WFRTControl.getActionsList();
-                let actionBubble = null;
-                if (actionList.includes(1)) {
-                    actionBubble = 1;
-                } else if (actionList.includes(4)) {
-                    actionBubble = 4;
+                    let actionList = WFRTControl.getActionsList();
+                    let actionBubble = null;
+                    if (actionList.includes(1)) {
+                        actionBubble = 1;
+                    } else if (actionList.includes(4)) {
+                        actionBubble = 4;
+                    }
+                    if (actionBubble) {
+                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
+                    }
                 }
-                if (actionBubble) {
-                    $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
-                }
+            }
             }
         }
     }
 
-    static activeButtonOpenZone(zonesData) {
-        if (window.location.href.includes('/update/')) {
-            WFRTControl.setZoneData(zonesData);
-            if (zonesData && Array.isArray(zonesData)) {
-                $('#btn-active-edit-zone-wf').removeClass('hidden');
+    static activeZoneHiddenMySelf() {
+        let zonesHiddenData = WFRTControl.getZoneHiddenData();
+        if (Array.isArray(zonesHiddenData)) {
+            let pageEle = DocumentControl.getElePageContent();
+            let input_mapping_properties = WFRTControl.getInputMappingProperties();
+
+            // apply zones hidden config
+            if (zonesHiddenData.length > 0) {
+                // $('#select-box-emp').prop('readonly', true);
+                zonesHiddenData.map((item) => {
+                    if (item.code) {
+                        let inputMapProperties = input_mapping_properties[item.code];
+                        if (inputMapProperties && typeof inputMapProperties === 'object') {
+                            let arrTmpFind = {};
+                            let arrTmpOfDataListFind = {}
+                            let readonly_not_disable = inputMapProperties['readonly_not_disable'];
+                            inputMapProperties['name'].map((nameFind) => {
+                                arrTmpFind[nameFind] = "[name=" + nameFind + "]";
+                                // cho trường hợp field là table or list
+                                arrTmpOfDataListFind[nameFind] = "[data-zone=" + nameFind + "]"
+                            })
+                            inputMapProperties['id'].map((idFind) => {
+                                arrTmpFind[idFind] = "[id=" + idFind + "]";
+                            })
+                            Object.keys(arrTmpFind).map((key) => {
+                                let findText = arrTmpFind[key];
+                                if (pageEle.find(findText).length <= 0 && arrTmpOfDataListFind.hasOwnProperty(key))
+                                    findText = arrTmpOfDataListFind[key]
+                                pageEle.find(findText).each(function () {
+                                    if (readonly_not_disable.includes(key)) {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_empty_value': true,
+                                        });
+                                    } else {
+                                        $(this).changePropertiesElementIsZone({
+                                            'add_empty_value': true,
+                                        });
+                                    }
+                                })
+                            });
+                        }
+                    }
+                })
             }
+        }
+    }
+
+    static activeButtonOpenZone(zonesData, zonesHiddenData, isEditAllZone) {
+        if (window.location.href.includes('/update/') || window.location.href.includes('/create')) {
+            WFRTControl.setZoneData(zonesData);
+            WFRTControl.setZoneHiddenData(zonesHiddenData);
+            WFRTControl.setIsEditAllZoneData(isEditAllZone);
+            if (zonesData && Array.isArray(zonesData) && zonesHiddenData && Array.isArray(zonesHiddenData)) {
+                $('#btn-active-edit-zone-wf').removeClass('hidden');
+                $('#btn-active-edit-zone-wf').click();
+            }
+        }
+    }
+
+    static activeDataZoneHiddenMySelf(zonesHiddenData) {
+        if (window.location.href.includes('/detail/') || window.location.href.includes('/update/')) {
+            WFRTControl.setZoneHiddenData(zonesHiddenData);
+            WFRTControl.activeZoneHiddenMySelf();
         }
     }
 
     static getZoneData() {
         let itemEle = $('#idxZonesData');
         if (itemEle) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }
+
+    static getZoneHiddenData() {
+        let itemEle = $('#idxZonesHiddenData');
+        if (itemEle && itemEle.length > 0) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }
+
+    static getIsEditAllZone() {
+        let itemEle = $('#idxIsEditAllZone');
+        if (itemEle && itemEle.length > 0) {
+            return itemEle.text();
+        }
+        return 'true';
+    }
+
+    static getCollabOutFormData() {
+        let itemEle = $('#idxCollabOutFormData');
+        if (itemEle && itemEle.length > 0) {
             return JSON.parse(itemEle.text());
         }
         return [];
@@ -1690,6 +2116,14 @@ class WFRTControl {
         return [];
     }
 
+    static getZoneHiddenKeyData() {
+        let itemEle = $('#idxZonesHiddenKeyData');
+        if (itemEle && itemEle.length > 0) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }
+
     static setZoneData(zonesData) {
         let body_fields = [];
         if (zonesData && Array.isArray(zonesData)) {
@@ -1698,6 +2132,26 @@ class WFRTControl {
             });
         }
         $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` + `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`);
+    }
+
+    static setZoneHiddenData(zonesHiddenData) {
+        let body_fields = [];
+        if (zonesHiddenData && Array.isArray(zonesHiddenData)) {
+            zonesHiddenData.map((item) => {
+                body_fields.push(item.code);
+            });
+            $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>` + `<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+        }
+    }
+
+    static setIsEditAllZoneData(isEditAllZone) {
+        $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
+    }
+
+    static setCollabOutFormData(collabOutFormData) {
+        if (collabOutFormData && Array.isArray(collabOutFormData)) {
+            $('html').append(`<script class="hidden" id="idxCollabOutFormData">${JSON.stringify(collabOutFormData)}</script>`);
+        }
     }
 
     static getInputMappingProperties() {
@@ -1739,16 +2193,20 @@ class WFRTControl {
             'add_disable': false,
             'remove_readonly': false,
             'add_readonly': false,
-            'add_border': false, ...opts
+            'add_border': false,
+            'add_class_active': false,  // flag to know element is active zone
+            'add_empty_value': false, ...opts
         }
         if (config.add_require_label === true) {
             $(ele$).closest('.form-group').find('.form-label').addClass('required');
         }
         if (config.add_disable === true) {
-            $(ele$).attr('disabled', 'disabled');
-            if ($(ele$).is('div')) {
-                $(ele$).css('cursor', 'no-drop')
-                $(ele$).addClass('bg-light');
+            if (!$(ele$).hasClass('zone-active')) {
+                $(ele$).attr('disabled', 'disabled');
+                if ($(ele$).is('div')) {
+                    $(ele$).css('cursor', 'no-drop')
+                    $(ele$).addClass('bg-light');
+                }
             }
         }
         if (config.remove_required === true) {
@@ -1758,10 +2216,12 @@ class WFRTControl {
             $(ele$).removeAttr('disabled');
         }
         if (config.add_readonly === true) {
-            if ($(ele$).is('div')) {
-                $(ele$).addClass('bg-light');
-            } else {
-                $(ele$).attr('readonly', 'readonly');
+            if (!$(ele$).hasClass('zone-active')) {
+                if ($(ele$).is('div')) {
+                    $(ele$).addClass('bg-light');
+                } else {
+                    $(ele$).attr('readonly', 'readonly');
+                }
             }
         }
         if (config.remove_readonly === true) {
@@ -1772,6 +2232,49 @@ class WFRTControl {
         }
         if (config.add_border === true) {
             $(ele$).addClass('border-warning');
+        }
+
+        if (config.add_class_active === true) {  // flag to know which fields are active by WF zones
+            $(ele$).addClass('zone-active');
+        }
+        if (config.add_empty_value === true) {  // set value to empty
+            if (!$(ele$).hasClass('zone-active')) {
+                if ($(ele$).is('input')) {  // if input
+                    $(ele$).val('');
+                    if ($(ele$).hasClass('mask-money')) {  // if input mask-money
+                        $(ele$).attr('value', '');
+                    }
+                    // add class hidden-zone (for use css in my-style.css)
+                    $(ele$).attr('placeholder', $.fn.transEle.attr('data-hidden-by-workflow-config'));
+                    $(ele$).addClass('hidden-zone');
+                }
+                if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2
+                    $(ele$).html(`<option value="" selected></option>`);
+                    // add class hidden-zone (for use css in my-style.css)
+                    $(ele$).initSelect2({placeholder: $.fn.transEle.attr('data-hidden-by-workflow-config'),});
+                    $(ele$).next('.select2-container').addClass('hidden-zone');
+                }
+                if ($(ele$).is('textarea')) {  // if textarea
+                    $(ele$).val('');
+                    // add class hidden-zone (for use css in my-style.css)
+                    $(ele$).attr('placeholder', $.fn.transEle.attr('data-hidden-by-workflow-config'));
+                    $(ele$).addClass('hidden-zone');
+                }
+                if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)
+                    if ($(ele$).attr('data-zone')) {
+                        if ($(ele$).hasClass('mask-money')) {
+                            $(ele$).attr('data-init-money', '').html(``);
+                        } else {
+                            $(ele$).html(``);
+                        }
+                    }
+                }
+                if ($(ele$).is('button')) {  // if button (only button that have attr data-zone)
+                    if ($(ele$).attr('data-zone')) {
+                        $(ele$).attr('hidden', 'true');
+                    }
+                }
+            }
         }
 
         // active border for select2

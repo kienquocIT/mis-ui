@@ -2,33 +2,32 @@ let ZONE_INDEX = 0;
 let WF_DATATYPE = [];
 
 // handle btn modal zone save
-function modalFormSubmit($form) {
+function modalFormSubmit($form, is_edit=false) {
     $('#btn-zone-submit').off().on('click', function (e) {
         e.preventDefault();
         let _form = new FormData($form[0])
         let form_order = parseInt(_form.get("order"))
-
-        // setup order
-        let order = 1;
-        if (!$('#table_workflow_zone')[0].querySelector('.dataTables_empty')) {
-            let tableLen = $('#table_workflow_zone')[0].tBodies[0].rows.length;
-            order = (tableLen + 1);
+        let $tableZone = $('#table_workflow_zone');
+        // setup order add new
+        if (is_edit === false) {
+            if (!$tableZone[0].querySelector('.dataTables_empty')) {
+                let tableLen = $tableZone[0].tBodies[0].rows.length;
+                form_order = (tableLen + 1);
+            }
         }
-
         let temp = {
-            // "order": form_order ? form_order : ZONE_INDEX + 1,
-            "order": order,
+            "order": form_order ? form_order : 1,
             "title": _form.get("title"),
             "remark": _form.get("remark"),
             "property_list": _form.getAll("property_list")
         }
         if (_form.get('zone_id'))
             temp['id'] = _form.get('zone_id')
-        if (_form.get("order") && _form.get("order") !== undefined) {
-            // let rowIdx = form_order - 1
-            let rowIdx = form_order - 2
-            $('#table_workflow_zone').DataTable().row(rowIdx).data(temp).draw()
-        } else $('#table_workflow_zone').DataTable().row.add(temp).draw()
+        // if (_form.get("order") && _form.get("order") !== undefined) {
+        if (is_edit === true) {  // edit zone
+            let rowIdx = form_order - 1
+            $tableZone.DataTable().row(rowIdx).data(temp).draw()
+        } else $tableZone.DataTable().row.add(temp).draw()  // add new zone
         $form[0].reset();
         $form.find('.dropdown-select_two').val(null).trigger('change');
         ZONE_INDEX = ZONE_INDEX + 1
@@ -36,6 +35,7 @@ function modalFormSubmit($form) {
     });
 }
 
+// handle event add new zone
 function addZoneBtn(ElmSelectbox) {
     // show modal add zone
     $('[data-bs-target="#add_zone"]').on('click', function (e) {
@@ -51,7 +51,7 @@ function addZoneBtn(ElmSelectbox) {
     });
 }
 
-// handle event table zone actions on click
+// handle event table zone actions on click (edit, delete)
 function actionsClick(elm, data, iEvent) {
     let isAction = $(iEvent.currentTarget).attr('data-action');
     if (isAction === 'edit') {
@@ -69,7 +69,7 @@ function actionsClick(elm, data, iEvent) {
         $form.find('[name="order"]').val(data.order)
         if (data.hasOwnProperty('id'))
             $form.find('[name="zone_id"]').val(data.id)
-        modalFormSubmit($form)
+        modalFormSubmit($form, true);
         $add_zone_modal.modal('show')
     } else if (isAction === 'delete') {
         let table_elm = $(elm).parents('table.table');
@@ -120,7 +120,8 @@ function initTableZone(data) {
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    return `<p>${row.title}</p>`
+                    let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                    return `<p class="table-row-title" data-row="${dataRow}">${row.title}</p>`
                 }
             },
             {

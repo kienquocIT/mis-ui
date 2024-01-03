@@ -5827,3 +5827,15 @@ msgstr "Ẩn theo cấu hình quy trình"
 #
 msgid "Add node"
 msgstr "Thêm trạm"
+
+#
+msgid "Select collaborator at next step"
+msgstr "Chọn cộng tác viên ở bước tiếp theo"
+
+#
+msgid "Returned content"
+msgstr "Nội dung trả về"
+
+#
+msgid "Type your content here..."
+msgstr "Nhập nội dung của bạn vào đây..."

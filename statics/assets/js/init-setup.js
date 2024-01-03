@@ -1501,8 +1501,8 @@ class WFRTControl {
     static callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload) {
         Swal.fire({
             input: "textarea",
-            inputLabel: "Message",
-            inputPlaceholder: "Type your message here... (max 255 characters)",
+            inputLabel: $.fn.transEle.attr('data-returned-content'),
+            inputPlaceholder: $.fn.transEle.attr('data-type-content'),
             inputAttributes: {
                 "aria-label": "Type your message here",
                 "maxlength": "255" // Set the maximum length attribute
@@ -1533,7 +1533,7 @@ class WFRTControl {
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
             Swal.fire({
-                title: "Select collaborator at next step",
+                title: $.fn.transEle.attr('data-select-next-node-collab'),
                 html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
                 allowOutsideClick: false,
                 showConfirmButton: true,
@@ -1573,7 +1573,7 @@ class WFRTControl {
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
             Swal.fire({
-                title: "Select collaborator at next step",
+                title: $.fn.transEle.attr('data-select-next-node-collab'),
                 html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
                 allowOutsideClick: false,
                 showConfirmButton: true,

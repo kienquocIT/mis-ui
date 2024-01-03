@@ -28,13 +28,13 @@ class MeetingScheduleCreate(View):
         menu_active='menu_meeting_create',
     )
     def get(self, request, *args, **kwargs):
-        resp0 = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_LIST).get()
+        # resp0 = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_LIST).get()
         resp1 = ServerAPI(
             user=request.user,
             url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
         ).get()
         return {
-            'zoom_config': resp0.result[0] if len(resp0.result) > 0 else '',
+            # 'zoom_config': resp0.result[0] if len(resp0.result) > 0 else '',
             'employee_current': resp1.result,
             'company_current': request.user.company_current_data
         }, status.HTTP_200_OK

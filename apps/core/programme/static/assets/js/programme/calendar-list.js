@@ -97,47 +97,7 @@ class programmeHandle {
         }
         return afterPrepare
     }
-
-    static callMeetingSchedule(calendar, params = null) {
-        $.fn.callAjax2({
-            'url': $('#url-factory').attr('data-meeting-schedule'),
-            'method': 'get',
-            'data': params ? params : {'meeting_date': moment().format('YYYY-MM-DD'), 'self_employee': true}
-        })
-            .then(function (req) {
-                    let data = $.fn.switcherResp(req)['meeting_schedule_list']
-                    let nextDay = {}
-                    let dataReceived = []
-                    for (let item of data) {
-                        console.log(item)
-                        item.calendar_type = 1
-                        let start_time = new Date(`${item.meeting_start_date}T${item.meeting_start_time}`)
-                        let end_time = new Date(`${item.meeting_start_date}T${item.meeting_start_time}`)
-                        end_time.setMinutes(end_time.getMinutes() + item.meeting_duration);
-                        let temp = {
-                            backgroundColor: '#FFC400',
-                            borderColor: '#FFC400',
-                            title: item.title,
-                            start: start_time,
-                            end: end_time,
-                            source: item
-                        }
-                        if (moment(temp.start).isAfter(moment(nextDay?.start))) nextDay = temp
-                        let milis = moment(temp.end).diff(moment(temp.start))
-                        if (moment.duration(milis).asHours() >= 8) temp.allDay = true
-                        if (dataReceived.indexOf(item.id) === -1){
-                            calendar.addEvent(temp)
-                            dataReceived.push(item.id)
-                        }
-                    }
-                    if (!programmeHandle.UpData?.[1] && Object.keys(nextDay).length > 0) programmeHandle.UpData[1] = nextDay
-                    calendar.render()
-                    $('.tit-upcoming-evt').trigger('Upcoming-Event:Trigger')
-                },
-                (errs) => {console.log('calendar-list_123 ', errs)}
-            )
-    }
-
+z
     static callMeeting(calendar, params = null) {
         $.fn.callAjax2({
             'url': $('#url-factory').attr('data-meet'),
@@ -286,13 +246,6 @@ class programmeHandle {
             let emp = $('#filter_employee_id').val()
             let group = $('#filter_group_id').val()
             switch (this.value) {
-                case 'meeting-schedule':
-                    if (emp.length > 0) params.employee_in_list = emp.join(',')
-                    else params.self_employee = true
-                    if (group) params.employee_inherit__group = group
-                    params.meeting_date = moment().format('YYYY-MM-DD')
-                    programmeHandle.callMeetingSchedule(calendar, params);
-                    break;
                 case 'meeting':
                     if (emp.length > 0) params.employee_in_list = emp.join(',')
                     else params.self_employee = true

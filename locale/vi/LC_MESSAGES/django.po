@@ -4898,7 +4898,7 @@ msgstr "Nhóm cấp trên"
 
 #
 msgid "Manager"
-msgstr "Trưởng phòng"
+msgstr "Trưởng nhóm"
 
 
 #

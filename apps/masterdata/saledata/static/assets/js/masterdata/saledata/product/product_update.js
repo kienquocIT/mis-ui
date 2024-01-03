@@ -1,6 +1,4 @@
 $(document).ready(async function () {
-    await loadWareHouseListAjax();
-
     new ProductHandle().load();
 
     LoadDetailProduct('update');

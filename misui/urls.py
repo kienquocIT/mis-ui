@@ -28,18 +28,11 @@ urlpatterns += i18n_patterns(
 )
 
 if not settings.USE_S3:
-    # urlpatterns += [
-    #     re_path(
-    #         r'^media/(?P<path>.*)$',
-    #         RedirectView.as_view(url=f'{settings.API_DOMAIN_SIMPLE}/media/%(path)s', permanent=True)
-    #     ),
-    # ]
-
     urlpatterns += [
         re_path(
             r'^media/(?P<path>.*)$',
             media_proxy.MediaProxyView.as_view(),
-            name='Media Proxy'
+            name='Media-Proxy'
         )
     ]
 

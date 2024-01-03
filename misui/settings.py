@@ -245,7 +245,7 @@ MEDIA_SECRET_TOKEN_UI = os.environ.get('MEDIA_SECRET_TOKEN_UI', 'Yk4pfMCqAgzZK3c
 # media server
 MEDIA_DOMAIN = os.environ.get('MEDIA_DOMAIN', 'http://127.0.0.1:8881/api/')
 MEDIA_PUBLIC_DOMAIN = os.environ.get('MEDIA_PUBLIC_DOMAIN', MEDIA_DOMAIN)
-
+MEDIA_TIMEOUT = int(os.environ.get('MEDIA_TIMEOUT', '0'))  # seconds
 # Key return resp after call API
 API_KEY_AUTH = 'Authorization'
 API_PREFIX_TOKEN = 'Bearer'
@@ -366,6 +366,7 @@ if os.environ.get('ENABLE_PROD', '0') in [1, '1']:
     )
     # Replace API DOMAIN
     API_DOMAIN = os.environ.get('API_DOMAIN', None)
+    API_DOMAIN_SIMPLE = os.environ.get('API_DOMAIN_SIMPLE', API_DOMAIN.replace("/api/", ""))
 
 #
 USE_S3 = os.getenv('USE_S3', '0') == '1'

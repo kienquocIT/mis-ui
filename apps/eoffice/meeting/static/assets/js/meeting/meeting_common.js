@@ -62,6 +62,7 @@ endDateBySelectEle.daterangepicker({
 
 modalRecurringMeetingEle.on('change', function () {
     $('.row-for-recurring').prop('hidden', !$(this).prop('checked'))
+    $('#meeting-id-personal').closest('.form-group').closest('.row').prop('hidden', $(this).prop('checked'))
 })
 
 modalRecurrenceEle.on('change', function () {
@@ -93,8 +94,9 @@ meetingTypeEle.on('change', function () {
 })
 
 meetingIDEle.on('change', function () {
-    $('#enable-continuous-meeting-chat-row').prop('hidden', $('#meeting-id-personal').prop('checked'))
-    $('#modal-enable-continuous-meeting-chat').prop('checked', !$('#meeting-id-personal').prop('checked')).prop('disabled', $('#meeting-id-personal').prop('checked'))
+    let bool = $('#meeting-id-personal').prop('checked')
+    $('#enable-continuous-meeting-chat-row .form-switch').prop('hidden', bool)
+    $('#modal-enable-continuous-meeting-chat').prop('checked', !bool).prop('disabled', bool)
 })
 
 function loadInternalParticipants(data) {
@@ -228,6 +230,22 @@ btn_add_app_meeting_schedule.on('click', function () {
 save_meeting_payload.on('click', function () {
     let flag = true;
     let data_meeting_payload = {}
+    if (modalRecurringMeetingEle.prop('checked')) {
+        data_meeting_payload['type'] = 8
+        // data_meeting_payload['recurrence'] = {
+        //     'end_date_time':,
+        //     'end_times':,
+        //     'monthly_day':,
+        //     'monthly_week':,
+        //     'monthly_week_day':,
+        //     'repeat_interval':,
+        //     'type':,
+        //     'weekly_days':,
+        // }
+    }
+    else {
+        data_meeting_payload['type'] = 2
+    }
     data_meeting_payload['topic'] = modalMeetingTitleEle.val()
     data_meeting_payload['start_time'] = startDateEle.val() + 'T' + startTimeEle.val()
     data_meeting_payload['duration'] = parseInt($('#duration-hour').val()) * 60 + parseInt($('#duration-min').val());
@@ -253,7 +271,9 @@ save_meeting_payload.on('click', function () {
         'waiting_room': $('#meeting-waiting-room').prop('checked')
     }
     if (data_meeting_payload['settings']['use_pmi']) {
-        data_meeting_payload['settings']['continuous_meeting_chat']['enable'] = $('#modal-enable-continuous-meeting-chat').prop('checked')
+        if (data_meeting_payload['settings'].hasOwnProperty('continuous_meeting_chat')) {
+            delete data_meeting_payload['settings']['continuous_meeting_chat'];
+        }
     }
 
     if (data_meeting_payload['topic'] === '') {

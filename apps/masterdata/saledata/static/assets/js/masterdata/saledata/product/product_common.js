@@ -783,6 +783,7 @@ function Disable(option) {
         $('.form-select').prop('disabled', true).css({color: 'black'});
         $('.select2').prop('disabled', true);
         $('input').prop('disabled', true);
+        $('#btn-add-row-variant-attributes').prop('disabled', true);
     }
 }
 
@@ -811,80 +812,82 @@ function getDataForm() {
     data['product_variant_attribute_list'] = [];
     data['product_variant_item_list'] = [];
 
-    table_Variant_Attributes.find('tbody tr').each(function (index) {
-        let row = $(this);
-        let attribute_title = row.find('.variant-attribute').val();
-        let attribute_value_list = row.find('.attribute_value_list_span').text();
-        let attribute_config = row.find('.config-selection').attr('data-value');
+    if (table_Variant_Attributes.prop('hidden') && table_Variant_Items.prop('hidden')) {
+        table_Variant_Attributes.find('tbody tr').each(function (index) {
+            let row = $(this);
+            let attribute_title = row.find('.variant-attribute').val();
+            let attribute_value_list = row.find('.attribute_value_list_span').text();
+            let attribute_config = row.find('.config-selection').attr('data-value');
 
-        if (attribute_title !== '' && attribute_value_list.length > 0 && attribute_config !== '') {
-            data['product_variant_attribute_list'].push({
-                'attribute_title': attribute_title,
-                'attribute_value_list': JSON.parse(attribute_value_list),
-                'attribute_config': attribute_config
-            })
-        } else {
-            $.fn.notifyB({description: 'Variant Attributes Table is missing data (Row ' + (index+1) + ')'}, 'failure');
-            variant_attribute_create_valid = false;
-        }
-    })
-    table_Variant_Items.find('tbody tr').each(function (index) {
-        let row = $(this);
-        let variant_value_list = [];
-        row.find('.variant-item').each(function () {
-            variant_value_list.push($(this).text())
-        });
-        let variant_name = row.find('.variant-name-span').text();
-        let variant_des = row.find('.variant-des-span').text();
-        if (variant_name === '' || variant_des === '') {
-            let variant_name_content = [];
-            let variant_des_content = [];
+            if (attribute_title !== '' && attribute_value_list.length > 0 && attribute_config !== '') {
+                data['product_variant_attribute_list'].push({
+                    'attribute_title': attribute_title,
+                    'attribute_value_list': JSON.parse(attribute_value_list),
+                    'attribute_config': attribute_config
+                })
+            } else {
+                $.fn.notifyB({description: 'Variant Attributes Table is missing data (Row ' + (index + 1) + ')'}, 'failure');
+                variant_attribute_create_valid = false;
+            }
+        })
+
+        table_Variant_Items.find('tbody tr').each(function (index) {
+            let row = $(this);
+            let variant_value_list = [];
             row.find('.variant-item').each(function () {
-                variant_name_content.push($(this).text());
-                variant_des_content.push($(this).text());
-            })
-            variant_name = $('#title').val() + ' (' + variant_name_content.join(', ') + ')';
-            variant_des = variant_des_content.join(', ');
-        }
-        let variant_SKU = row.find('.SKU-input').val();
-        let variant_extra_price = row.find('.extra-price-input').attr('value');
-        let is_active = row.find('.variant-active').is(':checked');
-
-        if (variant_value_list.length > 0 && variant_des !== '' && variant_name !== '' && data['title'] !== '') {
-            if (row.attr('data-variant-value-id') !== undefined) {
-                data['product_variant_item_list'].push({
-                    'variant_value_id': row.attr('data-variant-value-id'),
-                    'variant_value_list': variant_value_list,
-                    'variant_name': variant_name,
-                    'variant_des': variant_des,
-                    'variant_SKU': variant_SKU,
-                    'variant_extra_price': variant_extra_price,
-                    'is_active': is_active
+                variant_value_list.push($(this).text())
+            });
+            let variant_name = row.find('.variant-name-span').text();
+            let variant_des = row.find('.variant-des-span').text();
+            if (variant_name === '' || variant_des === '') {
+                let variant_name_content = [];
+                let variant_des_content = [];
+                row.find('.variant-item').each(function () {
+                    variant_name_content.push($(this).text());
+                    variant_des_content.push($(this).text());
                 })
+                variant_name = $('#title').val() + ' (' + variant_name_content.join(', ') + ')';
+                variant_des = variant_des_content.join(', ');
             }
-            else {
-                data['product_variant_item_list'].push({
-                    'variant_value_list': variant_value_list,
-                    'variant_name': variant_name,
-                    'variant_des': variant_des,
-                    'variant_SKU': variant_SKU,
-                    'variant_extra_price': variant_extra_price,
-                    'is_active': is_active
-                })
+            let variant_SKU = row.find('.SKU-input').val();
+            let variant_extra_price = row.find('.extra-price-input').attr('value');
+            let is_active = row.find('.variant-active').is(':checked');
+
+            if (variant_value_list.length > 0 && variant_des !== '' && variant_name !== '' && data['title'] !== '') {
+                if (row.attr('data-variant-value-id') !== undefined) {
+                    data['product_variant_item_list'].push({
+                        'variant_value_id': row.attr('data-variant-value-id'),
+                        'variant_value_list': variant_value_list,
+                        'variant_name': variant_name,
+                        'variant_des': variant_des,
+                        'variant_SKU': variant_SKU,
+                        'variant_extra_price': variant_extra_price,
+                        'is_active': is_active
+                    })
+                } else {
+                    data['product_variant_item_list'].push({
+                        'variant_value_list': variant_value_list,
+                        'variant_name': variant_name,
+                        'variant_des': variant_des,
+                        'variant_SKU': variant_SKU,
+                        'variant_extra_price': variant_extra_price,
+                        'is_active': is_active
+                    })
+                }
+            } else {
+                $.fn.notifyB({description: 'Variant Items Table is missing data (Row ' + (index + 1) + ')'}, 'failure');
+                variant_item_create_valid = false;
             }
-        } else {
-            $.fn.notifyB({description: 'Variant Items Table is missing data (Row ' + (index+1) + ')'}, 'failure');
-            variant_item_create_valid = false;
+        })
+
+        if (!variant_attribute_create_valid && !variant_item_create_valid) {
+            return false;
         }
-    })
 
-    if (!variant_attribute_create_valid && !variant_item_create_valid) {
-        return false;
-    }
-
-    if (table_Variant_Attributes.find('tbody tr').length !== data['product_variant_attribute_list'].length || table_Variant_Items.find('tbody tr').length !== data['product_variant_item_list'].length) {
-        $.fn.notifyB({description: 'Variant Tables is invalid'}, 'failure');
-        return false;
+        if (table_Variant_Attributes.find('tbody tr').length !== data['product_variant_attribute_list'].length || table_Variant_Items.find('tbody tr').length !== data['product_variant_item_list'].length) {
+            $.fn.notifyB({description: 'Variant Tables is invalid'}, 'failure');
+            return false;
+        }
     }
 
     if (check_tab_sale.is(':checked') === true) {

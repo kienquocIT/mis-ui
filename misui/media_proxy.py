@@ -19,7 +19,7 @@ class MediaProxyView(APIView):
         'text/html': 'application/json',
     }
     return_raw = True
-    TIMEOUT = None
+    TIMEOUT = settings.MEDIA_TIMEOUT or 10
 
     def get_proxy_host(self):
         return self.proxy_host

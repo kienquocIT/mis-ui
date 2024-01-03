@@ -91,3 +91,7 @@ text-transform: uppercase;
 .fc-event-time{
     text-transform: uppercase;
 }
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:focus{
+    color:#000!important;
+}

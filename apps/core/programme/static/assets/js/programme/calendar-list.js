@@ -4,6 +4,7 @@
 // 3: Leave
 class programmeHandle {
     static UpData = {};
+    static DateListCallable = []
 
     static renderUpEvt() {
         $(document).on('Upcoming-Event:Trigger', function () {
@@ -211,6 +212,34 @@ class programmeHandle {
         programmeHandle.callMeeting(calendar)
         programmeHandle.renderUpEvt()
 
+        function loopCallAPI(_ValMonth, _listGroup, _listEmp){
+            for (let cate of $('.categories-wrap input:checked')){
+                let _thisVal = cate.value
+                let params = {}
+                if (_thisVal === 'meeting'){
+                    params.meeting_date = _ValMonth
+                    if (_listGroup) params.employee_inherit__group = _listGroup
+                    if (_listEmp && _listEmp.length) params.employee_in_list = _listEmp.join(',')
+                    if (!_listGroup && !_listEmp) params.self_employee = true
+                    programmeHandle.callMeeting(calendar, params)
+                }
+                else if (_thisVal === 'business'){
+                    params.business_date = _ValMonth
+                    if (_listGroup) params.employee_inherit__group = _listGroup
+                    if (_listEmp && _listEmp.length) params.employee_inherit_list = _listEmp.join(',')
+                    if (!_listGroup && !_listEmp) params.self_employee = true
+                    programmeHandle.callBusiness(calendar, params)
+                }
+                else if (_thisVal === 'leave'){
+                    params.leave_date = _ValMonth
+                    if (_listGroup) params.leave__employee_inherit__group = _listGroup
+                    if (_listEmp && _listEmp.length) params.leave_employee_list = _listEmp.join(',')
+                    if (!_listGroup && !_listEmp) params.self_employee = true
+                    programmeHandle.callLeave(calendar, params)
+                }
+            }
+        }
+
         // click show detail of calendar
         $(document).on("click", ".calendarapp-wrap .fc-daygrid-event", function () {
             $('.hk-drawer.calendar-drawer').css({
@@ -229,17 +258,78 @@ class programmeHandle {
             return false;
         });
 
+        // click next btn
+        $(document).on("click", ".calendarapp-wrap .fc-next-button", function () {
+            // check opt filter, check display date current
+            let crtDate = new Date(), monthNext = moment(calendar.view.currentStart).format('YYYY-MM-DD'),
+                DStart = moment(calendar.view.currentStart), DEnd = moment(calendar.view.currentEnd),
+                calType = calendar.view.type;
+
+            // chọn tháng tiếp theo nếu list và week view sang tháng mới.
+            if ($.inArray(calType, ['timeGridWeek', 'listWeek']) > -1) {
+                if (DEnd.year() > DStart.year()) monthNext = DEnd.format('YYYY-MM-DD');
+                else if (DEnd.month() > DStart.month()) monthNext = DEnd.format('YYYY-MM-DD');
+            }
+
+            // logic: nếu tháng hiện tại trùng với tháng next (currentStart) thì ko call API,
+            if (crtDate.getMonth() === moment(monthNext).month()) return true
+            if ($.inArray(calType, ['timeGridWeek', 'listWeek']) > -1) {
+                let temp = moment(monthNext).month() + '-' + moment(monthNext).year()
+                if ($.inArray(temp, programmeHandle.DateListCallable) > -1) return true
+                else programmeHandle.DateListCallable.push( temp )
+            }
+
+            let listGroup = $('#filter_group_id').val(),
+            listEmp = $('#filter_employee_id').val();
+
+            // loop in app has checked
+            loopCallAPI(monthNext, listGroup, listEmp)
+
+        })
+
+        // click prev btn
+        $(document).on("click", ".calendarapp-wrap .fc-prev-button", function () {
+            // check opt filter, check display date current
+            let crtDate = new Date(), monthPrev = moment(calendar.view.currentStart).format('YYYY-MM-DD'),
+                DStart = moment(calendar.view.currentStart), DEnd = moment(calendar.view.currentEnd),
+                calType = calendar.view.type;
+
+            // chọn tháng tiếp theo nếu list và week view sang tháng mới.
+            if ($.inArray(calType, ['timeGridWeek', 'listWeek']) > -1) {
+                if (DEnd.year() > DStart.year()) monthPrev = DStart.format('YYYY-MM-DD');
+                else if (DEnd.month() > DStart.month()) monthPrev = DStart.format('YYYY-MM-DD');
+            }
+
+            // logic: nếu tháng hiện tại trùng với tháng next (currentStart) thì ko call API
+            if (crtDate.getMonth() === moment(monthPrev).month()) return true
+            if ($.inArray(calType, ['timeGridWeek', 'listWeek']) > -1) {
+                let temp = moment(monthPrev).month() + '-' + moment(monthPrev).year()
+                if ($.inArray(temp, programmeHandle.DateListCallable) > -1) return true
+                else programmeHandle.DateListCallable.push( temp )
+            }
+
+            let listGroup = $('#filter_group_id').val(),
+                listEmp = $('#filter_employee_id').val();
+
+            // loop in app has checked
+            loopCallAPI(monthPrev, listGroup, listEmp)
+        });
+
+
         $('.categories-wrap input').on('change', function () {
             programmeHandle.triggerCallAPI(calendar)
         })
     }
-
-    static triggerCallAPI(calendar) {
-        var allEvents = calendar.getEvents();
+    static deleteAllEvent(calendar){
+       var allEvents = calendar.getEvents();
         // Remove each event
         allEvents.forEach(function (event) {
             event.remove();
         });
+        programmeHandle.DateListCallable = []
+    }
+    static triggerCallAPI(calendar) {
+        programmeHandle.deleteAllEvent(calendar)
         // check show/hide on category list
         $('.categories-wrap input:checked').each(function () {
             let params = {}
@@ -272,7 +362,6 @@ class programmeHandle {
     }
 }
 
-window.targetEvent = ''
 $(document).ready(function () {
     let $FiEmpElm = $('.filter-emp')
 

@@ -485,6 +485,7 @@ class MeetingScheduleHandle {
                 return false
             }
         }
+        console.log(frm.dataForm)
         return {
             url: frm.dataUrl,
             method: frm.dataMethod,
@@ -591,6 +592,11 @@ function LoadDetailMeetingSchedule() {
                     $('#btn-edit-meeting').remove()
                     $('#btn-delete-meeting').remove()
                 }
+
+                new $x.cls.file($('#attachment')).init({
+                    enable_edit: false,
+                    data: data.attachment,
+                })
 
                 $('input').attr('disabled', true).attr('readonly', true)
                 $('select').attr('disabled', true).attr('readonly', true)

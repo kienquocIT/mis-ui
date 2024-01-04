@@ -25,6 +25,10 @@ BUSINESS_TRIP_DATA_MAP = {
     'morning_t': FieldMapCommon(
         name_mapping=['morning_t'],
     ).data,
+    'total_day': FieldMapCommon(
+        name_mapping=['total_day'],
+        readonly_not_disable=['total_day'],
+    ).data,
     'expense_items': FieldMapCommon(
         name_mapping=['expense_items'],
     ).data,

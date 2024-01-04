@@ -257,15 +257,11 @@ $(document).ready(function () {
     expenseItemTable.init()
 
     const $FormElm = $('#business_trip_form')
-
-    // // get WF initial zones
-    // if ($FormElm.attr('data-method').toLowerCase() === 'post') {
-    //     WFRTControl.setWFInitialData('businessrequest');
-    // }
-
     function submitHandleFunc() {
         const frm = new SetupFormSubmit($FormElm);
         let formData = frm.dataForm;
+        let method = frm.dataMethod.toLowerCase()
+
         formData.expense_items = expenseItemTable.get_data()
         formData.expense_items.map(function (item) {
             if (!item?.['expense_item'] && item?.['expense_item_data'])
@@ -276,38 +272,34 @@ $(document).ready(function () {
         })
         let OriginalList = $.map($empTripElm.select2('data'), (item)=> {return item.data.id});
         let dateF = formData.date_f, $morF = $('[name="morning_f"]:checked'), $morT = $('[name="morning_t"]:checked');
-        if ($morF.val() === 'true') dateF += ' 00:00:00'
-        else dateF += ' 12:00:00'
-        let dateT = formData.date_t
-        if ($morT.val() === 'true') dateT += ' 12:00:00'
-        else dateT += ' 23:59:59'
-        let data = {
-            'title': formData.title,
-            'remark': formData.remark,
-            'employee_inherit_id': formData.employee_inherit_id,
-            'date_created': $x.fn.reformatData(formData.date_created, 'DD/MM/YYYY', 'YYYY-MM-DD'),
-            'departure': formData.departure,
-            'destination': formData.destination,
-            'employee_on_trip': OriginalList,
-            'date_f': $x.fn.reformatData(dateF, 'DD/MM/YYYY HH:mm:ss', 'YYYY-MM-DD HH:mm:ss'),
-            'morning_f': $morF.val(),
-            'date_t': $x.fn.reformatData(dateT, 'DD/MM/YYYY HH:mm:ss', 'YYYY-MM-DD HH:mm:ss'),
-            'morning_t': $morT.val(),
-            'total_day': parseFloat(formData.total_day),
-            'pretax_amount': parseInt(formData.pretax_amount),
-            'taxes': parseInt(formData.taxes),
-            'total_amount': parseInt(formData.total_amount),
-            'expense_items': formData.expense_items,
-            'attachment': $x.cls.file.get_val(formData.attachment, []),
+        if (dateF && dateF !== 'Invalid date'){
+            if ($morF.val() === 'true') dateF += ' 00:00:00'
+            else dateF += ' 12:00:00'
+            formData.date_f = $x.fn.reformatData(dateF, 'DD/MM/YYYY HH:mm:ss', 'YYYY-MM-DD HH:mm:ss')
+            formData.morning_f = $morF.val()
         }
-        if (frm.dataMethod.toLowerCase() === 'post') data.system_status = 1
+        let dateT = formData.date_t
+        if (dateT && dateT !== 'Invalid date'){
+            if ($morT.val() === 'true') dateT += ' 12:00:00'
+            else dateT += ' 23:59:59'
+            formData.date_t = $x.fn.reformatData(dateT, 'DD/MM/YYYY HH:mm:ss', 'YYYY-MM-DD HH:mm:ss')
+            formData.morning_t = $morT.val()
+            formData.total_day = parseFloat(formData.total_day)
+        }
+        if (method === 'post')
+            formData.date_created = $x.fn.reformatData(formData.date_created, 'DD/MM/YYYY', 'YYYY-MM-DD')
+        if (formData.employee_on_trip) formData.employee_on_trip = OriginalList
+        if (formData.attachment) formData.attachment = $x.cls.file.get_val(formData.attachment, [])
+        formData.pretax_amount = parseInt(formData.pretax_amount)
+        formData.taxes = parseInt(formData.taxes)
+        formData.total_amount = parseInt(formData.total_amount)
+        if (method === 'post') formData.system_status = 1
 
-        // WFRTControl.callWFSubmitForm(frm);
-
+        WindowControl.showLoading();
         $.fn.callAjax2({
             'url': frm.dataUrl,
             'method': frm.dataMethod,
-            'data': data,
+            'data': formData,
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -334,7 +326,7 @@ $(document).ready(function () {
             },
             employee_inherit: {
                 required: true,
-            },
+            }
         },
         errorClass: 'is-invalid cl-red',
         submitHandler: submitHandleFunc

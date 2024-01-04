@@ -52,7 +52,7 @@
                 <label for="selectDeparture" class="form-label required">{% trans 'Departure' %}</label>
                 <select class="form-select" name="departure" id="selectDeparture"
                         data-url="{% url 'CityListAPI' %}"
-                        data-keyResp="cities" data-keyText="title" data-keyId="id"
+                        data-keyResp="cities" data-keyText="title" data-keyId="id" required
                 >
                 </select>
             </div>
@@ -60,7 +60,7 @@
                 <label for="selectDestination" class="form-label required">{% trans 'Destination' %}</label>
                 <select class="form-select" name="destination" id="selectDestination"
                         data-url="{% url 'CityListAPI' %}"
-                        data-keyResp="cities" data-keyText="title" data-keyId="id"
+                        data-keyResp="cities" data-keyText="title" data-keyId="id" required
                 >
                 </select>
             </div>

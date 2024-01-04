@@ -248,7 +248,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap w-100 mb-5"
+                                            class="table nowrap min-w-2000p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr>
@@ -276,9 +276,9 @@
                                                     </div>
                                                     <div class="col-3"></div>
                                                     <div class="col-4">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-pretax-amount" data-zone="quotation_products_data"></span></h6>
-                                                        <input id="quotation-create-product-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
-                                                        <input type="text" id="quotation-final-revenue-before-tax" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-product-pretax-amount" data-init-money="0" data-zone="quotation_products_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-product-pretax-amount-raw" value="0" hidden>
+                                                        <input type="text" class="quotation-final-revenue-before-tax" hidden>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -288,14 +288,14 @@
                                                     <div class="col-3">
                                                         <div class="input-group">
                                                             <span class="input-affix-wrapper">
-                                                                <input type="text" class="form-control validated-number" id="quotation-create-product-discount" value="0" data-zone="quotation_products_data" disabled>
+                                                                <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="quotation_products_data" disabled>
                                                                 <span class="input-suffix"><i class="fas fa-percentage"></i></span>
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <div class="col-4">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-discount-amount" data-zone="quotation_products_data"></span></h6>
-                                                        <input id="quotation-create-product-discount-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-product-discount-amount" data-init-money="0" data-zone="quotation_products_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-product-discount-amount-raw" value="0" hidden>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -304,8 +304,8 @@
                                                     </div>
                                                     <div class="col-3"></div>
                                                     <div class="col-4">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-taxes" data-zone="quotation_products_data"></span></h6>
-                                                        <input id="quotation-create-product-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-product-taxes" data-init-money="0" data-zone="quotation_products_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-product-taxes-raw" value="0" hidden>
                                                     </div>
                                                 </div>
                                                 <hr class="bg-teal">
@@ -315,8 +315,8 @@
                                                     </div>
                                                     <div class="col-3"></div>
                                                     <div class="col-4">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-product-total" data-zone="quotation_products_data"></span></h6>
-                                                        <input id="quotation-create-product-total-raw" type="text" class="form-control" value="0" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-product-total" data-init-money="0" data-zone="quotation_products_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-product-total-raw" value="0" hidden>
                                                     </div>
                                                 </div>
                                             </th>
@@ -423,8 +423,8 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-cost-pretax-amount" data-zone="quotation_costs_data"></span></h6>
-                                                        <input id="quotation-create-cost-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-cost-pretax-amount" data-init-money="0" data-zone="quotation_costs_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-cost-pretax-amount-raw" value="0" hidden>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -433,8 +433,8 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-cost-taxes" data-zone="quotation_costs_data"></span></h6>
-                                                        <input id="quotation-create-cost-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-cost-taxes" data-init-money="0" data-zone="quotation_costs_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-cost-taxes-raw" value="0" hidden>
                                                     </div>
                                                 </div>
                                                 <hr class="bg-teal">
@@ -444,8 +444,8 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-cost-total" data-zone="quotation_costs_data"></span></h6>
-                                                        <input id="quotation-create-cost-total-raw" type="text" class="form-control" value="0" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-cost-total" data-init-money="0" data-zone="quotation_costs_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-cost-total-raw" value="0" hidden>
                                                     </div>
                                                 </div>
                                             </th>
@@ -458,7 +458,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-expense"
-                                            class="table nowrap w-100 mb-5"
+                                            class="table nowrap min-w-1920p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr>
@@ -485,8 +485,8 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-expense-pretax-amount" data-zone="quotation_expenses_data"></span></h6>
-                                                        <input id="quotation-create-expense-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-expense-pretax-amount" data-init-money="0" data-zone="quotation_expenses_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-expense-pretax-amount-raw" value="0" hidden>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -495,8 +495,8 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-expense-taxes" data-zone="quotation_expenses_data"></span></h6>
-                                                        <input id="quotation-create-expense-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-expense-taxes" data-init-money="0" data-zone="quotation_expenses_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-expense-taxes-raw" value="0" hidden>
                                                     </div>
                                                 </div>
                                                 <hr class="bg-teal">
@@ -506,8 +506,8 @@
                                                     </div>
                                                     <div class="col-1"></div>
                                                     <div class="col-5">
-                                                        <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="quotation-create-expense-total" data-zone="quotation_expenses_data"></span></h6>
-                                                        <input id="quotation-create-expense-total-raw" type="text" class="form-control" value="0" hidden>
+                                                        <h6 class="mb-3"><span class="mask-money quotation-create-expense-total" data-init-money="0" data-zone="quotation_expenses_data"></span></h6>
+                                                        <input type="text" class="form-control quotation-create-expense-total-raw" value="0" hidden>
                                                     </div>
                                                 </div>
                                             </th>

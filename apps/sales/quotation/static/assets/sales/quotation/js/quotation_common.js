@@ -10,7 +10,7 @@ class QuotationLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
     static transEle = $('#app-trans-factory');
-    static finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-before-tax');
+    static finalRevenueBeforeTax = document.getElementById('datable-quotation-create-product').querySelector('.quotation-final-revenue-before-tax');
 
     static loadInformationSelectBox(ele, is_expense = false) {
         let optionSelected;
@@ -670,29 +670,35 @@ class QuotationLoadDataHandle {
         let taxRaw = null;
         let totalRaw = null;
         let discountRaw = null;
+        let discountRate = null;
+        let discountRateCopy = document.getElementById('quotation-copy-discount-on-total');
         if (is_product === true) {
-            pretax = document.getElementById('quotation-create-product-pretax-amount');
-            tax = document.getElementById('quotation-create-product-taxes');
-            total = document.getElementById('quotation-create-product-total');
-            discount = document.getElementById('quotation-create-product-discount-amount');
-            pretaxRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
-            taxRaw = document.getElementById('quotation-create-product-taxes-raw');
-            totalRaw = document.getElementById('quotation-create-product-total-raw');
-            discountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            pretax = tableProduct.querySelector('.quotation-create-product-pretax-amount');
+            tax = tableProduct.querySelector('.quotation-create-product-taxes');
+            total = tableProduct.querySelector('.quotation-create-product-total');
+            discount = tableProduct.querySelector('.quotation-create-product-discount-amount');
+            pretaxRaw = tableProduct.querySelector('.quotation-create-product-pretax-amount-raw');
+            taxRaw = tableProduct.querySelector('.quotation-create-product-taxes-raw');
+            totalRaw = tableProduct.querySelector('.quotation-create-product-total-raw');
+            discountRaw = tableProduct.querySelector('.quotation-create-product-discount-amount-raw');
+            discountRate = tableProduct.querySelector('.quotation-create-product-discount');
         } else if (is_cost === true) {
-            pretax = document.getElementById('quotation-create-cost-pretax-amount');
-            tax = document.getElementById('quotation-create-cost-taxes');
-            total = document.getElementById('quotation-create-cost-total');
-            pretaxRaw = document.getElementById('quotation-create-cost-pretax-amount-raw');
-            taxRaw = document.getElementById('quotation-create-cost-taxes-raw');
-            totalRaw = document.getElementById('quotation-create-cost-total-raw');
+            let tableCost = document.getElementById('datable-quotation-create-cost');
+            pretax = tableCost.querySelector('.quotation-create-cost-pretax-amount');
+            tax = tableCost.querySelector('.quotation-create-cost-taxes');
+            total = tableCost.querySelector('.quotation-create-cost-total');
+            pretaxRaw = tableCost.querySelector('.quotation-create-cost-pretax-amount-raw');
+            taxRaw = tableCost.querySelector('.quotation-create-cost-taxes-raw');
+            totalRaw = tableCost.querySelector('.quotation-create-cost-total-raw');
         } else if (is_expense === true) {
-            pretax = document.getElementById('quotation-create-expense-pretax-amount');
-            tax = document.getElementById('quotation-create-expense-taxes');
-            total = document.getElementById('quotation-create-expense-total');
-            pretaxRaw = document.getElementById('quotation-create-expense-pretax-amount-raw');
-            taxRaw = document.getElementById('quotation-create-expense-taxes-raw');
-            totalRaw = document.getElementById('quotation-create-expense-total-raw');
+            let tableExpense = document.getElementById('datable-quotation-create-expense');
+            pretax = tableExpense.querySelector('.quotation-create-expense-pretax-amount');
+            tax = tableExpense.querySelector('.quotation-create-expense-taxes');
+            total = tableExpense.querySelector('.quotation-create-expense-total');
+            pretaxRaw = tableExpense.querySelector('.quotation-create-expense-pretax-amount-raw');
+            taxRaw = tableExpense.querySelector('.quotation-create-expense-taxes-raw');
+            totalRaw = tableExpense.querySelector('.quotation-create-expense-total-raw');
         }
         if (pretax && tax && total) {
             if (is_product === true) {
@@ -705,14 +711,14 @@ class QuotationLoadDataHandle {
                 $(pretax).attr('data-init-money', String(data.total_expense_pretax_amount));
                 pretaxRaw.value = data.total_expense_pretax_amount
             }
-            let discountRate = document.getElementById('quotation-create-product-discount');
-            let discountRateCopy = document.getElementById('quotation-copy-discount-on-total');
+
             if (discount && discountRate) {
                 $(discount).attr('data-init-money', String(data.total_product_discount));
                 discountRaw.value = data.total_product_discount;
                 discountRate.value = data.total_product_discount_rate;
                 discountRateCopy.value = data.total_product_discount_rate;
             }
+
             if (is_product === true) {
                 $(tax).attr('data-init-money', String(data.total_product_tax));
                 taxRaw.value = data.total_product_tax
@@ -736,6 +742,7 @@ class QuotationLoadDataHandle {
             // load total revenue before tax for tab product
             QuotationLoadDataHandle.finalRevenueBeforeTax.value = data.total_product_revenue_before_tax;
         }
+        $.fn.initMaskMoney2();
     };
 
     static loadRowDisabled(row) {
@@ -835,6 +842,15 @@ class QuotationLoadDataHandle {
             deletePromotionRows($(tableProduct), true, false);
             deletePromotionRows($(tableProduct), false, true);
         }
+    };
+
+    static loadClearTableCost() {
+        let tableCost = $('#datable-quotation-create-cost');
+        tableCost.DataTable().clear().draw();
+        tableCost[0].querySelector('.quotation-create-cost-pretax-amount').innerHTML = "0";
+        tableCost[0].querySelector('.quotation-create-cost-taxes').innerHTML = "0";
+        tableCost[0].querySelector('.quotation-create-cost-total').innerHTML = "0";
+        return true;
     };
 
     // Load detail
@@ -945,10 +961,10 @@ class QuotationLoadDataHandle {
         }
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
-        // product totals
-        QuotationLoadDataHandle.loadTotal(data, true, false, false);
-        QuotationLoadDataHandle.loadTotal(data, false, true, false);
-        QuotationLoadDataHandle.loadTotal(data, false, false, true);
+        // load totals
+        // QuotationLoadDataHandle.loadTotal(data, true, false, false);
+        // QuotationLoadDataHandle.loadTotal(data, false, true, false);
+        // QuotationLoadDataHandle.loadTotal(data, false, false, true);
     };
 
     static loadDataProductAll() {
@@ -1028,6 +1044,11 @@ class QuotationLoadDataHandle {
             // mask money
             $.fn.initMaskMoney2();
         }
+        // load totals
+        // QuotationLoadDataHandle.loadTotal(data, true, false, false);
+        // QuotationLoadDataHandle.loadTotal(data, false, true, false);
+        // QuotationLoadDataHandle.loadTotal(data, false, false, true);
+        // $.fn.initMaskMoney2();
         return true
     };
 
@@ -1128,12 +1149,17 @@ class QuotationDataTableHandle {
         // init dataTable
         let $tables = $('#datable-quotation-create-product');
         $tables.DataTableDefault({
+            styleDom: 'hide-foot',
             data: data ? data : [],
+            ordering: false,
             paging: false,
             info: false,
+            autoWidth: true,
+            scrollX: true,
             columns: [
                 {
                     targets: 0,
+                    width: '2.5%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" data-row="${dataRow}">${row?.['order']}</span>`
@@ -1141,6 +1167,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '15%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1203,6 +1230,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '10%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1216,6 +1244,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
+                    width: '10%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1247,6 +1276,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: '10%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1258,6 +1288,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: '20%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1287,6 +1318,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: '10%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1317,6 +1349,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
+                    width: '10%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1373,6 +1406,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
+                    width: '10%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1392,6 +1426,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 9,
+                    width: '2.5%',
                     render: () => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1614,12 +1649,16 @@ class QuotationDataTableHandle {
         // init dataTable
         let $tables = $('#datable-quotation-create-expense');
         $tables.DataTableDefault({
+            styleDom: 'hide-foot',
             data: data ? data : [],
+            ordering: false,
             paging: false,
             info: false,
+            autoWidth: true,
             columns: [
                 {
                     targets: 0,
+                    width: '2.6%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" data-row="${dataRow}">${row?.['order']}</span>`
@@ -1627,6 +1666,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '15.63%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -1650,6 +1690,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '15.63%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -1682,6 +1723,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
+                    width: '10.42%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -1714,6 +1756,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: '10.42%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -1725,6 +1768,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: '21.88%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -1742,6 +1786,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: '10.42%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -1773,6 +1818,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
+                    width: '10.42%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -1792,6 +1838,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
+                    width: '2.5%',
                     render: () => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -2214,29 +2261,34 @@ class QuotationCalculateCaseHandle {
         let eleTaxesRaw = null;
         let eleTotalRaw = null;
         let eleDiscountRaw = null;
+        let eleDiscountRateTotal = null;
         if (is_product === true) {
-            elePretaxAmount = document.getElementById('quotation-create-product-pretax-amount');
-            eleTaxes = document.getElementById('quotation-create-product-taxes');
-            eleTotal = document.getElementById('quotation-create-product-total');
-            eleDiscount = document.getElementById('quotation-create-product-discount-amount');
-            elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
-            eleTaxesRaw = document.getElementById('quotation-create-product-taxes-raw');
-            eleTotalRaw = document.getElementById('quotation-create-product-total-raw');
-            eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            elePretaxAmount = tableProduct.querySelector('.quotation-create-product-pretax-amount');
+            eleTaxes = tableProduct.querySelector('.quotation-create-product-taxes');
+            eleTotal = tableProduct.querySelector('.quotation-create-product-total');
+            eleDiscount = tableProduct.querySelector('.quotation-create-product-discount-amount');
+            elePretaxAmountRaw = tableProduct.querySelector('.quotation-create-product-pretax-amount-raw');
+            eleTaxesRaw = tableProduct.querySelector('.quotation-create-product-taxes-raw');
+            eleTotalRaw = tableProduct.querySelector('.quotation-create-product-total-raw');
+            eleDiscountRaw = tableProduct.querySelector('.quotation-create-product-discount-amount-raw');
+            eleDiscountRateTotal = tableProduct.querySelector('.quotation-create-product-discount');
         } else if (is_cost === true) {
-            elePretaxAmount = document.getElementById('quotation-create-cost-pretax-amount');
-            eleTaxes = document.getElementById('quotation-create-cost-taxes');
-            eleTotal = document.getElementById('quotation-create-cost-total');
-            elePretaxAmountRaw = document.getElementById('quotation-create-cost-pretax-amount-raw');
-            eleTaxesRaw = document.getElementById('quotation-create-cost-taxes-raw');
-            eleTotalRaw = document.getElementById('quotation-create-cost-total-raw');
+            let tableCost = document.getElementById('datable-quotation-create-cost');
+            elePretaxAmount = tableCost.querySelector('.quotation-create-cost-pretax-amount');
+            eleTaxes = tableCost.querySelector('.quotation-create-cost-taxes');
+            eleTotal = tableCost.querySelector('.quotation-create-cost-total');
+            elePretaxAmountRaw = tableCost.querySelector('.quotation-create-cost-pretax-amount-raw');
+            eleTaxesRaw = tableCost.querySelector('.quotation-create-cost-taxes-raw');
+            eleTotalRaw = tableCost.querySelector('.quotation-create-cost-total-raw');
         } else if (is_expense === true) {
-            elePretaxAmount = document.getElementById('quotation-create-expense-pretax-amount');
-            eleTaxes = document.getElementById('quotation-create-expense-taxes');
-            eleTotal = document.getElementById('quotation-create-expense-total');
-            elePretaxAmountRaw = document.getElementById('quotation-create-expense-pretax-amount-raw');
-            eleTaxesRaw = document.getElementById('quotation-create-expense-taxes-raw');
-            eleTotalRaw = document.getElementById('quotation-create-expense-total-raw');
+            let tableExpense = document.getElementById('datable-quotation-create-expense');
+            elePretaxAmount = tableExpense.querySelector('.quotation-create-expense-pretax-amount');
+            eleTaxes = tableExpense.querySelector('.quotation-create-expense-taxes');
+            eleTotal = tableExpense.querySelector('.quotation-create-expense-total');
+            elePretaxAmountRaw = tableExpense.querySelector('.quotation-create-expense-pretax-amount-raw');
+            eleTaxesRaw = tableExpense.querySelector('.quotation-create-expense-taxes-raw');
+            eleTotalRaw = tableExpense.querySelector('.quotation-create-expense-total-raw');
         }
         if (elePretaxAmount && eleTaxes && eleTotal) {
             let shippingFee = 0;
@@ -2287,7 +2339,7 @@ class QuotationCalculateCaseHandle {
                 }
             }
             let discount_on_total = 0;
-            let discountTotalRate = $('#quotation-create-product-discount').val();
+            let discountTotalRate = document.getElementById('datable-quotation-create-product').querySelector('.quotation-create-product-discount').value;
             if (form.classList.contains('sale-order')) {
                 discountTotalRate = $('#quotation-copy-discount-on-total').val();
             }
@@ -2312,7 +2364,7 @@ class QuotationCalculateCaseHandle {
 
                     if (pretaxAmount > 0) {
                         discount_on_total = ((discountAmount / pretaxAmount) * 100).toFixed(2);
-                        document.getElementById('quotation-create-product-discount').value = discount_on_total;
+                        eleDiscountRateTotal.value = discount_on_total;
                     }
                 }
             }
@@ -2377,7 +2429,7 @@ class QuotationCalculateCaseHandle {
                 discount = 0
             }
             let discount_on_total = 0;
-            let discountTotalRate = $('#quotation-create-product-discount').val();
+            let discountTotalRate = document.getElementById('datable-quotation-create-product').querySelector('.quotation-create-product-discount').value;
             if (form.classList.contains('sale-order')) {
                 discountTotalRate = $('#quotation-copy-discount-on-total').val();
             }
@@ -2486,15 +2538,11 @@ class QuotationCheckConfigHandle {
                             for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
                                 let row = tableProduct.tBodies[0].rows[i];
                                 is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, row, true, false, is_make_price_change);
-                                // Re Calculate all data of rows & total
-                                // if (is_copy === false) {
-                                //     QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
-                                // }
                             }
                         }
                     }
                     if (!form.classList.contains('sale-order')) {
-                        let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
+                        let eleDiscountTotal = document.getElementById('datable-quotation-create-product').querySelector('.quotation-create-product-discount');
                         if (config.short_sale_config.is_discount_on_total === false) {
                             eleDiscountTotal.setAttribute('disabled', 'true');
                             eleDiscountTotal.classList.add('disabled-custom-show');
@@ -2538,15 +2586,11 @@ class QuotationCheckConfigHandle {
                             for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
                                 let row = tableProduct.tBodies[0].rows[i];
                                 is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, row, false, true, is_make_price_change);
-                                // Re Calculate all data of rows & total
-                                // if (is_copy === false) {
-                                //     QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
-                                // }
                             }
                         }
                     }
                     if (!form.classList.contains('sale-order')) {
-                        let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
+                        let eleDiscountTotal = document.getElementById('datable-quotation-create-product').querySelector('.quotation-create-product-discount');
                         if (config.long_sale_config.is_not_discount_on_total === false) {
                             if (eleDiscountTotal.hasAttribute('disabled')) {
                                 eleDiscountTotal.removeAttribute('disabled');
@@ -3474,25 +3518,26 @@ class QuotationSubmitHandle {
         if (quotation_products_data_setup.length > 0) {
             _form.dataForm[quotation_products_data] = quotation_products_data_setup;
             // total product
-            _form.dataForm['total_product_pretax_amount'] = parseFloat($('#quotation-create-product-pretax-amount-raw').val());
+            let tableProduct = document.getElementById('datable-quotation-create-product');
+            _form.dataForm['total_product_pretax_amount'] = parseFloat(tableProduct.querySelector('.quotation-create-product-pretax-amount-raw').value);
             if (!_form.dataForm['total_product_pretax_amount']) {
                 _form.dataForm['total_product_pretax_amount'] = 0;
             }
-            let totalProductDiscountRate = $('#quotation-create-product-discount').val();
+            let totalProductDiscountRate = tableProduct.querySelector('.quotation-create-product-discount').value;
             if (totalProductDiscountRate) {
                 _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
             } else {
                 _form.dataForm['total_product_discount_rate'] = 0;
             }
-            _form.dataForm['total_product_discount'] = parseFloat($('#quotation-create-product-discount-amount-raw').val());
+            _form.dataForm['total_product_discount'] = parseFloat(tableProduct.querySelector('.quotation-create-product-discount-amount-raw').value);
             if (!_form.dataForm['total_product_discount']) {
                 _form.dataForm['total_product_discount'] = 0;
             }
-            _form.dataForm['total_product_tax'] = parseFloat($('#quotation-create-product-taxes-raw').val());
+            _form.dataForm['total_product_tax'] = parseFloat(tableProduct.querySelector('.quotation-create-product-taxes-raw').value);
             if (!_form.dataForm['total_product_tax']) {
                 _form.dataForm['total_product_tax'] = 0;
             }
-            _form.dataForm['total_product'] = parseFloat($('#quotation-create-product-total-raw').val());
+            _form.dataForm['total_product'] = parseFloat(tableProduct.querySelector('.quotation-create-product-total-raw').value);
             if (!_form.dataForm['total_product']) {
                 _form.dataForm['total_product'] = 0;
             }
@@ -3505,15 +3550,16 @@ class QuotationSubmitHandle {
         if (quotation_costs_data_setup.length > 0) {
             _form.dataForm[quotation_costs_data] = quotation_costs_data_setup;
             // total cost
-            _form.dataForm['total_cost_pretax_amount'] = parseFloat($('#quotation-create-cost-pretax-amount-raw').val());
+            let tableCost = document.getElementById('datable-quotation-create-cost');
+            _form.dataForm['total_cost_pretax_amount'] = parseFloat(tableCost.querySelector('.quotation-create-cost-pretax-amount-raw').value);
             if (!_form.dataForm['total_cost_pretax_amount']) {
                 _form.dataForm['total_cost_pretax_amount'] = 0;
             }
-            _form.dataForm['total_cost_tax'] = parseFloat($('#quotation-create-cost-taxes-raw').val());
+            _form.dataForm['total_cost_tax'] = parseFloat(tableCost.querySelector('.quotation-create-cost-taxes-raw').value);
             if (!_form.dataForm['total_cost_tax']) {
                 _form.dataForm['total_cost_tax'] = 0;
             }
-            _form.dataForm['total_cost'] = parseFloat($('#quotation-create-cost-total-raw').val());
+            _form.dataForm['total_cost'] = parseFloat(tableCost.querySelector('.quotation-create-cost-total-raw').value);
             if (!_form.dataForm['total_cost']) {
                 _form.dataForm['total_cost'] = 0;
             }
@@ -3522,15 +3568,16 @@ class QuotationSubmitHandle {
         if (quotation_expenses_data_setup.length > 0) {
             _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup;
             // total expense
-            _form.dataForm['total_expense_pretax_amount'] = parseFloat($('#quotation-create-expense-pretax-amount-raw').val());
+            let tableExpense = document.getElementById('datable-quotation-create-expense');
+            _form.dataForm['total_expense_pretax_amount'] = parseFloat(tableExpense.querySelector('.quotation-create-expense-pretax-amount-raw').value);
             if (!_form.dataForm['total_expense_pretax_amount']) {
                 _form.dataForm['total_expense_pretax_amount'] = 0;
             }
-            _form.dataForm['total_expense_tax'] = parseFloat($('#quotation-create-expense-taxes-raw').val());
+            _form.dataForm['total_expense_tax'] = parseFloat(tableExpense.querySelector('.quotation-create-expense-taxes-raw').value);
             if (!_form.dataForm['total_expense_tax']) {
                 _form.dataForm['total_expense_tax'] = 0;
             }
-            _form.dataForm['total_expense'] = parseFloat($('#quotation-create-expense-total-raw').val());
+            _form.dataForm['total_expense'] = parseFloat(tableExpense.querySelector('.quotation-create-expense-total-raw').value);
             if (!_form.dataForm['total_expense']) {
                 _form.dataForm['total_expense'] = 0;
             }

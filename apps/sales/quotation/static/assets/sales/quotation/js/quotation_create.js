@@ -170,10 +170,7 @@ $(function () {
             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
             // Clear table COST if add new row Product
-            tableCost.DataTable().clear().draw();
-            document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
-            document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
-            document.getElementById('quotation-create-cost-total').innerHTML = "0";
+            QuotationLoadDataHandle.loadClearTableCost();
         });
 
 // Action on delete row product
@@ -219,10 +216,7 @@ $(function () {
             }
             // Clear table COST if item or quantity change
             if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
-                tableCost.DataTable().clear().draw();
-                document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
-                document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
-                document.getElementById('quotation-create-cost-total').innerHTML = "0";
+                QuotationLoadDataHandle.loadClearTableCost();
             }
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
@@ -235,10 +229,7 @@ $(function () {
 // If change product uom then clear table COST
         tableProduct.on('change', '.table-row-uom', function () {
             // Clear table COST if change product uom
-            tableCost.DataTable().clear().draw();
-            document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
-            document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
-            document.getElementById('quotation-create-cost-total').innerHTML = "0";
+            QuotationLoadDataHandle.loadClearTableCost();
         });
 
 // Check valid number for input
@@ -1015,10 +1006,7 @@ $(function () {
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
             // Clear table COST if add new row Product
-            tableCost.DataTable().clear().draw();
-            document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
-            document.getElementById('quotation-create-cost-taxes').innerHTML = "0";
-            document.getElementById('quotation-create-cost-total').innerHTML = "0";
+            QuotationLoadDataHandle.loadClearTableCost();
         });
 
 // INDICATORS

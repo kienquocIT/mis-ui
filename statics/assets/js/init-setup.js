@@ -1570,6 +1570,37 @@ class WFRTControl {
     }
 
     static callWFSubmitForm(_form) {
+        let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
+        if (btnIDLastSubmit === 'idxSaveInZoneWF') {  // check if btn idxSaveInZoneWF then submit not select collab
+            if (_form.dataForm.hasOwnProperty('system_status')) {
+                _form.dataForm['system_status'] = 1;
+            }
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': _form.dataUrl,
+                    'method': _form.dataMethod,
+                    'data': _form.dataForm,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
+                            window.location.replace(_form.dataUrlRedirect);
+                        }, 1000);
+                    }
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
+            return true;
+        }
+
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
             Swal.fire({

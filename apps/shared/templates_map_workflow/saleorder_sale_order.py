@@ -23,10 +23,12 @@ SALE_ORDER_DATA_MAP = {
         name_mapping=['sale_order_products_data'],
     ).data,
     'sale_order_logistic_data': FieldMapCommon(
-        name_mapping=['sale_order_logistic_data'],
+        name_mapping=['sale_order_logistic_data', 'sale_order_logistic_data_readonly'],
+        readonly_not_disable=['sale_order_logistic_data_readonly'],
     ).data,
     'sale_order_costs_data': FieldMapCommon(
-        name_mapping=['sale_order_costs_data'],
+        name_mapping=['sale_order_costs_data', 'sale_order_costs_data_readonly'],
+        readonly_not_disable=['sale_order_costs_data_readonly'],
     ).data,
     'sale_order_expenses_data': FieldMapCommon(
         name_mapping=['sale_order_expenses_data'],

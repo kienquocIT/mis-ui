@@ -144,7 +144,7 @@
     {{ data.sys_status|json_script:'sys_stt' }}
     <input type="text" id="url-factory"
            data-leave-detail="{% url 'LeaveRequestDetailAPI' pk=data.pk %}"
-           data-leave-available="{% url 'LeaveAvailableListAPI' %}"
+           data-leave-available="{% url 'LeaveAvailableDDListAPI' %}"
     >
     <input type="text" id="trans-factory"
            data-out-of-stock="{% trans 'Not enough leave or no leave available' %}"

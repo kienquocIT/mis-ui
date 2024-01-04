@@ -5821,8 +5821,8 @@ msgid "Promotion available"
 msgstr "Khuyến mãi"
 
 #
-msgid "Hidden by workflow config"
-msgstr "Ẩn theo cấu hình quy trình"
+msgid "Data is hidden by workflow config"
+msgstr "Dữ liệu bị ẩn theo cấu hình quy trình"
 
 #
 msgid "Add node"

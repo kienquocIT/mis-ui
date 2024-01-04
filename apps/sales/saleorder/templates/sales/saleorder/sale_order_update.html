@@ -466,9 +466,9 @@
                                 <div class="row logistics-body">
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Shipping Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" id="btn-edit-shipping" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
-                                        <textarea class="form-control disabled-custom-show" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="sale_order_logistic_data" disabled></textarea>
+                                        <textarea class="form-control disabled-custom-show" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
                                         <input type="text" id="quotation-create-customer-shipping" hidden>
                                     </div>
                                     <div
@@ -499,9 +499,9 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Billing Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" id="btn-edit-billing" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
-                                        <textarea class="form-control disabled-custom-show" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="sale_order_logistic_data" disabled></textarea>
+                                        <textarea class="form-control disabled-custom-show" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
                                         <input type="text" id="quotation-create-customer-billing" hidden>
                                     </div>
                                     <div

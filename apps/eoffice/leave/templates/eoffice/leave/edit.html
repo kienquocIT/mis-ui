@@ -165,7 +165,7 @@
     {{ data.sys_status|json_script:'sys_stt' }}
     {{ data.working_shift|json_script:'ws_data' }}
     <input type="text" id="url-factory"
-           data-leave-available="{% url 'LeaveAvailableListAPI' %}"
+           data-leave-available="{% url 'LeaveAvailableDDListAPI' %}"
            data-leave-detail="{% url 'LeaveRequestDetailAPI' data.pk %}"
     >
     <input type="text" id="trans-factory"

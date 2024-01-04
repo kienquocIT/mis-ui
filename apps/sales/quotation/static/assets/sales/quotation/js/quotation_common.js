@@ -1419,9 +1419,9 @@ class QuotationDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
+                        let dataZone = "quotation_costs_data_readonly";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
+                            dataZone = "sale_order_costs_data_readonly";
                         }
                         if (row.is_shipping === false) {
                             return `<select
@@ -1430,6 +1430,7 @@ class QuotationDataTableHandle {
                                         data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                         data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
                                         data-keyResp="product_sale_list"
+                                        data-zone="${dataZone}"
                                         disabled
                                     >
                                     </select>`;
@@ -1447,7 +1448,7 @@ class QuotationDataTableHandle {
                                                 <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
+                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" data-zone="${dataZone}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -1458,15 +1459,16 @@ class QuotationDataTableHandle {
                     targets: 2,
                     render: () => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
+                        let dataZone = "quotation_costs_data_readonly";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
+                            dataZone = "sale_order_costs_data_readonly";
                         }
                         return `<select 
                                     class="form-select table-row-uom disabled-custom-show"
                                     data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
+                                    data-zone="${dataZone}"
                                     disabled
                                 >
                                 </select>`;
@@ -1476,11 +1478,11 @@ class QuotationDataTableHandle {
                     targets: 3,
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
+                        let dataZone = "quotation_costs_data_readonly";
                         if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
+                            dataZone = "sale_order_costs_data_readonly";
                         }
-                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" disabled>`;
+                        return `<input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
@@ -3160,10 +3162,36 @@ class QuotationSubmitHandle {
         let customer_shipping = $('#quotation-create-customer-shipping');
         if (customer_shipping.val()) {
             _form.dataForm['customer_shipping'] = customer_shipping.val();
+            // handle case hidden zone
+            if (_form.dataMethod.toLowerCase() === 'put') {
+                let btnEditShipping = $('#btn-edit-shipping');
+                if (btnEditShipping.is(':hidden')) {
+                    let eleDataDetail = $('#quotation-detail-data');
+                    if (eleDataDetail && eleDataDetail.length > 0) {
+                        if (eleDataDetail.val()) {
+                            let dataDetail = JSON.parse(eleDataDetail.val());
+                            _form.dataForm[quotation_logistic_data]['shipping_address'] = dataDetail?.[quotation_logistic_data]?.['shipping_address'];
+                        }
+                    }
+                }
+            }
         }
         let customer_billing = $('#quotation-create-customer-billing');
         if (customer_billing.val()) {
             _form.dataForm['customer_billing'] = customer_billing.val();
+            // handle case hidden zone
+            if (_form.dataMethod.toLowerCase() === 'put') {
+                let btnEditShipping = $('#btn-edit-billing');
+                if (btnEditShipping.is(':hidden')) {
+                    let eleDataDetail = $('#quotation-detail-data');
+                    if (eleDataDetail && eleDataDetail.length > 0) {
+                        if (eleDataDetail.val()) {
+                            let dataDetail = JSON.parse(eleDataDetail.val());
+                            _form.dataForm[quotation_logistic_data]['billing_address'] = dataDetail?.[quotation_logistic_data]?.['billing_address'];
+                        }
+                    }
+                }
+            }
         }
 
         let quotation_indicators_data_setup = self.setupDataIndicator();

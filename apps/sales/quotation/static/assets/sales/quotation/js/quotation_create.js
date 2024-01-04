@@ -22,11 +22,16 @@ $(function () {
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
         // init first time indicator
-        indicatorClass.loadQuotationIndicator('quotation-indicator-data', true);
+        indicatorHandle.loadQuotationIndicator('quotation-indicator-data', true);
         // init dataTable
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
+        if (!formSubmit[0].classList.contains('sale-order')) {  // quotation indicators
+            QuotationDataTableHandle.dataTableQuotationIndicator();
+        } else {  // sale order indicators
+            QuotationDataTableHandle.dataTableSaleOrderIndicator();
+        }
 
         // ele tables
         let tableProduct = $('#datable-quotation-create-product');
@@ -1016,6 +1021,24 @@ $(function () {
             document.getElementById('quotation-create-cost-total').innerHTML = "0";
         });
 
+// INDICATORS
+        $('#tab-indicator').on('click', function () {
+            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                indicatorHandle.loadQuotationIndicator('quotation-indicator-data');
+            }
+        });
+
+        // Clear data indicator store then call API to get new
+        $('#btn-refresh-quotation-indicator').on('click', function () {
+            let transEle = $('#app-trans-factory');
+            document.getElementById('quotation-indicator-data').value = "";
+            indicatorHandle.loadQuotationIndicator('quotation-indicator-data');
+            $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
+        });
+
+
+
+
 
 // Submit form quotation + sale order
         formSubmit.submit(function (e) {
@@ -1060,7 +1083,7 @@ $(function () {
             }
             let _form = new SetupFormSubmit(formSubmit);
             // Load again indicator when Submit
-            indicatorClass.loadQuotationIndicator('quotation-indicator-data');
+            indicatorHandle.loadQuotationIndicator('quotation-indicator-data');
             QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',

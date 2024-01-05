@@ -185,19 +185,39 @@ $(document).on('click', '#table_opportunity_call_log_list .detail-call-log-butto
 })
 
 $(document).on('click', '#cancel-activity', function () {
-    let call_log_id = $('#detail-call-log .modal-body').attr('data-id')
-    let frm = $('#table_opportunity_call_log_list');
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
-    $.fn.callAjax(frm.attr('data-url-delete').replace(0, call_log_id), 'PUT', {'is_cancelled': !$('#cancel-activity').prop('disabled')}, csr)
-    .then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            $.fn.notifyB({description: "Successfully"}, 'success')
-            $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
-        }
-    },(errs) => {
-        $.fn.notifyB({description: errs.data.errors}, 'failure');
-    })
+    Swal.fire({
+		html:
+		`<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
+             <h5 class="text-danger">${trans_script.attr('data-trans-alert-cancel')}</h5>
+             <p>${trans_script.attr('data-trans-alert-warn')}</p>`,
+		customClass: {
+			confirmButton: 'btn btn-outline-secondary text-danger',
+			cancelButton: 'btn btn-outline-secondary text-gray',
+			container:'swal2-has-bg',
+			actions:'w-100'
+		},
+		showCancelButton: true,
+		buttonsStyling: false,
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
+		reverseButtons: true
+	}).then((result) => {
+		if (result.value) {
+		    let call_log_id = $('#detail-call-log .modal-body').attr('data-id')
+            let frm = $('#table_opportunity_call_log_list');
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(frm.attr('data-url-delete').replace(0, call_log_id), 'PUT', {'is_cancelled': !$('#cancel-activity').prop('disabled')}, csr)
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
+                }
+            },(errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            })
+		}
+	})
 })
 
 class CallLogHandle {

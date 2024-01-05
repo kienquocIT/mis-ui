@@ -181,22 +181,6 @@ $(document).on('click', '#table_opportunity_email_list .detail-email-button', fu
     $('#detail-email-content-area').html(email_obj.content)
 })
 
-$(document).on('click', '#table_opportunity_email_list .delete-activity', function () {
-    let email_id = $(this).attr('data-id');
-    let frm = $('#table_opportunity_email_list');
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
-    $.fn.callAjax(frm.attr('data-url-delete').replace(0, email_id), 'PUT', {}, csr)
-    .then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            $.fn.notifyB({description: "Successfully"}, 'success')
-            $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
-        }
-    },(errs) => {
-        $.fn.notifyB({description: errs.data.errors}, 'failure');
-    })
-})
-
 ClassicEditor
     .create(document.querySelector('#email-content-area'))
     .catch(error => {

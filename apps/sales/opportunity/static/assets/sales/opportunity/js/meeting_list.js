@@ -5,6 +5,7 @@ let meeting_address_slb = $('#meeting-address-select-box');
 let meeting_employee_attended_slb = $('#meeting-employee-attended-select-box');
 let meeting_date_input = $('#meeting-date-input');
 let MEETING_LIST = []
+let trans_script = $('#trans-script')
 
 function loadOpportunityMeetingList() {
     if (!$.fn.DataTable.isDataTable('#table_opportunity_meeting_list')) {
@@ -27,29 +28,33 @@ function loadOpportunityMeetingList() {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'wrap-text',
                     render: () => {
                         return ``;
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-45',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
+                        let status = ''
+                        if (row?.['is_cancelled']) {
+                            status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
+                        }
                         return `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
-                                    data-bs-target="#detail-meeting"><span><b>` + row.subject + `</b></span></a>`
+                                    data-bs-target="#detail-meeting"><span><b>` + row.subject + `</b></span> ${status}</a>`
                     }
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text w-25 text-center',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-primary w-50">${row.opportunity.code}</span>`
+                        return `<span class="text-secondary">${row.opportunity.code}</span>`
                     }
                 },
                 {
                     data: 'meeting_date',
-                    className: 'wrap-text w-20 text-center',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(data, {
                             'outputFormat': 'DD-MM-YYYY',
@@ -217,22 +222,50 @@ function detailMeeting($this) {
     $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
     $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
+    $('#cancel-activity').prop('hidden', meeting_obj.is_cancelled)
+    if (meeting_obj.is_cancelled) {
+        $('#is-cancelled').text(trans_script.attr('data-trans-activity-cancelled'))
+    }
+    else {
+        $('#is-cancelled').text('')
+    }
+    $('#detail-meeting .modal-body').attr('data-id', meeting_obj.id)
 }
 
-$(document).on('click', '#table_opportunity_meeting_list .delete-activity', function () {
-    let meeting_id = $(this).attr('data-id');
-    let frm = $('#table_opportunity_meeting_list');
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
-    $.fn.callAjax(frm.attr('data-url-delete').replace(0, meeting_id), 'PUT', {}, csr)
-        .then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                $.fn.notifyB({description: "Successfully"}, 'success')
-                $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
-            }
-        }, (errs) => {
+$(document).on('click', '#cancel-activity', function () {
+    Swal.fire({
+		html:
+		`<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
+             <h5 class="text-danger">${trans_script.attr('data-trans-alert-cancel')}</h5>
+             <p>${trans_script.attr('data-trans-alert-warn')}</p>`,
+		customClass: {
+			confirmButton: 'btn btn-outline-secondary text-danger',
+			cancelButton: 'btn btn-outline-secondary text-gray',
+			container:'swal2-has-bg',
+			actions:'w-100'
+		},
+		showCancelButton: true,
+		buttonsStyling: false,
+		confirmButtonText: 'Yes',
+		cancelButtonText: 'No',
+		reverseButtons: true
+	}).then((result) => {
+		if (result.value) {
+		    let meeting_id = $('#detail-meeting .modal-body').attr('data-id')
+            let frm = $('#table_opportunity_meeting_list');
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(frm.attr('data-url-delete').replace(0, meeting_id), 'PUT', {'is_cancelled': !$('#cancel-activity').prop('disabled')}, csr)
+                .then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
+                    }
+                }, (errs) => {
             $.fn.notifyB({description: errs.data.errors}, 'failure');
         })
+		}
+	})
 })
 
 function convert12hto24h(date){

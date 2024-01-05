@@ -220,22 +220,22 @@
                     <div class="row">
                         <div class="row">
                             <ul class="nav nav-light nav-tabs" id="quotation-tabs">
-                                <li class="nav-item">
+                                <li class="nav-item tab-detail">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                         <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item tab-logistic">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
                                         <span class="nav-link-text">{% trans 'Logistics' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item quotation-cost">
+                                <li class="nav-item tab-cost">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
                                         <span class="nav-link-text">{% trans 'Cost' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item tab-expense">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
                                         <span class="nav-link-text">{% trans 'Expense' %}</span>
                                     </a>
@@ -248,20 +248,20 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-2000p w-100 mb-5"
+                                            class="table nowrap min-w-1500p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">#</th>
-                                            <th class="w-10">{% trans 'Product' %}<span class="required"></span></th>
-                                            <th class="w-10">{% trans 'Description' %}</th>
-                                            <th class="w-10">{% trans 'UoM' %}<span class="required"></span></th>
-                                            <th class="w-10">{% trans 'Quantity' %}<span class="required"></span></th>
-                                            <th class="w-25">{% trans 'Unit Price' %}<span class="required"></span></th>
-                                            <th class="w-10">{% trans 'Discount' %}</th>
-                                            <th class="w-5">{% trans 'Tax' %}</th>
-                                            <th class="w-10">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5"></th>
+                                            <th>#</th>
+                                            <th>{% trans 'Product' %}</th>
+                                            <th>{% trans 'Description' %}</th>
+                                            <th>{% trans 'UoM' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Unit Price' %}</th>
+                                            <th>{% trans 'Discount' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Subtotal Price' %}</th>
+                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -405,7 +405,7 @@
                                             <th class="w-10">{% trans 'Product' %}</th>
                                             <th class="w-10">{% trans 'UoM' %}</th>
                                             <th class="w-15">{% trans 'Quantity' %}</th>
-                                            <th class="w-30">{% trans 'Cost Price' %}<span class="required"></span></th>
+                                            <th class="w-30">{% trans 'Cost Price' %}</th>
                                             <th class="w-5">{% trans 'Tax' %}</th>
                                             <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                             <th class="w-5"></th>
@@ -458,19 +458,19 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-expense"
-                                            class="table nowrap min-w-1920p w-100 mb-5"
+                                            class="table nowrap min-w-1500p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">#</th>
-                                            <th class="w-15 required">{% trans 'Expense name' %}</th>
-                                            <th class="w-10 required">{% trans 'Expense items' %}</th>
-                                            <th class="w-5 required">{% trans 'UoM' %}</th>
-                                            <th class="w-10 required">{% trans 'Quantity' %}</th>
-                                            <th class="w-30 required">{% trans 'Expense Price' %}</th>
-                                            <th class="w-5">{% trans 'Tax' %}</th>
-                                            <th class="w-15">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5"></th>
+                                            <th>#</th>
+                                            <th>{% trans 'Expense name' %}</th>
+                                            <th>{% trans 'Expense items' %}</th>
+                                            <th>{% trans 'UoM' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Expense Price' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Subtotal Price' %}</th>
+                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>

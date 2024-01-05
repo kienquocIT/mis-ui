@@ -24,10 +24,6 @@ $(function () {
                     } else {
                         QuotationLoadDataHandle.loadDataTablesAndDropDowns(data, false);
                     }
-                    // load totals
-        QuotationLoadDataHandle.loadTotal(data, true, false, false);
-        QuotationLoadDataHandle.loadTotal(data, false, true, false);
-        QuotationLoadDataHandle.loadTotal(data, false, false, true);
 
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES

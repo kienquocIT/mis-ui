@@ -512,7 +512,14 @@
             }
 
             function redirectToSelectTenant() {
-                if (allowAutoTenant !== 'True' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')) {
+                if (
+                    allowAutoTenant !== 'True'
+                    && (
+                        window.location.hostname === '127.0.0.1'
+                        || window.location.hostname === 'localhost'
+                        || mainDomain === '*'
+                    )
+                ) {
                     let tenant_code = prompt('Tenant Code:');
                     tenantSelEle.append(`<option value="${tenant_code}" selected></option>`);
                 } else {

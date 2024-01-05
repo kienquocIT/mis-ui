@@ -12,8 +12,7 @@ pipeline {
                     env.GIT_BRANCH_NAME = getGitBranchName();
                     env.PUSHER = sh (script: 'whoami', returnStdout: true).trim();
                     if (GIT_BRANCH_NAME == 'master') {
-                        env.PROJECT_DIR = '/home/jenkins/ui_mis';
-                        env.PROJECT_BUILD_DIR = env.PROJECT_DIR + '/src' + '/';
+                        env.PROJECT_DIR = '/home/jenkins/COMPILE/UI';
                         env.DEPLOY_SERVER_IP = '192.168.0.111';
                     }
                     if (GIT_BRANCH_NAME == 'dev') {
@@ -35,7 +34,11 @@ pipeline {
             steps {
                 echo "START SSH SERVER"
                 script {
-                    sh """ssh -tt $DEPLOY_SERVER_USER@$DEPLOY_SERVER_IP $PROJECT_DIR/deploy.sh"""
+                    if (GIT_BRANCH_NAME == 'master') {
+                        sh """ssh -tt $DEPLOY_SERVER_USER@$DEPLOY_SERVER_IP $PROJECT_DIR/compile.sh"""
+                    } else {
+                        sh """ssh -tt $DEPLOY_SERVER_USER@$DEPLOY_SERVER_IP $PROJECT_DIR/deploy.sh"""
+                    }
                 }
                 echo "DONE SSH SERVER"
             }

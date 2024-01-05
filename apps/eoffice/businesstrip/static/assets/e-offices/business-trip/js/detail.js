@@ -15,13 +15,14 @@ $(document).ready(function(){
             $('#dateCreatedInput').val($x.fn.reformatData(data.date_created, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#remarkInput').val(data.remark)
             $('#SystemStatusInput').val(JSON.parse($('#sys_stt').text())[data.system_status][1])
-            $('#selectDeparture').append(
-                `<option value="${data.departure.id}" selected>${data.departure.title}</option>`
-            ).trigger('change')
-            $('#selectDestination').append(
-                `<option value="${data.destination.id}" selected>${data.destination.title}</option>`
-            ).trigger('change')
-
+            if (data['departure']?.['id'])
+                $('#selectDeparture').append(
+                    `<option value="${data['departure'].id}" selected>${data['departure'].title}</option>`
+                ).trigger('change')
+            if (data['departure']?.['id'])
+                $('#selectDestination').append(
+                    `<option value="${data.destination.id}" selected>${data.destination.title}</option>`
+                ).trigger('change')
             data.employee_on_trip.map(function(item){
                 item.selected = true
                 return item

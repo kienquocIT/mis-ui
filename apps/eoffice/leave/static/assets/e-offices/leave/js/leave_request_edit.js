@@ -9,7 +9,7 @@ $(document).ready(function () {
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp)['leave_request_detail']
-            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
+            // WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
             $x.fn.renderCodeBreadcrumb(data);
             $('#inputTitle').val(data.title)
             $('#inputSystemStatus').val(JSON.parse($('#sys_stt').text())[data.system_status][1])
@@ -38,6 +38,9 @@ $(document).ready(function () {
                     detail_data.text(JSON.stringify(data.detail_data))
                     $('body').append(detail_data)
                     $EmpElm.trigger('Employee.Loaded')
+
+                    // set workflow runtime + active zone
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
                 }
             }, 200)
             if (data.system_status >= 2) $('#idxRealAction').remove()

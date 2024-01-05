@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, ConditionFormset, SaleMsg, InputMappingProperties
-from apps.shared.msg import BaseMsg
+from apps.shared.msg import BaseMsg, SOMsg
 
 SYSTEM_STATUS = (
     (0, BaseMsg.DRAFT),
@@ -14,6 +14,13 @@ SYSTEM_STATUS = (
     (2, BaseMsg.ADDED),
     (3, BaseMsg.FINISH),
     (4, BaseMsg.CANCEL),
+)
+
+DELIVERY_STATUS = (
+    (0, SOMsg.DELIVERY_TYPE_NONE),
+    (1, SOMsg.DELIVERY_TYPE_DELIVERING),
+    (2, SOMsg.DELIVERY_TYPE_PART),
+    (3, SOMsg.DELIVERY_TYPE_DELIVERED),
 )
 
 
@@ -43,7 +50,7 @@ class SaleOrderList(View):
         breadcrumb='SALE_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS, 'delivery_status': DELIVERY_STATUS}, status.HTTP_200_OK
 
 
 class SaleOrderCreate(View):

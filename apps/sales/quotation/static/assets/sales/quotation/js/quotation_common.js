@@ -868,11 +868,12 @@ class QuotationLoadDataHandle {
         let $form = $('#frm_quotation_create');
         let $table = $('#datable-quotation-create-product');
         let tableData = [];
+        let dataDetail = {};
         if ($form.attr('data-method').toLowerCase() === 'get') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
-                    let dataDetail = JSON.parse(eleDetail.val());
+                    dataDetail = JSON.parse(eleDetail.val());
                     if (dataDetail?.['quotation_products_data']) {
                         tableData = dataDetail?.['quotation_products_data'];
                     }
@@ -1108,17 +1109,22 @@ class QuotationLoadDataHandle {
         }
         QuotationLoadDataHandle.loadDropDowns($table);
         $.fn.initMaskMoney2();
+        // set again WF runtime
+        if (Object.keys(dataDetail).length > 0) {
+            WFRTControl.setWFRuntimeID(dataDetail?.['workflow_runtime_id']);
+        }
     };
 
     static loadReInitDataTableExpense() {
         let $form = $('#frm_quotation_create');
         let $table = $('#datable-quotation-create-expense');
         let tableData = [];
+        let dataDetail = {};
         if ($form.attr('data-method').toLowerCase() === 'get') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
-                    let dataDetail = JSON.parse(eleDetail.val());
+                    dataDetail = JSON.parse(eleDetail.val());
                     if (dataDetail?.['quotation_expenses_data']) {
                         tableData = dataDetail?.['quotation_expenses_data'];
                     }
@@ -1230,6 +1236,10 @@ class QuotationLoadDataHandle {
         }
         QuotationLoadDataHandle.loadDropDowns($table, true);
         $.fn.initMaskMoney2();
+        // set again WF runtime
+        if (Object.keys(dataDetail).length > 0) {
+            WFRTControl.setWFRuntimeID(dataDetail?.['workflow_runtime_id']);
+        }
     };
 
     // Load detail

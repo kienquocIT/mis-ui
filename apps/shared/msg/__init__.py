@@ -10,6 +10,9 @@ from .sale import MDConfigMsg
 from .sales import SaleMsg
 from .promotion import PromotionMsg
 from .eoffice import LeaveMsg, MeetingScheduleMsg
+from .goodsreceipt import GRMsg
+from .purchasing import PurchasingMsg
+from .saleorder import SOMsg
 
 
 class BaseMsg:

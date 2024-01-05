@@ -1,9 +1,0 @@
-#upload-area, #upload-photo {
-    height: 10em;
-    line-height: 150px;
-    background-size: auto 100%;
-    background-repeat: no-repeat;
-    background-position: center top;
-    text-align: center;
-    cursor: pointer;
-}

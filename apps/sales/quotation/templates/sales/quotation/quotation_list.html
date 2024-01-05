@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Quotation list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'QuotationCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Quotation' %}"
+       id="create_quotation_button"
+       data-bs-original-title="Add Quotation">
+            <button type="button" class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="table_quotation_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'QuotationListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Customer' %}</th>
+            <th>{% trans 'Sale Person' %}</th>
+            <th>{% trans 'Created Date' %}</th>
+            <th>{% trans 'Quotation Value' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="quotation-link"
+            data-link-update="{% url 'QuotationDetail' 1 %}"
+            data-link-list="{% url 'QuotationList' %}"
+    >
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-change="{% trans 'Change' %}"
+            data-cancel="{% trans 'Cancel' %}"
+    >
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/quotation/js/quotation_list.js' %}"></script>
+{% endblock %}

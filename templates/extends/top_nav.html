@@ -1,0 +1,408 @@
+{% load static i18n string_utils person_utils %}
+<!-- Top Navbar -->
+<nav class="hk-navbar navbar navbar-expand-xl navbar-light fixed-top">
+    <div class="container-fluid">
+        <!-- Start Nav -->
+        <div class="nav-start-wrap">
+            <button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle d-xl-none"><span
+                    class="icon"
+            ><span class="feather-icon"><i data-feather="align-left"></i></span></span></button>
+
+            <!-- Space -->
+            <div
+                    class="btn-group mr-3"
+                    id="menu-tenant"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-original-title="Space Menus"
+                    data-space-selected="{{ base.space_current_detail.code }}"
+            >
+                <button
+                        id="menu-tenant-text"
+                        type="button" class="btn btn-outline-light dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        data-dropdown-animation aria-haspopup="true" aria-expanded="false"
+                >
+                    {% if base.space_current_detail.name %}
+                        {{ base.space_current_detail.icon|safe }} {{ base.space_current_detail.name }}
+                    {% else %}
+                        _
+                    {% endif %}
+                </button>
+                <div
+                        class="dropdown-menu" data-url="{% url 'SpaceChangeView' %}"
+                        data-url-redirect="{% url 'HomeView' %}" data-method="PUT"
+                >
+                    {% csrf_token %}
+                    {% for item in base.space_list %}
+                        {% if item.child|length > 0 %}
+                            <h6 class="dropdown-header">{{ item.name }}</h6>
+                            {% for item_child in item.child %}
+                                <a
+                                        class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
+                                        data-space-code="{{ item_child.code }}"
+                                        data-space-name="{{ item_child.name }}"
+                                        href="#"
+                                >
+                                    {{ item_child.icon|safe }}
+                                    <span class="ml-1">{{ item_child.name }}</span>
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <a
+                                    class="dropdown-item  {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
+                                    href="#"
+                            >{{ item.name }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- // Space -->
+
+            <!-- Search -->
+            <form class="dropdown navbar-search">
+                <div
+                        class="dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation
+                        data-bs-auto-close="outside"
+                >
+                    <a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover  d-xl-none"><span
+                            class="icon"
+                    ><span class="feather-icon"><i data-feather="search"></i></span></span></a>
+                    <div class="input-group d-xl-flex d-none">
+							<span class="input-affix-wrapper input-search affix-border">
+								<input
+                                        type="text" class="form-control  bg-transparent"
+                                        data-navbar-search-close="false" placeholder="{% trans 'Search' %}..."
+                                        aria-label="Search"
+                                >
+								<span class="input-suffix"><span>/</span>
+									<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
+									<span
+                                            class="spinner-border spinner-border-sm input-loader text-primary"
+                                            role="status"
+                                    >
+										<span class="sr-only">Loading...</span>
+									</span>
+								</span>
+							</span>
+                    </div>
+                </div>
+                <div class="dropdown-menu p-0">
+                    <!-- Mobile Search -->
+                    <div class="dropdown-item d-xl-none bg-transparent">
+                        <div class="input-group mobile-search">
+								<span class="input-affix-wrapper input-search">
+									<input type="text" class="form-control" placeholder="Search..." aria-label="Search">
+									<span class="input-suffix">
+										<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
+										<span
+                                                class="spinner-border spinner-border-sm input-loader text-primary"
+                                                role="status"
+                                        >
+											<span class="sr-only">Loading...</span>
+										</span>
+									</span>
+								</span>
+                        </div>
+                    </div>
+                    <!--/ Mobile Search -->
+                    <div data-simplebar class="dropdown-body p-2"></div>
+                    <div class="dropdown-footer d-xl-flex d-none"><a href="#"><u></u></a></div>
+                </div>
+            </form>
+            <!-- /Search -->
+        </div>
+        <!-- /Start Nav -->
+
+        <!-- End Nav -->
+        <div class="nav-end-wrap">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <div class="dropdown dropdown-notifications">
+                        <a
+                                href="#"
+                                class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret mr-1"
+                                data-bs-toggle="dropdown" data-dropdown-animation role="button" aria-haspopup="true"
+                                aria-expanded="false"
+                                id="notifyDropdownData"
+                                data-url="{% url 'MyNotifyAllAPI' %}"
+                                data-method="GET"
+                        >
+                            <span
+                                    id="idxNotifyBell"
+                                    data-url="{% url 'MyNotifyNoDoneCountAPI' %}"
+                                    class="icon"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    data-bs-original-title="{% trans 'Notifications' %}"
+                            >
+                                <span class="position-relative">
+                                    <div class="avatar avatar-icon avatar-xxs avatar-rounded">
+                                        <span class="initial-wrap">
+                                            <i class="fa-regular fa-bell fa-sm my-bell" id="idxNotifyBellIcon"></i>
+                                        </span>
+                                        <span
+                                                class="badge badge-warning badge-sm position-top-end-overflow-1"
+                                                id="my-notify-count"
+                                        ></span>
+                                    </div>
+                                </span>
+                            </span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end p-0 mw-275p">
+                            <h6 class="dropdown-header px-4 fs-6">
+                                {% trans 'Notifications' %}
+                                <div>
+                                    <button
+                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                            id="btnNotifySeenAll"
+                                            data-url="{% url 'MyNotifySeenAllAPI' %}"
+                                            data-method="PUT"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Seen all' %}"
+                                    >
+                                        <span class="icon"><i class="fa-solid fa-check-double"></i></span>
+                                    </button>
+                                    <button
+                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                            id="btnNotifyClearAll"
+                                            data-url="{% url 'MyNotifyCleanAllAPI' %}"
+                                            data-method="DELETE"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Delete all viewed notifications' %}"
+                                    >
+                                        <span class="icon"><i class="fa-regular fa-trash-can"></i></span>
+                                    </button>
+                                </div>
+                            </h6>
+                            <div data-simplebar class="dropdown-body p-2">
+                                <div id="idxNotifyShowData"></div>
+                            </div>
+                            <div class="dropdown-footer hidden"><a href="#"><u>{% trans 'View all notifications' %}</u></a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="dropdown ps-2">
+                        <a
+                                class=" dropdown-toggle no-caret" href="#" role="button" data-bs-display="static"
+                                data-bs-toggle="dropdown" data-dropdown-animation data-bs-auto-close="outside"
+                                aria-expanded="false"
+                        >
+                            {{ base|render_avatar|safe }}
+                        </a>
+                        <div
+                                class="modal fade" id="switchMyCompany" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalCenter" aria-hidden="true"
+                        >
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">{% trans 'Switch Company' %}</h5>
+                                        <button
+                                                type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"
+                                        >
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <div>
+                                                {% csrf_token %}
+                                                {% for item in base.companies_data %}
+                                                    <div class="company_switch_item p-3">
+                                                        <div class="form-check d-flex align-items-center">
+                                                            {% if item.id == base.company_current_data.id %}
+                                                                <input
+                                                                        id="company_switch_id_{{ item.id }}"
+                                                                        name="switch_current_company"
+                                                                        class="form-check-input"
+                                                                        value="{{ item.id }}"
+                                                                        checked="checked" type="radio"
+                                                                >
+                                                                <b><label
+                                                                        class="form-check-label"
+                                                                        for="company_switch_id_{{ item.id }}"
+                                                                >
+                                                                    {% if item.logo %}
+                                                                        <img class="brand-img img-fluid" src="{{ item.logo }}" alt="brand" style="height: 3rem; margin: 0 1rem;">
+                                                                    {% endif %}
+                                                                    {{ item.title }}
+                                                                </label></b>
+                                                            {% else %}
+                                                                <input
+                                                                        id="company_switch_id_{{ item.id }}"
+                                                                        name="switch_current_company"
+                                                                        class="form-check-input"
+                                                                        value="{{ item.id }}"
+                                                                        type="radio"
+                                                                >
+                                                                <label
+                                                                        class="form-check-label"
+                                                                        for="company_switch_id_{{ item.id }}"
+                                                                >{{ item.code }} - {{ item.title }}</label>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button
+                                                type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                        >{% trans 'Close' %}</button>
+                                        <button
+                                                id="btn-call-switch-company"
+                                                data-url="{% url 'SwitchCompanyCurrentView' %}"
+                                                data-method="PUT"
+                                                type="button" class="btn btn-primary"
+                                        >{% trans 'Save' %}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <div class="p-2">
+                                <div class="media">
+                                    <div class="media-head me-2">
+                                        <div class="position-relative avatar avatar-primary avatar-sm avatar-rounded my-avatar">
+                                            {{ base|render_avatar_tag|safe }}
+{#                                            <div#}
+{#                                                    id="btnUploadMyAvatar"#}
+{#                                                    class="position-absolute rounded-circle btn bg-dark opacity-80 top-0 left-0 h-100 w-100 d-flex justify-content-center align-items-center my-upload-avatar d-none"#}
+{#                                            >#}
+{#                                                <i class="fa-solid fa-camera text-white"></i>#}
+{#                                            </div>#}
+                                        </div>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="dropdown">
+                                            {{ base.fullname }}
+                                        </div>
+                                        <div class="fs-7">
+                                            <a
+                                                    id="email-request-owner" href="mailto:{{ base.email }}"
+                                            >{{ base.email }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">
+                                {% trans 'Manage Account' %}
+                            </h6>
+                            {% if base.company_current_data %}
+                                <a
+                                        id="company-current-id"
+                                        class="dropdown-item" href="#"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="{{ base.company_current_data.title }}"
+                                        data-id="{{ base.company_current_data.id }}"
+                                        style="max-width: 20em;overflow: hidden;text-overflow: ellipsis;"
+                                >
+                                    <span id="btnChangeCurrentCompany" class="dropdown-icon" data-bs-toggle="modal" data-bs-target="#switchMyCompany">
+                                        <i
+                                                class="fa-solid fa-retweet"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="left"
+                                                title="Click to switch company"
+                                        ></i>
+                                    </span>
+                                    <span> {{ base.company_current_data.code }} - {{ base.company_current_data.title }} </span>
+                                </a>
+                                {% if base.employee_current_data %}
+                                    <a
+                                            class="dropdown-item"
+                                            href="{% url 'EmployeeDetail' pk=base.employee_current_data.id %}"
+                                            data-value-id="{{ base.employee_current_data.id }}"
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="{% trans 'Profile' %}"
+                                    >
+                                        <span class="dropdown-icon feather-icon">
+                                            <i data-feather="user"></i>
+                                        </span>
+                                        <span>
+                                            {{ base.employee_current_data.full_name }}
+                                        </span>
+                                    </a>
+                                {% else %}
+                                    <a class="dropdown-item" href="/">{% trans 'Profile' %}</a>
+                                {% endif %}
+                            {% endif %}
+
+                            <a
+                                    id="link-language" class="dropdown-item" href="#"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="{% trans 'Language' %}"
+                                    data-url="{% url 'MyLanguageAPI' %}"
+                                    data-value="{{base.language}}"
+                            >
+                                <span class="dropdown-icon feather-icon">
+                                    <i data-feather="globe"></i>
+                                </span>
+                                <span>{{ base.language|language_full_name }}</span>
+                            </a>
+
+                            <a id="link-logout" class="dropdown-item" href="{% url 'AuthLogout' %}">
+                                <span class="dropdown-icon feather-icon">
+                                    <i data-feather="log-out"></i>
+                                </span>
+                                <span>{% trans 'Sign Out' %}</span>
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalRaiseTicket">
+                                <span class="dropdown-icon feather-icon">
+                                    <i data-feather="tag"></i>
+                                </span>
+                                <span>{% trans 'Raise a ticket' %}</span>
+                            </a>
+                            <a class="dropdown-item" href="{% url 'TermsAndConditionsView' %}">
+                                <span class="dropdown-icon feather-icon">
+                                    <i data-feather="book"></i>
+                                </span>
+                                <span>{% trans 'Terms & Conditions' %}</span>
+                            </a>
+                            <a class="dropdown-item" href="{% url 'HelpAndSupportView' %}">
+                                <span class="dropdown-icon feather-icon">
+                                    <i data-feather="help-circle"></i>
+                                </span>
+                                <span>{% trans 'Help & Support' %}</span>
+                            </a>
+
+                            {% if is_debug_src %}
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Testing Product</h6>
+                                <a class="dropdown-item" href="{% url 'UtilitiesView' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-toolbox"></i>
+                                    </span>
+                                    <span>Utility tools page</span>
+                                </a>
+                                <a class="dropdown-item" href="{% url 'DefaultDataView' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-table"></i>
+                                    </span>
+                                    <span>System default data page</span>
+                                </a>
+                                <a class="dropdown-item" href="{% url 'ComponentCollections' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-puzzle-piece"></i>
+                                    </span>
+                                    <span>Components</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- /End Nav -->
+    </div>
+</nav>
+<!-- /Top Navbar -->

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Leave request' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+    </style>
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'LeaveRequestCreate' %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Create' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <table class="table nowrap w-100" id="leave_request_tbl" data-method="get">
+                <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>{% trans 'Name' %}</td>
+                        <td>{% trans 'Employee inherit' %}</td>
+                        <td>{% trans 'Code' %}</td>
+                        <td>{% trans 'Start day' %}</td>
+                        <td>{% trans 'Days off number' %}</td>
+                        <td>{% trans 'Status' %}</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-leave-list="{% url 'LeaveRequestListAPI' %}"
+           data-leave-detail="{% url 'LeaveRequestDetail' pk=0 %}"
+    >
+    <input type="text" id="trans-factory"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/e-offices/leave/js/leave_request_list.js' %}"></script>
+{% endblock %}

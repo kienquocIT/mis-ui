@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Product List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "ProductCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div id="section-product-list">
+        <table id="datatable_product_list" class="table nowrap w-100 mb-5" data-url="{% url "ProductListAPI" %}"
+               data-method="GET" data-url-detail="{% url "ProductDetail" pk=0%}"
+        data-url-product-type="{% url "ProductTypeListAPI" %}"
+        data-url-product-category="{% url "ProductCategoryListAPI" %}">
+            <thead>
+            <th class="w-5"></th>
+            <th class="w-10">{% trans "Code" %}</th>
+            <th class="w-25">{% trans "Name" %}</th>
+            <th class="w-15">{% trans "Product Type" %}</th>
+            <th class="w-10">{% trans "Product Category" %}</th>
+            <th class="w-15">{% trans "General Price" %}</th>
+            <th class="w-10">{% trans "Stock" %}</th>
+            <th class="w-10">{% trans "Available" %}</th>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/product/product_list.js' %}"></script>
+{% endblock %}

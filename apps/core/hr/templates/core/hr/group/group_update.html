@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/group/group_create.css' %}">
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm_group_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            id="frm_group_create" class="needs-validation" data-url="{% url 'GroupDetailAPI' pk=pk %}" data-method="PUT"
+            novalidate data-url-redirect="{% url 'GroupList' %}"
+    >
+        {% csrf_token %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-3">
+                    <div class="card position-sticky border-primary">
+                        <div class="card-body">
+                            <div class="row">
+                                <a class="nav-link active" href="#section5">
+                                    <div class="form-group">
+                                        <h6>{% trans 'Input General Information' %}</h6>
+                                    </div>
+                                </a>
+                            </div>
+                            <hr class="bg-teal">
+                            <div class="row">
+                                <a class="nav-link active" href="#section6">
+                                    <div class="form-group">
+                                        <h6>{% trans 'Add Employees, Manager' %}</h6>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-9">
+                    <div
+                            data-bs-spy="scroll" data-bs-target="#scrollspy_demo_v" data-bs-smooth-scroll="true"
+                            class="position-relative "
+                    >
+                        <!-- Section Input General Information -->
+                        <div id="section5">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Select Group Level' %}<span
+                                                    class="required"
+                                            ></span></label>
+                                            <select
+                                                    class="form-select"
+                                                    id="select-box-group-level"
+                                                    data-url="{% url 'GroupLevelListAPI' %}"
+                                                    data-method="GET"
+                                                    name="group_level"
+                                                    data-keyResp="group_level_list"
+                                                    required
+                                            >
+                                            </select>
+                                            <span class="form-text text-muted">{% trans 'Level link to this group' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Select Parent Group' %}</label>
+                                            <select
+                                                    class="form-select"
+                                                    id="select-box-group"
+                                                    data-url="{% url 'GroupListAPI' %}"
+                                                    data-method="GET"
+                                                    name="parent_n"
+                                                    data-keyResp="group_list"
+                                            >
+                                            </select>
+                                            <span class="form-text text-muted">{% trans 'Group parent of this group' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {% trans 'Reference Group Title' %}
+                                    </label>
+                                    <input
+                                            type="text" class="form-control" placeholder="" name="first_name"
+                                            id="reference-group-title"
+                                            disabled
+                                    >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label" for="group-title">{% trans 'Input Display Group Title' %}<span class="required"></span></label>
+                                    <input
+                                            type="text" class="form-control"
+                                            name="title"
+                                            id="group-title"
+                                            required
+                                    >
+                                    <span class="form-text text-muted">{% trans 'Name of Group' %}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label" for="group-code">{% trans 'Input Group Code' %}<span class="required"></span></label>
+                                    <input
+                                            type="text"
+                                            class="form-control"
+                                            name="code"
+                                            id="group-code"
+                                            required
+                                    >
+                                    <span class="form-text text-muted">{% trans 'Code of Group' %}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label" for="group-description">{% trans 'Description' %}</label>
+                                    <textarea class="form-control" rows="4" cols="50" name="description" id="group-description"></textarea>
+                                    <span class="form-text text-muted">{% trans 'Desciption of Group' %}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section Add Employees, Manager -->
+                        <div id="section6">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample">
+                                    <span><span>{% trans 'Add employee to group' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                </button>
+                            </div>
+                            <div
+                                    class="offcanvas offcanvas-end w-70 mt-4" tabindex="-1" id="offcanvasRight"
+                                    aria-labelledby="offcanvasTopLabel"
+                            >
+                                <div class="offcanvas-header">
+                                    <h5 id="offcanvasRightLabel">{% trans "Add Employee" %}</h5>
+                                </div>
+
+                                <div class="offcanvas-body form-group">
+                                    <table
+                                            id="datable_employee_list" class="table nowrap w-100 mb-5"
+                                            data-url="{% url 'EmployeeListAPI' %}"
+                                            data-method="GET"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>{% trans 'Code' %}</th>
+                                            <th>{% trans 'Full Name' %}</th>
+                                            <th>{% trans 'Group' %}</th>
+                                            <th>{% trans 'Role' %}</th>
+                                            <th>{% trans 'Date Joined' %}</th>
+                                            <th>
+                                                <div class="form-check"><input
+                                                        type="checkbox" class="form-check-input table-row-checkbox-all"
+                                                ></div>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                    <div class="modal-footer">
+                                        <button
+                                                type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas"
+                                        >{% trans 'Cancel' %}</button>
+                                        <button
+                                                type="button" class="btn btn-primary"
+                                                data-bs-dismiss="offcanvas"
+                                                id="button-add-group-employee"
+                                        >{% trans 'Add' %}</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <table
+                                    id="datable_employee_show_list"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>{% trans 'Full Name' %}</th>
+                                    <th>{% trans 'Role' %}</th>
+                                    <th>{% trans 'Actions' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <input
+                                    type="hidden"
+                                    id="data-group_employee"
+                            >
+                            <br>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans '1st Manager System Title' %}
+                                            </label>
+                                            <input
+                                                    type="text" class="form-control" placeholder=""
+                                                    name="first_name"
+                                                    id="first-manager-system-title"
+                                                    disabled
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                {% trans '2nd Manager System Title' %}
+                                            </label>
+                                            <input
+                                                    type="text" class="form-control" placeholder=""
+                                                    name="first_name"
+                                                    id="second-manager-system-title"
+                                                    disabled
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="first-manager-title">{% trans 'Input Display 1st Manager Title' %}</label>
+                                            <input
+                                                    type="text" class="form-control"
+                                                    name="first_manager_title"
+                                                    id="first-manager-title"
+                                            >
+                                            <span class="form-text text-muted">{% trans 'Title of 1st manager' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="second-manager-title">{% trans 'Input Display 2nd Manager Title' %}</label>
+                                            <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    name="second_manager_title"
+                                                    id="second-manager-title"
+                                            >
+                                            <span class="form-text text-muted">{% trans 'Title of 2nd manager' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label
+                                                    class="form-label" for="select-box-first-manager"
+                                            >{% trans 'First Manager Assign To' %}</label>
+                                            <select
+                                                    class="form-select"
+                                                    id="select-box-first-manager"
+                                                    data-url="{% url 'EmployeeListAPI' %}"
+                                                    data-method="GET"
+                                                    name="first_manager"
+                                                    data-keyResp="employee_list"
+                                                    data-keyText="full_name"
+                                            >
+                                            </select>
+                                            <span class="form-text text-muted">{% trans 'Assign to one employee' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Second Manager Assign To' %}</label>
+                                            <select
+                                                    class="form-select" id="select-box-second-manager"
+                                                    data-url="{% url 'EmployeeListAPI' %}"
+                                                    data-method="GET"
+                                                    name="second_manager"
+                                                    data-keyResp="employee_list"
+                                                    data-keyText="full_name"
+                                            >
+                                            </select>
+                                            <span class="form-text text-muted">{% trans 'Assign to one employee' %}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/hr/group/group_common.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/group/group_create.js' %}"></script>
+{% endblock %}

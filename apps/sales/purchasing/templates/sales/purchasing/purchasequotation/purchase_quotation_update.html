@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Purchase Quotation Update' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .select2-container--default.select2-container--disabled .select2-selection--multiple {
+            background-color: #f7f7f7;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            border: 1px solid black;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-purchase-quotation">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="url-script"
+            data-url-tax="{% url "TaxListAPI" %}"
+            data-url-product="{% url "ProductListAPI" %}"
+            data-url-contact="{% url "ContactListAPI" %}"
+            data-url-uom="{% url "UnitOfMeasureListAPI" %}"
+            data-url-account="{% url "AccountListAPI" %}"
+            data-url-pqr="{% url "PurchaseQuotationRequestListAPI" %}"
+            data-url-pqr-detail="{% url "PurchaseQuotationRequestDetailAPI" pk=0 %}"></script>
+    <form id="form-detail-purchase-quotation" data-method="PUT"
+          data-url-redirect="{% url "PurchaseQuotationDetail" '0' %}"
+          data-url="{% url 'PurchaseQuotationDetailAPI' '0' %}">
+        {% csrf_token %}
+        <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Name" %}</label>
+                        <input class="form-control" id="title">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Supplier" %}</label>
+                        <select id="supplier-select-box" class="select2" type="button" data-placeholder="Select Supplier"></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Expiration date" %}</label>
+                        <input class="form-control" id="expiration_date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Lead time" %}</label>
+                        <div class="row">
+                            <div class="col-2"><input type="number" min="1" class="form-control" id="lead-time-from"></div>
+                            <div class="col-1"><label class="col-form-label text-center">{% trans "to" %}</label></div>
+                            <div class="col-2"><input type="number" min="1" class="form-control" id="lead-time-to"></div>
+                            <div class="col-4">
+                                <select class="form-select" id="lead-time-type">
+                                    <option value="0" selected></option>
+                                    <option value="1">{% trans 'Week' %}</option>
+                                    <option value="2">{% trans 'Day' %}</option>
+                                    <option value="3">{% trans 'Hour' %}</option>
+                                </select>
+                            </div>
+                            <div class="col-3"><label class="col-form-label">{% trans "from order date" %}</label></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Contact" %}</label>
+                        <select id="contact-select-box" class="select2" type="button" data-placeholder="Select Contact"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">{% trans "PQ Request" %}</label>
+                        <select id="pqr-select-box" class="select2" type="button" data-placeholder="Select Purchase Quotation Request"></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Status" %}</label>
+                        <input class="form-control" id="status" value="Open" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Note" %}</label>
+                        <textarea style="height: 38px" class="form-control" id="note"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+            <span class="icon">
+                <i class="fas fa-angle-double-up text-primary"></i>
+            </span>
+        </button>
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-icon nav-light">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_attachment">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_line_detail" style="position: relative; overflow: auto; width: 100%;">
+                        <table class="table nowrap w-100" id="table-purchase-quotation-products-selected">
+                            <thead>
+                            <th class="w-5"></th>
+                            <th class="w-15 required">{% trans "Product" %}</th>
+                            <th class="w-10">{% trans "Description" %}</th>
+                            <th class="w-15 required">{% trans "UoM" %}</th>
+                            <th class="w-10 required">{% trans "Quantity" %}</th>
+                            <th class="w-15 required">{% trans "PR Unit Price" %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{% trans 'If the products are merged, Default Unit Price will be got from the smallest UoM ratio product.' %}">
+                                </i>
+                            </th>
+                            <th class="w-10 required">{% trans "Tax" %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{% trans 'If the products are merged, Default Tax will be got from the smallest UoM ratio product.' %}">
+                                </i>
+                            </th>
+                            <th class="w-15 required">{% trans "Subtotal Price" %}</th>
+                            <th class="w-5">{% trans "Action" %}</th>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button id="new-product-btn" class="btn btn-soft-primary mb-3" type="button">
+                                    <span>
+                                        <span>{% trans "New product" %}</span>
+                                        <span class="icon">
+                                            <i class="fas fa-plus-circle"></i>
+                                        </span>
+                                    </span>
+                                </button>
+                                </td>
+                                <td colspan="5"></td>
+                                <td colspan="2">
+                                    <div class="row mb-3">
+                                        <div class="col-4">{% trans "Pretax price" %}</div>
+                                        <span class="col-8 text-right mask-money" id="pretax-value">0</span>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4">{% trans "Taxes" %}</div>
+                                        <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                    </div>
+                                    <div class="dropdown-divider mb-3"></div>
+                                    <div class="row mb-3" style="font-weight: bold">
+                                        <div class="col-4">{% trans "Total" %}</div>
+                                        <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="tab_block_attachment">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="file" id="input-file-now" class="dropify">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_common.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_update.js' %}"></script>
+{% endblock %}

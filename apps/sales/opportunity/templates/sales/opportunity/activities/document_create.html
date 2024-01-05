@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Document For Customer' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm-create-opportunity-document">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form id="frm-create-opportunity-document" data-method="POST" data-url="{% url 'OpportunityDocumentListAPI' %}"
+    data-url-redirect="{% url 'OpportunityDocumentList' %}">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Sale Code' %}</label>
+                    <select
+                            class="form-select"
+                            id="box-select-opportunity"
+                            data-url="{% url 'OpportunityListAPI' %}"
+                            data-method="GET"
+                            name="opportunity"
+                            data-keyResp="opportunity_list"
+                    >
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Request Completed Date' %}</label>
+                    <input class="form-control" type="text" id="input-request-completed-date"
+                           name="request_completed_date"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Name' %}</label>
+                    <input class="form-control" name="title">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Person In Charge' %}</label>
+                    <select class="form-select"
+                            name="person_in_charge"
+                            id="box-select-person-in-charge"
+                            multiple
+                            data-method="GET"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyResp="employee_list"
+                            data-keyText="full_name"
+                    >
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Description' %}</label>
+                    <input class="form-control" name="description"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul class="nav nav-light nav-tabs" id="tab-select-table">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                        <span class="nav-link-text">{% trans 'Detail' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_detail">
+                <div class="document-content">
+                    <div class="row sub-document">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans 'Upload Document' %}</label>
+                                <button
+                                        type="button"
+                                        class="form-control btn btn-outline-primary btn-file-upload"
+                                        data-f-input-name="attachments1"
+                                        data-f-input-required="true"
+                                        data-f-input-disabled="false"
+                                        data-f-name-ele-id="#documentDisplay1"
+                                >{% trans 'Click here to upload file' %}
+                                </button>
+                                <p id="documentDisplay1"></p>
+                            </div>
+
+                        </div>
+                        <div class="col-7">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <textarea class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <button type="button" class="btn btn-link btn-animated" id="btn-add-document">
+                    <span>
+                        <span class="icon">
+                            <span class="feather-icon">
+                                <i data-feather="plus"></i>
+                            </span>
+                        </span>
+                        <span>{% trans 'Add Document' %}</span>
+                    </span>
+                    </button>
+                </div>
+                <div class="document-hidden hidden">
+                    <div class="row sub-document">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Upload Document' %}</label>
+                                <button
+                                        type="button"
+                                        class="form-control btn btn-outline-primary"
+                                        data-f-input-name="attachments0"
+                                        data-f-input-required="true"
+                                        data-f-input-disabled="false"
+                                        data-f-name-ele-id="#documentDisplay0"
+                                >{% trans 'Click here to upload file' %}
+                                </button>
+                                <p id="documentDisplay0"></p>
+                            </div>
+
+                        </div>
+                        <div class="col-7">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <textarea class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-1 mt-2">
+                            <a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del-doc mt-5">
+                                <span class="btn-icon-wrap">
+                                    <span class="feather-icon">
+                                        <i data-feather="trash-2"></i>
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/activities/js/document_common.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/activities/js/document_create.js' %}"></script>
+{% endblock %}

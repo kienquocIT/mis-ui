@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Purchase order list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'PurchaseOrderCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Purchase Order' %}"
+       id="create_purchase_order_button"
+       data-bs-original-title="Add Purchase Order">
+            <button type="button" class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="table_purchase_order_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'PurchaseOrderListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Supplier' %}</th>
+            <th>{% trans 'Delivered date' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Goods receipt' %}</th>
+            <th>{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="purchase-order-link"
+            data-link-update="{% url 'PurchaseOrderDetail' 1 %}"
+            data-link-list="{% url 'PurchaseOrderList' %}"
+    >
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-change="{% trans 'Change' %}"
+            data-cancel="{% trans 'Cancel' %}"
+            data-status-none="{% trans 'None' %}"
+            data-status-wait="{% trans 'Wait' %}"
+            data-status-partially="{% trans 'Partially received' %}"
+            data-status-received="{% trans 'Received' %}"
+    >
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+{% block jsFooter %}
+
+
+    <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_list.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_list.css' %}">
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'EmployeeCreate' %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="datable_employee_list" class="table nowrap w-100 mb-5"
+            data-url="{% url 'EmployeeListAPI' %}"
+            data-method="GET"
+            data-url-detail="{% url 'EmployeeDetail' pk='__pk__' %}"
+    >
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Full Name' %}</th>
+            <th>{% trans 'Department' %}</th>
+            <th>{% trans 'Roles' %}</th>
+            <th>{% trans 'Date Joined' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Is admin' %}</th>
+            <th>{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/hr/employee/employee_data.js' %}"></script>
+{% endblock %}

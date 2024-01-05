@@ -1,0 +1,560 @@
+{% load static compress i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans 'Login' %} &#8901; Minh Tâm Solution</title>
+    <meta name="description" content="Minh Tam Solution"/>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
+    <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+
+    {% compress css %}
+        <!-- CSS -->
+        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        <style>
+            select option:checked {
+                background-color: #e5fdff !important;
+                color: #37ceda !important;
+            }
+        </style>
+    {% endcompress %}
+</head>
+<body>
+<!-- Wrapper -->
+<div class="hk-wrapper hk-pg-auth" data-footer="simple">
+    <!-- Main Content -->
+    <div class="hk-pg-wrapper pt-0 pb-xl-0 pb-5">
+        <div class="hk-pg-body pt-0 pb-xl-0">
+            <!-- Container -->
+            <div class="container-xxl">
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-sm-10 position-relative mx-auto">
+                        <div class="auth-content py-8">
+                            <form
+                                    class="w-100"
+                                    id="form-login"
+                                    data-url="{% url 'AuthLogin' %}" data-url-redirect="" data-method="POST"
+                                    autocomplete="off"
+                                    data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
+                            >
+                                <div class="row">
+                                    <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
+                                        <div class="text-center mb-7">
+                                            <a class="navbar-brand me-0" href="/">
+                                                <img
+                                                        class="brand-img d-inline-block"
+                                                        src="{% static 'assets/images/logo/logo-111x64.png' %}"
+                                                        alt="brand"
+                                                >
+                                            </a>
+                                        </div>
+                                        <div class="card card-lg card-border">
+                                            <div class="card-body">
+                                                <h4 class="mb-4 text-center">{% trans 'Sign in to your account' %}</h4>
+                                                <div class="row gx-3">
+                                                    <div class="form-group col-lg-12 d-none">
+                                                        <div class="form-label-group">
+                                                            <label>Tenant</label>
+                                                        </div>
+                                                        <select
+                                                                class="form-select" id="tenant-select" required
+                                                                data-url="{% url 'TenantLoginChoice' %}"
+                                                                data-method="GET"
+                                                                name="tenant_code"
+                                                        >
+                                                            <option disabled value="">
+                                                                {% trans 'Choose...' %}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-lg-12">
+                                                        <div class="form-label-group">
+                                                            <label>{% trans 'User Name' %}</label>
+                                                        </div>
+                                                        <input
+                                                                name="username"
+                                                                class="form-control"
+                                                                placeholder="Enter username or email ID" value=""
+                                                                type="text"
+                                                                tabindex="1"
+                                                                required
+                                                        >
+                                                    </div>
+                                                    <div class="form-group col-lg-12">
+                                                        <div class="form-label-group">
+                                                            <label>{% trans 'Password' %}</label>
+                                                            <a
+                                                                    href="#"
+                                                                    class="fs-7 fw-medium"
+                                                            >{% trans 'Forgot Password ?' %}</a>
+                                                        </div>
+                                                        <div class="input-group password-check">
+																<span class="input-affix-wrapper">
+																	<input
+                                                                            name="password"
+                                                                            class="form-control"
+                                                                            placeholder="Enter your password" value=""
+                                                                            type="password"
+                                                                            tabindex="2"
+                                                                            required
+                                                                    >
+																	<a href="#" class="input-suffix text-muted">
+																		<span class="feather-icon"><i
+                                                                                class="form-icon"
+                                                                                data-feather="eye"
+                                                                        ></i></span>
+																		<span class="feather-icon d-none"><i
+                                                                                class="form-icon"
+                                                                                data-feather="eye-off"
+                                                                        ></i></span>
+																	</a>
+																</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="form-check form-check-sm mb-3">
+                                                        <input
+                                                                name="remember"
+                                                                type="checkbox" class="form-check-input" id="logged_in"
+                                                                checked tabindex="3"
+                                                        >
+                                                        <label
+                                                                class="form-check-label text-muted fs-7"
+                                                                for="logged_in"
+                                                        >{% trans 'Keep me logged in' %}</label>
+                                                    </div>
+                                                </div>
+                                                <div id="recapcha" class="mt-1 mb-1"></div>
+                                                <input
+                                                        type="submit" class="btn btn-primary btn-uppercase btn-block"
+                                                        value="{% trans 'Login' %}" tabindex="4"
+                                                >
+                                                <p class="p-xs mt-2 text-center"><a
+                                                        href="#"
+                                                ><u>{% trans 'Creat new account to MIS' %}</u></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Row -->
+            </div>
+            <!-- /Container -->
+        </div>
+        <!-- /Page Body -->
+
+        <!-- Page Footer -->
+        <div class="hk-footer border-0">
+            <footer class="container-xxl footer">
+                <div class="row">
+                    <div class="col-xl-8 text-center">
+                        <p class="footer-text pb-0"><span class="copy-text">Jampack © 2022 All rights reserved.</span>
+                            <a href="#" class="" target="_blank">Privacy Policy</a><span
+                                    class="footer-link-sep"
+                            >|</span><a href="#" class="" target="_blank">T&C</a><span
+                                    class="footer-link-sep"
+                            >|</span><a href="#" class="" target="_blank">System
+                                Status</a></p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- / Page Footer -->
+
+    </div>
+    <!-- /Main Content -->
+    <!-- spinner loading -->
+    <div id="loadingContainer" class="loading-container hidden">
+        <div class="my-spinner">
+            <div class="my-circle my-circle-1"></div>
+            <div class="my-circle my-circle-2"></div>
+            <div class="my-circle my-circle-3"></div>
+            <div class="my-circle my-circle-4"></div>
+            <div class="my-circle my-circle-5"></div>
+        </div>
+    </div>
+    <!-- /spinner loading -->
+    <div class="hidden">
+        <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
+        <span
+                id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"
+                data-captcha-require="{% trans 'Please solve the captcha.' %}"
+        ></span>
+    </div>
+</div>
+<!-- /Wrapper -->
+
+<script type="text/javascript">
+    let ggCaptChaEnabled = "{{ captcha_enabled }}";
+    var onloadCallback = function () {
+        if (ggCaptChaEnabled === 'True') {
+            grecaptcha.render('recapcha', {
+                'sitekey': '{{ secret_key_gg }}'
+            });
+        }
+    };
+</script>
+<script
+        src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer
+>
+</script>
+
+{% compress js %}
+    <!-- jQuery -->
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- FeatherIcons JS -->
+    <script src="{% static 'assets/js/feather.min.js' %}"></script>
+
+    <!-- Fancy Dropdown JS -->
+    <script src="{% static 'assets/js/dropdown-bootstrap-extended.js' %}"></script>
+
+    <!-- Simplebar JS -->
+    <script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+
+    <!-- Notify Popup -->
+    <script src="{% static 'assets/js/notify.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
+
+    <!-- Init JS -->
+    <script src="{% static 'assets/js/init.js' %}"></script>
+    <script>
+        // support for Form Submit
+        class SetupFormSubmitLogin {
+            constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = null) {
+                this.formSelected = formSelected;
+
+                // URL call API
+                this.dataUrl = formSelected.attr('data-url');
+                if (!this.dataUrl) this.dataUrl = urlDefault ? urlDefault : window.location.pathname;
+
+                // METHOD call API
+                this.dataMethod = formSelected.attr('data-method');
+                if (!this.dataMethod) {
+                    if (dataMethodDefault) {
+                        this.dataMethod = dataMethodDefault
+                    } else {
+                        throw ('Data Method do not support! It is ' + this.dataMethod);
+                    }
+                }
+
+                // URL REDIRECT after success callback
+                this.dataUrlRedirect = formSelected.attr('data-url-redirect');
+                if (!this.dataUrlRedirect) this.dataUrlRedirect = urlRedirectDefault ? urlRedirectDefault : null;
+
+                // REDIRECT TIMEOUT
+                this.dataRedirectTimeout = formSelected.attr('data-redirect-timeout');
+                if (!this.dataRedirectTimeout) this.dataRedirectTimeout = this.dataRedirectTimeout ? this.dataRedirectTimeout : 1000;
+
+                // Data body get from form input
+                this.dataForm = $.fn.serializerObjectLogin(formSelected);
+
+                // URL DETAIL
+                this.dataUrlDetail = formSelected.attr('data-url-detail');
+                if (!this.dataUrlRedirect) this.dataUrlRedirect = urlRedirectDefault ? urlRedirectDefault : null;
+                if (this.dataUrlDetail) {
+                    this.dataUrlDetail = this.dataUrlDetail.split("/").slice(0, -1).join("/") + "/";
+                }
+            }
+
+            getUrlDetail(pk) {
+                if (this.dataUrlDetail && pk) {
+                    return this.dataUrlDetail + pk.toString();
+                }
+                return null;
+            }
+
+            static getUrlDetailWithID(url, pk) {
+                url = url.split("/").slice(0, -1).join("/") + "/";
+                if (url && pk) {
+                    return url + pk.toString();
+                }
+                return null;
+            }
+        }
+
+        $.fn.extend({
+            redirectUrlLogin: function (redirectPath, timeout = 0, params = '') {
+                setTimeout(() => {
+                    if (params && (params !== '' && params !== undefined)) {
+                        window.location.href = redirectPath + '?' + params;
+                    } else {
+                        window.location.href = redirectPath;
+                    }
+                }, timeout);
+            },
+            notifyBLogin: function (option, typeAlert = null) {
+                setTimeout(function () {
+                    $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
+                }, 100);
+                let msg = "";
+                if (option.title) {
+                    msg += option.title;
+                }
+                if (option.description) {
+                    let des_tmp = '';
+                    if (typeof option.description === 'string') {
+                        des_tmp = option.description;
+                    } else if (Array.isArray(option.description)) {
+                        des_tmp = option.description.join(", ");
+                    } else if (typeof option.description === 'object') {
+                        let des_tmp_arr = [];
+                        for (const [_key, value] of Object.entries(option.description)) {
+                            des_tmp_arr.push(value);
+                        }
+                        des_tmp = des_tmp_arr.join(", ");
+                    } else {
+                        des_tmp = option.description.toString();
+                    }
+                    if (msg) {
+                        msg += ": " + des_tmp;
+                    } else {
+                        msg = des_tmp;
+                    }
+                }
+                let alert_config = {
+                    animate: {
+                        enter: 'animated bounceInDown',
+                        exit: 'animated bounceOutUp'
+                    },
+                    type: "dismissible alert-primary",
+                    z_index: 2147483647, /* Maximum index */
+                }
+                switch (typeAlert) {
+                    case 'success':
+                        alert_config['type'] = "dismissible alert-success";
+                        break
+                    case 'failure':
+                        alert_config['type'] = "dismissible alert-danger";
+                        break
+                    case 'warning':
+                        alert_config['type'] = "dismissible alert-warning";
+                        break
+                    case 'info':
+                        alert_config['type'] = "dismissible alert-info";
+                        break
+                }
+                $.notify(msg, alert_config);
+            },
+            serializerObjectLogin: function (formSelected) {
+                return formSelected.serializeArray().reduce((o, kv) => ({
+                    ...o,
+                    [kv.name]: kv.value
+                }), {});
+            },
+            showLoadingLogin: function (timeout) {
+                $('#loadingContainer').removeClass('hidden');
+                if (timeout) {
+                    setTimeout($.fn.hideLoadingLogin, (timeout > 100 ? timeout : 1000));
+                }
+            },
+            hideLoadingLogin: function () {
+                setTimeout(() => {
+                    $('#loadingContainer').addClass('hidden');
+                }, 250,)
+            },
+            callAjaxLogin: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
+                return new Promise(function (resolve, reject) {
+                    // Setup then Call Ajax
+                    let ctx = {
+                        url: url,
+                        type: method,
+                        dataType: 'json',
+                        contentType: content_type,
+                        data: content_type === "application/json" ? JSON.stringify(data) : data,
+                        headers: {
+                            "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers
+                        },
+                        success: function (rest, textStatus, jqXHR) {
+                            resolve(rest);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            reject(jqXHR.responseJSON);
+                        },
+                    };
+                    if (method.toLowerCase() === 'get') ctx.data = data
+                    $.ajax(ctx);
+                });
+            },
+
+        })
+    </script>
+
+    <!-- Custom JS -->
+    <script>
+        $(document).ready(function () {
+            let hasAppendSubCode = false;
+            let allowAutoTenant = '{{allow_auto_tenant}}';
+            let mainDomain = '{{ui_domain}}';
+            let hostData = window.location.hostname;
+            let autoTenant = '{{allow_auto_tenant}}';
+            let tenantSelEle = $('#tenant-select');
+            let frmLoginEle = $('#form-login');
+
+            frmLoginEle.submit(function (event) {
+                event.preventDefault();
+
+                let state = false;
+                if (ggCaptChaEnabled === 'True') {
+                    let response = grecaptcha.getResponse();
+                    if (!response) {
+                        $.fn.notifyBLogin({
+                            'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                        }, 'failure');
+                        return false;
+                    } else {
+                        state = true;
+                    }
+                } else {
+                    state = true;
+                }
+
+                if (state) {
+                    $.fn.showLoadingLogin();
+                    let frm = new SetupFormSubmitLogin($(this));
+                    if (frm.dataUrl && frm.dataMethod) {
+                        if (ggCaptChaEnabled === 'True' && !frm.dataForm['g-recaptcha-response']) {
+                            $.fn.notifyBLogin({
+                                'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                            }, 'failure');
+                            setTimeout(
+                                () => {
+                                    $.fn.hideLoadingLogin();
+                                }, 2000
+                            )
+                            return false;
+                        }
+                        $.fn.callAjaxLogin(
+                            frm.dataUrl,
+                            frm.dataMethod,
+                            {
+                                ...frm.dataForm,
+                                'g_recaptcha_response': frm.dataForm?.['g-recaptcha-response'] || ''
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = resp.data;
+                                if (data.status === 200) {
+                                    localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
+                                    $.fn.notifyBLogin({description: data.detail}, 'success');
+                                    let path_redirect = "/";
+                                    const params = Object.fromEntries(new URLSearchParams(location.search));
+                                    if (params.next) {
+                                        path_redirect = params.next;
+                                    }
+                                    $.fn.redirectUrlLogin(
+                                        path_redirect, 800
+                                    );
+                                }
+                                setTimeout(
+                                    () => {
+                                        $.fn.hideLoadingLogin();
+                                    }, 2000
+                                )
+                            },
+                            (err) => {
+                                $.fn.notifyBLogin({
+                                    'description': $('#errLoginIncorrect').attr('data-value')
+                                }, 'failure')
+                                $.fn.hideLoadingLogin();
+                            }
+                        )
+                    } else throw 'Setup call raise exception with URL or method is incorrect.!';
+                }
+            })
+
+            function loadTenantList(is_show_group = true) {
+                if (is_show_group === true) tenantSelEle.closest('.form-group').removeClass('d-none');
+                return $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
+                    (resp) => {
+                        let beforeTenantCode = localStorage.getItem('tenant_code');
+                        let code_list = [];
+                        tenantSelEle.attr('data-loaded', true);
+                        tenantSelEle.children().remove();
+                        resp.result.map((element) => {
+                            if (beforeTenantCode && element.code === beforeTenantCode) {
+                                tenantSelEle.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                            } else {
+                                tenantSelEle.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                            }
+                            code_list.push(element.code);
+                        });
+
+                        let tenant_code = window.location.hostname.split(".");
+                        if (tenant_code) {
+                            let code_selected = tenant_code[0].toUpperCase();
+                            if (code_list.indexOf(code_selected) !== -1) {
+                                tenantSelEle.find('option[value=' + code_selected + ']').attr('selected', 'selected');
+                            }
+                        }
+                    },
+                    (err) => {
+                        tenantSelEle.attr('data-loaded', false);
+                    }
+                )
+            }
+
+            function redirectToSelectTenant() {
+                if (
+                    allowAutoTenant !== 'True'
+                    && (
+                        window.location.hostname === '127.0.0.1'
+                        || window.location.hostname === 'localhost'
+                        || mainDomain === '*'
+                    )
+                ) {
+                    let tenant_code = prompt('Tenant Code:');
+                    tenantSelEle.append(`<option value="${tenant_code}" selected></option>`);
+                } else {
+                    window.location.href = frmLoginEle.attr('data-url-select-tenant');
+                }
+            }
+
+            if (autoTenant === 'True' && hostData.endsWith(mainDomain)) {
+                if (hostData.indexOf(mainDomain)) {
+                    loadTenantList(false).then(
+                        () => {
+                            let tenantCode = hostData.split(mainDomain)[0];
+                            if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
+
+                            let optOfCode = tenantSelEle.find(`option[value="${tenantCode}"]`);
+                            if (optOfCode.length > 0) {
+                                hasAppendSubCode = false;
+                                tenantSelEle.val(tenantCode).trigger('change');
+                            } else {
+                                {#redirectToSelectTenant();#}
+                                $.fn.notifyBLogin({
+                                    'description': 'The tenant is not found or was disabled!',
+                                }, 'failure')
+                            }
+                        }
+                    )
+
+                } else {
+                    redirectToSelectTenant();
+                }
+            } else {
+                redirectToSelectTenant();
+            }
+        });
+    </script>
+{% endcompress %}
+</body>
+</html>

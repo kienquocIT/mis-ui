@@ -1,0 +1,850 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BFlow - Business Flow</title>
+    <meta
+            name="description"
+            content="BFlow, MTS, Business Flow, Minh Tam Solution, BFlow - Business Flow, MTS - Minh Tam Solution, Giải pháp doanh nghiệp"
+    />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
+    <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            rel="stylesheet"
+            href="//fonts.googleapis.com/css?family=Google+Sans:400,500,600|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap"
+    >
+
+    <!-- CSS -->
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap-reboot.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap-utilities.min.css' %}">
+
+    <link rel="stylesheet"
+            href="{% static 'vendors/horizontal-vertical-timeline-plugin-jquery/dist/css/timeline.min.css' %}" >
+    <link href="{% static 'assets/css/landing-page.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<!-- Wrapper -->
+<div class="hk-wrapper" data-layout="horizontal" data-layout-style="default" data-menu="light" data-footer="simple">
+    <!-- Top Navbar -->
+    <nav class="hk-navbar navbar navbar-expand-xl navbar-light fixed-top">
+        <div class="container-fluid">
+            <!-- Start Nav -->
+            <div class="nav-start-wrap">
+                <!-- Brand -->
+                <a class="navbar-brand d-xl-flex d-none" href="/">
+                    <img
+                            class="brand-img img-fluid" src="{% static 'assets/images/logo/logo-55x32.png' %}"
+                            alt="brand"
+                    />
+                    <img
+                            class="brand-img img-fluid" src="{% static 'assets/images/logo/text-logo.png' %}"
+                            width="70px"
+                            alt="brand"
+                    />
+                </a>
+                <!-- /Brand -->
+                <button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle d-xl-none">
+                    <span class="icon">
+                        <i class="fa-solid fa-bars"></i>
+                    </span>
+                </button>
+
+            </div>
+            <!-- /Start Nav -->
+            <!-- Horizontal Nav -->
+            <div class="container">
+                <div class="hk-menu">
+                    <!-- Brand -->
+                    <div class="menu-header d-xl-none">
+                        <span>
+                            <a class="navbar-brand" href="/">
+                                <img
+                                        class="brand-img img-fluid"
+                                        src="{% static 'assets/images/logo/logo-55x32.png' %}"
+                                        alt="brand"
+                                />
+                            </a>
+                            <button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle">
+                                <span class="icon">
+                                    <span class="svg-icon fs-5">
+                                        <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                class="icon icon-tabler icon-tabler-arrow-bar-to-left" width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                        >
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <line x1="10" y1="12" x2="20" y2="12"></line>
+                                            <line x1="10" y1="12" x2="14" y2="16"></line>
+                                            <line x1="10" y1="12" x2="14" y2="8"></line>
+                                            <line x1="4" y1="4" x2="4" y2="20"></line>
+                                        </svg>
+                                    </span>
+                                </span>
+                            </button>
+                        </span>
+                    </div>
+                    <!-- /Brand -->
+
+                    <!-- Main Menu -->
+                    <div class="landing_menu">
+                        <div class="menu-content-wrap">
+                            <div class="container-fluid menu-group menu_cus_css">
+                                <ul class="navbar-nav flex-column justify-content-center text-uppercase font-weight-bold">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#intro">
+                                            <span class="nav-link-text">{% trans 'Introduce' %}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#products">
+                                            <span class="nav-link-text">{% trans 'Products' %}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#solutions">
+                                            <span class="nav-link-text">{% trans 'Solutions' %}</span>
+                                        </a>
+                                    </li>
+{#                                    <li class="nav-item">#}
+{#                                        <a class="nav-link" href="#customers">#}
+{#                                            <span class="nav-link-text">{% trans 'Customers' %}</span>#}
+{#                                        </a>#}
+{#                                    </li>#}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#about-us">
+                                            <span class="nav-link-text">{% trans 'About Us' %}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#contact">
+                                            <span class="nav-link-text">{% trans 'Contact' %}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="hk_menu_backdrop" class="hk-menu-backdrop"></div>
+                <!-- /Main Menu -->
+            </div>
+            <!-- /Horizontal Nav -->
+            <!-- End Nav -->
+            <div class="nav-end-wrap">
+                <ul class="navbar-nav flex-row">
+                    <li class="nav-item">
+                        <a
+                                href="{% url 'AuthLogin' %}" class="badge badge-primary px-3 py-2"
+                                style="margin-right: 10px!important; text-decoration: none;"
+                        >{% trans 'Login' %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a
+                                href="#" class="badge badge-primary px-3 py-2"
+                                style="margin-right: 10px!important; text-decoration: none;"
+                        >{% trans 'Registry' %}</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /End Nav -->
+        </div>
+    </nav>
+    <!-- /Top Navbar -->
+    <!-- Main Content -->
+    <div class="hk-pg-wrapper">
+        <section id="full_slider">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
+                    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
+                    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img
+                                class="d-block w-100" src="{% static 'assets/images/team/slide-6.jpg' %}"
+                                alt="Số hóa và tự động"
+                        >
+                        <div class="carousel-caption">
+                            <h5>Quản trị hiệu quả,<br> tăng trưởng bền vững</h5>
+                            <p>Giúp doanh nghiệp <span class="text-purple">CHUYỂN ĐỔI SỐ</span> thành công thông qua thực thi
+                                <span class="text-green"> MÔ HÌNH KINH DOANH</span>, và <span class="text-blue">
+                                    TRIẾT LÝ QUẢN TRỊ</span> trên phần mềm</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img
+                                class="d-block w-100" src="{% static 'assets/images/team/slide-4.jpg' %}"
+                                alt="Third slide"
+                        >
+                        <div class="carousel-caption">
+                            <h5>Thống nhất dữ liệu</h5>
+                            <p>Phần mềm quản trị doanh nghiệp giúp thống nhất dữ liệu từ các phòng ban khác nhau trong
+                                doanh nghiệp. Điều này giúp doanh nghiệp dễ dàng truy cập và phân tích dữ liệu, từ đó
+                                đưa ra quyết định chính xác hơn.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img
+                                class="d-block w-100" src="{% static 'assets/images/team/slide-3.jpg' %}"
+                                alt="Second slide"
+                        >
+                        <div class="carousel-caption">
+                            <h5>Báo cáo<br> và phân tích dữ liệu</h5>
+                            <p>Phần mềm quản trị doanh nghiệp cung cấp các công cụ báo cáo và phân tích dữ liệu mạnh mẽ.
+                                Điều này giúp doanh nghiệp hiểu rõ hơn về tình hình kinh doanh của mình, từ đó cải thiện
+                                hiệu quả hoạt động.</p>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </section>
+        <section id="intro" class="pb-10 wrap_intro">
+            <div class="container">
+                <div class="row">
+                    <div class="intro">
+                        <div class="intro_title">
+                            <span>Câu chuyện của chúng tôi <br> nhóm phát triển BFlow</span>
+                        </div>
+                        <figure>
+                            <blockquote class="blockquote">
+                                <p class="p-lg">Với các vai trò như người quản lý kinh doanh, chuyên viên phát triển
+                                    phần
+                                    mềm trong một doanh nghiệp, khi được giao nhiệm vụ bắt đầu triển khai một ứng dụng
+                                    phần mềm quản trị doanh nghiệp cho công ty, chúng tôi nhận ra rằng đa số các
+                                    phần mềm quản trị hiện tại thường chỉ tập trung vào số hóa (tin học hóa) các kết
+                                    quả giao dịch trong chuỗi bán hàng hay cung cấp dịch vụ nội bộ, giúp hỗ trợ tốt hơn
+                                    một số yêu cầu như nhập liệu, tập trung dữ liệu, các báo cáo kết quả kinh doanh
+                                    chung. Trong khi yêu cầu của ban lãnh đạo công ty đặt ra cho chúng tôi là mô hình
+                                    kinh doanh và các triết lý quản trị phải được hiện thực hóa và thực sự vận hành trên
+                                    phần mềm. Cụ thể để đáp ứng một số yêu cầu như: quản lý khách hàng theo mô
+                                    hình ma trận, lập kế hoạch tài chính và theo dõi giám sát cho từng dự án kinh doanh,
+                                    định mức các hoạt động cung cấp dịch vụ, đánh giá hiệu quả công việc cho từng cá
+                                    nhân, bộ phận trong tổ chức dưới nhiều góc độ khác nhau kể cả qui đổi về tài chính,
+                                    áp dụng mô hình cung cấp dịch vụ nội bộ (profit center). Chúng tôi đã không thể tìm
+                                    được các phần mềm hiện có trên thị trường đáp ứng được nhu cầu đó, và quyết định
+                                    đã được ban lãnh đạo công ty đưa ra là công ty phải tự phát triển một phần mềm
+                                    riêng để đáp ứng nhu cầu của mình.</p>
+                                <p class="p-lg">
+                                    Với nhiều nỗ lực từ nhóm dự án cộng với sự hỗ trợ liên tục từ Ban lãnh đạo công
+                                    ty thì phiên bản đầu tiên cũng đã hoàn thành và đưa vào sử dụng ngay. Suốt các
+                                    năm sau đó phần mềm này đã trở nên một công cụ gắn liền với các kết quả thành
+                                    công vượt bật trong phát triển của công ty. Trong khoảng thời gian đó nhiều công ty
+                                    có thông tin đã đặt vấn đề nhờ chúng tôi triển khai phần mềm tương tự cho họ. Tuy
+                                    nhiên vì giới hạn về nguồn lực, cũng như kiến trúc phần mềm lúc đó nếu triển khai
+                                    cho một công ty có ngành nghề kinh doanh khác thì phải tùy chỉnh và bổ sung mã
+                                    nguồn, do đó chung tôi chỉ nhận lời triển khai cho một số công ty trong nội bộ tập
+                                    đoàn và một vài công ty khách hàng thân thiết.</p>
+                                <p class="p-lg">
+                                    Đến cuối năm 2022, đặc biệt là sau khi dịch bệnh Covid kết thúc, các nhu cầu của
+                                    thị trường với một phần mềm quản trị giúp cho doanh nghiệp chuyển đổi số với các
+                                    yêu cầu tương tự càng trở nên cấp thiết hơn. Nhóm chúng tôi nhận thấy đã đến lúc
+                                    thực hiện sứ mệnh của mình nhằm đem đến cho các khách hàng một sản phẩm
+                                    phầm mềm có thể thực thi các mô hình kinh doanh và triển khai được triết lý quản
+                                    trị đặc sắc của các nhà quản lý, giúp cho doanh nghiệp ngày càng tăng năng suất và
+                                    phát triển bền vững hơn. Năm 2022, chúng tôi quyết định khởi nghiệp với sản phẩm
+                                    đầu tiên là <b>Business Flow</b> (BFlow) và đã hoàn thành phiên bản đầu tiên sau một
+                                    năm
+                                    phát triển.</p>
+                                <p class="p-lg">BFlow được thiết kế và phát triển trên nền tảng cung cấp dạng dịch vụ
+                                    (Software
+                                    as a Services - <b>SaaS</b>) giúp khách hàng nhanh chóng áp dụng với chi phí thấp
+                                    nhất
+                                </p>
+                            </blockquote>
+                            <figcaption class="blockquote-footer mt-3">
+                                <cite title="Source Title">BFlow Team</cite>
+                            </figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+            <div class="bg_block">
+                <img src="{% static 'assets/images/team/bg-our_story.jpg' %}">
+            </div>
+        </section>
+        <section class="outstanding" id="products">
+            <div class="container">
+                <div class="row">
+                    <div class="outstanding_title">
+                        <span>CÁC ĐẶC ĐIỂM NỔI BẬT CỦA BFLOW</span>
+                    </div>
+                    <div class="masonry">
+                        <div class="masonry-item">
+                            <img class="masonry-item_img-top" src="{% static 'assets/images/article/mind-map.png' %}"
+                                 alt="Hỗ trợ từng thao tác nghiệp vụ suốt quá trình kinh doanh">
+                            <div class="masonry-item_body">
+                                <h4 class="masonry-item_title">Hỗ trợ từng thao tác nghiệp vụ suốt quá trình kinh doanh</h4>
+                                <p class="masonry-item_text">
+                                    Phần mềm không đơn thuần tập trung vào việc nhập liệu các kết quả giao dịch
+                                    cần phải có cho hệ thống báo cáo và quản trị, mà thực sự hỗ trợ cho từng tác vụ của
+                                    từng nhân viên xuyên suốt các quá trình cung cấp dịch vụ cho khách hàng bên ngoài và
+                                    nội bộ
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/equalizer.png' %}"
+                                    alt="Hệ thống quy trình mạnh mẽ (power workflow definitions)"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Hệ thống quy trình mạnh mẽ (power workflow definitions)</h5>
+                                <p class="masonry-item_text">
+                                    Người dùng tự định nghĩa quy trình tạo dữ liệu, quy trình phê duyệt với nhiều bước,
+                                    nhiều người cộng tác thực hiện hay đánh giá phê duyệt tại mỗi bước. Các cơ chế điều
+                                    hướng quy trịnh được thực hiện tự động theo tính toán dữ liệu hay hay bằng tay.
+                                    Ngoài ra hệ thống còn cung cấp công cụ giám sát các quy trình đang chạy, cho phép
+                                    xử lý lỗi, điều hướng, bật tắt kích hoạt các quy trình khác nhau cho một chức năng
+                                    kinh doanh.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/key.png' %}"
+                                    alt="Phân quyền mạnh mẽ"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Phân quyền mạnh mẽ</h5>
+                                <p class="masonry-item_text">
+                                    Không chỉ phân quyền theo vai trò, tổ chức, hệ thống còn cho phép phân quyền theo
+                                    từng nhóm dự án trong các hoạt động bán hàng, các dự án khác cho khách hàng hay
+                                    nội bộ. Khi nhiều người cùng tương tác trên nhóm dữ liệu công việc cùng hiển thị,
+                                    hệ thống cho phép phân quyền người nào được tương tác trên đơn vị dữ liệu nào
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/group.png' %}"
+                                    alt="Hỗ trợ mạnh mẽ trong tương tác làm việc nhóm"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Hỗ trợ mạnh mẽ trong tương tác làm việc nhóm</h5>
+                                <p class="masonry-item_text">
+                                    Với các tính năng nổi bật về phân quyền, quy trình, và định nghĩa nhóm làm việc,
+                                    hệ thống cho phép thiết lập các dự án với nhiều thành viên được phân công vài trò
+                                    trách nhiệm phù hợp, giúp kiểm soát được các hoạt động, chi phí và bảo mật dự án.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/management.png' %}"
+                                    alt="Tự động hóa các tác vụ"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Tự động hóa các tác vụ</h5>
+                                <p class="masonry-item_text">
+                                    Một số nghiệp với nhiều tác vụ có tính tuần tự, hệ thống hỗ trợ tự thiết lập hay
+                                    gợi ý tác vụ một cách tự động, qua đó giúp nhân viên thực hiện công việc của
+                                    mình nhanh hơn mà không bị thiếu sót.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/money-bag.png' %}"
+                                    alt="Quản trị tài chính"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Quản trị tài chính</h5>
+                                <p class="masonry-item_text">
+                                    Theo dõi và quản lý sức khỏe tài chính của từng dự án, công việc, hỗ trợ bộ chỉ số
+                                    tài chính để đánh giá hiệu quả cho mọi hoạt động trong tiến trình kinh doanh,
+                                    từ lập kết hoạch cho đến thực thi và tổng kết đánh giá sau khi hoàn thành.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/work.png' %}"
+                                    alt="Ra quyết định dựa trên dữ liệu"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Ra quyết định dựa trên dữ liệu</h5>
+                                <p class="masonry-item_text">
+                                    Hệ thống luôn cung cấp chính xác thông tin nguồn lực của doanh nhiệp (con người,
+                                    sản phẩm dịch vụ, khách hàng, nhà cung cấp..) theo thời gian thực.
+                                    Nhờ đó các hệ thống điều hướng công việc theo quy trình tự động hóa được áp dụng,
+                                    hoặc thông qua các báo cáo phân tích, các nhà quản lý sẽ có các quyết định nhanh
+                                    chóng và chính xác.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/www.png' %}"
+                                    alt="Tạo nhanh trang web thương mại điện tử"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Tạo nhanh trang web thương mại điện tử</h5>
+                                <p class="masonry-item_text">
+                                    Cho phép người dùng nhanh chóng tự tạo một trang web thương mại điện tử chỉ bằng
+                                    vài bước định nghĩa đơn giản, trên đó có thể giúp khách hàng xem và tìm kiếm sản
+                                    phẩm dịch vụ, đặt hàng và theo dõi tính trạng thực hiện đơn hàng.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/responsive.png' %}"
+                                    alt="Giao diện thân thiện"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Giao diện thân thiện</h5>
+                                <p class="masonry-item_text">
+                                    Các thiết kế phần mềm chúng tôi tập trung những dữ liệu cần thiết và thể hiện đơn
+                                    giản, trực quan, giúp người dùng nhanh chóng hiển và thực hiện thao tác mà không
+                                    cần phải được đào tạo sử dụng.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/app.png' %}"
+                                    alt="Công cụ tự xây dựng các ứng dụng"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Công cụ tự xây dựng các ứng dụng</h5>
+                                <p class="masonry-item_text">
+                                    Cho phép dể dàng xây dựng các ứng dụng riêng phù hợp với yêu cầu nghiệp vụ của
+                                    từng doanh nghiệp thông qua công cụ kéo thả.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/security.png' %}"
+                                    alt="Bảo mật dữ liệu"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Bảo mật dữ liệu</h5>
+                                <p class="masonry-item_text">
+                                    Bảo mật dữ liệu cho công ty bạn luôn là ưu tiên hàng đầu của chúng tôi.
+                                    Kiến trúc phần mềm cũng như sử dụng các biện pháp và công cụ bảo mật mạnh mẽ
+                                    theo tuân thủ theo các tiêu chuẩn của ngành, bạn sẽ luôn yên tâm dữ liệu của bạn
+                                    luôn được an toàn.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/extendable.png' %}"
+                                    alt="Khả năng linh hoạt mở rộng"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Khả năng linh hoạt mở rộng</h5>
+                                <p class="masonry-item_text">
+                                    Với từng chức năng nghiệp vụ, phần mềm hỗ trợ cho bạn tùy chỉnh thực thi ở cấp độ
+                                    đơn giản cho đến phức tạp tùy theo quy mô hay mức độ quản trị của doanh nghiệp.
+                                    Khi doanh nghiệp phát triển về quy mô thâm chí phát triển thành mô hình tập đoàn,
+                                    có hình thức quản trị phức tập hơn, cần nhiều chức năng nghiệp vụ hơn, số người
+                                    dùng tăng lên nhiều, thì nền tảng phần mềm của chúng tôi sẽ thích ứng ngay,
+                                    không cần thay đổi, không bị gián đoạn.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/saas.png' %}"
+                                    alt="Cung cấp phần mềm dưới dạng dịch vụ (SaaS)"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Cung cấp phần mềm dưới dạng dịch vụ (SaaS)</h5>
+                                <p class="masonry-item_text">
+                                    Với khả năng cung cấp dưới dạng dịch vụ, việc triển khai ứng dụng phần mềm
+                                    trở nên dễ dàng và tiện lợi hơn nhiều: chỉ cần đăng ký là hệ thống tự khởi tạo
+                                    ứng dụng và cơ sở dữ liệu, không phải đầu tư hạ tầng phần cứng, không tốn chi
+                                    phí duy trì bộ máy nhân sự IT vận hành hệ thống.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="masonry-item">
+                            <img
+                                    class="masonry-item_img-top" src="{% static 'assets/images/article/api.png' %}"
+                                    alt="Khả năng tích hợp dữ liệu"
+                            >
+                            <div class="masonry-item_body">
+                                <h5 class="masonry-item_title">Khả năng tích hợp dữ liệu</h5>
+                                <p class="masonry-item_text">
+                                    Phần mềm sẵn sàng trong việc tích hợp với các công cụ quản lý phố biến,
+                                    hay các ứng dụng bên thứ ba mà công ty bạn đang sử dụng.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <div class="container-xxl">
+            <!-- Page Body -->
+            <div class="hk-pg-body">
+                <div id="solutions" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>GIẢI PHÁP TỐI ƯU CHO CÁC LĨNH VỰC KINH DOANH</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <div class="card">
+                                <img
+                                        class="card-img-top"
+                                        src="{% static 'assets/images/team/slide-6.jpg' %}"
+                                        alt="Bán lẻ"
+                                >
+                                <div class="card-body">
+                                    <h3 class="card-title">BÁN LẺ</h3>
+                                    <h5 class="card-subtitle mb-2 text-muted">bán buôn bán lẻ</h5>
+                                    <div class="separator-full"></div>
+                                    <p class="card-text">
+                                    <h6>Quản lý khách hàng</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>
+                                        Tạo và quản lý thông tin khách hàng, Xem các báo cáo phân tích kết quả kinh doanh trên từng khách hàng.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Thiết lập chính sách thanh toán, xây dựng và linh hoạt áp dụng các chương trình khuyến mãi, quà tặng... trên từng khách hàng</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Quản lý hàng hóa dịch vụ</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Thiết lập sản phẩm, các biến thể sản phẩm</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Xây dựng nhiều bảng giá áp dụng cho từng khách hàng</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Xem báo cáo kết quả kinh doanh theo từng nhóm sản phẩm hay trên từng sản phẩm</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Theo dõi chi tiết số lượng tồn kho và số sẵn sàng cho việc bán vào giao hàng</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Báo giá và đơn hàng</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Báo giá nhanh chính xác, gởi nhanh báo giá cho khách hàng qua email và nền tảng web để khách hàng có thể xác nhận.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Thiết lập đơn hàng nhanh chóng từ báo giá.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Tạo trang Web thương mại điện tử nhanh chóng giúp khách hàng có trải nghiệm tốt hơn khi tra cứu và đặt hàng.</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Giao hàng/đổi trả hàng</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Có thể thiết lập và áp dụng chi phí giao hàng.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Yêu cầu giao hàng được thiết lập và chuyển nhành cho nhân viên vụ trách.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Theo dõi tình trạng giao hàng, khách hàng cũng có thể theo qua tin nhắn hoặc Web.</small>
+                                    </p>
+                                    <div class="separator-full"></div>
+                                    <a href="#" class="btn btn-primary">Trải nghiệm</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="card">
+                                <img
+                                        class="card-img-top"
+                                        src="{% static 'assets/images/slide/factory.jpg' %}"
+                                        alt="Phân phối"
+                                >
+                                <div class="card-body">
+                                    <h3 class="card-title">PHÂN PHỐI</h3>
+                                    <h5 class="card-subtitle mb-2 text-muted">Các kênh phân phối hàng hoá</h5>
+                                    <div class="separator-full"></div>
+                                    <p class="card-text">
+                                    <h6>Quản lý đại lý</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Phân cấp và xây dựng các chính sách bán hàng cho từng đại lý bao gồm như công nợ, giá, chính sách thanh toán.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Quản lý chiết khấu thanh toán theo kết quả kinh doanh của đại lý.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Quản lý mô hình đại lý kinh doanh nhiều hình thức như mua đi bán lại, gởi bán đúng giá hưởng hoa hồng.</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Quản lý tồn kho</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Quản lý chính xác chi tiết hàng tồn kho theo mô hình kê khai thường xuyên hay kiểm kê định kỳ.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Thể hiện chi tiết hàng hóa tồn kho bao gồm số lượng tồn hiện tại, số lượng hàng đã được đặt, số lượng hàng sẽ được mua trong thời gian tới, số lượng sẵn sàng cho đặt hàng hiện tại.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Báo cáo chi tiết giá xuất kho theo các phương pháp như nhập trước xuất trước, bình quân gia quyền.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Dự báo như cầu hàng hóa theo dự báo nhu cầu thị trường.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Quản lý hàng nhập kho theo LOT (lô), Với phương pháp này, mỗi lô hàng sẽ có một số lô riêng biệt để dễ dàng theo dõi và kiểm soát. Hoặc chi tiết theo từng số serial.</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Báo cáo kết quả kinh doanh</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Báo cáo kết quả kinh doanh theo đại lý.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Báo cáo kết quả kinh doanh theo sản phẩm.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Báo cáo kết quả kinh doanh theo theo các lô nhập.</small>
+                                    </p>
+                                    <div class="separator-full"></div>
+                                    <a href="#" class="btn btn-primary">Trải nghiệm</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-12">
+                            <div class="card">
+                                <img
+                                        class="card-img-top"
+                                        src="{% static 'assets/images/slide/campaign-creators.jpg' %}"
+                                        alt="Kinh Doanh Dự Án"
+                                >
+                                <div class="card-body">
+                                    <h3 class="card-title">Kinh Doanh Dự Án</h3>
+                                    <h5 class="card-subtitle mb-2 text-muted">theo dõi từng dụ án cụ thể và tổng quan nhất</h5>
+                                    <div class="separator-full"></div>
+                                    <p class="card-text">
+                                    <h6>Quản lý cơ hội kinh doanh</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Quản lý cơ hội kinh doanh từ lúc khởi tạo cho đến lúc đóng cơ hội.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Thiết lập tự động thay đổi trạng thái của cơ hội để theo dõi nhanh kết quả.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Quản lý tự động và chi tiết các hoạt động của nhân viên kinh doanh và các thành viên dự án bán hàng khác trong tiến trình đạt được sự đồng ý mua của khách hàng.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Thiết lập dự án bán hàng có nhiều thành viên tham gia với các phân quyền thích hợp và bảo mật cho dự án.</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Báo giá dự án</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Thiết lập công thức tính toán các chỉ số tài chính để ra quyết định (doanh thu, lợi nhuận, chi phí dự kiến).</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Công cụ báo giá mạnh giúp có được thông tin hàng hóa dịch vụ chính xác, thiết lập giá, giám giá nhanh, ra quyết định nhanh theo các quy trình phê duyệt linh hoạt..</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Đơn hàng và hợp đồng</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Tạo đơn hàng nhanh từ báo giá.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Lập và phê duyệt hợp đồng trong quá trình thương thảo hợp đồng với khách hàng, Khách hàng có thể xem các phiên bản hợp đồng được duyệt trên Web</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Cung cấp hàng hóa và giao hàng</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Với hàng hóa thương mại theo từng dự án, hỗ trợ lập yêu cầu mua hàng, theo dõi chi tiết tình trạng hàng hóa từ lúc đặt mua đến khi về của từng dự án. Khách hàng cũng có thể theo dõi tình trạng hàng hóa trên Web.</small>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Hỗ trợ các tùy chọn giao hàng đa dạng, giao một lần hay nhiều lần, giao hàng có chuẩn bị hàng trước (pick and pack) hay không.</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Quản lý bảo hành, hỗ trợ</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Quản lý các thông tin chi tiết về dịch vụ bảo hành, hỗ trợ, tra cứu nhanh thông tin dựa trên LOT, serial number...</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Xem thông tin tài chính dự án và thực hiện quyết toán dự án</h6>
+                                    <small class="text-muted"><i class="fa-solid fa-check"></i>Hệ thống cho phép xem toàn bộ các kết quả doanh thu và chi phí dự án theo thời gian thực, cho phép thực hiện quyết toán và đóng dự án</small>
+                                    </p>
+                                    <div class="separator-full"></div>
+                                    <a href="#" class="btn btn-primary">Trải nghiệm</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="customers" class="hidden pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Customers' %}</span>
+                    </div>
+                    <div id="owl_demo_2" class="owl-carousel owl-theme">
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-bastion.jpg' %}" alt="">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-bastion.jpg' %}" alt="">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-bastion.jpg' %}" alt="">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-bastion.jpg' %}" alt="">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-bastion.jpg' %}" alt="">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-bastion.jpg' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div id="about-us" class="pb-10">
+                    <div class="hidden title-lg title-wth-divider mb-5">
+                        <span>{% trans 'About Us' %}</span>
+                    </div>
+                    <div class="hidden row">
+                        <div class="col-12 col-md-6 d-flex justify-content-center align-items-center mb-7">
+                            <img
+                                    src="{% static 'assets/images/team/team-work.jpg' %}"
+                                    style="object-fit: cover; max-height: 500px" alt=""
+                            >
+                        </div>
+                        <div class="col-12 col-md-6 mb-7">
+                            <h5 class="text-primary mb-5">Câu chuyện của chúng tôi</h5>
+                            <p>
+                                Câu chuyện của chúng tôi bắt đầu từ một ý tưởng đơn giản nhưng tận tâm: tạo ra một phần
+                                mềm quản trị doanh nghiệp giúp các doanh nhân và nhà quản lý thể hiện tiềm năng tối đa
+                                của họ. Tại ngọn đồi nhỏ này, một nhóm những cá nhân đam mê công nghệ và kinh doanh đã
+                                hợp tác nhau để xây dựng nên một ứng dụng mạnh mẽ, đáp ứng mọi nhu cầu của doanh nghiệp.
+                            </p>
+                            <p>
+                                Không gì có thể ngăn cản chúng tôi. Chúng tôi đã đánh bại hàng loạt khó khăn và thử
+                                thách, từ việc tìm nguồn tài trợ ban đầu đến việc đoàn kết phát triển sản phẩm. Chúng
+                                tôi đã luôn lắng nghe ý kiến phản hồi của khách hàng và liên tục cải tiến phần mềm của
+                                mình.
+                            </p>
+                            <p>
+                                Câu chuyện của chúng tôi không chỉ là về việc xây dựng một sản phẩm xuất sắc, mà còn là
+                                về việc xây dựng một cộng đồng đoanh nghiệp mạnh mẽ. Chúng tôi tự hào vì đã đồng hành
+                                cùng hàng ngàn doanh nghiệp trên khắp thế giới, giúp họ tăng cường hiệu suất và phát
+                                triển bền vững.
+                            </p>
+                            <p>
+                                Và câu chuyện của chúng tôi vẫn tiếp tục, với sự cam kết không ngừng nghỉ để đổi mới và
+                                phục vụ tốt hơn mỗi ngày. Chúng tôi hy vọng rằng phần mềm quản trị doanh nghiệp của
+                                chúng tôi sẽ luôn là người bạn đồng hành đáng tin cậy cho những người xây dựng và phát
+                                triển doanh nghiệp của mình.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="timeline" data-move-items="1" data-start-index="0">
+                            <div class="timeline__wrap">
+                                <div class="timeline__items">
+                                    <div class="timeline__item">
+                                        <div class="timeline__content">
+                                            <h2>09-2022</h2>
+                                            <h6>Thành lập công ty</h6>
+                                            <p>Hoàn thành tất cả các thủ tục pháp lý thành lập công ty.</p>
+                                            <p>Xây dựng đội ngũ phát triển sản phẩm.</p>
+                                        </div>
+                                    </div>
+                                    <div class="timeline__item">
+                                        <div class="timeline__content">
+                                            <h2>10-2023</h2>
+                                            <h6>Phát hành sản phẩm đầu tiên</h6>
+                                            <p>Phát hành phần mềm hỗ trợ việc kinh doanh của doanh nghiệp trên nền tảng
+                                                SAAS.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contact">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Contact' %}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <ul>
+                                <li>
+                                    <b>Địa chỉ:</b>
+                                    <p>20 Đường số 22, Bình Hưng, Bình Chánh, Thành phố Hồ Chí Minh 70000, Việt Nam</p>
+                                </li>
+                                <li>
+                                    <b>Email:</b>
+                                    <p>support@mtsolution.com.vn</p>
+                                </li>
+                                <li>
+                                    <b>Số điện thoại:</b>
+                                    <p>**Đang cập nhật**</p>
+                                </li>
+                                <li>
+                                    <small class="text-muted text-warning">Bạn có thể để lại liên lạc và lời nhắn tại
+                                        phần chat trong màng hình này. Đội hỗ trợ của chúng tôi sẽ nhanh chóng kết nối
+                                        với bạn.</small>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15679.953959206854!2d106.68808435!3d10.735370199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752fb753339b89%3A0xa83349079360b12b!2zMjAgxJDGsOG7nW5nIHPhu5EgMjIsIELDrG5oIEjGsG5nLCBCw6xuaCBDaMOhbmgsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCA3MDAwMCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1693989009427!5m2!1svi!2s"
+                                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+
+        <!-- Page Footer -->
+        <div class="hk-footer">
+            <footer class="container-xxl footer">
+                <div class="row">
+                    <div class="col-xl-8">
+                        <p class="footer-text"><span class="copy-text">BFlow © 2023 All rights reserved.</span> <a
+                                href="#" class="" target="_blank"
+                        >Privacy Policy</a><span class="footer-link-sep">|</span><a href="#" class="" target="_blank">T&C</a><span
+                                class="footer-link-sep"
+                        >|</span><a href="#" class="" target="_blank">System Status</a></p>
+                    </div>
+                    <div class="col-xl-4">
+                        <a href="#" class="footer-extr-link link-default"><span class="feather-icon"><i
+                                data-feather="external-link"
+                        ></i></span><u>Send feedback to our help forum</u></a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- / Page Footer -->
+
+    </div>
+    <!-- /Main Content -->
+</div>
+<!-- /Wrapper -->
+
+<!-- jQuery -->
+<script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
+
+<!-- Bootstrap Core JS -->
+<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.js' %}"></script>
+
+<!-- Simplebar JS -->
+<script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+
+<script>
+    const globeLanguage = "{{ base.language }}";
+</script>
+
+<!-- FeatherIcons JS -->
+<script src="{% static 'assets/js/feather.min.js' %}"></script>
+<script src="{% static 'vendors/owl.carousel/dist/owl.carousel.min.js' %}"></script>
+<!-- Init JS -->
+<script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/64f7e242a91e863a5c11df8e/1h9k4nles';
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s0.parentNode.insertBefore(s1, s0);
+    })();
+</script>
+<script>
+    $('#owl_demo_2').owlCarousel({
+        margin: 20,
+        autoplay: true,
+        responsiveClass: true,
+        responsive: {
+            0: {
+                items: 1
+            },
+            480: {
+                items: 2
+            },
+            800: {
+                items: 4
+            },
+
+        }
+    });
+</script>
+<script src="{% static 'vendors/horizontal-vertical-timeline-plugin-jquery/dist/js/timeline.min.js' %}"></script>
+<script>
+    $('.timeline').timeline({
+        horizontalStartPosition: 'top',
+        mode: 'horizontal',
+        visibleItems: 2,
+    });
+    $(document).ready(function(){
+        $('.nav-start-wrap button').off().on('click', function(){
+            $(this).closest('.container-fluid').find('.hk-menu').toggleClass('active_menu')
+        })
+    })
+</script>
+</body>
+</html>

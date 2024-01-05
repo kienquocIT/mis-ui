@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Master Data Meeting config' %}{% endblock %}
+{% block cssHeader %}
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    {{ data.zoom_config | json_script:"zoom_config" }}
+
+    <div class="row">
+        <div class="col-4 col-lg-3 col-md-3">
+            <ul class="nav flex-column nav-light nav-pills nav-vertical">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_meeting_room">
+                        <span class="nav-link-text">{% trans 'Meeting room' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_meeting_zoom_setting">
+                        <span class="nav-link-text">{% trans 'Zoom setting' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-1 col-lg-1 col-md-1"></div>
+        <div class="col-7 col-lg-8 col-md-8">
+            <div class="tab-content mt-0">
+                <div class="tab-pane fade show active" id="tab_block_meeting_room">
+                    <table class="table w-100 nowrap" id="table-meeting-room"
+                           data-url="{% url 'MeetingRoomListAPI' %}"
+                           data-method="GET"
+                    >
+                        <thead>
+                        <tr>
+                            <td></td>
+                            <td>{% trans 'Name' %}</td>
+                            <td>{% trans 'Code' %}</td>
+                            <td>{% trans 'Location' %}</td>
+                            <td>{% trans 'Description' %}</td>
+                            <td>{% trans 'Action' %}</td>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <button type="button"
+                            id="btn-add-mew-meeting-room"
+                            class="mt-10 btn btn-outline-primary btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#createMeetingRoomModal"
+                    >
+                        <i class="fas fa-plus-circle"></i>
+                        {% trans 'Add new meeting room' %}
+                    </button>
+                </div>
+                <div class="tab-pane fade" id="tab_block_meeting_zoom_setting">
+                    <span class="text-muted" id="1-existing-config" hidden><i class="fas fa-exclamation-circle"></i>&nbsp;{% trans '1 existing config' %}</span>
+                    <a class="btn btn-sm btn-gradient-light" id="reset-config" data-bs-toggle="collapse" href="#form-create-zoom-config" role="button" aria-expanded="false">
+                        {% trans 'New config' %}
+                    </a>
+                    <form id="form-create-zoom-config" class="collapse mt-5"
+                          data-url="{% url 'MeetingZoomConfigListAPI' %}"
+                          data-url-redirect="{% url 'MeetingConfigList' %}"
+                          data-method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="zoom-account-email">{% trans 'Account email' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="far fa-envelope"></i></span>
+                                        <input type="text" class="form-control" id="zoom-account-email">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="zoom-account-id">{% trans 'Account ID' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-fingerprint"></i></span>
+                                        <input type="text" class="form-control" id="zoom-account-id">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="zoom-client-id">{% trans 'Client ID' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input type="text" class="form-control" id="zoom-client-id">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="zoom-client-secret">{% trans 'Client secret' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                        <input type="password" class="form-control" id="zoom-client-secret">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="zoom-personal-meeting-id">{% trans 'Personal meeting ID' %}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user-shield"></i></span>
+                                        <input type="text" class="form-control" id="zoom-personal-meeting-id">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-gradient-primary w-100 mt-5" form="form-create-zoom-config">{% trans 'Save' %}</button>
+                            </div>
+                            <div class="col-12 col-md-1 col-lg-1"></div>
+                            <div class="col-12 col-md-5 col-lg-5">
+                                <a id="zoom-app-instruction-hidden-btn" class="link-secondary underline_hover" href="#">
+                                    <span>
+                                        <span>{% trans 'See instructions here' %}</span>&nbsp;
+                                        <span class="icon"><span class="feather-icon"><i class="bi bi-info-circle"></i></span></span>
+                                    </span>
+                                </a>
+                                <div id="zoom-app-instruction" hidden class="mt-5 hk-wizard hk-wizard-vertical">
+                                    <div class="hk-wizard-item hk-wizard-item-process hk-wizard-item-active">
+                                        <div class="hk-wizard-item-container">
+                                            <div class="hk-wizard-item-tail"></div>
+                                            <div class="hk-wizard-item-icon"><span class="hk-wizard-icon">1</span></div>
+                                            <div class="hk-wizard-item-content">
+                                                <div class="hk-wizard-item-title"><b>{% trans 'Enter Account email' %}</b></div>
+                                                <div class="hk-wizard-item-description">{% trans 'Enter your email, which you use to connect to Zoom API.' %}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hk-wizard-item hk-wizard-item-process hk-wizard-item-active">
+                                        <div class="hk-wizard-item-container">
+                                            <div class="hk-wizard-item-tail"></div>
+                                            <div class="hk-wizard-item-icon"><span class="hk-wizard-icon">2</span></div>
+                                            <div class="hk-wizard-item-content">
+                                                <div class="hk-wizard-item-title"><b>{% trans 'Build app' %}</b></div>
+                                                <div class="hk-wizard-item-description">{% trans 'Go to ' %}<a target="_blank" href="https://marketplace.zoom.us/develop/apps/Kk9stf5OToWIKLYoLcjw8g/credentials" class="link-danger underline_hover"><b>{% trans 'here' %}</b></a>{% trans '. Login your Zoom account with email in last step.' %}</div>
+                                                <div class="hk-wizard-item-description">{% trans 'Click "Develop" button > Select "Build Server-to-Server App" > Enter "App name".' %}</div>
+                                                <div class="hk-wizard-item-description">{% trans 'In tab "App Credentials": click "Next" button.' %}</div>
+                                                <div class="hk-wizard-item-description">{% trans 'In tab "Information": fill in all fields (required).' %}</div>
+                                                <div class="hk-wizard-item-description">{% trans 'In tab "Feature": click "Next" button.' %}</div>
+                                                <div class="hk-wizard-item-description">{% trans 'In tab "Scopes": click "Add Scopes" button > In tab "Meeting", select 2 rows:  (Get a meetings encoded SIP URL) and (View and manage all user meetings) > Click "Continue" button.' %}</div>
+                                                <div class="hk-wizard-item-description">{% trans 'Finally, in tab "Activation": click "Activate your app" button to active your app.' %}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hk-wizard-item hk-wizard-item-process hk-wizard-item-active">
+                                        <div class="hk-wizard-item-container">
+                                            <div class="hk-wizard-item-tail"></div>
+                                            <div class="hk-wizard-item-icon"><span class="hk-wizard-icon">3</span></div>
+                                            <div class="hk-wizard-item-content">
+                                                <div class="hk-wizard-item-title"><b>{% trans 'Get Account ID, Client ID, Client secret' %}</b></div>
+                                                <div class="hk-wizard-item-description">{% trans 'Open your app in last step, then go to "App Credentials" tab. You will see your Account ID, Client ID and Client secret.' %}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hk-wizard-item hk-wizard-item-process hk-wizard-item-active">
+                                        <div class="hk-wizard-item-container">
+                                            <div class="hk-wizard-item-tail"></div>
+                                            <div class="hk-wizard-item-icon"><span class="hk-wizard-icon">4</span></div>
+                                            <div class="hk-wizard-item-content">
+                                                <div class="hk-wizard-item-title"><b>{% trans 'Get Personal meeting ID' %}</b></div>
+                                                <div class="hk-wizard-item-description">{% trans 'Login to your Zoom Account ' %}<a target="_blank" href="https://us04web.zoom.us/profile" class="link-danger underline_hover"><b>{% trans 'here' %}</b></a>{% trans '. Go to Profile tab, your Personal Meeting ID here.' %}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hk-wizard-item hk-wizard-item-process hk-wizard-item-active">
+                                        <div class="hk-wizard-item-container">
+                                            <div class="hk-wizard-item-tail"></div>
+                                            <div class="hk-wizard-item-icon"><span class="hk-wizard-icon">5</span></div>
+                                            <div class="hk-wizard-item-content">
+                                                <div class="hk-wizard-item-title"><b>{% trans 'Done' %}</b></div>
+                                                <div class="hk-wizard-item-description"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createMeetingRoomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Create meeting room' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-create-meeting-room"
+                          data-url="{% url 'MeetingRoomListAPI' %}"
+                          data-url-redirect="{% url 'MeetingConfigList' %}"
+                          data-method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-title">{% trans 'Name' %}</label>
+                                    <input type="text" class="form-control" id="room-title">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-code">{% trans 'Code' %}</label>
+                                    <input type="text" class="form-control" id="room-code">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-location">{% trans 'Location' %}</label>
+                                    <textarea type="text" class="form-control" id="room-location"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-description">{% trans 'Description' %}</label>
+                                    <textarea type="text" class="form-control" id="room-description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="form-create-meeting-room">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateMeetingRoomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Update meeting room' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-meeting-room"
+                          data-url-detail="{% url 'MeetingRoomDetailAPI' '0' %}"
+                          data-url-redirect="{% url 'MeetingConfigList' %}"
+                          data-method="PUT">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-title">{% trans 'Name' %}</label>
+                                    <input type="text" class="form-control" id="room-title">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-code">{% trans 'Code' %}</label>
+                                    <input disabled readonly type="text" class="form-control" id="room-code">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-location">{% trans 'Location' %}</label>
+                                    <textarea type="text" class="form-control" id="room-location"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-description">{% trans 'Description' %}</label>
+                                    <textarea type="text" class="form-control" id="room-description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="form-update-meeting-room">{% trans 'Update' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/meetingconfig.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+{% endblock %}
+

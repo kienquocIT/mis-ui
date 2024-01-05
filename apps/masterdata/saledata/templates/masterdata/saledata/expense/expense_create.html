@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Expense Create' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm-create-expense">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form id="frm-create-expense" data-method="POST" data-url="{% url "ExpenseListAPI" %}"
+          data-url-redirect="{% url "ExpenseList" %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+                <label class="form-label required">{% trans 'Name' %}</label>
+                <input class="form-control" type="text" placeholder="Input Name" name="title" required>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <ul class="nav nav-light nav-tabs" id="tab-select-table">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
+                        <span class="nav-link-text">{% trans 'General' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_general">
+                <div class="row">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="box-expense-item">{% trans 'Expense item' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-expense-item"
+                                    data-url="{% url 'ExpenseItemListAPI' %}"
+                                    data-method="GET"
+                                    name="expense_item"
+                                    data-keyResp="expense_item_list"
+                                    required
+                            >
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                        <label class="form-label required" for="chooseUom">{% trans "UoM" %}</label>
+                        <select id="chooseUom" class="form-select" data-method="GET"
+                                data-url="{% url "UnitOfMeasureOfGroupLaborListAPI" %}"
+                                name="uom" required></select>
+                    </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group" id="choosePriceList" data-method="GET"
+                             data-url="{% url "PriceListAPI" %}">
+                            <label class="form-label">{% trans "Price List" %}</label>
+                            <input class="form-select dropdown-toggle" data-bs-toggle="dropdown" id="dropdown-price-list"
+                                   oninput="this.value=''"
+                                   data-bs-display="static" aria-expanded="false" placeholder="Select Price List">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Role" %}</label>
+                            <select class="form-select" id="chooseRole" data-method="GET"
+                                    data-url="{% url "RoleListAPI" %}" multiple name="role"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="chooseUoMGroup">{% trans "UoM Group" %}</label>
+                            <input id="chooseUoMGroup" data-method="GET" class="form-control" readonly
+                                   data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                                   name="uom_group" data-id="" required/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-price_list="{% url 'PriceListAPI' %}"
+           data-currency_list="{% url 'CurrencyListAPI' %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/expense/expense_common.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/expense/expense_create.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+{% endblock %}

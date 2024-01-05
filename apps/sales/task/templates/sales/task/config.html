@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Opportunity task config' %}{% endblock %}
+{% block cssHeader %}
+    <style>
+        .status-item p {
+            padding: 5px 10px;
+            cursor: text;
+            border-radius: 6px;
+        }
+
+        .status-item p:hover, .status-item p:focus {
+            outline: 1px dotted #6495ed;
+            outline-offset: -3px;
+        }
+
+        .status-header {
+            padding: .5rem 1.25rem;
+        }
+
+        .status-header p {
+            padding: 5px 10px;
+        }
+
+        .icon-close i:hover {
+            cursor: pointer;
+            color: #e10a2c;
+        }
+
+        .advance-list-item {
+            transition: none;
+            -webkit-transition: none;
+        }
+
+        .advance-list-item:hover {
+            transform: none;
+            -webkit-transform: none;
+        }
+
+        .hand-drag {
+            cursor: grab;
+        }
+
+        .ui-state-highlight {
+            display: block;
+            height: 30px;
+            border-radius: 4px;
+            border: dashed 1px #ff0000 !important;
+            background-color: #f8f8f8ff !important;
+        }
+
+        .outline-err {
+            outline: 1px dotted #ff0000;
+            outline-offset: -3px
+        }
+
+        .blur-35 {
+            opacity: 0.35;
+        }
+
+        .ui-state-system {
+            height: 30px;
+            border-radius: 4px;
+            border: dashed 1px rgb(255 0 0 / 20%);
+            background: rgb(247 247 247 / 30%);
+        }
+
+        .picker_color {
+            width: 27px;
+            padding: 2px;
+        }
+    </style>
+    <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block pageAction %}
+    <button
+            class="btn btn-icon btn-flush-dark btnrounded- flush-soft-hover no-caret d-lg-inline-block d-none"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-original-title="{% trans 'Save' %}"
+            form="formOpportunityTaskConfig" type="submit"
+    >
+        <span class="btn-icon-wrap">
+            <i class="far fa-save"></i>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form data-url="{% url 'OpportunityTaskConfigAPI' %}" data-method="PUT" id="formOpportunityTaskConfig" method="post"
+          autocomplete="off">
+        {% csrf_token %}
+        <h5 class="h5 mb-3 font-weight-bold">{% trans 'Opportunity task config' %}</h5>
+        <h6 class="h6">{% trans 'Status setup' %}</h6>
+        <hr>
+        <p>{% trans 'Task will change to' %}
+            <span class="strikethrough"><del>{% trans 'To do Status' %}</del></span>
+            {% trans ' if old status is delete' %}
+        </p>
+        <hr>
+        <ul class="nav nav-light nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                    <span class="nav-link-text">{% trans 'General' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                    <span class="nav-link-text">{% trans 'Status' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_block_1">
+                <h5 class="h5 mb-3 font-weight-bold">{% trans 'Assignee Permission' %}</h5>
+                <hr class="border-dark opacity-100">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="is_edit_date" id="assignee_edit_date">
+                    <label class="form-check-label" for="assignee_edit_date">
+                        {% trans 'Assignee can edit Start Date and End Date' %}</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="is_edit_est" id="assignee_edit_est">
+                    <label class="form-check-label" for="assignee_edit_est">
+                        {% trans 'Assignee can edit Estimate' %}</label>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_block_2">
+                <div class="wrap-status-setup w-md-50 w-100">
+                    <button class="btn btn-outline-primary btn-animated btn-xs add_new_stt" type="button">
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="font-3 ml-1">
+                        {% trans 'Add new' %}
+                    </span>
+                </span>
+                    </button>
+                    <hr>
+                    <div class="status-content">
+                        <div class="status-header d-flex justify-content-between align-items-center fw-bold font-3">
+                            <span class="w-5"></span>
+                            <p class="status_name w-35">
+                                {% trans 'Name' %}&nbsp;
+                                <i class="fas fa-info-circle text-primary" data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Click on text to edit.' %}"></i>
+                            </p>
+                            <p class="status_color w-10">{% trans 'Color' %}</p>
+                            <span class="w-10 text-right">
+                        {% trans 'Action' %}
+                    </span>
+                        </div>
+                        <ul id="todo_list" class="advance-list">
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="hidden">
+        <div id="item_config">
+            <li class="advance-list-item single-task-list active-todo">
+                <div class="status-item d-flex justify-content-between align-items-center">
+                    <span class="w-5 hand-drag"><i class="fa-solid fa-arrows-up-down"></i></span>
+                    <p class="status_name w-35" contenteditable="true"></p>
+                    <div class="status_color w-10 pl-2"><input type="color" class="picker_color"></div>
+                    <span class="icon-close w-10 text-right">
+                        <i class="fa-regular fa-circle-xmark fa-lg"></i>
+                    </span>
+                </div>
+            </li>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/sales/task/js/config.js' %}"></script>
+{% endblock %}

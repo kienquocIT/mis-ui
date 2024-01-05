@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Delivery List' %}{% endblock %}
+{% block cssHeader %}
+    <style>
+        .beauty_scroll{
+            overflow: hidden;
+            overflow-y: auto;
+        }
+        .beauty_scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .beauty_scroll::-webkit-scrollbar-thumb {
+            background-color: #d6d9da;
+            border-radius: 4px;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary btn-animated btn-xs" data-bs-toggle="modal"
+            data-bs-target="#sale_order_select" type="button">
+    <span class="icon">
+        <i class="fa-solid fa-plus"></i>
+        <span class="font-3 ml-1">
+            {% trans 'New' %}
+        </span>
+    </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    {% csrf_token %}
+    <table
+            id="dtbDeliveryList"
+            class="table nowrap w-100 mb-5"
+            data-method="get"
+            data-url="{% url "OrderDeliveryListAPI" %}"
+            data-url-detail="{% url 'OrderDeliveryDetail' pk=1 %}"
+            data-url-sale-order-detail="{% url 'SaleOrderDetail' pk=1 %}"
+    >
+        <thead>
+        <tr>
+            <th>{% trans 'Number' %}
+                <i class="fas fa-info-circle icon-info tit_visible_tb-head"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to open detail page.' %}"
+                ></i></th>
+            <th>
+                {% trans 'Sale Order' %}
+                <i
+                        class="fas fa-info-circle icon-info tit_visible_tb-head"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{% trans 'Press row here to open sale order page.' %}"
+                ></i>
+            </th>
+            <th>{% trans 'Created Date' %}</th>
+            <th>{% trans 'Expected Date' %}</th>
+            <th>{% trans 'Actual Date' %}</th>
+            <th>{% trans 'Person delivery' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="modal fade" id="sale_order_select" tabindex="-1" role="dialog"
+         aria-labelledby="sale_order_select" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Select Order' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body beauty_scroll h-350p">
+                    <table id="sale_order_approved" class="table w-100">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans 'Name' %}</th>
+                            <th>{% trans 'Code' %}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="modal-footer justify-content-between ">
+                    <button type="button" class="btn btn-primary" id="call_delivery" data-bs-dismiss="modal">
+                        {% trans 'Select' %}</button>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    {{ data.state_choices|json_script:"dataStateChoices" }}
+    <input type="hidden" id="url-factory" data-page-detail="{% url 'OrderDeliveryDetail' 1 %}"
+           data-sale-order="{% url 'SaleOrderListAPI' %}"
+           data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
+           data-picking="{% url 'OrderPickingList' %}"
+    >
+    <input type="hidden" id="trans-factory"
+    data-return="{% trans 'Return' %}">
+{% endblock %}
+
+{% block jsFooter %}
+
+    <script src="{% static 'sales/delivery/delivery/list.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Opportunity list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="#" data-bs-toggle="modal"
+       data-bs-target="#createOpportunityModalForms"
+       id="create_opportunity_button">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <input type="hidden" id="data-customer">
+    <input type="hidden" id="data-sale-person">
+    <input type="hidden" id="employee_current_id" value="{{ request.user.employee_current_data.id }}">
+    <input type="hidden" id="employee_current_group" value="{{ request.user.employee_current_data.group }}">
+    <input type="hidden" id="group_id_emp_login">
+    <input type="hidden" id="opportunity-link"
+           data-link-update="{% url 'OpportunityDetail' pk=0 %}"
+           data-link-list="{% url 'OpportunityList' %}"
+    >
+    <table
+            id="table_opportunity_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url "OpportunityListAPI" %}"
+            data-method="get"
+    >
+        <thead>
+        <tr>
+            <th></th>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Customer' %}</th>
+            <th>{% trans 'Sale Person' %}</th>
+            <th>{% trans 'Open Date' %}</th>
+            <th>{% trans 'Close Date' %}</th>
+            <th>{% trans 'Stage' %}</th>
+{#            <th>{% trans 'Actions' %}</th>#}
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div
+            class="modal fade"
+            id="createOpportunityModalForms"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="createOpportunityModalForms"
+            aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Create Opportunity' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form
+                            data-url="{% url 'OpportunityListAPI' %}"
+                            data-url-detail="{% url 'OpportunityUpdate' pk=0 %}"
+                            data-method="POST"
+                            id="form-create_opportunity"
+                            method="post"
+                    >
+                        {% csrf_token %}
+                        <div class="mb-3 form-group">
+                            <label class="form-label required">
+                                {% trans 'Select Customer' %}
+                            </label>
+                            <select
+                                    class="form-select"
+                                    id="select-box-customer"
+                                    data-close-on-select="true"
+                                    data-url="{% url "AccountForSaleListAPI" %}"
+                                    data-method="GET"
+                                    name="customer"
+                                    required
+                                    data-keyResp="account_sale_list"
+                                    data-keyText="name"
+                            ></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required" for="opp-title">
+                                {% trans 'Name' %}
+                            </label>
+                            <input
+                                    type="text" class="form-control" id="opp-title"
+                                    placeholder="" name="title" required
+                            >
+                        </div>
+                        <div class="mb-3 form-group">
+                            <label class="form-label">{% trans "Product Category" %}</label>
+                            <select class="form-select"
+                                    name="product_category"
+                                    id="select-box-product-category"
+                                    data-close-on-select="true"
+                                    multiple
+                                    data-method="GET"
+                                    data-url="{% url 'ProductCategoryListAPI' %}"
+                                    data-keyResp="product_category_list"
+                            >
+                            </select>
+                        </div>
+                        <div class="mb-3 form-group">
+                            <label class="form-label required">{% trans "Sale Person" %}</label>
+                            <select class="form-select"
+                                    name="employee_inherit_id"
+                                    id="select-box-sale-person"
+                                    data-method="GET"
+                                    data-url="{% url 'EmployeeListAPI' %}"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
+                                    required
+                            >
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary"
+                                form="form-create_opportunity">{% trans 'Save' %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-config="{% url 'OpportunityConfigAPI' %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_list.js' %}"></script>
+{% endblock %}

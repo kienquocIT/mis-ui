@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Expense List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "ExpenseCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table id="dtbExpense" class="table nowrap w-100 mb-5"
+           data-method="GET" data-url="{% url "ExpenseListAPI" %}"
+           data-url-detail="{% url "ExpenseDetail" pk=0 %}">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th class="wrap-text">{% trans 'Code' %}
+                <i
+                        class="fas fa-info-circle icon-info"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{% trans 'Press row here to open detail page.' %}"
+                ></i>
+            </th>
+            <th class="wrap-text">{% trans 'Name' %}</th>
+            <th class="wrap-text">{% trans 'Expense item' %}</th>
+        </tr>
+        </thead>
+    </table>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/expense/expense_list.js' %}"></script>
+{% endblock %}

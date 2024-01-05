@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Sale order list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    {% url 'SaleOrderCreate' as create_link %}
+    {% trans 'Create Sale Order' as create_title %}
+    {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_sale_order_button" create_title=create_title %}
+{% endblock %}
+
+{% block pageContent %}
+    <input type="hidden" id="sale-order-link"
+           data-link-update="{% url 'SaleOrderDetail' 1 %}"
+           data-link-list="{% url 'SaleOrderList' %}"
+           data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
+           data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
+    >
+    {% csrf_token %}
+    <table
+            id="table_sale_order_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'SaleOrderListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Customer' %}</th>
+            <th>{% trans 'Sale Person' %}</th>
+            <th>{% trans 'Created Date' %}</th>
+            <th>{% trans 'Order Value' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Delivery' %}</th>
+            <th>{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input type="hidden" id="trans-factory"
+    data-change="{% trans 'Change' %}"
+    data-delivery="{% trans 'Delivery' %}"
+    data-status-none="{% trans 'None' %}"
+    data-status-delivering="{% trans 'Delivering' %}"
+    data-status-partially="{% trans 'Partially delivered' %}"
+    data-status-delivered="{% trans 'Delivered' %}"
+    >
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/saleorder/js/sale_order_list.js' %}"></script>
+{% endblock %}

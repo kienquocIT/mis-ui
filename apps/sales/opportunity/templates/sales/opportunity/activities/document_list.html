@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Document For Customer' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "OpportunityDocumentCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table id="datatable-opportunity-document" class="table nowrap w-100 mb-5"
+           data-url="{% url "OpportunityDocumentListAPI" %}"
+           data-method="GET">
+        <thead>
+        <th class="w-30">{% trans "Title" %}</th>
+        <th class="w-20">{% trans "Sale code" %}</th>
+        <th class="w-30">{% trans "Person In Charge" %}</th>
+        <th class="w-20">{% trans "Date" %}</th>
+        </thead>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-detail="{% url 'OpportunityDocumentDetail' pk=0 %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/activities/js/document_list.js' %}"></script>
+{% endblock %}

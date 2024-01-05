@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Shipping List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "ShippingCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table id="dtbShipping" class="table nowrap w-100 mb-5"
+           data-method="GET" data-url="{% url "ShippingListAPI" %}"
+           data-url-detail="{%url "ShippingDetail" pk=0 %}">
+        <thead>
+        <tr>
+            <th>
+                #
+            </th>
+            <th class="wrap-text">
+                {% trans 'Code' %}
+                <i
+                        class="fas fa-info-circle icon-info"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{% trans 'Press row here to open detail page.' %}"
+                ></i>
+            </th>
+            <th class="wrap-text">{% trans 'Shipping Services Name' %}</th>
+            <th class="wrap-text">{% trans "Status" %}</th>
+        </tr>
+        </thead>
+    </table>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/shipping/shipping_list.js' %}"></script>
+{% endblock %}

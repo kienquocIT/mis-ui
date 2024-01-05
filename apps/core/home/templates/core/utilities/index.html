@@ -1,0 +1,519 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'vendors/dm-uploader/dist/css/jquery.dm-uploader.min.css' %}">
+{% endblock %}
+
+{% block pageContent %}
+    <form id="frm-x" data-url="#" data-method="POST">
+        <div class="row mb-3">
+            <div class="col-md-4 col-sm-12">
+                {% include 'extends/files/all.html' %}
+            </div>
+        </div>
+    </form>
+
+    <!-- Files Upload -->
+    <div class="row mb-3">
+        <form id="frmTest" data-url="xxxx" data-method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="inputTest1" class="form-label">Upload File 0</label>
+                        <button
+                                id="inputTest1"
+                                type="button"
+                                class="form-control btn btn-dark btn-file-upload text-white"
+                                data-f-input-name="inputTest1"
+                                data-f-input-required="true"
+                                data-f-accept="image/*"
+                        >Click me 0!
+                        </button>
+                        <small>Đang cho phép: "image/*"</small>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="inputTest1" class="form-label">Upload File 1</label>
+                        <button
+                                type="button"
+                                class="form-control btn btn-success btn-file-upload text-white"
+                                data-f-input-name="inputTest1"
+                                data-f-input-required="true"
+                        >Click me 1!
+                        </button>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="inputTest2" class="form-label">Upload File 2</label>
+                        <button
+                                type="button"
+                                class="form-control btn btn-danger btn-file-upload"
+                                data-f-input-name="inputTest2"
+                                data-f-input-required="true"
+                                data-f-name-ele-id="#fileNameTestDisplay"
+                                data-f-multiple="true"
+                        >Click me 2!
+                        </button>
+                        <p id="fileNameTestDisplay"></p>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="inputTest3" class="form-label">Upload File 3</label>
+                        <button
+                                type="button"
+                                class="form-control btn btn-danger btn-file-upload"
+                                data-f-input-name="inputTest3"
+                                data-f-input-required="true"
+                                data-f-input-disabled="true"
+                                data-f-name-ele-id="#fileNameTestDisplay3"
+                        >Click me 3!
+                        </button>
+                        <p id="fileNameTestDisplay3"></p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- // Files Upload -->
+
+    <!-- Utils -->
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button
+                        class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#flush-collapseUUID" aria-expanded="true" aria-controls="flush-collapseOne"
+                >
+                    <i class="fa-solid fa-wand-magic-sparkles mr-3"></i> UUID generate
+                </button>
+            </h2>
+            <div
+                    id="flush-collapseUUID" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne"
+                    data-bs-parent="#accordionFlushExample"
+            >
+                <div class="accordion-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="selectVersionUUID" class="form-label">Version:</label>
+                                    <select name="" id="selectVersionUUID" class="form-select">
+                                        <option value="1">Version 1</option>
+                                        <option value="4" selected>Version 4</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="selectTypeUUID4" class="form-label">Type Return:</label>
+                                    <select name="" id="selectTypeUUID4" class="form-select">
+                                        <option value="str" selected>String - have commas</option>
+                                        <option value="hex">Hex - no commas</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="inputAmountUUID4" class="form-label">Amount UUID4</label>
+                                    <div class="input-group mb-3">
+                                        <input
+                                                id="inputAmountUUID4"
+                                                value="1"
+                                                type="number" class="form-control" placeholder="Recipient's username"
+                                                aria-label="Recipient's username"
+                                                aria-describedby="button-addon2"
+                                                min="1"
+                                                max="500"
+                                        >
+                                        <button class="btn btn-primary" type="button" id="button-generate">
+                                            Generate
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="dataUUIDGenerate" class="form-label">Result:</label>
+                                    <ol id="dataUUIDGenerate" style="font-family: Consolas, monospace;"></ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingTwo">
+                <button
+                        class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"
+                >
+                    <i class="fa-solid fa-scissors mr-3"></i> Minimal UUID
+                </button>
+            </h2>
+            <div
+                    id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
+                    data-bs-parent="#accordionFlushExample"
+            >
+                <div class="accordion-body">
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-secondary" type="button" id="btnClearInputVal"><i
+                                class="fa-solid fa-xmark"
+                        ></i></button>
+                        <input
+                                type="text" class="form-control"
+                                placeholder="UUID-4 paste here, Commas with multiple UUID"
+                                aria-label="" aria-describedby="button-addon2"
+                                id="inputConvertMinimalUUID"
+                        >
+                        <button class="btn btn-outline-secondary" type="button" id="btnConvertMinimalUUID">Convert
+                        </button>
+                    </div>
+                    <div id="minimalUUIDResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // Utils -->
+
+    <div class="row mt-5 p-3">
+        <div class="col-6">
+            <select
+                    id="selectX"
+                    data-allowClear="true"
+                    multiple
+                    data-url="{% url 'EmployeeListAPI' %}"
+                    data-keyResp="employee_list"
+                    data-keyId="id"
+                    data-keyText="full_name"
+            >
+                <option value="1" selected>1111</option>
+                <option value="2" selected>2222</option>
+                <option value="3" selected>3333</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <select
+                    id="selectY"
+                    data-allowClear="true"
+                    data-url="{% url 'EmployeeListAPI' %}"
+                    data-keyResp="employee_list"
+                    data-keyId="id"
+                    data-keyText="full_name"
+            >
+                <option value="1" selected>1111</option>
+            </select>
+        </div>
+    </div>
+    <div class="row p-3">
+        <div class="col-3">
+            <div class="form-group">
+                <label for="selectGroupIcon">Select Employee</label>
+                <div class="input-affix-wrapper">
+                    <div class="dropdown input-prefix">
+                        <i
+                                class="fa-solid fa-circle-info" data-bs-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false"
+                        ></i>
+                        <div class="dropdown-menu w-210p mt-2">
+                            <label for="">{% trans 'Full name' %}</label>
+                            <input type="text" name="dd-full-name" class="form-control-plaintext" disabled readonly>
+                            <a href="#" data-url="{% url 'EmployeeDetail' pk='__pk__' %}" id="dd-btn-detail">
+                                <button class="btn btn-primary" disabled>{% trans 'Detail' %}</button>
+                            </a>
+                        </div>
+                    </div>
+                    <select
+                            id="selectGroupIcon"
+                            class="input-affix-main"
+                            data-allowClear="true"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyResp="employee_list"
+                            data-keyId="id"
+                            data-keyText="full_name"
+                    >
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group">
+                <label for="">XXXX</label>
+                <select class="select-x form-control" disabled>
+                    <option value="1">111</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label for="">XXXX</label>
+                <select class="select-x form-control">
+                    <option value="1">111</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="select-box-user">{% trans 'User' %}</label>
+                                    <select
+                                            class="form-select"
+                                            name="title" id="select-box-user"
+                                            readonly
+                                            disabled
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-50"></div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        $(function () {
+            $('.select-x').each(function () {
+                $(this).initSelect2({
+                    {#theme: 'bootstrap4',#}
+                    {#width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',#}
+                    {#placeholder: $(this).data('placeholder'),#}
+                    {#allowClear: Boolean($(this).data('allow-clear')),#}
+                    {#closeOnSelect: !$(this).attr('multiple'),#}
+                });
+            });
+            $('#select-box-user').initSelect2({
+                allowClear: true,
+                keyId: 'user--id',
+                keyText: 'user--full_name',
+                data: {
+                    'user': {
+                        "id": "735828d4-0af7-4702-b3e1-68cce968322a",
+                        "full_name": "AD Admin",
+                        "first_name": "Admin",
+                        "last_name": "AD",
+                        "email": "thangnv@gmail.com",
+                        "phone": "0903602848"
+                    }
+                },
+            });
+        });
+    </script>
+
+    <script>
+        function generateUUID(ver = 4, str_or_hex = 'str') {
+            let uid = null;
+            if (ver === 4) {
+                uid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    let r = Math.random() * 16 | 0,
+                        v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+            if (ver === 1) {
+                uid = 'xxxxxxxx-xxxx-1xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    let r = Math.random() * 16 | 0,
+                        v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
+            if (uid !== null) {
+                if (str_or_hex === 'hex') {
+                    return uid.replaceAll("-", "");
+                }
+                return uid;
+            }
+            throw Error('Version not support');
+        }
+
+        function copyText() {
+            let copyText = document.getElementById("copyText");
+
+            // Chọn toàn bộ nội dung trong input
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // Hỗ trợ cho một số trình duyệt di động
+
+            // Copy nội dung vào clipboard
+            document.execCommand("copy");
+
+            // Thông báo hoặc thay đổi trạng thái nút copy
+            let copyButton = document.getElementById("copyButton");
+            copyButton.innerHTML = "Copied!";
+        }
+
+        $('#button-generate').click(function (event) {
+            event.preventDefault();
+            let dataEle = $('#dataUUIDGenerate');
+            dataEle.empty();
+
+            let amount = Number.parseInt($('#inputAmountUUID4').val());
+            let versionUUID = Number.parseInt($('#selectVersionUUID').val());
+            let typeRs = $('#selectTypeUUID4').val();
+            if (
+                amount && Number.isInteger(amount) &&
+                typeRs && (typeRs === 'str' || typeRs === 'hex') &&
+                versionUUID && Number.isInteger(versionUUID) && (versionUUID === 1 || versionUUID === 4)
+            ) {
+                let btnCopy = `<button class="btn btn-icon btn-rounded bg-dark-hover btnCopy"><span class="icon"><i class="fa-solid fa-copy"></i></span></button>`;
+                for (let i = 0; i < amount; i++) {
+                    let tmp = generateUUID(versionUUID, typeRs);
+                    dataEle.append(
+                        `<li><span class="dataValueUUID mr-1">${tmp}</span>${btnCopy}</li>`
+                    )
+                }
+            }
+        });
+
+        $(document).on('click', '.btnCopy', function (event) {
+            let dataCopy = $(this).prev('.dataValueUUID').text();
+            navigator.clipboard.writeText(dataCopy);
+
+            if ($(this).next('.msgCopied').length > 0) {
+                $(this).next('.msgCopied').remove();
+            }
+            let eleCopied = $(`<span class="msgCopied text-muted">Copied!</span>`);
+            eleCopied.insertAfter($(this));
+            setTimeout(
+                () => {
+                    eleCopied.remove();
+                },
+                5000
+            )
+        });
+
+        let minimalUUIDInput = $('#inputConvertMinimalUUID');
+        let minimalUUIDResult = $('#minimalUUIDResult');
+
+        function replaceUUIDToMinimal() {
+            let data = minimalUUIDInput.val();
+            if (data) {
+                let arr = data.split(",");
+                let result = [];
+                arr.map(
+                    (item) => {
+                        result.push(
+                            item.replaceAll("-", "").replaceAll(" ", "")
+                        )
+                    }
+                )
+                minimalUUIDResult.html(
+                    `<ol>` +
+                    result.map(
+                        (item) => {
+                            return `<li>${item}</li>`
+                        }
+                    ).join("") +
+                    `</ol>`
+                );
+            } else {
+                minimalUUIDResult.empty();
+            }
+        }
+
+        $('#btnClearInputVal').click(function (event) {
+            minimalUUIDInput.val("");
+        })
+        $('#btnConvertMinimalUUID').click(function (event) {
+            replaceUUIDToMinimal();
+        });
+        minimalUUIDInput.on('keypress', function (e) {
+            if (e.which === 13) {
+                replaceUUIDToMinimal();
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            let dataDetail = {
+                "id": "777bf550-b408-47cf-9712-4070a5f0b9f6",
+                "relate_app_id": "4e48c863-861b-475a-aa5e-97a4ed26f294",
+                "relate_app_code": "account",
+                "relate_doc_id": "3bc606ab-a8a5-4aaa-b224-ee9d6a794b8a",
+                "media_file_id": "eefbf700-763e-49c3-bbb7-d7bb250dbc69",
+                "file_name": "avt.gif",
+                "file_size": 930108,
+                "file_type": "gif"
+            };
+            let ele = $('.btn-file-upload[data-f-input-name=inputTest3]')[0];
+            if (ele) FileUtils.init($(ele), dataDetail);
+
+            let btn = $('#inputTest1');
+            WindowControl.showLoadingButton(btn);
+            setTimeout(
+                () => {
+                    WindowControl.hideLoadingButton(btn);
+                },
+                1000
+            );
+
+
+            let pc100 = 10;
+            let intervalPc = setInterval(
+                () => {
+                    if (pc100 >= 100) {
+                        clearInterval(intervalPc);
+                    }
+                    $('#progresBarID').alterClass('w-*', 'w-' + pc100.toString());
+                    pc100 += 10;
+                },
+                1000
+            )
+        })
+    </script>
+    <script>
+        function renderDetailInfoEmployee(DDMenuEle, dataBackupOfSelected, selectedVal, selectEle) {
+            // dataBackupOfSelected: object or list[object] by multiple
+            // append HTML or find class/id replace value
+            //      DDMenuEle.html(``);
+            //      [Recommendation] DDMenuEle.find('.dd-full-name').val(dataBackupOfSelected?.['full_name'] || '');
+
+            DDMenuEle.find('input[name="dd-full-name"]').val(dataBackupOfSelected?.['full_name'] || '');
+            let btnDetail = $('#dd-btn-detail');
+            if (dataBackupOfSelected?.['id']) {
+                btnDetail.href = btnDetail.attr('data-url').replace('__pk__', dataBackupOfSelected?.['id']);
+                btnDetail.find('button').prop('disabled', false);
+            } else {
+                btnDetail.href = '#';
+                btnDetail.find('button').prop('disabled', true);
+            }
+        }
+
+        $(document).ready(function () {
+            $('#selectX').initSelect2({cache: true});
+            $('#selectY').initSelect2({});
+
+            $('#selectGroupIcon').initSelect2({
+                'callbackInfoDetail': renderDetailInfoEmployee
+            });
+        })
+    </script>
+
+    <script>
+        new $x.cls.file(
+            $('.dad-file-control-group'),
+            {
+                allowedTypes: 'image',
+                extFilter: ['jpeg', 'png'],
+            }
+        ).init({
+            'name': 'attachments',
+            'loadData': [],
+        });
+    </script>
+{% endblock %}

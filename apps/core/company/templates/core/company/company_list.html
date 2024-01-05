@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}{% endblock %}
+{% block pageAction %}
+    <a href="{% url "CompanyCreate" %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <input
+            name="default_representative_name" value="{{ request.user.first_name }} {{ request.user.last_name }}" hidden
+    />
+    <table
+            id="datable_company_list" class="table nowrap w-100 mb-5"
+            data-url="{% url "CompanyListAPI" %}"
+            data-url-redirect="/"
+            data-method="GET"
+            data-ui-domain="{{ data.ui_domain }}"
+    >
+        <thead>
+        <tr>
+            <th>
+                #
+            </th>
+            <th>{% trans 'Logo' %}</th>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Created Date' %}</th>
+            <th>{% trans 'Representative' %}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'core/company/js/company_list.js' %}"></script>
+{% endblock %}
+

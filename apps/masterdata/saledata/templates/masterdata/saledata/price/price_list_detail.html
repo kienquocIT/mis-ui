@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Price List Detail' %}{% endblock %}
+{% block cssHeader %}
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'PriceListUpdate' pk=0 %}" id="btn-edit">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 text-center">
+            <h3 style="color: #007D88; font-weight: bolder" id="price_list_name"></h3>
+        </div>
+        <div class="col-3">
+            <p id="time-valid" class="text-right"></p>
+        </div>
+    </div>
+    <div class="row">
+        <ul class="nav nav-light nav-tabs" id="tab-select-table">
+            <li class="nav-item" id="nav1">
+                <a id="products-nav" class="nav-link active" data-bs-toggle="tab" href="#tab-item-list">
+                    <span class="nav-link-text">{% trans 'Price List' %}</span>
+                </a>
+            </li>
+            <li class="nav-item" id="nav2">
+                <a id="setting-nav" class="nav-link" data-bs-toggle="tab" href="#tab-setting">
+                    <span class="nav-link-text">{% trans 'Setting' %}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content">
+        <!-- Tab add item -->
+        <div class="tab-pane fade show active" id="tab-item-list">
+            <div class="row">
+                <div class="col-12 text-left">
+                </div>
+            </div>
+            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
+                  data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}"
+                  data-method="PUT">
+                <table id="datatable-item-list" class="table nowrap w-100">
+                    <tr>
+                        <thead>
+                        <th>#</th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Item name" %}</th>
+                        <th>{% trans "UoM group" %}</th>
+                        <th>{% trans "UoM" %}</th>
+                        </thead>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+        <!-- Tab setting -->
+        <div class="tab-pane fade" id="tab-setting">
+            <h6 id="notify" class="text-red" style="font-style: italic"></h6>
+            <form id="form-update-price-list" data-method="PUT"
+                  data-url="{% url "PriceDetailAPI" pk=0 %}"
+                  data-url-redirect="{% url "PriceList" %}"
+                  data-url-list="{% url "PriceListAPI" %}"
+            >
+                {% csrf_token %}
+                <div class="row mt-3">
+                    <div class="form-group col-6">
+                        <label class="form-label">{% trans "Select price list" %}</label>
+                        <select
+                                class="form-select"
+                                data-method="GET"
+                                data-url="{% url "PriceListAPI" %}"
+                                id="select-box-price-list"
+                                disabled
+                                name="price_list_mapped"
+                                data-keyResp="price_list"
+                        >
+                        </select>
+                    </div>
+                    <div class="form-group col-6">
+                        <label class="form-label">{% trans "Select price list type" %}</label>
+                        <select class="form-select" name="price_list_type" id="select-box-type" disabled>
+                            <option></option>
+                            <option value="0">{% trans "For Sale" %}</option>
+                            <option value="1">{% trans "For Purchase" %}</option>
+                            <option value="2">{% trans "For Expense" %}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-check ml-3">
+                        <input class="form-check-input" type="checkbox"
+                               id="checkbox-update-auto" name="auto_update" disabled>
+                        <label class="form-check-label" for="checkbox-update-auto">
+                            {% trans "update automatically when source price list changes" %}
+                        </label>
+                    </div>
+                    <div class="form-check ml-3">
+                        <input class="form-check-input" type="checkbox"
+                               id="checkbox-can-delete" name="can_delete" disabled>
+                        <label class="form-check-label" for="checkbox-can-delete">
+                            {% trans "Can delete Item in price list" %}
+                        </label>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="form-group col-6">
+                        <label class="form-label">{% trans "Currency" %}</label>
+                        <select
+                                class="form-select"
+                                multiple
+                                data-method="GET"
+                                data-url="{% url "CurrencyListAPI" %}"
+                                id="select-box-currency"
+                                name="currency"
+                                readonly="readonly"
+                                data-keyResp="currency_list"
+                                disabled
+                        >
+                        </select>
+                        <input type="text" id="inp-source" hidden>
+                    </div>
+                    <div class="form-group col-6 inp-can-edit">
+                        <label class="form-label">{% trans "Factor" %}</label>
+                        <input class="form-control" type="number" name="factor" id="inp-factor" step="0.001"
+                               placeholder="Input factor (0.8)" disabled>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="application/json" id="price_parent"></script>
+    <script type="application/json" id="data_detail"></script>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-list="{% url 'PriceListAPI' %}"
+           data-url-product="{% url 'ProductForSaleListAPI' %}"
+           data-url-expense="{% url 'ExpenseListAPI' %}"
+           data-url-del-item="{% url 'PriceListDeleteProductAPI' pk=0 %}"
+    >
+    <input type="text" id="trans-factory"
+           data-trans-price="{% trans 'Price In' %}"
+           data-trans-not-modify="{% trans 'price list does not allow configuration.' %}"
+           data-trans-source-price="{% trans 'Get item from' %}"
+           data-trans-save-setting="{% trans 'Save Setting' %}"
+           data-trans-save-item="{% trans 'Save Item Price' %}"
+           data-trans-confirm-delete-item="{% trans 'Delete this item ?' %}"
+           data-trans-delete-item-failed="{% trans 'Can not delete this item!' %}"
+           data-trans-update-setting="{% trans 'You can update can delete in tab setting' %}"
+           data-trans-now="{% trans 'now' %}"
+    />
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/price/price_list_common.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/price/price_list_detail.js' %}"></script>
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+{% endblock %}

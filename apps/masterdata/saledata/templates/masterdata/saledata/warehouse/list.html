@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Warehouse List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "WareHouseCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="dtbWareHouseList"
+            class="table nowrap w-100 mb-5"
+            data-method="GET"
+            data-url="{% url "WareHouseListAPI" %}"
+            data-url-remove="{% url 'WareHouseDetailAPI' pk=1 %}"
+    >
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Description' %}</th>
+            <th>{% trans 'Active' %}</th>
+            <th>{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="hidden">
+        <span id="msgConfirmDelete">{% trans 'Are you sure you want to remove "{0}"?' %}</span>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input id="url-factory"
+           data-url-detail="{% url 'WareHouseDetail' pk=0 %}"
+           data-url-update="{% url 'WareHouseUpdate' pk=0 %}"
+    >
+
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/warehouse/warehouse_list.js' %}"></script>
+{% endblock %}

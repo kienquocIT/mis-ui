@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee_list.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/core/account/user_list.css' %}">
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'UserCreate' %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="datatable_user_list" class="table nowrap w-100 mb-5" data-url='{% url "UserListAPI" %}'
+            data-method="GET"
+    >
+        <thead>
+        <tr>
+            <th>
+                #
+            </th>
+            <th>{% trans "Full Name" %}</th>
+            <th>{% trans "User Name" %}</th>
+            <th>{% trans "Actions" %}</th>
+
+        </tr>
+        </thead>
+        <form id="form-user" data-url="{% url "UserList" %}">
+            {% csrf_token %}
+            <tbody>
+            </tbody>
+        </form>
+
+    </table>
+
+    <div
+            class="modal fade" id="modalChangePassword" tabindex="-1" role="dialog"
+            aria-labelledby="modalChangePassword" aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Change password of' %} <span
+                            id="modalChangePasswordUserText"
+                    ></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="new-password" class="form-label">{% trans 'New password' %}</label>
+                        <input
+                                type="password" class="form-control" name="new-password" id="new-password"
+                                autocomplete="false"
+                        />
+                        <div class="form-text">{% trans 'Show password' %} <i
+                                style="cursor:pointer;" class="ml-1 fas fa-eye btnShowHidePassword"
+                        ></i></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="retype-new-password" class="form-label">{% trans 'New password again' %}</label>
+                        <input
+                                type="password" class="form-control" name="retype-new-password" id="retype-new-password"
+                        />
+                        <div class="form-text">{% trans 'Show password' %} <i
+                                style="cursor:pointer;" class="ml-1 fas fa-eye btnShowHidePassword"
+                        ></i></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button
+                            type="button" class="btn btn-primary" id="btnSaveNewPassword"
+                            data-url="{% url 'UserResetPassword' pk=1 %}" data-id disabled="disabled"
+                    >{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="trans-factory"
+           data-trans-confirm-delete="{% trans 'Confirm Delete User?' %}"
+    >
+    <input type="text" id="url-factory"
+           data-url-user-detail-api="{% url 'UserDetailAPI' pk=0 %}"
+           data-url-user-detail="{% url 'UserDetail' pk=0 %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/account/user_list.js' %}"></script>
+    <script src="{% static 'assets/js/core/account/user_delete.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Picking list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="dtbPickingList"
+            class="table nowrap w-100 mb-5"
+            data-method="GET"
+            data-url="{% url "OrderPickingListAPI" %}"
+            data-url-detail="{% url 'OrderPickingDetail' pk=1 %}"
+            data-url-sale-order-detail="{% url 'SaleOrderDetail' pk=1 %}"
+    >
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>
+                {% trans 'Code' %}
+                <i
+                        class="fas fa-info-circle icon-info tit_visible_tb-head"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{% trans 'Press row here to open detail page.' %}"
+                ></i>
+            </th>
+            <th>{% trans 'Sale Order' %}</th>
+            <th>{% trans 'Created Date' %}</th>
+            <th>{% trans 'Estimated Delivery Date' %}</th>
+            <th>{% trans 'Person picking' %}</th>
+            <th>{% trans 'Status' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    {{ data.state_choices|json_script:"dataStateChoices" }}
+{% endblock %}
+
+{% block jsFooter %}
+
+    <script src="{% static 'sales/delivery/picking/list.js' %}"></script>
+{% endblock %}

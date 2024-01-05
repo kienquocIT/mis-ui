@@ -1,0 +1,682 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Opportunity list' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
+    <style></style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'OpportunityUpdate' pk=pk %}" id="btn-opp-edit">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-opp-list="{% url "OpportunityListAPI" %}"
+            data-url-quo-list="{% url "QuotationListAPI" %}"
+            data-url-so-list="{% url "SaleOrderListAPI" %}"
+            data-url-ap-list="{% url "AdvancePaymentListAPI" %}"
+            data-url-payment-list="{% url "PaymentListAPI" %}"
+            data-url-return-list="{% url "ReturnAdvanceListAPI" %}"
+            data-url-ap-detail="{% url "AdvancePaymentDetail" '0' %}"
+            data-url-payment-detail="{% url "PaymentDetail" '0' %}"
+            data-url-return-detail="{% url "ReturnAdvanceDetail" '0' %}"
+    ></script>
+    <div id="json-data">
+        <input id="emp-current-id" class="hidden" value="{{ request.user.employee_current_data.id }}">
+    </div>
+    <div id="text-notify" hidden>
+        <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
+        <span id="limit-close-date">{% trans "The closing date must not be later than the opening date" %}</span>
+        <span id="not-select-stage">{% trans "Configuration does not allow selecting stage" %}</span>
+        <span id="deal-close-lost">{% trans "Can not select stage because this opportunity is close lost" %}</span>
+        <span id="deal-closed">{% trans "Can not select stage because this opportunity has been closed" %}</span>
+        <span id="opp-updated">{% trans "Stage has been updated, Please Save!" %}</span>
+    </div>
+    <div id="div-url" hidden>
+        <input id="url-member" value="{% url "EmployeeDetail" pk=0 %}">
+    </diV>
+
+    <div class="page-content">
+        <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
+              data-url-redirect="{% url "OpportunityList" %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-12 mb-3 text-center">
+                    <span id="header-title" class="text-primary" style="font-weight: bolder; font-size: xx-large"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-3" id="group-general-info-opp">
+                    <div class="col-12" style="overflow-y: auto; height: 80vh">
+                        {% include 'sales/opportunity/extends/general-info.html' %}
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-9">
+                    <div class="col-12" style="overflow-y: auto; height: 80vh">
+                        {% include 'sales/opportunity/extends/relate-info.html' %}
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <form id="frm-add-member" data-method="POST" data-url="{% url 'MemberOfOpportunityDetailAddAPI' pk_opp='__pk_opp__' %}">
+            <div
+                    class="modal fade" id="modalAddMember" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLarge01"
+                    aria-hidden="true"
+            >
+                <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans "Add member to Sale team" %}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive" style="max-height: 400px">
+                                <table class="table nowrap w-100" id="dtbMember" data-method="GET"
+                                       data-url="{% url 'EmployeeListAPI' %}">
+                                    <thead>
+                                    <tr>
+                                        <th class="w-10"></th>
+                                        <th class="w-20">{% trans "Employee Code" %}</th>
+                                        <th class="w-30">{% trans "Employee Name" %}</th>
+                                        <th class="w-30">{% trans "Group" %}</th>
+                                        <th class="w-10"></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                    type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                            >{% trans "Close" %}</button>
+                            <button
+                                    type="submit" form="frm-add-member" class="btn btn-primary"
+                            >{% trans "Add" %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal fade mt-10" id="create-new-call-log" tabindex="-1" role="dialog"
+         aria-labelledby="createOpportunityCallLogModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Create New Call Log' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 62vh">
+                    <form data-url="{% url 'OpportunityCallLogListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityCallLogList' %}"
+                          data-method="POST"
+                          id="form-create-new-call-log"
+                          method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Subject' %}
+                            </label>
+                            <input id="subject-input" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Sale Code' %}
+                            </label>
+                            <select id="sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Customer' %}
+                            </label>
+                            <select disabled id="account-select-box" class="select2 form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label required">
+                                    {% trans 'Contact' %}
+                                </label>
+                                <select id="contact-select-box" class="select2 form-select"></select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label required">
+                                    {% trans 'Date' %}
+                                </label>
+                                <input id="date-input" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">
+                                {% trans 'Input Result' %}
+                            </label>
+                            <textarea id="result-text-area" class="form-control" style="min-height: 100px"></textarea>
+                        </div>
+                        <div class="mb-3" hidden>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-create-new-call-log"
+                            id="btn-create-new-call-log">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="detail-call-log" data-url="{% url 'OpportunityCallLogDetailAPI' '0' %}" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityCallLogModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Call Log' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Subject' %}
+                        </label>
+                        <input readonly id="detail-subject-input" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Sale Code' %}
+                        </label>
+                        <select disabled style="color: #6f6f6f" id="detail-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Customer' %}
+                        </label>
+                        <select disabled style="color: #6f6f6f" id="detail-account-select-box" class="select2 form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label required">
+                                {% trans 'Contact' %}
+                            </label>
+                            <select disabled id="detail-contact-select-box" class="select2 form-select"></select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label required">
+                                {% trans 'Date' %}
+                            </label>
+                            <input readonly id="detail-date-input" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Input Result' %}
+                        </label>
+                        <textarea readonly id="detail-result-text-area" class="form-control" style="min-height: 100px"></textarea>
+                    </div>
+                    <div class="mb-3" hidden>
+                        <div class="form-check">
+                            <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
+                            <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'sales/task/extend/task-form.html' %}
+
+    <div class="modal fade mt-10" id="send-email" tabindex="-1" role="dialog"
+         aria-labelledby="createOpportunityEmailModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Send Email' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <form data-url="{% url 'OpportunityEmailListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityEmailList' %}"
+                          data-method="POST"
+                          id="form-new-email"
+                          method="post">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <label class="form-label required">{% trans 'Sale Code' %}</label>
+                            <select id="email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="form-label required">{% trans 'To' %}</label>
+                            <select id="email-to-select-box" class="select2 form-select" multiple="multiple" data-account-list-url="{% url 'AccountDetailAPI' '0' %}" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="form-label">{% trans 'Cc' %}</label>
+                            <select id="email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="form-label required">{% trans 'Subject' %}</label>
+                            <div><input id="email-subject-input" class="form-control"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-12 col-form-label">{% trans 'Content' %}</label>
+                            <div><textarea id="email-content-area"></textarea></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-new-email"
+                                id="btn-send-email">{% trans 'Send' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="detail-send-email" data-url="{% url 'OpportunityEmailDetailAPI' '0' %}" tabindex="-1" role="dialog" aria-labelledby="detailOpportunityEmailModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Email' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="row mb-3">
+                        <label class="form-label required">{% trans 'Sale Code' %}</label>
+                        <select disabled id="detail-email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label required">{% trans 'To' %}</label>
+                        <select disabled id="detail-email-to-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label">{% trans 'Cc' %}</label>
+                        <select disabled id="detail-email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label required">{% trans 'Subject' %}</label>
+                        <div><input readonly id="detail-email-subject-input" class="form-control"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label">{% trans 'Content' %}</label>
+                        <div>
+                            <div class="row form-group mb-3" id="detail-email-content-area"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="create-meeting" tabindex="-1" role="dialog"
+         aria-labelledby="createOpportunityMeetingModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Create Meeting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <form data-url="{% url 'OpportunityMeetingListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityMeetingList' %}"
+                          data-method="POST"
+                          id="form-new-meeting"
+                          method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Subject' %}</label>
+                                    <input id="meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Sale Code' %}</label>
+                                    <select id="meeting-sale-code-select-box" data-url="{% url 'OpportunityListAPI' %}" data-method="GET" class="select2 form-select"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Date' %}</label>
+                                    <input id="meeting-date-input" placeholder="{% trans 'Input date' %}"
+                                           class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="InputFromTime" class="form-label">{% trans 'From time' %}</label>
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='meeting_from_time' id_select='InputFromTime' %}
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="InputToTime" class="form-label">{% trans 'To time' %}</label>
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='meeting_to_time' id_select='InputToTime' %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Meeting address' %}</label>
+                                    <div id="meeting-address-select-div">
+                                        <select id="meeting-address-select-box" class="select2"></select>
+                                        <a id="meeting-address-input-btn" class="text-primary form-text text-muted text-right" href="#">input address</a>
+                                    </div>
+                                    <div id="meeting-address-input-div" hidden>
+                                        <input id="meeting-address-input" placeholder="Input meeting address" class="form-control">
+                                        <a id="meeting-address-select-btn" class="text-primary form-text text-muted text-right" href="#">select address</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Room location' %}</label>
+                                    <input id="meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Employee attended' %}</label>
+                                    <select id="meeting-employee-attended-select-box" data-url="{% url 'EmployeeListAPI' %}"
+                                            multiple data-closeOnSelect="false"class="select2 select-multiple"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Customer member' %}</label>
+                                    <select disabled id="meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">
+                                        {% trans 'Input Result' %}
+                                    </label>
+                                    <textarea id="meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" hidden>
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                        <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-new-meeting"
+                            id="btn-create-meeting">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="detail-meeting" data-url="{% url 'OpportunityMeetingDetailAPI' '0' %}" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityMeetingModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Meeting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Subject' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Sale Code' %}</label>
+                                <select disabled id="detail-meeting-sale-code-select-box" class="select2 form-select"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Date' %}</label>
+                                <input disabled style="color: black" id="detail-meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 form-group">
+                            <label for="meeting-from-time" class="form-label required">{% trans 'From time' %}</label>
+                            <input disabled style="color: black" id="meeting-from-time"
+                                   placeholder="{% trans 'From time' %}" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-md-6 form-group">
+                            <label class="form-label required" for="meeting-to-time">{% trans 'To time' %}</label>
+                            <input disabled style="color: black" id="meeting-to-time"
+                                   placeholder="{% trans 'To time' %}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Meeting address' %}</label>
+                                <select disabled id="detail-meeting-address-select-box" class="select2 form-select"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Room location' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Employee attended' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-employee-attended-select-box" multiple class="select2 select-multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Customer member' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">
+                                    {% trans 'Input Result' %}
+                                </label>
+                                <textarea disabled style="color: #6f6f6f" id="detail-meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" hidden>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
+                                    <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ data.type_customer|json_script:'data_type_customer' }}
+    {{ data.role_customer|json_script:'data_role_customer' }}
+
+    <div
+            class="modal fade" id="modalEditMember" tabindex="-1" role="dialog" aria-labelledby="modalEditMember"
+            aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button
+                            type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    >{% trans 'Cancel' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <script
+            type="text" id="url-factory"
+            data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
+            data-task_list="{% url 'OpportunityTaskListAPI' %}"
+            data-url-product="{% url 'ProductForSaleListAPI' %}"
+            data-url-product-category="{% url 'ProductCategoryListAPI' %}"
+            data-url-tax="{% url 'TaxListAPI' %}"
+            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
+            data-url-competitor="{% url 'AccountForSaleListAPI' %}"
+            data-url-contact="{% url 'ContactListAPI' %}"
+            data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
+            data-url-config="{% url 'OpportunityConfigAPI' %}"
+            data-url-related-quotation="{% url 'QuotationDetail' pk=0 %}"
+            data-url-related-sale-order="{% url 'SaleOrderDetail' pk=0 %}"
+            data-url-member-detail="{% url 'OpportunityMemberDetailAPI' pk=0 %}"
+            data-url-delete-member="{% url 'OpportunityDeleteMemberAPI' pk=0 %}"
+            data-url-member-list="{% url 'OpportunityMemberListAPI' pk=0 %}"
+
+            data-url-account-list="{% url 'AccountListAPI' %}"
+            data-url-contact-list="{% url 'ContactListAPI' %}"
+            data-url-opp-list="{% url 'OpportunityListAPI' %}"
+            data-url-employee-list="{% url 'EmployeeListAPI' %}"
+
+            data-url-config-stage="{% url 'OpportunityConfigStageListAPI' %}"
+
+            data-url-quotation-detail="{% url 'QuotationDetail' pk=0 %}"
+            data-url-sale-order-detail="{% url 'SaleOrderDetail' pk=0 %}"
+            data-url-advance-detail="{% url 'AdvancePaymentDetail' pk=0 %}"
+            data-url-payment-detail="{% url 'PaymentDetail' pk=0 %}"
+            data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
+    ></script>
+    <script
+            type="text" id="trans-factory"
+            data-activity-type01="{% trans 'Call to customer' %}"
+            data-activity-type02="{% trans 'Send email' %}"
+            data-activity-type03="{% trans 'Meeting with customer' %}"
+            data-trans-limit-quantity="{% trans 'quantity must not be less than zero' %}"
+            data-trans-limit-money="{% trans 'money must not be less than zero' %}"
+            data-trans-role-decision-maker="{% trans 'Only one decision maker can be selected' %}"
+            data-trans-opp-win-deal="{% trans 'Opp has been Win Deal' %}"
+            data-assignee_empty="{% trans 'Assignee is required' %}"
+            data-trans-not-created="{% trans 'has not been created for Opportunity' %}"
+            data-msg-deny-delete-member-owner="{% trans 'This is Sale Person, can not remove!' %}"
+
+            data-trans-quotation="{% trans "Quotation" %}"
+            data-trans-sale-order="{% trans "Sale Order" %}"
+            data-trans-advance="{% trans "Advance Payment" %}"
+            data-trans-payment="{% trans "Payment" %}"
+            data-trans-return="{% trans "Return Advance" %}"
+            data-trans-task="{% trans "Task" %}"
+            data-trans-call="{% trans "Call customer" %}"
+            data-trans-email="{% trans "Email to customer" %}"
+            data-trans-meeting="{% trans "Meeting with customer" %}"
+            data-trans-valid="{% trans "Valid" %}"
+            data-trans-invalid="{% trans "invalid" %}"
+    ></script>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
+
+    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/permission_group_tabs.js' %}"></script>
+    <script>
+        function loadPermitEmpty() {
+            let cls = new HandlePermissions();
+            cls.loadData([], [], {
+                enableVisibleColumns : false,
+                enableSortColumns : false,
+                enableTools : false,
+                searching : false,
+                ordering : false,
+                visibleSearchField : false,
+                visibleOrder : false,
+            });
+        }
+
+        $('#btnResetData').on('click', function (){
+            $('#member-current-edit').trigger('change');
+        })
+    </script>
+
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
+{% endblock %}

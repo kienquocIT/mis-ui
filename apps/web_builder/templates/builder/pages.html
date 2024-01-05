@@ -1,0 +1,459 @@
+{% extends 'base.html' %}
+{% load static i18n page_list %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'builder/config/builder-style.css' %}">
+{% endblock %}
+
+{% block pageContent %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <div class="page-tree border border-light p-3 rounded shadow-sm">
+                    <ul>
+                        <li class="d-flex align-items-center">
+                            <h5>{% trans 'Page List' %}</h5>
+                            <button class="btn btn-xs btn-soft-primary ml-3" id="idx-add-new-page">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </li>
+                        <ul>
+                            {% render_tree_page data.page_list data.page_viewer_domain as html_page_tree %}
+                            {{ html_page_tree|safe }}
+                        </ul>
+                    </ul>
+                </div>
+                <div class="border border-light p-3 rounded shadow-sm mt-1">
+                    <div>
+                        <h5>{% trans 'Website architecture' %}</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 150px;">{% trans 'Property' %}</th>
+                                    <th>{% trans 'Descriptions' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{% trans 'Name' %}</td>
+                                    <td>{% trans 'Representative Name of page (visible to only the editor)' %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans 'Remarks' %}</td>
+                                    <td>{% trans 'Descriptions of page (visible to only the editor)' %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans 'Page Title' %}</td>
+                                    <td>{% trans 'Represents the name displayed at the top of a webpage, providing a brief description of its content.' %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans 'Path' %}</td>
+                                    <td>{% trans 'Specifies the location or URL of the content within the website structure.' %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans 'Publish' %}</td>
+                                    <td>{% trans 'Indicates the publication status, determining whether the content is currently visible to the audience (true) or not (false).' %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-5">
+                        <h5>{% trans 'Set up the display of product listings' %}:</h5>
+                        <div class="px-3 py-2 border border-light rounded" style="border-left: 3px solid #ffce33!important;">
+                            <ol class="mb-0">
+                                <li>{% trans 'Create a page where you want to display the product listings' %}. <small>({% trans 'Skip this step if you already have a page' %}.)</small></li>
+                                <li>{% trans "Go to the page's design mode" %}</li>
+                                <li>{% trans "Use the 'Product List' block in the page's design to display product details" %}</li>
+                                <li>{% trans 'Save the design' %}</li>
+                                <li>{% trans 'Access the page preview to see the display of the newly added product listings' %}</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <h5>{% trans 'Set up the product detail page' %}:</h5>
+                        <div class="px-3 py-2 border border-light rounded" style="border-left: 3px solid #ffce33!important;">
+                            <ol class="mb-0">
+                                <li>{% trans "Create a new page with Path = '/product/{id}'" %}</li>
+                                <li>{% trans "Use the 'Product Detail' block in the design of the newly created page to display product details" %}</li>
+                                <li>{% trans 'Save the design' %}</li>
+                                <li>{% trans 'Access the preview of the page containing the product listings and click on any product to navigate to the Product Detail page' %}</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="w-100 mt-5">
+                        <h5>{% trans 'Building a website instructions' %}</h5>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Overview design page' %}</p>
+                            <img src="{% static 'assets/images/web-design/full.png' %}" alt="Full design" class="w-100">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Block' %}</p>
+                            <img src="{% static 'assets/images/web-design/block.png' %}" alt="Block" style="max-height: 250px; object-fit: cover">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Layer' %}</p>
+                            <img src="{% static 'assets/images/web-design/layers.png' %}" alt="Layer">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Settings' %}</p>
+                            <img src="{% static 'assets/images/web-design/component-settings.png' %}" alt="component-settings">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Styles' %}</p>
+                            <img src="{% static 'assets/images/web-design/styles.png' %}" alt="Styles">
+                        </div>
+                        <div class="w-100 mt-5">
+                            <p>{% trans 'Actions' %}</p>
+                            <img src="{% static 'assets/images/web-design/actions.png' %}" alt="actions">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <form
+                        id="frm-add-page"
+                        data-url="{% url 'AddNewCompanyWebsite' %}"
+                        data-method="POST"
+                        class="border border-light p-3 rounded shadow-sm"
+                >
+                    <h5>{% trans 'Add new' %} Page</h5>
+                    <div class="form-group">
+                        <label for="add-page-name" class="form-label required">{% trans 'Name' %}</label>
+                        <input type="text" name="title" class="form-control" id="add-page-name"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-page-remarks" class="form-label">{% trans 'Remarks' %}</label>
+                        <input type="text" name="remarks" id="add-page-remarks" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-page-title" class="form-label required">{% trans 'Page Title' %}</label>
+                        <input type="text" name="page_title" id="add-page-title" class="form-control" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-page-path" class="form-label required">{% trans 'Path' %}</label>
+                        <input type="text" name="page_path" id="add-page-path" class="form-control" required/>
+                        <small id="add-page-path" class="form-text text-muted">{% trans 'Fill id with {id}.' %}</small>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check form-check-sm">
+                            <input type="checkbox" id="add-page-publish" name="is_publish" class="form-check-input">
+                            <label class="form-check-label" for="add-page-publish">{% trans 'Publish' %}</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">{% trans 'Add' %}</button>
+                    </div>
+                </form>
+                <form
+                        id="frm-edit-page"
+                        data-base-url-add="{% url 'MyCompanyWebsiteDetailAPI' pk='__pk__' %}"
+                        data-url=""
+                        data-method="PUT"
+                        class="d-none border border-light p-3 rounded shadow-sm"
+                >
+                    <h5>{% trans 'Edit' %} Page</h5>
+                    <div class="form-group">
+                        <label for="edit-page-name" class="form-label required">{% trans 'Name' %}</label>
+                        <input type="text" name="title" class="form-control" id="edit-page-name" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-page-remarks" class="form-label">{% trans 'Remarks' %}</label>
+                        <input type="text" name="remarks" id="edit-page-remarks" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-page-title" class="form-label required">{% trans 'Page Title' %}</label>
+                        <input type="text" name="page_title" id="edit-page-title" class="form-control" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-page-path" class="form-label required">{% trans 'Path' %}</label>
+                        <input type="text" name="page_path" id="edit-page-path" class="form-control" required/>
+                        <small id="edit-page-path" class="form-text text-muted">{% trans 'Fill id with {id}.' %}</small>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check form-check-sm">
+                            <input
+                                    type="checkbox" id="edit-page-publish" name="is_publish" class="form-check-input"
+                                    checked
+                            >
+                            <label class="form-check-label" for="edit-page-publish">{% trans 'Publish' %}</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+                        <button
+                                type="button" class="btn btn-secondary" id="idx-btn-delete"
+                        >{% trans 'Delete' %}</button>
+                        <button class="btn btn-light btn-clone-page" type="button" data-base-url="{% url 'WebsiteDetailClone' pk='__pk__' %}" data-url="">
+                            {% trans 'Clone' %}
+                            <i class="fa-regular fa-clone"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        function convertToSlug(txt) {
+            return txt.toLowerCase()
+                .replace(/(?!\/)[^-\w ]+/g, function(match) {
+                    return match !== "{pk}" ? match : "";
+                })
+                .replace(/ +/g, "-");
+        }
+
+        let frmAddPage = $("#frm-add-page");
+        let frmEditPage = $("#frm-edit-page");
+
+        function resetInputForm(frm, data) {
+            frm.find('input[name="title"]').val(data ? data['title'] || "" : "");
+            frm.find('input[name="is_publish"]').prop('checked', data ? data['is_publish'] || false : false);
+            frm.find('input[name="page_path"]').val(data ? data['page_path'] || "" : "");
+            frm.find('input[name="page_title"]').val(data ? data['page_title'] || "" : "");
+            frm.find('input[name="remarks"]').val(data ? data['remarks'] || "" : "");
+        }
+
+        function openEdit(data) {
+            frmAddPage.addClass('d-none');
+            frmEditPage.removeClass('d-none');
+            resetInputForm(frmEditPage, data);
+
+            let baseUrl = frmEditPage.attr('data-base-url-add');
+            frmEditPage.attr('data-url', baseUrl.replaceAll('__pk__', data['id']));
+
+            let cloneBtn = frmEditPage.find('.btn-clone-page');
+            cloneBtn.attr(
+                'data-url',
+                cloneBtn.attr('data-base-url').replaceAll("__pk__", data['id'])
+            )
+        }
+
+        function openAdd() {
+            frmAddPage.removeClass('d-none');
+            frmEditPage.addClass('d-none');
+            resetInputForm(frmAddPage);
+        }
+
+        $('.page-item').on('click', function () {
+            let data = JSON.parse($(this).siblings('.page-item-data').text());
+            openEdit(data && typeof data === 'object' ? data : {});
+        });
+
+        $('#idx-add-new-page').on('click', function () {
+            openAdd();
+        });
+
+        $.validator.addMethod("startWithSlash", function (value, element) {
+            return value.charAt(0) === "/" && !value.startsWith('/system') && !value.startsWith('/admin');
+        }, `{% trans "This field must start with a forward slash '/' and must not contain any misleading words such as system, admin, etc." %}`);
+
+        SetupFormSubmit.validate(frmAddPage, {
+            rules: {
+                // simple rule, converted to {required:true}
+                title: {
+                    required: true,
+                    maxlength: 100,
+                    minlength: 1,
+                },
+                remarks: {
+                    maxlength: 250,
+                },
+                page_path: {
+                    required: true,
+                    maxlength: 200,
+                    minlength: 1,
+                    startWithSlash: true,
+                },
+                page_title: {
+                    required: true,
+                    maxlength: 100,
+                    minlength: 1,
+                },
+            },
+            submitHandler: function (form, event) {
+                $x.fn.showLoadingPage();
+                let frm = new SetupFormSubmit(form);
+                let data = {
+                    ...frm.dataForm,
+                    'is_publish': $(form).find('input[name="is_publish"]').prop('checked'),
+                }
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: data,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-success'),
+                        }, 'success');
+                        if (data['status'] === 200) setTimeout(() => {
+                            $x.fn.hideLoadingPage();
+                            window.location.reload();
+                        }, 1000);
+                    },
+                    (errs) => {
+                        let errsData = errs?.['data']?.['errors'] || {};
+                        if (errsData && typeof errsData === 'object'){
+                            $(form).validate().showErrors(errsData)
+                            Object.keys(errsData).map(
+                                (key) => {
+                                    if ($(form).find(`input[name="${key}"]`).length === 0){
+                                        $.fn.notifyB({'description': errsData[key]}, 'failure')
+                                    }
+                                }
+                            )
+                        }
+                        $x.fn.hideLoadingPage();
+                    }
+                )
+                return false;
+            }
+        });
+
+        $('input[name="page_path"]').on('change', function (){
+            $(this).val(convertToSlug($(this).val()))
+        })
+
+        SetupFormSubmit.validate(frmEditPage, {
+            rules: {
+                // simple rule, converted to {required:true}
+                title: {
+                    required: true,
+                    maxlength: 100,
+                    minlength: 1,
+                },
+                remarks: {
+                    maxlength: 250,
+                },
+                page_path: {
+                    required: true,
+                    maxlength: 200,
+                    minlength: 1,
+                },
+                page_title: {
+                    required: true,
+                    maxlength: 100,
+                    minlength: 1,
+                },
+            },
+            submitHandler: function (form, event) {
+                $x.fn.showLoadingPage();
+                let frm = new SetupFormSubmit(form);
+                let data = {
+                    ...frm.dataForm,
+                    'is_publish': $(form).find('input[name="is_publish"]').prop('checked'),
+                }
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: data,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-success'),
+                        }, 'success');
+                        if (data['status'] === 200) setTimeout(() => {
+                            $x.fn.hideLoadingPage();
+                            window.location.reload();
+                        }, 1000);
+                    },
+                    (errs) => {
+                        let errsData = errs?.['data']?.['errors'] || {};
+                        Object.keys(errsData).map(
+                            (key) => {
+                                if ($(form).find(`input[name="${key}"]`).length === 0){
+                                    $.fn.notifyB({'description': errsData[key]}, 'failure')
+                                }
+                            }
+                        )
+                        $x.fn.hideLoadingPage();
+                    }
+                )
+            }
+        });
+
+        $('#idx-btn-delete').on('click', function () {
+            let page_title = $(this).closest('form').find('input[name="title"]').val();
+            Swal.fire({
+                title: $.fn.transEle.attr('data-sure-delete'),
+                text: page_title,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: $.fn.transEle.attr('data-msg-yes-delete-it'),
+                cancelButtonText: $.fn.transEle.data('cancel'),
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $x.fn.showLoadingPage();
+                    $.fn.callAjax2({
+                        url: frmEditPage.attr('data-url'),
+                        method: 'DELETE',
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            $.fn.notifyB({
+                                'description': $.fn.transEle.attr('data-success'),
+                            }, 'success');
+                            if (data['status'] === 200) setTimeout(() => {
+                                $x.fn.hideLoadingPage();
+                                window.location.reload();
+                            }, 1000);
+                        },
+                        (errs) => {
+                            $x.fn.hideLoadingPage();
+                        }
+                    )
+                }
+            })
+        })
+
+        $('.btn-clone-page').on('click', function (){
+            let page_title = $(this).closest('form').find('input[name="title"]').val();
+            let url = $(this).attr('data-url');
+            if (url){
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-sure-clone'),
+                    text: page_title,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: $.fn.transEle.attr('data-msg-yes-clone-it'),
+                    cancelButtonText: $.fn.transEle.data('cancel'),
+                }).then(
+                    (result) => {
+                        if (result.isConfirmed) {
+                            $.fn.callAjax2({
+                                url: url,
+                                method: 'POST',
+                                data: {},
+                                isLoading: true,
+                            }
+                            ).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    $.fn.notifyB({
+                                        'description': $.fn.transEle.attr('data-success'),
+                                    }, 'success');
+                                    if (data['status'] === 200) setTimeout(() => {
+                                        $x.fn.hideLoadingPage();
+                                        window.location.reload();
+                                    }, 1000);
+                                },
+                                (errs) => {
+                                    $x.fn.hideLoadingPage();
+                                }
+                            )
+                        }
+                    }
+                )
+
+            }
+        })
+    </script>
+{% endblock %}

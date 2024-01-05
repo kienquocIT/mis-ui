@@ -1,0 +1,76 @@
+{% load static i18n %}
+<!-- Config General -->
+<br>
+<div class="row">
+    <div class="col-12">
+        <div class="col mb-2">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input disabled-but-edit" id="is-choose-price-list" disabled>
+                <label
+                        class="form-check-label disabled-label" for="is-choose-price-list"
+                >{% trans 'If short sale (without opportunity), enable to select price from price list' %}</label>
+            </div>
+        </div>
+        <div class="col mb-2">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input disabled-but-edit" id="is-input-price" disabled>
+                <label
+                        class="form-check-label disabled-label" for="is-input-price"
+                >{% trans 'If short sale (without opportunity), enable to input price' %}</label>
+            </div>
+        </div>
+        <div class="col mb-2">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input disabled-but-edit" id="is-discount-on-product" disabled>
+                <label
+                        class="form-check-label disabled-label" for="is-discount-on-product"
+                >{% trans 'If short sale (without opportunity), enable to input discount rate on product' %}</label>
+            </div>
+        </div>
+        <div class="col mb-2">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input disabled-but-edit" id="is-discount-on-total" disabled>
+                <label
+                        class="form-check-label disabled-label" for="is-discount-on-total"
+                >{% trans 'If short sale (without opportunity), enable to input discount rate on total' %}</label>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<div class="row">
+    <div class="col-12">
+        <div class="col mb-2">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input disabled-but-edit" id="is-not-input-price" disabled>
+                <label
+                        class="form-check-label disabled-label" for="is-not-input-price"
+                >{% trans 'If long sale (with opportunity), disable input price' %}</label>
+            </div>
+        </div>
+        <div class="col mb-2">
+            <div class="form-check">
+                <input
+                        type="checkbox" class="form-check-input disabled-but-edit" id="is-not-discount-on-product"
+                        disabled
+                >
+                <label
+                        class="form-check-label disabled-label" for="is-not-discount-on-product"
+                >{% trans 'If long sale (with opportunity), disable input discount on product' %}</label>
+            </div>
+        </div>
+        <div class="col mb-2">
+            <div class="form-check">
+                <input
+                        type="checkbox" class="form-check-input disabled-but-edit" id="is-not-discount-on-total"
+                        disabled
+                >
+                <label
+                        class="form-check-label disabled-label" for="is-not-discount-on-total"
+                >{% trans 'If long sale (with opportunity), disable input discount on total' %}</label>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Config General -->

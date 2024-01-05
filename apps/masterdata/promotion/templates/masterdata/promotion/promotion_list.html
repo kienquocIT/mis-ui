@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Promotion list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'PromotionCreate' %}">
+        <button class="btn btn-outline-primary" type="button">
+        <span>
+            <span>{% trans 'Create' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+
+    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
+       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
+       data-bs-original-title="Refresh" onclick="location.reload();">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="refresh-cw"></i>
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-md-12">
+            <table id="promotion-list" class="table nowrap w-100 mb-5"
+                   data-url="{% url "PromotionListAPI" %}">
+                <thead>
+                <th class="w-5">#</th>
+                <th class="w-60">{% trans "Promotion name" %}</th>
+                <th class="w-20">{% trans "Status" %}</th>
+                <th class="w-15"></th>
+                </thead>
+            </table>
+        </div>
+    </div>
+    {% csrf_token %}
+    <input type="hidden" id="trans-factory"
+           data-valid="{% trans 'Valid' %}"
+           data-invalid="{% trans 'invalid' %}"
+           data-expired="{% trans 'Expired' %}"
+           data-terms-config="{% trans 'Confirm' %}"
+           data-terms-cancel="{% trans 'Cancel' %}"
+           data-terms-mess_tit="{% trans 'Delete Item' %}"
+           data-terms-mess="{% trans 'Do you really want to delete this item' %}"
+    >
+    <input type="hidden" id="url-factory"
+           data-detail-api="{% url 'PromotionDetailAPI' 1 %}"
+           data-detail="{% url 'PromotionDetail' 1 %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/masterdata/promotion/js/list.js' %}"></script>
+{% endblock %}
+

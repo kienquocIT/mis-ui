@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/extends_new/style.css' %}">
+    <style>
+        .row-error-disabled {
+            position: relative;
+        }
+
+        .row-error-disabled::after {
+            content: "{% trans 'This application has been disabled for you or cannot be found!' %}";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'EmployeeUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div
+            id="employee-detail-page" class="needs-validation"
+            data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
+            data-method="GET"
+            data-url-redirect="{% url 'EmployeeList' %}"
+            data-doc-id="{{ data.data.doc_id }}"
+    >
+        {% csrf_token %}
+        {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with range_allowed="1,2,3,4" get_from='employee' actions_enabled=False summary_enabled=True plan_app_enabled=True permit_enabled=True li_head='core/hr/employee/extends/tab-info.html' li_content_head='core/hr/employee/extends/tab-info-content.html'  li_content_head_disabled=True %}
+    </div>
+    <template class="template-factory hidden">
+        <div class="belong-to">
+            <select class="form-select select_range" disabled>
+                {% for item in data.belong_list %}
+                    <option value="{{ item.value }}">{{ item.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </template>
+    <input
+            data-application="{% trans 'Application' %}" type="hidden" class="hidden table-translate"
+            data-view_all="{% trans 'All' %}"
+            data-view="{% trans 'View' %}"
+            data-create="{% trans 'Create' %}"
+            data-edit="{% trans 'Edit' %}"
+            data-delete="{% trans 'Delete' %}"
+            data-permission_range="{% trans 'Permission range' %}"
+            data-empty="{% trans 'Permission list is empty' %}"
+            data-add="{% trans 'Add new permission' %}"
+            data-actions="{% trans 'Actions' %}"
+    >
+    <input
+            class="url-factory" type="hidden" data-link-1="{% url 'ApplicationPermissionAPI' %}"
+            data-link-2="{% url 'EmployeeDetailAPI' data.data.doc_id %}"
+            data-link-3="{% url 'EmployeeUpdate' data.data.doc_id %}"
+    >
+{% endblock %}
+
+
+{% block jsFooter %}
+    <script>
+        function onLoadDropdownUserDetail(eleInfo, eleInfoData, selectedData) {
+            let userData = selectedData?.['user'] || {};
+            if (typeof userData === 'object' && Object.keys(userData).length > 0){
+                eleInfoData.find('.user-info-detail-first-name').val(userData['first_name'] || '');
+                eleInfoData.find('.user-info-detail-last-name').val(userData['last_name'] || '');
+                eleInfoData.find('.user-info-detail-email').val(userData['email'] || '');
+            }
+            return eleInfo;
+        }
+    </script>
+
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+
+    <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
+
+{% endblock %}

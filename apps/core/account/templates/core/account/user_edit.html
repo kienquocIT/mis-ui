@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-edit-user">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <span id="pageDataHide" data-url="{% url 'UserDetailAPI' pk=pk %}"></span>
+    <form data-url="{% url 'UserDetailAPI' pk=0 %}" data-url-redirect="/" data-method="PUT" id="form-edit-user">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-6 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "First Name" %}</label>
+                    <input class="form-control" type="text"
+                           id="inp-first_name" name="first_name" required>
+                </div>
+            </div>
+            <div class="col-6 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Last Name" %}</label>
+                    <input class="form-control" type="text" id="inp-last_name" name="last_name" required>
+                </div>
+            </div>
+            <div class="col-6 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Full Name" %}</label>
+                    <input class="form-control-plaintext" type="text"
+                           id="inp-full_name" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Email" %}</label>
+                    <input class="form-control" type="text" id="inp-email" name="email">
+                </div>
+            </div>
+            <div class="col-6 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Company" %}</label>
+                    <select
+                            class="form-select"
+                            id="select-box-company"
+                            data-url="{% url "CompanyListAPI" %}"
+                            data-method="GET"
+                            name="company_current"
+                    >
+                    </select>
+                </div>
+            </div>
+            <div class="col-6 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">{% trans "Phone" %}</label>
+                    <input class="form-control" type="text" id="inp-phone" name="phone">
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/core/account/user_common.js' %}"></script>
+    <script src="{% static 'assets/js/core/account/user_edit.js' %}"></script>
+{% endblock %}

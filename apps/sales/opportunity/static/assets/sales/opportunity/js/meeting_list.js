@@ -56,15 +56,6 @@ function loadOpportunityMeetingList() {
                         });
                     }
                 },
-                {
-                    data: 'action',
-                    className: 'wrap-text w-5 text-center',
-                    render: (data, type, row) => {
-                        let btn = $(`${$('.delete-btn').html()}`)
-                        btn.attr('data-id', row.id)
-                        return btn.prop('outerHTML')
-                    }
-                },
             ],
             rowCallback: function(row, data, index){
                 $('.detail-meeting-button', row).on('click', function () {
@@ -232,7 +223,7 @@ $(document).on('click', '#table_opportunity_meeting_list .delete-activity', func
     let meeting_id = $(this).attr('data-id');
     let frm = $('#table_opportunity_meeting_list');
     let csr = $("input[name=csrfmiddlewaretoken]").val();
-    $.fn.callAjax(frm.attr('data-url-delete').replace(0, meeting_id), 'DELETE', {}, csr)
+    $.fn.callAjax(frm.attr('data-url-delete').replace(0, meeting_id), 'PUT', {}, csr)
         .then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {

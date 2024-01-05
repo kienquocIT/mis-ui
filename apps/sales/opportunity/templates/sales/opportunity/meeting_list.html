@@ -19,7 +19,7 @@
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityMeetingListAPI' %}"
-           data-url-delete="{% url 'OpportunityMeetingDeleteAPI' '0' %}"
+           data-url-delete="{% url 'OpportunityMeetingDetailAPI' '0' %}"
            data-url-redirect="{% url 'OpportunityMeetingList' %}"
            data-method="GET">
         <thead>
@@ -32,9 +32,8 @@
                    title="{% trans 'Press row here to see detail meeting.' %}">
                 </i>
             </th>
-            <th class="text-center">{% trans 'Sale Code' %}</th>
-            <th class="text-center">{% trans 'Date' %}</th>
-            <th></th>
+            <th>{% trans 'Sale Code' %}</th>
+            <th>{% trans 'Date' %}</th>
         </tr>
         </thead>
         <tbody>

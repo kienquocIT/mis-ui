@@ -8,7 +8,9 @@ $(document).ready(function () {
             dataSrc: 'data.leave_request',
         },
         rowIdx: true,
-        pageLength:50,
+        pageLength: 50,
+        autoWidth: true,
+        scrollX: true,
         columns: [
             {
                 targets: 0,
@@ -17,14 +19,14 @@ $(document).ready(function () {
             },
             {
                 data: 'title',
-                render: (row, type, data)=>{
+                render: (row, type, data) => {
                     const url = $urlFact.attr('data-leave-detail').format_url_with_uuid(data.id)
                     return row ? `<a href="${url}" target="blank">${row}</a>` : '--'
                 }
             },
             {
                 data: 'employee_inherit',
-                render: (row, type, data)=>{
+                render: (row, type, data) => {
                     let time = '--';
                     if (Object.keys(row).length > 0) time = `${row.full_name}`
                     return time
@@ -32,9 +34,9 @@ $(document).ready(function () {
             },
             {
                 data: 'code',
-                render: (row, type, data) =>{
+                render: (row, type, data) => {
                     let html = '--'
-                    if (row){
+                    if (row) {
                         html = `<span class="badge badge-info">${row}</span>`
                     }
                     return html
@@ -42,13 +44,13 @@ $(document).ready(function () {
             },
             {
                 data: 'start_day',
-                render: (row, type, data) =>{
+                render: (row, type, data) => {
                     return row ? moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'
                 }
             },
             {
                 data: 'total',
-                render: (row, type, data) =>{
+                render: (row, type, data) => {
                     return row ? row : '--'
                 }
             },

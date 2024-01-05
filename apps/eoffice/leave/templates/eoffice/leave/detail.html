@@ -59,7 +59,7 @@
                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
             </div>
-            <div class="col-md-4 col-xs-12 form-group"></div>
+            <div class="clearfix"></div>
             <div class="col-xs-12 col-md-4 form-group">
                 <label for="selectEmployeeInherit" class="form-label required">{% trans 'Beneficiary' %}</label>
                 <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
@@ -101,7 +101,7 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="tabDetail">
-                    <table id="leave_detail_tbl" class="table nowrap w-100 mb-5">
+                    <table id="leave_detail_tbl" class="table nowrap w-100 min-w-1500p mb-5">
                         <thead>
                         <tr>
                             <th>{% trans 'Leave type' %}</th>
@@ -122,7 +122,7 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="tabAvailable">
-                    <table id="leave_available_tbl" class="table nowrap w-100 mb-5">
+                    <table id="leave_available_tbl" class="table nowrap w-100 min-w-1500p mb-5">
                         <thead>
                         <tr>
                             <th>{% trans 'Name' %}</th>

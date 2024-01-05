@@ -24,6 +24,7 @@ $(function () {
                     } else {
                         QuotationLoadDataHandle.loadDataTablesAndDropDowns(data, false);
                     }
+
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
                         $('#data-copy-quotation-detail').val(JSON.stringify(data))

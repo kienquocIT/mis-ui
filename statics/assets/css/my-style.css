@@ -661,6 +661,10 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 .min-w-1500p {
     min-width: 1500px;
 }
+
+.min-w-2000p {
+    min-width: 2000px;
+}
 /* -- Extend Bootstrap Advance */
 
 /* File upload */
@@ -807,7 +811,6 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     border: dashed 1px #ff0000;
     background: rgb(247 247 247 / 30%);
     font-style: italic;
-    color: #ff0000;
 }
 
 .hidden-zone::placeholder {

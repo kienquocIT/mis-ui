@@ -1121,58 +1121,6 @@ $(document).ready(function () {
 
             // for task
 
-            function resetFormTask() {
-                // clean html select etc.
-                $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-                $('#selectAssignTo').val(null).trigger('change');
-                if ($('.current-create-task').length <= 0)
-                    $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
-                $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
-                $('#inputLabel').val(null);
-                $('[name="id"]').remove();
-                const $inputAssigner = $('#inputAssigner');
-                $inputAssigner.val($inputAssigner.attr('data-name'))
-                $('.create-subtask').addClass('hidden')
-                $('[name="parent_n"]').remove();
-                window.editor.setData('')
-                $('.create-task').attr('disabled', false)
-            }
-
-            function logworkSubmit() {
-                $('#save-logtime').off().on('click', function () {
-                    const startDate = $('#startDateLogTime').val()
-                    const endDate = $('#endDateLogTime').val()
-                    const est = $('#EstLogtime').val()
-                    const taskID = $('#logtime_task_id').val()
-                    if (!startDate && !endDate && !est) {
-                        $.fn.notifyB({description: $('#form_valid').attr('data-logtime-valid')}, 'failure')
-                        return false
-                    }
-                    const data = {
-                        'start_date': moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                        'end_date': moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                        'time_spent': est,
-                    }
-                    // if has task id => log time
-                    if (taskID && taskID.valid_uuid4()) {
-                        data.task = taskID
-                        let url = $('#url-factory').attr('data-logtime')
-                        $.fn.callAjax(url, 'POST', data, true)
-                            .then(
-                                (req) => {
-                                    let data = $.fn.switcherResp(req);
-                                    if (data?.['status'] === 200) {
-                                        $.fn.notifyB({description: data.message}, 'success')
-                                    }
-                                }
-                            )
-                    } else {
-                        $('[name="log_time"]').attr('value', JSON.stringify(data))
-                    }
-                    $('#logWorkModal').modal('hide')
-                });
-            }
-
             class AssignToSetup {
                 static case01(config, params) {
                     // có opps + config có in assign opt lớn hơn 0
@@ -1396,10 +1344,6 @@ $(document).ready(function () {
                             sttElm.attr('data-onload', JSON.stringify(todoItem))
                             sttElm.initSelect2()
                         })
-
-                // load assigner
-                const $assignerElm = $('#inputAssigner')
-                $assignerElm.val($assignerElm.attr('data-name')).attr('value', $assignerElm.attr('data-value-id'))
 
                 // assign to me btn
                 const $assignBtnElm = $('.btn-assign');

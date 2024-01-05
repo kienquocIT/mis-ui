@@ -1155,8 +1155,7 @@ $(document).ready(function () {
                 )
             })
 
-            // for task
-
+            // for TASK
             function resetFormTask() {
                 // clean html select etc.
                 $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
@@ -1418,7 +1417,7 @@ $(document).ready(function () {
                 }
 
                 /** start run and init all function **/
-                    // run status select default
+                // run status select default
                 const sttElm = $('#selectStatus');
                 sttElm.attr('data-url')
                 $.fn.callAjax2({

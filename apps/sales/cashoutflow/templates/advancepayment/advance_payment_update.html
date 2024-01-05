@@ -233,54 +233,54 @@
                                data-url-tax-list="{% url 'TaxListAPI' %}">
                             <thead>
                             <tr>
-                                <th class="text-center" style="width: 2%"></th>
-                                <th class="required" style="width: 18%">{% trans 'Expense name' %}</th>
-                                <th class="required" style="width: 12%">{% trans 'Expense type' %}</th>
-                                <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
-                                <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
-                                <th class="required" style="width: 14%">{% trans 'Unit price' %}</th>
-                                <th style="width: 10%">{% trans 'Tax' %}</th>
-                                <th class="required" style="width: 14%">{% trans 'Subtotal price' %}</th>
-                                <th class="required" style="width: 14%">{% trans 'After tax subtotal' %}</th>
-                                <th style="width: 1%"></th>
+                                <th class="text-center" style="min-width: 50px"></th>
+                                <th class="required" style="min-width: 300px">{% trans 'Expense name' %}</th>
+                                <th class="required" style="min-width: 350px">{% trans 'Expense type' %}</th>
+                                <th class="required" style="min-width: 200px">{% trans 'UoM' %}</th>
+                                <th class="required" style="min-width: 200px">{% trans 'Quantity' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'Unit price' %}</th>
+                                <th style="min-width: 200px">{% trans 'Tax' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'Subtotal price' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'After tax subtotal' %}</th>
+                                <th style="min-width: 50px"></th>
                             </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
-                            <tfoot>
+                            <tbody></tbody>
+                            <tfoot style="font-weight: bold">
                                 <tr>
                                     <td colspan="1"></td>
-                                        <td colspan="1">
-                                            <button type="button" id="btn-add-row-line-detail" name="expense_valid_list" class="btn btn-outline-primary btn-sm">
-                                                <i class="fas fa-plus-circle"></i>
-                                                {% trans 'Add new row' %}
-                                            </button>
-                                        </td>
-                                    <td colspan="5"></td>
+                                    <td colspan="1">
+                                        <button type="button" id="btn-add-row-line-detail" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-plus-circle"></i>
+                                            {% trans 'Add new row' %}
+                                        </button>
+                                    </td>
+                                    <td colspan="4"></td>
                                     <td colspan="2" class="text-primary">
                                         <div class="row mt-3">
                                             <div class="col-4">{% trans "Pretax price" %}</div>
                                             <span class="col-8 text-right mask-money" id="pretax-value">0</span>
                                         </div>
+                                        <div class="row"><i class="bi bi-plus"></i></div>
                                         <div class="row">
                                             <div class="col-4">{% trans "Taxes" %}</div>
                                             <span class="col-8 text-right mask-money" id="taxes-value">0</span>
                                         </div>
-                                        <div class="dropdown-divider"></div>
+                                        <hr class="bg-teal">
                                         <div class="row" style="font-weight: bold">
                                             <div class="col-4">{% trans "Total" %}</div>
                                             <span class="col-8 text-right mask-money" id="total-value">0</span>
                                         </div>
                                         <div class="row mt-3 mb-3">
-                                            <div class="col-12">
+                                            <div class="col-12 bg-primary p-2 text-dark bg-opacity-10">
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="money-gave" name="money_gave">
+                                                    <input type="checkbox" class="form-check-input" id="money-gave">
                                                     <label class="text-primary">{% trans "Money gave/transferred" %}</label>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td></td>
+                                    <td colspan="2"></td>
                                 </tr>
                             </tfoot>
                         </table>

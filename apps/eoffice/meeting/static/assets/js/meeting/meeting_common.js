@@ -1,5 +1,6 @@
 const startTimeEle = $('#start-time')
 const startDateEle = $('#start-date')
+const externalParticipantsAccountEle = $('#external-participants-account')
 const endDateBySelectEle = $('#end-date-by-select')
 const endDateAfterSelectEle = $('#end-date-after-select')
 const modalMeetingSelectAppEle = $('#modal-select-app')
@@ -128,14 +129,50 @@ function loadInternalParticipants(data) {
     }).on('change', function () {})
 }
 
-function loadExternalParticipants(data) {
+function loadExternalAccountParticipants(data) {
+    externalParticipantsAccountEle.initSelect2({
+        ajax: {
+            url: externalParticipantsAccountEle.attr('data-url'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp];
+        },
+        data: (data ? data : null),
+        keyResp: 'account_list',
+        keyId: 'id',
+        keyText: 'name',
+    }).on('change', function () {
+        let account_selected = SelectDDControl.get_data_from_idx(externalParticipantsAccountEle, externalParticipantsAccountEle.val())
+        if (account_selected) {
+            loadExternalParticipants(null, account_selected)
+            externalParticipantsEle.prop('disabled', false)
+        }
+        else {
+            externalParticipantsEle.prop('disabled', true)
+        }
+    })
+}
+
+function loadExternalParticipants(data, account=null) {
+    let account_manager_id = []
+    if (account) {
+        account_manager_id = account.manager.map(item => item.id);
+    }
     externalParticipantsEle.initSelect2({
         ajax: {
             url: externalParticipantsEle.attr('data-url'),
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
-            return resp.data[keyResp];
+            let res = []
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                let item = resp.data[keyResp][i]
+                if (account_manager_id.includes(item.id)) {
+                    res.push(item)
+                }
+            }
+            return res
         },
         templateResult: function(data) {
             let ele = $('<div class="row col-12"></div>');
@@ -417,7 +454,7 @@ class MeetingScheduleHandle {
     load() {
         loadMeetingRoom()
         loadInternalParticipants()
-        loadExternalParticipants()
+        loadExternalAccountParticipants()
         loadModalAttendees()
     }
     combinesData(frmEle) {
@@ -437,6 +474,7 @@ class MeetingScheduleHandle {
         frm.dataForm['meeting_start_date'] = meeting_start_date
         frm.dataForm['meeting_start_time'] = meeting_start_time
         frm.dataForm['meeting_duration'] = meeting_duration
+        frm.dataForm['account_external'] = externalParticipantsAccountEle.val()
         frm.dataForm['participants'] = []
         for (let i = 0; i < internalParticipantsEle.val().length; i++) {
             frm.dataForm['participants'].push({
@@ -514,6 +552,8 @@ function LoadDetailMeetingSchedule() {
                 $('#duration-hour').val(parseInt(data?.['meeting_duration']/60))
                 $('#duration-min').val(parseInt(data?.['meeting_duration']%60))
                 loadInternalParticipants(data?.['participants'].filter(item => item?.['is_external'] === false))
+                loadExternalAccountParticipants(data?.['account_external'])
+
                 loadExternalParticipants(data?.['participants'].filter(item => item?.['is_external'] === true))
                 $('#offline-meeting').prop('checked', data?.['meeting_type'])
                 $('.row-for-offline-meeting').prop('hidden', !data?.['meeting_type'])

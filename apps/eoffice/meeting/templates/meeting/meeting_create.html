@@ -130,16 +130,16 @@
                                 </div>
                             </div>
                             <div class="row">
-    {#                            <div class="col-12 col-lg-4 col-md-4">#}
-    {#                                <div class="form-group">#}
-    {#                                    <label class="form-label" for="external-participants-account">{% trans "Account" %}</label>#}
-    {#                                    <select class="form-select select2" id="external-participants-account"></select>#}
-    {#                                </div>#}
-    {#                            </div>#}
+                                <div class="col-12 col-lg-12 col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label" for="external-participants-account">{% trans "Account" %}</label>
+                                        <select data-url="{% url 'AccountListAPI' %}" data-method="GET" class="form-select select2" id="external-participants-account"></select>
+                                    </div>
+                                </div>
                                 <div class="col-12 col-lg-12 col-md-12">
                                     <div class="form-group">
                                         <label class="form-label" for="external-participants">{% trans "External participants" %}</label>
-                                        <select multiple class="form-select select2"
+                                        <select disabled multiple class="form-select select2"
                                                 id="external-participants"
                                                 data-method="GET"
                                                 data-url="{% url 'EmployeeListAPI' %}"

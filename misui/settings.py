@@ -14,13 +14,13 @@ import os
 from colorama import Fore
 from pathlib import Path
 
-from dotenv import load_dotenv
+from .load_env import load_env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # load environment from .env file
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+load_env(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -90,7 +90,6 @@ INSTALLED_APPS = \
     ] + [  # external
         'apps.web_builder',
     ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -395,7 +394,6 @@ if OS_DEBUG is True or OS_DEBUG in [1, '1']:
     print(Fore.CYAN, '----------------------------------------------------------------------------------', '\033[0m')
 else:
     DEBUG = False
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 

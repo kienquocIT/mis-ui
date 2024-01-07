@@ -129,6 +129,83 @@ function loadInternalParticipants(data) {
     }).on('change', function () {})
 }
 
+function loadInternalParticipantsTable(selected_data=[]) {
+    let dtb = $('#internal-employees-table');
+    dtb.DataTable().clear().destroy()
+    let frm = new SetupFormSubmit(dtb);
+    dtb.DataTableDefault({
+        useDataServer: true,
+        rowIdx: true,
+        paging: false,
+        ajax: {
+            url: frm.dataUrl,
+            type: frm.dataMethod,
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    return resp.data['employee_list'] ? resp.data['employee_list'] : [];
+                }
+                return [];
+            },
+        },
+        columns: [
+            {
+                className: 'wrap-text',
+                render: () => {
+                    return ``;
+                }
+            },
+            {
+                data: 'full_name',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span data-id="${row.id}" data-fullname="${row?.['full_name']}" class="text-primary emp-info">${row?.['full_name']}</span>`;
+                }
+            },
+            {
+                data: 'group',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row?.['group']?.['title']) {
+                        return `<span class="text-secondary">${row?.['group']?.['title']}</span>`;
+                    }
+                    return ``;
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    let checked = ''
+                    if (selected_data.includes(row.id)) {
+                        checked = 'checked'
+                    }
+                    return `<div class="form-check form-check-lg">
+                                <input ${checked} type="checkbox" class="form-check-input checkbox_internal_employees">
+                            </div>`
+                }
+            },
+        ],
+    });
+}
+
+$('#btn_load_internal_participants_table').on('click', function () {
+    loadInternalParticipantsTable(internalParticipantsEle.val())
+})
+
+$('#select-internal-employees-btn').on('click', function () {
+    let internal_employee_list = []
+    $('#internal-employees-table tr').each(function () {
+        if ($(this).find('.checkbox_internal_employees').prop('checked')) {
+            let emp_info = $(this).find('.emp-info')
+            internal_employee_list.push({
+                'id': emp_info.attr('data-id'),
+                'full_name': emp_info.attr('data-fullname'),
+            })
+        }
+    })
+    loadInternalParticipants(internal_employee_list)
+})
+
 function loadExternalAccountParticipants(data) {
     externalParticipantsAccountEle.initSelect2({
         ajax: {
@@ -145,20 +222,12 @@ function loadExternalAccountParticipants(data) {
     }).on('change', function () {
         let account_selected = SelectDDControl.get_data_from_idx(externalParticipantsAccountEle, externalParticipantsAccountEle.val())
         if (account_selected) {
-            loadExternalParticipants(null, account_selected)
-            externalParticipantsEle.prop('disabled', false)
-        }
-        else {
-            externalParticipantsEle.prop('disabled', true)
+            loadExternalParticipantsTable(null, account_selected)
         }
     })
 }
 
-function loadExternalParticipants(data, account=null) {
-    let account_manager_id = []
-    if (account) {
-        account_manager_id = account.manager.map(item => item.id);
-    }
+function loadExternalParticipants(data) {
     externalParticipantsEle.initSelect2({
         ajax: {
             url: externalParticipantsEle.attr('data-url'),
@@ -188,6 +257,107 @@ function loadExternalParticipants(data, account=null) {
         keyText: 'full_name',
     }).on('change', function () {})
 }
+
+function loadExternalParticipantsTable(data, account=null, selected_data=[]) {
+    let account_manager_id = []
+    if (account) {
+        for (let i = 0; i < account?.['manager'].length; i++) {
+            account_manager_id.push(account?.['manager'][i]?.['id'])
+        }
+    }
+    let dtb = $('#external-employees-table');
+    dtb.DataTable().clear().destroy()
+    let frm = new SetupFormSubmit(dtb);
+    dtb.DataTableDefault({
+        useDataServer: true,
+        rowIdx: true,
+        paging: false,
+        ajax: {
+            url: frm.dataUrl,
+            type: frm.dataMethod,
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let res = []
+                    for (let i = 0; i < resp.data['employee_list'].length; i++) {
+                        let item = resp.data['employee_list'][i]
+                        if (account_manager_id.includes(item.id)) {
+                            res.push(item)
+                        }
+                    }
+                    return res
+                }
+                return [];
+            },
+        },
+        columns: [
+            {
+                className: 'wrap-text',
+                render: () => {
+                    return ``;
+                }
+            },
+            {
+                data: 'full_name',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span data-id="${row.id}" data-fullname="${row?.['full_name']}" class="text-primary emp-info">${row?.['full_name']}</span>`;
+                }
+            },
+            {
+                data: 'group',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row?.['group']?.['title']) {
+                        return `<span class="text-secondary">${row?.['group']?.['title']}</span>`;
+                    }
+                    return ``;
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    let checked = ''
+                    if (selected_data.includes(row.id)) {
+                        checked = 'checked'
+                    }
+                    return `<div class="form-check form-check-lg">
+                                <input ${checked} type="checkbox" class="form-check-input checkbox_external_employees">
+                            </div>`
+                }
+            },
+        ],
+    });
+}
+
+$('#btn_load_external_participants_table').on('click', function () {
+    if ($('#selected-account-script').text()) {
+        loadExternalAccountParticipants(JSON.parse($('#selected-account-script').text()))
+        loadExternalParticipantsTable(null, JSON.parse($('#selected-account-script').text()), externalParticipantsEle.val())
+    }
+    else {
+        loadExternalAccountParticipants()
+        loadExternalParticipantsTable(null, null, externalParticipantsEle.val())
+    }
+})
+
+$('#select-external-employees-btn').on('click', function () {
+    let external_employee_list = []
+    $('#external-employees-table tr').each(function () {
+        if ($(this).find('.checkbox_external_employees').prop('checked')) {
+            let emp_info = $(this).find('.emp-info')
+            external_employee_list.push({
+                'id': emp_info.attr('data-id'),
+                'full_name': emp_info.attr('data-fullname'),
+            })
+        }
+    })
+    let account_selected = SelectDDControl.get_data_from_idx(externalParticipantsAccountEle, externalParticipantsAccountEle.val())
+    if (account_selected) {
+        $('#selected-account-script').text(JSON.stringify(account_selected))
+    }
+    loadExternalParticipants(external_employee_list)
+})
 
 function loadModalAttendees(data) {
     modalAttendeesEle.initSelect2({
@@ -453,9 +623,7 @@ function isToday(targetDateTimeString) {
 class MeetingScheduleHandle {
     load() {
         loadMeetingRoom()
-        loadInternalParticipants()
-        loadExternalAccountParticipants()
-        loadModalAttendees()
+        loadInternalParticipantsTable()
     }
     combinesData(frmEle) {
         let meeting_name = $('#name').val()
@@ -643,6 +811,8 @@ function LoadDetailMeetingSchedule() {
                 $('textarea').attr('disabled', true).attr('readonly', true)
                 $('#btn-edit-meeting').attr('disabled', true).attr('readonly', true)
                 $('#btn-delete-meeting').attr('disabled', true).attr('readonly', true)
+                $('#btn_load_internal_participants_table').attr('disabled', true).attr('readonly', true)
+                $('#btn_load_external_participants_table').attr('disabled', true).attr('readonly', true)
             }
         })
 }

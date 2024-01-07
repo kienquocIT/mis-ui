@@ -107,26 +107,10 @@ meetingIDEle.on('change', function () {
 
 function loadInternalParticipants(data) {
     internalParticipantsEle.initSelect2({
-        ajax: {
-            url: internalParticipantsEle.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            return resp.data[keyResp];
-        },
-        templateResult: function(data) {
-            let ele = $('<div class="row col-12"></div>');
-            ele.append('<div class="col-8">' + data.data?.['full_name'] + '</div>');
-            if (data.data?.['group']?.['title'] !== undefined) {
-                ele.append('<div class="col-4">(' + data.data?.['group']['title'] + ')</div>');
-            }
-            return ele;
-        },
         data: (data ? data : null),
-        keyResp: 'employee_list',
         keyId: 'id',
         keyText: 'full_name',
-    }).on('change', function () {})
+    })
 }
 
 function loadInternalParticipantsTable(selected_data=[]) {
@@ -229,33 +213,10 @@ function loadExternalAccountParticipants(data) {
 
 function loadExternalParticipants(data) {
     externalParticipantsEle.initSelect2({
-        ajax: {
-            url: externalParticipantsEle.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            let res = []
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                let item = resp.data[keyResp][i]
-                if (account_manager_id.includes(item.id)) {
-                    res.push(item)
-                }
-            }
-            return res
-        },
-        templateResult: function(data) {
-            let ele = $('<div class="row col-12"></div>');
-            ele.append('<div class="col-8">' + data.data?.['full_name'] + '</div>');
-            if (data.data?.['group']?.['title'] !== undefined) {
-                ele.append('<div class="col-4">(' + data.data?.['group']['title'] + ')</div>');
-            }
-            return ele;
-        },
         data: (data ? data : null),
-        keyResp: 'employee_list',
         keyId: 'id',
         keyText: 'full_name',
-    }).on('change', function () {})
+    })
 }
 
 function loadExternalParticipantsTable(data, account=null, selected_data=[]) {
@@ -623,7 +584,6 @@ function isToday(targetDateTimeString) {
 class MeetingScheduleHandle {
     load() {
         loadMeetingRoom()
-        loadInternalParticipantsTable()
     }
     combinesData(frmEle) {
         let meeting_name = $('#name').val()

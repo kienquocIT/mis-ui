@@ -1,11 +1,11 @@
 version: '2.12'
 
 services:
-  ui-dev:
+  bflow-ui:
     build:
       context: ../../
       dockerfile: builder/Dockerfile
-    container_name: ui-dev
+    container_name: bflow-ui
     command: sh ./builder/docker_entry_point.sh
     restart: unless-stopped
     volumes:

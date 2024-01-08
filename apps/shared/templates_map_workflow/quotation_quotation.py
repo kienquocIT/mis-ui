@@ -33,6 +33,9 @@ QUOTATION_DATA_MAP = {
     'quotation_expenses_data': FieldMapCommon(
         name_mapping=['quotation_expenses_data'],
     ).data,
+    'quotation_indicators_data': FieldMapCommon(
+        name_mapping=['quotation_indicators_data'],
+    ).data,
     'is_customer_confirm': FieldMapCommon(
         name_mapping=['is_customer_confirm'],
     ).data,

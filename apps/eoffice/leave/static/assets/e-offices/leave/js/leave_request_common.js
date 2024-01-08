@@ -22,8 +22,8 @@ function renderTemplateSelected(state){
 
 function ConvertToTotal(data){
     let tempTotal
-    const dFrom = new Date(data.date_from)// số giờ bắt đầu
-    const dTo = new Date(data.date_to)// số giờ kết thúc
+    const dFrom = new Date(data.date_from.split(' ')[0])// số giờ bắt đầu
+    const dTo = new Date(data.date_to.split(' ')[0])// số giờ kết thúc
     tempTotal = Math.abs(
         Math.floor(dTo.getTime() / (3600 * 24 * 1000)) -
         Math.floor(dFrom.getTime() / (3600 * 24 * 1000))
@@ -147,6 +147,8 @@ class detailTab {
             ordering: false,
             paginate: false,
             info: false,
+            autoWidth: true,
+            scrollX: true,
             columns: [
                 {
                     data: 'leave_available',
@@ -157,7 +159,7 @@ class detailTab {
                         if (row && Object.keys(row).length > 0) dataLoad.push(
                             {...row, selected: true}
                         )
-                        let html = $(`<select>`).addClass('form-select row_leave-available').attr('name', `leave_available_${meta.row}`).attr('data-zone', 'detail_data')
+                        let html = $(`<select>`).addClass('form-select row_leave-available w-100').attr('name', `leave_available_${meta.row}`).attr('data-zone', 'detail_data')
                         if (row && Object.keys(row).length > 0) html.attr('data-onload', JSON.stringify(dataLoad))
                         return html.prop('outerHTML')
                     }
@@ -266,6 +268,7 @@ class detailTab {
                     .attr('data-keyText', "leave_type.title")
                     .attr('data-keyId', "id")
                     .initSelect2({
+                        "dropdownAutoWidth": true,
                         'dataParams': {employee: $EmpElm.val()},
                         'templateResult': renderTemplateResult,
                         'templateSelection': renderTemplateSelected,
@@ -373,7 +376,8 @@ class TabAvailable {
             ordering: false,
             paginate: false,
             info: false,
-            responsive: true,
+            autoWidth: true,
+            scrollX: true,
             columns: [
                 {
                     data: 'leave_type',

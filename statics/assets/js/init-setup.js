@@ -1397,18 +1397,16 @@ class WFRTControl {
         let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
         if ((btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext')
             && WFRTControl.getWFRuntimeID() && WFRTControl.getTaskWF() && pk && url.includes(pk) && method.toLowerCase() === 'put') {
-            // let taskID = WFRTControl.getTaskWF();
-            // let keyOk = WFRTControl.getZoneKeyData();
-            // let newData = {};
-            // for (let key in reqBodyData) {
-            //     if (keyOk.includes(key)) {
-            //         newData[key] = reqBodyData[key];
-            //     }
-            // }
-            // newData['task_id'] = taskID;
-            // reqBodyData = newData;
-
-            reqBodyData['task_id'] = WFRTControl.getTaskWF();
+            let taskID = WFRTControl.getTaskWF();
+            let keyOk = WFRTControl.getZoneKeyData();
+            let newData = {};
+            for (let key in reqBodyData) {
+                if (keyOk.includes(key)) {
+                    newData[key] = reqBodyData[key];
+                }
+            }
+            newData['task_id'] = taskID;
+            reqBodyData = newData;
         }
         return reqBodyData;
     }
@@ -2294,9 +2292,9 @@ class WFRTControl {
                 if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {
                         if ($(ele$).hasClass('mask-money')) {
-                            $(ele$).attr('data-init-money', '').html(``);
+                            $(ele$).attr('data-init-money', '').html(`${$.fn.transEle.attr('data-hidden-by-workflow-config')}`);
                         } else {
-                            $(ele$).html(``);
+                            $(ele$).html(`${$.fn.transEle.attr('data-hidden-by-workflow-config')}`);
                         }
                     }
                 }

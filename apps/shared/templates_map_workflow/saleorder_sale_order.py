@@ -33,4 +33,7 @@ SALE_ORDER_DATA_MAP = {
     'sale_order_expenses_data': FieldMapCommon(
         name_mapping=['sale_order_expenses_data'],
     ).data,
+    'sale_order_indicators_data': FieldMapCommon(
+        name_mapping=['sale_order_indicators_data'],
+    ).data,
 }

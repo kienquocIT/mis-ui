@@ -36,10 +36,10 @@
             width: 30px;
         }
         .one-row-txt{
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: calc(100% - 75px);
-            white-space: nowrap;
+            {#overflow: hidden;#}
+            {#text-overflow: ellipsis;#}
+            {#width: calc(100% - 75px);#}
+            {#white-space: nowrap;#}
         }
     </style>
 {% endblock %}
@@ -48,7 +48,7 @@
             <span>
                 <span>{% trans 'Save' %}</span>
                 <span class="icon">
-
+                    <i class="fa-solid fa-plus"></i>
                 </span>
             </span>
     </button>
@@ -71,8 +71,9 @@
                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
             </div>
-            <div class="col-md-4 col-xs-12 form-group"></div>
-            <div class="col-xs-12 col-md-4 form-group">
+            <div class="clearfix"></div>
+{#            <div class="col-xs-12 col-md-4 form-group">#}
+            <div class="w-100p form-group">
                 <label for="selectEmployeeInherit" class="form-label required">{% trans 'Beneficiary' %}</label>
                 <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
                         data-url="{% url 'EmployeeListAPI' %}"
@@ -113,7 +114,7 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="leave_detail">
-                    <table id="leave_detail_tbl" class="table nowrap w-100 mb-5">
+                    <table id="leave_detail_tbl" class="table nowrap w-100 min-w-1500p mb-5">
                         <thead>
                         <tr>
                             <th>{% trans 'Leave type' %}</th>
@@ -143,7 +144,7 @@
                     </button>
                 </div>
                 <div class="tab-pane fade" id="leave_available">
-                    <table id="leave_available_tbl" class="table nowrap w-100 mb-5">
+                    <table id="leave_available_tbl" class="table nowrap w-100 min-w-1500p mb-5">
                         <thead>
                         <tr>
                             <th>{% trans 'Name' %}</th>

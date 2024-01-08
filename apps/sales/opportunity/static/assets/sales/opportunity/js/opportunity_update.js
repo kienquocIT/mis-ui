@@ -1119,8 +1119,6 @@ $(document).ready(function () {
                 )
             })
 
-            // for task
-            Task_in_opps.init(opportunity_detail_data)
 
             // TIMELINE
 
@@ -1393,6 +1391,9 @@ $(document).ready(function () {
             }
 
             loadDblActivityLogs();
+
+            // for task
+            Task_in_opps.init(opportunity_detail_data, loadDblActivityLogs)
 
             // event create related features
             $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {

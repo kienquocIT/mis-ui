@@ -182,6 +182,8 @@ $(function () {
     const $sttElm = $('#selectStatus');
     const $oppElm = $('#opportunity_id')
 
+    new $x.cls.file($('#attachment')).init({'name': 'attach'});
+
     //--DATETIME-- run single date
     $('input[type=text].date-picker').daterangepicker({
         minYear: 2023,
@@ -324,7 +326,7 @@ $(function () {
                 if (tagsList)
                     formData.label = JSON.parse(tagsList)
                 formData.employee_created = $assignerElm.attr('value')
-                formData.task_status = $sttElm.val()
+                // formData.task_status = $sttElm.val()
                 const task_status = $sttElm.select2('data')[0]
                 const taskSttData = {
                     'id': task_status.id,
@@ -345,7 +347,7 @@ $(function () {
                         'first_name': assign_to.first_name,
                         'last_name': assign_to.last_name,
                     }
-                    formData.employee_inherit_id = assign_to.id
+                    // formData.employee_inherit_id = assign_to.id
                 }
 
                 formData.checklist = []

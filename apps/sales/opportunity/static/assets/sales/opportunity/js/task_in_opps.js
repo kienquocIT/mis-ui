@@ -21,10 +21,7 @@ function isValidString(inputString) {
 }
 
 function logWorkSubmit() {
-    $('#inputTextEstimate').on('blur', function () {
-        if (!isValidString(this.value))
-            $.fn.notifyB({description: $('#form_valid').attr('data-estimate-error')}, 'failure')
-    })
+
     $('#save-logtime').off().on('click', function () {
         const startDate = $('#startDateLogTime').val()
         const endDate = $('#endDateLogTime').val()
@@ -45,6 +42,7 @@ function logWorkSubmit() {
 
 class labelHandle {
     deleteLabel(elm) {
+        let $taskLabelElm = $('#inputLabel')
         elm.find('.tag-delete').on('click', function (e) {
             e.stopPropagation();
             const selfTxt = $(this).prev().text();
@@ -70,6 +68,7 @@ class labelHandle {
     // on click add label
     addLabel() {
         const _this = this
+        let $taskLabelElm = $('#inputLabel')
         $('.form-tags-input-wrap .btn-add-tag').on('click', function () {
             const $elmInputLabel = $('#inputLabelName')
             const newTxt = $elmInputLabel.val()
@@ -156,8 +155,8 @@ class checklistHandle {
     }
 }
 
-function TaskSubmitFunc(Elmform) {
-    let _form = new SetupFormSubmit(Elmform);
+function TaskSubmitFunc(platform, callBackFunc) {
+    let _form = new SetupFormSubmit(platform);
     let formData = _form.dataForm
     const start_date = new Date(formData.start_date).getDate()
     const end_date = new Date(formData.end_date).getDate()
@@ -179,12 +178,8 @@ function TaskSubmitFunc(Elmform) {
     if (tagsList)
         formData.label = JSON.parse(tagsList)
     formData.employee_created = $('#inputAssigner').attr('value')
-    formData.task_status = $('#selectStatus').val()
 
-    const assign_to = $('#selectAssignTo').val()
-    if (assign_to) {
-        formData.employee_inherit_id = assign_to
-    } else {
+    if (!formData.employee_inherit_id) {
         $.fn.notifyB({'description': $('#trans-factory').attr('data-assignee_empty')}, 'failure')
         return false
     }
@@ -218,7 +213,7 @@ function TaskSubmitFunc(Elmform) {
             if (data) {
                 $.fn.notifyB({description: data.message}, 'success')
                 $('.cancel-task').trigger('click')
-                loadDblActivityLogs();
+                callBackFunc();
             }
         },
         (error) => {
@@ -228,9 +223,27 @@ function TaskSubmitFunc(Elmform) {
 }
 
 class Task_in_opps {
-    static init(opps_info) {
+    static init(opps_info, selfCallBack) {
         let $empElm = $('#employee_inherit_id')
         const $form = $('#formOpportunityTask')
+
+        $('#inputTextEstimate, #EstLogtime').on('blur', function () {
+            if (!isValidString(this.value))
+                $.fn.notifyB({description: $('#form_valid').attr('data-estimate-error')}, 'failure')
+        })
+
+        // run date picker
+        $('.date-picker',$form).each(function(){
+            $(this).daterangepicker({
+                minYear: 2023,
+                singleDatePicker: true,
+                timePicker: false,
+                showDropdowns: true,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            })
+        })
 
         // init ASSIGNER
         const $assignerElm = $('#inputAssigner')
@@ -239,6 +252,7 @@ class Task_in_opps {
         //--DROPDOWN ASSIGN TO-- assign to me btn
         const $assignBtnElm = $(`<a href="#" class="form-text text-muted link-info btn-assign">${$('#form_valid').attr('data-assign-txt')}</a>`)
         $empElm.parents('.form-group').append($assignBtnElm)
+        $empElm.initSelect2()
         $assignBtnElm.off().on('click', function () {
             if ($(this).hasClass('disabled')) return false
             const infoObj = {
@@ -273,7 +287,7 @@ class Task_in_opps {
         formLabel.init()
 
         // auto load opp if in page opp
-        const $selectElm = $('#selectOpportunity')
+        const $selectElm = $('#opportunity_id')
         let data = {}
         if (opps_info) data = {
             "id": opps_info.id,
@@ -322,10 +336,16 @@ class Task_in_opps {
             });
         });
 
+        // init attachment
+        new $x.cls.file($('#attachment')).init({'name': 'attach'});
+
         // validate form
-        SetupFormSubmit.validate($form, {
-            errorClass: 'is-invalid cl-red',
-            submitHandler: TaskSubmitFunc($form)
-        })
+        $form.on('submit', function(e){
+            e.preventDefault();
+            SetupFormSubmit.validate($form, {
+                errorClass: 'is-invalid cl-red',
+                submitHandler: TaskSubmitFunc($form, selfCallBack)
+            })
+        });
     }
 }

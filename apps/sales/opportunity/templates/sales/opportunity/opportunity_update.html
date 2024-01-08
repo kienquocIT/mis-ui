@@ -2,20 +2,16 @@
 {% load static i18n %}
 {% block title %}{% trans 'Opportunity list' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
-
+    <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         @media screen and (max-width: 991px) {
-                #group-general-info-opp {
-                    border-right: unset !important;
-                }
+            #group-general-info-opp {
+                border-right: unset !important;
             }
-    </style>
-    <style>
+        }
         .row-error-disabled {
             position: relative;
         }
@@ -268,7 +264,7 @@
                     <div class="mb-3" hidden>
                         <div class="form-check">
                             <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
-                            <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                            <label for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
                         </div>
                     </div>
                 </div>
@@ -579,7 +575,7 @@
                             <div class="mb-3">
                                 <div class="form-check">
                                     <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
-                                    <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                                    <label for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
                                 </div>
                             </div>
                         </div>
@@ -592,10 +588,8 @@
     {{ data.type_customer|json_script:'data_type_customer' }}
     {{ data.role_customer|json_script:'data_role_customer' }}
 
-    <div
-            class="modal fade" id="modalEditMember" tabindex="-1" role="dialog" aria-labelledby="modalEditMember"
-            aria-hidden="true"
-    >
+    <div class="modal fade" id="modalEditMember" tabindex="-1" role="dialog" aria-labelledby="modalEditMember"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">

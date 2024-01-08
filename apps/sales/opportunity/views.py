@@ -62,10 +62,11 @@ class OpportunityDetail(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-            'type_customer': TYPE_CUSTOMER,
-            'role_customer': ROLE_CUSTOMER,
-        }, status.HTTP_200_OK
+                   'employee_current_id': request.user.employee_current_data.get('id', None),
+                   'type_customer': TYPE_CUSTOMER,
+                   'role_customer': ROLE_CUSTOMER,
+                   'list_from_app': 'task.opportunitytask.create',
+               }, status.HTTP_200_OK
 
 
 class OpportunityUpdate(View):
@@ -79,10 +80,12 @@ class OpportunityUpdate(View):
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='PUT', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
+        # "list_from_app" this field for task form, who field choice employee follow by permission in opps.
         result = {
             'employee_current_id': request.user.employee_current_data.get('id', None),
             'type_customer': TYPE_CUSTOMER,
             'role_customer': ROLE_CUSTOMER,
+            'list_from_app': 'task.opportunitytask.create',
         }
         return result, status.HTTP_200_OK
 

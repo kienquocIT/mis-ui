@@ -176,7 +176,7 @@ $(function () {
                     $wrap.append(template);
                     const subTaskID = item.id
                     template.find('button').off().on('click', function () {
-                        const _isDelete = _this.deleteTaskAPI(subTaskID)
+                        const _isDelete = _this.deleteTask(subTaskID)
                         _isDelete.then((req) => {
                             let res = $.fn.switcherResp(req);
                             if (res?.['status'] === 200) {
@@ -192,9 +192,9 @@ $(function () {
                                     }
                                 }
                                 taskList.splice(isIdx, 1)
-                                _this.setTaskList = taskList
+                                // kanbanHandle.setTaskList = taskList
                                 // reload count sub task in screen
-                                _this.reloadCountParent()
+                                _this.reloadCountParent(taskList)
                                 // count number task in task status
                                 countSTT()
                             }
@@ -260,6 +260,19 @@ $(function () {
                 'method': 'DELETE'
             })
         }
+
+        static reloadCountParent(taskList) {
+            let countTemp = {}
+            for (let [idx, item] of taskList.entries()) {
+                if (item?.parent_n?.id)
+                    countTemp[item.parent_n.id] = (countTemp[item.parent_n.id] || 0) + 1;
+                else countTemp[item.id] = 0
+
+            }
+            for (let key in countTemp) {
+                $(`[data-task-id="${key}"]`).parents('.tasklist-card').find('.sub_task_count').text(countTemp[key])
+            }
+        }
     }
 
     // task util class
@@ -272,20 +285,6 @@ $(function () {
 
         get getTaskList() {
             return this.taskList
-        }
-
-        reloadCountParent() {
-            let currentList = this.taskList
-            let countTemp = {}
-            for (let [idx, item] of currentList.entries()) {
-                if (item?.parent_n?.id)
-                    countTemp[item.parent_n.id] = (countTemp[item.parent_n.id] || 0) + 1;
-                else countTemp[item.id] = 0
-
-            }
-            for (let key in countTemp) {
-                $(`[data-task-id="${key}"]`).parents('.tasklist-card').find('.sub_task_count').text(countTemp[key])
-            }
         }
 
         showHideSubtask(newHTML = null) {
@@ -394,6 +393,13 @@ $(function () {
                             if (data.attach) {
                                 const fileDetail = data.attach[0]?.['files']
                                 FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                                // load attachments
+                                new $x.cls.file(
+                                    $('#attachment')
+                                ).init({
+                                    enable_edit: false,
+                                    data: data.attach,
+                                })
                             }
                         }
                     })
@@ -424,7 +430,7 @@ $(function () {
                         }
                         currentTaskList.splice(isIdx, 1)
                         _this.setTaskList = currentTaskList
-                        _this.reloadCountParent()
+                        initCommon.reloadCountParent(currentTaskList)
                         // count task in task status
                         countSTT()
                         $.fn.notifyB({description: res.message}, 'success')
@@ -472,6 +478,12 @@ $(function () {
                 if (newData.attach) {
                     const fileDetail = newData.attach[0]?.['files']
                     FileUtils.init($(`[name="attach"]`, childHTML).siblings('button'), fileDetail);
+                    new $x.cls.file(
+                        $('#attachment')
+                    ).init({
+                        enable_edit: false,
+                        data: newData.attach,
+                    })
                 }
 
                 if (newData.parent_n && Object.keys(newData?.parent_n).length)
@@ -496,7 +508,7 @@ $(function () {
                     })
                     $('.cancel-task').trigger('click')
                     // reload lại các sub
-                    this.reloadCountParent()
+                    initCommon.reloadCountParent(this.getTaskList)
                     // đếm lại số task trong task status
                     countSTT()
 
@@ -581,7 +593,7 @@ $(function () {
             //     $elm.find('.sub_task_count').text(hasSub[data.id])
             $('.cancel-task').trigger('click')
             // reload sub count
-            this.reloadCountParent()
+            initCommon.reloadCountParent(this.getTaskList)
             // đếm lại số task trong task status
             countSTT()
         }

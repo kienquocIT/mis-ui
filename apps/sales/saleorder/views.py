@@ -23,6 +23,13 @@ DELIVERY_STATUS = (
     (3, SOMsg.DELIVERY_TYPE_DELIVERED),
 )
 
+PAYMENT_TERM_STAGE = (
+    (0, SOMsg.PAYMENT_STAGE_SO),
+    (1, SOMsg.PAYMENT_STAGE_CONTRACT),
+    (2, SOMsg.PAYMENT_STAGE_DELIVERY),
+    (3, SOMsg.PAYMENT_STAGE_ACCEPTANCE),
+)
+
 
 def create_sale_order(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
@@ -71,6 +78,7 @@ class SaleOrderCreate(View):
             'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'saleorder.saleorder.create',
+            'payment_term_stage': PAYMENT_TERM_STAGE,
         }
         return result, status.HTTP_200_OK
 

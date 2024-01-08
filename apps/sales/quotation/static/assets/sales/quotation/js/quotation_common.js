@@ -10,6 +10,7 @@ class QuotationLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
     static transEle = $('#app-trans-factory');
+    static dataStage = JSON.parse($('#payment_term_stage').text());
 
     static loadInformationSelectBox(ele, is_expense = false) {
         let optionSelected;
@@ -1240,6 +1241,55 @@ class QuotationLoadDataHandle {
         if (Object.keys(dataDetail).length > 0) {
             WFRTControl.setWFRuntimeID(dataDetail?.['workflow_runtime_id']);
         }
+    };
+
+    static loadDataTablePaymentStage() {
+        let $table = $('#datable-quotation-payment-stage');
+        let data = [
+            {
+                'stage': QuotationLoadDataHandle.dataStage[0][1],
+                'remark': '',
+                'date': '',
+                'date_type': '',
+                'payment_ratio': 0,
+                'value_before_tax': 0,
+                'due_date': '',
+                'is_ar_invoice': true,
+            },
+            {
+                'stage': QuotationLoadDataHandle.dataStage[1][1],
+                'remark': '',
+                'date': '',
+                'date_type': '',
+                'payment_ratio': 0,
+                'value_before_tax': 0,
+                'due_date': '',
+                'is_ar_invoice': true,
+            },
+            {
+                'stage': QuotationLoadDataHandle.dataStage[2][1],
+                'remark': '',
+                'date': '',
+                'date_type': '',
+                'payment_ratio': 0,
+                'value_before_tax': 0,
+                'due_date': '',
+                'is_ar_invoice': true,
+            },
+            {
+                'stage': QuotationLoadDataHandle.dataStage[3][1],
+                'remark': '',
+                'date': '',
+                'date_type': '',
+                'payment_ratio': 0,
+                'value_before_tax': 0,
+                'due_date': '',
+                'is_ar_invoice': true,
+            },
+        ]
+        $table.DataTable().clear().draw();
+        $table.DataTable().rows.add(data).draw();
+        return true;
     };
 
     // Load detail
@@ -2633,6 +2683,75 @@ class QuotationDataTableHandle {
                         return `<span class="table-row-rate" data-value="${row.indicator_rate}">${row.indicator_rate} %</span>`
                     }
                 }
+            ],
+        });
+    }
+
+    static dataTablePaymentStage(data) {
+        // init dataTable
+        let $tables = $('#datable-quotation-payment-stage');
+        $tables.DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-stage" data-row="${dataRow}">${row?.['stage']}</span>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<input type="text" class="form-control table-row-remark" value="${row?.['remark']}">`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        if (row?.['date']) {
+                            return `<p>${moment(row?.['date'] ? row?.['date'] : '').format('DD/MM/YYYY')}</p>`;
+                        } else {
+                            return `<p></p>`;
+                        }
+                    },
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-date-type">${row?.['date_type']}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-ratio">${row?.['payment_ratio']} %</span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}"></span>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    render: (data, type, row) => {
+                        if (row?.['due_date']) {
+                            return `<p>${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
+                        } else {
+                            return `<p></p>`;
+                        }
+                    }
+                },
+                {
+                    targets: 7,
+                    render: () => {
+                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox"></div>`;
+                    }
+                },
             ],
         });
     }

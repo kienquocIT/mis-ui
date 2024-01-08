@@ -526,9 +526,8 @@
                     window.location.href = frmLoginEle.attr('data-url-select-tenant');
                 }
             }
-
             if (autoTenant === 'True' && hostData.endsWith(mainDomain)) {
-                if (hostData.indexOf(mainDomain)) {
+                if (hostData.indexOf(mainDomain) !== -1) {
                     loadTenantList(false).then(
                         () => {
                             let tenantCode = hostData.split(mainDomain)[0];
@@ -541,8 +540,14 @@
                             } else {
                                 {#redirectToSelectTenant();#}
                                 $.fn.notifyBLogin({
-                                    'description': 'The tenant is not found or was disabled!',
+                                    'description': 'The tenant is not found or was disabled! Auto redirect to selection of tenant page.',
                                 }, 'failure')
+                                setTimeout(
+                                    () => {
+                                        redirectToSelectTenant();
+                                    },
+                                    2000
+                                )
                             }
                         }
                     )

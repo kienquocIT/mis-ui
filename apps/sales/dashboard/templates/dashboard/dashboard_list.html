@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Dashboard List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-report-revenue-list="{% url 'ReportRevenueListAPI' %}"
+    ></script>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label" for="revenue-group">{% trans 'Revenue' %}</label>
+                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="{% trans 'Reload revenue data' %}"
+                            id="reload-revenue-data-btn"
+                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                    >
+                        <span class="icon"><i class="fas fa-sync"></i></span>
+                    </button>
+                    <div class="row">
+                        <div class="col-5">
+                            <select class="form-select select2" id="revenue-group"
+                                    data-url="{% url 'GroupListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select select2" id="revenue-type">
+                                <option value="0" selected>{% trans 'Period revenue' %}</option>
+                                <option value="1">{% trans 'Accumulated revenue' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <button type="button" id="btn-show-revenue-chart"
+                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-primary"
+                            >
+                                <span>
+                                    <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
+                                    <div class="dropdown-menu">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="revenue-million-checkbox" name="revenue-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="revenue-million-checkbox">{% trans 'Million' %}</label>
+                                        </div>
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="revenue-billion-checkbox" name="revenue-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="revenue-billion-checkbox">{% trans 'Billion' %}</label>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="revenue-year-filter">{% trans 'Year' %}</label>
+                                            <input type="number" id="revenue-year-filter" class="form-control" value="2023">
+                                        </div>
+                                    </div>
+                                    <span>{% trans 'Show' %}</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-11" id="revenue_chart"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label" for="profit-group">{% trans 'Profit' %}</label>
+                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="{% trans 'Reload profit data' %}"
+                            id="reload-profit-data-btn"
+                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                    >
+                        <span class="icon"><i class="fas fa-sync"></i></span>
+                    </button>
+                    <div class="row">
+                        <div class="col-5">
+                            <select class="form-select select2" id="profit-group"
+                                    data-url="{% url 'GroupListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select select2" id="profit-type">
+                                <option value="0" selected>{% trans 'Period revenue' %}</option>
+                                <option value="1">{% trans 'Accumulated revenue' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <button type="button" id="btn-show-profit-chart"
+                                    class="w-100 btn btn-custom btn-flush-danger btn-gradient-danger"
+                            >
+                                <span>
+                                    <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
+                                    <div class="dropdown-menu">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="profit-million-checkbox" name="profit-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="profit-million-checkbox">{% trans 'Million' %}</label>
+                                        </div>
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="profit-billion-checkbox" name="profit-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="profit-billion-checkbox">{% trans 'Billion' %}</label>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="profit-year-filter">{% trans 'Year' %}</label>
+                                            <input type="number" id="profit-year-filter" class="form-control" value="2023">
+                                        </div>
+                                    </div>
+                                    <span>{% trans 'Show' %}</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-11" id="profit_chart"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6"></div>
+        <div class="col-12 col-md-6 col-lg-6"></div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6"></div>
+        <div class="col-12 col-md-6 col-lg-6"></div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/dashboard/dashboard_common.js' %}"></script>
+{% endblock %}

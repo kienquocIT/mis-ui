@@ -181,6 +181,9 @@ class MenusCRM:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
+    DASHBOARD = MenuCommon(
+        name='Dashboard', code='id_menu_dashboard', view_name='DashboardList', icon='<i class="fas fa-chart-bar"></i>',
+    )
     CALENDAR = MenuCommon(
         name='Calendar', code='menu_calendar', view_name='ProgrammeList',
         icon='<i class="fa-regular fa-calendar-days"></i>',
@@ -489,6 +492,7 @@ class SpaceItem:
             icon='<i class="fa-solid fa-users-gear"></i>',
             menus=[
                 MenusCRM.HOME,
+                MenusCRM.DASHBOARD,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,

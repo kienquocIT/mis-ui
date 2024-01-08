@@ -65,8 +65,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-5">
-                <div class="col-11" id="revenue_chart"></div>
+            <div class="row mt-3">
+                <div class="col-11 border rounded" id="revenue_chart"></div>
             </div>
         </div>
         <div class="col-12 col-md-6 col-lg-6">
@@ -121,18 +121,242 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-5">
-                <div class="col-11" id="profit_chart"></div>
+            <div class="row mt-3">
+                <div class="col-11 border rounded" id="profit_chart"></div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12 col-md-6 col-lg-6"></div>
-        <div class="col-12 col-md-6 col-lg-6"></div>
+    <div class="row mt-5">
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label" for="top-sellers-time">{% trans 'Top 5 sellers' %}</label>
+                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="{% trans 'Reload top 5 sellers data' %}"
+                            id="reload-revenue-data-btn"
+                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                    >
+                        <span class="icon"><i class="fas fa-sync"></i></span>
+                    </button>
+                    <div class="row">
+                        <div class="col-5">
+                            <select class="form-select select2" id="top-sellers-time">
+                                <option value="0" selected>{% trans 'This month' %}</option>
+                                <option value="1">{% trans 'This quarter' %}</option>
+                                <option value="2">{% trans 'This year' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select select2" id="top-sellers-type">
+                                <option value="0" selected>{% trans 'Period revenue' %}</option>
+                                <option value="1">{% trans 'Accumulated revenue' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <button type="button" id="btn-show-top-sellers-chart"
+                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-success"
+                            >
+                                <span>
+                                    <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
+                                    <div class="dropdown-menu">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="top-sellers-million-checkbox" name="top-sellers-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="top-sellers-million-checkbox">{% trans 'Million' %}</label>
+                                        </div>
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="top-sellers-billion-checkbox" name="top-sellers-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="top-sellers-billion-checkbox">{% trans 'Billion' %}</label>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-sellers-year-filter">{% trans 'Year' %}</label>
+                                            <input type="number" id="top-sellers-year-filter" class="form-control" value="2023">
+                                        </div>
+                                    </div>
+                                    <span>{% trans 'Show' %}</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-11 border rounded" id="top_sellers_chart"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label" for="top-customers-time">{% trans 'Top 5 customers' %}</label>
+                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="{% trans 'Reload top 5 customers data' %}"
+                            id="reload-revenue-data-btn"
+                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                    >
+                        <span class="icon"><i class="fas fa-sync"></i></span>
+                    </button>
+                    <div class="row">
+                        <div class="col-5">
+                            <select class="form-select select2" id="top-customers-time">
+                                <option value="0" selected>{% trans 'This month' %}</option>
+                                <option value="1">{% trans 'This quarter' %}</option>
+                                <option value="2">{% trans 'This year' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select select2" id="top-customers-type">
+                                <option value="0" selected>{% trans 'Period revenue' %}</option>
+                                <option value="1">{% trans 'Accumulated revenue' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <button type="button" id="btn-show-top-customers-chart"
+                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-info"
+                            >
+                                <span>
+                                    <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
+                                    <div class="dropdown-menu">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="top-customers-million-checkbox" name="top-customers-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="top-customers-million-checkbox">{% trans 'Million' %}</label>
+                                        </div>
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="top-customers-billion-checkbox" name="top-customers-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="top-customers-billion-checkbox">{% trans 'Billion' %}</label>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-customers-year-filter">{% trans 'Year' %}</label>
+                                            <input type="number" id="top-customers-year-filter" class="form-control" value="2023">
+                                        </div>
+                                    </div>
+                                    <span>{% trans 'Show' %}</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-11 border rounded" id="top_customers_chart"></div>
+            </div>
+        </div>
     </div>
-    <div class="row">
-        <div class="col-12 col-md-6 col-lg-6"></div>
-        <div class="col-12 col-md-6 col-lg-6"></div>
+    <div class="row mt-5">
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label" for="top-categories-time">{% trans 'Top 5 categories' %}</label>
+                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="{% trans 'Reload top 5 categories data' %}"
+                            id="reload-revenue-data-btn"
+                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                    >
+                        <span class="icon"><i class="fas fa-sync"></i></span>
+                    </button>
+                    <div class="row">
+                        <div class="col-5">
+                            <select class="form-select select2" id="top-categories-time">
+                                <option value="0" selected>{% trans 'This month' %}</option>
+                                <option value="1">{% trans 'This quarter' %}</option>
+                                <option value="2">{% trans 'This year' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select select2" id="top-categories-type">
+                                <option value="0" selected>{% trans 'Period revenue' %}</option>
+                                <option value="1">{% trans 'Accumulated revenue' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <button type="button" id="btn-show-top-categories-chart"
+                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-dark"
+                            >
+                                <span>
+                                    <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
+                                    <div class="dropdown-menu">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="top-categories-million-checkbox" name="top-categories-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="top-categories-million-checkbox">{% trans 'Million' %}</label>
+                                        </div>
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="top-categories-billion-checkbox" name="top-categories-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="top-categories-billion-checkbox">{% trans 'Billion' %}</label>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-categories-year-filter">{% trans 'Year' %}</label>
+                                            <input type="number" id="top-categories-year-filter" class="form-control" value="2023">
+                                        </div>
+                                    </div>
+                                    <span>{% trans 'Show' %}</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-11 border rounded" id="top_categories_chart"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label" for="top-products-time">{% trans 'Top 5 products' %}</label>
+                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="{% trans 'Reload top 5 products data' %}"
+                            id="reload-revenue-data-btn"
+                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                    >
+                        <span class="icon"><i class="fas fa-sync"></i></span>
+                    </button>
+                    <div class="row">
+                        <div class="col-5">
+                            <select class="form-select select2" id="top-products-time">
+                                <option value="0" selected>{% trans 'This month' %}</option>
+                                <option value="1">{% trans 'This quarter' %}</option>
+                                <option value="2">{% trans 'This year' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select select2" id="top-products-type">
+                                <option value="0" selected>{% trans 'Period revenue' %}</option>
+                                <option value="1">{% trans 'Accumulated revenue' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <button type="button" id="btn-show-top-products-chart"
+                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-warning"
+                            >
+                                <span>
+                                    <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
+                                    <div class="dropdown-menu">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="top-products-million-checkbox" name="top-products-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="top-products-million-checkbox">{% trans 'Million' %}</label>
+                                        </div>
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="top-products-billion-checkbox" name="top-products-money-unit-radio" class="form-check-input">
+                                            <label class="form-check-label" for="top-products-billion-checkbox">{% trans 'Billion' %}</label>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-products-year-filter">{% trans 'Year' %}</label>
+                                            <input type="number" id="top-products-year-filter" class="form-control" value="2023">
+                                        </div>
+                                    </div>
+                                    <span>{% trans 'Show' %}</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-11 border rounded" id="top_products_chart"></div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 {% block jsFooterUnCompress %}

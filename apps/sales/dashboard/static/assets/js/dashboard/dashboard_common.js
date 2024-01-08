@@ -77,7 +77,7 @@ $(document).ready(function () {
                 }
             ],
             chart: {
-                height: 300,
+                height: 260,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -200,7 +200,7 @@ $(document).ready(function () {
                 }
             ],
             chart: {
-                height: 300,
+                height: 260,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -430,7 +430,7 @@ $(document).ready(function () {
                 }
             ],
             chart: {
-                height: 300,
+                height: 260,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -553,7 +553,7 @@ $(document).ready(function () {
                 }
             ],
             chart: {
-                height: 300,
+                height: 260,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -708,4 +708,336 @@ $(document).ready(function () {
     $('#reload-profit-data-btn').on('click', function() {
         AjaxProfitChart(false)
     })
+
+    // Top sellers chart
+    
+    let options1 = {
+        series: [{
+            data: [5.4e+3, 4.7e+3, 4.48e+3, 4.3e+3, 4e+3]
+        }],
+        chart: {
+            type: 'bar',
+            height: 260
+        },
+        plotOptions: {
+            bar: {
+                barHeight: '100%',
+                distributed: true,
+                horizontal: true,
+                dataLabels: {
+                    position: 'bottom'
+                },
+            }
+        },
+        colors: [
+            '#726fd9',
+            '#69d5a0',
+            '#e58196',
+            '#e3cc64',
+            '#706f6f',
+        ],
+        dataLabels: {
+            enabled: true,
+            textAnchor: 'start',
+            style: {
+                colors: ['#fff']
+            },
+            formatter: function (val, opt) {
+                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+            },
+            offsetX: 0,
+            dropShadow: {
+                enabled: false
+            }
+        },
+        stroke: {
+            width: 1,
+            colors: ['#fff']
+        },
+        xaxis: {
+            title: {
+                text: 'Value (million)'
+            },
+            categories: [
+                'Nguyễn Thị Mai',
+                'Nguyễn Văn Quyền',
+                'System Admin',
+                'Nguyễn Hoàng Quân',
+                'Trịnh Thị Kim Chi',
+            ],
+        },
+        yaxis: {
+            labels: {
+                show: false
+            }
+        },
+        title: {
+            text: 'Top 5 Sellers Chart',
+            align: 'left',
+        },
+        subtitle: {
+            text: "Seller's fullname",
+            align: 'center',
+        },
+        tooltip: {
+            theme: 'dark',
+            x: {
+                show: true
+            },
+            y: {
+                show: true,
+                title: {
+                    formatter: function () {
+                        return ''
+                    }
+                }
+            }
+        },
+        legend: {
+            show: false
+        }
+    };
+    
+    let chart1 = new ApexCharts(document.querySelector("#top_sellers_chart"), options1);
+    chart1.render();
+
+    // Top customers chart
+
+    let options2 = {
+        series: [{
+            data: [4.4e+3, 3.5e+3, 3.18e+3, 3.03e+3, 3.0e+3]
+        }],
+        chart: {
+            type: 'bar',
+            height: 260
+        },
+        plotOptions: {
+            bar: {
+                barHeight: '100%',
+                distributed: true,
+                horizontal: true,
+                dataLabels: {
+                    position: 'bottom'
+                },
+            }
+        },
+        colors: [
+            '#ff5e5e',
+            '#ea8ac3',
+            '#e3b388',
+            '#4885e1',
+            '#63d75d',
+        ],
+        dataLabels: {
+            enabled: true,
+            textAnchor: 'start',
+            style: {
+                colors: ['#fff']
+            },
+            formatter: function (val, opt) {
+                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+            },
+            offsetX: 0,
+            dropShadow: {
+                enabled: false
+            }
+        },
+        stroke: {
+            width: 1,
+            colors: ['#fff']
+        },
+        xaxis: {
+            title: {
+                text: 'Value (million)'
+            },
+            categories: [
+                'CÔNG TY TNHH DGFILM',
+                'CÔNG TY TNHH CÔNG NGHỆ ARIAN',
+                'CÔNG TY TNHH IMS KHẢI HOÀNG',
+                'Công ty Minh Đăng',
+                'Công ty TNHH Hồng Hà',
+            ],
+        },
+        yaxis: {
+            labels: {
+                show: false
+            }
+        },
+        title: {
+            text: 'Top 5 Customers Chart',
+            align: 'left',
+        },
+        subtitle: {
+            text: "Customer's fullname",
+            align: 'center',
+        },
+        tooltip: {
+            theme: 'dark',
+            x: {
+                show: true
+            },
+            y: {
+                show: true,
+                title: {
+                    formatter: function () {
+                        return ''
+                    }
+                }
+            }
+        },
+        legend: {
+            show: false
+        }
+    };
+
+    let chart2 = new ApexCharts(document.querySelector("#top_customers_chart"), options2);
+    chart2.render();
+
+    // Top categories chart
+
+    let options3 = {
+        series: [{
+            data: [54e3, 48e3, 41e3, 37e3, 26e3]
+        }],
+        chart: {
+            height: 260,
+            type: 'bar',
+            events: {
+                click: function(chart, w, e) {
+                    // console.log(chart, w, e)
+                }
+            }
+        },
+        title: {
+            text: 'Top 5 Categories Chart',
+            align: 'left',
+        },
+        colors: [
+            '#e3cc64',
+            '#ff5e5e',
+            '#00ab57',
+            '#706f6f',
+            '#007b7b',
+        ],
+        plotOptions: {
+            bar: {
+                columnWidth: '50%',
+                distributed: true,
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        legend: {
+            show: false
+        },
+        xaxis: {
+            labels: {
+                show: true
+            },
+            categories: [
+                'Software',
+                'Clothing',
+                'Electric',
+                'Hardware',
+                'F&B'
+            ],
+        },
+        yaxis: {
+            labels: {
+                show: true
+            }
+        },
+        tooltip: {
+            theme: 'dark',
+            x: {
+                show: true
+            },
+            y: {
+                show: true,
+                title: {
+                    formatter: function () {
+                        return ''
+                    }
+                }
+            }
+        },
+    };
+
+    let chart3 = new ApexCharts(document.querySelector("#top_categories_chart"), options3);
+    chart3.render();
+
+    // Top products chart
+
+    let options4 = {
+        series: [{
+            data: [4.4e3, 3.8e3, 3.3e3, 2.7e3, 2.1e3]
+        }],
+        chart: {
+            height: 260,
+            type: 'bar',
+            events: {
+                click: function(chart, w, e) {
+                    // console.log(chart, w, e)
+                }
+            }
+        },
+        title: {
+            text: 'Top 5 Products Chart',
+            align: 'left',
+        },
+        colors: [
+            '#ea8ac3',
+            '#01cbcb',
+            '#e3b388',
+            '#63d75d',
+            '#4885e1',
+        ],
+        plotOptions: {
+            bar: {
+                columnWidth: '50%',
+                distributed: true,
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        legend: {
+            show: false
+        },
+        xaxis: {
+            labels: {
+                show: true
+            },
+            categories: [
+                'BFlow licenses',
+                'Áo thun Nike Essentials',
+                'Máy rửa xe cầm tay',
+                'Máy in HP',
+                'Dịch vụ Pentest'
+            ],
+        },
+        yaxis: {
+            labels: {
+                show: true
+            }
+        },
+        tooltip: {
+            theme: 'dark',
+            x: {
+                show: true
+            },
+            y: {
+                show: true,
+                title: {
+                    formatter: function () {
+                        return ''
+                    }
+                }
+            }
+        },
+    };
+
+    let chart4 = new ApexCharts(document.querySelector("#top_products_chart"), options4);
+    chart4.render();
 })

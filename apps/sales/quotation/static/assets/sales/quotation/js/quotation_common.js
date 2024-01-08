@@ -1289,6 +1289,22 @@ class QuotationLoadDataHandle {
         ]
         $table.DataTable().clear().draw();
         $table.DataTable().rows.add(data).draw();
+        // load date picker
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-date')) {
+                $(row.querySelector('.table-row-date')).daterangepicker({
+                    singleDatePicker: true,
+                    timePicker: true,
+                    showDropdowns: true,
+                    minYear: 2023,
+                    locale: {
+                        format: 'DD/MM/YYYY'
+                    },
+                });
+                $(row.querySelector('.table-row-date')).val(null).trigger('change');
+            }
+        })
         return true;
     };
 
@@ -1469,14 +1485,18 @@ class QuotationLoadDataHandle {
         tableProduct.DataTable().clear().draw();
         tableCost.DataTable().clear().draw();
         tableExpense.DataTable().clear().draw();
-        tableIndicator.DataTable().clear().draw();
+        // tableIndicator.DataTable().clear().draw();
 
         tableProduct.DataTable().rows.add(products_data).draw();
         tableCost.DataTable().rows.add(costs_data).draw();
         tableExpense.DataTable().rows.add(expenses_data).draw();
-        tableIndicator.DataTable().rows.add(indicators_data).draw();
-        // set attr disabled
+        // tableIndicator.DataTable().rows.add(indicators_data).draw();
+        // load indicators & set attr disabled
         if (is_detail === true) {
+            // load indicators
+            tableIndicator.DataTable().clear().draw();
+            tableIndicator.DataTable().rows.add(indicators_data).draw();
+            // set disabled
             QuotationLoadDataHandle.loadTableDisabled(tableProduct);
             QuotationLoadDataHandle.loadTableDisabled(tableCost);
             QuotationLoadDataHandle.loadTableDisabled(tableExpense);
@@ -2711,11 +2731,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (row?.['date']) {
-                            return `<p>${moment(row?.['date'] ? row?.['date'] : '').format('DD/MM/YYYY')}</p>`;
-                        } else {
-                            return `<p></p>`;
-                        }
+                        return `<input type="text" class="form-control table-row-date" value="${row?.['date']}">`;
                     },
                 },
                 {

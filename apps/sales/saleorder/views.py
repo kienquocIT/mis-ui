@@ -128,6 +128,7 @@ class SaleOrderDetail(View):
         return {'data': {'doc_id': pk},
                 'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
                 'form_id': 'frm_quotation_create',
+                'payment_term_stage': PAYMENT_TERM_STAGE,
                 }, status.HTTP_200_OK
 
 
@@ -145,6 +146,7 @@ class SaleOrderUpdate(View):
                    'input_mapping_properties': input_mapping_properties,
                    'form_id': 'frm_quotation_create',
                    'list_from_app': 'saleorder.saleorder.edit',
+                   'payment_term_stage': PAYMENT_TERM_STAGE,
                }, status.HTTP_200_OK
 
 

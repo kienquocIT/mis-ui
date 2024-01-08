@@ -3,6 +3,7 @@
 {% block cssHeader %}
     <link href="{% static 'assets/sales/quotation/css/quotation_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     {% include 'extends/systems/page_actions.html' with is_save=True is_save_draft=True save_frm='frm_quotation_create' %}
@@ -482,7 +483,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-
                                 <br>
                                 <div class="row logistics-body">
                                     <div class="form-group">
@@ -738,11 +738,11 @@
                         <thead>
                         <tr>
                             <th class="w-10">#</th>
-                            <th class="w-20">{% trans 'Indicator name' %}</th>
-                            <th class="w-20">{% trans 'Quotation indicator value' %}</th>
-                            <th class="w-20">{% trans 'Sale order indicator value' %}</th>
-                            <th class="w-20">{% trans 'Difference value' %}</th>
-                            <th class="w-10">{% trans 'Indicator rate' %}</th>
+                            <th class="w-30">{% trans 'Indicator name' %}</th>
+                            <th class="w-15">{% trans 'Quotation indicator value' %}</th>
+                            <th class="w-15">{% trans 'Sale order indicator value' %}</th>
+                            <th class="w-15">{% trans 'Difference value' %}</th>
+                            <th class="w-15">{% trans 'Indicator rate' %}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -877,11 +877,7 @@
 {% endblock %}
 
 {% block jsFooter %}
-    <!-- Select2 -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-
-    <!-- Daterangepicker JS -->
-
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/sales/quotation/js/quotation_promote_shipping.js' %}"></script>

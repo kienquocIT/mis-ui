@@ -168,24 +168,24 @@
                 <div class="table-responsive">
                     <table class="table nowrap w-100" id="table-timeline"
                            data-url-logs_list="{% url 'OpportunityActivityLogListAPI' %}"
-                           data-url-delete-call-log="{% url 'OpportunityCallLogDeleteAPI' '0' %}"
-                           data-url-delete-email="{% url 'OpportunityEmailDeleteAPI' '0' %}"
-                           data-url-delete-meeting="{% url 'OpportunityMeetingDeleteAPI' '0' %}"
+                           data-url-delete-call-log="{% url 'OpportunityCallLogDetailAPI' '0' %}"
+                           data-url-delete-email="{% url 'OpportunityEmailDetailAPI' '0' %}"
+                           data-url-delete-meeting="{% url 'OpportunityMeetingDetailAPI' '0' %}"
                            data-method="GET">
                         <thead>
                         <tr>
                             <th class="w-5"></th>
-                            <th class="w-15">{% trans "Activity" %}</th>
-                            <th class="w-30">{% trans 'Subject' %}
+                            <th>{% trans "Activity" %}</th>
+                            <th>
+                                {% trans 'Subject' %}
                                 <i class="fas fa-info-circle icon-info"
                                    data-bs-toggle="tooltip"
                                    data-bs-placement="bottom"
                                    title="{% trans 'Press row here to see detail.' %}">
                                 </i>
                             </th>
-                            <th class="w-20">{% trans "Type" %}</th>
-                            <th class="w-20">{% trans "Date" %}</th>
-                            <th class="w-10">{% trans "Action" %}</th>
+                            <th>{% trans "Type" %}</th>
+                            <th>{% trans "Date" %}</th>
                         </tr>
                         </thead>
                         <tbody></tbody>

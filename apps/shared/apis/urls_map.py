@@ -250,11 +250,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
     OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
-    OPPORTUNITY_CALL_LOG_DELETE = StringUrl('opportunity/delete-call-log/{pk}')
+    OPPORTUNITY_CALL_LOG_UPDATE = StringUrl('opportunity/call-log/{pk}')
     OPPORTUNITY_EMAIL_LIST = StringUrl('opportunity/send-email/lists')
-    OPPORTUNITY_EMAIL_DELETE = StringUrl('opportunity/delete-email/{pk}')
+    OPPORTUNITY_EMAIL_UPDATE = StringUrl('opportunity/send-email/{pk}')
     OPPORTUNITY_MEETING_LIST = StringUrl('opportunity/meeting/lists')
-    OPPORTUNITY_MEETING_DELETE = StringUrl('opportunity/delete-meeting/{pk}')
+    OPPORTUNITY_MEETING_UPDATE = StringUrl('opportunity/meeting/{pk}')
+    OPPORTUNITY_CALL_LOG_DETAIL = StringUrl('opportunity/call-log/{pk}')
+    OPPORTUNITY_EMAIL_DETAIL = StringUrl('opportunity/send-email/{pk}')
+    OPPORTUNITY_MEETING_DETAIL = StringUrl('opportunity/meeting/{pk}')
     OPPORTUNITY_ACTIVITY_LOGS = StringUrl('opportunity/activity-log/lists')
     OPPORTUNITY_SALE_LIST = StringUrl('opportunity/lists-sale')
 
@@ -325,9 +328,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Opportunity detail
     OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
     OPPORTUNITY_DETAIL_GET_CREATE_FROM_OPP = StringUrl('opportunity/{pk}/create-from-opp')
-    OPPORTUNITY_CALL_LOG_DETAIL = StringUrl('opportunity/call-log/{pk}')
-    OPPORTUNITY_EMAIL_DETAIL = StringUrl('opportunity/send-email/{pk}')
-    OPPORTUNITY_MEETING_DETAIL = StringUrl('opportunity/meeting/{pk}')
     MEMBER_OF_OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk_opp}/member/{pk_member}')
     MEMBER_OF_OPPORTUNITY_ADD = StringUrl('opportunity/{pk_opp}/member/add')
 

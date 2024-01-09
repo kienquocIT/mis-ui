@@ -98,14 +98,21 @@ class AuthLoginSelectTenant(APIView):
 class AuthLogin(APIView):
     permission_classes = [AllowAny]
 
-    @classmethod
-    def get(cls, request):
+    def check_home_domain(self):
+        meta_hosts = self.request.META['HTTP_HOST']
+        if meta_hosts and f'{settings.UI_DOMAIN_SUB_HOME}.{settings.UI_DOMAIN}' in meta_hosts:
+            return True
+        return False
+
+    def get(self, request):
         if request.user and not isinstance(request.user, AnonymousUser):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
                 return redirect(request.query_params.get('next', reverse('HomeView')))
         request.session.flush()
         request.user = AnonymousUser
+        if self.check_home_domain() is True:
+            return redirect(reverse('AuthLoginSelectTenant'))
         return render(
             request, 'auths/login.html', {
                 'is_notify_key': False,

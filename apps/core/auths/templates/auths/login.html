@@ -10,8 +10,8 @@
     <meta name="description" content="Minh Tam Solution"/>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
-    <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}">
+    <link rel="icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}" type="image/x-icon">
 
     {% compress css %}
         <!-- CSS -->
@@ -51,7 +51,7 @@
                                             <a class="navbar-brand me-0" href="/">
                                                 <img
                                                         class="brand-img d-inline-block"
-                                                        src="{% static 'assets/images/logo/logo-111x64.png' %}"
+                                                        src="{% static 'assets/images/bflow/logo_180x180.png' %}"
                                                         alt="brand"
                                                 >
                                             </a>
@@ -526,9 +526,8 @@
                     window.location.href = frmLoginEle.attr('data-url-select-tenant');
                 }
             }
-
             if (autoTenant === 'True' && hostData.endsWith(mainDomain)) {
-                if (hostData.indexOf(mainDomain)) {
+                if (hostData.indexOf(mainDomain) !== -1) {
                     loadTenantList(false).then(
                         () => {
                             let tenantCode = hostData.split(mainDomain)[0];
@@ -541,8 +540,14 @@
                             } else {
                                 {#redirectToSelectTenant();#}
                                 $.fn.notifyBLogin({
-                                    'description': 'The tenant is not found or was disabled!',
+                                    'description': 'The tenant is not found or was disabled! Auto redirect to selection of tenant page.',
                                 }, 'failure')
+                                setTimeout(
+                                    () => {
+                                        redirectToSelectTenant();
+                                    },
+                                    2000
+                                )
                             }
                         }
                     )

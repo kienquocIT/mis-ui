@@ -14,13 +14,13 @@ import os
 from colorama import Fore
 from pathlib import Path
 
-from dotenv import load_dotenv
+from .load_env import load_env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # load environment from .env file
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+load_env(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -42,6 +42,8 @@ ALLOWED_HOSTS = []
 IS_SERVER_MAINTAINING = True if os.environ.get('IS_SERVER_MAINTAINING', '0') in [1, '1'] else False
 
 RELEASE_VERSION = os.environ.get('RELEASE_VERSION', '0.0.1')
+
+CSRF_TRUSTED_ORIGINS = json.loads(os.environ.get('CSRF_TRUSTED_ORIGINS', '[]'))
 
 # Application definition
 
@@ -90,7 +92,6 @@ INSTALLED_APPS = \
     ] + [  # external
         'apps.web_builder',
     ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -228,9 +229,10 @@ API_DOMAIN_SIMPLE = f'{protocol}://{domain}'
 API_DOMAIN = f'{protocol}://{domain}/{prefix}'
 
 # main UI domain
-UI_PROTOCOL = os.environ.get('UI_PROTOCOL') if os.environ.get('UI_PROTOCOL', None) else 'http'
-UI_DOMAIN = os.environ.get('UI_DOMAIN') if os.environ.get('UI_DOMAIN', None) else '127.0.0.1'
+UI_PROTOCOL = os.environ.get('UI_PROTOCOL', 'http')
+UI_DOMAIN = os.environ.get('UI_DOMAIN', '127.0.0.1')
 UI_DOMAIN_SUB_DOMAIN = '.' + UI_DOMAIN
+UI_DOMAIN_SUB_HOME = os.environ.get('UI_DOMAIN_SUB_HOME', 'home')
 UI_FULL_DOMAIN = os.environ.get('UI_FULL_DOMAIN', 'http://{sub_domain}.local.test:8001')
 UI_URL = os.environ.get('UI_URL') if os.environ.get('UI_URL', None) else f'{UI_PROTOCOL}://{UI_DOMAIN}'
 UI_ALLOW_AUTO_TENANT = True if os.environ.get('UI_ALLOW_AUTO_TENANT', '0') in [1, '1'] else False
@@ -395,7 +397,6 @@ if OS_DEBUG is True or OS_DEBUG in [1, '1']:
     print(Fore.CYAN, '----------------------------------------------------------------------------------', '\033[0m')
 else:
     DEBUG = False
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 

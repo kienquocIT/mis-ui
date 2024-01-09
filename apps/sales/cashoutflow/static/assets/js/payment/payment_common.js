@@ -1739,6 +1739,11 @@ function LoadDetailPayment(option) {
 
                 $.fn.initMaskMoney2();
 
+                new $x.cls.file($('#attachment')).init({
+                    enable_edit: option !== 'detail',
+                    data: data.attachment,
+                })
+
                 Disable(option);
                 quotation_mapped_select.attr('disabled', true).attr('readonly', true);
                 sale_order_mapped_select.attr('disabled', true).attr('readonly', true);

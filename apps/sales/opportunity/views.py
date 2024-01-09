@@ -62,10 +62,11 @@ class OpportunityDetail(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-            'type_customer': TYPE_CUSTOMER,
-            'role_customer': ROLE_CUSTOMER,
-        }, status.HTTP_200_OK
+                   'employee_current_id': request.user.employee_current_data.get('id', None),
+                   'type_customer': TYPE_CUSTOMER,
+                   'role_customer': ROLE_CUSTOMER,
+                   'list_from_app': 'task.opportunitytask.create',
+               }, status.HTTP_200_OK
 
 
 class OpportunityUpdate(View):
@@ -79,10 +80,12 @@ class OpportunityUpdate(View):
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='PUT', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
+        # "list_from_app" this field for task form, who field choice employee follow by permission in opps.
         result = {
             'employee_current_id': request.user.employee_current_data.get('id', None),
             'type_customer': TYPE_CUSTOMER,
             'role_customer': ROLE_CUSTOMER,
+            'list_from_app': 'task.opportunitytask.create',
         }
         return result, status.HTTP_200_OK
 
@@ -336,10 +339,18 @@ class OpportunityCallLogListAPI(APIView):
         )
 
 
-class OpportunityCallLogDeleteAPI(APIView):
+class OpportunityCallLogDetailAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='opportunity_call_log_detail')
+
     @mask_view(auth_require=True, is_api=True)
-    def delete(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DELETE.fill_key(pk=pk)).delete(request.data)
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_UPDATE.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
 
@@ -385,10 +396,18 @@ class OpportunityEmailListAPI(APIView):
         )
 
 
-class OpportunityEmailDeleteAPI(APIView):
+class OpportunityEmailDetailAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='opportunity_email_detail')
+
     @mask_view(auth_require=True, is_api=True, )
-    def delete(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DELETE.fill_key(pk=pk)).delete(request.data)
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_UPDATE.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
 
@@ -440,13 +459,18 @@ class OpportunityMeetingListAPI(APIView):
         )
 
 
-class OpportunityMeetingDeleteAPI(APIView):
+class OpportunityMeetingDetailAPI(APIView):
     @mask_view(
-        auth_require=True,
         is_api=True,
+        auth_require=True
     )
-    def delete(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DELETE.fill_key(pk=pk)).delete(request.data)
+    def get(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='opportunity_meeting_detail')
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
 
@@ -589,33 +613,3 @@ class OpportunityMemberListAPI(APIView):
     def get(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_LIST.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='opportunity_member')
-
-
-class OpportunityCallLogDetailAPI(APIView):
-    @mask_view(
-        is_api=True,
-        auth_require=True
-    )
-    def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DETAIL.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='opportunity_call_log_detail')
-
-
-class OpportunityEmailDetailAPI(APIView):
-    @mask_view(
-        is_api=True,
-        auth_require=True
-    )
-    def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DETAIL.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='opportunity_email_detail')
-
-
-class OpportunityMeetingDetailAPI(APIView):
-    @mask_view(
-        is_api=True,
-        auth_require=True
-    )
-    def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DETAIL.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='opportunity_meeting_detail')

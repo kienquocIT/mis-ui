@@ -1,0 +1,21 @@
+version: '2.12'
+
+services:
+  bflow-ui:
+    build:
+      context: ../../
+      dockerfile: builder/Dockerfile
+    container_name: bflow-ui
+    command: sh ./builder/docker_entry_point.sh
+    restart: unless-stopped
+    volumes:
+      - ../../:/code
+      - ${STATIC_ROOT_PATH}:/code/static
+    ports:
+      - ${RUNNING_PORT}:8000
+    networks:
+      - docker_network_cloud
+
+networks:
+  docker_network_cloud:
+    external: true

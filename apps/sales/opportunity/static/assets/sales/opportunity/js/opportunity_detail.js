@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let trans_script = $('#trans-script')
     let eleFrmPermit = $('#permit-member');
     $(document).on('click', '#btnOpenPermit', function () {
         eleFrmPermit.removeClass('hidden');
@@ -732,23 +733,53 @@ $(document).ready(function () {
                         $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
                         $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
                         $('#detail-result-text-area').val(call_log_obj.input_result);
+
+                        $('#detail-call-log #cancel-activity').prop('hidden', call_log_obj.is_cancelled)
+                        if (call_log_obj.is_cancelled) {
+                            $('#detail-call-log #is-cancelled').text(trans_script.attr('data-trans-activity-cancelled'))
+                        }
+                        else {
+                            $('#detail-call-log #is-cancelled').text('')
+                        }
+                        $('#detail-call-log .modal-body').attr('data-id', call_log_obj.id)
                     })
             })
 
-            $(document).on('click', '#table-timeline .delete-call-log-button', function () {
-                let call_log_id = $(this).attr('data-id');
-                $.fn.callAjax2({url: table_timeline.attr('data-url-delete-call-log').replace(0, call_log_id), method: 'DELETE'}).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            loadDblActivityLogs();
-                        }
+            $(document).on('click', '#detail-call-log #cancel-activity', function () {
+                Swal.fire({
+                    html:
+                    `<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
+                         <h5 class="text-danger">${trans_script.attr('data-trans-alert-cancel-call-log')}</h5>
+                         <p>${trans_script.attr('data-trans-alert-warn-call-log')}</p>`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-secondary text-danger',
+                        cancelButton: 'btn btn-outline-secondary text-gray',
+                        container:'swal2-has-bg',
+                        actions:'w-100'
                     },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        let call_log_id = $('#detail-call-log .modal-body').attr('data-id')
+
+                        let csr = $("input[name=csrfmiddlewaretoken]").val();
+                        $.fn.callAjax($('#detail-call-log').attr('data-url').replace(0, call_log_id), 'PUT', {'is_cancelled': !$('#detail-call-log #cancel-activity').prop('disabled')}, csr)
+                        .then((resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyB({description: "Successfully"}, 'success')
+                                $('#detail-call-log').modal('hide')
+                                loadDblActivityLogs();
+                            }
+                        },(errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        })
                     }
-                )
+                })
             })
 
             // for send email.
@@ -1136,511 +1167,62 @@ $(document).ready(function () {
                         $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
                         $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
+                        $('#cancel-activity').prop('hidden', meeting_obj.is_cancelled)
+                        if (meeting_obj.is_cancelled) {
+                            $('#is-cancelled').text(trans_script.attr('data-trans-activity-cancelled'))
+                        }
+                        else {
+                            $('#is-cancelled').text('')
+                        }
+                        $('#detail-meeting .modal-body').attr('data-id', meeting_obj.id)
+
+                        $('#detail-meeting #cancel-activity').prop('hidden', meeting_obj.is_cancelled)
+                        if (meeting_obj.is_cancelled) {
+                            $('#detail-meeting #is-cancelled').text(trans_script.attr('data-trans-activity-cancelled'))
+                        }
+                        else {
+                            $('#detail-meeting #is-cancelled').text('')
+                        }
+                        $('#detail-meeting .modal-body').attr('data-id', meeting_obj.id)
                     })
             })
 
-            $(document).on('click', '#table-timeline .delete-meeting-button', function () {
-                let meeting_id = $(this).attr('data-id');
-                $.fn.callAjax2({url: table_timeline.attr('data-url-delete-meeting').replace(0, meeting_id), method: 'DELETE'}).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            loadDblActivityLogs();
-                        }
+            $(document).on('click', '#detail-meeting #cancel-activity', function () {
+                Swal.fire({
+                    html:
+                    `<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
+                         <h5 class="text-danger">${trans_script.attr('data-trans-alert-cancel-meeting')}</h5>
+                         <p>${trans_script.attr('data-trans-alert-warn-meeting')}</p>`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-secondary text-danger',
+                        cancelButton: 'btn btn-outline-secondary text-gray',
+                        container:'swal2-has-bg',
+                        actions:'w-100'
                     },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
-            })
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        let call_log_id = $('#detail-meeting .modal-body').attr('data-id')
 
-            // for task
-
-            function resetFormTask() {
-                // clean html select etc.
-                $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-                $('#selectAssignTo').val(null).trigger('change');
-                if ($('.current-create-task').length <= 0)
-                    $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
-                $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
-                $('#inputLabel').val(null);
-                $('[name="id"]').remove();
-                const $inputAssigner = $('#inputAssigner');
-                $inputAssigner.val($inputAssigner.attr('data-name'))
-                $('.create-subtask').addClass('hidden')
-                $('[name="parent_n"]').remove();
-                window.editor.setData('')
-                $('.create-task').attr('disabled', false)
-            }
-
-            function logworkSubmit() {
-                $('#save-logtime').off().on('click', function () {
-                    const startDate = $('#startDateLogTime').val()
-                    const endDate = $('#endDateLogTime').val()
-                    const est = $('#EstLogtime').val()
-                    const taskID = $('#logtime_task_id').val()
-                    if (!startDate && !endDate && !est) {
-                        $.fn.notifyB({description: $('#form_valid').attr('data-logtime-valid')}, 'failure')
-                        return false
-                    }
-                    const data = {
-                        'start_date': moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                        'end_date': moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                        'time_spent': est,
-                    }
-                    // if has task id => log time
-                    if (taskID && taskID.valid_uuid4()) {
-                        data.task = taskID
-                        let url = $('#url-factory').attr('data-logtime')
-                        $.fn.callAjax(url, 'POST', data, true)
-                            .then(
-                                (req) => {
-                                    let data = $.fn.switcherResp(req);
-                                    if (data?.['status'] === 200) {
-                                        $.fn.notifyB({description: data.message}, 'success')
-                                    }
-                                }
-                            )
-                    } else {
-                        $('[name="log_time"]').attr('value', JSON.stringify(data))
-                    }
-                    $('#logWorkModal').modal('hide')
-                });
-            }
-
-            class AssignToSetup {
-                static case01(config, params) {
-                    // có opps + config có in assign opt lớn hơn 0
-                    if (config.in_assign_opt === 1) {
-                        // chỉ employee trong opportunity
-                        let selectOpt = '';
-                        $('#card-member .card').each(function () {
-                            let opt = `<option value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
-                            }</option>`
-                            selectOpt += opt
-                        })
-                        $('#selectAssignTo').html(selectOpt).removeAttr('data-url')
-
-                    } else if (config.in_assign_opt === 2) {
-                        // chỉ nhân viên của user
-                        params = {'group__first_manager__id': true}
-                    } else {
-                        // vừa trong opportunity vừa là nhân viên của user
-                        $('.is-lazy-loading').addClass('is_show')
-                        let selectOpt = '<option value=""></option>';
-                        $('#card-member .card').each(function () {
-                            let opt = `<option value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
-                            }</option>`
-                            selectOpt += opt
-                        })
-                        const $sltElm = $('#selectAssignTo')
-                        //
-                        $.fn.callAjax2({
-                            'url': $sltElm.attr('data-url'),
-                            'method': 'get',
-                            'data': {'group__first_manager__id': true}
-                        }).then(
-                            (resp) => {
-                                const data = $.fn.switcherResp(resp);
-                                let assigneeList = data?.[$sltElm.attr('data-keyresp')]
-                                for (const item of assigneeList) {
-                                    if (selectOpt.indexOf(item?.[$sltElm.attr('data-keyid')]) === -1) {
-                                        let opt = `<option value="${item?.[$sltElm.attr('data-keyid')]
-                                        }">${item?.[$sltElm.attr('data-keytext')]}</option>`
-                                        selectOpt += opt
-                                    }
-                                }
-                                $sltElm.html(selectOpt).removeAttr('data-url')
-                                $('.is-lazy-loading').removeClass('is_show')
-                            }
-                        )
-                    }
-                    return params
-                }
-
-                static hasConfig(config) {
-                    const $selectElm = $('#selectAssignTo')
-                    let params = {}
-                    if (config.in_assign_opt > 0) params = this.case01(config, params)
-
-                    $selectElm.attr('data-params', JSON.stringify(params))
-                    if ($selectElm.hasClass("select2-hidden-accessible")) $selectElm.select2('destroy')
-                    $selectElm.initSelect2()
-                }
-
-                static init() {
-                    $.fn.callAjax2({
-                        'url': $('#task_url_sub').attr('data-task-config'),
-                        'method': 'get'
-                    }).then(
-                        (resp) => {
-                            const data = $.fn.switcherResp(resp);
-                            let taskConfig = data?.['task_config']
-                            this.hasConfig(taskConfig)
-                        }
-                    )
-                }
-            }
-
-            $(function () {
-                // declare variable
-                const $form = $('#formOpportunityTask')
-                const $taskLabelElm = $('#inputLabel')
-
-                // run single date
-                $('input[type=text].date-picker').daterangepicker({
-                    minYear: 2023,
-                    singleDatePicker: true,
-                    timePicker: false,
-                    showDropdowns: true,
-                    // "cancelClass": "btn-secondary",
-                    // maxYear: parseInt(moment().format('YYYY'), 10)
-                    locale: {
-                        format: 'DD/MM/YYYY'
-                    }
-                })
-
-                // label handle
-                class labelHandle {
-                    deleteLabel(elm) {
-                        elm.find('.tag-delete').on('click', function (e) {
-                            e.stopPropagation();
-                            const selfTxt = $(this).prev().text();
-                            elm.remove();
-                            let labelList = JSON.parse($taskLabelElm.val())
-                            const idx = labelList.indexOf(selfTxt)
-                            if (idx > -1) labelList.splice(idx, 1)
-                            $taskLabelElm.attr('value', JSON.stringify(labelList))
-                        })
-                    }
-
-                    renderLabel(list) {
-                        // reset empty
-                        let htmlElm = $('.label-mark')
-                        htmlElm.html('')
-                        for (let item of list) {
-                            const labelHTML = $(`<span class="item-tag"><span>${item}</span><span class="tag-delete">x</span></span>`)
-                            htmlElm.append(labelHTML)
-                            this.deleteLabel(labelHTML)
-                        }
-                    }
-
-                    // on click add label
-                    addLabel() {
-                        const _this = this
-                        $('.form-tags-input-wrap .btn-add-tag').on('click', function () {
-                            const $elmInputLabel = $('#inputLabelName')
-                            const newTxt = $elmInputLabel.val()
-                            let labelList = $taskLabelElm.val()
-                            if (labelList !== undefined && labelList !== '') labelList = JSON.parse(labelList)
-                            if (!labelList.length) labelList = []
-                            labelList.push(newTxt)
-                            $taskLabelElm.attr('value', JSON.stringify(labelList))
-                            const labelHTML = $(`<span class="item-tag"><span>${newTxt}</span><span class="tag-delete">x</span></span>`)
-                            $('.label-mark').append(labelHTML)
-                            $elmInputLabel.val('')
-                            _this.deleteLabel(labelHTML)
-                        })
-                    }
-
-                    showDropdown() {
-                        $('.label-mark').off().on('click', function () {
-                            const isParent = $(this).parent('.dropdown')
-                            isParent.children().toggleClass('show')
-                            $('input', isParent).focus()
-                        });
-                        $('.form-tags-input-wrap .btn-close-tag').on('click', function () {
-                            $(this).parents('.dropdown').children().removeClass('show')
-                        })
-                    }
-
-                    init() {
-                        this.showDropdown()
-                        this.addLabel()
-                    }
-                }
-
-                // checklist handle
-                class checklistHandle {
-
-                    datalist = []
-
-                    set setDataList(data) {
-                        this.datalist = data;
-                    }
-
-                    render() {
-                        let $elm = $('.wrap-checklist')
-                        $elm.html('')
-                        for (const item of this.datalist) {
-                            let html = $($('.check-item-template').html())
-                            // html.find
-                            html.find('label').text(item.name)
-                            html.find('input').prop('checked', item.done)
-                            $elm.append(html)
-                            html.find('label').focus()
-                            this.delete(html)
-                        }
-                    }
-
-                    delete(elm) {
-                        elm.find('button').off().on('click', () => elm.remove())
-                    }
-
-                    get() {
-                        let checklist = []
-                        $('.wrap-checklist .checklist_item').each(function () {
-                            checklist.push({
-                                'name': $(this).find('label').text(),
-                                'done': $(this).find('input').prop('checked')
-                            })
-                        })
-                        return checklist
-                    }
-
-                    add() {
-                        const _this = this;
-                        $('.create-checklist').off().on('click', function () {
-                            let html = $($('.check-item-template').html())
-                            // html.find
-                            $('.wrap-checklist').append(html)
-                            html.find('label').focus(function () {
-                                $(this).select();
-                            });
-                            _this.delete(html)
-                        });
-                    }
-
-                    init() {
-                        this.add()
-                    }
-                }
-
-                /** start run and init all function **/
-                    // run status select default
-                const sttElm = $('#selectStatus');
-                sttElm.attr('data-url')
-                $.fn.callAjax2({
-                    'url': sttElm.attr('data-url'),
-                    'method': 'get'
-                })
-                    .then(
-                        (resp) => {
-                            const data = $.fn.switcherResp(resp);
-                            let todoItem = data[sttElm.attr('data-keyResp')][0]
-                            sttElm.attr('data-onload', JSON.stringify(todoItem))
-                            sttElm.initSelect2()
-                        })
-
-                // load assigner
-                const $assignerElm = $('#inputAssigner')
-                $assignerElm.val($assignerElm.attr('data-name')).attr('value', $assignerElm.attr('data-value-id'))
-
-                // assign to me btn
-                const $assignBtnElm = $('.btn-assign');
-                const $assigneeElm = $('#selectAssignTo')
-
-                AssignToSetup.init()
-                $assignBtnElm.off().on('click', function () {
-                    const name = $assignerElm.attr('data-name')
-                    const id = $assignerElm.attr('data-value-id')
-                    const infoObj = {
-                        'full_name': name,
-                        'id': id
-                    }
-                    $assigneeElm.attr('data-onload', JSON.stringify(infoObj))
-                    $assigneeElm.initSelect2()
-                });
-
-                // run init label function
-                let formLabel = new labelHandle()
-                formLabel.init()
-                // public global scope for list page render when edit
-                window.formLabel = formLabel
-
-                // auto load opp if in page opp
-                const $btnInOpp = $('.current-create-task')
-                const $selectElm = $('#selectOpportunity')
-
-                if ($btnInOpp.length) {
-                    const pk = $.fn.getPkDetail()
-                    let data = {
-                        "id": pk,
-                        "code": ''
-                    }
-                    const isCheck = setInterval(() => {
-                        let oppCode = $('#span-code').text()
-                        if (oppCode.length) {
-                            clearInterval(isCheck)
-                            data.code = oppCode
-                            $selectElm.attr('data-onload', JSON.stringify(data)).attr('disabled', true)
-                            $selectElm.initSelect2()
-                        }
-                    }, 1000)
-                } else $selectElm.initSelect2()
-
-                // click to log-work
-                $('.btn-log_work').off().on('click', () => {
-                    $('#logWorkModal').modal('show')
-                    $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
-                    const taskID = $('.task_edit [name="id"]').val()
-                    if (taskID) $('#logtime_task_id').val(taskID)
-                    logworkSubmit()
-                })
-
-                // run CKEditor
-                ClassicEditor
-                    .create(
-                        document.querySelector('.ck5-rich-txt'),
-                        {
-                            toolbar: {
-                                items: ['heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList']
-                            },
-                        },
-                    )
-                    .then(newEditor => {
-                        // public global scope for clean purpose when reset form.
-                        let editor = newEditor;
-                        window.editor = editor;
-                    })
-
-                // run checklist tab
-                let checklist = new checklistHandle()
-                checklist.init();
-                // public global scope with name checklist
-                window.checklist = checklist;
-
-                // reset form create task khi click huỷ bỏ hoặc tạo mới task con
-                $('.cancel-task, [data-drawer-target="#drawer_task_create"]').each((idx, elm) => {
-                    $(elm).on('click', function () {
-                        if ($(this).hasClass('cancel-task')) {
-                            $(this).closest('.ntt-drawer').toggleClass('open');
-                            $('.hk-wrapper').toggleClass('open');
-                        }
-                        resetFormTask()
-                    });
-                });
-
-                // validate form
-                jQuery.validator.setDefaults({
-                    debug: false,
-                    success: "valid"
-                });
-
-                $form.validate({
-                    errorElement: 'p',
-                    errorClass: 'is-invalid cl-red',
-                })
-
-                // form submit
-                $form.off().on('submit', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    let _form = new SetupFormSubmit($form);
-                    let formData = _form.dataForm
-                    const start_date = new Date(formData.start_date).getDate()
-                    const end_date = new Date(formData.end_date).getDate()
-                    if (end_date < start_date) {
-                        $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
-                        return false
-                    }
-                    if (formData.log_time === "")
-                        delete formData.log_time
-                    else {
-                        let temp = formData.log_time.replaceAll("'", '"')
-                        temp = JSON.parse(temp)
-                        formData.log_time = temp
-                    }
-                    formData.start_date = moment(formData.start_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
-                    formData.end_date = moment(formData.end_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
-                    formData.priority = parseInt(formData.priority)
-                    let tagsList = $('#inputLabel').attr('value')
-                    if (tagsList)
-                        formData.label = JSON.parse(tagsList)
-                    formData.employee_created = $('#inputAssigner').attr('value')
-                    formData.task_status = $('#selectStatus').val()
-                    const task_status = $('#selectStatus').select2('data')[0]
-                    const taskSttData = {
-                        'id': task_status.id,
-                        'title': task_status.title,
-                    }
-
-                    const assign_to = $('#selectAssignTo').select2('data')[0]
-                    let assign_toData = {}
-                    if (assign_to) {
-                        assign_toData = {
-                            'id': assign_to.id,
-                            'first_name': assign_to.text.split('. ')[1],
-                            'last_name': assign_to.text.split('. ')[0],
-                        }
-                        formData.employee_inherit_id = assign_to.id
-                    } else {
-                        $.fn.notifyB({'description': $('#trans-factory').attr('data-assignee_empty')}, 'failure')
-                        return false
-                    }
-
-                    formData.checklist = []
-                    $('.wrap-checklist .checklist_item').each(function () {
-                        formData.checklist.push({
-                            'name': $(this).find('label').text(),
-                            'done': $(this).find('input').prop('checked'),
-                        })
-                    })
-
-                    if (!formData.opportunity) delete formData.opportunity
-                    if ($('#selectOpportunity').val()) formData.opportunity = $('#selectOpportunity').val()
-
-                    if ($('[name="attach"]').val()) {
-                        let list = []
-                        list.push($('[name="attach"]').val())
-                        formData.attach = list
-                    }
-
-                    let method = 'POST'
-                    let url = _form.dataUrl
-                    if (formData.id && formData.id !== '') {
-                        method = 'PUT'
-                        url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
-                    }
-                    $.fn.callAjax2({
-                        'url': url,
-                        'method': method,
-                        'data': formData,
-                        'sweetAlertOpts': {
-                            'allowOutsideClick': true
-                        }
-                    }).then(
-                        (resp) => {
-                            const data = $.fn.switcherResp(resp);
+                        let csr = $("input[name=csrfmiddlewaretoken]").val();
+                        $.fn.callAjax($('#detail-meeting').attr('data-url').replace(0, call_log_id), 'PUT', {'is_cancelled': !$('#detail-meeting #cancel-activity').prop('disabled')}, csr)
+                        .then((resp) => {
+                            let data = $.fn.switcherResp(resp);
                             if (data) {
-                                $.fn.notifyB({description: data.message}, 'success')
-                                // if in task page load add task function
-                                if ($(document).find('#tasklist_wrap').length) {
-                                    let elm = $('<input type="hidden" id="addNewTaskData"/>');
-                                    // case update
-                                    if (!data?.id && data?.status === 200) {
-                                        elm = $('<input type="hidden" id="updateTaskData"/>');
-                                        formData.code = $('#inputTextCode').val();
-                                        formData.assign_to = assign_toData
-                                        formData.task_status = taskSttData
-                                    }
-                                    // case create
-                                    if (data?.id) formData = data
-                                    const datadump = JSON.stringify(formData)
-                                    elm.attr('data-task', datadump)
-                                    $('body').append(elm)
-                                }
-                                if ($('.current-create-task').length) $('.cancel-task').trigger('click')
+                                $.fn.notifyB({description: "Successfully"}, 'success')
+                                $('#detail-meeting').modal('hide')
                                 loadDblActivityLogs();
                             }
-                        },
-                        (error) => {
-                            console.log(error)
-                        }
-                    )
+                        },(errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        })
+                    }
                 })
-            }, jQuery)
+            })
 
             // TIMELINE
 
@@ -1813,6 +1395,7 @@ $(document).ready(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('activity_logs_list')) {
+                                console.log(resp.data['activity_logs_list'])
                                 return resp.data['activity_logs_list'] ? resp.data['activity_logs_list'] : []
                             }
                             throw Error('Call data raise errors.')
@@ -1848,7 +1431,11 @@ $(document).ready(function () {
                                         </div>`;
                                     }
                                 } else {
-                                    return `<span class="badge badge-soft-primary">${typeMapActivity[row?.['log_type']]}</span>`;
+                                    let status = ''
+                                    if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
+                                        status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
+                                    }
+                                    return `<span class="badge badge-soft-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                                 }
                                 return `<p></p>`;
                             }
@@ -1891,27 +1478,15 @@ $(document).ready(function () {
                                     'outputFormat': 'DD-MM-YYYY',
                                 });
                             }
-                        },
-                        {
-                            targets: 5,
-                            render: (data, type, row) => {
-                                if (row?.['log_type'] === 2) {
-                                    return `<button type="button" data-id="${row?.['call_log']['id']}" class="btn btn-icon btn-rounded flush-soft-hover delete-call-log-button"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
-                                } else if (row?.['log_type'] === 3) {
-                                    return `<button type="button" data-id="${row?.['email']['id']}" class="btn btn-icon btn-rounded flush-soft-hover delete-email-button"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
-                                } else if (row?.['log_type'] === 4) {
-                                    return `<button type="button" data-id="${row?.['meeting']['id']}" class="btn btn-icon btn-rounded flush-soft-hover delete-meeting-button"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
-                                }
-                                else {
-                                    return ``
-                                }
-                            }
-                        },
+                        }
                     ],
                 });
             }
 
             loadDblActivityLogs();
+
+            // for task
+            Task_in_opps.init(opportunity_detail_data, loadDblActivityLogs)
 
             // event create related features
             $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {

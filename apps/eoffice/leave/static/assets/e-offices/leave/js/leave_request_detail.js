@@ -12,6 +12,8 @@ $(document).ready(function () {
                 ordering: false,
                 paginate: false,
                 info: false,
+                autoWidth: true,
+                scrollX: true,
                 columns: [
                     {
                         data: 'leave_available',
@@ -141,7 +143,8 @@ $(document).ready(function () {
                 ordering: false,
                 paginate: false,
                 info: false,
-                responsive: true,
+                autoWidth: true,
+                scrollX: true,
                 columns: [
                     {
                         data: 'leave_type',

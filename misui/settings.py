@@ -43,6 +43,8 @@ IS_SERVER_MAINTAINING = True if os.environ.get('IS_SERVER_MAINTAINING', '0') in 
 
 RELEASE_VERSION = os.environ.get('RELEASE_VERSION', '0.0.1')
 
+CSRF_TRUSTED_ORIGINS = json.loads(os.environ.get('CSRF_TRUSTED_ORIGINS', '[]'))
+
 # Application definition
 
 INSTALLED_APPS = \

@@ -2,6 +2,9 @@
 import os
 import subprocess
 import sys
+from dotenv import load_dotenv
+
+print('load_dotenv: ', load_dotenv('.env'))  # load env variable before create_if_exist database.
 
 DB_HOST = os.environ.get('DB_HOST')
 DB_PORT = os.environ.get('DB_PORT')

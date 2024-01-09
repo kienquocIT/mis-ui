@@ -921,7 +921,8 @@ class QuotationLoadDataHandle {
                             rowData['tax'] = {
                                 'id': dataTax?.['id'],
                                 'title': dataTax?.['title'],
-                                'code': dataTax?.['code']
+                                'code': dataTax?.['code'],
+                                'rate': dataTax?.['rate'],
                             };
                             rowData['product_tax_title'] = dataTax?.['title'];
                             rowData['product_tax_value'] = dataTax?.['rate'];
@@ -1251,75 +1252,111 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadDataTablePaymentStage(paymentTermData) {
+    static loadDataTablePaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
-        if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
-            let data = [
-                {
-                    'stage': 0,
-                    'remark': '',
-                    'date': '',
-                    'date_type': '',
-                    'payment_ratio': 0,
-                    'value_before_tax': 0,
-                    'due_date': '',
-                    'is_ar_invoice': false,
-                },
-                {
-                    'stage': 1,
-                    'remark': '',
-                    'date': '',
-                    'date_type': '',
-                    'payment_ratio': 0,
-                    'value_before_tax': 0,
-                    'due_date': '',
-                    'is_ar_invoice': false,
-                },
-                {
-                    'stage': 2,
-                    'remark': '',
-                    'date': '',
-                    'date_type': '',
-                    'payment_ratio': 0,
-                    'value_before_tax': 0,
-                    'due_date': '',
-                    'is_ar_invoice': false,
-                },
-                {
-                    'stage': 3,
-                    'remark': '',
-                    'date': '',
-                    'date_type': '',
-                    'payment_ratio': 0,
-                    'value_before_tax': 0,
-                    'due_date': '',
-                    'is_ar_invoice': false,
-                },
-            ]
-            $table.DataTable().clear().draw();
-            $table.DataTable().rows.add(data).draw();
-            // load date picker
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-date')) {
-                    $(row.querySelector('.table-row-date')).daterangepicker({
-                        singleDatePicker: true,
-                        timePicker: true,
-                        showDropdowns: true,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                    });
-                    $(row.querySelector('.table-row-date')).val(null).trigger('change');
-                }
-            })
-        } else {  // if dataTable is not empty then update data
-            let term = paymentTermData?.['term'];
-            if (term) {
-
+        let term = [];
+        let dataSO = {'stage': 0, 'is_ar_invoice': false};
+        let dataContract = {};
+        let dataDelivery = [];
+        let dataAcceptance = [];
+        let valueSO = 0;
+        let tableProduct = document.getElementById('datable-quotation-create-product');
+        if (tableProduct.closest('.dataTables_scroll')) {
+            let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            // elePretaxAmountRaw = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+            if (tableProductFt.querySelector('.quotation-create-product-total-raw')) {
+                valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
             }
         }
+        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                term = dataSelected?.['term'];
+            }
+        }
+        if (term.length > 0) {
+            for (let termData of term) {
+                let value = 0;
+                let ratio = 0;
+                if (termData?.['unit_type'] === 0) {
+                    value = (parseFloat(termData?.['value']) * valueSO) / 100;
+                    ratio = termData?.['value'];
+                }
+                if (termData['after'] === 1) {
+                    dataContract = {
+                        'stage': 0,
+                        'date_type': '',
+                        'payment_ratio': ratio,
+                        'value_before_tax': value,
+                        'is_ar_invoice': false,
+                    }
+                } else if (termData['after'] === 2) {
+                    dataDelivery.push({
+                        'stage': 2,
+                        'date_type': '',
+                        'payment_ratio': ratio,
+                        'value_before_tax': value,
+                        'is_ar_invoice': false,
+                    })
+                } else if (termData['after'] === 4) {
+                    dataAcceptance.push({
+                        'stage': 3,
+                        'date_type': '',
+                        'payment_ratio': ratio,
+                        'value_before_tax': value,
+                        'is_ar_invoice': false,
+                    })
+                }
+            }
+            if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
+                let data = [dataSO, dataContract];
+                for (let deli of dataDelivery) {
+                    data.push(deli);
+                }
+                for (let acc of dataAcceptance) {
+                    data.push(acc);
+                }
+                $table.DataTable().clear().draw();
+                $table.DataTable().rows.add(data).draw();
+                // load date picker
+                $table.DataTable().rows().every(function () {
+                    let row = this.node();
+                    if (row.querySelector('.table-row-date')) {
+                        $(row.querySelector('.table-row-date')).daterangepicker({
+                            singleDatePicker: true,
+                            timePicker: true,
+                            showDropdowns: true,
+                            minYear: 2023,
+                            locale: {
+                                format: 'DD/MM/YYYY'
+                            },
+                        });
+                        $(row.querySelector('.table-row-date')).val(null).trigger('change');
+                    }
+                })
+            } else {  // if dataTable is not empty then update data
+                $table.DataTable().rows().every(function () {
+                    let row = this.node();
+                    let eleStage = row.querySelector('.table-row-stage');
+                    if (eleStage) {
+                        let dataRowRaw = eleStage.getAttribute('data-row');
+                        if (dataRowRaw) {
+                            let dataRow = JSON.parse(dataRowRaw);
+                            if (dataRow?.['stage'] !== 0) {
+                                let eleRatio = row.querySelector('.table-row-ratio');
+                                let eleValue = row.querySelector('.table-row-value');
+                                if (eleRatio && eleValue) {
+                                    let value = (parseFloat(eleRatio.getAttribute('data-ratio')) * valueSO) / 100;
+                                    eleValue.setAttribute('data-init-money', String(value));
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+        }
+        // mask money
+        $.fn.initMaskMoney2();
         return true;
     };
 
@@ -2741,13 +2778,13 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-remark" value="${row?.['remark']}">`;
+                        return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-date" value="${row?.['date']}">`;
+                        return `<input type="text" class="form-control table-row-date" value="${row?.['date'] ? row?.['date'] : ''}">`;
                     },
                 },
                 {
@@ -2764,7 +2801,7 @@ class QuotationDataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         if (row?.['stage'] !== 0) {
-                            return `<span class="table-row-ratio">${row?.['payment_ratio']} %</span>`;
+                            return `<span class="table-row-ratio" data-ratio="${row?.['payment_ratio']}">${row?.['payment_ratio']} %</span>`;
                         } else {
                             return `<span></span>`;
                         }

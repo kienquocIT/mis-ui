@@ -100,8 +100,14 @@ $(function () {
         });
 
 // Action on click dropdown payment term
-        QuotationLoadDataHandle.paymentSelectEle.on('click', function() {
+        QuotationLoadDataHandle.paymentSelectEle.on('click', function () {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        });
+
+        QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
+            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                QuotationLoadDataHandle.loadDataTablePaymentStage();
+            }
         });
 
 // Action on click dropdown contact
@@ -237,6 +243,8 @@ $(function () {
             deletePromotionRows(tableProduct, false, true);
             // Re Calculate all data of rows & total
             QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
+            // update table payment stage
+            QuotationLoadDataHandle.loadDataTablePaymentStage();
         });
 
 // If change product uom then clear table COST
@@ -612,16 +620,16 @@ $(function () {
         });
 
 // SHIPPING-BILLING
-        $quotationTabs.on('click', '.tab-logistic', function () {
-            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-                    if (dataSelected) {
-                        QuotationLoadDataHandle.loadDataTablePaymentStage(dataSelected);
-                    }
-                }
-            }
-        });
+//         $quotationTabs.on('click', '.tab-logistic', function () {
+//             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+//                 if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+//                     let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+//                     if (dataSelected) {
+//                         QuotationLoadDataHandle.loadDataTablePaymentStage(dataSelected);
+//                     }
+//                 }
+//             }
+//         });
 // Action on click choose shipping
         modalShipping.on('click', '.choose-shipping', function () {
             // Enable other buttons

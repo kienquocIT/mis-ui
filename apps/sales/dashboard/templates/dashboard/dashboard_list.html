@@ -10,13 +10,15 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
-            data-url-report-revenue-list="{% url 'ReportRevenueListAPI' %}"
+            data-url-report-revenue-profit-list="{% url 'ReportRevenueListAPI' %}"
+            data-url-top-sellers-customers-list="{% url 'ReportCustomerListAPI' %}"
+            data-url-top-categories-products-list="{% url 'ReportProductListAPI' %}"
     ></script>
-    <div class="row">
-        <div class="col-12 col-md-6 col-lg-6">
+    <div class="row mb-6">
+        <div class="px-6 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
-                    <label class="form-label" for="revenue-group">{% trans 'Revenue' %}</label>
+                    <label class="form-label" for="revenue-group"><span class="badge badge-purple"><i class="fas fa-chart-line"></i>&nbsp;{% trans 'Revenue' %}</span></label>
                     <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="{% trans 'Reload revenue data' %}"
                             id="reload-revenue-data-btn"
@@ -37,9 +39,9 @@
                                 <option value="1">{% trans 'Accumulated revenue' %}</option>
                             </select>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <button type="button" id="btn-show-revenue-chart"
-                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-primary"
+                                    class="w-100 btn btn-custom btn-light"
                             >
                                 <span>
                                     <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
@@ -66,13 +68,13 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-11 border rounded" id="revenue_chart"></div>
+                <div class="col-12 border rounded p-3" id="revenue_chart"></div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-6">
+        <div class="px-6 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
-                    <label class="form-label" for="profit-group">{% trans 'Profit' %}</label>
+                    <label class="form-label" for="profit-group"><span class="badge badge-pink"><i class="fas fa-chart-line"></i>&nbsp;{% trans 'Profit' %}</span></label>
                     <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="{% trans 'Reload profit data' %}"
                             id="reload-profit-data-btn"
@@ -93,9 +95,9 @@
                                 <option value="1">{% trans 'Accumulated revenue' %}</option>
                             </select>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <button type="button" id="btn-show-profit-chart"
-                                    class="w-100 btn btn-custom btn-flush-danger btn-gradient-danger"
+                                    class="w-100 btn btn-custom btn-light"
                             >
                                 <span>
                                     <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
@@ -122,18 +124,18 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-11 border rounded" id="profit_chart"></div>
+                <div class="col-12 border rounded p-3" id="profit_chart"></div>
             </div>
         </div>
     </div>
-    <div class="row mt-5">
-        <div class="col-12 col-md-6 col-lg-6">
+    <div class="row mb-6">
+        <div class="px-6 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
-                    <label class="form-label" for="top-sellers-time">{% trans 'Top 5 sellers' %}</label>
+                    <label class="form-label" for="top-sellers-time"><span class="badge badge-green"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Top sellers' %}</span></label>
                     <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="{% trans 'Reload top 5 sellers data' %}"
-                            id="reload-revenue-data-btn"
+                            title="{% trans 'Reload top sellers data' %}"
+                            id="reload-top-sellers-data-btn"
                             class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
                     >
                         <span class="icon"><i class="fas fa-sync"></i></span>
@@ -147,14 +149,14 @@
                             </select>
                         </div>
                         <div class="col-4">
-                            <select class="form-select select2" id="top-sellers-type">
-                                <option value="0" selected>{% trans 'Period revenue' %}</option>
-                                <option value="1">{% trans 'Accumulated revenue' %}</option>
-                            </select>
+                            <div class="input-group">
+                                <span class="input-group-text">Top</span>
+                                <input class="form-control" type="number" id="top-sellers-number" min="1" max="20" value="5">
+                            </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <button type="button" id="btn-show-top-sellers-chart"
-                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-success"
+                                    class="w-100 btn btn-custom btn-light"
                             >
                                 <span>
                                     <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
@@ -169,6 +171,14 @@
                                         </div>
                                         <div class="dropdown-divider"></div>
                                         <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-sellers-month-filter">{% trans 'Month' %}</label>
+                                            <input type="number" id="top-sellers-month-filter" class="form-control" min="1" max="12" value="11">
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-sellers-quarter-filter">{% trans 'Quarter' %}</label>
+                                            <input type="number" id="top-sellers-quarter-filter" class="form-control" min="1" max="4" value="1">
+                                        </div>
+                                        <div class="form-group form-group-sm">
                                             <label class="form-check-label" for="top-sellers-year-filter">{% trans 'Year' %}</label>
                                             <input type="number" id="top-sellers-year-filter" class="form-control" value="2023">
                                         </div>
@@ -181,16 +191,16 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-11 border rounded" id="top_sellers_chart"></div>
+                <div class="col-12 border rounded p-3" id="top_sellers_chart"></div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-6">
+        <div class="px-6 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
-                    <label class="form-label" for="top-customers-time">{% trans 'Top 5 customers' %}</label>
+                    <label class="form-label" for="top-customers-time"><span class="badge badge-orange"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Top customers' %}</span></label>
                     <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="{% trans 'Reload top 5 customers data' %}"
-                            id="reload-revenue-data-btn"
+                            title="{% trans 'Reload top customers data' %}"
+                            id="reload-top-customers-data-btn"
                             class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
                     >
                         <span class="icon"><i class="fas fa-sync"></i></span>
@@ -204,14 +214,14 @@
                             </select>
                         </div>
                         <div class="col-4">
-                            <select class="form-select select2" id="top-customers-type">
-                                <option value="0" selected>{% trans 'Period revenue' %}</option>
-                                <option value="1">{% trans 'Accumulated revenue' %}</option>
-                            </select>
+                            <div class="input-group">
+                                <span class="input-group-text">Top</span>
+                                <input class="form-control" type="number" id="top-customers-number" min="1" max="20" value="5">
+                            </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <button type="button" id="btn-show-top-customers-chart"
-                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-info"
+                                    class="w-100 btn btn-custom btn-light"
                             >
                                 <span>
                                     <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
@@ -226,6 +236,14 @@
                                         </div>
                                         <div class="dropdown-divider"></div>
                                         <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-customers-month-filter">{% trans 'Month' %}</label>
+                                            <input type="number" id="top-customers-month-filter" class="form-control" min="1" max="12" value="11">
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-customers-quarter-filter">{% trans 'Quarter' %}</label>
+                                            <input type="number" id="top-customers-quarter-filter" class="form-control" min="1" max="4" value="1">
+                                        </div>
+                                        <div class="form-group form-group-sm">
                                             <label class="form-check-label" for="top-customers-year-filter">{% trans 'Year' %}</label>
                                             <input type="number" id="top-customers-year-filter" class="form-control" value="2023">
                                         </div>
@@ -238,18 +256,18 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-11 border rounded" id="top_customers_chart"></div>
+                <div class="col-12 border rounded p-3" id="top_customers_chart"></div>
             </div>
         </div>
     </div>
-    <div class="row mt-5">
-        <div class="col-12 col-md-6 col-lg-6">
+    <div class="row mb-6">
+        <div class="px-6 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
-                    <label class="form-label" for="top-categories-time">{% trans 'Top 5 categories' %}</label>
+                    <label class="form-label" for="top-categories-time"><span class="badge badge-red"><i class="bi bi-bar-chart-line-fill"></i>&nbsp;{% trans 'Top categories' %}</span></label>
                     <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="{% trans 'Reload top 5 categories data' %}"
-                            id="reload-revenue-data-btn"
+                            title="{% trans 'Reload top categories data' %}"
+                            id="reload-top-categories-data-btn"
                             class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
                     >
                         <span class="icon"><i class="fas fa-sync"></i></span>
@@ -263,14 +281,14 @@
                             </select>
                         </div>
                         <div class="col-4">
-                            <select class="form-select select2" id="top-categories-type">
-                                <option value="0" selected>{% trans 'Period revenue' %}</option>
-                                <option value="1">{% trans 'Accumulated revenue' %}</option>
-                            </select>
+                            <div class="input-group">
+                                <span class="input-group-text">Top</span>
+                                <input class="form-control" type="number" id="top-categories-number" min="1" max="20" value="5">
+                            </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <button type="button" id="btn-show-top-categories-chart"
-                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-dark"
+                                    class="w-100 btn btn-custom btn-light"
                             >
                                 <span>
                                     <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
@@ -285,6 +303,14 @@
                                         </div>
                                         <div class="dropdown-divider"></div>
                                         <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-categories-month-filter">{% trans 'Month' %}</label>
+                                            <input type="number" id="top-categories-month-filter" class="form-control" min="1" max="12" value="11">
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-categories-quarter-filter">{% trans 'Quarter' %}</label>
+                                            <input type="number" id="top-categories-quarter-filter" class="form-control" min="1" max="4" value="1">
+                                        </div>
+                                        <div class="form-group form-group-sm">
                                             <label class="form-check-label" for="top-categories-year-filter">{% trans 'Year' %}</label>
                                             <input type="number" id="top-categories-year-filter" class="form-control" value="2023">
                                         </div>
@@ -297,16 +323,16 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-11 border rounded" id="top_categories_chart"></div>
+                <div class="col-12 border rounded p-3" id="top_categories_chart"></div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-6">
+        <div class="px-6 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
-                    <label class="form-label" for="top-products-time">{% trans 'Top 5 products' %}</label>
+                    <label class="form-label" for="top-products-time"><span class="badge badge-purple"><i class="bi bi-bar-chart-line-fill"></i>&nbsp;{% trans 'Top products' %}</span></label>
                     <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="{% trans 'Reload top 5 products data' %}"
-                            id="reload-revenue-data-btn"
+                            title="{% trans 'Reload top products data' %}"
+                            id="reload-top-products-data-btn"
                             class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
                     >
                         <span class="icon"><i class="fas fa-sync"></i></span>
@@ -320,14 +346,14 @@
                             </select>
                         </div>
                         <div class="col-4">
-                            <select class="form-select select2" id="top-products-type">
-                                <option value="0" selected>{% trans 'Period revenue' %}</option>
-                                <option value="1">{% trans 'Accumulated revenue' %}</option>
-                            </select>
+                            <div class="input-group">
+                                <span class="input-group-text">Top</span>
+                                <input class="form-control" type="number" id="top-products-number" min="1" max="20" value="5">
+                            </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <button type="button" id="btn-show-top-products-chart"
-                                    class="w-100 btn btn-custom btn-flush-primary btn-gradient-warning"
+                                    class="w-100 btn btn-custom btn-light"
                             >
                                 <span>
                                     <span class="icon" data-bs-toggle="dropdown"><span class="feather-icon"><i class="fas fa-cog"></i></span></span>
@@ -342,6 +368,14 @@
                                         </div>
                                         <div class="dropdown-divider"></div>
                                         <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-products-month-filter">{% trans 'Month' %}</label>
+                                            <input type="number" id="top-products-month-filter" class="form-control" min="1" max="12" value="11">
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="form-check-label" for="top-products-quarter-filter">{% trans 'Quarter' %}</label>
+                                            <input type="number" id="top-products-quarter-filter" class="form-control" min="1" max="4" value="1">
+                                        </div>
+                                        <div class="form-group form-group-sm">
                                             <label class="form-check-label" for="top-products-year-filter">{% trans 'Year' %}</label>
                                             <input type="number" id="top-products-year-filter" class="form-control" value="2023">
                                         </div>
@@ -354,7 +388,7 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-11 border rounded" id="top_products_chart"></div>
+                <div class="col-12 border rounded p-3" id="top_products_chart"></div>
             </div>
         </div>
     </div>

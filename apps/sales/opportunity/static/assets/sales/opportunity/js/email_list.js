@@ -126,14 +126,14 @@ function loadOpportunityEmailList() {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'wrap-text',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-45',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<a class="text-primary link-primary underline_hover detail-email-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
                                     data-bs-target="#detail-send-email"><span><b>` + row.subject + `</b></span></a>`
@@ -141,23 +141,16 @@ function loadOpportunityEmailList() {
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text w-25 text-center',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-primary w-50">${row.opportunity.code}</span>`
+                        return `<span class="text-secondary">${row.opportunity.code}</span>`
                     }
                 },
                 {
                     data: 'date_created',
-                    className: 'wrap-text w-20 text-center',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(data);
-                    }
-                },
-                {
-                    data: 'action',
-                    className: 'wrap-text w-5 text-center',
-                    render: (data, type, row) => {
-                        return `<button data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs delete-activity"><span class="icon"><i class="bi bi-trash"></i></span></button>`
                     }
                 },
             ],
@@ -186,22 +179,6 @@ $(document).on('click', '#table_opportunity_email_list .detail-email-button', fu
     }
 
     $('#detail-email-content-area').html(email_obj.content)
-})
-
-$(document).on('click', '#table_opportunity_email_list .delete-activity', function () {
-    let email_id = $(this).attr('data-id');
-    let frm = $('#table_opportunity_email_list');
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
-    $.fn.callAjax(frm.attr('data-url-delete').replace(0, email_id), 'DELETE', {}, csr)
-    .then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            $.fn.notifyB({description: "Successfully"}, 'success')
-            $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
-        }
-    },(errs) => {
-        $.fn.notifyB({description: errs.data.errors}, 'failure');
-    })
 })
 
 ClassicEditor

@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+
     new MeetingScheduleHandle().load()
 
     $('#form-create-meeting').submit(function (event) {

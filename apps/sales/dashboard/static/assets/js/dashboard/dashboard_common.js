@@ -2,16 +2,20 @@ $(document).ready(function () {
     let scriptUrlEle = $('#script-url')
 
     // Revenue chart
+    const revenueGroupEle = $('#revenue-group')
+    const revenueTypeEle = $('#revenue-type')
+    const revenueYearFilterEle = $('#revenue-year-filter')
+    const revenueBillionCheckboxEle = $('#revenue-billion-checkbox')
 
     let revenue_chart_list_DF = []
     let revenue_chart_DF = null
     let revenue_expected_data_DF = [3.0e+9, 3.0e+9, 4.0e+9, 5.0e+9, 4.0e+9, 3.0e+9, 4.0e+9, 3.0e+9, 4.0e+9, 3.2e+9, 3.4e+9, 4.0e+9,]
 
     function LoadRevenueGroup(data) {
-        $('#revenue-group').initSelect2({
+        revenueGroupEle.initSelect2({
             allowClear: true,
             ajax: {
-                url: $('#revenue-group').attr('data-url'),
+                url: revenueGroupEle.attr('data-url'),
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
@@ -41,7 +45,7 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
             const year = dateApproved.getFullYear()
-            const filterYear = parseInt($('#revenue-year-filter').val())
+            const filterYear = parseInt(revenueYearFilterEle.val())
             if (year === filterYear) {
                 if (!group_filter) {
                     revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
@@ -123,7 +127,7 @@ $(document).ready(function () {
                     text: titleY
                 },
                 labels: {
-                    formatter: function(val, index) {
+                    formatter: function(val) {
                         return val.toFixed(3);
                     }
                 }
@@ -160,7 +164,7 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
             const year = dateApproved.getFullYear();
-            const filterYear = parseInt($('#revenue-year-filter').val());
+            const filterYear = parseInt(revenueYearFilterEle.val());
             if (year === filterYear) {
                 if (!group_filter) {
                     revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
@@ -255,7 +259,7 @@ $(document).ready(function () {
                     text: titleY
                 },
                 labels: {
-                    formatter: function(val, index) {
+                    formatter: function(val) {
                         return val.toFixed(3);
                     }
                 }
@@ -282,9 +286,9 @@ $(document).ready(function () {
     }
 
     function InitOptionRevenueChart() {
-        let group = $('#revenue-group').val()
-        let calculate_type = $('#revenue-type').val()
-        const isBillionChecked = $('#revenue-billion-checkbox').prop('checked')
+        let group = revenueGroupEle.val()
+        let calculate_type = revenueTypeEle.val()
+        const isBillionChecked = revenueBillionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         if (calculate_type === '0') {
             let options = CombineRevenueChartDataPeriod(
@@ -307,9 +311,9 @@ $(document).ready(function () {
     }
 
     function UpdateOptionRevenueChart() {
-        let group = $('#revenue-group').val()
-        let calculate_type = $('#revenue-type').val()
-        const isBillionChecked = $('#revenue-billion-checkbox').prop('checked')
+        let group = revenueGroupEle.val()
+        let calculate_type = revenueTypeEle.val()
+        const isBillionChecked = revenueBillionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         if (calculate_type === '0') {
             let options = CombineRevenueChartDataPeriod(
@@ -349,6 +353,7 @@ $(document).ready(function () {
         Promise.all([revenue_chart_ajax]).then(
             (results) => {
                 revenue_chart_list_DF = results[0];
+                revenueYearFilterEle.val(new Date().getFullYear())
                 if (is_init) {
                     InitOptionRevenueChart()
                 }
@@ -361,11 +366,7 @@ $(document).ready(function () {
 
     AjaxRevenueChart()
 
-    $('#btn-show-revenue-chart').on('click', function() {
-        UpdateOptionRevenueChart()
-    })
-
-    $('#revenue-type').on('change', function() {
+    revenueTypeEle.on('change', function() {
         UpdateOptionRevenueChart()
     })
 
@@ -373,17 +374,25 @@ $(document).ready(function () {
         AjaxRevenueChart(false)
     })
 
+    $('.timechart-revenue').on('change', function() {
+        UpdateOptionRevenueChart()
+    })
+
     // Profit chart
+    const profitGroupEle = $('#profit-group')
+    const profitTypeEle = $('#profit-type')
+    const profitYearFilterEle = $('#profit-year-filter')
+    const profitBillionCheckboxEle = $('#profit-billion-checkbox')
 
     let profit_chart_list_DF = []
     let profit_chart_DF = null
     let profit_expected_data_DF = [1.0e+9, 1.7e+9, 1.5e+9, 1.8e+9, 1.0e+9, 0.5e+9, 1.5e+9, 1.3e+9, 1.5e+9, 1.2e+9, 1.4e+9, 2.0e+9,]
 
     function LoadProfitGroup(data) {
-        $('#profit-group').initSelect2({
+        profitGroupEle.initSelect2({
             allowClear: true,
             ajax: {
-                url: $('#profit-group').attr('data-url'),
+                url: profitGroupEle.attr('data-url'),
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
@@ -413,7 +422,7 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
             const year = dateApproved.getFullYear()
-            const filterYear = parseInt($('#profit-year-filter').val())
+            const filterYear = parseInt(profitYearFilterEle.val())
             if (year === filterYear) {
                 if (!group_filter) {
                     profit_chart_data[month] += (item?.['gross_profit'] ? item?.['gross_profit'] : 0) / cast_billion
@@ -494,7 +503,7 @@ $(document).ready(function () {
                     text: titleY
                 },
                 labels: {
-                    formatter: function(val, index) {
+                    formatter: function(val) {
                         return val.toFixed(3);
                     }
                 }
@@ -531,7 +540,7 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
             const year = dateApproved.getFullYear();
-            const filterYear = parseInt($('#profit-year-filter').val());
+            const filterYear = parseInt(profitYearFilterEle.val());
             if (year === filterYear) {
                 if (!group_filter) {
                     profit_chart_data[month] += (item?.['gross_profit'] ? item?.['gross_profit'] : 0) / cast_billion
@@ -626,7 +635,7 @@ $(document).ready(function () {
                     text: titleY
                 },
                 labels: {
-                    formatter: function(val, index) {
+                    formatter: function(val) {
                         return val.toFixed(3);
                     }
                 }
@@ -653,9 +662,9 @@ $(document).ready(function () {
     }
 
     function InitOptionProfitChart() {
-        let group = $('#profit-group').val()
-        let calculate_type = $('#profit-type').val()
-        const isBillionChecked = $('#profit-billion-checkbox').prop('checked')
+        let group = profitGroupEle.val()
+        let calculate_type = profitTypeEle.val()
+        const isBillionChecked = profitBillionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         if (calculate_type === '0') {
             let options = CombineProfitChartDataPeriod(
@@ -678,9 +687,9 @@ $(document).ready(function () {
     }
 
     function UpdateOptionProfitChart() {
-        let group = $('#profit-group').val()
-        let calculate_type = $('#profit-type').val()
-        const isBillionChecked = $('#profit-billion-checkbox').prop('checked')
+        let group = profitGroupEle.val()
+        let calculate_type = profitTypeEle.val()
+        const isBillionChecked = profitBillionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         if (calculate_type === '0') {
             let options = CombineProfitChartDataPeriod(
@@ -720,7 +729,7 @@ $(document).ready(function () {
         Promise.all([profit_chart_ajax]).then(
             (results) => {
                 profit_chart_list_DF = results[0];
-                // console.log(profit_chart_list_DF)
+                profitYearFilterEle.val(new Date().getFullYear())
                 if (is_init) {
                     InitOptionProfitChart()
                 }
@@ -733,11 +742,7 @@ $(document).ready(function () {
 
     AjaxProfitChart()
 
-    $('#btn-show-profit-chart').on('click', function() {
-        UpdateOptionProfitChart()
-    })
-
-    $('#profit-type').on('change', function() {
+    profitTypeEle.on('change', function() {
         UpdateOptionProfitChart()
     })
 
@@ -745,7 +750,16 @@ $(document).ready(function () {
         AjaxProfitChart(false)
     })
 
+    $('.timechart-profit').on('change', function () {
+        UpdateOptionProfitChart()
+    })
+
     // Top sellers chart
+    const topSellersTimeFilterYearEle = $('#top-sellers-time-filter-year')
+    const topSellersTimeFilterMMQQEle = $('#top-sellers-time-filter-mm-qq')
+    const topSellersTimeFilterSelectEle = $('#top-sellers-time-filter-select')
+    const topSellersTimeEle = $('#top-sellers-time')
+    const topSellersNumberEle = $('#top-sellers-number')
 
     let top_sellers_chart_list_DF = []
     let top_sellers_chart_DF = null
@@ -756,17 +770,21 @@ $(document).ready(function () {
             cast_billion = 1e9
         }
 
+        const current_year = new Date().getFullYear()
+        const current_month = new Date().getMonth() + 1
+        const current_quarter = parseInt(current_month/3) + 1
+        const filter_year = topSellersTimeFilterYearEle.val()
+        const filter_qq_mm = topSellersTimeFilterMMQQEle.val()
+
         let top_sellers_chart_data = []
         for (const item of top_sellers_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth() + 1
             const year = dateApproved.getFullYear()
-            const filterYear = parseInt($('#top-sellers-year-filter').val())
-            const filterMonth = parseInt($('#top-sellers-month-filter').val())
-            const filterQuarter = parseInt($('#top-sellers-quarter-filter').val())
-            const filterTimes = $('#top-sellers-time').val()
+            const month = dateApproved.getMonth() + 1
+            const quarter = parseInt(month/3) + 1
+            const filterTimes = topSellersTimeEle.val()
             if (filterTimes === '0') {
-                if (year === filterYear && month === filterMonth) {
+                if (year === current_year && month === current_month) {
                     top_sellers_chart_data.push({
                         'id': item?.['employee_inherit']?.['id'],
                         'full_name': item?.['employee_inherit']?.['full_name'],
@@ -775,7 +793,16 @@ $(document).ready(function () {
                 }
             }
             else if (filterTimes === '1') {
-                if (year === filterYear && parseInt(month/3) === filterQuarter) {
+                if (year === current_year && quarter === current_quarter) {
+                    top_sellers_chart_data.push({
+                        'id': item?.['employee_inherit']?.['id'],
+                        'full_name': item?.['employee_inherit']?.['full_name'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
+                }
+            }
+            else if (filterTimes === '2') {
+                if (year === current_year) {
                     top_sellers_chart_data.push({
                         'id': item?.['employee_inherit']?.['id'],
                         'full_name': item?.['employee_inherit']?.['full_name'],
@@ -784,12 +811,32 @@ $(document).ready(function () {
                 }
             }
             else {
-                if (year === filterYear) {
-                    top_sellers_chart_data.push({
-                        'id': item?.['employee_inherit']?.['id'],
-                        'full_name': item?.['employee_inherit']?.['full_name'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
+                if (topSellersTimeFilterSelectEle.val() === '0') {
+                    if (year === parseInt(filter_year)) {
+                        top_sellers_chart_data.push({
+                            'id': item?.['employee_inherit']?.['id'],
+                            'full_name': item?.['employee_inherit']?.['full_name'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
+                }
+                else if (topSellersTimeFilterSelectEle.val() === '1') {
+                    if (month === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                        top_sellers_chart_data.push({
+                            'id': item?.['employee_inherit']?.['id'],
+                            'full_name': item?.['employee_inherit']?.['full_name'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
+                }
+                else if (topSellersTimeFilterSelectEle.val() === '2') {
+                    if (quarter === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                        top_sellers_chart_data.push({
+                            'id': item?.['employee_inherit']?.['id'],
+                            'full_name': item?.['employee_inherit']?.['full_name'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
                 }
             }
         }
@@ -805,7 +852,7 @@ $(document).ready(function () {
         top_sellers_chart_data = Object.values(top_sellers_chart_data_sum)
 
         top_sellers_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = top_sellers_chart_data.slice(0, $('#top-sellers-number').val())
+        let topX = top_sellers_chart_data.slice(0, topSellersNumberEle.val())
         let topX_revenue = topX.map(item => item.revenue);
         let topX_full_name = topX.map(item => item.full_name);
 
@@ -830,7 +877,7 @@ $(document).ready(function () {
                 style: {
                     colors: ['#fff']
                 },
-                formatter: function (val, opt) {
+                formatter: function (val) {
                     return val
                     // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
                 },
@@ -842,7 +889,10 @@ $(document).ready(function () {
             xaxis: {
                 categories: topX_full_name,
                 labels: {
-                    show: true
+                    show: true,
+                    formatter: function(val) {
+                        return val.toFixed(3);
+                    }
                 },
                 title: {
                     text: titleX
@@ -923,7 +973,7 @@ $(document).ready(function () {
         Promise.all([top_sellers_chart_ajax]).then(
             (results) => {
                 top_sellers_chart_list_DF = results[0];
-                // console.log(top_sellers_chart_list_DF)
+                $('#top-sellers-time-filter-year').val(new Date().getFullYear())
                 if (is_init) {
                     InitOptionTopSellersChart()
                 }
@@ -936,23 +986,51 @@ $(document).ready(function () {
 
     AjaxTopSellersChart()
 
-    $('#btn-show-top-sellers-chart').on('click', function() {
+    topSellersNumberEle.on('change', function() {
         UpdateOptionTopSellersChart()
     })
 
-    $('#top-sellers-number').on('change', function() {
-        UpdateOptionTopSellersChart()
+    topSellersTimeEle.on('change', function() {
+        if ($(this).val() === '3') {
+            topSellersTimeFilterSelectEle.prop('disabled', false)
+            topSellersTimeFilterMMQQEle.prop('disabled', topSellersTimeFilterSelectEle.val() === '0')
+            topSellersTimeFilterYearEle.prop('disabled', false)
+        }
+        else {
+            UpdateOptionTopSellersChart()
+            topSellersTimeFilterSelectEle.prop('disabled', true)
+            topSellersTimeFilterMMQQEle.prop('disabled', true)
+            topSellersTimeFilterYearEle.prop('disabled', true)
+        }
     })
 
-    $('#top-sellers-time').on('change', function() {
-        UpdateOptionTopSellersChart()
+    topSellersTimeFilterSelectEle.on('change', function() {
+        topSellersTimeFilterMMQQEle.val('').prop('disabled', $(this).val() === '0')
+        topSellersTimeFilterMMQQEle.closest('div').prop('hidden', $(this).val() === '0')
+
+        topSellersTimeFilterYearEle.val(new Date().getFullYear())
+        if ($(this).val() === '1') {
+            topSellersTimeFilterMMQQEle.val(new Date().getMonth() + 1)
+        }
+        else if ($(this).val() === '2') {
+            topSellersTimeFilterMMQQEle.val(parseInt((new Date().getMonth() + 1) / 3) + 1)
+        }
     })
 
     $('#reload-top-sellers-data-btn').on('click', function() {
         AjaxTopSellersChart(false)
     })
 
+    $('.timechart-sellers').on('change', function () {
+        UpdateOptionTopSellersChart()
+    })
+
     // Top customers chart
+    const topCustomersTimeFilterYearEle = $('#top-customers-time-filter-year')
+    const topCustomersTimeFilterMMQQEle = $('#top-customers-time-filter-mm-qq')
+    const topCustomersTimeFilterSelectEle = $('#top-customers-time-filter-select')
+    const topCustomersTimeEle = $('#top-customers-time')
+    const topCustomersNumberEle = $('#top-customers-number')
     
     let top_customers_chart_list_DF = []
     let top_customers_chart_DF = null
@@ -963,17 +1041,21 @@ $(document).ready(function () {
             cast_billion = 1e9
         }
 
+        const current_year = new Date().getFullYear()
+        const current_month = new Date().getMonth() + 1
+        const current_quarter = parseInt(current_month/3) + 1
+        const filter_year = topCustomersTimeFilterYearEle.val()
+        const filter_qq_mm = topCustomersTimeFilterMMQQEle.val()
+
         let top_customers_chart_data = []
         for (const item of top_customers_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth() + 1
             const year = dateApproved.getFullYear()
-            const filterYear = parseInt($('#top-customers-year-filter').val())
-            const filterMonth = parseInt($('#top-customers-month-filter').val())
-            const filterQuarter = parseInt($('#top-customers-quarter-filter').val())
-            const filterTimes = $('#top-customers-time').val()
+            const month = dateApproved.getMonth() + 1
+            const quarter = parseInt(month/3) + 1
+            const filterTimes = topCustomersTimeEle.val()
             if (filterTimes === '0') {
-                if (year === filterYear && month === filterMonth) {
+                if (year === current_year && month === current_month) {
                     top_customers_chart_data.push({
                         'id': item?.['customer']?.['id'],
                         'title': item?.['customer']?.['title'],
@@ -982,7 +1064,16 @@ $(document).ready(function () {
                 }
             }
             else if (filterTimes === '1') {
-                if (year === filterYear && parseInt(month/3) === filterQuarter) {
+                if (year === current_year && quarter === current_quarter) {
+                    top_customers_chart_data.push({
+                        'id': item?.['customer']?.['id'],
+                        'title': item?.['customer']?.['title'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
+                }
+            }
+            else if (filterTimes === '2') {
+                if (year === current_year) {
                     top_customers_chart_data.push({
                         'id': item?.['customer']?.['id'],
                         'title': item?.['customer']?.['title'],
@@ -991,12 +1082,32 @@ $(document).ready(function () {
                 }
             }
             else {
-                if (year === filterYear) {
-                    top_customers_chart_data.push({
-                        'id': item?.['customer']?.['id'],
-                        'title': item?.['customer']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
+                if (topCustomersTimeFilterSelectEle.val() === '0') {
+                    if (year === parseInt(filter_year)) {
+                        top_customers_chart_data.push({
+                            'id': item?.['customer']?.['id'],
+                            'title': item?.['customer']?.['title'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
+                }
+                else if (topCustomersTimeFilterSelectEle.val() === '1') {
+                    if (month === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                        top_customers_chart_data.push({
+                            'id': item?.['customer']?.['id'],
+                            'title': item?.['customer']?.['title'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
+                }
+                else if (topCustomersTimeFilterSelectEle.val() === '2') {
+                    if (quarter === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                        top_customers_chart_data.push({
+                            'id': item?.['customer']?.['id'],
+                            'title': item?.['customer']?.['title'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
                 }
             }
         }
@@ -1012,7 +1123,7 @@ $(document).ready(function () {
         top_customers_chart_data = Object.values(top_customers_chart_data_sum)
 
         top_customers_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = top_customers_chart_data.slice(0, $('#top-customers-number').val())
+        let topX = top_customers_chart_data.slice(0, topCustomersNumberEle.val())
         let topX_revenue = topX.map(item => item.revenue);
         let topX_title = topX.map(item => item.title);
 
@@ -1037,7 +1148,7 @@ $(document).ready(function () {
                 style: {
                     colors: ['#fff']
                 },
-                formatter: function (val, opt) {
+                formatter: function (val) {
                     return val
                     // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
                 },
@@ -1049,7 +1160,10 @@ $(document).ready(function () {
             xaxis: {
                 categories: topX_title,
                 labels: {
-                    show: true
+                    show: true,
+                    formatter: function(val) {
+                        return val.toFixed(3);
+                    }
                 },
                 title: {
                     text: titleX
@@ -1130,7 +1244,7 @@ $(document).ready(function () {
         Promise.all([top_customers_chart_ajax]).then(
             (results) => {
                 top_customers_chart_list_DF = results[0];
-                // console.log(top_customers_chart_list_DF)
+                $('#top-customers-time-filter-year').val(new Date().getFullYear())
                 if (is_init) {
                     InitOptionTopCustomersChart()
                 }
@@ -1143,23 +1257,50 @@ $(document).ready(function () {
 
     AjaxTopCustomersChart()
 
-    $('#btn-show-top-customers-chart').on('click', function() {
+    topCustomersNumberEle.on('change', function() {
         UpdateOptionTopCustomersChart()
     })
 
-    $('#top-customers-number').on('change', function() {
-        UpdateOptionTopCustomersChart()
+    topCustomersTimeEle.on('change', function() {
+        if ($(this).val() === '3') {
+            topCustomersTimeFilterSelectEle.prop('disabled', false)
+            topCustomersTimeFilterMMQQEle.prop('disabled', topCustomersTimeFilterSelectEle.val() === '0')
+            topCustomersTimeFilterYearEle.prop('disabled', false)
+        }
+        else {
+            UpdateOptionTopCustomersChart()
+            topCustomersTimeFilterSelectEle.prop('disabled', true)
+            topCustomersTimeFilterMMQQEle.prop('disabled', true)
+            topCustomersTimeFilterYearEle.prop('disabled', true)
+        }
     })
 
-    $('#top-customers-time').on('change', function() {
-        UpdateOptionTopCustomersChart()
+    topCustomersTimeFilterSelectEle.on('change', function() {
+        topCustomersTimeFilterMMQQEle.val('').prop('disabled', $(this).val() === '0')
+        topCustomersTimeFilterMMQQEle.closest('div').prop('hidden', $(this).val() === '0')
+        topCustomersTimeFilterYearEle.val(new Date().getFullYear())
+        if ($(this).val() === '1') {
+            topCustomersTimeFilterMMQQEle.val(new Date().getMonth() + 1)
+        }
+        else if ($(this).val() === '2') {
+            topCustomersTimeFilterMMQQEle.val(parseInt((new Date().getMonth() + 1) / 3) + 1)
+        }
     })
 
     $('#reload-top-customers-data-btn').on('click', function() {
         AjaxTopCustomersChart(false)
     })
+
+    $('.timechart-customers').on('change', function () {
+        UpdateOptionTopCustomersChart()
+    })
     
     // Top categories chart
+    const topCategoriesTimeFilterYearEle = $('#top-categories-time-filter-year')
+    const topCategoriesTimeFilterMMQQEle = $('#top-categories-time-filter-mm-qq')
+    const topCategoriesTimeFilterSelectEle = $('#top-categories-time-filter-select')
+    const topCategoriesTimeEle = $('#top-categories-time')
+    const topCategoriesNumberEle = $('#top-categories-number')
 
     let top_categories_chart_list_DF = []
     let top_categories_chart_DF = null
@@ -1170,17 +1311,21 @@ $(document).ready(function () {
             cast_billion = 1e9
         }
 
+        const current_year = new Date().getFullYear()
+        const current_month = new Date().getMonth() + 1
+        const current_quarter = parseInt(current_month/3) + 1
+        const filter_year = topCategoriesTimeFilterYearEle.val()
+        const filter_qq_mm = topCategoriesTimeFilterMMQQEle.val()
+
         let top_categories_chart_data = []
         for (const item of top_categories_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth() + 1
             const year = dateApproved.getFullYear()
-            const filterYear = parseInt($('#top-categories-year-filter').val())
-            const filterMonth = parseInt($('#top-categories-month-filter').val())
-            const filterQuarter = parseInt($('#top-categories-quarter-filter').val())
-            const filterTimes = $('#top-categories-time').val()
+            const month = dateApproved.getMonth() + 1
+            const quarter = parseInt(month/3) + 1
+            const filterTimes = topCategoriesTimeEle.val()
             if (filterTimes === '0') {
-                if (year === filterYear && month === filterMonth) {
+                if (year === current_year && month === current_month) {
                     top_categories_chart_data.push({
                         'id': item?.['product']?.['general_product_category']?.['id'],
                         'title': item?.['product']?.['general_product_category']?.['title'],
@@ -1189,7 +1334,16 @@ $(document).ready(function () {
                 }
             }
             else if (filterTimes === '1') {
-                if (year === filterYear && parseInt(month/3) === filterQuarter) {
+                if (year === current_year && quarter === current_quarter) {
+                    top_categories_chart_data.push({
+                        'id': item?.['product']?.['general_product_category']?.['id'],
+                        'title': item?.['product']?.['general_product_category']?.['title'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
+                }
+            }
+            else if (filterTimes === '2') {
+                if (year === current_year) {
                     top_categories_chart_data.push({
                         'id': item?.['product']?.['general_product_category']?.['id'],
                         'title': item?.['product']?.['general_product_category']?.['title'],
@@ -1198,12 +1352,32 @@ $(document).ready(function () {
                 }
             }
             else {
-                if (year === filterYear) {
-                    top_categories_chart_data.push({
-                        'id': item?.['product']?.['general_product_category']?.['id'],
-                        'title': item?.['product']?.['general_product_category']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
+                if (topCategoriesTimeFilterSelectEle.val() === '0') {
+                    if (year === parseInt(filter_year)) {
+                        top_categories_chart_data.push({
+                            'id': item?.['product']?.['general_product_category']?.['id'],
+                            'title': item?.['product']?.['general_product_category']?.['title'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
+                }
+                else if (topCategoriesTimeFilterSelectEle.val() === '1') {
+                    if (month === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                        top_categories_chart_data.push({
+                            'id': item?.['product']?.['general_product_category']?.['id'],
+                            'title': item?.['product']?.['general_product_category']?.['title'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
+                }
+                else if (topCategoriesTimeFilterSelectEle.val() === '2') {
+                    if (quarter === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                        top_categories_chart_data.push({
+                            'id': item?.['product']?.['general_product_category']?.['id'],
+                            'title': item?.['product']?.['general_product_category']?.['title'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
                 }
             }
         }
@@ -1219,7 +1393,7 @@ $(document).ready(function () {
         top_categories_chart_data = Object.values(top_categories_chart_data_sum)
 
         top_categories_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = top_categories_chart_data.slice(0, $('#top-categories-number').val())
+        let topX = top_categories_chart_data.slice(0, topCategoriesNumberEle.val())
         let topX_revenue = topX.map(item => item.revenue);
         let topX_title = topX.map(item => item.title);
 
@@ -1244,7 +1418,7 @@ $(document).ready(function () {
                 style: {
                     colors: ['#fff']
                 },
-                formatter: function (val, opt) {
+                formatter: function (val) {
                     return val
                     // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
                 },
@@ -1264,7 +1438,10 @@ $(document).ready(function () {
             },
             yaxis: {
                 labels: {
-                    show: true
+                    show: true,
+                    formatter: function(val) {
+                        return val.toFixed(3);
+                    }
                 },
                 title: {
                     text: titleY
@@ -1333,7 +1510,7 @@ $(document).ready(function () {
         Promise.all([top_categories_chart_ajax]).then(
             (results) => {
                 top_categories_chart_list_DF = results[0];
-                // console.log(top_categories_chart_list_DF)
+                $('#top-categories-time-filter-year').val(new Date().getFullYear())
                 if (is_init) {
                     InitOptionTopCategoriesChart()
                 }
@@ -1346,23 +1523,50 @@ $(document).ready(function () {
 
     AjaxTopCategoriesChart()
 
-    $('#btn-show-top-categories-chart').on('click', function() {
+    topCategoriesNumberEle.on('change', function() {
         UpdateOptionTopCategoriesChart()
     })
 
-    $('#top-categories-number').on('change', function() {
-        UpdateOptionTopCategoriesChart()
+    topCategoriesTimeEle.on('change', function() {
+        if ($(this).val() === '3') {
+            topCategoriesTimeFilterSelectEle.prop('disabled', false)
+            topCategoriesTimeFilterMMQQEle.prop('disabled', topCategoriesTimeFilterSelectEle.val() === '0')
+            topCategoriesTimeFilterYearEle.prop('disabled', false)
+        }
+        else {
+            UpdateOptionTopCategoriesChart()
+            topCategoriesTimeFilterSelectEle.prop('disabled', true)
+            topCategoriesTimeFilterMMQQEle.prop('disabled', true)
+            topCategoriesTimeFilterYearEle.prop('disabled', true)
+        }
     })
 
-    $('#top-categories-time').on('change', function() {
-        UpdateOptionTopCategoriesChart()
+    topCategoriesTimeFilterSelectEle.on('change', function() {
+        topCategoriesTimeFilterMMQQEle.val('').prop('disabled', $(this).val() === '0')
+        topCategoriesTimeFilterMMQQEle.closest('div').prop('hidden', $(this).val() === '0')
+        topCategoriesTimeFilterYearEle.val(new Date().getFullYear())
+        if ($(this).val() === '1') {
+            topCategoriesTimeFilterMMQQEle.val(new Date().getMonth() + 1)
+        }
+        else if ($(this).val() === '2') {
+            topCategoriesTimeFilterMMQQEle.val(parseInt((new Date().getMonth() + 1) / 3) + 1)
+        }
     })
 
     $('#reload-top-categories-data-btn').on('click', function() {
         AjaxTopCategoriesChart(false)
     })
 
+    $('.timechart-categories').on('change', function () {
+        UpdateOptionTopCategoriesChart()
+    })
+
     // Top products chart
+    const topProductsTimeFilterYearEle = $('#top-products-time-filter-year')
+    const topProductsTimeFilterMMQQEle = $('#top-products-time-filter-mm-qq')
+    const topProductsTimeFilterSelectEle = $('#top-products-time-filter-select')
+    const topProductsTimeEle = $('#top-products-time')
+    const topProductsNumberEle = $('#top-products-number')
 
     let top_products_chart_list_DF = []
     let top_products_chart_DF = null
@@ -1373,17 +1577,21 @@ $(document).ready(function () {
             cast_billion = 1e9
         }
 
+        const current_year = new Date().getFullYear()
+        const current_month = new Date().getMonth() + 1
+        const current_quarter = parseInt(current_month/3) + 1
+        const filter_year = topProductsTimeFilterYearEle.val()
+        const filter_qq_mm = topProductsTimeFilterMMQQEle.val()
+
         let top_products_chart_data = []
         for (const item of top_products_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth() + 1
             const year = dateApproved.getFullYear()
-            const filterYear = parseInt($('#top-products-year-filter').val())
-            const filterMonth = parseInt($('#top-products-month-filter').val())
-            const filterQuarter = parseInt($('#top-products-quarter-filter').val())
-            const filterTimes = $('#top-products-time').val()
+            const month = dateApproved.getMonth() + 1
+            const quarter = parseInt(month/3) + 1
+            const filterTimes = topProductsTimeEle.val()
             if (filterTimes === '0') {
-                if (year === filterYear && month === filterMonth) {
+                if (year === current_year && month === current_month) {
                     top_products_chart_data.push({
                         'id': item?.['product']?.['id'],
                         'title': item?.['product']?.['title'],
@@ -1392,7 +1600,16 @@ $(document).ready(function () {
                 }
             }
             else if (filterTimes === '1') {
-                if (year === filterYear && parseInt(month/3) === filterQuarter) {
+                if (year === current_year && quarter === current_quarter) {
+                    top_products_chart_data.push({
+                        'id': item?.['product']?.['id'],
+                        'title': item?.['product']?.['title'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
+                }
+            }
+            else if (filterTimes === '2') {
+                if (year === current_year) {
                     top_products_chart_data.push({
                         'id': item?.['product']?.['id'],
                         'title': item?.['product']?.['title'],
@@ -1401,12 +1618,32 @@ $(document).ready(function () {
                 }
             }
             else {
-                if (year === filterYear) {
-                    top_products_chart_data.push({
-                        'id': item?.['product']?.['id'],
-                        'title': item?.['product']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
+                if (topProductsTimeFilterSelectEle.val() === '0') {
+                    if (year === parseInt(filter_year)) {
+                        top_products_chart_data.push({
+                            'id': item?.['product']?.['id'],
+                            'title': item?.['product']?.['title'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
+                }
+                else if (topProductsTimeFilterSelectEle.val() === '1') {
+                    if (month === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                        top_products_chart_data.push({
+                            'id': item?.['product']?.['id'],
+                            'title': item?.['product']?.['title'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
+                }
+                else if (topProductsTimeFilterSelectEle.val() === '2') {
+                    if (quarter === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                        top_products_chart_data.push({
+                            'id': item?.['product']?.['id'],
+                            'title': item?.['product']?.['title'],
+                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                        })
+                    }
                 }
             }
         }
@@ -1422,7 +1659,7 @@ $(document).ready(function () {
         top_products_chart_data = Object.values(top_products_chart_data_sum)
 
         top_products_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = top_products_chart_data.slice(0, $('#top-products-number').val())
+        let topX = top_products_chart_data.slice(0, topProductsNumberEle.val())
         let topX_revenue = topX.map(item => item.revenue);
         let topX_title = topX.map(item => item.title);
 
@@ -1434,7 +1671,7 @@ $(document).ready(function () {
                 type: 'bar',
                 height: 230
             },
-            colors: ['#ba97d3'],
+            colors: ['#28abbe'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,
@@ -1447,7 +1684,7 @@ $(document).ready(function () {
                 style: {
                     colors: ['#fff']
                 },
-                formatter: function (val, opt) {
+                formatter: function (val) {
                     return val
                     // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
                 },
@@ -1467,7 +1704,10 @@ $(document).ready(function () {
             },
             yaxis: {
                 labels: {
-                    show: true
+                    show: true,
+                    formatter: function(val) {
+                        return val.toFixed(3);
+                    }
                 },
                 title: {
                     text: titleY
@@ -1536,7 +1776,7 @@ $(document).ready(function () {
         Promise.all([top_products_chart_ajax]).then(
             (results) => {
                 top_products_chart_list_DF = results[0];
-                // console.log(top_products_chart_list_DF)
+                $('#top-products-time-filter-year').val(new Date().getFullYear())
                 if (is_init) {
                     InitOptionTopProductsChart()
                 }
@@ -1549,19 +1789,41 @@ $(document).ready(function () {
 
     AjaxTopProductsChart()
 
-    $('#btn-show-top-products-chart').on('click', function() {
+    topProductsNumberEle.on('change', function() {
         UpdateOptionTopProductsChart()
     })
 
-    $('#top-products-number').on('change', function() {
-        UpdateOptionTopProductsChart()
+    topProductsTimeEle.on('change', function() {
+        if ($(this).val() === '3') {
+            topProductsTimeFilterSelectEle.prop('disabled', false)
+            topProductsTimeFilterMMQQEle.prop('disabled', topProductsTimeFilterSelectEle.val() === '0')
+            topProductsTimeFilterYearEle.prop('disabled', false)
+        }
+        else {
+            UpdateOptionTopProductsChart()
+            topProductsTimeFilterSelectEle.prop('disabled', true)
+            topProductsTimeFilterMMQQEle.prop('disabled', true)
+            topProductsTimeFilterYearEle.prop('disabled', true)
+        }
     })
 
-    $('#top-products-time').on('change', function() {
-        UpdateOptionTopProductsChart()
+    topProductsTimeFilterSelectEle.on('change', function() {
+        topProductsTimeFilterMMQQEle.val('').prop('disabled', $(this).val() === '0')
+        topProductsTimeFilterMMQQEle.closest('div').prop('hidden', $(this).val() === '0')
+        topProductsTimeFilterYearEle.val(new Date().getFullYear())
+        if ($(this).val() === '1') {
+            topProductsTimeFilterMMQQEle.val(new Date().getMonth() + 1)
+        }
+        else if ($(this).val() === '2') {
+            topProductsTimeFilterMMQQEle.val(parseInt((new Date().getMonth() + 1) / 3) + 1)
+        }
     })
 
     $('#reload-top-products-data-btn').on('click', function() {
         AjaxTopProductsChart(false)
+    })
+
+    $('.timechart-products').on('change', function () {
+        UpdateOptionTopProductsChart()
     })
 })

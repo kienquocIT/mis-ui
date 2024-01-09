@@ -39,27 +39,28 @@ $(function () {
                     {
                         targets: 2,
                         render: (data, type, row) => {
-                            let status_data = {
-                                "For purchase order": "badge badge-soft-warning",
-                                "For inventory adjustment": "badge badge-soft-success",
-                                "For production": "badge badge-soft-info",
-                            }
-                            return `<span class="${status_data[row?.['goods_receipt_type']]}">${row?.['goods_receipt_type']}</span>`;
+                            let type_data = [
+                                "badge badge-soft-warning",
+                                "badge badge-soft-success",
+                                "badge badge-soft-info",
+                            ]
+                            let typeTxt = JSON.parse($('#gr_type').text())
+                            return `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span>`;
                         }
                     },
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            let status_data = {
-                                "For purchase order": "badge badge-soft-warning",
-                                "For inventory adjustment": "badge badge-soft-success",
-                                "For production": "badge badge-soft-info",
-                            }
+                            let type_data = [
+                                "badge badge-soft-warning",
+                                "badge badge-soft-success",
+                                "badge badge-soft-info",
+                            ]
                             let ele = `<span></span>`;
-                            if (row?.['goods_receipt_type'] === 'For purchase order') {
-                                ele = `<span class="${status_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span>`;
-                            } else if (row?.['goods_receipt_type'] === 'For inventory adjustment') {
-                                ele = `<span class="${status_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span>`;
+                            if (row?.['goods_receipt_type'] === 0) {
+                                ele = `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span>`;
+                            } else if (row?.['goods_receipt_type'] === 1) {
+                                ele = `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span>`;
                             }
                             return ele;
                         }

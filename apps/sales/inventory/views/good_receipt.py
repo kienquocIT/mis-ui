@@ -4,8 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, PermCheck
-from apps.shared.msg import BaseMsg
-
+from apps.shared.msg import BaseMsg, GRMsg
 
 SYSTEM_STATUS = (
     (0, BaseMsg.DRAFT),
@@ -13,6 +12,12 @@ SYSTEM_STATUS = (
     (2, BaseMsg.ADDED),
     (3, BaseMsg.FINISH),
     (4, BaseMsg.CANCEL),
+)
+
+GR_TYPE = (
+    (0, GRMsg.TYPE_FOR_PO),
+    (1, GRMsg.TYPE_FOR_IA),
+    (2, GRMsg.TYPE_FOR_PRODUCT),
 )
 
 
@@ -42,7 +47,7 @@ class GoodsReceiptList(View):
         breadcrumb='GOODS_RECEIPT_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS, 'gr_type': GR_TYPE}, status.HTTP_200_OK
 
 
 class GoodsReceiptCreate(View):

@@ -61,6 +61,7 @@
             data-status-received="{% trans 'Received' %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
+    {{ data.gr_status|json_script:'gr_status' }}
 {% endblock %}
 {% block jsFooter %}
 

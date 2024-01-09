@@ -2292,9 +2292,9 @@ class WFRTControl {
                 if ($(ele$).is('span')) {  // if span (only span that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {
                         if ($(ele$).hasClass('mask-money')) {
-                            $(ele$).attr('data-init-money', '').html(`${$.fn.transEle.attr('data-hidden-by-workflow-config')}`);
+                            $(ele$).attr('data-init-money', '').html(``);
                         } else {
-                            $(ele$).html(`${$.fn.transEle.attr('data-hidden-by-workflow-config')}`);
+                            $(ele$).html(``);
                         }
                     }
                 }

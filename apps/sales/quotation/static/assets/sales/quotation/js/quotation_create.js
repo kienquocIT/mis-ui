@@ -30,8 +30,15 @@ $(function () {
         } else {  // sale order indicators
             QuotationDataTableHandle.dataTableSaleOrderIndicator();
         }
+        if (formSubmit[0].classList.contains('sale-order')) {
+            QuotationDataTableHandle.dataTablePaymentStage();
+        }
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
+        // init payment stage
+        if (formSubmit[0].classList.contains('sale-order')) {
+            QuotationLoadDataHandle.loadDataTablePaymentStage();
+        }
         // ele tables
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');

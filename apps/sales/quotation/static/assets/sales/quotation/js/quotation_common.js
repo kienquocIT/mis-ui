@@ -895,7 +895,8 @@ class QuotationLoadDataHandle {
                         rowData['product'] = {
                             'id': dataProduct?.['id'],
                             'title': dataProduct?.['title'],
-                            'code': dataProduct?.['code']
+                            'code': dataProduct?.['code'],
+                            'price_list': dataProduct?.['price_list'],
                         };
                         rowData['product_title'] = dataProduct?.['title'];
                         rowData['product_code'] = dataProduct?.['code'];
@@ -1107,7 +1108,15 @@ class QuotationLoadDataHandle {
         if ($form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled($table);
         }
+        // load dropdowns
         QuotationLoadDataHandle.loadDropDowns($table);
+        // check config & load price list for rows
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            QuotationCheckConfigHandle.checkConfig(false, row);
+            QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+        })
+
         $.fn.initMaskMoney2();
         // set again WF runtime
         if (Object.keys(dataDetail).length > 0) {

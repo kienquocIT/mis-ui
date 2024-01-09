@@ -1247,44 +1247,44 @@ class QuotationLoadDataHandle {
         let $table = $('#datable-quotation-payment-stage');
         let data = [
             {
-                'stage': QuotationLoadDataHandle.dataStage[0][1],
+                'stage': 0,
                 'remark': '',
                 'date': '',
                 'date_type': '',
                 'payment_ratio': 0,
                 'value_before_tax': 0,
                 'due_date': '',
-                'is_ar_invoice': true,
+                'is_ar_invoice': false,
             },
             {
-                'stage': QuotationLoadDataHandle.dataStage[1][1],
+                'stage': 1,
                 'remark': '',
                 'date': '',
                 'date_type': '',
                 'payment_ratio': 0,
                 'value_before_tax': 0,
                 'due_date': '',
-                'is_ar_invoice': true,
+                'is_ar_invoice': false,
             },
             {
-                'stage': QuotationLoadDataHandle.dataStage[2][1],
+                'stage': 2,
                 'remark': '',
                 'date': '',
                 'date_type': '',
                 'payment_ratio': 0,
                 'value_before_tax': 0,
                 'due_date': '',
-                'is_ar_invoice': true,
+                'is_ar_invoice': false,
             },
             {
-                'stage': QuotationLoadDataHandle.dataStage[3][1],
+                'stage': 3,
                 'remark': '',
                 'date': '',
                 'date_type': '',
                 'payment_ratio': 0,
                 'value_before_tax': 0,
                 'due_date': '',
-                'is_ar_invoice': true,
+                'is_ar_invoice': false,
             },
         ]
         $table.DataTable().clear().draw();
@@ -2719,7 +2719,7 @@ class QuotationDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-stage" data-row="${dataRow}">${row?.['stage']}</span>`;
+                        return `<span class="table-row-stage" data-row="${dataRow}">${QuotationLoadDataHandle.dataStage[row?.['stage']][1]}</span>`;
                     }
                 },
                 {
@@ -2737,19 +2737,31 @@ class QuotationDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-date-type">${row?.['date_type']}</span>`;
+                        if (row?.['stage'] !== 0) {
+                            return `<span class="table-row-date-type">${row?.['date_type']}</span>`;
+                        } else {
+                            return `<span></span>`;
+                        }
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-ratio">${row?.['payment_ratio']} %</span>`;
+                        if (row?.['stage'] !== 0) {
+                            return `<span class="table-row-ratio">${row?.['payment_ratio']} %</span>`;
+                        } else {
+                            return `<span></span>`;
+                        }
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}"></span>`;
+                        if (row?.['stage'] !== 0) {
+                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}"></span>`;
+                        } else {
+                            return `<span></span>`;
+                        }
                     }
                 },
                 {

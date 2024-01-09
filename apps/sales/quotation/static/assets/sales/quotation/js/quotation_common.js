@@ -10,7 +10,6 @@ class QuotationLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
     static transEle = $('#app-trans-factory');
-    static dataStage = JSON.parse($('#payment_term_stage').text());
 
     static loadInformationSelectBox(ele, is_expense = false) {
         let optionSelected;
@@ -1243,68 +1242,75 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadDataTablePaymentStage() {
+    static loadDataTablePaymentStage(paymentTermData) {
         let $table = $('#datable-quotation-payment-stage');
-        let data = [
-            {
-                'stage': 0,
-                'remark': '',
-                'date': '',
-                'date_type': '',
-                'payment_ratio': 0,
-                'value_before_tax': 0,
-                'due_date': '',
-                'is_ar_invoice': false,
-            },
-            {
-                'stage': 1,
-                'remark': '',
-                'date': '',
-                'date_type': '',
-                'payment_ratio': 0,
-                'value_before_tax': 0,
-                'due_date': '',
-                'is_ar_invoice': false,
-            },
-            {
-                'stage': 2,
-                'remark': '',
-                'date': '',
-                'date_type': '',
-                'payment_ratio': 0,
-                'value_before_tax': 0,
-                'due_date': '',
-                'is_ar_invoice': false,
-            },
-            {
-                'stage': 3,
-                'remark': '',
-                'date': '',
-                'date_type': '',
-                'payment_ratio': 0,
-                'value_before_tax': 0,
-                'due_date': '',
-                'is_ar_invoice': false,
-            },
-        ]
-        $table.DataTable().clear().draw();
-        $table.DataTable().rows.add(data).draw();
-        // load date picker
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            if (row.querySelector('.table-row-date')) {
-                $(row.querySelector('.table-row-date')).daterangepicker({
-                    singleDatePicker: true,
-                    timePicker: true,
-                    showDropdowns: true,
-                    minYear: 2023,
-                    locale: {
-                        format: 'DD/MM/YYYY'
-                    },
-                });
-                $(row.querySelector('.table-row-date')).val(null).trigger('change');
+        if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
+            let data = [
+                {
+                    'stage': 0,
+                    'remark': '',
+                    'date': '',
+                    'date_type': '',
+                    'payment_ratio': 0,
+                    'value_before_tax': 0,
+                    'due_date': '',
+                    'is_ar_invoice': false,
+                },
+                {
+                    'stage': 1,
+                    'remark': '',
+                    'date': '',
+                    'date_type': '',
+                    'payment_ratio': 0,
+                    'value_before_tax': 0,
+                    'due_date': '',
+                    'is_ar_invoice': false,
+                },
+                {
+                    'stage': 2,
+                    'remark': '',
+                    'date': '',
+                    'date_type': '',
+                    'payment_ratio': 0,
+                    'value_before_tax': 0,
+                    'due_date': '',
+                    'is_ar_invoice': false,
+                },
+                {
+                    'stage': 3,
+                    'remark': '',
+                    'date': '',
+                    'date_type': '',
+                    'payment_ratio': 0,
+                    'value_before_tax': 0,
+                    'due_date': '',
+                    'is_ar_invoice': false,
+                },
+            ]
+            $table.DataTable().clear().draw();
+            $table.DataTable().rows.add(data).draw();
+            // load date picker
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-date')) {
+                    $(row.querySelector('.table-row-date')).daterangepicker({
+                        singleDatePicker: true,
+                        timePicker: true,
+                        showDropdowns: true,
+                        minYear: 2023,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                    });
+                    $(row.querySelector('.table-row-date')).val(null).trigger('change');
+                }
+            })
+        } else {  // if dataTable is not empty then update data
+            let term = paymentTermData?.['term'];
+            if (term) {
+
             }
-        })
+        }
         return true;
     };
 
@@ -2719,7 +2725,8 @@ class QuotationDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-stage" data-row="${dataRow}">${QuotationLoadDataHandle.dataStage[row?.['stage']][1]}</span>`;
+                        let dataStage = JSON.parse($('#payment_term_stage').text());
+                        return `<span class="table-row-stage" data-row="${dataRow}">${dataStage[row?.['stage']][1]}</span>`;
                     }
                 },
                 {

@@ -32,7 +32,8 @@ class HomeView(View):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
                 return {'employee_current_data': employee_current_data}, status.HTTP_200_OK
-        return redirect(reverse('LandingPageView'))
+        # return redirect(reverse('LandingPageView'))
+        return redirect(reverse('AuthLogin'))
 
 
 class OutLayoutNotFoundView(View):

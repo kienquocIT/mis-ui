@@ -4,9 +4,31 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared.msg import ReportMsg
 
+FILTER_QUARTER = (
+    (1, ReportMsg.QUARTER_FIRST),
+    (2, ReportMsg.QUARTER_SECOND),
+    (3, ReportMsg.QUARTER_THIRD),
+    (4, ReportMsg.QUARTER_FOURTH),
+)
 
-# REPORT
+FILTER_MONTH = (
+    (1, ReportMsg.MONTH_JANUARY),
+    (2, ReportMsg.MONTH_FEBRUARY),
+    (3, ReportMsg.MONTH_MARCH),
+    (4, ReportMsg.MONTH_APRIL),
+    (5, ReportMsg.MONTH_MAY),
+    (6, ReportMsg.MONTH_JUNE),
+    (7, ReportMsg.MONTH_JULY),
+    (8, ReportMsg.MONTH_AUGUST),
+    (9, ReportMsg.MONTH_SEPTEMBER),
+    (10, ReportMsg.MONTH_OCTOBER),
+    (11, ReportMsg.MONTH_NOVEMBER),
+    (12, ReportMsg.MONTH_DECEMBER),
+)
+
+# REPORT REVENUE
 class ReportRevenueList(View):
     permission_classes = [IsAuthenticated]
 
@@ -33,6 +55,7 @@ class ReportRevenueListAPI(APIView):
         return resp.auto_return(key_success='report_revenue_list')
 
 
+# REPORT PRODUCT
 class ReportProductList(View):
     permission_classes = [IsAuthenticated]
 
@@ -59,6 +82,7 @@ class ReportProductListAPI(APIView):
         return resp.auto_return(key_success='report_product_list')
 
 
+# REPORT CUSTOMER
 class ReportCustomerList(View):
     permission_classes = [IsAuthenticated]
 
@@ -96,3 +120,30 @@ class ItemsDetailReportList(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+# REPORT PIPELINE
+class ReportPipelineList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/report/report_pipeline.html',
+        menu_active='menu_report_pipeline_list',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {'filter_quarter': FILTER_QUARTER, 'filter_month': FILTER_MONTH}, status.HTTP_200_OK
+
+
+class ReportPipelineListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_PIPELINE_LIST).get(data)
+        return resp.auto_return(key_success='report_pipeline_list')

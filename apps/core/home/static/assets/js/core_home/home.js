@@ -164,6 +164,7 @@ function loadBookmarkList() {
 function loadTabTodo() {
     let tbl = $("#tbl_my_task");
     let dataLoaded = tbl.attr('data-loaded');
+    let appList = JSON.parse($('#app_list').text())
     if (!dataLoaded) {
         tbl.attr('data-loaded', true);
         WindowControl.showLoadingWaitResponse(tbl);
@@ -200,12 +201,15 @@ function loadTabTodo() {
                         );
                         return `<a href="${urlData}">${data ? data : "_"}</a>`;
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text',
                     width: "10%",
                     data: 'app_code',
                     render: (data, type, row) => {
-                        return data ? `<span class="badge badge-light">${data}</span>` : '';
+                        let temp = data.toLowerCase().split('.')
+                        let txtTran = appList?.[temp[0]]?.[temp[1]] || data
+                        return data ? `<span class="badge badge-light">${txtTran}</span>` : '';
                     }
                 }, {
                     className: 'wrap-text',

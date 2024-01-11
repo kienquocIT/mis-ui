@@ -412,6 +412,12 @@ class MenusReport:
         name='Sale reports', code='menu_sale_reports', view_name='', icon='<i class="fas fa-chart-line"></i>',
         child=[
             MenuCommon(
+                name='Pipeline report',
+                code='menu_report_pipeline_list',
+                view_name='ReportPipelineList',
+                icon='<i class="fas fa-funnel-dollar"></i>',
+            ),
+            MenuCommon(
                 name='Revenue report',
                 code='menu_report_revenue_list',
                 view_name='ReportRevenueList',

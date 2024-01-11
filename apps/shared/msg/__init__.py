@@ -13,6 +13,7 @@ from .eoffice import LeaveMsg, MeetingScheduleMsg
 from .goodsreceipt import GRMsg
 from .purchasing import PurchasingMsg
 from .saleorder import SOMsg
+from .report import ReportMsg
 
 
 class BaseMsg:

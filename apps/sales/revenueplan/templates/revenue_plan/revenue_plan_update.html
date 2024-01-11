@@ -3,11 +3,16 @@
 {% load static %}
 {% block title %}{% trans 'Revenue Plan Update' %}{% endblock %}
 {% block cssHeader %}
+    <style>
+        .money-td {
+            min-width: 230px;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-create-revenue-plan">
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-revenue-plan">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -17,12 +22,163 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    {{ data.revenue_plan_config | json_script:"revenue_plan_config" }}
 
+    <form id="form-detail-revenue-plan"
+          data-method="PUT"
+          data-url-redirect="{% url 'RevenuePlanDetail' '0' %}"
+          data-url-list="{% url 'RevenuePlanList' %}"
+          data-url-detail="{% url 'RevenuePlanDetail' '0' %}"
+          data-url-detail-api="{% url 'RevenuePlanDetailAPI' '0' %}"
+          data-url="{% url "RevenuePlanListAPI" %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label for="revenue-plan-name" class="form-label required">{% trans 'Name' %}</label>
+                    <input type="text" class="form-control" id="revenue-plan-name">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label for="revenue-plan-period" class="form-label required">{% trans 'Period' %}</label>
+                    <select class="form-select select2" id="revenue-plan-period"
+                            data-url="{% url 'PeriodsConfigListAPI' %}"
+                            data-method="GET"
+                    ></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-check">
+                            <input class="form-check-input" id="monthly" type="checkbox" checked>
+                            <label class="form-check-label" for="monthly">{% trans 'Monthly' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-check">
+                            <input class="form-check-input" id="quarterly" type="checkbox" disabled>
+                            <label class="form-check-label" for="quarterly">{% trans 'Quarterly' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-check">
+                            <input disabled checked class="form-check-input" id="annual" type="checkbox">
+                            <label class="form-check-label" for="annual">{% trans 'Annual' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-check">
+                            <input class="form-check-input" id="equal" type="checkbox" checked disabled>
+                            <label class="form-check-label" for="equal">{% trans 'Period target equals total of sub period targets' %}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <button type="button" id="add-group-plan" class="btn btn-custom btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-group-plan-modal">
+                    <span>
+                        <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
+                        <span>{% trans 'Add group plan' %}</span>
+                    </span>
+                </button>
+            </div>
+
+            <div class="modal fade" id="add-group-plan-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans 'Add group plan' %}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="modal-group" class="form-label">{% trans 'Select group' %}</label>
+                                        <select class="form-select select2" id="modal-group"
+                                                data-method="GET" data-url="{% url 'GroupListAPI' %}"
+                                        ></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-add-group-plan">{% trans 'Add' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5 mb-10">
+            <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                <table class="table nowrap w-100" id="revenue-plan-table"
+                       data-group-url="{% url 'GroupDetailAPI' '0' %}"
+                >
+                    <thead>
+                        <tr>
+                            <td><b>{% trans 'Group' %}</b></td>
+                            <td><b>{% trans 'Employee' %}</b></td>
+                            <td class="money-td">{% trans 'January' %}</td>
+                            <td class="money-td">{% trans 'February' %}</td>
+                            <td class="money-td">{% trans 'March' %}</td>
+                            <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 1</b></span></td>
+                            <td class="money-td">{% trans 'April' %}</td>
+                            <td class="money-td">{% trans 'May' %}</td>
+                            <td class="money-td">{% trans 'June' %}</td>
+                            <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 2</b></span></td>
+                            <td class="money-td">{% trans 'July' %}</td>
+                            <td class="money-td">{% trans 'August' %}</td>
+                            <td class="money-td">{% trans 'September' %}</td>
+                            <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 3</b></span></td>
+                            <td class="money-td">{% trans 'October' %}</td>
+                            <td class="money-td">{% trans 'November' %}</td>
+                            <td class="money-td">{% trans 'December' %}</td>
+                            <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 4</b></span></td>
+                            <td class="money-td"><span class="text-primary"><b>{% trans 'Year' %}</b></span></td>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr class="bg-overlay bg-primary bg-opacity-10 company-row">
+                            <td><span class="text-primary"><b>{% trans 'Company' %}</b></span></td>
+                            <td></td>
+                            <td class="sum-m1"><span class="sum-company-m1 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m2"><span class="sum-company-m2 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m3"><span class="sum-company-m3 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-q1"><span class="sum-company-q1 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m4"><span class="sum-company-m4 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m5"><span class="sum-company-m5 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m6"><span class="sum-company-m6 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-q2"><span class="sum-company-q2 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m7"><span class="sum-company-m7 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m8"><span class="sum-company-m8 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m9"><span class="sum-company-m9 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-q3"><span class="sum-company-q3 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m10"><span class="sum-company-m10 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m11"><span class="sum-company-m11 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-m12"><span class="sum-company-m12 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-q4"><span class="sum-company-q4 mask-money text-primary" data-init-money="0"></span></td>
+                            <td class="sum-year"><span class="sum-company-year mask-money text-primary" data-init-money="0"></span></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </form>
 {% endblock %}
 {% block jsFooterUnCompress %}
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'assets/js/revenue_plan/revenue_plan_common.js' %}"></script>
+    <script src="{% static 'assets/js/revenue_plan/revenue_plan_update.js' %}"></script>
 {% endblock %}

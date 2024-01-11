@@ -4,9 +4,9 @@
 {% block title %}{% trans 'Revenue Plan Create' %}{% endblock %}
 {% block cssHeader %}
     <style>
-    .money-td {
-        min-width: 230px;
-    }
+        .money-td {
+            min-width: 230px;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -80,7 +80,7 @@
         </div>
         <div class="row mt-5">
             <div class="col-12">
-                <button type="button" class="btn btn-custom btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-group-plan-modal">
+                <button type="button" id="add-group-plan" class="btn btn-custom btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-group-plan-modal">
                     <span>
                         <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
                         <span>{% trans 'Add group plan' %}</span>

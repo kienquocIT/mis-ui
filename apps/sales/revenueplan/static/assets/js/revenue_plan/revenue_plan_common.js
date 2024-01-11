@@ -4,7 +4,7 @@ const revenuePlanTable = $('#revenue-plan-table')
 let revenue_plan_config_list = []
 if ($('#revenue_plan_config').text() !== '') {
     let revenue_plan_config = JSON.parse($('#revenue_plan_config').text());
-    for (let i = 0; i < revenue_plan_config[0]['roles_mapped_list'].length; i++) {
+    for (let i = 0; i < revenue_plan_config[0]?.['roles_mapped_list'].length; i++) {
         revenue_plan_config_list.push(
             revenue_plan_config[0]['roles_mapped_list'][i]['id']
         )
@@ -267,13 +267,15 @@ function UpdateTablePlan(group_employee_list, group_selected) {
 
         if ($('#monthly').prop('checked')) {
             revenuePlanTable.find('.mtarget-td').each(function () {
-                $(this).html('')
-                let quarter_belong = getQuarterBelong($(this).closest('td').attr('data-type'))
-                $(this).append(`<input value="0" data-return-type="number" class="mask-money form-control month-target ${quarter_belong} ${$(this).closest('td').attr('data-type')}targetvalue">`)
+                if ($(this).html() === '') {
+                    let quarter_belong = getQuarterBelong($(this).closest('td').attr('data-type'))
+                    $(this).append(`<input value="0" data-return-type="number" class="mask-money form-control month-target ${quarter_belong} ${$(this).closest('td').attr('data-type')}targetvalue">`)
+                }
             })
             revenuePlanTable.find('.qtarget-td').each(function () {
-                $(this).html('')
-                $(this).append(`<input readonly value="0" data-return-type="number" class="mask-money form-control quarter-target ${$(this).closest('td').attr('data-type')}targetvalue">`)
+                if ($(this).html() === '') {
+                    $(this).append(`<input readonly value="0" data-return-type="number" class="mask-money form-control quarter-target ${$(this).closest('td').attr('data-type')}targetvalue">`)
+                }
             })
             $.fn.initMaskMoney2()
         }
@@ -319,6 +321,9 @@ $('#btn-add-group-plan').on('click', function () {
                     let group_employee_list = data.group_employee
                     if (revenue_plan_config_list.length > 0) {
                         UpdateTablePlan(group_employee_list, group_selected)
+                    }
+                    else {
+                        $.fn.notifyB({description: "Missing config role(s) that has permission to create revenue plans"}, 'warning')
                     }
                 }
             })
@@ -403,32 +408,17 @@ class RevenuePlanHandle {
 
         frm.dataForm['RevenuePlanGroupEmployee_data'] = []
         for (let i = 0; i < frm.dataForm['group_mapped_list'].length; i++) {
-            let emp_target_list = []
             revenuePlanTable.find(`tbody tr[class="${frm.dataForm['group_mapped_list'][i]}"]`).each(function (){
                 let emp_month_target = []
                 for (let j = 0; j < 12; j++) {
-                    emp_month_target.push(
-                        parseFloat(
-                            revenuePlanTable.find(
-                                `tbody tr[class="${frm.dataForm['group_mapped_list'][i]}"] .m${j+1}targetvalue`
-                            ).attr('value')
-                        )
-                    )
+                    emp_month_target.push(parseFloat($(this).find(`.m${j+1}targetvalue`).attr('value')))
                 }
                 let emp_quarter_target = []
                 for (let j = 0; j < 4; j++) {
-                    emp_quarter_target.push(
-                        parseFloat(
-                            revenuePlanTable.find(
-                                `tbody tr[class="${frm.dataForm['group_mapped_list'][i]}"] .q${j+1}targetvalue`
-                            ).attr('value')
-                        )
-                    )
+                    emp_quarter_target.push(parseFloat($(this).find(`.q${j+1}targetvalue`).attr('value')))
                 }
-                let emp_year_target = parseFloat(revenuePlanTable.find(
-                    `tbody tr[class="${frm.dataForm['group_mapped_list'][i]}"] .ytarget-td span`
-                ).attr('data-init-money'))
-                emp_target_list.push({
+                let emp_year_target = parseFloat($(this).find(`.ytarget-td span`).attr('data-init-money'))
+                frm.dataForm['RevenuePlanGroupEmployee_data'].push({
                     'revenue_plan_group_mapped_id': frm.dataForm['group_mapped_list'][i],
                     'employee_mapped_id': $(this).find('td[class="employee-mapped"]').attr('data-employee-id'),
                     'emp_month_target': emp_month_target,
@@ -436,15 +426,13 @@ class RevenuePlanHandle {
                     'emp_year_target': emp_year_target
                 })
             })
-
-            frm.dataForm['RevenuePlanGroupEmployee_data'] = emp_target_list
         }
 
         console.log(frm.dataForm)
         if (for_update) {
             let pk = $.fn.getPkDetail();
             return {
-                url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
+                url: frmEle.attr('data-url-detail-api').format_url_with_uuid(pk),
                 method: frm.dataMethod,
                 data: frm.dataForm,
                 urlRedirect: frm.dataUrlRedirect,
@@ -457,4 +445,102 @@ class RevenuePlanHandle {
             urlRedirect: frm.dataUrlRedirect,
         };
     }
+}
+
+function Disabled(option) {
+    if (option === 'detail') {
+        $('input').prop('readonly', true).prop('disabled', true)
+        $('select').prop('disabled', true)
+        $('#add-group-plan').addClass('disabled')
+    }
+}
+
+function LoadDetailRevenuePlan(option) {
+    let pk = $.fn.getPkDetail()
+    let url_loaded = $('#form-detail-revenue-plan').attr('data-url-detail-api').replace(0, pk);
+    console.log(url_loaded)
+    $.fn.callAjax(url_loaded, 'GET').then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                data = data['revenue_plan_detail'];
+                console.log(data)
+
+                $('#revenue-plan-name').val(data?.['title'])
+                LoadPeriod(data?.['period_mapped'])
+                $('#monthly').prop('checked', data?.['monthly'])
+                $('#quarterly').prop('checked', data?.['quarterly'])
+                $('#equal').prop('checked', data?.['auto_sum_target'])
+
+                for (let i = 0; i < data?.['company_month_target'].length; i++) {
+                    revenuePlanTable.find('tfoot .company-row').find(`.sum-m${i+1} span`).attr('data-init-money', data?.['company_month_target'][i])
+                }
+                for (let i = 0; i < data?.['company_quarter_target'].length; i++) {
+                    revenuePlanTable.find('tfoot .company-row').find(`.sum-q${i+1} span`).attr('data-init-money', data?.['company_quarter_target'][i])
+                }
+                revenuePlanTable.find('tfoot .company-row').find(`.sum-company-year`).attr('data-init-money', data?.['company_year_target'])
+
+                for (let i = 0; i < data?.['revenue_plan_group_data'].length; i++) {
+                    let group_selected = data?.['revenue_plan_group_data'][i]?.['group_mapped']
+                    let group_month_target = data?.['revenue_plan_group_data'][i]?.['group_month_target']
+                    let group_quarter_target = data?.['revenue_plan_group_data'][i]?.['group_quarter_target']
+                    let group_year_target = data?.['revenue_plan_group_data'][i]?.['group_year_target']
+                    revenuePlanTable.find('tbody').append(
+                        `<tr class="bg-overlay bg-secondary bg-opacity-10" data-row="group-sum-row" data-group-id="${group_selected.id}">
+                            <td><span class="text-primary"><b>${group_selected.title}</b></span></td>
+                            <td></td>
+                            <td class="sum-m1"><span class="sum-group-m1 mask-money text-primary" data-init-money="${group_month_target[0]}"</span></td>
+                            <td class="sum-m2"><span class="sum-group-m2 mask-money text-primary" data-init-money="${group_month_target[1]}"</span></td>
+                            <td class="sum-m3"><span class="sum-group-m3 mask-money text-primary" data-init-money="${group_month_target[2]}"</span></td>
+                            <td class="sum-q1"><span class="sum-group-q1 mask-money text-primary" data-init-money="${group_quarter_target[0]}"></span></td>
+                            <td class="sum-m4"><span class="sum-group-m4 mask-money text-primary" data-init-money="${group_month_target[3]}"</span></td>
+                            <td class="sum-m5"><span class="sum-group-m5 mask-money text-primary" data-init-money="${group_month_target[4]}"</span></td>
+                            <td class="sum-m6"><span class="sum-group-m6 mask-money text-primary" data-init-money="${group_month_target[5]}"</span></td>
+                            <td class="sum-q2"><span class="sum-group-q2 mask-money text-primary" data-init-money="${group_quarter_target[1]}"></span></td>
+                            <td class="sum-m7"><span class="sum-group-m7 mask-money text-primary" data-init-money="${group_month_target[6]}"</span></td>
+                            <td class="sum-m8"><span class="sum-group-m8 mask-money text-primary" data-init-money="${group_month_target[7]}"</span></td>
+                            <td class="sum-m9"><span class="sum-group-m9 mask-money text-primary" data-init-money="${group_month_target[8]}"</span></td>
+                            <td class="sum-q3"><span class="sum-group-q3 mask-money text-primary" data-init-money="${group_quarter_target[2]}"></span></td>
+                            <td class="sum-m10"><span class="sum-group-m10 mask-money text-primary" data-init-money="${group_month_target[9]}"</span></td>
+                            <td class="sum-m11"><span class="sum-group-m11 mask-money text-primary" data-init-money="${group_month_target[10]}"</span></td>
+                            <td class="sum-m12"><span class="sum-group-m12 mask-money text-primary" data-init-money="${group_month_target[11]}"</span></td>
+                            <td class="sum-q4"><span class="sum-group-q4 mask-money text-primary" data-init-money="${group_quarter_target[3]}"></span></td>
+                            <td class="sum-year"><span class="sum-group-year mask-money text-primary" data-init-money="${group_year_target}"></span></td>
+                        </tr>`
+                    )
+                    let group_employee_valid = data?.['revenue_plan_group_data'][i]?.['employee_target_data']
+                    for (let j = 0; j < group_employee_valid.length; j++) {
+                        let emp_month_target = group_employee_valid[j]?.['emp_month_target']
+                        let emp_quarter_target = group_employee_valid[j]?.['emp_quarter_target']
+                        let emp_year_target = group_employee_valid[j]?.['emp_year_target']
+                        revenuePlanTable.find('tbody').append(
+                            `<tr class="${group_selected.id}">
+                                <td></td>
+                                <td class="employee-mapped" data-employee-id="${group_employee_valid[j]?.['id']}">${group_employee_valid[j]?.['full_name']}</td>
+                                <td class="mtarget-td" data-type="m1"><input value="${emp_month_target[0]}" data-return-type="number" class="mask-money form-control month-target quarter1belong m1targetvalue"></td>
+                                <td class="mtarget-td" data-type="m2"><input value="${emp_month_target[1]}" data-return-type="number" class="mask-money form-control month-target quarter1belong m2targetvalue"></td>
+                                <td class="mtarget-td" data-type="m3"><input value="${emp_month_target[2]}" data-return-type="number" class="mask-money form-control month-target quarter1belong m3targetvalue"></td>
+                                <td class="qtarget-td q1target-td" data-type="q1"><input readonly value="${emp_quarter_target[0]}" data-return-type="number" class="mask-money form-control quarter-target q1targetvalue"></td>
+                                <td class="mtarget-td" data-type="m4"><input value="${emp_month_target[3]}" data-return-type="number" class="mask-money form-control month-target quarter2belong m4targetvalue"></td>
+                                <td class="mtarget-td" data-type="m5"><input value="${emp_month_target[4]}" data-return-type="number" class="mask-money form-control month-target quarter2belong m5targetvalue"></td>
+                                <td class="mtarget-td" data-type="m6"><input value="${emp_month_target[5]}" data-return-type="number" class="mask-money form-control month-target quarter2belong m6targetvalue"></td>
+                                <td class="qtarget-td q2target-td" data-type="q2"><input readonly value="${emp_quarter_target[1]}" data-return-type="number" class="mask-money form-control quarter-target q2targetvalue"></td>
+                                <td class="mtarget-td" data-type="m7"><input value="${emp_month_target[6]}" data-return-type="number" class="mask-money form-control month-target quarter3belong m7targetvalue"></td>
+                                <td class="mtarget-td" data-type="m8"><input value="${emp_month_target[7]}" data-return-type="number" class="mask-money form-control month-target quarter3belong m8targetvalue"></td>
+                                <td class="mtarget-td" data-type="m9"><input value="${emp_month_target[8]}" data-return-type="number" class="mask-money form-control month-target quarter3belong m9targetvalue"></td>
+                                <td class="qtarget-td q3target-td" data-type="q3"><input readonly value="${emp_quarter_target[2]}" data-return-type="number" class="mask-money form-control quarter-target q3targetvalue"></td>
+                                <td class="mtarget-td" data-type="m10"><input value="${emp_month_target[9]}" data-return-type="number" class="mask-money form-control month-target quarter4belong m10targetvalue"></td>
+                                <td class="mtarget-td" data-type="m11"><input value="${emp_month_target[10]}" data-return-type="number" class="mask-money form-control month-target quarter4belong m11targetvalue"></td>
+                                <td class="mtarget-td" data-type="m12"><input value="${emp_month_target[11]}" data-return-type="number" class="mask-money form-control month-target quarter4belong m12targetvalue"></td>
+                                <td class="qtarget-td q4target-td" data-type="q4"><input readonly value="${emp_quarter_target[3]}" data-return-type="number" class="mask-money form-control quarter-target q4targetvalue"></td>
+                                <td class="ytarget-td" data-type="year"><span class="mask-money text-primary" data-init-money="${emp_year_target}"></span></td>
+                            </tr>`
+                        )
+                    }
+                }
+
+                Disabled(option)
+                $.fn.initMaskMoney2();
+            }
+        })
 }

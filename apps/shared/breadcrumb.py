@@ -292,7 +292,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 
-    REVENUE_PLAN_LIST_PAGE = BreadcrumbChildren(_('Revenue plan'), 'RevenuePlanList')
+    REVENUE_PLAN_LIST_PAGE = BreadcrumbChildren(_('Revenue plan list'), 'RevenuePlanList')
+    REVENUE_PLAN_CREATE_PAGE = BreadcrumbChildren(_('Revenue plan create'), 'RevenuePlanDetail')
+    REVENUE_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    REVENUE_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -754,3 +757,6 @@ class BreadcrumbView:
     REVENUE_PLAN_CONFIG_PAGE = [BreadcrumbItem.REVENUE_PLAN_CONFIG_PAGE]
 
     REVENUE_PLAN_LIST_PAGE = [BreadcrumbItem.REVENUE_PLAN_LIST_PAGE]
+    REVENUE_PLAN_CREATE_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    REVENUE_PLAN_DETAIL_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    REVENUE_PLAN_UPDATE_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

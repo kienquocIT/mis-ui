@@ -25,7 +25,7 @@ class RevenuePlanCreate(View):
         auth_require=True,
         template='revenue_plan/revenue_plan_create.html',
         menu_active='',
-        breadcrumb='REVENUE_PLAN_LIST_PAGE',
+        breadcrumb='REVENUE_PLAN_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.REVENUE_PLAN_CONFIG_LIST, user=request.user).get()
@@ -41,7 +41,7 @@ class RevenuePlanDetail(View):
         auth_require=True,
         template='revenue_plan/revenue_plan_detail.html',
         menu_active='',
-        breadcrumb='REVENUE_PLAN_LIST_PAGE',
+        breadcrumb='REVENUE_PLAN_DETAIL_PAGE',
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.REVENUE_PLAN_DETAIL, user=request.user).get()
@@ -57,10 +57,13 @@ class RevenuePlanUpdate(View):
         auth_require=True,
         template='revenue_plan/revenue_plan_update.html',
         menu_active='',
-        breadcrumb='REVENUE_PLAN_LIST_PAGE',
+        breadcrumb='REVENUE_PLAN_UPDATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp0 = ServerAPI(url=ApiURL.REVENUE_PLAN_CONFIG_LIST, user=request.user).get()
+        return {
+            'revenue_plan_config': resp0.result,
+        }, status.HTTP_200_OK
 
 
 class RevenuePlanListAPI(APIView):

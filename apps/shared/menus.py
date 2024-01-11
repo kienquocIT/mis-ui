@@ -119,6 +119,10 @@ class MenusCoreConfigurations:
                 name='Price', code='id_menu_master_data_price', view_name='PriceMasterDataList',
                 icon='<i class="bi bi-currency-exchange"></i>',
             ),
+            MenuCommon(
+                name='Periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
+                icon='<i class="fas fa-hourglass-end"></i>',
+            ),
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
@@ -173,6 +177,10 @@ class MenusCoreConfigurations:
                 name='Meeting', code='id_menu_master_data_meeting_config', view_name='MeetingConfigList',
                 icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),
+            MenuCommon(
+                name='Revenue plan config', code='id_menu_master_data_revenue_plan_config', view_name='RevenuePlanConfigList',
+                icon='<i class="fas fa-hand-holding-usd"></i>',
+            ),
         ]
     )
 
@@ -180,6 +188,12 @@ class MenusCoreConfigurations:
 class MenusCRM:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    DASHBOARD = MenuCommon(
+        name='Dashboard', code='id_menu_dashboard', view_name='DashboardList', icon='<i class="fas fa-chart-bar"></i>',
+    )
+    REVENUE_PLAN = MenuCommon(
+        name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList', icon='<i class="fas fa-hand-holding-usd"></i>',
     )
     CALENDAR = MenuCommon(
         name='Calendar', code='menu_calendar', view_name='ProgrammeList',
@@ -495,6 +509,8 @@ class SpaceItem:
             icon='<i class="fa-solid fa-users-gear"></i>',
             menus=[
                 MenusCRM.HOME,
+                MenusCRM.DASHBOARD,
+                MenusCRM.REVENUE_PLAN,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,

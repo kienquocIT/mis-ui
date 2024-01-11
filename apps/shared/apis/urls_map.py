@@ -177,6 +177,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     MEETING_ZOOM_CONFIG_LIST = StringUrl('meeting-schedule/zoom-configs')
     MEETING_ZOOM_CONFIG_DETAIL = StringUrl('meeting-schedule/zoom-config/{pk}')
 
+    PERIODS_CONFIG_LIST = StringUrl('saledata/periods')
+    PERIODS_CONFIG_DETAIL = StringUrl('saledata/period/{pk}')
+
+    REVENUE_PLAN_CONFIG_LIST = StringUrl('saledata/revenue-plan-config')
+
     # masterdata/lookup/account
     INDUSTRY_LIST = StringUrl('saledata/industries')
     ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
@@ -461,3 +466,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ASSET_TOOLS_CONFIG = StringUrl('asset-tools/config')
     ASSET_TOOLS_PROVIDE = StringUrl('asset-tools/provide')
     ASSET_TOOLS_PROVIDE_DETAIL = StringUrl('asset-tools/provide/detail')
+
+    # Revenue plan
+    REVENUE_PLAN_LIST = StringUrl('revenue-plans/list')
+    REVENUE_PLAN_DETAIL = StringUrl('revenue-plan/detail')

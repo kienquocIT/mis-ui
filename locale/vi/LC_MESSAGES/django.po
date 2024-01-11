@@ -5839,3 +5839,59 @@ msgstr "Nội dung trả về"
 #
 msgid "Type your content here..."
 msgstr "Nhập nội dung của bạn vào đây..."
+
+#
+msgid "Period revenue"
+msgstr "Doanh thu theo kỳ"
+
+#
+msgid "Accumulated revenue"
+msgstr "Doanh thu tích luỹ"
+
+#
+msgid "Million"
+msgstr "Triệu"
+
+#
+msgid "Billion"
+msgstr "Tỷ"
+
+#
+msgid "Profit"
+msgstr "Lợi nhuận"
+
+#
+msgid "Top sellers"
+msgstr "Top người bán hàng"
+
+#
+msgid "Top customers"
+msgstr "Top khách hàng"
+
+#
+msgid "Top categories"
+msgstr "Top danh mục sản phẩm"
+
+#
+msgid "Top products"
+msgstr "Top sản phẩm"
+
+#
+msgid "This quarter"
+msgstr "Quý này"
+
+#
+msgid "Time chart"
+msgstr "Thời gian"
+
+#
+msgid "Optional"
+msgstr "Tuỳ chỉnh"
+
+#
+msgid "Quarter"
+msgstr "Quý"
+
+#
+msgid "Whole year"
+msgstr "Cả năm"

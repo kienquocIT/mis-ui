@@ -16,6 +16,7 @@ from apps.masterdata.saledata.views.expense_item import ExpenseItemList, Expense
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
 from apps.masterdata.saledata.views.import_data import SaleDataImportDataList
+from apps.masterdata.saledata.views.periods import PeriodsConfigList, PeriodsConfigListAPI, PeriodsConfigDetailAPI
 from apps.masterdata.saledata.views.product import (
     ProductMasterDataList, ProductTypeListAPI, ProductCategoryListAPI, UnitOfMeasureListAPI,
     UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
@@ -28,6 +29,7 @@ from apps.masterdata.saledata.views.price import (
     UpdateProductForPriceListAPI, PriceListDeleteProductAPI, ProductAddFromPriceListAPI, DeleteCurrencyFromPriceListAPI,
     PriceDeleteAPI, PriceListUpdate
 )
+from apps.masterdata.saledata.views.revenue_plan_config import RevenuePlanConfigList, RevenuePlanConfigListAPI
 from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
     ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
 from apps.masterdata.saledata.views.warehouse import (
@@ -87,6 +89,18 @@ urlpatterns = [
     path(
         'masterdata/meetingzoomconfig/api/<str:pk>', MeetingZoomConfigDetailAPI.as_view(),
         name='MeetingZoomConfigDetailAPI'
+    ),
+    path(
+        'masterdata/periodsconfig', PeriodsConfigList.as_view(),
+        name='PeriodsConfigList'
+    ),
+    path(
+        'masterdata/periodsconfig/api', PeriodsConfigListAPI.as_view(),
+        name='PeriodsConfigListAPI'
+    ),
+    path(
+        'masterdata/periodsconfig/api/<str:pk>', PeriodsConfigDetailAPI.as_view(),
+        name='PeriodsConfigDetailAPI'
     ),
 ] + [
     path('contacts', ContactList.as_view(), name='ContactList'),
@@ -260,4 +274,15 @@ urlpatterns += [
     path('expense-items', ExpenseItemList.as_view(), name='ExpenseItemList'),
     path('expense-items/api', ExpenseItemListAPI.as_view(), name='ExpenseItemListAPI'),
     path('expense-items/api/<str:pk>', ExpenseItemDetailAPI.as_view(), name='ExpenseItemDetailAPI'),
+]
+
+urlpatterns += [
+    path(
+        'revenue-plan-config', RevenuePlanConfigList.as_view(),
+        name='RevenuePlanConfigList'
+    ),
+    path(
+        'revenue-plan-config/api', RevenuePlanConfigListAPI.as_view(),
+        name='RevenuePlanConfigListAPI'
+    ),
 ]

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Revenue plan config' %}{% endblock %}
+{% block cssHeader %}
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-config-revenue-plan">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    {{ data.revenue_plan_config | json_script:"revenue_plan_config" }}
+    <div class="row">
+        <form id="form-config-revenue-plan"
+              data-url="{% url 'RevenuePlanConfigListAPI' %}"
+              data-url-redirect="{% url 'RevenuePlanConfigList' %}"
+              data-method="POST">
+            {% csrf_token %}
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="role-select" class="form-label">{% trans 'Select role(s) that has permission to create revenue plans' %}</label>
+                    <select multiple class="form-select select2" id="role-select" data-method="GET" data-url="{% url 'RoleListAPI' %}"></select>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/revenue_plan_config.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Revenue Plan List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "RevenuePlanCreate" %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100" id="table-revenue-plan-list"
+                   data-method="GET"
+                   data-url="{% url 'RevenuePlanListAPI' %}"
+                   data-url-detail="{% url 'RevenuePlanDetail' '0' %}"
+            >
+                <thead>
+                <tr>
+                    <td></td>
+                    <td>{% trans 'Code' %}</td>
+                    <td>{% trans 'Name' %}</td>
+                    <td>{% trans 'Period' %}</td>
+                    <td>{% trans 'Sale person' %}</td>
+                    <td>{% trans 'Date' %}</td>
+                    <td>{% trans 'Status' %}</td>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/revenue_plan/revenue_plan_list.js' %}"></script>
+{% endblock %}

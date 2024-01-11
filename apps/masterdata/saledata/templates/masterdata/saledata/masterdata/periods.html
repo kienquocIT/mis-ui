@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Master Data Periods config' %}{% endblock %}
+{% block cssHeader %}
+    <!-- Select2 -->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-periods-create">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100" id="table-periods-config"
+                   data-method="GET" data-url="{% url 'PeriodsConfigListAPI' %}"
+            >
+                <thead>
+                <tr>
+                    <td></td>
+                    <td>{% trans 'Code' %}</td>
+                    <td>{% trans 'Name' %}</td>
+                    <td>{% trans 'Fiscal year' %}</td>
+                    <td>{% trans 'Start date' %}</td>
+                    <td>{% trans 'Action' %}</td>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-periods-create" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'New periods' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-create-periods-config"
+                          data-url="{% url 'PeriodsConfigListAPI' %}"
+                          data-url-redirect="{% url 'PeriodsConfigList' %}"
+                          data-method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="periods-title" class="form-label">{% trans 'Name' %}</label>
+                                    <input type="text" class="form-control" id="periods-title" placeholder="2024">
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="periods-code" class="form-label">{% trans 'Code' %}</label>
+                                    <input type="text" class="form-control" id="periods-code" placeholder="P2024">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="periods-fiscal-year" class="form-label">{% trans 'Fiscal year' %}</label>
+                                    <input type="number" class="form-control" id="periods-fiscal-year" placeholder="2024" min="2024">
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="periods-start-date" class="form-label">{% trans 'Start date' %}</label>
+                                    <input type="text" class="form-control" id="periods-start-date" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-create-periods-config">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-periods-update" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Update periods' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-periods-config" data-id=""
+                          data-url="{% url 'PeriodsConfigDetailAPI' '0' %}"
+                          data-url-redirect="{% url 'PeriodsConfigList' %}"
+                          data-method="PUT">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="periods-title-update" class="form-label">{% trans 'Name' %}</label>
+                                    <input type="text" class="form-control" id="periods-title-update" placeholder="2024">
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="periods-code-update" class="form-label">{% trans 'Code' %}</label>
+                                    <input type="text" class="form-control" id="periods-code-update" placeholder="P2024">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="periods-fiscal-year-update" class="form-label">{% trans 'Fiscal year' %}</label>
+                                    <input type="number" class="form-control" id="periods-fiscal-year-update" placeholder="2024" min="2024">
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="periods-start-date-update" class="form-label">{% trans 'Start date' %}</label>
+                                    <input type="text" class="form-control" id="periods-start-date-update" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-update-periods-config">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/periods.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+{% endblock %}
+

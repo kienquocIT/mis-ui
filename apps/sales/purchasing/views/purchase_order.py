@@ -4,8 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, PermCheck
-from apps.shared.msg import BaseMsg
-
+from apps.shared.msg import BaseMsg, PurchasingMsg
 
 SYSTEM_STATUS = (
     (0, BaseMsg.DRAFT),
@@ -13,6 +12,13 @@ SYSTEM_STATUS = (
     (2, BaseMsg.ADDED),
     (3, BaseMsg.FINISH),
     (4, BaseMsg.CANCEL),
+)
+
+PO_GR_STATUS = (
+    (0, PurchasingMsg.PO_GR_NONE),
+    (1, PurchasingMsg.PO_GR_WAIT),
+    (2, PurchasingMsg.PO_GR_PART),
+    (3, PurchasingMsg.PO_GR_RECEIVED),
 )
 
 
@@ -42,7 +48,7 @@ class PurchaseOrderList(View):
         breadcrumb='PURCHASE_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS, 'gr_status': PO_GR_STATUS}, status.HTTP_200_OK
 
 
 class PurchaseOrderCreate(View):

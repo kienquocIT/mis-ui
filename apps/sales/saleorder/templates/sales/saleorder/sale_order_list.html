@@ -52,6 +52,7 @@
     data-status-delivered="{% trans 'Delivered' %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
+    {{ data.delivery_status|json_script:'delivery_status' }}
 {% endblock %}
 
 {% block jsFooter %}

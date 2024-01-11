@@ -58,6 +58,7 @@
             data-cancel="{% trans 'Cancel' %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
+    {{ data.gr_type|json_script:'gr_type' }}
 {% endblock %}
 
 {% block jsFooter %}

@@ -28,7 +28,7 @@
 
     <table id="table_opportunity_email_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityEmailListAPI' %}"
-           data-url-delete="{% url 'OpportunityEmailDeleteAPI' '0' %}"
+           data-url-delete="{% url 'OpportunityEmailDetailAPI' '0' %}"
            data-url-redirect="{% url 'OpportunityEmailList' %}"
            data-method="GET">
         <thead>
@@ -41,9 +41,8 @@
                    title="{% trans 'Press row here to see detail email log.' %}">
                 </i>
             </th>
-            <th class="text-center">{% trans 'Sale Code' %}</th>
-            <th class="text-center">{% trans 'Date' %}</th>
-            <th></th>
+            <th>{% trans 'Sale Code' %}</th>
+            <th>{% trans 'Date' %}</th>
         </tr>
         </thead>
         <tbody>
@@ -107,7 +106,7 @@
                         <span aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="modal-body" style="overflow: auto; height: 58vh">
+                <div class="modal-body">
                     <div class="row mb-3">
                         <label class="form-label required">{% trans 'Sale Code' %}</label>
                         <select disabled id="detail-email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>

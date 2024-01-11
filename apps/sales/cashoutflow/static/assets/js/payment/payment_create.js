@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+
     const urlParams = new URLSearchParams(window.location.search);
 
     let sale_code_mapped= urlParams.get('sale_code_mapped');

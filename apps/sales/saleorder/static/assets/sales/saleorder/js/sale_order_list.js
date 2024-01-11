@@ -116,13 +116,14 @@ $(function () {
                     {
                         targets: 7,
                         render: (data, type, row) => {
-                            let $eleTrans = $('#trans-factory');
-                            let status_data = {};
-                            status_data[$eleTrans.attr('data-status-none')] = "badge badge-soft-light";
-                            status_data[$eleTrans.attr('data-status-delivering')] = "badge badge-soft-warning";
-                            status_data[$eleTrans.attr('data-status-partially')] = "badge badge-soft-info text-sky";
-                            status_data[$eleTrans.attr('data-status-delivered')] = "badge badge-soft-success";
-                            return `<span class="${status_data[row?.['delivery_status']]}">${row?.['delivery_status']}</span>`;
+                            let sttTxt = JSON.parse($('#delivery_status').text())
+                            let sttData = [
+                                "soft-light",
+                                "soft-warning",
+                                "soft-info text-sky",
+                                "soft-success",
+                            ]
+                            return `<span class="badge badge-${sttData[row?.['delivery_status']]}">${sttTxt[row?.['delivery_status']][1]}</span>`;
                         }
                     },
                     {

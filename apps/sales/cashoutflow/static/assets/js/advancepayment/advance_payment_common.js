@@ -10,18 +10,6 @@ let opp_mapped_select = $('#opportunity_id')
 let script_url = $('#script-url')
 let tab_plan_datatable = $('#tab_plan_datatable')
 
-$('#input-file-now').dropify({
-    messages: {
-        'default': 'Drag and drop your file here.',
-    },
-    tpl: {
-        message: '<div class="dropify-message">' +
-            '<span class="file-icon"></span>' +
-            '<h5>{{ default }}</h5>' +
-            '</div>',
-    }
-});
-
 APTypeEle.on('change', function () {
     if (APTypeEle.val() === '1') {
         supplierEle.prop('disabled', false);
@@ -1276,6 +1264,11 @@ function LoadDetailAP(option) {
                 money_gave.prop('checked', data?.['money_gave']);
 
                 $.fn.initMaskMoney2();
+
+                new $x.cls.file($('#attachment')).init({
+                    enable_edit: option !== 'detail',
+                    data: data.attachment,
+                })
 
                 Disable(option);
                 quotation_mapped_select.attr('disabled', true).attr('readonly', true);

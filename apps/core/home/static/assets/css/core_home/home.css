@@ -18,3 +18,34 @@
 .bookmark-item:hover .bookmark-item-action {
     display: block;
 }
+
+#welcome-group {
+    position: relative;
+}
+
+#welcome-body {
+    position: relative;
+    z-index: 99999;
+}
+
+#welcome-canvas {
+    position: absolute;
+    z-index: 99998;
+    top: 0;
+    left: 0;
+    width: inherit;
+    height: inherit;
+}
+
+#welcome-group:hover #welcome-close {
+    display: block;
+}
+
+#welcome-close {
+    display: none;
+    position: absolute;
+    z-index: 99998;
+    top: -10px;
+    right: -10px;
+    height: 30px;
+}

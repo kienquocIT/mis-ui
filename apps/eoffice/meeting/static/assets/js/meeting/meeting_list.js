@@ -6,7 +6,6 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,

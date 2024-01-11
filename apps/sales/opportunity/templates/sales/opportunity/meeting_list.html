@@ -16,10 +16,16 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script id="trans-script"
+            data-trans-activity-cancelled="{% trans 'Cancelled' %}"
+            data-trans-alert-cancel="{% trans 'Cancel this meeting ?' %}"
+            data-trans-alert-warn="{% trans 'This meeting cannot be reactivated.' %}"
+    ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
+
     <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityMeetingListAPI' %}"
-           data-url-delete="{% url 'OpportunityMeetingDeleteAPI' '0' %}"
+           data-url-delete="{% url 'OpportunityMeetingDetailAPI' '0' %}"
            data-url-redirect="{% url 'OpportunityMeetingList' %}"
            data-method="GET">
         <thead>
@@ -32,14 +38,14 @@
                    title="{% trans 'Press row here to see detail meeting.' %}">
                 </i>
             </th>
-            <th class="text-center">{% trans 'Sale Code' %}</th>
-            <th class="text-center">{% trans 'Date' %}</th>
-            <th></th>
+            <th>{% trans 'Sale Code' %}</th>
+            <th>{% trans 'Date' %}</th>
         </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
+
     <div class="modal fade mt-10" id="create-meeting" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityMeetingModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -165,17 +171,18 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade mt-10" id="detail-meeting" tabindex="-1" role="dialog"
          aria-labelledby="detailOpportunityMeetingModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Detail Meeting' %}</h5>
+                    <h5 class="modal-title">{% trans 'Detail Meeting' %} <span id="is-cancelled" class="badge badge-sm badge-soft-danger"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="modal-body" style="overflow: auto; height: 58vh">
+                <div class="modal-body" data-id="">
                     <div class="row">
                         <div class="col-12">
                             <div class="mb-3">
@@ -264,7 +271,13 @@
                             </div>
                         </div>
                     </div>
+                    <div>
+                        <button id="cancel-activity" type="button" class="btn btn-custom btn-soft-danger btn-rounded btn-sm">
+                            <span><span>{% trans 'Cancel' %}</span><span class="icon"><i class="fa fa-times"></i></span></span>
+                        </button>
+                    </div>
                 </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>

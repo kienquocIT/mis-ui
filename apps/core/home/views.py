@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 
 from apps.shared import mask_view, ConditionFormset, ServerAPI, ApiURL, ServerMsg, TypeCheck, BreadcrumbView
 from apps.core.home.utils import ReverseUrlCommon
+from apps.shared.apps_code_to_txt import AppsCodeToList
 
 
 class LandingPageView(View):
@@ -31,7 +32,10 @@ class HomeView(View):
             employee_current_data = getattr(request.user, 'employee_current_data', {})
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
-                return {'employee_current_data': employee_current_data}, status.HTTP_200_OK
+                return {
+                           'employee_current_data': employee_current_data,
+                           'app_name_list': AppsCodeToList.get_data()
+                       }, status.HTTP_200_OK
         return redirect(reverse('LandingPageView'))
 
 

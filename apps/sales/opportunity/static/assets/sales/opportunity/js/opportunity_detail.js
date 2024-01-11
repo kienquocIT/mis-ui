@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let trans_script = $('#trans-script')
     let eleFrmPermit = $('#permit-member');
     $(document).on('click', '#btnOpenPermit', function () {
         eleFrmPermit.removeClass('hidden');
@@ -732,23 +733,53 @@ $(document).ready(function () {
                         $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
                         $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
                         $('#detail-result-text-area').val(call_log_obj.input_result);
+
+                        $('#detail-call-log #cancel-activity').prop('hidden', call_log_obj.is_cancelled)
+                        if (call_log_obj.is_cancelled) {
+                            $('#detail-call-log #is-cancelled').text(trans_script.attr('data-trans-activity-cancelled'))
+                        }
+                        else {
+                            $('#detail-call-log #is-cancelled').text('')
+                        }
+                        $('#detail-call-log .modal-body').attr('data-id', call_log_obj.id)
                     })
             })
 
-            $(document).on('click', '#table-timeline .delete-call-log-button', function () {
-                let call_log_id = $(this).attr('data-id');
-                $.fn.callAjax2({url: table_timeline.attr('data-url-delete-call-log').replace(0, call_log_id), method: 'DELETE'}).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            loadDblActivityLogs();
-                        }
+            $(document).on('click', '#detail-call-log #cancel-activity', function () {
+                Swal.fire({
+                    html:
+                    `<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
+                         <h5 class="text-danger">${trans_script.attr('data-trans-alert-cancel-call-log')}</h5>
+                         <p>${trans_script.attr('data-trans-alert-warn-call-log')}</p>`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-secondary text-danger',
+                        cancelButton: 'btn btn-outline-secondary text-gray',
+                        container:'swal2-has-bg',
+                        actions:'w-100'
                     },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        let call_log_id = $('#detail-call-log .modal-body').attr('data-id')
+
+                        let csr = $("input[name=csrfmiddlewaretoken]").val();
+                        $.fn.callAjax($('#detail-call-log').attr('data-url').replace(0, call_log_id), 'PUT', {'is_cancelled': !$('#detail-call-log #cancel-activity').prop('disabled')}, csr)
+                        .then((resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyB({description: "Successfully"}, 'success')
+                                $('#detail-call-log').modal('hide')
+                                loadDblActivityLogs();
+                            }
+                        },(errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        })
                     }
-                )
+                })
             })
 
             // for send email.
@@ -1136,23 +1167,61 @@ $(document).ready(function () {
                         $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
                         $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
+                        $('#cancel-activity').prop('hidden', meeting_obj.is_cancelled)
+                        if (meeting_obj.is_cancelled) {
+                            $('#is-cancelled').text(trans_script.attr('data-trans-activity-cancelled'))
+                        }
+                        else {
+                            $('#is-cancelled').text('')
+                        }
+                        $('#detail-meeting .modal-body').attr('data-id', meeting_obj.id)
+
+                        $('#detail-meeting #cancel-activity').prop('hidden', meeting_obj.is_cancelled)
+                        if (meeting_obj.is_cancelled) {
+                            $('#detail-meeting #is-cancelled').text(trans_script.attr('data-trans-activity-cancelled'))
+                        }
+                        else {
+                            $('#detail-meeting #is-cancelled').text('')
+                        }
+                        $('#detail-meeting .modal-body').attr('data-id', meeting_obj.id)
                     })
             })
 
-            $(document).on('click', '#table-timeline .delete-meeting-button', function () {
-                let meeting_id = $(this).attr('data-id');
-                $.fn.callAjax2({url: table_timeline.attr('data-url-delete-meeting').replace(0, meeting_id), method: 'DELETE'}).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            loadDblActivityLogs();
-                        }
+            $(document).on('click', '#detail-meeting #cancel-activity', function () {
+                Swal.fire({
+                    html:
+                    `<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
+                         <h5 class="text-danger">${trans_script.attr('data-trans-alert-cancel-meeting')}</h5>
+                         <p>${trans_script.attr('data-trans-alert-warn-meeting')}</p>`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-secondary text-danger',
+                        cancelButton: 'btn btn-outline-secondary text-gray',
+                        container:'swal2-has-bg',
+                        actions:'w-100'
                     },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        let call_log_id = $('#detail-meeting .modal-body').attr('data-id')
+
+                        let csr = $("input[name=csrfmiddlewaretoken]").val();
+                        $.fn.callAjax($('#detail-meeting').attr('data-url').replace(0, call_log_id), 'PUT', {'is_cancelled': !$('#detail-meeting #cancel-activity').prop('disabled')}, csr)
+                        .then((resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyB({description: "Successfully"}, 'success')
+                                $('#detail-meeting').modal('hide')
+                                loadDblActivityLogs();
+                            }
+                        },(errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        })
                     }
-                )
+                })
             })
 
             // TIMELINE
@@ -1326,6 +1395,7 @@ $(document).ready(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('activity_logs_list')) {
+                                console.log(resp.data['activity_logs_list'])
                                 return resp.data['activity_logs_list'] ? resp.data['activity_logs_list'] : []
                             }
                             throw Error('Call data raise errors.')
@@ -1361,7 +1431,11 @@ $(document).ready(function () {
                                         </div>`;
                                     }
                                 } else {
-                                    return `<span class="badge badge-soft-primary">${typeMapActivity[row?.['log_type']]}</span>`;
+                                    let status = ''
+                                    if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
+                                        status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
+                                    }
+                                    return `<span class="badge badge-soft-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                                 }
                                 return `<p></p>`;
                             }
@@ -1404,22 +1478,7 @@ $(document).ready(function () {
                                     'outputFormat': 'DD-MM-YYYY',
                                 });
                             }
-                        },
-                        {
-                            targets: 5,
-                            render: (data, type, row) => {
-                                if (row?.['log_type'] === 2) {
-                                    return `<button type="button" data-id="${row?.['call_log']['id']}" class="btn btn-icon btn-rounded flush-soft-hover delete-call-log-button"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
-                                } else if (row?.['log_type'] === 3) {
-                                    return `<button type="button" data-id="${row?.['email']['id']}" class="btn btn-icon btn-rounded flush-soft-hover delete-email-button"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
-                                } else if (row?.['log_type'] === 4) {
-                                    return `<button type="button" data-id="${row?.['meeting']['id']}" class="btn btn-icon btn-rounded flush-soft-hover delete-meeting-button"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
-                                }
-                                else {
-                                    return ``
-                                }
-                            }
-                        },
+                        }
                     ],
                 });
             }

@@ -247,20 +247,33 @@
                                data-url-tax-list="{% url 'TaxListAPI' %}">
                             <thead>
                             <tr>
-                                <th class="text-center" style="width: 2%"></th>
-                                <th class="required" style="width: 14%">{% trans 'Expense type' %}</th>
-                                <th style="width: 14%">{% trans 'Description' %}</th>
-                                <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
-                                <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
-                                <th class="required" style="width: 13%">{% trans 'Unit price' %}</th>
-                                <th style="width: 8%">{% trans 'Tax' %}</th>
-                                <th class="required" style="width: 13%">{% trans 'Subtotal price' %}</th>
-                                <th class="required" style="width: 13%">{% trans 'After tax subtotal' %}</th>
-                                <th class="required" style="width: 9%">{% trans 'Document number' %}</th>
-                                <th style="width: 1%"></th>
+                                <th class="text-center" style="min-width: 50px"></th>
+                                <th class="required" style="min-width: 300px">{% trans 'Expense type' %}</th>
+                                <th style="min-width: 200px">{% trans 'Description' %}</th>
+                                <th class="required" style="min-width: 200px">{% trans 'UoM' %}</th>
+                                <th class="required" style="min-width: 200px">{% trans 'Quantity' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'Unit price' %}</th>
+                                <th style="min-width: 200px">{% trans 'Tax' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'Subtotal price' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'After tax subtotal' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'Document number' %}</th>
+                                <th></th>
                             </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button disabled type="button" id="btn-add-row-line-detail" class="my-3 btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-plus-circle"></i>
+                                        {% trans 'Add new row' %}
+                                    </button>
+                                </td>
+                                <td colspan="9"></td>
+                            </tr>
+                            </tfoot>
                         </table>
                     </div>
                     <div class="tab-pane fade" id="tab_plan">
@@ -323,7 +336,9 @@
                     <div class="tab-pane fade" id="tab_attachment">
                         <div class="row">
                             <div class="col-12">
-                                <input type="file" id="input-file-now" class="dropify">
+                                <div class="w-100" id="attachment">
+                                    {% include 'extends/files/all.html' %}
+                                </div>
                             </div>
                         </div>
                     </div>

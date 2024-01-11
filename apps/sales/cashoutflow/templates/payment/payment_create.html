@@ -233,29 +233,32 @@
                                data-url-tax-list="{% url 'TaxListAPI' %}">
                             <thead>
                             <tr>
-                                <th class="text-center"></th>
-                                <th class="required">{% trans 'Expense type' %}</th>
-                                <th>{% trans 'Description' %}</th>
-                                <th class="required">{% trans 'UoM' %}</th>
-                                <th class="required">{% trans 'Quantity' %}</th>
-                                <th class="required">{% trans 'Unit price' %}</th>
-                                <th>{% trans 'Tax' %}</th>
-                                <th class="required">{% trans 'Subtotal price' %}</th>
-                                <th class="required">{% trans 'After tax subtotal' %}</th>
-                                <th class="required">{% trans 'Document number' %}</th>
+                                <th class="text-center" style="min-width: 50px"></th>
+                                <th class="required" style="min-width: 300px">{% trans 'Expense type' %}</th>
+                                <th style="min-width: 200px">{% trans 'Description' %}</th>
+                                <th class="required" style="min-width: 200px">{% trans 'UoM' %}</th>
+                                <th class="required" style="min-width: 200px">{% trans 'Quantity' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'Unit price' %}</th>
+                                <th style="min-width: 200px">{% trans 'Tax' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'Subtotal price' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'After tax subtotal' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'Document number' %}</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             </tbody>
                             <tfoot>
-                                <td colspan="2">
-                                    <button type="button" id="btn-add-row-line-detail" class="btn btn-outline-primary btn-sm">
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button type="button" id="btn-add-row-line-detail" class="my-3 btn btn-outline-primary btn-sm">
                                         <i class="fas fa-plus-circle"></i>
                                         {% trans 'Add new row' %}
                                     </button>
                                 </td>
                                 <td colspan="9"></td>
+                            </tr>
                             </tfoot>
                         </table>
                     </div>
@@ -319,7 +322,9 @@
                     <div class="tab-pane fade" id="tab_attachment">
                         <div class="row">
                             <div class="col-12">
-                                <input type="file" id="input-file-now" class="dropify">
+                                <div class="w-100" id="attachment">
+                                    {% include 'extends/files/all.html' %}
+                                </div>
                             </div>
                         </div>
                     </div>

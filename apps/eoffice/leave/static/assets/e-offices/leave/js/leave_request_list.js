@@ -11,6 +11,14 @@ $(document).ready(function () {
         pageLength: 50,
         autoWidth: true,
         scrollX: true,
+        cusFilter: [{
+            dataUrl: $urlFact.attr('data-filter_employee'),
+            keyResp: 'employee_list',
+            keyText: 'full_name',
+            keyParam: "employee_inherit__in",
+            placeholder: $('#trans-factory').attr('data-employee_filter_head'),
+            multiple: true,
+        },],
         columns: [
             {
                 targets: 0,
@@ -30,7 +38,7 @@ $(document).ready(function () {
                     let time = '--';
                     if (Object.keys(row).length > 0) time = `${row.full_name}`
                     return time
-                }
+                },
             },
             {
                 data: 'code',

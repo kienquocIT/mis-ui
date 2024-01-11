@@ -45,8 +45,10 @@
     <input type="text" id="url-factory"
            data-leave-list="{% url 'LeaveRequestListAPI' %}"
            data-leave-detail="{% url 'LeaveRequestDetail' pk=0 %}"
+           data-filter_employee="{% url 'EmployeeListAPI'%}?list_from_app=leave.leaverequest.view"
     >
     <input type="text" id="trans-factory"
+           data-employee_filter_head="{% trans 'Employee inherit' %}"
     >
 {% endblock %}
 {% block jsFooter %}

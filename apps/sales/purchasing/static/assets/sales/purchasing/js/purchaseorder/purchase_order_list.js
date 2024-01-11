@@ -70,13 +70,14 @@ $(function () {
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            let $eleTrans = $('#app-trans-factory');
-                            let status_data = {};
-                            status_data[$eleTrans.attr('data-status-none')] = "badge badge-soft-light";
-                            status_data[$eleTrans.attr('data-status-wait')] = "badge badge-soft-warning";
-                            status_data[$eleTrans.attr('data-status-partially')] = "badge badge-soft-info text-sky";
-                            status_data[$eleTrans.attr('data-status-received')] = "badge badge-soft-success";
-                            return `<span class="${status_data[row?.['receipt_status']]}">${row?.['receipt_status']}</span>`;
+                            let sttTxt = JSON.parse($('#gr_status').text())
+                            let sttData = [
+                                "soft-light",
+                                "soft-warning",
+                                "soft-info text-sky",
+                                "soft-success",
+                            ]
+                            return `<span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span>`;
                         }
                     },
                     {

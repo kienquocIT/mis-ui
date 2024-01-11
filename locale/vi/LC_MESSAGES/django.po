@@ -5839,3 +5839,7 @@ msgstr "Nội dung trả về"
 #
 msgid "Type your content here..."
 msgstr "Nhập nội dung của bạn vào đây..."
+
+#
+msgid "This image encountered an error during loading or does not exist."
+msgstr "Hình ảnh này gặp lỗi trong quá trình tải hoặc không tồn tại."

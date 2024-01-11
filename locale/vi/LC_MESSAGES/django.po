@@ -5891,3 +5891,7 @@ msgstr "Tuỳ chỉnh"
 #
 msgid "Quarter"
 msgstr "Quý"
+
+#
+msgid "Whole year"
+msgstr "Cả năm"

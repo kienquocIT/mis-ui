@@ -892,12 +892,7 @@ class QuotationLoadDataHandle {
                 if ($(eleProduct).val()) { // PRODUCT
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
-                        rowData['product'] = {
-                            'id': dataProduct?.['id'],
-                            'title': dataProduct?.['title'],
-                            'code': dataProduct?.['code'],
-                            'price_list': dataProduct?.['price_list'],
-                        };
+                        rowData['product'] = dataProduct;
                         rowData['product_title'] = dataProduct?.['title'];
                         rowData['product_code'] = dataProduct?.['code'];
                     }
@@ -905,11 +900,7 @@ class QuotationLoadDataHandle {
                     if ($(eleUOM).val()) {
                         let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                         if (dataUOM) {
-                            rowData['unit_of_measure'] = {
-                                'id': dataUOM?.['id'],
-                                'title': dataUOM?.['title'],
-                                'code': dataUOM?.['code']
-                            };
+                            rowData['unit_of_measure'] = dataUOM;
                             rowData['product_uom_title'] = dataUOM?.['title'];
                             rowData['product_uom_code'] = dataUOM?.['code'];
                         }
@@ -918,12 +909,7 @@ class QuotationLoadDataHandle {
                     if ($(eleTax).val()) {
                         let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                         if (dataTax) {
-                            rowData['tax'] = {
-                                'id': dataTax?.['id'],
-                                'title': dataTax?.['title'],
-                                'code': dataTax?.['code'],
-                                'rate': dataTax?.['rate'],
-                            };
+                            rowData['tax'] = dataTax;
                             rowData['product_tax_title'] = dataTax?.['title'];
                             rowData['product_tax_value'] = dataTax?.['rate'];
                         } else {
@@ -991,11 +977,7 @@ class QuotationLoadDataHandle {
                     rowData['product_uom_code'] = "";
                     let uomData = getDataByProductID(elePromotion.getAttribute('data-id-product'));
                     if (uomData && Object.keys(uomData).length > 0) {
-                        rowData['unit_of_measure'] = {
-                            'id': uomData?.['id'],
-                            'title': uomData?.['title'],
-                            'code': uomData?.['code']
-                        };
+                        rowData['unit_of_measure'] = uomData;
                         rowData['product_uom_title'] = uomData?.['title'];
                         rowData['product_uom_code'] = uomData?.['code'];
                     }
@@ -1005,11 +987,7 @@ class QuotationLoadDataHandle {
                         if (optionSelected) {
                             if (optionSelected.querySelector('.data-info')) {
                                 let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                                rowData['tax'] = {
-                                    'id': dataInfo?.['id'],
-                                    'title': dataInfo?.['title'],
-                                    'code': dataInfo?.['code']
-                                };
+                                rowData['tax'] = dataInfo;
                                 rowData['product_tax_title'] = dataInfo?.['title'];
                                 rowData['product_tax_value'] = dataInfo?.['value'];
                             } else {
@@ -1061,11 +1039,7 @@ class QuotationLoadDataHandle {
                         if (optionSelected) {
                             if (optionSelected.querySelector('.data-info')) {
                                 let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                                rowData['tax'] = {
-                                    'id': dataInfo?.['id'],
-                                    'title': dataInfo?.['title'],
-                                    'code': dataInfo?.['code']
-                                };
+                                rowData['tax'] = dataInfo;
                                 rowData['product_tax_title'] = dataInfo?.['title'];
                                 rowData['product_tax_value'] = dataInfo?.['value'];
                             } else {
@@ -1105,6 +1079,20 @@ class QuotationLoadDataHandle {
         }
         $table.DataTable().destroy();
         QuotationDataTableHandle.dataTableProduct();
+        if (tableData.length === 0 && $form.attr('data-method').toLowerCase() === 'put') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    dataDetail = JSON.parse(eleDetail.val());
+                    if (dataDetail?.['quotation_products_data']) {
+                        tableData = dataDetail?.['quotation_products_data'];
+                    }
+                    if (dataDetail?.['sale_order_products_data']) {
+                        tableData = dataDetail?.['sale_order_products_data'];
+                    }
+                }
+            }
+        }
         $table.DataTable().rows.add(tableData).draw();
         if ($form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled($table);
@@ -1156,11 +1144,7 @@ class QuotationLoadDataHandle {
                 if ($(eleExpenseItem).val()) {
                     let dataExpenseItem = SelectDDControl.get_data_from_idx($(eleExpenseItem), $(eleExpenseItem).val());
                     if (dataExpenseItem) {
-                        rowData['expense_item'] = {
-                            'id': dataExpenseItem?.['id'],
-                            'title': dataExpenseItem?.['title'],
-                            'code': dataExpenseItem?.['code']
-                        };
+                        rowData['expense_item'] = dataExpenseItem;
                         rowData['expense_code'] = dataExpenseItem?.['code'];
                         rowData['expense_type_title'] = dataExpenseItem?.['title'];
                     }
@@ -1173,11 +1157,7 @@ class QuotationLoadDataHandle {
                     if ($(eleLaborItem).val()) {
                         let dataLaborItem = SelectDDControl.get_data_from_idx($(eleLaborItem), $(eleLaborItem).val());
                         if (dataLaborItem) {
-                            rowData['expense'] = {
-                                'id': dataLaborItem?.['id'],
-                                'title': dataLaborItem?.['title'],
-                                'code': dataLaborItem?.['code']
-                            };
+                            rowData['expense'] = dataLaborItem;
                             rowData['expense_title'] = dataLaborItem?.['title'];
                         }
                     }
@@ -1186,11 +1166,7 @@ class QuotationLoadDataHandle {
                 if ($(eleUOM).val()) {
                     let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                     if (dataUOM) {
-                        rowData['unit_of_measure'] = {
-                            'id': dataUOM?.['id'],
-                            'title': dataUOM?.['title'],
-                            'code': dataUOM?.['code']
-                        };
+                        rowData['unit_of_measure'] = dataUOM;
                         rowData['product_uom_title'] = dataUOM?.['title'];
                         rowData['product_uom_code'] = dataUOM?.['code'];
                     }
@@ -1199,11 +1175,7 @@ class QuotationLoadDataHandle {
                 if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                     if (dataTax) {
-                        rowData['tax'] = {
-                            'id': dataTax?.['id'],
-                            'title': dataTax?.['title'],
-                            'code': dataTax?.['code']
-                        };
+                        rowData['tax'] = dataTax;
                         rowData['product_tax_title'] = dataTax?.['title'];
                         rowData['product_tax_value'] = dataTax?.['rate'];
                     } else {
@@ -1240,6 +1212,20 @@ class QuotationLoadDataHandle {
         }
         $table.DataTable().destroy();
         QuotationDataTableHandle.dataTableExpense();
+        if (tableData.length === 0 && $form.attr('data-method').toLowerCase() === 'put') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    dataDetail = JSON.parse(eleDetail.val());
+                    if (dataDetail?.['quotation_expenses_data']) {
+                        tableData = dataDetail?.['quotation_expenses_data'];
+                    }
+                    if (dataDetail?.['sale_order_expenses_data']) {
+                        tableData = dataDetail?.['sale_order_expenses_data'];
+                    }
+                }
+            }
+        }
         $table.DataTable().rows.add(tableData).draw();
         if ($form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled($table);
@@ -1358,6 +1344,144 @@ class QuotationLoadDataHandle {
         // mask money
         $.fn.initMaskMoney2();
         return true;
+    };
+
+    static loadDataTableCost() {
+        let $form = $('#frm_quotation_create');
+        let $table = $('#datable-quotation-create-cost');
+        let $tableProduct = $('#datable-quotation-create-product');
+        let dataDetail = {};
+        // clear table
+        $table.DataTable().clear().draw();
+        $table[0].querySelector('.quotation-create-cost-pretax-amount').innerHTML = "0";
+        $table[0].querySelector('.quotation-create-cost-taxes').innerHTML = "0";
+        $table[0].querySelector('.quotation-create-cost-total').innerHTML = "0";
+        // update data detail
+        if ($form.attr('data-method').toLowerCase() === 'get' || $form.attr('data-method').toLowerCase() === 'put') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    dataDetail = JSON.parse(eleDetail.val());
+                }
+            }
+        }
+        // copy data tab detail to table cost
+        if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
+            let valueOrder = 0;
+            $tableProduct.DataTable().rows().every(function () {
+                let row = this.node();
+                let valueQuantity = 0;
+                let valuePrice = 0;
+                let valueTaxAmount = 0;
+                let valueSubtotal = 0;
+                let dataProduct = {};
+                let dataUOM = {};
+                let dataTax = {};
+                let product = row.querySelector('.table-row-item');
+                let uom = row.querySelector('.table-row-uom');
+                let tax = row.querySelector('.table-row-tax');
+                let shipping = row.querySelector('.table-row-shipping');
+                if ($(product).val()) { // PRODUCT
+                    dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
+                    valuePrice = dataProduct?.['sale_cost'] ? dataProduct?.['sale_cost'] : 0;
+                    if ($(uom).val()) {
+                        dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
+                    }
+                    if ($(tax).val()) {
+                        dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
+                    }
+                    valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                    valueOrder++
+                    let dataAdd = {
+                        "tax": {
+                            "id": "",
+                            "code": "",
+                            "title": "",
+                            "value": 0
+                        },
+                        "order": valueOrder,
+                        "product": {
+                            "id": "",
+                            "code": "",
+                            "title": ""
+                        },
+                        "product_code": "",
+                        "product_title": "",
+                        "unit_of_measure": {
+                            "id": "",
+                            "code": "",
+                            "title": ""
+                        },
+                        "product_quantity": valueQuantity,
+                        "product_uom_code": "",
+                        "product_tax_title": "",
+                        "product_tax_value": 0,
+                        "product_uom_title": "",
+                        "product_cost_price": valuePrice,
+                        "product_tax_amount": valueTaxAmount,
+                        "product_subtotal_price": valueSubtotal,
+                        "is_shipping": false,
+                    }
+                    let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+                    QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
+                    QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
+                    QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
+                } else if (shipping) { // SHIPPING
+                    let shippingID = shipping.getAttribute('data-id');
+                    let shippingTitle = shipping.value;
+                    valueQuantity = 1;
+                    valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
+                    // check if margin then minus
+                    let shippingPriceMargin = shipping.getAttribute('data-shipping-price-margin');
+                    if (shippingPriceMargin) {
+                        if (parseFloat(shippingPriceMargin) > 0) {
+                            valueSubtotal = valueSubtotal - parseFloat(shippingPriceMargin);
+                        }
+                    }
+                    valueOrder++
+                    let dataAdd = {
+                        "tax": {
+                            "id": "",
+                            "code": "",
+                            "title": "",
+                            "value": 0
+                        },
+                        "order": valueOrder,
+                        "product": {
+                            "id": shippingID,
+                            "code": "",
+                            "title": shippingTitle
+                        },
+                        "product_code": "",
+                        "product_title": shippingTitle,
+                        "unit_of_measure": {
+                            "id": "",
+                            "code": "",
+                            "title": ""
+                        },
+                        "product_quantity": valueQuantity,
+                        "product_uom_code": "",
+                        "product_tax_title": "",
+                        "product_tax_value": 0,
+                        "product_uom_title": "",
+                        "product_cost_price": valueSubtotal,
+                        "product_tax_amount": valueTaxAmount,
+                        "product_subtotal_price": valueSubtotal,
+                        "is_shipping": true,
+                        "shipping": {"id": shippingID},
+                    }
+                    let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+                    QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
+                    QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
+                }
+            })
+            // Re calculate
+            QuotationCalculateCaseHandle.calculateAllRowsTableCost($table);
+            // set again WF runtime
+            if (Object.keys(dataDetail).length > 0) {
+                WFRTControl.setWFRuntimeID(dataDetail?.['workflow_runtime_id']);
+            }
+        }
     };
 
     // Load detail
@@ -1662,10 +1786,9 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [
+            columns: [  // 50, 250, 100, 100, 150, 300, 200, 100, 200, 50 (1500p)
                 {
                     targets: 0,
-                    // width: '2.5%',
                     width: '3.33%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
@@ -1674,8 +1797,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    // width: '15%',
-                    width: '13.33%',
+                    width: '16.66%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1738,7 +1860,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    // width: '10%',
                     width: '6.66%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
@@ -1753,7 +1874,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    // width: '10%',
                     width: '6.66%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
@@ -1786,8 +1906,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    // width: '10%',
-                    width: '13.33%',
+                    width: '10%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1799,7 +1918,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    // width: '20%',
                     width: '20%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
@@ -1830,7 +1948,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    // width: '10%',
                     width: '13.33%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
@@ -1862,7 +1979,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
-                    // width: '10%',
                     width: '6.66%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
@@ -1920,7 +2036,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    // width: '10%',
                     width: '13.33%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
@@ -1941,7 +2056,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 9,
-                    // width: '2.5%',
                     width: '3.33%',
                     render: () => {
                         let $form = $('#frm_quotation_create');

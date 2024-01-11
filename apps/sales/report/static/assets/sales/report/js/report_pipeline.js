@@ -20,28 +20,28 @@ $(function () {
                         targets: 0,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</p>`;
+                            return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 1,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</p>`;
+                            return `<p>${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 2,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
+                            return `<p>${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
+                            return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
@@ -55,63 +55,63 @@ $(function () {
                         targets: 5,
                         width: '3.33%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
+                            return `<p>${row?.['opportunity']?.['win_rate'] ? row?.['opportunity']?.['win_rate'] : '0'} %</p>`;
                         }
                     },
                     {
                         targets: 6,
                         width: '6.66%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money table-row-pipeline" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
+                            return `<p>${moment(row?.['open_date'] ? row?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
                         }
                     },
                     {
                         targets: 7,
                         width: '6.66%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
+                            return `<p>${moment(row?.['close_date'] ? row?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
                         }
                     },
                     {
                         targets: 8,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
+                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value'])}"></span>`;
                         }
                     },
                     {
                         targets: 9,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
+                            return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['forecast_value'])}"></span>`;
                         }
                     },
                     {
                         targets: 10,
                         width: '3.33%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
+                            return `<p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
                         }
                     },
                     {
                         targets: 11,
                         width: '3.33%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
+                            return `<p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
                         }
                     },
                     {
                         targets: 12,
                         width: '3.33%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
+                            return `<p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
                         }
                     },
                     {
                         targets: 13,
                         width: '3.33%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
+                            return `<p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
                         }
                     },
                 ],
@@ -121,31 +121,62 @@ $(function () {
                 },
             });
         }
-
-        // function loadTotal() {
-        //     let newRevenue = 0;
-        //     let newGrossProfit = 0;
-        //     let newNetIncome = 0;
-        //     $table.DataTable().rows().every(function () {
-        //         let row = this.node();
-        //         let rowRevenue = row?.querySelector('.table-row-pipeline')?.getAttribute('data-init-money');
-        //         let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
-        //         let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
-        //         if (rowRevenue) {
-        //             newRevenue += parseFloat(rowRevenue);
-        //         }
-        //         if (rowGrossProfit) {
-        //             newGrossProfit += parseFloat(rowGrossProfit);
-        //         }
-        //         if (rowNetIncome) {
-        //             newNetIncome += parseFloat(rowNetIncome);
-        //         }
-        //     });
-        //     eleRevenue.attr('data-init-money', String(newRevenue));
-        //     eleGrossProfit.attr('data-init-money', String(newGrossProfit));
-        //     eleNetIncome.attr('data-init-money', String(newNetIncome));
-        // }
         loadDbl();
+
+        function setupData(dataList) {
+            let result = [];
+            let dataGroup = {};
+            let dataEmployee = {};
+            let totalValue = 0;
+            let totalForecastValue = 0;
+            let totalCall = 0;
+            let totalEmail = 0;
+            let totalMeeting = 0;
+            let totalDocument = 0;
+            for (let data of dataList) {
+                totalValue += data?.['value'];
+                totalForecastValue += data?.['value'];
+                totalCall += data?.['opportunity']?.['call'];
+                totalEmail += data?.['opportunity']?.['email'];
+                totalMeeting += data?.['opportunity']?.['meeting'];
+                totalDocument += data?.['opportunity']?.['document'];
+                // group
+                if (!dataGroup.hasOwnProperty(data?.['group']?.['id'])) {
+                    dataGroup[data?.['group']?.['id']] = data?.['group'];
+                }
+                // employee
+                if (!dataEmployee.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                    dataEmployee[data?.['employee_inherit']?.['id']] = data?.['employee_inherit'];
+                }
+            }
+            let dataTotal = {
+                'opportunity': {
+                    'value': totalValue,
+                    'forecast_value': totalForecastValue,
+                    'call': totalCall,
+                    'email': totalEmail,
+                    'meeting': totalMeeting,
+                    'document': totalDocument,
+                },
+                'group': {'title': 'Total'},
+            }
+            result.push(dataTotal);
+            for (let groupKey of dataGroup) {
+                result.push(dataGroup[groupKey]);
+                for (let employeeKey of dataEmployee) {
+                    if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
+                        result.push(dataEmployee[employeeKey]);
+                        for (let data of dataList) {
+                            if (data?.['employee_inherit']?.['id'] === employeeKey) {
+                                result.push(data);
+                            }
+                        }
+                    }
+                }
+            }
+            $table.DataTable().clear().draw();
+            $table.DataTable().rows.add(result).draw();
+        }
 
         function loadBoxEmployee() {
             boxEmployee.empty();

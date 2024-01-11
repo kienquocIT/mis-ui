@@ -288,6 +288,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     DASHBOARD_LIST_PAGE = BreadcrumbChildren(_('Dashboard'), 'DashboardList')
 
+    PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
+
+    REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
+
+    REVENUE_PLAN_LIST_PAGE = BreadcrumbChildren(_('Revenue plan'), 'RevenuePlanList')
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -453,7 +458,7 @@ class BreadcrumbView:
 
     MEETING_CONFIG_PAGE = [
         BreadcrumbItem.MEETING_CONFIG_PAGE
-    ]
+    ],
 
     CONTACT_MASTER_DATA_LIST_PAGE = [
         BreadcrumbItem.CONTACT_MASTER_DATA_LIST_PAGE
@@ -743,3 +748,9 @@ class BreadcrumbView:
     MEETING_SCHEDULE_DETAIL_PAGE = MEETING_SCHEDULE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 
     DASHBOARD_LIST_PAGE = [BreadcrumbItem.DASHBOARD_LIST_PAGE]
+
+    PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
+
+    REVENUE_PLAN_CONFIG_PAGE = [BreadcrumbItem.REVENUE_PLAN_CONFIG_PAGE]
+
+    REVENUE_PLAN_LIST_PAGE = [BreadcrumbItem.REVENUE_PLAN_LIST_PAGE]

@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     let revenue_chart_list_DF = []
     let revenue_chart_DF = null
-    let revenue_expected_data_DF = [3.0e+9, 3.0e+9, 4.0e+9, 5.0e+9, 4.0e+9, 3.0e+9, 4.0e+9, 3.0e+9, 4.0e+9, 3.2e+9, 3.4e+9, 4.0e+9,]
+    let revenue_expected_data_DF = []
 
     function LoadRevenueGroup(data) {
         revenueGroupEle.initSelect2({
@@ -311,26 +311,50 @@ $(document).ready(function () {
     }
 
     function UpdateOptionRevenueChart() {
-        let group = revenueGroupEle.val()
-        let calculate_type = revenueTypeEle.val()
-        const isBillionChecked = revenueBillionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
-        if (calculate_type === '0') {
-            let options = CombineRevenueChartDataPeriod(
-                group,
-                isBillionChecked,
-                `Revenue (${unitText})`
-            )
-            revenue_chart_DF.updateOptions(options)
-        }
-        else {
-            let options = CombineRevenueChartDataAccumulated(
-                group,
-                isBillionChecked,
-                `Revenue (${unitText})`
-            )
-            revenue_chart_DF.updateOptions(options)
-        }
+        let company_revenue_plan_list_ajax = $.fn.callAjax2({
+            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
+            data: {},
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
+                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
+                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === parseInt($('#revenue-year-filter').val())) {
+                            return data?.['revenue_plan_list'][i]?.['company_month_target']
+                        }
+                    }
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+        })
+
+        Promise.all([company_revenue_plan_list_ajax]).then(
+            (results) => {
+                revenue_expected_data_DF = results[0];
+                let group = revenueGroupEle.val()
+                let calculate_type = revenueTypeEle.val()
+                const isBillionChecked = revenueBillionCheckboxEle.prop('checked')
+                const unitText = isBillionChecked ? 'billion' : 'million'
+                if (calculate_type === '0') {
+                    let options = CombineRevenueChartDataPeriod(
+                        group,
+                        isBillionChecked,
+                        `Revenue (${unitText})`
+                    )
+                    revenue_chart_DF.updateOptions(options)
+                }
+                else {
+                    let options = CombineRevenueChartDataAccumulated(
+                        group,
+                        isBillionChecked,
+                        `Revenue (${unitText})`
+                    )
+                    revenue_chart_DF.updateOptions(options)
+                }
+            })
     }
 
     function AjaxRevenueChart(is_init=true) {
@@ -350,9 +374,30 @@ $(document).ready(function () {
                 console.log(errs);
         })
 
-        Promise.all([revenue_chart_ajax]).then(
+        let company_revenue_plan_list_ajax = $.fn.callAjax2({
+            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
+            data: {},
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
+                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
+                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === new Date().getFullYear()) {
+                            return data?.['revenue_plan_list'][i]?.['company_month_target']
+                        }
+                    }
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+        })
+
+        Promise.all([revenue_chart_ajax, company_revenue_plan_list_ajax]).then(
             (results) => {
                 revenue_chart_list_DF = results[0];
+                revenue_expected_data_DF = results[1];
                 revenueYearFilterEle.val(new Date().getFullYear())
                 if (is_init) {
                     InitOptionRevenueChart()
@@ -386,7 +431,7 @@ $(document).ready(function () {
 
     let profit_chart_list_DF = []
     let profit_chart_DF = null
-    let profit_expected_data_DF = [1.0e+9, 1.7e+9, 1.5e+9, 1.8e+9, 1.0e+9, 0.5e+9, 1.5e+9, 1.3e+9, 1.5e+9, 1.2e+9, 1.4e+9, 2.0e+9,]
+    let profit_expected_data_DF = []
 
     function LoadProfitGroup(data) {
         profitGroupEle.initSelect2({
@@ -687,26 +732,50 @@ $(document).ready(function () {
     }
 
     function UpdateOptionProfitChart() {
-        let group = profitGroupEle.val()
-        let calculate_type = profitTypeEle.val()
-        const isBillionChecked = profitBillionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
-        if (calculate_type === '0') {
-            let options = CombineProfitChartDataPeriod(
-                group,
-                isBillionChecked,
-                `Profit (${unitText})`
-            )
-            profit_chart_DF.updateOptions(options)
-        }
-        else {
-            let options = CombineProfitChartDataAccumulated(
-                group,
-                isBillionChecked,
-                `Profit (${unitText})`
-            )
-            profit_chart_DF.updateOptions(options)
-        }
+        let company_revenue_plan_list_ajax = $.fn.callAjax2({
+            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
+            data: {},
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
+                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
+                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === parseInt($('#profit-year-filter').val())) {
+                            return data?.['revenue_plan_list'][i]?.['company_month_target']
+                        }
+                    }
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+        })
+
+        Promise.all([company_revenue_plan_list_ajax]).then(
+            (results) => {
+                profit_expected_data_DF = results[0];
+                let group = profitGroupEle.val()
+                let calculate_type = profitTypeEle.val()
+                const isBillionChecked = profitBillionCheckboxEle.prop('checked')
+                const unitText = isBillionChecked ? 'billion' : 'million'
+                if (calculate_type === '0') {
+                    let options = CombineProfitChartDataPeriod(
+                        group,
+                        isBillionChecked,
+                        `Profit (${unitText})`
+                    )
+                    profit_chart_DF.updateOptions(options)
+                }
+                else {
+                    let options = CombineProfitChartDataAccumulated(
+                        group,
+                        isBillionChecked,
+                        `Profit (${unitText})`
+                    )
+                    profit_chart_DF.updateOptions(options)
+                }
+            })
     }
 
     function AjaxProfitChart(is_init=true) {
@@ -726,9 +795,30 @@ $(document).ready(function () {
                 console.log(errs);
         })
 
-        Promise.all([profit_chart_ajax]).then(
+        let company_revenue_plan_list_ajax = $.fn.callAjax2({
+            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
+            data: {},
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
+                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
+                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === new Date().getFullYear()) {
+                            return data?.['revenue_plan_list'][i]?.['company_month_target']
+                        }
+                    }
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+        })
+
+        Promise.all([profit_chart_ajax, company_revenue_plan_list_ajax]).then(
             (results) => {
                 profit_chart_list_DF = results[0];
+                profit_expected_data_DF = results[1];
                 profitYearFilterEle.val(new Date().getFullYear())
                 if (is_init) {
                     InitOptionProfitChart()

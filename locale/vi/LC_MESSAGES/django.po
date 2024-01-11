@@ -5887,3 +5887,7 @@ msgstr "Thời gian"
 #
 msgid "Optional"
 msgstr "Tuỳ chỉnh"
+
+#
+msgid "Quarter"
+msgstr "Quý"

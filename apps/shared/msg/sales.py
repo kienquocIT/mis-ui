@@ -42,3 +42,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     IA_CREATE = _('Inventory adjustment create successfully')
     IA_UPDATE = _('Inventory adjustment update successfully')
     FINAL_ACCEPTANCE_UPDATE = _('Final acceptance update successfully')
+    RP_CREATE = _('Revenue plan create successfully')
+    RP_UPDATE = _('Revenue plan update successfully')

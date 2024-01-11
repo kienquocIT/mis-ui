@@ -100,8 +100,14 @@ $(function () {
         });
 
 // Action on click dropdown payment term
-        QuotationLoadDataHandle.paymentSelectEle.on('click', function() {
+        QuotationLoadDataHandle.paymentSelectEle.on('click', function () {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        });
+
+        QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
+            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                QuotationLoadDataHandle.loadDataTablePaymentStage();
+            }
         });
 
 // Action on click dropdown contact
@@ -123,7 +129,6 @@ $(function () {
         $quotationTabs.on('click', '.tab-detail', function () {
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
-
 // Action on click button add product
         $('#btn-add-product-quotation-create').on('click', function (e) {
             e.preventDefault();
@@ -183,7 +188,7 @@ $(function () {
             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
             // Clear table COST if add new row Product
-            QuotationLoadDataHandle.loadClearTableCost();
+            QuotationLoadDataHandle.loadDataTableCost();
         });
 
 // Action on delete row product
@@ -229,7 +234,7 @@ $(function () {
             }
             // Clear table COST if item or quantity change
             if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
-                QuotationLoadDataHandle.loadClearTableCost();
+                QuotationLoadDataHandle.loadDataTableCost();
             }
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
@@ -237,12 +242,14 @@ $(function () {
             deletePromotionRows(tableProduct, false, true);
             // Re Calculate all data of rows & total
             QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
+            // update table payment stage
+            QuotationLoadDataHandle.loadDataTablePaymentStage();
         });
 
 // If change product uom then clear table COST
         tableProduct.on('change', '.table-row-uom', function () {
-            // Clear table COST if change product uom
-            QuotationLoadDataHandle.loadClearTableCost();
+            // load again table cost
+            QuotationLoadDataHandle.loadDataTableCost();
         });
 
 // Check valid number for input
@@ -484,120 +491,120 @@ $(function () {
 // COST
 // COPY PRODUCT -> COST
         $quotationTabs.on('click', '.tab-cost', function () {
-            let tableEmpty = tableCost[0].querySelector('.dataTables_empty');
-            if (tableEmpty) {
-                // copy data
-                let valueOrder = 0;
-                for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
-                    let valueQuantity = 0;
-                    let valuePrice = 0;
-                    let valueTaxAmount = 0;
-                    let valueSubtotal = 0;
-                    let dataProduct = {};
-                    let dataUOM = {};
-                    let dataTax = {};
-                    let row = tableProduct[0].tBodies[0].rows[i];
-                    let product = row.querySelector('.table-row-item');
-                    let uom = row.querySelector('.table-row-uom');
-                    let tax = row.querySelector('.table-row-tax');
-                    let shipping = row.querySelector('.table-row-shipping');
-                    if ($(product).val()) { // PRODUCT
-                        dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
-                        valuePrice = dataProduct?.['sale_cost'] ? dataProduct?.['sale_cost'] : 0;
-                        if ($(uom).val()) {
-                            dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
-                        }
-                        if ($(tax).val()) {
-                            dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
-                        }
-                        valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
-                        valueOrder++
-                        let dataAdd = {
-                            "tax": {
-                                "id": "",
-                                "code": "",
-                                "title": "",
-                                "value": 0
-                            },
-                            "order": valueOrder,
-                            "product": {
-                                "id": "",
-                                "code": "",
-                                "title": ""
-                            },
-                            "product_code": "",
-                            "product_title": "",
-                            "unit_of_measure": {
-                                "id": "",
-                                "code": "",
-                                "title": ""
-                            },
-                            "product_quantity": valueQuantity,
-                            "product_uom_code": "",
-                            "product_tax_title": "",
-                            "product_tax_value": 0,
-                            "product_uom_title": "",
-                            "product_cost_price": valuePrice,
-                            "product_tax_amount": valueTaxAmount,
-                            "product_subtotal_price": valueSubtotal,
-                            "is_shipping": false,
-                        }
-                        let newRow = tableCost.DataTable().row.add(dataAdd).draw().node();
-                        QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
-                        QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
-                        QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
-                    } else if (shipping) { // SHIPPING
-                        let shippingID = shipping.getAttribute('data-id');
-                        let shippingTitle = shipping.value;
-                        valueQuantity = 1;
-                        valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
-                        // check if margin then minus
-                        let shippingPriceMargin = shipping.getAttribute('data-shipping-price-margin');
-                        if (shippingPriceMargin) {
-                            if (parseFloat(shippingPriceMargin) > 0) {
-                                valueSubtotal = valueSubtotal - parseFloat(shippingPriceMargin);
-                            }
-                        }
-                        valueOrder++
-                        let dataAdd = {
-                            "tax": {
-                                "id": "",
-                                "code": "",
-                                "title": "",
-                                "value": 0
-                            },
-                            "order": valueOrder,
-                            "product": {
-                                "id": shippingID,
-                                "code": "",
-                                "title": shippingTitle
-                            },
-                            "product_code": "",
-                            "product_title": shippingTitle,
-                            "unit_of_measure": {
-                                "id": "",
-                                "code": "",
-                                "title": ""
-                            },
-                            "product_quantity": valueQuantity,
-                            "product_uom_code": "",
-                            "product_tax_title": "",
-                            "product_tax_value": 0,
-                            "product_uom_title": "",
-                            "product_cost_price": valueSubtotal,
-                            "product_tax_amount": valueTaxAmount,
-                            "product_subtotal_price": valueSubtotal,
-                            "is_shipping": true,
-                            "shipping": {"id": shippingID},
-                        }
-                        let newRow = tableCost.DataTable().row.add(dataAdd).draw().node();
-                        QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
-                        QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
-                    }
-                }
-                // Re calculate
-                QuotationCalculateCaseHandle.calculateAllRowsTableCost(tableCost);
-            }
+            // let tableEmpty = tableCost[0].querySelector('.dataTables_empty');
+            // if (tableEmpty) {
+            //     // copy data
+            //     let valueOrder = 0;
+            //     for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
+            //         let valueQuantity = 0;
+            //         let valuePrice = 0;
+            //         let valueTaxAmount = 0;
+            //         let valueSubtotal = 0;
+            //         let dataProduct = {};
+            //         let dataUOM = {};
+            //         let dataTax = {};
+            //         let row = tableProduct[0].tBodies[0].rows[i];
+            //         let product = row.querySelector('.table-row-item');
+            //         let uom = row.querySelector('.table-row-uom');
+            //         let tax = row.querySelector('.table-row-tax');
+            //         let shipping = row.querySelector('.table-row-shipping');
+            //         if ($(product).val()) { // PRODUCT
+            //             dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
+            //             valuePrice = dataProduct?.['sale_cost'] ? dataProduct?.['sale_cost'] : 0;
+            //             if ($(uom).val()) {
+            //                 dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
+            //             }
+            //             if ($(tax).val()) {
+            //                 dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
+            //             }
+            //             valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+            //             valueOrder++
+            //             let dataAdd = {
+            //                 "tax": {
+            //                     "id": "",
+            //                     "code": "",
+            //                     "title": "",
+            //                     "value": 0
+            //                 },
+            //                 "order": valueOrder,
+            //                 "product": {
+            //                     "id": "",
+            //                     "code": "",
+            //                     "title": ""
+            //                 },
+            //                 "product_code": "",
+            //                 "product_title": "",
+            //                 "unit_of_measure": {
+            //                     "id": "",
+            //                     "code": "",
+            //                     "title": ""
+            //                 },
+            //                 "product_quantity": valueQuantity,
+            //                 "product_uom_code": "",
+            //                 "product_tax_title": "",
+            //                 "product_tax_value": 0,
+            //                 "product_uom_title": "",
+            //                 "product_cost_price": valuePrice,
+            //                 "product_tax_amount": valueTaxAmount,
+            //                 "product_subtotal_price": valueSubtotal,
+            //                 "is_shipping": false,
+            //             }
+            //             let newRow = tableCost.DataTable().row.add(dataAdd).draw().node();
+            //             QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
+            //             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
+            //             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
+            //         } else if (shipping) { // SHIPPING
+            //             let shippingID = shipping.getAttribute('data-id');
+            //             let shippingTitle = shipping.value;
+            //             valueQuantity = 1;
+            //             valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
+            //             // check if margin then minus
+            //             let shippingPriceMargin = shipping.getAttribute('data-shipping-price-margin');
+            //             if (shippingPriceMargin) {
+            //                 if (parseFloat(shippingPriceMargin) > 0) {
+            //                     valueSubtotal = valueSubtotal - parseFloat(shippingPriceMargin);
+            //                 }
+            //             }
+            //             valueOrder++
+            //             let dataAdd = {
+            //                 "tax": {
+            //                     "id": "",
+            //                     "code": "",
+            //                     "title": "",
+            //                     "value": 0
+            //                 },
+            //                 "order": valueOrder,
+            //                 "product": {
+            //                     "id": shippingID,
+            //                     "code": "",
+            //                     "title": shippingTitle
+            //                 },
+            //                 "product_code": "",
+            //                 "product_title": shippingTitle,
+            //                 "unit_of_measure": {
+            //                     "id": "",
+            //                     "code": "",
+            //                     "title": ""
+            //                 },
+            //                 "product_quantity": valueQuantity,
+            //                 "product_uom_code": "",
+            //                 "product_tax_title": "",
+            //                 "product_tax_value": 0,
+            //                 "product_uom_title": "",
+            //                 "product_cost_price": valueSubtotal,
+            //                 "product_tax_amount": valueTaxAmount,
+            //                 "product_subtotal_price": valueSubtotal,
+            //                 "is_shipping": true,
+            //                 "shipping": {"id": shippingID},
+            //             }
+            //             let newRow = tableCost.DataTable().row.add(dataAdd).draw().node();
+            //             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
+            //             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
+            //         }
+            //     }
+            //     // Re calculate
+            //     QuotationCalculateCaseHandle.calculateAllRowsTableCost(tableCost);
+            // }
         });
 
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
@@ -612,16 +619,16 @@ $(function () {
         });
 
 // SHIPPING-BILLING
-        $quotationTabs.on('click', '.tab-logistic', function () {
-            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-                    if (dataSelected) {
-                        QuotationLoadDataHandle.loadDataTablePaymentStage(dataSelected);
-                    }
-                }
-            }
-        });
+//         $quotationTabs.on('click', '.tab-logistic', function () {
+//             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+//                 if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+//                     let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+//                     if (dataSelected) {
+//                         QuotationLoadDataHandle.loadDataTablePaymentStage(dataSelected);
+//                     }
+//                 }
+//             }
+//         });
 // Action on click choose shipping
         modalShipping.on('click', '.choose-shipping', function () {
             // Enable other buttons
@@ -1033,8 +1040,8 @@ $(function () {
             QuotationLoadDataHandle.loadRowDisabled(newRow);
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
-            // Clear table COST if add new row Product
-            QuotationLoadDataHandle.loadClearTableCost();
+            // load again table cost
+            QuotationLoadDataHandle.loadDataTableCost();
         });
 
 // INDICATORS

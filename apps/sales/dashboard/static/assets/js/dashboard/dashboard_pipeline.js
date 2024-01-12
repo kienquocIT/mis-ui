@@ -120,7 +120,20 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 230
+                height: 230,
+                animations: {
+                    enabled: true,
+                    easing: 'linear',
+                    speed: 800,
+                    animateGradually: {
+                        enabled: true,
+                        delay: 200
+                    },
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 300
+                    }
+                }
             },
             plotOptions: {
                 bar: {

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Dashboard Pipeline' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-pipeline-list="{% url 'ReportPipelineListAPI' %}"
+    ></script>
+    <div class="row mb-6">
+        <div class="px-6 col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label"><span class="badge badge-primary"><i class="fas fa-chart-line"></i>&nbsp;{% trans 'Total pipeline' %}</span></label>
+                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="{% trans 'Reload total pipeline data' %}"
+                            id="reload-revenue-data-btn"
+                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                    >
+                        <span class="icon"><i class="fas fa-sync"></i></span>
+                    </button>
+                    <div class="row">
+                        <div class="col-11">
+                            <select class="form-select select2" id="total-pipeline-group"
+                                    data-url="{% url 'GroupListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                        <div class="col-1">
+                            <div class="btn-group">
+                                <div class="dropdown">
+                                    <button class="btn btn-wth-icon" data-bs-toggle="dropdown">
+                                        <span><span class="icon">
+                                            <span class="feather-icon text-secondary"><i class="fas fa-cog"></i></span>
+                                        </span></span>
+                                    </button>
+                                    <div class="dropdown-menu w-300p">
+                                        <div class="form-check">
+                                            <div class="row">
+                                                <div class="col-12 col-md-6 col-lg-6">
+                                                    <div class="form-check form-check-sm">
+                                                        <input checked type="radio" id="total-pipeline-million-checkbox" name="total-pipeline-money-unit-radio" class="form-check-input timechart-revenue">
+                                                        <label class="form-check-label" for="total-pipeline-million-checkbox">{% trans 'Million' %}</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-6 col-lg-6">
+                                                    <div class="form-check form-check-sm">
+                                                        <input type="radio" id="total-pipeline-billion-checkbox" name="total-pipeline-money-unit-radio" class="form-check-input timechart-revenue">
+                                                        <label class="form-check-label" for="total-pipeline-billion-checkbox">{% trans 'Billion' %}</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="form-group">
+                                            <label class="form-check-label" for="total-pipeline-year-filter">{% trans 'Year' %}</label>
+                                            <input type="number" id="total-pipeline-year-filter" class="form-control timechart-total-pipeline">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 border rounded p-3" id="total_pipeline_chart"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/dashboard/dashboard_pipeline.js' %}"></script>
+{% endblock %}

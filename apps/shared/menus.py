@@ -190,7 +190,21 @@ class MenusCRM:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     DASHBOARD = MenuCommon(
-        name='Dashboard', code='id_menu_dashboard', view_name='DashboardList', icon='<i class="fas fa-chart-bar"></i>',
+        name='Dashboard', code='id_menu_dashboard', view_name='#', icon='<i class="fas fa-chart-bar"></i>',
+        child=[
+            MenuCommon(
+                name='General', code='id_menu_dashboard_general', view_name='DashboardGeneralList',
+                icon='<i class="far fa-eye"></i>',
+            ),
+            # MenuCommon(
+            #     name='Picking', code='menu_order_picking_list', view_name='OrderPickingList',
+            #     icon='<i class="fas fa-box"></i>',
+            # ),
+            MenuCommon(
+                name='Pineline', code='id_menu_dashboard_pineline', view_name='DashboardPipelineList',
+                icon='<i class="fas fa-truck-pickup"></i>',
+            ),
+        ],
     )
     REVENUE_PLAN = MenuCommon(
         name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList', icon='<i class="fas fa-hand-holding-usd"></i>',

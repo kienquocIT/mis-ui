@@ -310,27 +310,32 @@ function LoadModalGroup(data) {
 
 $('#btn-add-group-plan').on('click', function () {
     let group_selected = SelectDDControl.get_data_from_idx(modalGroupEle, modalGroupEle.val());
-    if (Object.keys(group_selected).length !== 0) {
-        let pk = group_selected.id
-        let url_loaded = $('#revenue-plan-table').attr('data-group-url').replace(0, pk);
-        $.fn.callAjax(url_loaded, 'GET').then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    data = data['group'];
-                    let group_employee_list = data.group_employee
-                    if (revenue_plan_config_list.length > 0) {
-                        UpdateTablePlan(group_employee_list, group_selected)
+    if (revenuePlanTable.find('tbody').find(`.${group_selected.id}`).length === 0) {
+        if (Object.keys(group_selected).length !== 0) {
+            let pk = group_selected.id
+            let url_loaded = $('#revenue-plan-table').attr('data-group-url').replace(0, pk);
+            $.fn.callAjax(url_loaded, 'GET').then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        data = data['group'];
+                        let group_employee_list = data.group_employee
+                        if (revenue_plan_config_list.length > 0) {
+                            UpdateTablePlan(group_employee_list, group_selected)
+                        }
+                        else {
+                            $.fn.notifyB({description: "Missing config role(s) that has permission to create revenue plans"}, 'warning')
+                        }
                     }
-                    else {
-                        $.fn.notifyB({description: "Missing config role(s) that has permission to create revenue plans"}, 'warning')
-                    }
-                }
-            })
-        $('#add-group-plan-modal').modal('hide')
+                })
+            $('#add-group-plan-modal').modal('hide')
+        }
+        else {
+            $.fn.notifyB({description: "No group has been selected"}, 'warning')
+        }
     }
     else {
-        $.fn.notifyB({description: "No group has been selected"}, 'warning')
+        $.fn.notifyB({description: "This group has been selected"}, 'warning')
     }
 })
 

@@ -301,6 +301,7 @@ function InitOptionRevenueChart() {
         revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
         revenue_chart_DF.render();
     }
+    $('#revenue-spinner').prop('hidden', true)
 }
 
 function UpdateOptionRevenueChart() {
@@ -723,6 +724,7 @@ function InitOptionProfitChart() {
         profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
         profit_chart_DF.render();
     }
+    $('#profit-spinner').prop('hidden', true)
 }
 
 function UpdateOptionProfitChart() {
@@ -1022,6 +1024,7 @@ function InitOptionTopSellersChart() {
         '',
         `Revenue (${unitText})`
     )
+    $('#top-sellers-spinner').prop('hidden', true)
     top_sellers_chart_DF = new ApexCharts(document.querySelector("#top_sellers_chart"), options);
     top_sellers_chart_DF.render();
 }
@@ -1293,6 +1296,7 @@ function InitOptionTopCustomersChart() {
         '',
         `Revenue (${unitText})`
     )
+    $('#top-customers-spinner').prop('hidden', true)
     top_customers_chart_DF = new ApexCharts(document.querySelector("#top_customers_chart"), options);
     top_customers_chart_DF.render();
 }
@@ -1559,6 +1563,7 @@ function InitOptionTopCategoriesChart() {
         `Revenue (${unitText})`,
         "Category's name",
     )
+    $('#top-categories-spinner').prop('hidden', true)
     top_categories_chart_DF = new ApexCharts(document.querySelector("#top_categories_chart"), options);
     top_categories_chart_DF.render();
 }
@@ -1825,6 +1830,7 @@ function InitOptionTopProductsChart() {
         `Revenue (${unitText})`,
         "Product's name",
     )
+    $('#top-products-spinner').prop('hidden', true)
     top_products_chart_DF = new ApexCharts(document.querySelector("#top_products_chart"), options);
     top_products_chart_DF.render();
 }

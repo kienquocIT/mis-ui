@@ -26,7 +26,7 @@
                     </button>
                     <div class="row">
                         <div class="col-11">
-                            <select class="form-select select2" id="total-pipeline-group"
+                            <select disabled class="form-select select2" id="total-pipeline-group"
                                     data-url="{% url 'GroupListAPI' %}"
                                     data-method="GET"
                             ></select>
@@ -69,7 +69,9 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-12 border rounded p-3" id="total_pipeline_chart"></div>
+                <div class="col-12 border rounded p-3" id="total_pipeline_chart">
+                    <div id="total-pipeline-spinner" class="spinner-border" role="status"></div>
+                </div>
             </div>
         </div>
     </div>

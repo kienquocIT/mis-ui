@@ -196,6 +196,7 @@ function InitOptionTotalPipelineChart() {
         '',
         `Total (${unitText})`
     )
+    $('#total-pipeline-spinner').prop('hidden', true)
     total_pipeline_chart_DF = new ApexCharts(document.querySelector("#total_pipeline_chart"), options);
     total_pipeline_chart_DF.render();
 }
@@ -236,7 +237,7 @@ function AjaxTotalPipelineChart(is_init=true) {
                 InitOptionTotalPipelineChart()
             }
             else {
-                $.fn.notifyB({description: "Get the latest TotalPipeline data successfully"}, 'success')
+                $.fn.notifyB({description: "Get the latest total pipeline data successfully"}, 'success')
                 UpdateOptionTotalPipelineChart()
             }
         })

@@ -33,7 +33,7 @@ $(document).ready(function () {
 
     LoadRevenueGroup()
 
-    function CombineRevenueChartDataPeriod(group_filter, show_billion, titleY = 'Revenue (million)', titleX = 'Fiscal month') {
+    function CombineRevenueChartDataPeriod(group_filter, show_billion, titleY = 'Revenue (million)', titleX = 'Fiscal month', chart_title='Revenue chart') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -96,7 +96,7 @@ $(document).ready(function () {
                 curve: 'smooth'
             },
             title: {
-                text: 'Revenue chart',
+                text: chart_title,
                 align: 'left'
             },
             grid: {
@@ -150,7 +150,7 @@ $(document).ready(function () {
         };
     }
 
-    function CombineRevenueChartDataAccumulated(group_filter, show_billion, titleY = 'Revenue (million)', titleX = 'Fiscal month') {
+    function CombineRevenueChartDataAccumulated(group_filter, show_billion, titleY = 'Revenue (million)', titleX = 'Fiscal month', chart_title='Revenue chart') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -231,7 +231,7 @@ $(document).ready(function () {
                 curve: 'smooth'
             },
             title: {
-                text: 'Revenue chart',
+                text: chart_title,
                 align: 'left'
             },
             grid: {
@@ -287,6 +287,10 @@ $(document).ready(function () {
 
     function InitOptionRevenueChart() {
         let group = revenueGroupEle.val()
+        let group_title = SelectDDControl.get_data_from_idx(revenueGroupEle, revenueGroupEle.val())['title']
+        if (!group_title) {
+            group_title = 'Company'
+        }
         let calculate_type = revenueTypeEle.val()
         const isBillionChecked = revenueBillionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
@@ -294,7 +298,9 @@ $(document).ready(function () {
             let options = CombineRevenueChartDataPeriod(
                 group,
                 isBillionChecked,
-                `Revenue (${unitText})`
+                `Revenue (${unitText})`,
+                'Fiscal month',
+                `Revenue chart of ${group_title} in ${revenueYearFilterEle.val()}`
             )
             revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
             revenue_chart_DF.render();
@@ -302,7 +308,9 @@ $(document).ready(function () {
             let options = CombineRevenueChartDataAccumulated(
                 group,
                 isBillionChecked,
-                `Revenue (${unitText})`
+                `Revenue (${unitText})`,
+                'Fiscal month',
+                `Revenue chart of ${group_title} in ${revenueYearFilterEle.val()}`
             )
             revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
             revenue_chart_DF.render();
@@ -335,6 +343,10 @@ $(document).ready(function () {
             (results) => {
                 revenue_expected_data_DF = results[0];
                 let group = revenueGroupEle.val()
+                let group_title = SelectDDControl.get_data_from_idx(revenueGroupEle, revenueGroupEle.val())['title']
+                if (!group_title) {
+                    group_title = 'Company'
+                }
                 let calculate_type = revenueTypeEle.val()
                 const isBillionChecked = revenueBillionCheckboxEle.prop('checked')
                 const unitText = isBillionChecked ? 'billion' : 'million'
@@ -342,14 +354,18 @@ $(document).ready(function () {
                     let options = CombineRevenueChartDataPeriod(
                         group,
                         isBillionChecked,
-                        `Revenue (${unitText})`
+                        `Revenue (${unitText})`,
+                        'Fiscal month',
+                        `Revenue chart of ${group_title} in ${revenueYearFilterEle.val()}`
                     )
                     revenue_chart_DF.updateOptions(options)
                 } else {
                     let options = CombineRevenueChartDataAccumulated(
                         group,
                         isBillionChecked,
-                        `Revenue (${unitText})`
+                        `Revenue (${unitText})`,
+                        'Fiscal month',
+                        `Revenue chart of ${group_title} in ${revenueYearFilterEle.val()}`
                     )
                     revenue_chart_DF.updateOptions(options)
                 }
@@ -454,7 +470,7 @@ $(document).ready(function () {
 
     LoadProfitGroup()
 
-    function CombineProfitChartDataPeriod(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Fiscal month') {
+    function CombineProfitChartDataPeriod(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Fiscal month', chart_title='Profit chart') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -522,7 +538,7 @@ $(document).ready(function () {
                 curve: 'smooth'
             },
             title: {
-                text: 'Profit chart',
+                text: chart_title,
                 align: 'left'
             },
             grid: {
@@ -576,7 +592,7 @@ $(document).ready(function () {
         };
     }
 
-    function CombineProfitChartDataAccumulated(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Fiscal month') {
+    function CombineProfitChartDataAccumulated(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Fiscal month', chart_title='Profit chart') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -657,7 +673,7 @@ $(document).ready(function () {
                 curve: 'smooth'
             },
             title: {
-                text: 'Profit chart',
+                text: chart_title,
                 align: 'left'
             },
             grid: {
@@ -713,6 +729,10 @@ $(document).ready(function () {
 
     function InitOptionProfitChart() {
         let group = profitGroupEle.val()
+        let group_title = SelectDDControl.get_data_from_idx(profitGroupEle, profitGroupEle.val())['title']
+        if (!group_title) {
+            group_title = 'Company'
+        }
         let calculate_type = profitTypeEle.val()
         const isBillionChecked = profitBillionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
@@ -720,7 +740,9 @@ $(document).ready(function () {
             let options = CombineProfitChartDataPeriod(
                 group,
                 isBillionChecked,
-                `Profit (${unitText})`
+                `Profit (${unitText})`,
+                'Fiscal month',
+                `Profit chart of ${group_title} in ${profitYearFilterEle.val()}`
             )
             profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
             profit_chart_DF.render();
@@ -728,7 +750,9 @@ $(document).ready(function () {
             let options = CombineProfitChartDataAccumulated(
                 group,
                 isBillionChecked,
-                `Profit (${unitText})`
+                `Profit (${unitText})`,
+                'Fiscal month',
+                `Profit chart of ${group_title} in ${profitYearFilterEle.val()}`
             )
             profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
             profit_chart_DF.render();
@@ -761,6 +785,10 @@ $(document).ready(function () {
             (results) => {
                 profit_expected_data_DF = results[0];
                 let group = profitGroupEle.val()
+                let group_title = SelectDDControl.get_data_from_idx(profitGroupEle, profitGroupEle.val())['title']
+                if (!group_title) {
+                    group_title = 'Company'
+                }
                 let calculate_type = profitTypeEle.val()
                 const isBillionChecked = profitBillionCheckboxEle.prop('checked')
                 const unitText = isBillionChecked ? 'billion' : 'million'
@@ -768,14 +796,18 @@ $(document).ready(function () {
                     let options = CombineProfitChartDataPeriod(
                         group,
                         isBillionChecked,
-                        `Profit (${unitText})`
+                        `Profit (${unitText})`,
+                        'Fiscal month',
+                        `Profit chart of ${group_title} in ${profitYearFilterEle.val()}`
                     )
                     profit_chart_DF.updateOptions(options)
                 } else {
                     let options = CombineProfitChartDataAccumulated(
                         group,
                         isBillionChecked,
-                        `Profit (${unitText})`
+                        `Profit (${unitText})`,
+                        'Fiscal month',
+                        `Profit chart of ${group_title} in ${profitYearFilterEle.val()}`
                     )
                     profit_chart_DF.updateOptions(options)
                 }

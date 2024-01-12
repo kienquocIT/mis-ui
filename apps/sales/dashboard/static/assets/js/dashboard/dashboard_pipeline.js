@@ -31,7 +31,7 @@ $(document).ready(function () {
 
     LoadTotalPipelineGroup()
 
-    function CombineTotalPipelineChartData(group_filter, show_billion, titleY = "Stage", titleX = 'Total (million)') {
+    function CombineTotalPipelineChartData(group_filter, show_billion, titleY = "Stage", titleX = 'Total (million)', chart_title='Total Pipeline Chart') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -181,7 +181,7 @@ $(document).ready(function () {
                 },
             },
             title: {
-                text: `Total Pipeline Chart`,
+                text: chart_title,
                 align: 'left',
             },
             tooltip: {
@@ -208,7 +208,8 @@ $(document).ready(function () {
             group,
             isBillionChecked,
             '',
-            `Total (${unitText})`
+            `Total (${unitText})`,
+            `Total Pipeline Chart of Company in ${totalPipelineYearFilterEle.val()}`
         )
         $('#total-pipeline-spinner').prop('hidden', true)
         total_pipeline_chart_DF = new ApexCharts(document.querySelector("#total_pipeline_chart"), options);
@@ -217,13 +218,18 @@ $(document).ready(function () {
 
     function UpdateOptionTotalPipelineChart() {
         let group = totalPipelineGroupEle.val()
+        let group_title = SelectDDControl.get_data_from_idx(totalPipelineGroupEle, totalPipelineGroupEle.val())['title']
+        if (!group_title) {
+            group_title = 'Company'
+        }
         const isBillionChecked = totalPipelineBillionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         let options = CombineTotalPipelineChartData(
             group,
             isBillionChecked,
             '',
-            `Total (${unitText})`
+            `Total (${unitText})`,
+            `Total Pipeline Chart of ${group_title} in ${totalPipelineYearFilterEle.val()}`
         )
         total_pipeline_chart_DF.updateOptions(options)
     }

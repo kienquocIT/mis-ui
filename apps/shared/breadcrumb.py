@@ -288,7 +288,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     DASHBOARD_GENERAL_LIST_PAGE = BreadcrumbChildren(_('General dashboard'), 'DashboardGeneralList')
 
-    DASHBOARD_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pineline dashboard'), 'DashboardPipelineList')
+    DASHBOARD_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline dashboard'), 'DashboardPipelineList')
 
     PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
 

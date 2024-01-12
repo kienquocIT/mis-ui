@@ -201,8 +201,8 @@ class MenusCRM:
             #     icon='<i class="fas fa-box"></i>',
             # ),
             MenuCommon(
-                name='Pineline', code='id_menu_dashboard_pineline', view_name='DashboardPipelineList',
-                icon='<i class="fas fa-truck-pickup"></i>',
+                name='Pipeline', code='id_menu_dashboard_pipeline', view_name='DashboardPipelineList',
+                icon='<i class="fas fa-stream"></i>',
             ),
         ],
     )

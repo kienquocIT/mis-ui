@@ -66,7 +66,6 @@ function CombineTotalPipelineChartData(show_billion, titleY="Stage", titleX='Tot
         }
         groupedData[stage].push(item);
     });
-    console.log(groupedData)
 
     let list_stage_indicator = []
     let data_group_by_stage_indicator = []
@@ -78,9 +77,6 @@ function CombineTotalPipelineChartData(show_billion, titleY="Stage", titleX='Tot
         let wr_temp = groupedData[stage].reduce((wr, item) => wr = item.stage_win_rate, 0);
         data_winrate.push(wr_temp)
     }
-    console.log(list_stage_indicator)
-    console.log(data_group_by_stage_indicator)
-    console.log(data_winrate)
 
     let sortedDataBy_data_winrate = data_winrate.map((item, index) => ({
         data_winrate: item,

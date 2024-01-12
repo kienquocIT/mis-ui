@@ -122,8 +122,6 @@ function CombineTotalPipelineChartData(show_billion, titleY="Stage", titleX='Tot
         },
         colors: [
             '#4885e1', '#93852d', '#ff5e5e', '#63d75d',
-            '#4885e1', '#93852d', '#ff5e5e', '#63d75d',
-            '#4885e1', '#93852d', '#ff5e5e', '#63d75d',
         ],
         dataLabels: {
             enabled: true,

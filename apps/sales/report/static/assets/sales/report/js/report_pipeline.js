@@ -15,7 +15,7 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                columns: [  // 150,150,150,150,150,50,100,100,150,150,50,50,50,50 (1500p)
+                columns: [  // 200,200,100,250,150,100,150,150,150,150,100,100,100,100 (2000p)
                     {
                         targets: 0,
                         width: '10%',
@@ -32,84 +32,92 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '10%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '10%',
+                        width: '7.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '3.33%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['win_rate'] ? row?.['opportunity']?.['win_rate'] : '0'} %</p>`;
                         }
                     },
                     {
                         targets: 6,
-                        width: '6.66%',
+                        width: '7.5%',
                         render: (data, type, row) => {
-                            return `<p>${moment(row?.['open_date'] ? row?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
+                            if (row?.['opportunity']?.['open_date']) {
+                                return `<p>${moment(row?.['opportunity']?.['open_date'] ? row?.['opportunity']?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                     {
                         targets: 7,
-                        width: '6.66%',
+                        width: '7.5%',
                         render: (data, type, row) => {
-                            return `<p>${moment(row?.['close_date'] ? row?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
+                            if (row?.['opportunity']?.['close_date']) {
+                                return `<p>${moment(row?.['opportunity']?.['close_date'] ? row?.['opportunity']?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                     {
                         targets: 8,
-                        width: '10%',
+                        width: '7.5%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value'])}"></span>`;
+                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
                         }
                     },
                     {
                         targets: 9,
-                        width: '10%',
+                        width: '7.5%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['forecast_value'])}"></span>`;
+                            return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span>`;
                         }
                     },
                     {
                         targets: 10,
-                        width: '3.33%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
                         }
                     },
                     {
                         targets: 11,
-                        width: '3.33%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
                         }
                     },
                     {
                         targets: 12,
-                        width: '3.33%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
                         }
                     },
                     {
                         targets: 13,
-                        width: '3.33%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
                         }
@@ -141,12 +149,19 @@ $(function () {
                 totalMeeting += data?.['opportunity']?.['meeting'];
                 totalDocument += data?.['opportunity']?.['document'];
                 // group
-                if (!dataGroup.hasOwnProperty(data?.['group']?.['id'])) {
-                    dataGroup[data?.['group']?.['id']] = data?.['group'];
+                if (data?.['group']?.['id']) {
+                    if (!dataGroup.hasOwnProperty(data?.['group']?.['id'])) {
+                        dataGroup[data?.['group']?.['id']] = data?.['group'];
+                    }
                 }
-                // employee
                 if (!dataEmployee.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
                     dataEmployee[data?.['employee_inherit']?.['id']] = data?.['employee_inherit'];
+                }
+                // employee
+                if (data?.['employee_inherit']?.['id']) {
+                    if (!dataEmployee.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                        dataEmployee[data?.['employee_inherit']?.['id']] = data?.['employee_inherit'];
+                    }
                 }
             }
             let dataTotal = {
@@ -161,11 +176,11 @@ $(function () {
                 'group': {'title': 'Total'},
             }
             result.push(dataTotal);
-            for (let groupKey of dataGroup) {
-                result.push(dataGroup[groupKey]);
-                for (let employeeKey of dataEmployee) {
+            for (let groupKey in dataGroup) {
+                result.push({'group': dataGroup[groupKey]});
+                for (let employeeKey in dataEmployee) {
                     if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
-                        result.push(dataEmployee[employeeKey]);
+                        result.push({'employee_inherit': dataEmployee[employeeKey]});
                         for (let data of dataList) {
                             if (data?.['employee_inherit']?.['id'] === employeeKey) {
                                 result.push(data);
@@ -176,6 +191,7 @@ $(function () {
             }
             $table.DataTable().clear().draw();
             $table.DataTable().rows.add(result).draw();
+            $.fn.initMaskMoney2();
         }
 
         function loadBoxEmployee() {
@@ -260,17 +276,14 @@ $(function () {
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
-                    'data': dataParams,
-                    // 'isDropdown': true,
+                    // 'data': dataParams,
                 }
             ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
-                            $table.DataTable().clear().draw();
-                            $table.DataTable().rows.add(data.report_revenue_list).draw();
-                            // loadTotal();
+                        if (data.hasOwnProperty('report_pipeline_list') && Array.isArray(data.report_pipeline_list)) {
+                            setupData(data.report_pipeline_list);
                         }
                     }
                 }

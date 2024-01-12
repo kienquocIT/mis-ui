@@ -56,12 +56,6 @@ function CombineRevenueChartDataPeriod(group_filter, show_billion, titleY='Reven
             }
         }
     }
-    // auto
-    // for (let i = 0; i < revenue_chart_data.length; i++) {
-    //     if (revenue_chart_data[i] <= 0) {
-    //         revenue_chart_data[i] = 4e+9 / cast_billion
-    //     }
-    // }
 
     let revenue_expected_data = []
     for (let i = 0; i < revenue_expected_data_DF.length; i++) {
@@ -127,7 +121,7 @@ function CombineRevenueChartDataPeriod(group_filter, show_billion, titleY='Reven
             },
             labels: {
                 formatter: function(val) {
-                    return val.toFixed(3);
+                    if (val) {return val.toFixed(3)} else {return val}
                 }
             }
             // min: 5,
@@ -259,7 +253,7 @@ function CombineRevenueChartDataAccumulated(group_filter, show_billion, titleY='
             },
             labels: {
                 formatter: function(val) {
-                    return val.toFixed(3);
+                    if (val) {return val.toFixed(3)} else {return val}
                 }
             }
             // min: 5,
@@ -397,6 +391,7 @@ function AjaxRevenueChart(is_init=true) {
         (results) => {
             revenue_chart_list_DF = results[0];
             revenue_expected_data_DF = results[1];
+            console.log(revenue_chart_list_DF)
             revenueYearFilterEle.val(new Date().getFullYear())
             if (is_init) {
                 InitOptionRevenueChart()
@@ -548,7 +543,7 @@ function CombineProfitChartDataPeriod(group_filter, show_billion, titleY='Profit
             },
             labels: {
                 formatter: function(val) {
-                    return val.toFixed(3);
+                    if (val) {return val.toFixed(3)} else {return val}
                 }
             }
             // min: 5,
@@ -680,7 +675,7 @@ function CombineProfitChartDataAccumulated(group_filter, show_billion, titleY='P
             },
             labels: {
                 formatter: function(val) {
-                    return val.toFixed(3);
+                    if (val) {return val.toFixed(3)} else {return val}
                 }
             }
             // min: 5,
@@ -980,7 +975,7 @@ function CombineTopSellersChartData(show_billion, titleY="Seller's fullname", ti
             labels: {
                 show: true,
                 formatter: function(val) {
-                    return val.toFixed(3);
+                    if (val) {return val.toFixed(3)} else {return val}
                 }
             },
             title: {
@@ -1251,7 +1246,7 @@ function CombineTopCustomersChartData(show_billion, titleY="Customer's name", ti
             labels: {
                 show: true,
                 formatter: function(val) {
-                    return val.toFixed(3);
+                    if (val) {return val.toFixed(3)} else {return val}
                 }
             },
             title: {
@@ -1529,7 +1524,7 @@ function CombineTopCategoriesChartData(show_billion, titleY="Revenue (million)",
             labels: {
                 show: true,
                 formatter: function(val) {
-                    return val.toFixed(3);
+                    if (val) {return val.toFixed(3)} else {return val}
                 }
             },
             title: {
@@ -1795,7 +1790,7 @@ function CombineTopProductsChartData(show_billion, titleY="Revenue (million)", t
             labels: {
                 show: true,
                 formatter: function(val) {
-                    return val.toFixed(3);
+                    if (val) {return val.toFixed(3)} else {return val}
                 }
             },
             title: {

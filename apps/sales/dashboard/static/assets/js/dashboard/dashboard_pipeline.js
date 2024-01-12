@@ -48,30 +48,61 @@ function CombineTotalPipelineChartData(show_billion, titleY="Stage", titleX='Tot
                 'id': item.opportunity?.['id'],
                 'title': item.opportunity?.['title'],
                 'value': item.opportunity?.['value'],
-                'stage_indicator': item.opportunity?.['stage']?.['indicator']
+                'stage_indicator': item.opportunity?.['stage']?.['indicator'],
+                'stage_win_rate': item.opportunity?.['stage']?.['win_rate']
             })
         }
     }
 
-    let sortedData = total_pipeline_chart_data.sort(function(a, b) {
+    let sortedDataByIndicator = total_pipeline_chart_data.sort(function(a, b) {
         return a.stage_indicator.localeCompare(b.stage_indicator);
     });
 
     let groupedData = {};
-    sortedData.forEach(function(item) {
+    sortedDataByIndicator.forEach(function(item) {
         let stage = item.stage_indicator;
         if (!groupedData[stage]) {
             groupedData[stage] = [];
         }
         groupedData[stage].push(item);
     });
+    console.log(groupedData)
 
     let list_stage_indicator = []
     let data_group_by_stage_indicator = []
+    let data_winrate = []
     for (let stage in groupedData) {
         list_stage_indicator.push(stage)
         let sumValue = groupedData[stage].reduce((total, item) => total + item.value, 0);
         data_group_by_stage_indicator.push(sumValue / cast_billion)
+        let wr_temp = groupedData[stage].reduce((wr, item) => wr = item.stage_win_rate, 0);
+        data_winrate.push(wr_temp)
+    }
+    console.log(list_stage_indicator)
+    console.log(data_group_by_stage_indicator)
+    console.log(data_winrate)
+
+    let sortedDataBy_data_winrate = data_winrate.map((item, index) => ({
+        data_winrate: item,
+        list_stage_indicator: list_stage_indicator[index],
+        data_group_by_stage_indicator: data_group_by_stage_indicator[index]
+    })).sort(
+        (obj1, obj2) => obj1.data_winrate - obj2.data_winrate
+    );
+
+    list_stage_indicator = sortedDataBy_data_winrate.map(
+        item => item.list_stage_indicator
+    );
+    data_group_by_stage_indicator = sortedDataBy_data_winrate.map(
+        item => item.data_group_by_stage_indicator
+    );
+    data_winrate = sortedDataBy_data_winrate.map(
+        item => item.data_winrate
+    );
+
+    let list_stage_indicator_new = []
+    for (let i = 0; i < list_stage_indicator.length; i++) {
+        list_stage_indicator_new.push(`${list_stage_indicator[i]} (${data_winrate[i].toString()}%)`)
     }
 
     return {
@@ -82,13 +113,22 @@ function CombineTotalPipelineChartData(show_billion, titleY="Stage", titleX='Tot
             type: 'bar',
             height: 230
         },
-        colors: ['#307b8c'],
         plotOptions: {
             bar: {
-                borderRadius: 5,
+                barHeight: '100%',
+                distributed: true,
                 horizontal: true,
+                dataLabels: {
+                    position: 'center'
+                },
+                borderRadius: 4,
             }
         },
+        colors: [
+            '#4885e1', '#93852d', '#ff5e5e', '#63d75d',
+            '#4885e1', '#93852d', '#ff5e5e', '#63d75d',
+            '#4885e1', '#93852d', '#ff5e5e', '#63d75d',
+        ],
         dataLabels: {
             enabled: true,
             // textAnchor: 'start',
@@ -104,12 +144,16 @@ function CombineTotalPipelineChartData(show_billion, titleY="Stage", titleX='Tot
                 enabled: false
             }
         },
+        stroke: {
+            width: 1,
+            colors: ['#fff']
+        },
         xaxis: {
-            categories: list_stage_indicator,
+            categories: list_stage_indicator_new,
             labels: {
                 show: true,
                 formatter: function(val) {
-                    return val.toFixed(3);
+                    if (val) {return val.toFixed(3)} else {return val}
                 }
             },
             title: {
@@ -131,19 +175,15 @@ function CombineTotalPipelineChartData(show_billion, titleY="Stage", titleX='Tot
         tooltip: {
             theme: 'dark',
             x: {
-                show: true
+                show: false
             },
             y: {
-                show: true,
                 title: {
                     formatter: function () {
                         return ''
                     }
                 }
             }
-        },
-        legend: {
-            show: false
         }
     };
 }
@@ -153,7 +193,7 @@ function InitOptionTotalPipelineChart() {
     const unitText = isBillionChecked ? 'billion' : 'million'
     let options = CombineTotalPipelineChartData(
         isBillionChecked,
-        'Stage',
+        '',
         `Total (${unitText})`
     )
     total_pipeline_chart_DF = new ApexCharts(document.querySelector("#total_pipeline_chart"), options);
@@ -165,7 +205,7 @@ function UpdateOptionTotalPipelineChart() {
     const unitText = isBillionChecked ? 'billion' : 'million'
     let options = CombineTotalPipelineChartData(
         isBillionChecked,
-        'Stage',
+        '',
         `Total (${unitText})`
     )
     total_pipeline_chart_DF.updateOptions(options)
@@ -206,4 +246,8 @@ AjaxTotalPipelineChart()
 
 $('.timechart-total-pipeline').on('change', function () {
     UpdateOptionTotalPipelineChart()
+})
+
+$('#reload-total-pipeline-data-btn').on('click', function() {
+    AjaxTotalPipelineChart(false)
 })

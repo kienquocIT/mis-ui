@@ -3488,17 +3488,18 @@ class indicatorHandle {
             }
         }
         let dataDetail = {};
-        let dataDetailQuoIndicator = [];
-        let dataDetailSOIndicator = [];
         let eleDetail = $('#quotation-detail-data');
         if (eleDetail && eleDetail.length > 0) {
             if (eleDetail.val()) {
                 dataDetail = JSON.parse(eleDetail.val());
-                if (dataDetail?.['quotation_indicators_data']) {
-                    dataDetailQuoIndicator = dataDetail?.['quotation_indicators_data'];
-                }
-                if (dataDetail?.['sale_order_indicators_data']) {
-                    dataDetailSOIndicator = dataDetail?.['sale_order_indicators_data'];
+            }
+        }
+        // check zone before calculate
+        let keyHidden = WFRTControl.getZoneHiddenKeyData();
+        if (data_form && dataDetail && keyHidden) {
+            for (let key of keyHidden) {
+                if (!data_form.hasOwnProperty(key) && dataDetail.hasOwnProperty(key)) {
+                    data_form[key] = dataDetail[key];
                 }
             }
         }
@@ -3537,21 +3538,6 @@ class indicatorHandle {
             // calculate
             // value
             let value = indicatorHandle.evaluateFormula(parse_formula);
-            if (!value || ['', "", "undefined", null].includes(value)) {
-                value = 0;
-                for (let indicate of dataDetailQuoIndicator) {
-                    if (indicate?.['indicator']?.['code'] === indicator?.['code']) {
-                        value = indicate?.['indicator_value'];
-                        break;
-                    }
-                }
-                for (let indicate of dataDetailSOIndicator) {
-                    if (indicate?.['indicator']?.['code'] === indicator?.['code']) {
-                        value = indicate?.['indicator_value'];
-                        break;
-                    }
-                }
-            }
             // rate value
             if (indicator?.['code'] === "IN0001") {
                 revenueValue = value
@@ -3620,21 +3606,6 @@ class indicatorHandle {
         } catch (error) {
             return null;
         }
-    }
-
-    // math functions
-    static max(data_list) {
-  return Math.max(...data_list);
-}
-
-    static min(data_list) {
-  return Math.min(...data_list);
-}
-
-    static sum() {
-      return Array.prototype.reduce.call(arguments, function(acc, val) {
-        return acc + val;
-      }, 0);
     }
 
     static functionMaxMin(item, data_form, result_json) {
@@ -4424,4 +4395,19 @@ function getDataByProductID(product_id) {
         }
     }
     return uom_data
+}
+
+// math functions
+function max(data_list) {
+    return Math.max(...data_list);
+}
+
+function min(data_list) {
+    return Math.min(...data_list);
+}
+
+function sum() {
+    return Array.prototype.reduce.call(arguments, function (acc, val) {
+        return acc + val;
+    }, 0);
 }

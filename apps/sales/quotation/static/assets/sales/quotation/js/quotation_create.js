@@ -187,8 +187,9 @@ $(function () {
             QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')));
             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
-            // Clear table COST if add new row Product
+            // load again table cost
             QuotationLoadDataHandle.loadDataTableCost();
+            QuotationLoadDataHandle.loadSetWFRuntimeZone();
         });
 
 // Action on delete row product
@@ -234,7 +235,9 @@ $(function () {
             }
             // Clear table COST if item or quantity change
             if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
+                // load again table cost
                 QuotationLoadDataHandle.loadDataTableCost();
+                QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
@@ -250,6 +253,7 @@ $(function () {
         tableProduct.on('change', '.table-row-uom', function () {
             // load again table cost
             QuotationLoadDataHandle.loadDataTableCost();
+            QuotationLoadDataHandle.loadSetWFRuntimeZone();
         });
 
 // Check valid number for input
@@ -926,6 +930,7 @@ $(function () {
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
             // load again table cost
             QuotationLoadDataHandle.loadDataTableCost();
+            QuotationLoadDataHandle.loadSetWFRuntimeZone();
         });
 
 // INDICATORS
@@ -992,6 +997,17 @@ $(function () {
             // Load again indicator when Submit
             indicatorHandle.loadQuotationIndicator('quotation-indicator-data');
             QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+            let keyHidden = WFRTControl.getZoneHiddenKeyData();
+            if (keyHidden) {
+                if (keyHidden.length > 0) {
+                    // special case: tab cost depend on tab detail
+                    if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
+                        QuotationLoadDataHandle.loadDataTableCost();
+                        QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+                        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                    }
+                }
+            }
             let submitFields = [
                 'title',
                 'opportunity_id',
@@ -1087,8 +1103,6 @@ $(function () {
                     }
                 }
             }
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-
             WFRTControl.callWFSubmitForm(_form);
 
 

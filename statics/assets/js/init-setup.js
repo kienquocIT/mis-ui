@@ -1399,9 +1399,13 @@ class WFRTControl {
             && WFRTControl.getWFRuntimeID() && WFRTControl.getTaskWF() && pk && url.includes(pk) && method.toLowerCase() === 'put') {
             let taskID = WFRTControl.getTaskWF();
             let keyOk = WFRTControl.getZoneKeyData();
+            let keyOkRelated = WFRTControl.getZoneKeyRelatedData();
             let newData = {};
             for (let key in reqBodyData) {
                 if (keyOk.includes(key)) {
+                    newData[key] = reqBodyData[key];
+                }
+                if (keyOkRelated.includes(key)) {
                     newData[key] = reqBodyData[key];
                 }
             }
@@ -2153,14 +2157,24 @@ class WFRTControl {
         return [];
     }
 
+    static getZoneKeyRelatedData() {
+        let itemEle = $('#idxZonesKeyRelatedData');
+        if (itemEle && itemEle.length > 0) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }
+
     static setZoneData(zonesData) {
         let body_fields = [];
+        let body_fields_related = [];
         if (zonesData && Array.isArray(zonesData)) {
             zonesData.map((item) => {
                 body_fields.push(item.code);
+                body_fields_related = body_fields_related.concat(item?.['code_related']);
             });
         }
-        $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` + `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`);
+        $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` + `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>` + `<script class="hidden" id="idxZonesKeyRelatedData">${JSON.stringify(body_fields_related)}</script>`);
     }
 
     static setZoneHiddenData(zonesHiddenData) {

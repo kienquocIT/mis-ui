@@ -855,15 +855,6 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadClearTableCost() {
-        let tableCost = $('#datable-quotation-create-cost');
-        tableCost.DataTable().clear().draw();
-        tableCost[0].querySelector('.quotation-create-cost-pretax-amount').innerHTML = "0";
-        tableCost[0].querySelector('.quotation-create-cost-taxes').innerHTML = "0";
-        tableCost[0].querySelector('.quotation-create-cost-total').innerHTML = "0";
-        return true;
-    };
-
     static loadReInitDataTableProduct() {
         let $form = $('#frm_quotation_create');
         let $table = $('#datable-quotation-create-product');
@@ -1347,24 +1338,13 @@ class QuotationLoadDataHandle {
     };
 
     static loadDataTableCost() {
-        let $form = $('#frm_quotation_create');
         let $table = $('#datable-quotation-create-cost');
         let $tableProduct = $('#datable-quotation-create-product');
-        let dataDetail = {};
         // clear table
         $table.DataTable().clear().draw();
         $table[0].querySelector('.quotation-create-cost-pretax-amount').innerHTML = "0";
         $table[0].querySelector('.quotation-create-cost-taxes').innerHTML = "0";
         $table[0].querySelector('.quotation-create-cost-total').innerHTML = "0";
-        // update data detail
-        if ($form.attr('data-method').toLowerCase() === 'get' || $form.attr('data-method').toLowerCase() === 'put') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
-                }
-            }
-        }
         // copy data tab detail to table cost
         if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
             let valueOrder = 0;
@@ -1477,9 +1457,21 @@ class QuotationLoadDataHandle {
             })
             // Re calculate
             QuotationCalculateCaseHandle.calculateAllRowsTableCost($table);
-            // set again WF runtime
-            if (Object.keys(dataDetail).length > 0) {
-                WFRTControl.setWFRuntimeID(dataDetail?.['workflow_runtime_id']);
+        }
+    };
+
+    static loadSetWFRuntimeZone() {
+        let $form = $('#frm_quotation_create');
+        if ($form.attr('data-method').toLowerCase() === 'get' || $form.attr('data-method').toLowerCase() === 'put') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    let dataDetail = JSON.parse(eleDetail.val());
+                    // set again WF runtime
+                    if (Object.keys(dataDetail).length > 0) {
+                        WFRTControl.setWFRuntimeID(dataDetail?.['workflow_runtime_id']);
+                    }
+                }
             }
         }
     };
@@ -3496,10 +3488,22 @@ class indicatorHandle {
         }
         // check zone before calculate
         let keyHidden = WFRTControl.getZoneHiddenKeyData();
-        if (data_form && dataDetail && keyHidden) {
-            for (let key of keyHidden) {
-                if (!data_form.hasOwnProperty(key) && dataDetail.hasOwnProperty(key)) {
-                    data_form[key] = dataDetail[key];
+        if (keyHidden) {
+            if (keyHidden.length > 0) {
+                // special case: tab cost depend on tab detail
+                if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
+                    QuotationLoadDataHandle.loadDataTableCost();
+                    QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+                    data_form = _form.dataForm;
+                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                }
+                // set data detail to zones hidden
+                if (data_form && dataDetail) {
+                    for (let key of keyHidden) {
+                        if (!data_form.hasOwnProperty(key) && dataDetail.hasOwnProperty(key)) {
+                            data_form[key] = dataDetail[key];
+                        }
+                    }
                 }
             }
         }

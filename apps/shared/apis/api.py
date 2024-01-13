@@ -593,6 +593,7 @@ class ServerAPI:
     """
 
     def __init__(self, url, **kwargs):
+        print(url)
         self.cus_headers = kwargs.get('cus_headers', None)
         api_domain = kwargs.get('api_domain', settings.API_DOMAIN)
         self.user = kwargs.get('user', None)

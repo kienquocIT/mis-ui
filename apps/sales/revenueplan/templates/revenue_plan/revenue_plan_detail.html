@@ -13,7 +13,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'RevenuePlanUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
+        <button class="btn btn-outline-primary" id="btn-update-revenue-plan">
             <span>
                 <span>{% trans 'Edit' %}</span>
                 <span class="icon">
@@ -82,15 +82,6 @@
             </div>
         </div>
         <div class="row mt-5">
-            <div class="col-12">
-                <button type="button" id="add-group-plan" class="btn btn-custom btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-group-plan-modal">
-                    <span>
-                        <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
-                        <span>{% trans 'Add group plan' %}</span>
-                    </span>
-                </button>
-            </div>
-
             <div class="modal fade" id="add-group-plan-modal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">

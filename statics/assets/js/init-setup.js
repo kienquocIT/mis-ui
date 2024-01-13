@@ -1457,21 +1457,21 @@ class WFRTControl {
         let urlBase = globeTaskDetail;
         let dataSuccessReload = $(ele$).attr('data-success-reload');
         let dataSubmit = {'action': actionSelected};
-        let nextNodeCollab = ele$.attr('data-next-node-collab');
+        let urlRedirect = ele$.attr('data-url-redirect');
         if (actionSelected !== undefined && taskID && urlBase) {
             if (actionSelected === '1') {  // check approve if next node is out form need select person before submit
-                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, nextNodeCollab);
+                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
             } else if (actionSelected === '3') {  // check return need remark before submit
                 return WFRTControl.callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
             } else if (actionSelected === '4') {  // check receive if next node is out form need select person before submit
-                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, nextNodeCollab);
+                return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
             } else {
                 return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
             }
         }
     }
 
-    static callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload) {
+    static callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect = null) {
         let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
         WindowControl.showLoading();
         return $.fn.callAjax2({
@@ -1486,16 +1486,26 @@ class WFRTControl {
                 }, 'success');
                 if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
                     setTimeout(() => {
-                        window.location.reload()
+                        if (!urlRedirect) {
+                            window.location.reload()
+                        } else {
+                            window.location.replace(urlRedirect);
+                        }
                     }, 1000)
                 }
             }
             setTimeout(() => {
                 WindowControl.hideLoading();
+                if (urlRedirect) {
+                    window.location.replace(urlRedirect);
+                }
             }, 1000)
         }, (errs) => {
             setTimeout(() => {
                 WindowControl.hideLoading();
+                if (urlRedirect) {
+                    window.location.replace(urlRedirect);
+                }
             }, 500)
         });
     }
@@ -1527,11 +1537,7 @@ class WFRTControl {
         });
     }
 
-    static callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, nextNodeCollab) {
-        if (nextNodeCollab) {
-            dataSubmit['next_node_collab_id'] = nextNodeCollab;
-            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
-        }
+    static callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect) {
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
             Swal.fire({
@@ -1560,20 +1566,20 @@ class WFRTControl {
                     let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
                     if (eleChecked) {
                         dataSubmit['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                        return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+                        return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
                     } else {
                         return "You need to select one person!";
                     }
                 }
             });
         } else {
-            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
+            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
         }
     }
 
     static callWFSubmitForm(_form) {
         let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
-        if (btnIDLastSubmit === 'idxSaveInZoneWF') {  // check if btn idxSaveInZoneWF then submit not select collab
+        if (btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext') {  // check if btn idxSaveInZoneWF then submit not select collab
             if (_form.dataForm.hasOwnProperty('system_status')) {
                 _form.dataForm['system_status'] = 1;
             }
@@ -1588,10 +1594,28 @@ class WFRTControl {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        if (btnIDLastSubmit === 'idxSaveInZoneWFThenNext') {
+                            let btnWF = document.querySelector('.btn-action-wf');
+                            if (btnWF) {
+                                btnWF.setAttribute('data-url-redirect', _form.dataUrlRedirect);
+                            }
+                            let btnSubmit = $('#idxSaveInZoneWFThenNext');
+                            let dataWFAction = btnSubmit.attr('data-wf-action');
+                            if (btnSubmit && dataWFAction) {
+                                let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
+                                if (eleActionDoneTask.length > 0) {
+                                    DocumentControl.setBtnIDLastSubmit(null);
+                                    $(eleActionDoneTask[0]).attr('data-success-reload', false)
+                                    WFRTControl.callActionWF($(eleActionDoneTask[0]));
+                                }
+                            }
+                        }
                         $.fn.notifyB({description: data.message}, 'success');
-                        setTimeout(() => {
-                            window.location.replace(_form.dataUrlRedirect);
-                        }, 1000);
+                        if (btnIDLastSubmit === 'idxSaveInZoneWF') {
+                            setTimeout(() => {
+                                window.location.replace(_form.dataUrlRedirect);
+                            }, 1000);
+                        }
                     }
                 }, (err) => {
                     setTimeout(() => {
@@ -1602,7 +1626,6 @@ class WFRTControl {
             )
             return true;
         }
-
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {
             Swal.fire({
@@ -1634,10 +1657,6 @@ class WFRTControl {
                             _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
                         }
                         if (_form.dataMethod.toLowerCase() === 'put') {
-                            let btnWF = document.querySelector('.btn-action-wf');
-                            if (btnWF) {
-                                btnWF.setAttribute('data-next-node-collab', eleChecked.getAttribute('data-id'));
-                            }
                             if (_form.dataForm.hasOwnProperty('system_status')) {
                                 _form.dataForm['system_status'] = 1;
                             }

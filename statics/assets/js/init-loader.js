@@ -357,24 +357,25 @@ $.fn.extend({
                             if (onlySuccessCallback === false) {
                                 let data = $.fn.switcherResp(rest, isNotify, sweetAlertOpts);
                                 if (data) {
-                                    if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
-                                        let btnSubmit = $('#idxSaveInZoneWFThenNext');
-                                        let dataWFAction = btnSubmit.attr('data-wf-action');
-                                        if (btnSubmit && dataWFAction) {
-                                            let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
-                                            if (eleActionDoneTask.length > 0) {
-                                                DocumentControl.setBtnIDLastSubmit(null);
-                                                $(eleActionDoneTask[0]).attr('data-success-reload', false)
-                                                WFRTControl.callActionWF($(eleActionDoneTask[0])).then(() => {
-                                                    resolve(rest);
-                                                })
-                                            } else {
-                                                resolve(rest);
-                                            }
-                                        } else {
-                                            resolve(rest);
-                                        }
-                                    } else resolve(rest);
+                                    // if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
+                                    //     let btnSubmit = $('#idxSaveInZoneWFThenNext');
+                                    //     let dataWFAction = btnSubmit.attr('data-wf-action');
+                                    //     if (btnSubmit && dataWFAction) {
+                                    //         let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
+                                    //         if (eleActionDoneTask.length > 0) {
+                                    //             DocumentControl.setBtnIDLastSubmit(null);
+                                    //             $(eleActionDoneTask[0]).attr('data-success-reload', false)
+                                    //             WFRTControl.callActionWF($(eleActionDoneTask[0])).then(() => {
+                                    //                 resolve(rest);
+                                    //             })
+                                    //         } else {
+                                    //             resolve(rest);
+                                    //         }
+                                    //     } else {
+                                    //         resolve(rest);
+                                    //     }
+                                    // } else resolve(rest);
+                                    resolve(rest);
                                 } else resolve({'status': jqXHR.status});
                             }
                         },

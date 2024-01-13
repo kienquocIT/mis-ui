@@ -2278,7 +2278,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [
+            columns: [  // 50,300,300,100,150,250,100,200,50 (1500p)
                 {
                     targets: 0,
                     width: '3.33%',
@@ -2379,7 +2379,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '6.66%',
+                    width: '10%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -2391,7 +2391,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '20%',
+                    width: '16.66%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
@@ -3539,7 +3539,9 @@ class indicatorHandle {
                     parse_formula += item;
                 }
             }
-            // calculate
+            // begin calculate
+            // format
+            parse_formula = indicatorHandle.formatExpression(parse_formula);
             // value
             let value = indicatorHandle.evaluateFormula(parse_formula);
             // rate value
@@ -3717,6 +3719,11 @@ class indicatorHandle {
                 }
             }
         }
+    }
+
+    static formatExpression(input) {
+        // Replace consecutive subtraction operators with a space before each minus sign
+        return input.replace(/--/g, '+');
     }
 
 }

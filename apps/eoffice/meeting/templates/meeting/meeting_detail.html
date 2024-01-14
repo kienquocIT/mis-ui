@@ -305,11 +305,10 @@
                         <div class="modal-body">
                             <div class="table-responsive" style="max-height: 400px;">
                                 <div class="form-group">
-                                    <script id="selected-account-script"></script>
                                     <label class="form-label" for="external-participants-account">{% trans "Account" %}</label>
                                     <select data-url="{% url 'AccountListAPI' %}" data-method="GET" class="form-select select2" id="external-participants-account"></select>
                                 </div>
-                                <table class="table nowrap w-100" id="external-employees-table" data-method="GET" data-url="{% url 'EmployeeListAPI' %}">
+                                <table class="table nowrap w-100" id="external-contact-table" data-method="GET" data-url="{% url 'EmployeeListAPI' %}">
                                     <thead>
                                     <tr>
                                         <th class="w-10"></th>

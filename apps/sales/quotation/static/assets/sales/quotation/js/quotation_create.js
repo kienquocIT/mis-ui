@@ -507,16 +507,9 @@ $(function () {
         });
 
 // SHIPPING-BILLING
-//         $quotationTabs.on('click', '.tab-logistic', function () {
-//             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
-//                 if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-//                     let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-//                     if (dataSelected) {
-//                         QuotationLoadDataHandle.loadDataTablePaymentStage(dataSelected);
-//                     }
-//                 }
-//             }
-//         });
+        $('#datable-quotation-payment-stage').on('change', '.table-row-date', function () {
+            QuotationLoadDataHandle.loadDueDatePaymentStage(this);
+        });
 // Action on click choose shipping
         modalShipping.on('click', '.choose-shipping', function () {
             // Enable other buttons

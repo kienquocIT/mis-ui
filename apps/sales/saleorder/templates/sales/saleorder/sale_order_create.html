@@ -462,7 +462,7 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tab_logistic">
-                                <div class="row" hidden>
+                                <div class="row">
                                     <table
                                             id="datable-quotation-payment-stage"
                                             class="table nowrap w-100 mb-5"
@@ -471,10 +471,10 @@
                                         <tr>
                                             <th class="w-10">{% trans 'Stage' %}</th>
                                             <th class="w-20">{% trans 'Description' %}</th>
-                                            <th class="w-10">{% trans 'Date' %}</th>
+                                            <th class="w-15">{% trans 'Date' %}</th>
                                             <th class="w-15">{% trans 'Payment term date type' %}</th>
                                             <th class="w-10">{% trans 'Payment ratio' %}</th>
-                                            <th class="w-10">{% trans 'Value before tax' %}</th>
+                                            <th class="w-15">{% trans 'Value before tax' %}</th>
                                             <th class="w-10">{% trans 'Due date' %}</th>
                                             <th class="w-5">{% trans 'AR invoice' %}</th>
                                         </tr>
@@ -874,6 +874,7 @@
             value="0"
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
+    {{ data.payment_date_type|json_script:'payment_date_type' }}
 {% endblock %}
 
 {% block jsFooter %}

@@ -609,57 +609,7 @@ $(function () {
 
 // Action on confirm copy quotation
         $('#btn-quotation-copy-confirm').on('click', function () {
-            let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
-            let dataCopyTo = {'id': dataCopy.id, 'option': 'all'};
-            let type = $(this)[0].getAttribute('data-copy-type');
-            if (divCopyOption[0].querySelector('.check-option').checked === false) { // if option copy is custom then setup data products & costs for load
-                let result = [];
-                let productCopyTo = [];
-                let order = 0;
-                for (let idx = 0; idx < tableCopyQuotationProduct[0].tBodies[0].rows.length; idx++) {
-                    let row = tableCopyQuotationProduct[0].tBodies[0].rows[idx];
-                    let check = row.querySelector('.table-row-check-product');
-                    if (check.checked === true) {
-                        let quantyInput = row.querySelector('.table-row-quantity-input').value;
-                        let prodID = check.getAttribute('data-id');
-                        for (let i = 0; i < dataCopy.quotation_products_data.length; i++) {
-                            let data = dataCopy.quotation_products_data[i];
-                            if (data.product.id === prodID) {
-                                data['product_quantity'] = parseFloat(quantyInput);
-                                order++
-                                data['order'] = order;
-                                result.push(data);
-                                productCopyTo.push({'id': data.product.id, 'quantity': parseFloat(quantyInput)})
-                                break
-                            }
-                        }
-                    }
-                }
-                dataCopy['quotation_products_data'] = result;
-                dataCopyTo['option'] = 'custom';
-                dataCopyTo['products'] = productCopyTo;
-                dataCopy['quotation_costs_data'] = [];
-            } else { // if option copy is ALL product
-                dataCopy['quotation_products_data'] = dataCopy.quotation_products_data;
-            }
-            if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
-                // Begin load data copy FROM
-                document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
-                QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-                QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                // Check promotion -> re calculate
-                QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
-                // Set form novalidate
-                formSubmit[0].setAttribute('novalidate', 'novalidate');
-            } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
-                // create URL and add to href
-                let eleRedirect = document.getElementById('link-to-sale-order-create');
-                let urlSaleOrder = eleRedirect.getAttribute('data-url') + "?data_copy_to=" + encodeURIComponent(JSON.stringify(dataCopyTo));
-                eleRedirect.setAttribute('href', urlSaleOrder);
-                // active event on click <a>
-                eleRedirect.click();
-            }
+            QuotationLoadDataHandle.loadCopyData(this);
         });
 
 // Load data quotation COPY TO sale order when sale order page CREATE loaded

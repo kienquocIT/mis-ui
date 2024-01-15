@@ -1232,7 +1232,7 @@ class QuotationLoadDataHandle {
     static loadDataTablePaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
         let term = [];
-        let dataSO = {'stage': 0, 'is_ar_invoice': false};
+        let dataSO = {'stage': 0, 'is_ar_invoice': false, 'number_of_day': 0,};
         let dataContract = {};
         let dataDelivery = [];
         let dataAcceptance = [];
@@ -1240,7 +1240,6 @@ class QuotationLoadDataHandle {
         let tableProduct = document.getElementById('datable-quotation-create-product');
         if (tableProduct.closest('.dataTables_scroll')) {
             let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
-            // elePretaxAmountRaw = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
             if (tableProductFt.querySelector('.quotation-create-product-total-raw')) {
                 valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
             }
@@ -1255,33 +1254,42 @@ class QuotationLoadDataHandle {
             for (let termData of term) {
                 let value = 0;
                 let ratio = 0;
+                let numberOfDay = 0;
                 if (termData?.['unit_type'] === 0) {
-                    value = (parseFloat(termData?.['value']) * valueSO) / 100;
-                    ratio = termData?.['value'];
+                    if (termData?.['value']) {
+                       ratio = parseFloat(termData?.['value']);
+                       value = (ratio * valueSO) / 100;
+                    }
+                    if (termData?.['no_of_days']) {
+                        numberOfDay = parseInt(termData?.['no_of_days']);
+                    }
                 }
                 if (termData['after'] === 1) {
                     dataContract = {
-                        'stage': 0,
-                        'date_type': '',
+                        'stage': 1,
+                        'date_type': termData['after'],
                         'payment_ratio': ratio,
                         'value_before_tax': value,
                         'is_ar_invoice': false,
+                        'number_of_day': numberOfDay,
                     }
                 } else if (termData['after'] === 2) {
                     dataDelivery.push({
                         'stage': 2,
-                        'date_type': '',
+                        'date_type': termData['after'],
                         'payment_ratio': ratio,
                         'value_before_tax': value,
                         'is_ar_invoice': false,
+                        'number_of_day': numberOfDay,
                     })
                 } else if (termData['after'] === 4) {
                     dataAcceptance.push({
                         'stage': 3,
-                        'date_type': '',
+                        'date_type': termData['after'],
                         'payment_ratio': ratio,
                         'value_before_tax': value,
                         'is_ar_invoice': false,
+                        'number_of_day': numberOfDay,
                     })
                 }
             }
@@ -1309,6 +1317,7 @@ class QuotationLoadDataHandle {
                             },
                         });
                         $(row.querySelector('.table-row-date')).val(null).trigger('change');
+                        row.querySelector('.table-row-due-date').innerHTML = '';
                     }
                 })
             } else {  // if dataTable is not empty then update data
@@ -1334,6 +1343,17 @@ class QuotationLoadDataHandle {
         }
         // mask money
         $.fn.initMaskMoney2();
+        return true;
+    };
+
+    static loadDueDatePaymentStage(ele) {
+        let row = ele.closest('tr');
+        let date = $(ele).val();
+        let numberOfDay = ele.getAttribute('data-number-of-day');
+        let eleDueDate = row.querySelector('.table-row-due-date');
+        if (date && numberOfDay && eleDueDate) {
+            eleDueDate.innerHTML = calculateDate(date, {'number_day_after': parseInt(numberOfDay)});
+        }
         return true;
     };
 
@@ -1531,7 +1551,7 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxSOQuotation(data?.['quotation']);
         }
         if (data?.['date_created']) {
-            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('MM/DD/YYYY'));
+            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
         if (data?.['is_customer_confirm'] && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
@@ -2588,14 +2608,9 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-copy-quotation');
         $tables.DataTableDefault({
             data: data ? data : [],
-            paging: false,
-            ordering: false,
-            info: false,
-            columnDefs: [],
-            drawCallback: function () {
-            },
-            rowCallback: function (row, data) {
-            },
+            // paging: false,
+            // ordering: false,
+            // info: false,
             columns: [
                 {
                     targets: 0,
@@ -2890,14 +2905,15 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-date" value="${row?.['date'] ? row?.['date'] : ''}">`;
+                        return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${row?.['date'] ? row?.['date'] : ''}">`;
                     },
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
+                        let dataDateType = JSON.parse($('#payment_date_type').text());
                         if (row?.['stage'] !== 0) {
-                            return `<span class="table-row-date-type">${row?.['date_type']}</span>`;
+                            return `<span class="table-row-date-type">${dataDateType[row?.['date_type']][1]}</span>`;
                         } else {
                             return `<span></span>`;
                         }
@@ -2927,9 +2943,9 @@ class QuotationDataTableHandle {
                     targets: 6,
                     render: (data, type, row) => {
                         if (row?.['due_date']) {
-                            return `<p>${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
+                            return `<p class="table-row-due-date">${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
                         } else {
-                            return `<p></p>`;
+                            return `<p class="table-row-due-date"></p>`;
                         }
                     }
                 },
@@ -3548,8 +3564,10 @@ class indicatorHandle {
             if (indicator?.['code'] === "IN0001") {
                 revenueValue = value
             }
-            if (revenueValue !== 0) {
-               rateValue = ((value / revenueValue) * 100).toFixed(1);
+            if (value && revenueValue) {
+                if (revenueValue !== 0) {
+                    rateValue = ((value / revenueValue) * 100).toFixed(1);
+                }
             }
             // quotation value
             let quotationValue = 0;
@@ -4421,4 +4439,19 @@ function sum() {
     return Array.prototype.reduce.call(arguments, function (acc, val) {
         return acc + val;
     }, 0);
+}
+
+// date
+function calculateDate(dateString, opts = {}) {
+    let parts = dateString.split('/');
+    let day = parseInt(parts[0], 10);
+    let month = parseInt(parts[1], 10) - 1; // Months are zero-based in JavaScript
+    let year = parseInt(parts[2], 10);
+    let originalDate = new Date(year, month, day);
+    if (opts.hasOwnProperty('number_day_after')) {
+        let newDate = new Date(originalDate);
+        newDate.setDate(originalDate.getDate() + opts?.['number_day_after']);
+        let padWithZero = (value) => (value < 10 ? `0${value}` : value);
+        return `${padWithZero(newDate.getDate())}/${padWithZero(newDate.getMonth() + 1)}/${newDate.getFullYear()}`;
+    }
 }

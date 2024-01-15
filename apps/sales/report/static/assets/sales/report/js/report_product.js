@@ -132,6 +132,7 @@ $(function () {
                 format: 'DD/MM/YYYY'
             }
         });
+        $('input[type=text].date-picker').val(null).trigger('change');
 
         // mask money
         $.fn.initMaskMoney2();

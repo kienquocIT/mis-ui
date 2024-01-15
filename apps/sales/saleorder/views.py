@@ -30,6 +30,14 @@ PAYMENT_TERM_STAGE = (
     (3, SOMsg.PAYMENT_STAGE_ACCEPTANCE),
 )
 
+PAYMENT_DATE_TYPE = (
+    (0, SOMsg.PAYMENT_DATE_TYPE_CONTRACT),
+    (1, SOMsg.PAYMENT_DATE_TYPE_CONTRACT),
+    (2, SOMsg.PAYMENT_DATE_TYPE_DELIVERY),
+    (3, SOMsg.PAYMENT_DATE_TYPE_ACCEPTANCE),
+    (4, SOMsg.PAYMENT_DATE_TYPE_ACCEPTANCE),
+)
+
 
 def create_sale_order(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
@@ -79,6 +87,7 @@ class SaleOrderCreate(View):
             'form_id': 'frm_quotation_create',
             'list_from_app': 'saleorder.saleorder.create',
             'payment_term_stage': PAYMENT_TERM_STAGE,
+            'payment_date_type': PAYMENT_DATE_TYPE,
         }
         return result, status.HTTP_200_OK
 
@@ -129,6 +138,7 @@ class SaleOrderDetail(View):
                 'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
                 'form_id': 'frm_quotation_create',
                 'payment_term_stage': PAYMENT_TERM_STAGE,
+                'payment_date_type': PAYMENT_DATE_TYPE,
                 }, status.HTTP_200_OK
 
 
@@ -147,6 +157,7 @@ class SaleOrderUpdate(View):
                    'form_id': 'frm_quotation_create',
                    'list_from_app': 'saleorder.saleorder.edit',
                    'payment_term_stage': PAYMENT_TERM_STAGE,
+                   'payment_date_type': PAYMENT_DATE_TYPE,
                }, status.HTTP_200_OK
 
 

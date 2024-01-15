@@ -15,10 +15,10 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                columns: [  // 200,200,100,250,150,100,150,150,150,150,100,100,100,100 (2000p)
+                columns: [  // 150,200,150,250,150,100,150,150,150,150,100,100,100,100 (2000p)
                     {
                         targets: 0,
-                        width: '10%',
+                        width: '7.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
                         }
@@ -32,7 +32,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '5%',
+                        width: '7.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</p>`;
                         }
@@ -48,7 +48,7 @@ $(function () {
                         targets: 4,
                         width: '7.5%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
+                            return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
                         }
                     },
                     {
@@ -135,6 +135,7 @@ $(function () {
             let result = [];
             let dataGroup = {};
             let dataEmployee = {};
+            // total
             let totalValue = 0;
             let totalForecastValue = 0;
             let totalCall = 0;
@@ -142,12 +143,24 @@ $(function () {
             let totalMeeting = 0;
             let totalDocument = 0;
             for (let data of dataList) {
-                totalValue += data?.['value'];
-                totalForecastValue += data?.['value'];
-                totalCall += data?.['opportunity']?.['call'];
-                totalEmail += data?.['opportunity']?.['email'];
-                totalMeeting += data?.['opportunity']?.['meeting'];
-                totalDocument += data?.['opportunity']?.['document'];
+                if (data?.['opportunity']?.['value']) {
+                    totalValue += data?.['opportunity']?.['value'];
+                }
+                if (data?.['opportunity']?.['forecast_value']) {
+                    totalForecastValue += data?.['opportunity']?.['forecast_value'];
+                }
+                if (data?.['opportunity']?.['call']) {
+                    totalCall += data?.['opportunity']?.['call'];
+                }
+                if (data?.['opportunity']?.['email']) {
+                    totalEmail += data?.['opportunity']?.['email'];
+                }
+                if (data?.['opportunity']?.['meeting']) {
+                    totalMeeting += data?.['opportunity']?.['meeting'];
+                }
+                if (data?.['opportunity']?.['document']) {
+                    totalDocument += data?.['opportunity']?.['document'];
+                }
                 // group
                 if (data?.['group']?.['id']) {
                     if (!dataGroup.hasOwnProperty(data?.['group']?.['id'])) {
@@ -175,14 +188,16 @@ $(function () {
                 },
                 'group': {'title': 'Total'},
             }
-            result.push(dataTotal);
-            for (let groupKey in dataGroup) {
+            result.push(dataTotal);  // push data total
+            for (let groupKey in dataGroup) {  // push data group
                 result.push({'group': dataGroup[groupKey]});
-                for (let employeeKey in dataEmployee) {
+                for (let employeeKey in dataEmployee) {  // push data employee
                     if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
                         result.push({'employee_inherit': dataEmployee[employeeKey]});
-                        for (let data of dataList) {
+                        for (let data of dataList) {  // push data opp
                             if (data?.['employee_inherit']?.['id'] === employeeKey) {
+                                data['group'] = {};
+                                data['employee_inherit'] = {};
                                 result.push(data);
                             }
                         }
@@ -278,6 +293,7 @@ $(function () {
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
                     // 'data': dataParams,
+                    isLoading: true,
                 }
             ).then(
                 (resp) => {

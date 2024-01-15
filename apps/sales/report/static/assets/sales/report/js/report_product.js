@@ -180,7 +180,7 @@ $(function () {
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
                     'data': dataParams,
-                    // 'isDropdown': true,
+                    isLoading: true,
                 }
             ).then(
                 (resp) => {

@@ -58,12 +58,9 @@ function APLoadQuotation(data) {
         callbackDataResp: function (resp, keyResp) {
             let result = [];
             for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0) {
+                if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0 && resp.data[keyResp][i].system_status === 3) {
                     result.push(resp.data[keyResp][i])
                 }
-            }
-            if (result.length > 0) {
-                $('.select2-results__message').prop('hidden', true);
             }
             return result;
         },
@@ -123,12 +120,9 @@ function APLoadSaleOrder(data) {
         callbackDataResp: function (resp, keyResp) {
             let result = [];
             for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0) {
+                if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0 && resp.data[keyResp][i].system_status === 3) {
                     result.push(resp.data[keyResp][i])
                 }
-            }
-            if (result.length > 0) {
-                $('.select2-results__message').prop('hidden', true);
             }
             return result;
         },

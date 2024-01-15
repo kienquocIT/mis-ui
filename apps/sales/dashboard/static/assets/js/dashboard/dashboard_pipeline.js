@@ -267,6 +267,7 @@ $(document).ready(function () {
         Promise.all([TotalPipeline_chart_ajax]).then(
             (results) => {
                 total_pipeline_chart_list_DF = results[0];
+                console.log(total_pipeline_chart_list_DF)
                 totalPipelineYearFilterEle.val(new Date().getFullYear())
                 if (is_init) {
                     InitOptionTotalPipelineChart()

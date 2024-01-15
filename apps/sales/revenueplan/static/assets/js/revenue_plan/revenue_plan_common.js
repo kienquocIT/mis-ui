@@ -433,7 +433,7 @@ class RevenuePlanHandle {
             })
         }
 
-        console.log(frm.dataForm)
+        // console.log(frm.dataForm)
         if (for_update) {
             let pk = $.fn.getPkDetail();
             return {
@@ -463,13 +463,12 @@ function Disabled(option) {
 function LoadDetailRevenuePlan(option) {
     let pk = $.fn.getPkDetail()
     let url_loaded = $('#form-detail-revenue-plan').attr('data-url-detail-api').replace(0, pk);
-    console.log(url_loaded)
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['revenue_plan_detail'];
-                console.log(data)
+                // console.log(data)
 
                 $('#revenue-plan-name').val(data?.['title'])
                 LoadPeriod(data?.['period_mapped'])
@@ -545,6 +544,12 @@ function LoadDetailRevenuePlan(option) {
                 }
 
                 Disabled(option)
+
+                // $('#btn-update-revenue-plan').prop(
+                //     'disabled',
+                //     new Date(data?.['period_mapped']?.['start_date']).getFullYear() < new Date().getFullYear()
+                // )
+
                 $.fn.initMaskMoney2();
             }
         })

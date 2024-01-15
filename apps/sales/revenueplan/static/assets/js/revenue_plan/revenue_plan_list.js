@@ -66,7 +66,12 @@ $(document).ready(function () {
                         data: 'status',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-success">Open</span>`
+                            if (row.status === 'Opening') {
+                                return `<span class="badge badge-success">${row.status}</span>`
+                            }
+                            else {
+                                return `<span class="badge badge-secondary">${row.status}</span>`
+                            }
                         }
                     }
                 ],

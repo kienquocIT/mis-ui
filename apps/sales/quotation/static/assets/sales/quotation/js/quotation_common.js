@@ -2608,14 +2608,9 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-copy-quotation');
         $tables.DataTableDefault({
             data: data ? data : [],
-            paging: false,
-            ordering: false,
-            info: false,
-            columnDefs: [],
-            drawCallback: function () {
-            },
-            rowCallback: function (row, data) {
-            },
+            // paging: false,
+            // ordering: false,
+            // info: false,
             columns: [
                 {
                     targets: 0,

@@ -20,7 +20,8 @@ SALE_ORDER_DATA_MAP = {
         name_mapping=['payment_term'],
     ).data,
     'sale_order_products_data': FieldMapCommon(
-        name_mapping=['sale_order_products_data'],
+        name_mapping=['sale_order_products_data', 'sale_order_products_data_readonly'],
+        readonly_not_disable=['sale_order_products_data_readonly'],
     ).data,
     'sale_order_logistic_data': FieldMapCommon(
         name_mapping=['sale_order_logistic_data', 'sale_order_logistic_data_readonly'],

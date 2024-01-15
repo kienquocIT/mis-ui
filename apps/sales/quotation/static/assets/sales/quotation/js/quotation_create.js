@@ -882,6 +882,7 @@ $(function () {
         $('#tab-indicator').on('click', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 indicatorHandle.loadQuotationIndicator('quotation-indicator-data');
+                QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
         });
 

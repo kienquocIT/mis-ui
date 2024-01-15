@@ -1551,7 +1551,7 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxSOQuotation(data?.['quotation']);
         }
         if (data?.['date_created']) {
-            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('MM/DD/YYYY'));
+            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
         if (data?.['is_customer_confirm'] && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
@@ -3569,8 +3569,10 @@ class indicatorHandle {
             if (indicator?.['code'] === "IN0001") {
                 revenueValue = value
             }
-            if (revenueValue !== 0) {
-               rateValue = ((value / revenueValue) * 100).toFixed(1);
+            if (value && revenueValue) {
+                if (revenueValue !== 0) {
+                    rateValue = ((value / revenueValue) * 100).toFixed(1);
+                }
             }
             // quotation value
             let quotationValue = 0;

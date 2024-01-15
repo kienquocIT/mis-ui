@@ -62,8 +62,10 @@ $(function () {
             timePicker: true,
             showDropdowns: false,
             minYear: 1901,
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY'), 10)
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
         });
         $('.daterangepicker').remove();
 

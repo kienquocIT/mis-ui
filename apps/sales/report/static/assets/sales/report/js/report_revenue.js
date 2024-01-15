@@ -12,66 +12,72 @@ $(function () {
         function loadDbl(data) {
             $table.DataTableDefault({
                 data: data ? data : [],
-                columns: [
+                autoWidth: true,
+                scrollX: true,
+                columns: [  // 150,200,150,100,250,400,250,250,250 (2000p)
                     {
                         targets: 0,
-                        class: 'w-5',
+                        width: '7.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 1,
-                        class: 'w-10',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 2,
-                        class: 'w-5',
+                        width: '7.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        class: 'w-10',
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
+                            if (row?.['date_approved']) {
+                                return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
+                            } else {
+                                return `<p></p>`;
+                            }
                         }
                     },
                     {
                         targets: 4,
-                        class: 'w-5',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        class: 'w-20',
+                        width: '20%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 6,
-                        class: 'w-20',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 7,
-                        class: 'w-20',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 8,
-                        class: 'w-20',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -172,7 +178,7 @@ $(function () {
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
                     'data': dataParams,
-                    // 'isDropdown': true,
+                    isLoading: true,
                 }
             ).then(
                 (resp) => {

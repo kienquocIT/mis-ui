@@ -16,14 +16,7 @@
         <div class="px-6 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
-                    <label class="form-label"><span class="badge badge-primary"><i class="fas fa-chart-line"></i>&nbsp;{% trans 'Total pipeline' %}</span></label>
-                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="{% trans 'Reload total pipeline data' %}"
-                            id="reload-total-pipeline-data-btn"
-                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
-                    >
-                        <span class="icon"><i class="fas fa-sync"></i></span>
-                    </button>
+                    <label class="form-label"><span class="badge badge-primary"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Total pipeline' %}</span></label>
                     <div class="row">
                         <div class="col-11">
                             <select class="form-select select2" id="total-pipeline-group"
@@ -68,9 +61,48 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-12 border rounded p-3" id="total_pipeline_chart">
+            <div class="row mt-3 border rounded p-3">
+                <div class="col-12" id="total_pipeline_chart">
                     <div id="total-pipeline-spinner" class="spinner-border" role="status"></div>
+                </div>
+                <div class="col-12" id="top_sale_by_total_pipeline_chart"></div>
+            </div>
+        </div>
+        <div class="px-6 col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label"><span class="badge badge-primary"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Customer activities' %}</span></label>
+                    <div class="row">
+                        <div class="col-5">
+                            <select class="form-select select2" id="customer-activities-month">
+                                <option value="0">{% trans 'All' %}</option>
+                                <option value="1">{% trans 'January' %}</option>
+                                <option value="2">{% trans 'February' %}</option>
+                                <option value="3">{% trans 'March' %}</option>
+                                <option value="4">{% trans 'April' %}</option>
+                                <option value="5">{% trans 'May' %}</option>
+                                <option value="6">{% trans 'June' %}</option>
+                                <option value="7">{% trans 'July' %}</option>
+                                <option value="8">{% trans 'August' %}</option>
+                                <option value="9">{% trans 'September' %}</option>
+                                <option value="10">{% trans 'October' %}</option>
+                                <option value="11">{% trans 'November' %}</option>
+                                <option value="12">{% trans 'December' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-5">
+                            <input type="number" class="form-control" id="customer-activities-year">
+                        </div>
+                        <div class="col-2 text-center">
+                            <button id="previous" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-left-fill"></i></span></button>
+                            <button id="next" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-right-fill"></i></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3 border rounded p-3">
+                <div class="col-12" id="customer_activities_pipeline_chart">
+                    <div id="customer-activities-spinner" class="spinner-border" role="status"></div>
                 </div>
             </div>
         </div>

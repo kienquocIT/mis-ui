@@ -134,7 +134,9 @@ $(function () {
         function setupData(dataList) {
             let result = [];
             let dataGroup = {};
+            let dataGroupTotal = {};
             let dataEmployee = {};
+            let dataEmployeeTotal = {};
             // total
             let totalValue = 0;
             let totalForecastValue = 0;
@@ -161,19 +163,52 @@ $(function () {
                 if (data?.['opportunity']?.['document']) {
                     totalDocument += data?.['opportunity']?.['document'];
                 }
-                // group
+                // group setup
                 if (data?.['group']?.['id']) {
+                    // data group
                     if (!dataGroup.hasOwnProperty(data?.['group']?.['id'])) {
                         dataGroup[data?.['group']?.['id']] = data?.['group'];
                     }
+                    // data group total
+                    if (!dataGroupTotal.hasOwnProperty(data?.['group']?.['id'])) {
+                        dataGroupTotal[data?.['group']?.['id']] = {'value': 0, 'forecast_value': 0}
+                        if (data?.['opportunity']?.['value']) {
+                            dataGroupTotal[data?.['group']?.['id']]['value'] = data?.['opportunity']?.['value'];
+                        }
+                        if (data?.['opportunity']?.['forecast_value']) {
+                            dataGroupTotal[data?.['group']?.['id']]['forecast_value'] = data?.['opportunity']?.['value'];
+                        }
+                    } else {
+                        if (data?.['opportunity']?.['value']) {
+                            dataGroupTotal[data?.['group']?.['id']]['value'] += data?.['opportunity']?.['value'];
+                        }
+                        if (data?.['opportunity']?.['forecast_value']) {
+                            dataGroupTotal[data?.['group']?.['id']]['forecast_value'] += data?.['opportunity']?.['forecast_value'];
+                        }
+                    }
                 }
-                if (!dataEmployee.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                    dataEmployee[data?.['employee_inherit']?.['id']] = data?.['employee_inherit'];
-                }
-                // employee
+                // employee setup
                 if (data?.['employee_inherit']?.['id']) {
+                    // data employee
                     if (!dataEmployee.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
                         dataEmployee[data?.['employee_inherit']?.['id']] = data?.['employee_inherit'];
+                    }
+                    // data employee total
+                    if (!dataEmployeeTotal.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                        dataEmployeeTotal[data?.['employee_inherit']?.['id']] = {'value': 0, 'forecast_value': 0}
+                        if (data?.['opportunity']?.['value']) {
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['value'] = data?.['opportunity']?.['value'];
+                        }
+                        if (data?.['opportunity']?.['forecast_value']) {
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['forecast_value'] = data?.['opportunity']?.['value'];
+                        }
+                    } else {
+                        if (data?.['opportunity']?.['value']) {
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['value'] += data?.['opportunity']?.['value'];
+                        }
+                        if (data?.['opportunity']?.['forecast_value']) {
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['forecast_value'] += data?.['opportunity']?.['forecast_value'];
+                        }
                     }
                 }
             }
@@ -190,10 +225,16 @@ $(function () {
             }
             result.push(dataTotal);  // push data total
             for (let groupKey in dataGroup) {  // push data group
-                result.push({'group': dataGroup[groupKey]});
+                result.push({
+                    'group': dataGroup[groupKey],
+                    'opportunity': {'value': dataGroupTotal?.[groupKey]?.['value'], 'forecast_value': dataGroupTotal?.[groupKey]?.['forecast_value']}
+                });
                 for (let employeeKey in dataEmployee) {  // push data employee
                     if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
-                        result.push({'employee_inherit': dataEmployee[employeeKey]});
+                        result.push({
+                            'employee_inherit': dataEmployee[employeeKey],
+                            'opportunity': {'value': dataEmployeeTotal?.[employeeKey]?.['value'], 'forecast_value': dataEmployeeTotal?.[employeeKey]?.['forecast_value']}
+                        });
                         for (let data of dataList) {  // push data opp
                             if (data?.['employee_inherit']?.['id'] === employeeKey) {
                                 data['group'] = {};

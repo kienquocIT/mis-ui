@@ -2903,38 +2903,37 @@ class QuotationDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row, meta) => {
-                        return `<span class="table-row-order" data-value="${(meta.row + 1)}">${(meta.row + 1)}</span>`
+                        return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="sale_order_indicators_data">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        // return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
-                        return `<span class="table-row-title" data-id="${row.quotation_indicator.id}">${row.quotation_indicator.title}</span>`
+                        return `<span class="table-row-title" data-id="${row.quotation_indicator.id}" data-zone="sale_order_indicators_data">${row.quotation_indicator.title}</span>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row.quotation_indicator_value)}" data-value="${row.quotation_indicator_value}"></span>`
+                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row.quotation_indicator_value)}" data-value="${row.quotation_indicator_value}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}"></span>`
+                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row.difference_indicator_value)}" data-value="${row.difference_indicator_value}"></span>`
+                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row.difference_indicator_value)}" data-value="${row.difference_indicator_value}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-rate" data-value="${row.indicator_rate}">${row.indicator_rate} %</span>`
+                        return `<span class="table-row-rate" data-value="${row.indicator_rate}" data-zone="sale_order_indicators_data">${row.indicator_rate} %</span>`
                     }
                 }
             ],

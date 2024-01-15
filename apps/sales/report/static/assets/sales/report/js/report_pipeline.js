@@ -135,11 +135,22 @@ $(function () {
             let result = [];
             let dataGroup = {};
             let dataGroupTotal = {};
+            let dataGroupWinRate = {};
+            let dataGroupCall = {};
+            let dataGroupEmail = {};
+            let dataGroupMeeting = {};
+            let dataGroupDocument = {};
             let dataEmployee = {};
             let dataEmployeeTotal = {};
+            let dataEmployeeWinRate = {};
+            let dataEmployeeCall = {};
+            let dataEmployeeEmail = {};
+            let dataEmployeeMeeting = {};
+            let dataEmployeeDocument = {};
             // total
             let totalValue = 0;
             let totalForecastValue = 0;
+            let totalWinRate = 0;
             let totalCall = 0;
             let totalEmail = 0;
             let totalMeeting = 0;
@@ -150,6 +161,9 @@ $(function () {
                 }
                 if (data?.['opportunity']?.['forecast_value']) {
                     totalForecastValue += data?.['opportunity']?.['forecast_value'];
+                }
+                if (data?.['opportunity']?.['win_rate']) {
+                    totalWinRate += data?.['opportunity']?.['win_rate'];
                 }
                 if (data?.['opportunity']?.['call']) {
                     totalCall += data?.['opportunity']?.['call'];
@@ -186,6 +200,36 @@ $(function () {
                             dataGroupTotal[data?.['group']?.['id']]['forecast_value'] += data?.['opportunity']?.['forecast_value'];
                         }
                     }
+                    // data group win rate
+                    if (!dataGroupWinRate.hasOwnProperty(data?.['group']?.['id'])) {
+                        dataGroupWinRate[data?.['group']?.['id']] = data?.['opportunity']?.['win_rate'];
+                    } else {
+                        dataGroupWinRate[data?.['group']?.['id']] += data?.['opportunity']?.['win_rate'];
+                    }
+                    // data group call
+                    if (!dataGroupCall.hasOwnProperty(data?.['group']?.['id'])) {
+                        dataGroupCall[data?.['group']?.['id']] = data?.['opportunity']?.['call'];
+                    } else {
+                        dataGroupCall[data?.['group']?.['id']] += data?.['opportunity']?.['call'];
+                    }
+                    // data group email
+                    if (!dataGroupEmail.hasOwnProperty(data?.['group']?.['id'])) {
+                        dataGroupEmail[data?.['group']?.['id']] = data?.['opportunity']?.['email'];
+                    } else {
+                        dataGroupEmail[data?.['group']?.['id']] += data?.['opportunity']?.['email'];
+                    }
+                    // data group meeting
+                    if (!dataGroupMeeting.hasOwnProperty(data?.['group']?.['id'])) {
+                        dataGroupMeeting[data?.['group']?.['id']] = data?.['opportunity']?.['meeting'];
+                    } else {
+                        dataGroupMeeting[data?.['group']?.['id']] += data?.['opportunity']?.['meeting'];
+                    }
+                    // data group document
+                    if (!dataGroupDocument.hasOwnProperty(data?.['group']?.['id'])) {
+                        dataGroupDocument[data?.['group']?.['id']] = data?.['opportunity']?.['document'];
+                    } else {
+                        dataGroupDocument[data?.['group']?.['id']] += data?.['opportunity']?.['document'];
+                    }
                 }
                 // employee setup
                 if (data?.['employee_inherit']?.['id']) {
@@ -210,6 +254,36 @@ $(function () {
                             dataEmployeeTotal[data?.['employee_inherit']?.['id']]['forecast_value'] += data?.['opportunity']?.['forecast_value'];
                         }
                     }
+                    // data employee win rate
+                    if (!dataEmployeeWinRate.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                        dataEmployeeWinRate[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['win_rate'];
+                    } else {
+                        dataEmployeeWinRate[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['win_rate'];
+                    }
+                    // data employee call
+                    if (!dataEmployeeCall.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                        dataEmployeeCall[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['call'];
+                    } else {
+                        dataEmployeeCall[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['call'];
+                    }
+                    // data employee email
+                    if (!dataEmployeeEmail.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                        dataEmployeeEmail[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['email'];
+                    } else {
+                        dataEmployeeEmail[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['email'];
+                    }
+                    // data employee meeting
+                    if (!dataEmployeeMeeting.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                        dataEmployeeMeeting[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['meeting'];
+                    } else {
+                        dataEmployeeMeeting[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['meeting'];
+                    }
+                    // data employee document
+                    if (!dataEmployeeDocument.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                        dataEmployeeDocument[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['document'];
+                    } else {
+                        dataEmployeeDocument[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['document'];
+                    }
                 }
             }
             let dataTotal = {
@@ -222,18 +296,37 @@ $(function () {
                     'document': totalDocument,
                 },
                 'group': {'title': 'Total'},
+                'group_by': 0,
             }
             result.push(dataTotal);  // push data total
             for (let groupKey in dataGroup) {  // push data group
                 result.push({
                     'group': dataGroup[groupKey],
-                    'opportunity': {'value': dataGroupTotal?.[groupKey]?.['value'], 'forecast_value': dataGroupTotal?.[groupKey]?.['forecast_value']}
+                    'opportunity': {
+                        'value': dataGroupTotal?.[groupKey]?.['value'],
+                        'forecast_value': dataGroupTotal?.[groupKey]?.['forecast_value'],
+                        // 'win_rate': dataGroupWinRate?.[groupKey],
+                        'call': dataGroupCall?.[groupKey],
+                        'email': dataGroupEmail?.[groupKey],
+                        'meeting': dataGroupMeeting?.[groupKey],
+                        'document': dataGroupDocument?.[groupKey],
+                    },
+                    'group_by': 1,
                 });
                 for (let employeeKey in dataEmployee) {  // push data employee
                     if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
                         result.push({
                             'employee_inherit': dataEmployee[employeeKey],
-                            'opportunity': {'value': dataEmployeeTotal?.[employeeKey]?.['value'], 'forecast_value': dataEmployeeTotal?.[employeeKey]?.['forecast_value']}
+                            'opportunity': {
+                                'value': dataEmployeeTotal?.[employeeKey]?.['value'],
+                                'forecast_value': dataEmployeeTotal?.[employeeKey]?.['forecast_value'],
+                                // 'win_rate': dataEmployeeWinRate?.[employeeKey],
+                                'call': dataEmployeeCall?.[employeeKey],
+                                'email': dataEmployeeEmail?.[employeeKey],
+                                'meeting': dataEmployeeMeeting?.[employeeKey],
+                                'document': dataEmployeeDocument?.[employeeKey],
+                            },
+                            'group_by': 2
                         });
                         for (let data of dataList) {  // push data opp
                             if (data?.['employee_inherit']?.['id'] === employeeKey) {
@@ -247,6 +340,15 @@ $(function () {
             }
             $table.DataTable().clear().draw();
             $table.DataTable().rows.add(result).draw();
+            // custom total row
+            if ($table.DataTable().data().count() !== 0) {
+                let firstRow = $table.DataTable().row(0).node();
+                // $(firstRow).css('background-color', '#ebfcf5');
+                // $(firstRow).css('color', '#00ab66');
+                $(firstRow).css('background-color', '#ebf5f5');
+                $(firstRow).css('color', '#007D88');
+            }
+
             $.fn.initMaskMoney2();
         }
 

@@ -1496,6 +1496,67 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadCopyData(ele) {
+        let formSubmit = $('#frm_quotation_create');
+        let divCopyOption = $('#copy-quotation-option');
+        let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
+        let tableProduct = $('#datable-quotation-create-product');
+        let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
+        let dataCopyTo = {'id': dataCopy.id, 'option': 'all'};
+        let type = $(ele)[0].getAttribute('data-copy-type');
+        if (divCopyOption[0].querySelector('.check-option').checked === false) { // if option copy is custom then setup data products & costs for load
+            let result = [];
+            let productCopyTo = [];
+            let order = 0;
+            tableCopyQuotationProduct.DataTable().rows().every(function () {
+                let row = this.node();
+                let check = row.querySelector('.table-row-check-product');
+                if (check.checked === true) {
+                    let quantyInput = row.querySelector('.table-row-quantity-input').value;
+                    let prodID = check.getAttribute('data-id');
+                    for (let i = 0; i < dataCopy.quotation_products_data.length; i++) {
+                        let data = dataCopy.quotation_products_data[i];
+                        if (data.product.id === prodID) {
+                            data['product_quantity'] = parseFloat(quantyInput);
+                            order++
+                            data['order'] = order;
+                            result.push(data);
+                            productCopyTo.push({'id': data.product.id, 'quantity': parseFloat(quantyInput)})
+                            break
+                        }
+                    }
+                }
+            });
+            dataCopy['quotation_products_data'] = result;
+            dataCopyTo['option'] = 'custom';
+            dataCopyTo['products'] = productCopyTo;
+            dataCopy['quotation_costs_data'] = [];
+        } else { // if option copy is ALL product
+            dataCopy['quotation_products_data'] = dataCopy.quotation_products_data;
+        }
+        if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
+            // Begin load data copy FROM
+            document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
+            QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+            QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
+            QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+            // Check promotion -> re calculate
+            QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+            // load again table cost
+            QuotationLoadDataHandle.loadDataTableCost();
+            QuotationLoadDataHandle.loadSetWFRuntimeZone();
+            // Set form novalidate
+            formSubmit[0].setAttribute('novalidate', 'novalidate');
+        } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
+            // create URL and add to href
+            let eleRedirect = document.getElementById('link-to-sale-order-create');
+            let urlSaleOrder = eleRedirect.getAttribute('data-url') + "?data_copy_to=" + encodeURIComponent(JSON.stringify(dataCopyTo));
+            eleRedirect.setAttribute('href', urlSaleOrder);
+            // active event on click <a>
+            eleRedirect.click();
+        }
+    };
+
     // Load detail
     static loadDetailQuotation(data, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
@@ -2842,38 +2903,37 @@ class QuotationDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row, meta) => {
-                        return `<span class="table-row-order" data-value="${(meta.row + 1)}">${(meta.row + 1)}</span>`
+                        return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="sale_order_indicators_data">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        // return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
-                        return `<span class="table-row-title" data-id="${row.quotation_indicator.id}">${row.quotation_indicator.title}</span>`
+                        return `<span class="table-row-title" data-id="${row.quotation_indicator.id}" data-zone="sale_order_indicators_data">${row.quotation_indicator.title}</span>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row.quotation_indicator_value)}" data-value="${row.quotation_indicator_value}"></span>`
+                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row.quotation_indicator_value)}" data-value="${row.quotation_indicator_value}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}"></span>`
+                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row.difference_indicator_value)}" data-value="${row.difference_indicator_value}"></span>`
+                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row.difference_indicator_value)}" data-value="${row.difference_indicator_value}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-rate" data-value="${row.indicator_rate}">${row.indicator_rate} %</span>`
+                        return `<span class="table-row-rate" data-value="${row.indicator_rate}" data-zone="sale_order_indicators_data">${row.indicator_rate} %</span>`
                     }
                 }
             ],

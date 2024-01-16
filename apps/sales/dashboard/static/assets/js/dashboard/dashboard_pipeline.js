@@ -881,7 +881,7 @@ $(document).ready(function () {
             `Total (${unitText})`,
             'Forecast value chart'
         )
-        $('#forecast-pipeline-spinner').prop('hidden', true)
+        $('#forecast-spinner').prop('hidden', true)
         forecast_chart_list_DF = new ApexCharts(document.querySelector("#forecast_pipeline_chart"), options);
         forecast_chart_list_DF.render();
     }
@@ -1115,6 +1115,7 @@ $(document).ready(function () {
             0,
             10
         )
+        $('#customer-activities-spinner').prop('hidden', true)
         customer_activities_pipeline_chart_list_DF = new ApexCharts(document.querySelector("#customer_activities_pipeline_chart"), options);
         customer_activities_pipeline_chart_list_DF.render();
     }

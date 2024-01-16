@@ -437,6 +437,9 @@ $(function () {
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
+            if (boxMonth.val()) {
+                dataParams['opportunity__close_date__month'] = boxMonth.val();
+            }
             // let date = $('#report-pipeline-date-approved').val();
             // if (date) {
             //     let dateStrings = date.split(' - ');

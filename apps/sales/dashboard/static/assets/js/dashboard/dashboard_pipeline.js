@@ -528,6 +528,27 @@ $(document).ready(function () {
 
     // Forecast chart
 
+    function LoadForeCastGroup(data) {
+        $('#forecast-group').initSelect2({
+            allowClear: true,
+            ajax: {
+                url: $('#forecast-group').attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp]
+            },
+            data: (data ? data : null),
+            keyResp: 'group_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            UpdateOptionForecastChart(parseInt($('#forecast-type').val()))
+        })
+    }
+
+    LoadForeCastGroup()
+
     let forecast_chart_list_DF = null
 
     function CombineForecastMonthChartData(group_filter, show_billion, titleY = "Month", titleX = 'Total (million)', chart_title='Forecast value chart') {
@@ -546,6 +567,10 @@ $(document).ready(function () {
                 'opp_close_date': item?.['opportunity']?.['close_date'],
                 'forecast_value': item?.['opportunity']?.['forecast_value'],
             })
+        }
+
+        if (group_filter) {
+            data_process = data_process.filter(item => item.group_id === group_filter)
         }
 
         let all_data_year = {}
@@ -699,6 +724,10 @@ $(document).ready(function () {
                 'opp_close_date': item?.['opportunity']?.['close_date'],
                 'forecast_value': item?.['opportunity']?.['forecast_value'],
             })
+        }
+
+        if (group_filter) {
+            data_process = data_process.filter(item => item.group_id === group_filter)
         }
 
         let all_data_year = {}
@@ -858,11 +887,12 @@ $(document).ready(function () {
     }
 
     function UpdateOptionForecastChart(type=0) {
+        let group = $('#forecast-group').val()
         const isBillionChecked = $('#forecast-billion-checkbox').prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         if (type === 0) {
             let options = CombineForecastMonthChartData(
-                null,
+                group,
                 isBillionChecked,
                 'Month',
                 `Total (${unitText})`,
@@ -872,7 +902,7 @@ $(document).ready(function () {
         }
         else {
             let options = CombineForecastQuarterChartData(
-                null,
+                group,
                 isBillionChecked,
                 'Quarter',
                 `Total (${unitText})`,

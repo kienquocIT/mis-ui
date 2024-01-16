@@ -75,13 +75,19 @@
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-blue"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Forecast' %}</span></label>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-5">
+                            <select class="form-select select2" id="forecast-group"
+                                    data-url="{% url 'GroupListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                        <div class="col-3">
                             <select class="form-select select2" id="forecast-type">
                                 <option value="0" selected>{% trans 'Month' %}</option>
                                 <option value="1">{% trans 'Quarter' %}</option>
                             </select>
                         </div>
-                        <div class="col-5">
+                        <div class="col-3">
                             <input type="number" class="form-control" id="forecast-year">
                         </div>
                         <div class="col-1">

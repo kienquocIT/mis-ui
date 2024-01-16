@@ -62,18 +62,72 @@
                 </div>
             </div>
             <div class="row mt-3 border rounded p-3">
-                <div class="col-12" id="total_pipeline_chart">
+                <div class="col-12 mb-3" id="total_pipeline_chart">
                     <div id="total-pipeline-spinner" class="spinner-border" role="status"></div>
                 </div>
                 <div class="col-12" id="top_sale_by_total_pipeline_chart"></div>
+                <div class="col-12 text-right">
+                    <button id="top-previous" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-left-fill"></i></span></button>
+                    <button id="top-next" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-right-fill"></i></span></button>
+                </div>
             </div>
         </div>
         <div class="px-6 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
-                    <label class="form-label"><span class="badge badge-primary"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Customer activities' %}</span></label>
+                    <label class="form-label"><span class="badge badge-blue"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Forecast' %}</span></label>
                     <div class="row">
+                        <div class="col-6">
+                            <select class="form-select select2" id="forecast-type">
+                                <option value="0" selected>{% trans 'Month' %}</option>
+                                <option value="1">{% trans 'Quarter' %}</option>
+                            </select>
+                        </div>
                         <div class="col-5">
+                            <input type="number" class="form-control" id="forecast-year">
+                        </div>
+                        <div class="col-1">
+                            <div class="btn-group">
+                                <div class="dropdown">
+                                    <button class="btn btn-wth-icon" data-bs-toggle="dropdown">
+                                        <span><span class="icon">
+                                            <span class="feather-icon text-secondary"><i class="fas fa-cog"></i></span>
+                                        </span></span>
+                                    </button>
+                                    <div class="dropdown-menu w-300p">
+                                        <div class="form-check">
+                                            <div class="row">
+                                                <div class="col-12 col-md-6 col-lg-6">
+                                                    <div class="form-check form-check-sm">
+                                                        <input checked type="radio" id="forecast-million-checkbox" name="forecast-money-unit-radio" class="form-check-input timechart-forecast">
+                                                        <label class="form-check-label" for="forecast-million-checkbox">{% trans 'Million' %}</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-6 col-lg-6">
+                                                    <div class="form-check form-check-sm">
+                                                        <input type="radio" id="forecast-billion-checkbox" name="forecast-money-unit-radio" class="form-check-input timechart-forecast">
+                                                        <label class="form-check-label" for="forecast-billion-checkbox">{% trans 'Billion' %}</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3 border rounded p-3">
+                <div class="col-12 mb-3" id="forecast_pipeline_chart">
+                    <div id="forecast-pipeline-spinner" class="spinner-border" role="status"></div>
+                </div>
+            </div>
+            <div class="row mt-6">
+                <div class="col-12">
+                    <label class="form-label"><span class="badge badge-pumpkin"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Customer activities' %}</span></label>
+                    <div class="row">
+                        <div class="col-6">
                             <select class="form-select select2" id="customer-activities-month">
                                 <option value="0">{% trans 'All' %}</option>
                                 <option value="1">{% trans 'January' %}</option>
@@ -90,19 +144,17 @@
                                 <option value="12">{% trans 'December' %}</option>
                             </select>
                         </div>
-                        <div class="col-5">
+                        <div class="col-6">
                             <input type="number" class="form-control" id="customer-activities-year">
-                        </div>
-                        <div class="col-2 text-center">
-                            <button id="previous" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-left-fill"></i></span></button>
-                            <button id="next" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-right-fill"></i></span></button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row mt-3 border rounded p-3">
-                <div class="col-12" id="customer_activities_pipeline_chart">
-                    <div id="customer-activities-spinner" class="spinner-border" role="status"></div>
+                <div class="col-12" id="customer_activities_pipeline_chart"></div>
+                <div class="col-12 text-right">
+                    <button id="previous" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-left-fill"></i></span></button>
+                    <button id="next" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-right-fill"></i></span></button>
                 </div>
             </div>
         </div>

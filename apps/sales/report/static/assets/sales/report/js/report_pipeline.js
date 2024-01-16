@@ -55,7 +55,11 @@ $(function () {
                         targets: 5,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['win_rate'] ? row?.['opportunity']?.['win_rate'] : '0'} %</p>`;
+                            if ([0, 1, 2].includes(row?.['group_by'])) {
+                                return `<p></p>`;
+                            } else {
+                                return `<p>${row?.['opportunity']?.['win_rate'] ? row?.['opportunity']?.['win_rate'] : '0'} %</p>`;
+                            }
                         }
                     },
                     {
@@ -416,26 +420,35 @@ $(function () {
             // loadTotal();
         });
 
+        $('input[type=radio].check-period').on('click', function () {
+            for (let ele of this.closest('.area-period-all').querySelectorAll('.area-period-element')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of this.closest('.area-period').querySelectorAll('.area-period-element')) {
+                ele.removeAttribute('disabled');
+            }
+        });
+
         btnView.on('click', function () {
             let dataParams = {};
             if (boxGroup.val()) {
-                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
+                dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
-            let date = $('#report-pipeline-date-approved').val();
-            if (date) {
-                let dateStrings = date.split(' - ');
-                let dateStart = dateStrings[0] + " 00:00:00";
-                let dateEnd = dateStrings[1] + " 23:59:59";
-                dataParams['date_approved__gte'] = moment(dateStart, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
-                dataParams['date_approved__lte'] = moment(dateEnd, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
-            }
+            // let date = $('#report-pipeline-date-approved').val();
+            // if (date) {
+            //     let dateStrings = date.split(' - ');
+            //     let dateStart = dateStrings[0] + " 00:00:00";
+            //     let dateEnd = dateStrings[1] + " 23:59:59";
+            //     dataParams['date_approved__gte'] = moment(dateStart, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
+            //     dataParams['date_approved__lte'] = moment(dateEnd, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
+            // }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
-                    // 'data': dataParams,
+                    'data': dataParams,
                     isLoading: true,
                 }
             ).then(

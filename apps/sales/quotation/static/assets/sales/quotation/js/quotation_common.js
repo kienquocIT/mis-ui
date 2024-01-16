@@ -3824,12 +3824,17 @@ class QuotationSubmitHandle {
             let eleProduct = row.querySelector('.table-row-item');
             let elePromotion = row.querySelector('.table-row-promotion');
             let eleShipping = row.querySelector('.table-row-shipping');
-            if ($(eleProduct).val()) { // PRODUCT
-                let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-                if (dataProduct) {
-                    rowData['product'] = dataProduct?.['id'];
-                    rowData['product_title'] = dataProduct?.['title'];
-                    rowData['product_code'] = dataProduct?.['code'];
+            if (eleProduct) { // PRODUCT
+                if ($(eleProduct).val()) {
+                    let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+                    if (dataProduct) {
+                        rowData['product'] = dataProduct?.['id'];
+                        rowData['product_title'] = dataProduct?.['title'];
+                        rowData['product_code'] = dataProduct?.['code'];
+                    }
+                } else {
+                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-product')}, 'failure');
+                    return false
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
                 if ($(eleUOM).val()) {
@@ -3839,6 +3844,9 @@ class QuotationSubmitHandle {
                         rowData['product_uom_title'] = dataUOM?.['title'];
                         rowData['product_uom_code'] = dataUOM?.['code'];
                     }
+                } else {
+                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-product-uom')}, 'failure');
+                    return false
                 }
                 let eleTax = row.querySelector('.table-row-tax');
                 if ($(eleTax).val()) {
@@ -4156,6 +4164,9 @@ class QuotationSubmitHandle {
                     rowData['expense_code'] = dataExpenseItem?.['code'];
                     rowData['expense_type_title'] = dataExpenseItem?.['title'];
                 }
+            } else {
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-expense')}, 'failure');
+                return false
             }
             if (row?.querySelector('.table-row-expense-title')) {
               rowData['expense_title'] = row.querySelector('.table-row-expense-title').value;
@@ -4178,6 +4189,9 @@ class QuotationSubmitHandle {
                     rowData['product_uom_title'] = dataUOM?.['title'];
                     rowData['product_uom_code'] = dataUOM?.['code'];
                 }
+            } else {
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-expense-uom')}, 'failure');
+                return false
             }
             let eleTax = row.querySelector('.table-row-tax');
             if ($(eleTax).val()) {

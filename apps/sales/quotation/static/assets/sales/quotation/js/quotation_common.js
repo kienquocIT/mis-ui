@@ -1099,9 +1099,7 @@ class QuotationLoadDataHandle {
 
         $.fn.initMaskMoney2();
         // set again WF runtime
-        if (Object.keys(dataDetail).length > 0) {
-            WFRTControl.setWFRuntimeID(dataDetail?.['workflow_runtime_id']);
-        }
+        QuotationLoadDataHandle.loadSetWFRuntimeZone();
     };
 
     static loadReInitDataTableExpense() {
@@ -1222,9 +1220,7 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadDropDowns($table, true);
         $.fn.initMaskMoney2();
         // set again WF runtime
-        if (Object.keys(dataDetail).length > 0) {
-            WFRTControl.setWFRuntimeID(dataDetail?.['workflow_runtime_id']);
-        }
+        QuotationLoadDataHandle.loadSetWFRuntimeZone();
     };
 
     static loadDataTablePaymentStage() {

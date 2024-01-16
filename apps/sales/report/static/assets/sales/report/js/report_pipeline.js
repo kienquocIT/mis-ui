@@ -5,6 +5,7 @@ $(function () {
         let boxEmployee = $('#box-report-pipeline-employee');
         let boxQuarter = $('#box-report-pipeline-quarter');
         let boxMonth = $('#box-report-pipeline-month');
+        let eleAreaPeriodAll = $('#area-period-all');
         let btnView = $('#btn-view');
         let $table = $('#table_report_pipeline_list');
         let dataQuarter = JSON.parse($('#filter_quarter').text());
@@ -388,6 +389,22 @@ $(function () {
             boxMonth.initSelect2({data: data, 'allowClear': true,});
         }
 
+        function getMonthRange(month) {
+            let year = new Date().getFullYear();
+            // Ensure month is within valid range (1 to 12)
+            if (month < 1 || month > 12) {
+                throw new Error('Invalid month');
+            }
+            // Create the first day of the month
+            let startDate = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
+            // Create the last day of the next month, then subtract one millisecond to get the last millisecond of the current month
+            let endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+            // Format the dates
+            let formattedStartDate = startDate.toISOString().slice(0, 19).replace('T', ' ');
+            let formattedEndDate = endDate.toISOString().slice(0, 19).replace('T', ' ');
+            return {startDate: formattedStartDate, endDate: formattedEndDate};
+        }
+
         boxGroup.initSelect2({'allowClear': true,});
         loadBoxEmployee();
         loadBoxQuarter();
@@ -412,12 +429,10 @@ $(function () {
         boxGroup.on('change', function() {
             loadBoxEmployee();
             $table.DataTable().clear().draw();
-            // loadTotal();
         });
 
         boxEmployee.on('change', function() {
             $table.DataTable().clear().draw();
-            // loadTotal();
         });
 
         $('input[type=radio].check-period').on('click', function () {
@@ -437,9 +452,15 @@ $(function () {
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
-            if (boxMonth.val()) {
-                dataParams['opportunity__close_date__month'] = boxMonth.val();
+            let eleCheck = eleAreaPeriodAll[0].querySelector('.check-period:checked');
+            if (eleCheck.classList.contains('check-month')) {
+                if (boxMonth.val()) {
+                    let {startDate, endDate} = getMonthRange(parseInt(boxMonth.val()));
+                    dataParams['opportunity__close_date__gte'] = startDate;
+                    dataParams['opportunity__close_date__lte'] = endDate;
+                }
             }
+
             // let date = $('#report-pipeline-date-approved').val();
             // if (date) {
             //     let dateStrings = date.split(' - ');

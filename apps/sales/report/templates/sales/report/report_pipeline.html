@@ -40,12 +40,12 @@
                 ></select>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-6 area-period-all">
+        <div class="col-12 col-md-6 col-lg-6 area-period-all" id="area-period-all">
             <div class="row mb-2"><p>{% trans 'Select period' %}</p></div>
             <div class="row mb-2 area-period">
                 <div class="col-12 col-md-2 col-lg-2">
                     <div class="form-check mt-1 mr-3">
-                        <input type="radio" id="customRadio1" name="customRadio" class="form-check-input check-period">
+                        <input type="radio" id="customRadio1" name="customRadio" class="form-check-input check-period check-quarter">
                         <label class="form-check-label" for="customRadio1">{% trans 'Quarter' %}</label>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
             <div class="row mb-2 area-period">
                 <div class="col-12 col-md-2 col-lg-2">
                     <div class="form-check mt-1 mr-4">
-                        <input type="radio" id="customRadio2" name="customRadio" class="form-check-input check-period" checked>
+                        <input type="radio" id="customRadio2" name="customRadio" class="form-check-input check-period check-month" checked>
                         <label class="form-check-label" for="customRadio2">{% trans 'Month' %}</label>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
             <div class="row area-period">
                 <div class="col-12 col-md-2 col-lg-2">
                     <div class="form-check mt-1 mr-3">
-                        <input type="radio" id="customRadio3" name="customRadio" class="form-check-input check-period">
+                        <input type="radio" id="customRadio3" name="customRadio" class="form-check-input check-period check-custom">
                         <label class="form-check-label" for="customRadio3">{% trans 'Custom' %}</label>
                     </div>
                 </div>

@@ -1,18 +1,4 @@
 $(document).ready(function () {
-    function InitPeriodsStartDate(year) {
-        $('#periods-start-date').daterangepicker({
-            singleDatePicker: true,
-            timePicker: false,
-            showDropdowns: true,
-            minYear: parseInt(year),
-            maxYear: parseInt(year),
-            cancelClass: "btn-secondary",
-            locale: {
-                format: 'YYYY-MM-DD'
-            }
-        }).val('');
-    }
-
     $('#periods-fiscal-year').on('change', function () {
         if ($(this).val() !== '') {
             $('#periods-start-date').val(`${$(this).val()}-01-01`)
@@ -76,7 +62,9 @@ $(document).ready(function () {
                         data: 'start_date',
                         className: 'wrap-text w-25',
                         render: (data, type, row, meta) => {
-                            return `<span class="initial-wrap">${row.start_date}</span>`
+                            let parsedDate = new Date(row.start_date);
+                            let formattedDate = `${parsedDate.getDate().toString().padStart(2, '0')}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getFullYear()}`;
+                            return `<span class="initial-wrap">${formattedDate}</span>`
                         }
                     },
                     {

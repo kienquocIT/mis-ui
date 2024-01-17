@@ -1748,6 +1748,20 @@ class QuotationLoadDataHandle {
         if (form.classList.contains('sale-order')) {
             tablePaymentStage.DataTable().clear().draw();
             tablePaymentStage.DataTable().rows.add(data?.['sale_order_payment_stage']).draw();
+            tablePaymentStage.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-date')) {
+                    $(row.querySelector('.table-row-date')).daterangepicker({
+                        singleDatePicker: true,
+                        timePicker: true,
+                        showDropdowns: true,
+                        minYear: 2023,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                    });
+                }
+            })
         }
         // load indicators & set attr disabled
         if (is_detail === true) {

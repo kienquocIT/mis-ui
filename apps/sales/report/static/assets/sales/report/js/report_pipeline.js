@@ -490,27 +490,19 @@ $(function () {
             });
         }
 
-        function getMonthRange(month) {
-            if (eleFiscalYear.val()) {
-                let dataFiscalYear = JSON.parse(eleFiscalYear.val());
-                if (dataFiscalYear.length > 0) {
-                    let startDateFY = dataFiscalYear[0]?.['start_date'];
-                    let dateObject = new Date(startDateFY);
-                    let year = dateObject.getFullYear();
-                    // Ensure month is within valid range (1 to 12)
-                    if (month < 1 || month > 12) {
-                        throw new Error('Invalid month');
-                    }
-                    // Create the first day of the month
-                    let startDate = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
-                    // Create the last day of the next month, then subtract one millisecond to get the last millisecond of the current month
-                    let endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
-                    // Format the dates
-                    let formattedStartDate = startDate.toISOString().slice(0, 19).replace('T', ' ');
-                    let formattedEndDate = endDate.toISOString().slice(0, 19).replace('T', ' ');
-                    return {startDate: formattedStartDate, endDate: formattedEndDate};
-                }
+        function getMonthRange(month, year) {
+            // Ensure month is within valid range (1 to 12)
+            if (month < 1 || month > 12) {
+                throw new Error('Invalid month');
             }
+            // Create the first day of the month
+            let startDate = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
+            // Create the last day of the next month, then subtract one millisecond to get the last millisecond of the current month
+            let endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+            // Format the dates
+            let formattedStartDate = startDate.toISOString().slice(0, 19).replace('T', ' ');
+            let formattedEndDate = endDate.toISOString().slice(0, 19).replace('T', ' ');
+            return {startDate: formattedStartDate, endDate: formattedEndDate};
         }
 
         function getQuarterRange(quarter) {
@@ -618,9 +610,12 @@ $(function () {
             }
             if (eleCheck.classList.contains('check-month')) {  // month
                 if (boxMonth.val()) {
-                    let {startDate, endDate} = getMonthRange(parseInt(boxMonth.val()));
-                    dataParams['opportunity__close_date__gte'] = startDate;
-                    dataParams['opportunity__close_date__lte'] = endDate;
+                    let dataMonth = SelectDDControl.get_data_from_idx(boxMonth, boxMonth.val());
+                    if (dataMonth) {
+                        let {startDate, endDate} = getMonthRange(parseInt(boxMonth.val()), parseInt(dataMonth?.['year']));
+                        dataParams['opportunity__close_date__gte'] = startDate;
+                        dataParams['opportunity__close_date__lte'] = endDate;
+                    }
                 }
             }
             if (eleCheck.classList.contains('check-custom')) {  // custom

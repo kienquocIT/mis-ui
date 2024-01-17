@@ -1,12 +1,13 @@
 $(document).ready(function () {
     $('#periods-fiscal-year').on('change', function () {
-        if ($(this).val() !== '') {
-            $('#periods-start-date').val(`${$(this).val()}-01-01`)
-            // $('#periods-start-date').prop('readonly', false)
-            // InitPeriodsStartDate($(this).val())
+        if ($(this).val() !== '' && $('#periods-fiscal-month-start').val() !== '') {
+            $('#periods-start-date').val(`${parseInt($(this).val())}-0${parseInt($('#periods-fiscal-month-start').val())}-01`)
         }
-        else {
-            $('#periods-start-date').prop('readonly', true)
+    })
+
+    $('#periods-fiscal-month-start').on('change', function () {
+        if ($(this).val() !== '' && $('#periods-fiscal-year').val() !== '') {
+            $('#periods-start-date').val(`${parseInt($('#periods-fiscal-year').val())}-0${parseInt($(this).val())}-01`)
         }
     })
 
@@ -70,7 +71,7 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-10 text-center',
                         render: (data, type, row, meta) => {
-                            return `<button data-id="${row.id}" data-title="${row.title}" data-code="${row.code}" data-fiscal-year="${row.fiscal_year}" data-start-date="${row.start_date}"
+                            return `<button data-id="${row.id}" data-title="${row.title}" data-code="${row.code}" data-fiscal-year="${row.fiscal_year}" data-space-month="${row.space_month}" data-start-date="${row.start_date}"
                                             class="btn btn-icon btn-rounded btn-flush-primary edit-periods" type="button" data-bs-toggle="modal" data-bs-target="#modal-periods-update">
                                         <span class="icon"><i class="bi bi-pencil-square"></i></span>
                                     </button>`
@@ -88,12 +89,15 @@ $(document).ready(function () {
         let periods_title = $(this).attr('data-title')
         let periods_code = $(this).attr('data-code')
         let periods_fiscal_year = $(this).attr('data-fiscal-year')
+        let periods_fiscal_month_start = parseInt($(this).attr('data-space-month')) + 1
         let periods_start_date = $(this).attr('data-start-date')
+
 
         $('#form-update-periods-config').attr('data-id', periods_id)
         $('#periods-title-update').val(periods_title)
         $('#periods-code-update').val(periods_code)
         $('#periods-fiscal-year-update').val(periods_fiscal_year)
+        $('#periods-fiscal-month-start-update').val(periods_fiscal_month_start)
         $('#periods-start-date-update').val(periods_start_date)
     })
 

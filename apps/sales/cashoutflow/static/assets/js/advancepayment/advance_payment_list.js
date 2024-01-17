@@ -162,7 +162,7 @@ $(document).ready(function () {
                                 approved_trans = 'Finish'
                                 text_color = 'badge-success'
                             }
-                            else if (row.system_status ===4) {
+                            else if (row.system_status === 4) {
                                 approved_trans = 'Cancel'
                                 text_color = 'badge-danger'
                             }
@@ -173,7 +173,7 @@ $(document).ready(function () {
                         data: '',
                         className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            if (row.system_status !== 3) {
+                            if (row.system_status !== 3 || !row.money_gave) {
                                 return ``;
                             }
                             else {
@@ -204,8 +204,7 @@ $(document).ready(function () {
                                     flag = 2;
                                 }
 
-
-                                return `<div class="dropdown ap-shortcut" data-ap-id="${row.id}" data-sale-code-id="${sale_code_id}" data-sale-code-title="${sale_code_title}" data-sale-code-CODE="${sale_code_CODE}" data-flag="${flag}">
+                                return `<div data-money-gave="${row.money_gave}" class="dropdown ap-shortcut" data-ap-id="${row.id}" data-sale-code-id="${sale_code_id}" data-sale-code-title="${sale_code_title}" data-sale-code-CODE="${sale_code_CODE}" data-flag="${flag}">
                                             <a type="button" data-bs-toggle="dropdown"><i class="fas fa-stream text-primary"></i></a>
                                             <div class="dropdown-menu"></div>
                                         </div>`;

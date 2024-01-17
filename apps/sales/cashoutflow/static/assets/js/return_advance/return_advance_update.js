@@ -28,7 +28,7 @@ $(function () {
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
                 frm.dataForm['system_status'] = 1;
-                frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
+                frm.dataForm['money_received'] = $('#money-received').prop('checked');
                 let tbProduct = $('#dtbProduct');
                 let cost_list = []
                 tbProduct.find('tbody tr').each(function () {
@@ -42,6 +42,8 @@ $(function () {
                 })
                 frm.dataForm['cost'] = cost_list;
                 $('#cost').val(cost_list)
+
+                console.log(frm.dataForm)
                 $.fn.callAjax2({
                     url: frm.getUrlDetail(id),
                     method: frm.dataMethod,

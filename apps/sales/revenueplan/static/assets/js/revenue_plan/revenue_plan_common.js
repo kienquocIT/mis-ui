@@ -13,7 +13,17 @@ if ($('#revenue_plan_config').text() !== '') {
 const QUARTER_1 = ['m1', 'm2', 'm3']
 const QUARTER_2 = ['m4', 'm5', 'm6']
 const QUARTER_3 = ['m7', 'm8', 'm9']
-const QUARTER_4 = ['m10', 'm11', 'm12']
+const trans_script = $('#trans-url')
+
+function getMonthOrder(space_month) {
+    for (let i = 0; i < 12; i++) {
+        let trans_order = i+1+space_month
+        if (trans_order > 12) {
+            trans_order -= 12
+        }
+        $(`#m${i+1}th`).text(trans_script.attr(`data-trans-m${trans_order}th`))
+    }
+}
 
 function getQuarterBelong(value) {
     let quarter_belong = ''
@@ -292,6 +302,11 @@ function LoadPeriod(data) {
         keyResp: 'periods_list',
         keyId: 'id',
         keyText: 'title',
+    }).on('change', function () {
+        let selected_option = SelectDDControl.get_data_from_idx(revenuePlanPeriodEle, revenuePlanPeriodEle.val())
+        if (selected_option) {
+            getMonthOrder(selected_option['space_month'])
+        }
     })
 }
 
@@ -469,6 +484,7 @@ function LoadDetailRevenuePlan(option) {
             if (data) {
                 data = data['revenue_plan_detail'];
                 // console.log(data)
+                getMonthOrder(data?.['period_mapped']?.['space_month'])
 
                 $('#revenue-plan-name').val(data?.['title'])
                 LoadPeriod(data?.['period_mapped'])

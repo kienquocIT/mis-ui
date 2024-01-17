@@ -5822,7 +5822,7 @@ msgstr "Khuyến mãi"
 
 #
 msgid "Data is hidden by workflow config"
-msgstr "Dữ liệu bị ẩn theo cấu hình quy trình"
+msgstr "Dữ liệu bị ẩn theo quy trình"
 
 #
 msgid "Add node"
@@ -5895,3 +5895,51 @@ msgstr "Quý"
 #
 msgid "Whole year"
 msgstr "Cả năm"
+
+#
+msgid "Opp code"
+msgstr "Mã chkd"
+
+#
+msgid "Win"
+msgstr "Thắng"
+
+#
+msgid "Opp value"
+msgstr "Giá trị chkd"
+
+#
+msgid "Forecast value"
+msgstr "Giá trị dự tính"
+
+#
+msgid "Call"
+msgstr "Cuộc gọi"
+
+#
+msgid "Document"
+msgstr "Tài liệu"
+
+#
+msgid "The first quarter"
+msgstr "Quý một"
+
+#
+msgid "The second quarter"
+msgstr "Quý hai"
+
+#
+msgid "The third quarter"
+msgstr "Quý ba"
+
+#
+msgid "The fourth quarter"
+msgstr "Quý bốn"
+
+#
+msgid "Custom"
+msgstr "Tùy chỉnh"
+
+#
+msgid "Pipeline report"
+msgstr "Báo cáo đường dẫn"

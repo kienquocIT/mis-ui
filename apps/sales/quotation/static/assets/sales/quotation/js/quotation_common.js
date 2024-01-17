@@ -1721,10 +1721,12 @@ class QuotationLoadDataHandle {
     };
 
     static loadDataTables(data, is_detail = false) {
+        let form = document.getElementById('frm_quotation_create');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
         let tableIndicator = $('#datable-quotation-create-indicator');
+        let tablePaymentStage = $('#datable-quotation-payment-stage');
         let products_data = data?.['quotation_products_data'];
         let costs_data = data?.['quotation_costs_data'];
         let expenses_data = data?.['quotation_expenses_data'];
@@ -1738,12 +1740,15 @@ class QuotationLoadDataHandle {
         tableProduct.DataTable().clear().draw();
         tableCost.DataTable().clear().draw();
         tableExpense.DataTable().clear().draw();
-        // tableIndicator.DataTable().clear().draw();
 
         tableProduct.DataTable().rows.add(products_data).draw();
         tableCost.DataTable().rows.add(costs_data).draw();
         tableExpense.DataTable().rows.add(expenses_data).draw();
-        // tableIndicator.DataTable().rows.add(indicators_data).draw();
+        // payment stage (sale order)
+        if (form.classList.contains('sale-order')) {
+            tablePaymentStage.DataTable().clear().draw();
+            tablePaymentStage.DataTable().rows.add(data?.['sale_order_payment_stage']).draw();
+        }
         // load indicators & set attr disabled
         if (is_detail === true) {
             // load indicators
@@ -1753,6 +1758,9 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadTableDisabled(tableProduct);
             QuotationLoadDataHandle.loadTableDisabled(tableCost);
             QuotationLoadDataHandle.loadTableDisabled(tableExpense);
+            if (form.classList.contains('sale-order')) {
+                QuotationLoadDataHandle.loadTableDisabled(tablePaymentStage);
+            }
             // mask money
             $.fn.initMaskMoney2();
         }
@@ -1825,6 +1833,15 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.del-row')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-remark')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-date')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-checkbox-invoice')) {
             ele.setAttribute('disabled', 'true');
         }
     };
@@ -2954,10 +2971,10 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    render: (data, type, row) => {
+                    render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let dataStage = JSON.parse($('#payment_term_stage').text());
-                        return `<span class="table-row-stage" data-row="${dataRow}">${dataStage[row?.['stage']][1]}</span>`;
+                        return `<span class="table-row-stage" data-row="${dataRow}" data-stage="${row?.['stage']}" data-order="${(meta.row + 1)}">${dataStage[row?.['stage']][1]}</span>`;
                     }
                 },
                 {
@@ -2969,7 +2986,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${row?.['date'] ? row?.['date'] : ''}">`;
+                        return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date'] ? row?.['date'] : '').format('DD/MM/YYYY')}">`;
                     },
                 },
                 {
@@ -2977,7 +2994,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         let dataDateType = JSON.parse($('#payment_date_type').text());
                         if (row?.['stage'] !== 0) {
-                            return `<span class="table-row-date-type">${dataDateType[row?.['date_type']][1]}</span>`;
+                            return `<span class="table-row-date-type" data-date-type="${row?.['date_type']}">${dataDateType[row?.['date_type']][1]}</span>`;
                         } else {
                             return `<span></span>`;
                         }
@@ -3015,8 +3032,12 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
-                    render: () => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox"></div>`;
+                    render: (data, type, row) => {
+                        if (row?.['is_ar_invoice'] === true) {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
+                        } else {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
+                        }
                     }
                 },
             ],
@@ -4266,6 +4287,65 @@ class QuotationSubmitHandle {
         return result
     }
 
+    static setupDatePaymentStage() {
+        let result = [];
+        let $table = $('#datable-quotation-payment-stage');
+        $table.DataTable().rows().every(function () {
+            let rowData = {};
+            let row = this.node();
+            let eleStage = row.querySelector('.table-row-stage');
+            if (eleStage) {
+                if (eleStage.getAttribute('data-stage')) {
+                    rowData['stage'] = parseInt(eleStage.getAttribute('data-stage'));
+                    rowData['order'] = parseInt(eleStage.getAttribute('data-order'));
+                }
+            }
+            let eleRemark = row.querySelector('.table-row-remark');
+            if (eleRemark) {
+                rowData['remark'] = eleRemark.value;
+            }
+            let eleDate = row.querySelector('.table-row-date');
+            if (eleDate) {
+                if (eleDate.value) {
+                    rowData['date'] = String(moment(eleDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+                }
+                rowData['number_of_day'] = parseInt(eleDate.getAttribute('data-number-of-day'));
+            }
+            let eleDateType = row.querySelector('.table-row-date-type');
+            if (eleDateType) {
+                if (eleDateType.getAttribute('data-date-type')) {
+                    rowData['date_type'] = parseInt(eleDateType.getAttribute('data-date-type'));
+                }
+            }
+            let eleRatio = row.querySelector('.table-row-ratio');
+            if (eleRatio) {
+                if (eleRatio.getAttribute('data-ratio')) {
+                    rowData['payment_ratio'] = parseFloat(eleRatio.getAttribute('data-ratio'));
+                }
+            }
+            let eleValue = row.querySelector('.table-row-value');
+            if (eleValue) {
+                if (eleValue.getAttribute('data-init-money')) {
+                    rowData['value_before_tax'] = parseFloat(eleValue.getAttribute('data-init-money'));
+                }
+            }
+            let eleDueDate = row.querySelector('.table-row-due-date');
+            if (eleDueDate) {
+                if (eleDueDate.innerHTML) {
+                    rowData['due_date'] = String(moment(eleDueDate.innerHTML, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+                }
+            }
+            let eleARInvoice = row.querySelector('.table-row-checkbox-invoice');
+            if (eleARInvoice) {
+                rowData['is_ar_invoice'] = eleARInvoice.checked;
+            }
+            if (rowData.hasOwnProperty('stage')) {
+                result.push(rowData);
+            }
+        });
+        return result;
+    }
+
     static setupDataSubmit(_form, is_sale_order = false) {
         let quotation_products_data = 'quotation_products_data';
         let quotation_costs_data = 'quotation_costs_data';
@@ -4288,7 +4368,7 @@ class QuotationSubmitHandle {
         }
         let dateCreatedVal = $('#quotation-create-date-created').val();
         if (dateCreatedVal) {
-            _form.dataForm['date_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
+            _form.dataForm['date_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss');
         }
         if (is_sale_order === false) {
             _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;
@@ -4407,10 +4487,17 @@ class QuotationSubmitHandle {
                 }
             }
         }
-
+        // indicator
         let quotation_indicators_data_setup = QuotationSubmitHandle.setupDataIndicator();
         if (quotation_indicators_data_setup.length > 0) {
-            _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup
+            _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup;
+        }
+        // payment stage
+        if (is_sale_order === true) {
+            let dataPaymentStage = QuotationSubmitHandle.setupDatePaymentStage();
+            if (dataPaymentStage.length > 0) {
+                _form.dataForm['sale_order_payment_stage'] = dataPaymentStage;
+            }
         }
 
         // ****************************

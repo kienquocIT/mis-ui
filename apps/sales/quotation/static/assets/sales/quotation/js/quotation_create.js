@@ -1024,6 +1024,8 @@ $(function () {
                     'sale_order_expenses_data',
                     // indicator tab
                     'sale_order_indicators_data',
+                    // payment stage tab
+                    'sale_order_payment_stage',
                     // system
                     'system_status',
                 ]

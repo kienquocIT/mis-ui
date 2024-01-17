@@ -226,7 +226,7 @@ $(document).ready(function () {
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp)?.['leave_request_detail']
-            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
+
             $x.fn.renderCodeBreadcrumb(data);
             $('#inputTitle').val(data.title)
             $('#inputRequestDate').val(moment(data.request_date, 'YYYY-MM-DD').format('DD/MM/YYYY'))
@@ -243,6 +243,7 @@ $(document).ready(function () {
             // after load employee inherit load table leave available
             TabAvailable.load_table()
             if (data.system_status >= 2) $('#idxRealAction').remove()
+            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )

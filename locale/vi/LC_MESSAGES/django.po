@@ -5922,19 +5922,19 @@ msgstr "Tài liệu"
 
 #
 msgid "The first quarter"
-msgstr "Quý một"
+msgstr "Quý 1"
 
 #
 msgid "The second quarter"
-msgstr "Quý hai"
+msgstr "Quý 2"
 
 #
 msgid "The third quarter"
-msgstr "Quý ba"
+msgstr "Quý 3"
 
 #
 msgid "The fourth quarter"
-msgstr "Quý bốn"
+msgstr "Quý 4"
 
 #
 msgid "Custom"

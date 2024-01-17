@@ -210,6 +210,9 @@ class QuotationLoadDataHandle {
         let tableProduct = $('#datable-quotation-create-product');
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        // load again payment stage because payment change
+        $('#datable-quotation-payment-stage').DataTable().clear().draw();
+        QuotationLoadDataHandle.loadDataTablePaymentStage();
         if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
@@ -1288,12 +1291,19 @@ class QuotationLoadDataHandle {
                 }
             }
             if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
-                let data = [dataSO, dataContract];
+                let data = [dataSO];
+                if (Object.keys(dataContract).length > 0) {
+                    data.push(dataContract);
+                }
                 for (let deli of dataDelivery) {
-                    data.push(deli);
+                    if (Object.keys(deli).length > 0) {
+                        data.push(deli);
+                    }
                 }
                 for (let acc of dataAcceptance) {
-                    data.push(acc);
+                    if (Object.keys(acc).length > 0) {
+                        data.push(acc);
+                    }
                 }
                 $table.DataTable().clear().draw();
                 $table.DataTable().rows.add(data).draw();
@@ -1853,7 +1863,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50, 250, 100, 100, 150, 300, 200, 100, 200, 50 (1500p)
+            columns: [  // 50, 250, 200, 100, 150, 250, 150, 100, 200, 50 (1500p)
                 {
                     targets: 0,
                     width: '3.33%',
@@ -1927,7 +1937,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '6.66%',
+                    width: '13.33%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -1985,7 +1995,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '20%',
+                    width: '16.66%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
@@ -2015,7 +2025,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '13.33%',
+                    width: '10%',
                     render: (data, type, row) => {
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";

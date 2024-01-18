@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Dashboard Pipeline' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -162,4 +163,5 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'assets/sales/dashboard/dashboard_pipeline.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
 {% endblock %}

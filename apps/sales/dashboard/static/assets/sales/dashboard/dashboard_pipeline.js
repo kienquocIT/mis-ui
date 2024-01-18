@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    $('#modal-dashboard-setting .modal-dialog').draggable({
+        "handle": ".modal-header"
+    });
+
     let scriptUrlEle = $('#script-url')
     const moneyRadioEle = $('.money-radio')
     const billionCheckboxEle = $('#billion-checkbox')

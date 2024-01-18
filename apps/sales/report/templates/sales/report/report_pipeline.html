@@ -86,9 +86,9 @@
                 </div>
                 <div class="col-12 col-md-5 col-lg-5">
                     <div class="d-flex mr-2">
-                        <label class="form-label mt-1 mr-2" for="report-pipeline-date-approved">{% trans 'From' %}</label>
+                        <label class="form-label mt-1 mr-2" for="report-pipeline-date-from">{% trans 'From' %}</label>
                         <div class="input-affix-wrapper">
-                            <input type="text" name="date_from" id="report-pipeline-date-approved"
+                            <input type="text" name="date_from" id="report-pipeline-date-from"
                                    class="form-control date-picker area-period-element" autocomplete="off" disabled>
                             <div class="input-suffix">
                                 <i class="fas fa-calendar-week"></i>
@@ -98,9 +98,9 @@
                 </div>
                 <div class="col-12 col-md-5 col-lg-5">
                     <div class="d-flex">
-                        <label class="form-label mt-1 mr-2" for="report-pipeline-date-approved">{% trans 'To' %}</label>
+                        <label class="form-label mt-1 mr-2" for="report-pipeline-date-to">{% trans 'To' %}</label>
                         <div class="input-affix-wrapper">
-                            <input type="text" name="date_to" id="report-pipeline-date-approved"
+                            <input type="text" name="date_to" id="report-pipeline-date-to"
                                    class="form-control date-picker area-period-element" autocomplete="off" disabled>
                             <div class="input-suffix">
                                 <i class="fas fa-calendar-week"></i>
@@ -129,13 +129,13 @@
         <thead>
         <tr>
             <th>{% trans 'Group' %}</th>
-            <th>{% trans 'Sale person' %}</th>
+            <th>{% trans 'Sale Person' %}</th>
             <th>{% trans 'Opp code' %}</th>
             <th>{% trans 'Customer' %}</th>
             <th>{% trans 'Stage' %}</th>
             <th>% {% trans 'Win' %}</th>
-            <th>{% trans 'Open date' %}</th>
-            <th>{% trans 'Close date' %}</th>
+            <th>{% trans 'Open Date' %}</th>
+            <th>{% trans 'Close Date' %}</th>
             <th>{% trans 'Opp value' %}</th>
             <th>{% trans 'Forecast value' %}</th>
             <th>{% trans 'Call' %}</th>
@@ -149,6 +149,12 @@
     </table>
 {% endblock %}
 {% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="data-fiscal-year"
+            data-url="{% url "PeriodsConfigListAPI" %}"
+            data-method="GET"
+    >
     {{ data.filter_quarter|json_script:'filter_quarter' }}
     {{ data.filter_month|json_script:'filter_month' }}
 {% endblock %}

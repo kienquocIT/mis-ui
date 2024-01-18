@@ -851,12 +851,13 @@ class POLoadDataHandle {
         // init datePicker
         $(newRow.querySelector('.table-row-due-date')).daterangepicker({
             singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
+            timepicker: false,
+            showDropdowns: false,
             minYear: 2023,
             locale: {
                 format: 'DD/MM/YYYY'
             },
+            maxYear: parseInt(moment().format('YYYY'), 10),
         });
         $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
         // init maskMoney
@@ -1778,7 +1779,11 @@ class PODataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}">`;
+                        if (row?.['due_date'] !== '') {
+                            return `<input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">`;
+                        } else {
+                            return `<input type="text" class="form-control table-row-due-date" value="">`;
+                        }
                     }
                 },
             ],

@@ -1313,12 +1313,13 @@ class QuotationLoadDataHandle {
                     if (row.querySelector('.table-row-date')) {
                         $(row.querySelector('.table-row-date')).daterangepicker({
                             singleDatePicker: true,
-                            timePicker: true,
-                            showDropdowns: true,
+                            timepicker: false,
+                            showDropdowns: false,
                             minYear: 2023,
                             locale: {
                                 format: 'DD/MM/YYYY'
                             },
+                            maxYear: parseInt(moment().format('YYYY'), 10),
                         });
                         $(row.querySelector('.table-row-date')).val(null).trigger('change');
                         row.querySelector('.table-row-due-date').innerHTML = '';
@@ -3000,7 +3001,11 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date'] ? row?.['date'] : '').format('DD/MM/YYYY')}">`;
+                        if (row?.['date'] !== '') {
+                            return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">`;
+                        } else {
+                            return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">`;
+                        }
                     },
                 },
                 {

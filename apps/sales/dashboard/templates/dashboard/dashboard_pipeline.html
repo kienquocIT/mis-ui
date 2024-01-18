@@ -12,8 +12,55 @@
     <script id="script-url"
             data-url-pipeline-list="{% url 'ReportPipelineListAPI' %}"
     ></script>
+    <button class="btn btn-icon btn-rounded btn-xs btn-primary btn-floating position-fixed" data-bs-toggle="modal" data-bs-target="#modal-dashboard-setting">
+        <i class="fas fa-cog"></i>
+    </button>
+    <div class="modal fade" id="modal-dashboard-setting" tabindex="-1" role="dialog" aria-labelledby="modal-dashboard-setting" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Dashboard setting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-check-label">{% trans 'Money display' %}</label>
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="million-checkbox" name="money-unit-radio" class="form-check-input money-radio">
+                                            <label class="form-check-label" for="million-checkbox">{% trans 'Million' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="billion-checkbox" name="money-unit-radio" class="form-check-input money-radio">
+                                            <label class="form-check-label" for="billion-checkbox">{% trans 'Billion' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-check-label">{% trans 'Money round' %}</label>
+                                <input id="money-round" type="number" class="form-control" value="1" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row mb-6">
-        <div class="px-6 col-12 col-md-6 col-lg-6">
+        <div class="px-7 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-primary"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Total pipeline' %}</span></label>
@@ -24,37 +71,8 @@
                                     data-method="GET"
                             ></select>
                         </div>
-                        <div class="col-5">
+                        <div class="col-6">
                             <input type="number" id="total-pipeline-year-filter" class="form-control timechart-total-pipeline">
-                        </div>
-                        <div class="col-1">
-                            <div class="btn-group">
-                                <div class="dropdown">
-                                    <button class="btn btn-wth-icon" data-bs-toggle="dropdown">
-                                        <span><span class="icon">
-                                            <span class="feather-icon text-secondary"><i class="fas fa-cog"></i></span>
-                                        </span></span>
-                                    </button>
-                                    <div class="dropdown-menu w-300p">
-                                        <div class="form-check">
-                                            <div class="row">
-                                                <div class="col-12 col-md-6 col-lg-6">
-                                                    <div class="form-check form-check-sm">
-                                                        <input checked type="radio" id="total-pipeline-million-checkbox" name="total-pipeline-money-unit-radio" class="form-check-input timechart-total-pipeline">
-                                                        <label class="form-check-label" for="total-pipeline-million-checkbox">{% trans 'Million' %}</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-6 col-lg-6">
-                                                    <div class="form-check form-check-sm">
-                                                        <input type="radio" id="total-pipeline-billion-checkbox" name="total-pipeline-money-unit-radio" class="form-check-input timechart-total-pipeline">
-                                                        <label class="form-check-label" for="total-pipeline-billion-checkbox">{% trans 'Billion' %}</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -70,7 +88,7 @@
                 </div>
             </div>
         </div>
-        <div class="px-6 col-12 col-md-6 col-lg-6">
+        <div class="px-7 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-blue"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Forecast' %}</span></label>
@@ -81,7 +99,7 @@
                                     data-method="GET"
                             ></select>
                         </div>
-                        <div class="col-3">
+                        <div class="col-4">
                             <select class="form-select select2" id="forecast-type">
                                 <option value="0" selected>{% trans 'Month' %}</option>
                                 <option value="1">{% trans 'Quarter' %}</option>
@@ -89,35 +107,6 @@
                         </div>
                         <div class="col-3">
                             <input type="number" class="form-control" id="forecast-year">
-                        </div>
-                        <div class="col-1">
-                            <div class="btn-group">
-                                <div class="dropdown">
-                                    <button class="btn btn-wth-icon" data-bs-toggle="dropdown">
-                                        <span><span class="icon">
-                                            <span class="feather-icon text-secondary"><i class="fas fa-cog"></i></span>
-                                        </span></span>
-                                    </button>
-                                    <div class="dropdown-menu w-300p">
-                                        <div class="form-check">
-                                            <div class="row">
-                                                <div class="col-12 col-md-6 col-lg-6">
-                                                    <div class="form-check form-check-sm">
-                                                        <input checked type="radio" id="forecast-million-checkbox" name="forecast-money-unit-radio" class="form-check-input timechart-forecast">
-                                                        <label class="form-check-label" for="forecast-million-checkbox">{% trans 'Million' %}</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-6 col-lg-6">
-                                                    <div class="form-check form-check-sm">
-                                                        <input type="radio" id="forecast-billion-checkbox" name="forecast-money-unit-radio" class="form-check-input timechart-forecast">
-                                                        <label class="form-check-label" for="forecast-billion-checkbox">{% trans 'Billion' %}</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

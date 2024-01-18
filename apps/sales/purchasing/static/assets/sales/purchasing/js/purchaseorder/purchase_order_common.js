@@ -836,6 +836,33 @@ class POLoadDataHandle {
         return true
     };
 
+    static loadAddPaymentStage() {
+        let $table = $('#datable-po-payment-stage');
+        let dataAdd = {
+            'remark': '',
+            'payment_ratio': 0,
+            'value_before_tax': 0,
+            'tax': {},
+            'value_after_tax': 0,
+        }
+        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+        // init select2
+        POLoadDataHandle.loadBoxTax($(newRow.querySelector('.table-row-tax')));
+        // init datePicker
+        $(newRow.querySelector('.table-row-due-date')).daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            minYear: 2023,
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+        });
+        $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
+        // init maskMoney
+        $.fn.initMaskMoney2();
+    };
+
     // LOAD DETAIL
     static loadDetailPage(data) {
         $('#data-detail-page').val(JSON.stringify(data));
@@ -1693,6 +1720,71 @@ class PODataTableHandle {
         });
     };
 
+    static dataTablePaymentStage(data) {
+        // init dataTable
+        let $tables = $('#datable-po-payment-stage');
+        $tables.DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row, meta) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<input type="text" class="form-control table-row-remark" data-row="${dataRow}" data-order="${(meta.row + 1)}" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-ratio validated-number" value="${row?.['payment_ratios'] ? row?.['payment_ratios'] : '0'}">
+                                        <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                                    </div>
+                                </div>`
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-value-before-tax" 
+                                    value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
+                                    data-return-type="number"
+                                >`;
+                    },
+                },
+                {
+                    targets: 3,
+                    render: () => {
+                        return `<select 
+                                    class="form-select table-row-tax"
+                                    data-url="${PODataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${PODataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-keyResp="tax_list"
+                                 >
+                                </select>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-value-after-tax" data-init-money="${parseFloat(row?.['value_after_tax'] ? row?.['value_after_tax'] : '0')}"></span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}">`;
+                    }
+                },
+            ],
+        });
+    }
+
 }
 
 // Calculate
@@ -1807,6 +1899,30 @@ class POCalculateHandle {
             self.calculateMain(table, row)
         }
     };
+
+    // payment stage
+    static calculateValueAfterTax(row) {
+        let eleValueBT = row.querySelector('.table-row-value-before-tax');
+        let eleTax = row.querySelector('.table-row-tax');
+        let eleValueAT = row.querySelector('.table-row-value-after-tax');
+        if (eleValueBT && eleTax && eleValueAT) {
+            if ($(eleTax).val()) {
+                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                if (dataTax) {
+                    let valueTax = ($(eleValueBT).valCurrency() * parseFloat(dataTax?.['rate'])) / 100;
+                    let valueAT = $(eleValueBT).valCurrency() + valueTax;
+                    $(eleValueAT).attr('data-init-money', String(valueAT));
+                }
+            } else {
+                let valueAT = $(eleValueBT).valCurrency();
+                $(eleValueAT).attr('data-init-money', String(valueAT));
+            }
+        }
+        // init maskMoney
+        $.fn.initMaskMoney2();
+        return true;
+    }
+
 }
 
 // Validate

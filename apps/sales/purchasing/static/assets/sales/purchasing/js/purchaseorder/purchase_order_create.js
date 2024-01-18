@@ -6,12 +6,14 @@ $(function () {
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
+        let btnAddPayment = $('#btn-add-po-payment-stage');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         // let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
+        let tablePaymentStage = $('#datable-po-payment-stage');
 
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
@@ -23,6 +25,7 @@ $(function () {
             PODataTableHandle.dataTablePurchaseQuotation();
             PODataTableHandle.dataTablePurchaseOrderProductAdd();
             PODataTableHandle.dataTablePurchaseOrderProductRequest();
+            PODataTableHandle.dataTablePaymentStage();
         }
 
         // run datetimepicker
@@ -223,6 +226,15 @@ $(function () {
                 }
             }
             POCalculateHandle.calculateMain(tablePurchaseOrderProductRequest, row);
+        });
+
+        // PAYMENT STAGE
+        btnAddPayment.on('click', function () {
+            POLoadDataHandle.loadAddPaymentStage();
+        });
+
+        tablePaymentStage.on('change', '.table-row-value-before-tax, .table-row-tax', function () {
+           POCalculateHandle.calculateValueAfterTax(this.closest('tr'));
         });
 
 // SUBMIT FORM

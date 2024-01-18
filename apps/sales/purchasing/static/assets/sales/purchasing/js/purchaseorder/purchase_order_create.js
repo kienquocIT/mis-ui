@@ -238,15 +238,15 @@ $(function () {
         });
 
         // COMMON
-        $('input[type=text].valid-number').on('change', function () {
-            let value = this.value;
-            // Replace non-digit characters with an empty string
-            value = value.replace(/[^0-9.]/g, '');
-            // Remove unnecessary zeros from the integer part
-            value = value.replace("-", "").replace(/^0+(?=\d)/, '');
-            // Update value of input
-            this.value = value;
-        });
+        // $('input[type=text].valid-number').on('change', '.valid-number', function () {
+        //     let value = this.value;
+        //     // Replace non-digit characters with an empty string
+        //     value = value.replace(/[^0-9.]/g, '');
+        //     // Remove unnecessary zeros from the integer part
+        //     value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+        //     // Update value of input
+        //     this.value = value;
+        // });
 
 // SUBMIT FORM
         formSubmit.submit(function (e) {

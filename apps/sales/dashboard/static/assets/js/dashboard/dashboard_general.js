@@ -807,8 +807,8 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
                     for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === parseInt($('#profit-year-filter').val())) {
-                            return data?.['revenue_plan_list'][i]?.['company_month_target']
+                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === fiscal_year_Setting) {
+                            return data?.['revenue_plan_list'][i]
                         }
                     }
                 }
@@ -820,7 +820,7 @@ $(document).ready(function () {
 
         Promise.all([company_revenue_plan_list_ajax]).then(
             (results) => {
-                profit_expected_data_DF = results[0];
+                profit_expected_data_DF = results[0]?.['company_month_target'];
                 let group = profitGroupEle.val()
                 let group_title = SelectDDControl.get_data_from_idx(profitGroupEle, profitGroupEle.val())['title']
                 if (!group_title) {

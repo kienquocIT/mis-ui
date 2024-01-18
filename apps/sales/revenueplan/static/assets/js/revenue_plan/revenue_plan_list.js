@@ -59,7 +59,9 @@ $(document).ready(function () {
                         data: 'date_created',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="text-secondary">${row.date_created.split(' ')[0]}</span>`
+                            let parsedDate = new Date(row.date_created.split(' ')[0]);
+                            let formattedDate = `${parsedDate.getDate().toString().padStart(2, '0')}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getFullYear()}`;
+                            return `<span class="text-secondary">${formattedDate}</span>`
                         }
                     },
                     {

@@ -24,6 +24,21 @@
 {% block pageContent %}
     {{ data.revenue_plan_config | json_script:"revenue_plan_config" }}
 
+    <script id="trans-url"
+            data-trans-m1th="{% trans 'January' %}"
+            data-trans-m2th="{% trans 'February' %}"
+            data-trans-m3th="{% trans 'March' %}"
+            data-trans-m4th="{% trans 'April' %}"
+            data-trans-m5th="{% trans 'May' %}"
+            data-trans-m6th="{% trans 'June' %}"
+            data-trans-m7th="{% trans 'July' %}"
+            data-trans-m8th="{% trans 'August' %}"
+            data-trans-m9th="{% trans 'September' %}"
+            data-trans-m10th="{% trans 'October' %}"
+            data-trans-m11th="{% trans 'November' %}"
+            data-trans-m12th="{% trans 'December' %}"
+    ></script>
+
     <form id="form-detail-revenue-plan"
           data-method="PUT"
           data-url-redirect="{% url 'RevenuePlanDetail' '0' %}"
@@ -127,21 +142,21 @@
                         <tr>
                             <td><b>{% trans 'Group' %}</b></td>
                             <td><b>{% trans 'Employee' %}</b></td>
-                            <td class="money-td">{% trans 'January' %}</td>
-                            <td class="money-td">{% trans 'February' %}</td>
-                            <td class="money-td">{% trans 'March' %}</td>
+                            <td class="money-td" id="m1th"></td>
+                            <td class="money-td" id="m2th"></td>
+                            <td class="money-td" id="m3th"></td>
                             <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 1</b></span></td>
-                            <td class="money-td">{% trans 'April' %}</td>
-                            <td class="money-td">{% trans 'May' %}</td>
-                            <td class="money-td">{% trans 'June' %}</td>
+                            <td class="money-td" id="m4th"></td>
+                            <td class="money-td" id="m5th"></td>
+                            <td class="money-td" id="m6th"></td>
                             <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 2</b></span></td>
-                            <td class="money-td">{% trans 'July' %}</td>
-                            <td class="money-td">{% trans 'August' %}</td>
-                            <td class="money-td">{% trans 'September' %}</td>
+                            <td class="money-td" id="m7th"></td>
+                            <td class="money-td" id="m8th"></td>
+                            <td class="money-td" id="m9th"></td>
                             <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 3</b></span></td>
-                            <td class="money-td">{% trans 'October' %}</td>
-                            <td class="money-td">{% trans 'November' %}</td>
-                            <td class="money-td">{% trans 'December' %}</td>
+                            <td class="money-td" id="m10th"></td>
+                            <td class="money-td" id="m11th"></td>
+                            <td class="money-td" id="m12th"></td>
                             <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 4</b></span></td>
                             <td class="money-td"><span class="text-primary"><b>{% trans 'Year' %}</b></span></td>
                         </tr>

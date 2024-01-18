@@ -58,6 +58,7 @@ $(document).ready(function () {
             fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
             space_month_Setting = period_selected_Setting?.['space_month']
             UpdateOptionRevenueChart()
+            UpdateOptionProfitChart()
         })
     }
 

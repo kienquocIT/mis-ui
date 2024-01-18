@@ -4306,7 +4306,7 @@ class QuotationSubmitHandle {
         return result
     }
 
-    static setupDatePaymentStage() {
+    static setupDataPaymentStage() {
         let result = [];
         let $table = $('#datable-quotation-payment-stage');
         $table.DataTable().rows().every(function () {
@@ -4513,7 +4513,7 @@ class QuotationSubmitHandle {
         }
         // payment stage
         if (is_sale_order === true) {
-            let dataPaymentStage = QuotationSubmitHandle.setupDatePaymentStage();
+            let dataPaymentStage = QuotationSubmitHandle.setupDataPaymentStage();
             if (dataPaymentStage.length > 0) {
                 _form.dataForm['sale_order_payment_stage'] = dataPaymentStage;
             }

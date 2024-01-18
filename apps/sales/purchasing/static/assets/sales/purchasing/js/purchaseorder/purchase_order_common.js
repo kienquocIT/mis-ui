@@ -1741,7 +1741,7 @@ class PODataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-ratio validated-number" value="${row?.['payment_ratios'] ? row?.['payment_ratios'] : '0'}">
+                                        <input type="text" class="form-control table-row-ratio valid-number" value="${row?.['payment_ratios'] ? row?.['payment_ratios'] : '0'}">
                                         <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                                     </div>
                                 </div>`
@@ -2117,6 +2117,52 @@ class POSubmitHandle {
         return result
     };
 
+    static setupDataPaymentStage() {
+        let result = [];
+        let $table = $('#datable-po-payment-stage');
+        $table.DataTable().rows().every(function () {
+            let rowData = {};
+            let row = this.node();
+            let eleRemark = row.querySelector('.table-row-remark');
+            if (eleRemark) {
+                rowData['remark'] = eleRemark.value;
+                if (eleRemark.getAttribute('data-order')) {
+                    rowData['order'] = parseInt(eleRemark.getAttribute('data-order'));
+                }
+            }
+            let eleRatio = row.querySelector('.table-row-ratio');
+            if (eleRatio) {
+                rowData['payment_ratio'] = parseFloat(eleRatio.value);
+            }
+            let eleValueBT = row.querySelector('.table-row-before-tax');
+            if (eleValueBT) {
+                if ($(eleValueBT).valCurrency()) {
+                    rowData['value_before_tax'] = parseFloat($(eleValueBT).valCurrency());
+                }
+            }
+            let eleTax = row.querySelector('.table-row-tax');
+            if (eleTax) {
+                if ($(eleTax).val()) {
+                    rowData['tax'] = $(eleTax).val();
+                }
+            }
+            let eleValueAT = row.querySelector('.table-row-after-tax');
+            if (eleValueAT) {
+                if (eleValueAT.getAttribute('data-init-money')) {
+                    rowData['value_after_tax'] = parseFloat(eleValueAT.getAttribute('data-init-money'));
+                }
+            }
+            let eleDueDate = row.querySelector('.table-row-due-date');
+            if (eleDueDate) {
+                if (eleDueDate.value) {
+                    rowData['due_date'] = String(moment(eleDueDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+                }
+            }
+            result.push(rowData);
+        });
+        return result;
+    };
+
     static setupDataSubmit(_form) {
         if (POLoadDataHandle.PRDataEle.val()) {
             _form.dataForm['purchase_requests_data'] = JSON.parse(POLoadDataHandle.PRDataEle.val());
@@ -2124,10 +2170,6 @@ class POSubmitHandle {
         if (POLoadDataHandle.PQDataEle.val()) {
            _form.dataForm['purchase_quotations_data'] = JSON.parse(POLoadDataHandle.PQDataEle.val());
         }
-        // let pr_products_data_setup = POSubmitHandle.setupDataPRProduct();
-        // if (pr_products_data_setup.length > 0) {
-        //     _form.dataForm['purchase_request_products_data'] = pr_products_data_setup;
-        // }
         let dateDeliveredVal = $('#purchase-order-date-delivered').val();
         if (dateDeliveredVal) {
             _form.dataForm['delivered_date'] = moment(dateDeliveredVal,
@@ -2149,6 +2191,12 @@ class POSubmitHandle {
             _form.dataForm['total_product'] = parseFloat($('#purchase-order-product-add-total-raw').val());
             _form.dataForm['total_product_revenue_before_tax'] = parseFloat(POLoadDataHandle.finalRevenueBeforeTaxAdd.value);
         }
+        // payment stage
+        let dataPaymentStage = POSubmitHandle.setupDataPaymentStage();
+        if (dataPaymentStage.length > 0) {
+            _form.dataForm['payment_stage'] = dataPaymentStage;
+        }
+
         // system fields
         if (_form.dataMethod === "POST") {
             _form.dataForm['system_status'] = 1;

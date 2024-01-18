@@ -12,31 +12,50 @@
     <script id="script-url"
             data-url-pipeline-list="{% url 'ReportPipelineListAPI' %}"
     ></script>
-    <div class="dropdown">
-        <button class="btn btn-icon btn-rounded btn-xs btn-secondary btn-floating position-fixed" data-bs-toggle="dropdown">
-            <i class="fas fa-cog"></i>
-        </button>
-        <div class="dropdown-menu w-300p bg-secondary-dark-5">
-            <div class="form-group">
-                <label class="form-check-label text-white">{% trans 'Money display' %}</label>
-                <div class="row mt-2">
-                    <div class="col-6">
-                        <div class="form-check form-check-sm">
-                            <input checked type="radio" id="million-checkbox" name="money-unit-radio" class="form-check-input money-radio">
-                            <label class="form-check-label text-white" for="million-checkbox">{% trans 'Million' %}</label>
+    <button class="btn btn-icon btn-rounded btn-xs btn-primary btn-floating position-fixed" data-bs-toggle="modal" data-bs-target="#modal-dashboard-setting">
+        <i class="fas fa-cog"></i>
+    </button>
+    <div class="modal fade" id="modal-dashboard-setting" tabindex="-1" role="dialog" aria-labelledby="modal-dashboard-setting" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Dashboard setting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-check-label">{% trans 'Money display' %}</label>
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="million-checkbox" name="money-unit-radio" class="form-check-input money-radio">
+                                            <label class="form-check-label" for="million-checkbox">{% trans 'Million' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="billion-checkbox" name="money-unit-radio" class="form-check-input money-radio">
+                                            <label class="form-check-label" for="billion-checkbox">{% trans 'Billion' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-check form-check-sm">
-                            <input type="radio" id="billion-checkbox" name="money-unit-radio" class="form-check-input money-radio">
-                            <label class="form-check-label text-white" for="billion-checkbox">{% trans 'Billion' %}</label>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-check-label">{% trans 'Money round' %}</label>
+                                <input id="money-round" type="number" class="form-control" value="1" min="0">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="form-check-label text-white">{% trans 'Money round' %}</label>
-                <input id="money-round" type="number" class="form-control" value="1" min="0">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
             </div>
         </div>
     </div>

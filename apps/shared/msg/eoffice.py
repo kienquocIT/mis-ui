@@ -27,6 +27,7 @@ class BusinessTripMsg:
 class AssetToolsMsg:
     ASSET_TOOLS = _('Asset, Tools')
     PROVIDE = _('Provide')
+    DELIVERY = _('Delivery')
 
 
 class MeetingScheduleMsg:

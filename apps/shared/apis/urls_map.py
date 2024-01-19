@@ -466,6 +466,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ASSET_TOOLS_CONFIG = StringUrl('asset-tools/config')
     ASSET_TOOLS_PROVIDE = StringUrl('asset-tools/provide')
     ASSET_TOOLS_PROVIDE_DETAIL = StringUrl('asset-tools/provide/detail')
+    ASSET_TOOLS_PRODUCT_LIST_BY_PROVIDE = StringUrl('asset-tools/provide/product-list-by-provide-id')
+    ASSET_TOOLS_DELIVERY = StringUrl('asset-tools/delivery')
+    ASSET_TOOLS_DELIVERY_DETAIL = StringUrl('asset-tools/delivery/detail')
+    ASSET_TOOLS_DELIVERY_PRODUCT_LIST = StringUrl('asset-tools/delivery/product-view-list')
 
     # Revenue plan
     REVENUE_PLAN_LIST = StringUrl('revenue-plans/list')

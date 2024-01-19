@@ -6,8 +6,4 @@ WORKDIR /code
 
 RUN apt-get update && apt-get install -y default-mysql-client curl
 
-COPY req.txt /code/
-
 RUN python -m pip install -r /code/req.txt
-
-COPY . /code/

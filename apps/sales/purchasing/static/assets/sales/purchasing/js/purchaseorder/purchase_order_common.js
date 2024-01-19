@@ -2178,7 +2178,7 @@ class POSubmitHandle {
             if (eleRatio) {
                 rowData['payment_ratio'] = parseFloat(eleRatio.value);
             }
-            let eleValueBT = row.querySelector('.table-row-before-tax');
+            let eleValueBT = row.querySelector('.table-row-value-before-tax');
             if (eleValueBT) {
                 if ($(eleValueBT).valCurrency()) {
                     rowData['value_before_tax'] = parseFloat($(eleValueBT).valCurrency());
@@ -2190,7 +2190,7 @@ class POSubmitHandle {
                     rowData['tax'] = $(eleTax).val();
                 }
             }
-            let eleValueAT = row.querySelector('.table-row-after-tax');
+            let eleValueAT = row.querySelector('.table-row-value-after-tax');
             if (eleValueAT) {
                 if (eleValueAT.getAttribute('data-init-money')) {
                     rowData['value_after_tax'] = parseFloat(eleValueAT.getAttribute('data-init-money'));

@@ -5229,12 +5229,19 @@ var DataTableAction = {
                 value: 'code'
             },
         ];
-        if (format) keyArg = JSON.parse(templateFormat.replace(/'/g, '"'));
+        // if (format) keyArg = JSON.parse(format.replace(/'/g, '"'));
+        if (format) keyArg = format;
 
 
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {
-            if (data.hasOwnProperty(key.value)) htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
+            let value = data[key.value]
+            if (data.hasOwnProperty(key.value)) htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${value}</p></div>`;
+            if (key.value.split('.').length >= 2){
+                value = data[key.value.split('.')[0]]?.[key.value.split('.')[1]]
+                if (data.hasOwnProperty(key.value.split('.')[0]))
+                    htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${value}</p></div>`;
+            }
         }
         if (link) {
             link = link.format_url_with_uuid(data['id']);

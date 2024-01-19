@@ -1,7 +1,7 @@
 __all__ = ['AssetToolsConfigView', 'AssetToolsConfigViewAPI', 'AssetToolsProvideRequestList',
            'AssetToolsProvideRequestListAPI', 'AssetToolsProvideRequestCreate', 'AssetToolsProvideRequestCreateAPI',
            'AssetToolsProvideRequestDetail', 'AssetToolsProvideRequestDetailAPI', 'AssetToolsProvideRequestEdit',
-           'AssetToolsProvideRequestEditAPI'
+           'AssetToolsProvideRequestEditAPI', 'AssetProductListByProvideIDAPI'
            ]
 
 from django.views import View
@@ -172,3 +172,15 @@ class AssetToolsProvideRequestEditAPI(APIView):
             resp.result['message'] = f'{AssetToolsMsg.PROVIDE} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class AssetProductListByProvideIDAPI(APIView):
+    @mask_view(
+        login_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_PRODUCT_LIST_BY_PROVIDE).get(
+            request.query_params.dict()
+        )
+        return resp.auto_return(key_success='asset_provide_product_list')

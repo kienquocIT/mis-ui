@@ -1363,6 +1363,35 @@ class ListeningEventController {
         })
     }
 
+    static listenImageLoad(imgEle = null, add_margin=false){
+        function resolve_title_tooltip(_ele){
+            let parentTxt = '';
+            if ($(_ele).parent().attr('data-toggle') === 'tooltip' || $(_ele).parent().attr('data-bs-toggle') === 'tooltip') {
+                parentTxt = $(_ele).parent().attr('title');
+            }
+            return `${parentTxt ? parentTxt + "." : ""} ${globeFileNotFoundAlt}`
+        }
+
+        (
+            imgEle ? imgEle : $('img')
+        ).each(function (){
+            if ($(this)[0].complete === true && $(this)[0].naturalWidth === 0 && $(this)[0].naturalHeight === 0) {
+                $(this).attr('data-old-src', $(this).attr('src'));
+                $(this).attr('src', globeFileNotFoundImg);
+                $(this).attr('data-toggle', 'tooltip');
+                $(this).attr('title', resolve_title_tooltip($(this)));
+                $(this).tooltip();
+            }
+
+            $(this).on('error', function() {
+                $(this).attr('data-old-src', $(this).attr('src'));
+                $(this).attr('data-toggle', 'tooltip');
+                $(this).attr('title', resolve_title_tooltip($(this)));
+                $(this).attr('src', globeFileNotFoundImg);
+            });
+        })
+    }
+
     // main
     active() {
         this.switchCompany();
@@ -1381,6 +1410,7 @@ class ListeningEventController {
         this.tabHashUrl();  // keep it run after nttDrawer and log
         this.setValidatorDefaults();
         this.dropdownInAccordion();
+        ListeningEventController.listenImageLoad();
     }
 }
 
@@ -3616,6 +3646,11 @@ class DTBControl {
         let initCompleteManual = this.opts?.['initComplete'] || function (settings, json) {
         };
         return function (settings, json) {
+            ListeningEventController.listenImageLoad(
+                $(this.api().table().container()).find('img'),
+                true,
+            );
+
             $(this.api().table().container()).find('input').attr('autocomplete', 'off');
             initCompleteManual.bind(this)(settings, json);
             DTBControl.parseHeaderDropdownFilter.bind(this)(

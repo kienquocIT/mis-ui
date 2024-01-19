@@ -15,7 +15,7 @@ urlpatterns = [
     path('p-503', OutLayoutServerOff.as_view(), name='OutLayoutServerOff'),
     path('404', NotFoundView.as_view(), name='NotFoundView'),
     path('503', ServerMaintainView.as_view(), name='ServerMaintainView'),
-    path('introduce', LandingPageView.as_view(), name='LandingPageView'),
+    # path('introduce', LandingPageView.as_view(), name='LandingPageView'),
     path('terms', TermsAndConditionsView.as_view(), name='TermsAndConditionsView'),
     path('help-and-support', HelpAndSupportView.as_view(), name='HelpAndSupportView'),
 

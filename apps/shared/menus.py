@@ -463,6 +463,12 @@ class MenusReport:
                 view_name='ReportCustomerList',
                 icon='<i class="fas fa-user-tie"></i>',
             ),
+            MenuCommon(
+                name='Cashflow report',
+                code='menu_report_cashflow_list',
+                view_name='ReportCashflowList',
+                icon='<i class="fas fa-comment-dollar"></i>',
+            ),
         ],
     )
     INVENTORY_REPORT = MenuCommon(

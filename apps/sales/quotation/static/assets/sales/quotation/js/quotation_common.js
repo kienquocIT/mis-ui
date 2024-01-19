@@ -3049,9 +3049,15 @@ class QuotationDataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (row?.['date'] !== '') {
-                            return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">`;
+                            return `<div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">
+                                        <div class="input-suffix"><i class="fas fa-calendar-week"></i></div>
+                                    </div>`;
                         } else {
-                            return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">`;
+                            return `<div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">
+                                        <div class="input-suffix"><i class="fas fa-calendar-week"></i></div>
+                                    </div>`;
                         }
                     },
                 },

@@ -1039,7 +1039,24 @@ class POLoadDataHandle {
         tablePaymentStage.DataTable().clear().draw();
         tablePaymentStage.DataTable().rows.add(data?.['purchase_order_payment_stage']).draw();
         POLoadDataHandle.loadTableDropDowns();
-        POLoadDataHandle.loadTableDisabled(tablePaymentStage);
+        if (form.attr('data-method') === 'GET') {
+            POLoadDataHandle.loadTableDisabled(tablePaymentStage);
+        }
+        tablePaymentStage.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-due-date')) {
+                $(row.querySelector('.table-row-due-date')).daterangepicker({
+                    singleDatePicker: true,
+                    timepicker: false,
+                    showDropdowns: false,
+                    minYear: 2023,
+                    locale: {
+                        format: 'DD/MM/YYYY'
+                    },
+                    maxYear: parseInt(moment().format('YYYY'), 10),
+                });
+            }
+        })
         // mask money
         $.fn.initMaskMoney2();
     };

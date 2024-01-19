@@ -1755,12 +1755,13 @@ class QuotationLoadDataHandle {
                 if (row.querySelector('.table-row-date')) {
                     $(row.querySelector('.table-row-date')).daterangepicker({
                         singleDatePicker: true,
-                        timePicker: true,
-                        showDropdowns: true,
+                        timepicker: false,
+                        showDropdowns: false,
                         minYear: 2023,
                         locale: {
                             format: 'DD/MM/YYYY'
                         },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
                     });
                 }
             })

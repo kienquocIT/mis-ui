@@ -63,13 +63,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-6 area-period-all" id="area-period-all">
-            <div class="row mb-2 area-period">
+        <div class="col-12 col-md-6 col-lg-6" id="area-period-all">
+            <div class="row form-group">
                 <div class="col-12 col-md-2 col-lg-2">
-                    <div class="form-check mt-1 mr-3">
-                        <input type="radio" id="customRadio1" name="customRadio" class="form-check-input check-period check-quarter">
-                        <label class="form-check-label" for="customRadio1">{% trans 'Year' %}</label>
-                    </div>
+                    <label class="form-label mt-2" for="box-report-cashflow-year">{% trans 'Year' %}</label>
                 </div>
                 <div class="col-12 col-md-10 col-lg-10">
                     <select
@@ -77,17 +74,13 @@
                             id="box-report-cashflow-year"
                             data-url=""
                             data-method="GET"
-                            name="quarter"
-                            disabled
+                            name="year"
                     ></select>
                 </div>
             </div>
-            <div class="row mb-2 area-period">
+            <div class="row form-group">
                 <div class="col-12 col-md-2 col-lg-2">
-                    <div class="form-check mt-1 mr-4">
-                        <input type="radio" id="customRadio2" name="customRadio" class="form-check-input check-period check-month" checked>
-                        <label class="form-check-label" for="customRadio2">{% trans 'Month' %}</label>
-                    </div>
+                    <label class="form-label mt-2" for="box-report-cashflow-month">{% trans 'Month' %}</label>
                 </div>
                 <div class="col-12 col-md-10 col-lg-10">
                     <select

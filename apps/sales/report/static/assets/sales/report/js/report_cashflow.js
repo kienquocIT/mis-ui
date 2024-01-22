@@ -401,18 +401,25 @@ $(function () {
 
         function getAllMonthsFiscalYear() {
             let months = [];
-            if (eleFiscalYear.val()) {
+            if (boxYear.val() && eleFiscalYear.val()) {
+                let year = boxYear.val();
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
-                    let startDateFY = new Date(dataFiscalYear[0]?.['start_date']);
-                    let currentDate = new Date(startDateFY);
-                    // Loop for 12 months
-                    for (let i = 0; i < 12; i++) {
-                        let formattedMonth = currentDate.toISOString().slice(0, 7);
-                        months.push(formattedMonth);
-                        // Move to the next month
-                        currentDate.setMonth(currentDate.getMonth() + 1);
+                    for (let dataFY of dataFiscalYear) {
+                        if (dataFY?.['fiscal_year'] === parseInt(year)) {
+                            let startDateFY = new Date(dataFY?.['start_date']);
+                            let currentDate = new Date(startDateFY);
+                            // Loop for 12 months
+                            for (let i = 0; i < 12; i++) {
+                                let formattedMonth = currentDate.toISOString().slice(0, 7);
+                                months.push(formattedMonth);
+                                // Move to the next month
+                                currentDate.setMonth(currentDate.getMonth() + 1);
+                            }
+                            break;
+                        }
                     }
+
                 }
             }
             return months;
@@ -484,9 +491,15 @@ $(function () {
                     'id': monthYear?.['month'],
                     'title': dataMonth[monthYear?.['month'] - 1][1],
                     'month': monthYear?.['month'],
-                    'year': monthYear?.['year']
+                    'year': monthYear?.['year'],
                 })
             }
+            data.push({
+                'id': '',
+                'title': 'Select...',
+                'month': 0,
+                'year': 0,
+            })
             boxMonth.empty();
             boxMonth.initSelect2({
                 data: data,
@@ -496,6 +509,28 @@ $(function () {
                     return $(`<span>${state.text} ${groupHTML}</span>`);
                 },
             });
+        }
+
+        function getYearRange() {
+            if (boxYear.val()) {
+                let year = parseInt(boxYear.val());
+                if (!isNaN(year) && Number.isInteger(year)) {
+                    // Create the first day of the year
+                    let startDate = new Date(year, 0, 1, 0, 0, 0, 0);
+                    // Create the last day of the year, then subtract one millisecond to get the last millisecond of the last day
+                    let endDate = new Date(year + 1, 0, 1, 0, 0, 0, 0) - 1;
+                    // Format the dates as 'YYYY-MM-DD HH:mm:ss'
+                    let formattedStartDate = startDate.toISOString().slice(0, 19).replace('T', ' ');
+                    let formattedEndDate = new Date(endDate).toISOString().slice(0, 19).replace('T', ' ');
+
+                    return {startDate: formattedStartDate, endDate: formattedEndDate};
+                } else {
+                    // Handle invalid input
+                    console.error('Invalid year input');
+                    return null;
+                }
+            }
+            return null;
         }
 
         function getMonthRange(month, year) {
@@ -583,13 +618,17 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Events
-        boxGroup.on('change', function() {
+        boxGroup.on('change', function () {
             loadBoxEmployee();
             $table.DataTable().clear().draw();
         });
 
-        boxEmployee.on('change', function() {
+        boxEmployee.on('change', function () {
             $table.DataTable().clear().draw();
+        });
+
+        boxYear.on('change', function () {
+            loadBoxMonth();
         });
 
         $('input[type=radio].check-period').on('click', function () {
@@ -604,48 +643,17 @@ $(function () {
         btnView.on('click', function () {
             let dataParams = {};
             if (boxGroup.val()) {
-                dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
+                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
-            let eleCheck = eleAreaPeriodAll[0].querySelector('.check-period:checked');
-            if (eleCheck.classList.contains('check-quarter')) {  // quarter
-                if (boxQuarter.val()) {
-                    let {startDate, endDate} = getQuarterRange(parseInt(boxQuarter.val()));
-                    dataParams['opportunity__close_date__gte'] = startDate;
-                    dataParams['opportunity__close_date__lte'] = endDate;
-                }
-            }
-            if (eleCheck.classList.contains('check-month')) {  // month
-                if (boxMonth.val()) {
-                    let dataMonth = SelectDDControl.get_data_from_idx(boxMonth, boxMonth.val());
-                    if (dataMonth) {
-                        let {startDate, endDate} = getMonthRange(parseInt(boxMonth.val()), parseInt(dataMonth?.['year']));
-                        dataParams['opportunity__close_date__gte'] = startDate;
-                        dataParams['opportunity__close_date__lte'] = endDate;
-                    }
-                }
-            }
-            if (eleCheck.classList.contains('check-custom')) {  // custom
-                if (boxFrom.val()) {
-                    let startDate = getDateFrom();
-                    dataParams['opportunity__close_date__gte'] = startDate;
-                }
-                if (boxTo.val()) {
-                    let endDate = getDateTo();
-                    dataParams['opportunity__close_date__lte'] = endDate;
-                }
+            if (boxYear.val()) {
+                let {startDate, endDate} = getYearRange(parseInt(boxYear.val()));
+                dataParams['due_date__gte'] = startDate;
+                dataParams['due_date__lte'] = endDate;
             }
 
-            // let date = $('#report-pipeline-date-approved').val();
-            // if (date) {
-            //     let dateStrings = date.split(' - ');
-            //     let dateStart = dateStrings[0] + " 00:00:00";
-            //     let dateEnd = dateStrings[1] + " 23:59:59";
-            //     dataParams['date_approved__gte'] = moment(dateStart, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
-            //     dataParams['date_approved__lte'] = moment(dateEnd, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
-            // }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
@@ -656,8 +664,8 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('report_pipeline_list') && Array.isArray(data.report_pipeline_list)) {
-                            setupData(data.report_pipeline_list);
+                        if (data.hasOwnProperty('report_cashflow_list') && Array.isArray(data.report_cashflow_list)) {
+                            setupData(data.report_cashflow_list);
                         }
                     }
                 }

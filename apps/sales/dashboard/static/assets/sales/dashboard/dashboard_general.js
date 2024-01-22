@@ -69,6 +69,7 @@ $(document).ready(function () {
     let revenue_chart_list_DF = []
     let revenue_chart_DF = null
     let revenue_expected_data_DF = []
+    let revenue_expected_data_detail_DF = []
 
     function LoadRevenueGroup(data) {
         revenueGroupEle.initSelect2({
@@ -115,8 +116,22 @@ $(document).ready(function () {
         }
 
         let revenue_expected_data = []
-        for (let i = 0; i < revenue_expected_data_DF.length; i++) {
-            revenue_expected_data.push(revenue_expected_data_DF[i] / cast_billion)
+        if (group_filter) {
+            let group_found_data = revenue_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
+            if (group_found_data) {
+                let group_expected_data = group_found_data?.['group_month_target']
+                for (let i = 0; i < group_expected_data.length; i++) {
+                    revenue_expected_data.push(group_expected_data[i] / cast_billion)
+                }
+            }
+            else {
+                revenue_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        }
+        else {
+            for (let i = 0; i < revenue_expected_data_DF.length; i++) {
+                revenue_expected_data.push(revenue_expected_data_DF[i] / cast_billion)
+            }
         }
 
         return {
@@ -238,9 +253,24 @@ $(document).ready(function () {
         }
 
         let revenue_expected_data = []
-        for (let i = 0; i < revenue_expected_data_DF.length; i++) {
-            revenue_expected_data.push(revenue_expected_data_DF[i] / cast_billion)
+        if (group_filter) {
+            let group_found_data = revenue_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
+            if (group_found_data) {
+                let group_expected_data = group_found_data?.['group_month_target']
+                for (let i = 0; i < group_expected_data.length; i++) {
+                    revenue_expected_data.push(group_expected_data[i] / cast_billion)
+                }
+            }
+            else {
+                revenue_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }
         }
+        else {
+            for (let i = 0; i < revenue_expected_data_DF.length; i++) {
+                revenue_expected_data.push(revenue_expected_data_DF[i] / cast_billion)
+            }
+        }
+
         for (let i = 0; i < revenue_expected_data.length; i++) {
             let last_sum = 0
             if (i > 0) {
@@ -464,6 +494,7 @@ $(document).ready(function () {
             (results) => {
                 revenue_chart_list_DF = results[0];
                 revenue_expected_data_DF = results[1]?.['company_month_target'];
+                revenue_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
 
                 period_selected_Setting = results[1]?.['period_mapped']
                 fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
@@ -499,6 +530,7 @@ $(document).ready(function () {
     let profit_chart_list_DF = []
     let profit_chart_DF = null
     let profit_expected_data_DF = []
+    let profit_expected_data_detail_DF = []
 
     function LoadProfitGroup(data) {
         profitGroupEle.initSelect2({
@@ -545,15 +577,30 @@ $(document).ready(function () {
         }
 
         let profit_expected_data = []
-        for (let i = 0; i < profit_expected_data_DF.length; i++) {
-            profit_expected_data.push(profit_expected_data_DF[i] / cast_billion)
+        if (group_filter) {
+            let group_found_data = profit_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
+            if (group_found_data) {
+                let group_expected_data = group_found_data?.['group_month_target']
+                for (let i = 0; i < group_expected_data.length; i++) {
+                    profit_expected_data_DF.push(group_expected_data[i] / cast_billion)
+                }
+            }
+            else {
+                profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }
         }
+        else {
+            for (let i = 0; i < profit_expected_data_DF.length; i++) {
+                profit_expected_data.push(profit_expected_data_DF[i] / cast_billion)
+            }
+        }
+
         return {
             series: [
-                {
-                    name: "Expected",
-                    data: profit_expected_data
-                },
+                // {
+                //     name: "Expected",
+                //     data: profit_expected_data
+                // },
                 {
                     name: "Reality",
                     data: profit_chart_data
@@ -574,7 +621,10 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#5a9a9a', '#E92990'],
+            colors: [
+                // '#5a9a9a',
+                '#E92990'
+            ],
             dataLabels: {
                 enabled: false,
             },
@@ -666,9 +716,24 @@ $(document).ready(function () {
         }
 
         let profit_expected_data = []
-        for (let i = 0; i < profit_expected_data_DF.length; i++) {
-            profit_expected_data.push(profit_expected_data_DF[i] / cast_billion)
+        if (group_filter) {
+            let group_found_data = profit_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
+            if (group_found_data) {
+                let group_expected_data = group_found_data?.['group_month_target']
+                for (let i = 0; i < group_expected_data.length; i++) {
+                    profit_expected_data_DF.push(group_expected_data[i] / cast_billion)
+                }
+            }
+            else {
+                profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }
         }
+        else {
+            for (let i = 0; i < profit_expected_data_DF.length; i++) {
+                profit_expected_data.push(profit_expected_data_DF[i] / cast_billion)
+            }
+        }
+
         for (let i = 0; i < profit_expected_data.length; i++) {
             let last_sum = 0
             if (i > 0) {
@@ -678,10 +743,10 @@ $(document).ready(function () {
         }
         return {
             series: [
-                {
-                    name: "Expected",
-                    data: profit_expected_data
-                },
+                // {
+                //     name: "Expected",
+                //     data: profit_expected_data
+                // },
                 {
                     name: "Reality",
                     data: profit_chart_data
@@ -702,7 +767,10 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#5a9a9a', '#E92990'],
+            colors: [
+                // '#5a9a9a',
+                '#E92990'
+            ],
             dataLabels: {
                 enabled: false,
             },
@@ -892,6 +960,7 @@ $(document).ready(function () {
             (results) => {
                 profit_chart_list_DF = results[0];
                 profit_expected_data_DF = results[1]?.['company_month_target'];
+                profit_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
 
                 period_selected_Setting = results[1]?.['period_mapped']
                 fiscal_year_Setting = period_selected_Setting?.['fiscal_year']

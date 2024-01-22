@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'AR Invoice Create' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+        .dropdown-menu { !important;
+            width: max-content;
+            border: solid 1px #d8d8d8;
+        }
+        .table td, .table th {
+            padding: 0.5rem;
+        }
+        #tab_line_detail_datatable input[disabled] {
+            cursor: text;
+        }
+        #tab_line_detail_datatable tbody .dropdown-toggle::after {
+            content: none;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-ar-invoice">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-delivery-list="{% url 'DeliveryListForARInvoiceAPI' %}"
+    >
+    </script>
+    <script id="script-trans"
+            data-trans-delivery-for="{% trans 'Delivery' %}"
+            data-trans-delivery-time="{% trans 'time' %}"
+    >
+    </script>
+    {{ data.data.employee_current | json_script:"employee_current" }}
+    <form id="form-create-ar-invoice" data-url="{% url 'ARInvoiceListAPI' %}" data-method="POST" data-url-redirect="{% url "ARInvoiceList" %}">
+        {% csrf_token %}
+        <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required" for="name">{% trans "Name" %}</label>
+                        <input class="form-control" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="customer-code">{% trans "Customer" %}</label>
+                        <div class="input-group">
+                            <span class="input-affix-wrapper">
+                                <input readonly type="text" placeholder="Click the button to select or enter manually" class="form-control" id="customer-code">
+                            </span>
+                            <button type="button" class="btn btn-light" id="customer-select-btn"
+                                    data-bs-toggle="modal" data-bs-target="#customer-select-modal"
+                            >
+                                <i class="fas fa-grip-horizontal"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="sale-order">{% trans "Sale order" %}</label>
+                        <select class="form-select select2" id="sale-order" data-method="GET" data-url="{% url 'SaleOrderListAPI' %}"></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12 col-lg-4 col-md-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="posting-date">{% trans "Posting date" %}</label>
+                                <input class="form-control" id="posting-date">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-4 col-md-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="document-date">{% trans "Document date" %}</label>
+                                <input class="form-control" id="document-date">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-4 col-md-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="invoice-date">{% trans "Invoice date" %}</label>
+                                <input class="form-control" id="invoice-date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-12 col-md-12">
+                            <div class="form-group">
+                                <label class="form-label required" for="invoice-exp">{% trans "Invoice example" %}</label>
+                                <select class="form-select" id="invoice-exp">
+                                    <option></option>
+                                    <option value="0">01GTKT0/001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn giá trị gia tăng (hoá đơn điện tử)</option>
+                                    <option value="1">01GTKT3/001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn giá trị gia tăng</option>
+                                    <option value="2">02GTTT0/001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn bán hàng (hoá đơn điện tử)</option>
+                                    <option value="3">02GTTT3/001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn bán hàng</option>
+                                    <option value="4">03XKNB3/001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Phiếu xuất kho kiêm vận chuyển hàng hoá nội bộ</option>
+                                    <option value="5">04HGDL3/001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Phiếu xuất kho gửi bán hàng đại lí</option>
+                                    <option value="6">07KPTQ3/001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn bán hàng (dành cho tổ chức, cá nhân trong khu phi thuế quan)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="invoice-sign">{% trans "Invoice sign" %}</label>
+                                <input class="form-control" id="invoice-sign">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="invoice-number">{% trans "Invoice number" %}</label>
+                                <input class="form-control" id="invoice-number">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="customer-select-modal" tabindex="-1" role="dialog" aria-labelledby="customer-select-modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered min-w-1000p" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans 'Select Customer' %}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive" style="max-height: 500px;">
+                                <table class="table nowrap w-100" id="table-select-customer"
+                                   data-method="GET" data-url="{% url 'AccountListAPI' %}"
+                            >
+                                <thead class="bg-primary-light-5">
+                                <tr>
+                                    <td class="w-5"></td>
+                                    <td class="w-25"><b>{% trans 'Customer code' %}</b></td>
+                                    <td class="w-50"><b>{% trans 'Customer name' %}</b></td>
+                                    <td class="w-25"><b>{% trans 'Tax number' %}</b></td>
+                                    <td class="w-5"><b>{% trans 'Select' %}</b></td>
+                                </tr>
+                                </thead>
+                            </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" id="select-customer-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="offcanvas offcanvas-end w-80 mt-9" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
+                <div class="offcanvas-header px-5 py-5">
+                        <h5 id="offcanvasRightLabel">
+                            {% trans 'AR Invoice create' %}&nbsp;
+                            <i class="fas fa-angle-right"></i>&nbsp;
+                            <span class="badge badge-primary">
+                                <span>
+                                    <span class="icon"><span class="feather-icon"><i data-feather="package"></i></span></span>
+                                    {% trans 'Select Delivery' %}
+                                </span>
+                            </span>
+                        </h5>
+{#                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>#}
+                </div>
+                <div class="offcanvas-body px-5 py-5">
+                    <div class="table-responsive" style="max-height: 300px;">
+                        <table class="table w-100 nowrap" id="table-select-delivery">
+                            <thead class="bg-primary-light-5">
+                            <tr>
+                                <td class="w-10"></td>
+                                <td class="w-20">{% trans 'Code' %}</td>
+                                <td class="w-50">{% trans 'Name' %}</td>
+                                <td class="w-10 text-center">{% trans 'Already' %}</td>
+                                <td class="w-10 text-center">{% trans 'Select' %}</td>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <hr class="bg-teal mt-10 mb-10">
+                    <div class="table-responsive" style="max-height: 300px;">
+                        <table class="table w-100 nowrap" id="table-product-detail">
+                            <thead class="bg-secondary-light-5">
+                            <tr>
+                                <td class="w-10"></td>
+                                <td class="w-30">{% trans 'Product' %}</td>
+                                <td class="w-15">{% trans 'UOM' %}</td>
+                                <td class="w-15">{% trans 'Total' %}</td>
+                                <td class="w-15">{% trans 'Already' %}</td>
+                                <td class="w-15">{% trans 'This time' %}</td>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="text-right mt-10">
+                        <button type="button" id="add-product-btn" class="btn btn-custom btn-gradient-primary btn-wth-icon btn-rounded">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+            <span class="icon">
+                <i class="fas fa-angle-double-up text-primary"></i>
+            </span>
+        </button>
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-file-alt"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                    </a>
+                </li>
+            </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_line_detail">
+                        <div class="row" style="position: relative; overflow: auto">
+                            <div class="col-12">
+                                <script id="data-line-detail-table"></script>
+                                <table id="tab_line_detail_datatable" data-delivery-selected="" class="table nowrap w-100"
+                                       data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                                       data-url-tax-list="{% url 'TaxListAPI' %}">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center" style="min-width: 50px"></th>
+                                        <th class="required" style="min-width: 300px">{% trans 'Product' %}</th>
+                                        <th class="required" style="min-width: 200px">{% trans 'UoM' %}</th>
+                                        <th class="required" style="min-width: 200px">{% trans 'Quantity' %}</th>
+                                        <th class="required" style="min-width: 300px">{% trans 'Unit price' %}</th>
+                                        <th style="min-width: 200px">{% trans 'Tax value' %}</th>
+                                        <th class="required" style="min-width: 300px">{% trans 'Subtotal price' %}</th>
+                                        <th style="min-width: 50px"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-7">
+                                <button class="btn btn-outline-primary" type="button" id="btn-add-row-line-detail">
+                                    <span>
+                                        <span class="icon">
+                                            <span class="feather-icon"><i class="far fa-edit"></i></span>
+                                        </span>
+                                        <span>{% trans 'Edit' %} {% trans 'items' %}</span>
+                                    </span>
+                                </button>
+                                <button class="btn btn-outline-secondary" type="button" id="btn-add-row-line-detail-discount">
+                                    <span>
+                                        <span class="icon">
+                                            <span class="feather-icon"><i class="fas fa-gift"></i></span>
+                                        </span>
+                                        <span>{% trans 'Add' %} {% trans 'discount' %}</span>
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="col-4 border text-primary">
+                                <div class="row mt-3">
+                                    <div class="col-4">{% trans "Pretax price" %}</div>
+                                    <span class="col-8 text-right mask-money" id="pretax-value">0</span>
+                                </div>
+                                <div class="row"><i class="bi bi-plus"></i></div>
+                                <div class="row">
+                                    <div class="col-4">{% trans "Taxes" %}</div>
+                                    <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                </div>
+                                <hr class="bg-teal">
+                                <div class="row mb-3 text-danger" style="font-weight: bold">
+                                    <div class="col-4">{% trans "Discount" %}</div>
+                                    <span class="col-8 text-right mask-money" id="discount-all">0</span>
+                                </div>
+                                <div class="row mb-3" style="font-weight: bold">
+                                    <div class="col-4">{% trans "Total" %}</div>
+                                    <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_attachment">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="w-100" id="attachment">
+                                    {% include 'extends/files/all.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static "assets/js/arinvoice/ar_invoice_common.js" %}"></script>
+    <script src="{% static "assets/js/arinvoice/ar_invoice_create.js" %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+{% endblock %}

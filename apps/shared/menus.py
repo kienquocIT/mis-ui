@@ -320,6 +320,10 @@ class MenusCRM:
 
         ],
     )
+    AR_INVOICE = MenuCommon(
+        name='AR Invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
+        icon='<i class="bi bi-receipt"></i>',
+    )
 
     TASK = MenuCommon(
         name='Task', code='menu_opportunity_task', view_name='OpportunityTaskList',
@@ -539,6 +543,7 @@ class SpaceItem:
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
+                MenusCRM.AR_INVOICE
             ],
         ),
         'purchase': SpaceCommon(

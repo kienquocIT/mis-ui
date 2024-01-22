@@ -127,6 +127,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ROLE_DETAIL_PK = StringUrl('hr/role/{pk}')
     ROLE_DETAIL_APP_LIST = StringUrl('hr/role/{pk}/app')
 
+    # comment
+    COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
+
     # base
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')

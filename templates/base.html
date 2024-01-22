@@ -650,6 +650,11 @@
     {% block jsFooter %}{% endblock %}
     <!-- // Customize JS -->
 {% endcompress %}
+    <!-- TinyMCE | Not compress because it depends on load another file -->
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+    <!-- // TinyMCE -->
+
     {% block jsFooterUnCompress %}{% endblock %}
 </body>
 </html>

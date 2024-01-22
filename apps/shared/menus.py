@@ -424,6 +424,10 @@ class MenuEOffice:
                 name='Provide request', code='menu_asset_provide', view_name='AssetToolsProvideRequestList',
                 icon='<i class="fa-solid fa-hand-holding"></i>',
             ),
+            MenuCommon(
+                name='Asset, Tools delivery', code='menu_asset_delivery', view_name='AssetToolsDeliveryList',
+                icon='<i class="fa-solid fa-truck-fast"></i>',
+            ),
         ]
     )
     MEETING = MenuCommon(

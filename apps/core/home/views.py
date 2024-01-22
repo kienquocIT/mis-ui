@@ -36,7 +36,8 @@ class HomeView(View):
                            'employee_current_data': employee_current_data,
                            'app_name_list': AppsCodeToList.get_data()
                        }, status.HTTP_200_OK
-        return redirect(reverse('LandingPageView'))
+        # return redirect(reverse('LandingPageView'))
+        return redirect(reverse('AuthLogin'))
 
 
 class OutLayoutNotFoundView(View):

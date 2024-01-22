@@ -1,13 +1,29 @@
 $(document).ready(function () {
+    $('#modal-dashboard-setting .modal-dialog').draggable({
+        "handle": ".modal-header"
+    });
+
     let scriptUrlEle = $('#script-url')
-    let FROM = 0
-    let TO = 10
+    const moneyRadioEle = $('.money-radio')
+    const billionCheckboxEle = $('#billion-checkbox')
+    const moneyRoundEle = $('#money-round')
+
+    moneyRadioEle.on('change', function () {
+        UpdateOptionTotalPipelineChart()
+        UpdateOptionTopSaleByTotalPipelineChart(TOP_FROM, TOP_TO)
+        UpdateOptionForecastChart(parseInt($('#forecast-type').val()))
+    })
+
+    moneyRoundEle.on('change', function () {
+        UpdateOptionTotalPipelineChart()
+        UpdateOptionTopSaleByTotalPipelineChart(TOP_FROM, TOP_TO)
+        UpdateOptionForecastChart(parseInt($('#forecast-type').val()))
+    })
 
     // Total pipeline chart
 
     const totalPipelineGroupEle = $('#total-pipeline-group')
     const totalPipelineYearFilterEle = $('#total-pipeline-year-filter')
-    const totalPipelineBillionCheckboxEle = $('#total-pipeline-billion-checkbox')
 
     let total_pipeline_chart_list_DF = []
     let total_pipeline_chart_DF = null
@@ -140,7 +156,7 @@ $(document).ready(function () {
                     distributed: true,
                     horizontal: true,
                     dataLabels: {
-                        position: 'center'
+                        position: 'top',
                     }
                 }
             },
@@ -155,7 +171,11 @@ $(document).ready(function () {
                     colors: ['#fff']
                 },
                 formatter: function (val) {
-                    return val
+                    if (val) {
+                        return val.toFixed(parseInt(moneyRoundEle.val()))
+                    } else {
+                        return val
+                    }
                     // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
                 },
                 offsetX: 0,
@@ -173,7 +193,7 @@ $(document).ready(function () {
                     show: true,
                     formatter: function (val) {
                         if (val) {
-                            return val.toFixed(3)
+                            return val.toFixed(parseInt(moneyRoundEle.val()))
                         } else {
                             return val
                         }
@@ -216,7 +236,7 @@ $(document).ready(function () {
 
     function InitOptionTotalPipelineChart() {
         let group = totalPipelineGroupEle.val()
-        const isBillionChecked = totalPipelineBillionCheckboxEle.prop('checked')
+        const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         let options = CombineTotalPipelineChartData(
             group,
@@ -236,7 +256,7 @@ $(document).ready(function () {
         if (!group_title) {
             group_title = 'Company'
         }
-        const isBillionChecked = totalPipelineBillionCheckboxEle.prop('checked')
+        const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         let options = CombineTotalPipelineChartData(
             group,
@@ -394,7 +414,7 @@ $(document).ready(function () {
             series: series_data_DF,
             chart: {
                 type: 'bar',
-                height: 400,
+                height: 500,
                 stacked: true,
                 animations: {
                     enabled: true,
@@ -420,12 +440,13 @@ $(document).ready(function () {
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
+                        position: "top",
                         total: {
                             enabled: true,
                             offsetX: 10,
                             formatter: function (val) {
                                 if (val) {
-                                    return val.toFixed(3)
+                                    return val.toFixed(parseInt(moneyRoundEle.val()))
                                 } else {
                                     return val
                                 }
@@ -434,13 +455,36 @@ $(document).ready(function () {
                     }
                 }
             },
+            dataLabels: {
+                enabled: true,
+                // textAnchor: 'start',
+                style: {
+                    colors: ['#fff']
+                },
+                formatter: function (val) {
+                    if (val) {
+                            return val.toFixed(parseInt(moneyRoundEle.val()))
+                        } else {
+                            return val
+                        }
+                    // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+                },
+                offsetX: 0,
+                dropShadow: {
+                    enabled: false
+                }
+            },
+            stroke: {
+                width: 1,
+                colors: ['#fff']
+            },
             xaxis: {
                 categories: employee_fullname_list_DF,
                 labels: {
                     show: true,
                     formatter: function (val) {
                         if (val) {
-                            return val.toFixed(3)
+                            return val.toFixed(parseInt(moneyRoundEle.val()))
                         } else {
                             return val
                         }
@@ -480,7 +524,7 @@ $(document).ready(function () {
 
     function InitOptionTopSaleByTotalPipelineChart() {
         let group = totalPipelineGroupEle.val()
-        const isBillionChecked = totalPipelineBillionCheckboxEle.prop('checked')
+        const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         ProcessDataTopSale(group, isBillionChecked, 0, 5)
         let options = CombineTopSaleByTotalPipelineChartData(
@@ -499,7 +543,7 @@ $(document).ready(function () {
         if (!group_title) {
             group_title = 'Company'
         }
-        const isBillionChecked = totalPipelineBillionCheckboxEle.prop('checked')
+        const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         ProcessDataTopSale(group, isBillionChecked, from, to)
         let options = CombineTopSaleByTotalPipelineChartData(
@@ -621,7 +665,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 350,
+                height: 450,
                 stacked: true,
                 animations: {
                     enabled: true,
@@ -646,12 +690,13 @@ $(document).ready(function () {
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
+                        position: "top",
                         total: {
                             enabled: true,
                             offsetX: 10,
                             formatter: function (val) {
                                 if (val) {
-                                    return val.toFixed(3)
+                                    return val.toFixed(parseInt(moneyRoundEle.val()))
                                 } else {
                                     return val
                                 }
@@ -659,6 +704,29 @@ $(document).ready(function () {
                         }
                     }
                 }
+            },
+            dataLabels: {
+                enabled: true,
+                // textAnchor: 'start',
+                style: {
+                    colors: ['#fff']
+                },
+                formatter: function (val) {
+                    if (val) {
+                            return val.toFixed(parseInt(moneyRoundEle.val()))
+                        } else {
+                            return val
+                        }
+                    // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+                },
+                offsetX: 0,
+                dropShadow: {
+                    enabled: false
+                }
+            },
+            stroke: {
+                width: 1,
+                colors: ['#fff']
             },
             xaxis: {
                 categories: [
@@ -671,7 +739,7 @@ $(document).ready(function () {
                     show: true,
                     formatter: function (val) {
                         if (val) {
-                            return val.toFixed(3)
+                            return val.toFixed(parseInt(moneyRoundEle.val()))
                         } else {
                             return val
                         }
@@ -770,9 +838,9 @@ $(document).ready(function () {
         let group_3_list_quarter = [];
 
         for (let i = 0; i < group_1_list.length; i += 3) {
-            group_1_list_quarter.push(group_1_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(3));
-            group_2_list_quarter.push(group_2_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(3));
-            group_3_list_quarter.push(group_3_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(3));
+            group_1_list_quarter.push(group_1_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(parseInt(moneyRoundEle.val())));
+            group_2_list_quarter.push(group_2_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(parseInt(moneyRoundEle.val())));
+            group_3_list_quarter.push(group_3_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(parseInt(moneyRoundEle.val())));
         }
 
         return {
@@ -788,7 +856,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 350,
+                height: 450,
                 stacked: true,
                 animations: {
                     enabled: true,
@@ -813,12 +881,13 @@ $(document).ready(function () {
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
+                        position: "top",
                         total: {
                             enabled: true,
                             offsetX: 10,
                             formatter: function (val) {
                                 if (val) {
-                                    return val.toFixed(3)
+                                    return val.toFixed(parseInt(moneyRoundEle.val()))
                                 } else {
                                     return val
                                 }
@@ -827,13 +896,36 @@ $(document).ready(function () {
                     }
                 }
             },
+            dataLabels: {
+                enabled: true,
+                // textAnchor: 'start',
+                style: {
+                    colors: ['#fff']
+                },
+                formatter: function (val) {
+                    if (val) {
+                            return val.toFixed(parseInt(moneyRoundEle.val()))
+                        } else {
+                            return val
+                        }
+                    // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+                },
+                offsetX: 0,
+                dropShadow: {
+                    enabled: false
+                }
+            },
+            stroke: {
+                width: 1,
+                colors: ['#fff']
+            },
             xaxis: {
                 categories: ['1','2','3','4'],
                 labels: {
                     show: true,
                     formatter: function (val) {
                         if (val) {
-                            return val.toFixed(3)
+                            return val.toFixed(parseInt(moneyRoundEle.val()))
                         } else {
                             return val
                         }
@@ -872,7 +964,7 @@ $(document).ready(function () {
     }
 
     function InitOptionForecastChart() {
-        const isBillionChecked = $('#forecast-billion-checkbox').prop('checked')
+        const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         let options = CombineForecastMonthChartData(
             null,
@@ -888,7 +980,7 @@ $(document).ready(function () {
 
     function UpdateOptionForecastChart(type=0) {
         let group = $('#forecast-group').val()
-        const isBillionChecked = $('#forecast-billion-checkbox').prop('checked')
+        const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
         if (type === 0) {
             let options = CombineForecastMonthChartData(
@@ -932,6 +1024,8 @@ $(document).ready(function () {
     let email_chart_data_DF = []
     let meeting_chart_data_DF = []
     let document_chart_data_DF = []
+    let FROM = 0
+    let TO = 10
 
     function ProcessDataCustomerActivities() {
         let activities_data = []
@@ -1056,6 +1150,7 @@ $(document).ready(function () {
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
+                        position: "center",
                         total: {
                             enabled: true,
                             formatter: function (val) {
@@ -1064,6 +1159,10 @@ $(document).ready(function () {
                         }
                     }
                 }
+            },
+            stroke: {
+                width: 1,
+                colors: ['#fff']
             },
             xaxis: {
                 categories: customer_title_chart_data_DF.slice(from, to),

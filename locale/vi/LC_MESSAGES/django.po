@@ -3162,6 +3162,18 @@ msgid "Collapse"
 msgstr "Thu gọn/Mở rộng"
 
 #
+msgid "Collapse All"
+msgstr "Thu gọn tất cả"
+
+#
+msgid "Expand All"
+msgstr "Mở rộng tất cả"
+
+#
+msgid "Showing {} records"
+msgstr "Đang hiển thị {} dữ liệu"
+
+#
 msgid "Sale order config update successfully"
 msgstr "Cập nhật cấu hình đơn hàng thành công"
 

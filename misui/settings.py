@@ -70,6 +70,7 @@ INSTALLED_APPS = \
         'apps.core.workflow',
         'apps.core.process',
         'apps.core.programme',
+        'apps.core.comment',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',

@@ -270,6 +270,8 @@ $(function () {
                 'total_product_tax',
                 'total_product',
                 'total_product_revenue_before_tax',
+                // payment stage tab
+                'purchase_order_payment_stage',
                 // system
                 'system_status',
             ]
@@ -278,7 +280,6 @@ $(function () {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
-            let csr = $("[name=csrfmiddlewaretoken]").val();
             WindowControl.showLoading();
             $.fn.callAjax2(
                 {

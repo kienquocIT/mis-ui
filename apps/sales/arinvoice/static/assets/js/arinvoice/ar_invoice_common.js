@@ -467,7 +467,13 @@ function loadTableSelectCustomer() {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        return resp.data['account_list'] ? resp.data['account_list'] : [];
+                        let res = []
+                        for (let i = 0; i < resp.data['account_list'].length; i++) {
+                            if (resp.data['account_list'][i]['account_type'].some(item => item === "Customer")) {
+                                res.push(resp.data['account_list'][i])
+                            }
+                        }
+                        return res;
                     }
                     return [];
                 },

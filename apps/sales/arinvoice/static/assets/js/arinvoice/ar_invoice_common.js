@@ -352,11 +352,11 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
                 }
             },
             {
-                data: 'product_mapped__title',
+                data: 'product__title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product_mapped']).length !== 0) {
-                        return `<span class="product-id" data-id="${row?.['product_mapped']?.['id']}">${row?.['product_mapped']?.['title']}</span>`
+                    if (Object.keys(row?.['product']).length !== 0) {
+                        return `<span class="product-id" data-id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</span>`
                     }
                     else {
                         return `<input class="discount-name form-control" value="${row?.['discount_name']}">`
@@ -364,11 +364,11 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
                 }
             },
             {
-                data: 'product_mapped_uom__title',
+                data: 'product_uom__title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product_mapped']).length !== 0) {
-                        return `<span class="uom-id" data-id="${row?.['product_mapped_uom']?.['id']}">${row?.['product_mapped_uom']?.['title']}</span>`
+                    if (Object.keys(row?.['product']).length !== 0) {
+                        return `<span class="uom-id" data-id="${row?.['product_uom']?.['id']}">${row?.['product_uom']?.['title']}</span>`
                     }
                     else {
                         return `<input class="discount-uom form-control" value="${row?.['discount_uom']}">`
@@ -376,11 +376,11 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
                 }
             },
             {
-                data: 'product_mapped_quantity',
+                data: 'product_quantity',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product_mapped']).length !== 0) {
-                        return `<span class="picked_quantity">${row?.['product_mapped_quantity']}</span>`
+                    if (Object.keys(row?.['product']).length !== 0) {
+                        return `<span class="picked_quantity">${row?.['product_quantity']}</span>`
                     }
                     else {
                         return `<input type="number" class="discount-quantity form-control" value="${row?.['discount_quantity']}">`
@@ -388,11 +388,11 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
                 }
             },
             {
-                data: 'product_mapped_unit_price',
+                data: 'product_unit_price',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product_mapped']).length !== 0) {
-                        return `<input class="product_unit_price mask-money form-control" value="${row?.['product_mapped_unit_price']}">`
+                    if (Object.keys(row?.['product']).length !== 0) {
+                        return `<input class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
                     }
                     else {
                         return `<input class="discount-unit-price mask-money form-control"  value="${row?.['discount_unit_price']}">`
@@ -400,11 +400,11 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
                 }
             },
             {
-                data: 'product_mapped_tax_value',
+                data: 'product_tax_value',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product_mapped']).length !== 0) {
-                        return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_mapped_tax_value']}"></span>`
+                    if (Object.keys(row?.['product']).length !== 0) {
+                        return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_tax_value']}"></span>`
                     }
                     else {
                         return `<span class="mask-money text-danger" data-init-money="0"></span>`
@@ -412,11 +412,11 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
                 }
             },
             {
-                data: 'product_mapped_subtotal',
+                data: 'product_subtotal',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product_mapped']).length !== 0) {
-                        return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_mapped_subtotal']}"></span>`
+                    if (Object.keys(row?.['product']).length !== 0) {
+                        return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal']}"></span>`
                     }
                     else {
                         return `<span class="discount-subtotal-price mask-money text-danger" data-init-money="${row?.['discount_subtotal']}"></span>`
@@ -425,7 +425,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
             },
             {
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product_mapped']).length !== 0) {
+                    if (Object.keys(row?.['product']).length !== 0) {
                         return ``
                     }
                     else {
@@ -666,12 +666,12 @@ class ARInvoiceHandle {
             if ($(this).find('.product-id').length > 0) {
                 frm.dataForm['data_item_list'].push({
                     'item_index': $(this).find('td:first-child').text(),
-                    'product_mapped_id': $(this).find('.product-id').attr('data-id'),
-                    'product_mapped_uom_id': $(this).find('.uom-id').attr('data-id'),
-                    'product_mapped_quantity': $(this).find('.picked_quantity').text(),
-                    'product_mapped_unit_price': $(this).find('.product_unit_price').attr('value'),
-                    'product_mapped_tax_value': $(this).find('.product_taxes').attr('data-init-money'),
-                    'product_mapped_subtotal': $(this).find('.product_subtotal_price').attr('data-init-money'),
+                    'product_id': $(this).find('.product-id').attr('data-id'),
+                    'product_uom_id': $(this).find('.uom-id').attr('data-id'),
+                    'product_quantity': $(this).find('.picked_quantity').text(),
+                    'product_unit_price': $(this).find('.product_unit_price').attr('value'),
+                    'product_tax_value': $(this).find('.product_taxes').attr('data-init-money'),
+                    'product_subtotal': $(this).find('.product_subtotal_price').attr('data-init-money'),
                 })
             }
             else {
@@ -727,7 +727,7 @@ function LoadDetailARInvoice(option) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['ar_invoice_detail'];
-                // console.log(data)
+                console.log(data)
                 $x.fn.renderCodeBreadcrumb(data);
 
                 $('#name').val(data?.['title'])
@@ -746,6 +746,11 @@ function LoadDetailARInvoice(option) {
                 loadTableLineDetailForDetailPage(data?.['item_and_discount_mapped'].sort((a, b) => a.item_index - b.item_index), option)
 
                 Disabled(option)
+
+                new $x.cls.file($('#attachment')).init({
+                    enable_edit: option !== 'detail',
+                    data: data.attachment,
+                })
 
                 $.fn.initMaskMoney2();
             }

@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+
     new ARInvoiceHandle().load();
 
     $('#form-create-ar-invoice').submit(function (event) {

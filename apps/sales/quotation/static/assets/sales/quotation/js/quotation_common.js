@@ -1748,23 +1748,25 @@ class QuotationLoadDataHandle {
         tableExpense.DataTable().rows.add(expenses_data).draw();
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {
-            tablePaymentStage.DataTable().clear().draw();
-            tablePaymentStage.DataTable().rows.add(data?.['sale_order_payment_stage']).draw();
-            tablePaymentStage.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-date')) {
-                    $(row.querySelector('.table-row-date')).daterangepicker({
-                        singleDatePicker: true,
-                        timepicker: false,
-                        showDropdowns: false,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                        maxYear: parseInt(moment().format('YYYY'), 10),
-                    });
-                }
-            })
+            if (data?.['sale_order_payment_stage']) {
+                tablePaymentStage.DataTable().clear().draw();
+                tablePaymentStage.DataTable().rows.add(data?.['sale_order_payment_stage']).draw();
+                tablePaymentStage.DataTable().rows().every(function () {
+                    let row = this.node();
+                    if (row.querySelector('.table-row-date')) {
+                        $(row.querySelector('.table-row-date')).daterangepicker({
+                            singleDatePicker: true,
+                            timepicker: false,
+                            showDropdowns: false,
+                            minYear: 2023,
+                            locale: {
+                                format: 'DD/MM/YYYY'
+                            },
+                            maxYear: parseInt(moment().format('YYYY'), 10),
+                        });
+                    }
+                })
+            }
         }
         // load indicators & set attr disabled
         if (is_detail === true) {
@@ -4629,7 +4631,16 @@ function filterDataProductNotPromotion(data_products) {
     let order = 0;
     for (let i = 0; i < data_products.length; i++) {
         let dataProd = data_products[i];
-        if (dataProd?.['is_promotion'] === false && dataProd?.['is_shipping'] === false) {
+        let itemType = 0  // product
+        if (dataProd.hasOwnProperty('product') && dataProd.hasOwnProperty('promotion') && dataProd.hasOwnProperty('shipping')) {
+            if (Object.keys(dataProd['promotion']).length > 0) {
+                itemType = 1  // promotion
+            }
+            if (Object.keys(dataProd['shipping']).length > 0) {
+                itemType = 2  // shipping
+            }
+        }
+        if (itemType === 0) {
             order++;
             dataProd['order'] = order;
             finalList.push(dataProd)

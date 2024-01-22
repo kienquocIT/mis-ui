@@ -3,7 +3,7 @@ from django.urls import path
 from apps.sales.report.views import (
     ReportRevenueList, ReportRevenueListAPI, ReportProductList, ReportProductListAPI,
     ReportCustomerList, ReportCustomerListAPI,
-    ItemsDetailReportList, ReportPipelineList, ReportPipelineListAPI, ReportCashflowList
+    ItemsDetailReportList, ReportPipelineList, ReportPipelineListAPI, ReportCashflowList, ReportCashflowListAPI
 )
 
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
     path('pipeline', ReportPipelineList.as_view(), name='ReportPipelineList'),
     path('api/pipeline', ReportPipelineListAPI.as_view(), name='ReportPipelineListAPI'),
     path('cashflow', ReportCashflowList.as_view(), name='ReportCashflowList'),
+    path('api/cashflow', ReportCashflowListAPI.as_view(), name='ReportCashflowListAPI'),
 
     path('items-detail', ItemsDetailReportList.as_view(), name='ItemsDetailReportList'),
 ]

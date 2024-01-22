@@ -380,21 +380,18 @@ $(function () {
             )
         }
 
-        function getFiscalYearEndDate() {
+        function getFiscalYearEndDate(startDate) {
             let endDateFY = '';
-            if (eleFiscalYear.val()) {
-                let dataFiscalYear = JSON.parse(eleFiscalYear.val());
-                if (dataFiscalYear.length > 0) {
-                    let startDateFY = new Date(dataFiscalYear[0]?.['start_date']);
-                    let endDateFY = new Date(startDateFY);
-                    // Add 12 months to the start date
-                    endDateFY.setMonth(startDateFY.getMonth() + 12);
-                    // Subtract 1 day to get the last day of the fiscal year
-                    endDateFY.setDate(endDateFY.getDate() - 1);
-                    // Format the end date as 'YYYY-MM-DD'
-                    endDateFY = endDateFY.toISOString().slice(0, 10);
-                    return endDateFY;
-                }
+            if (startDate) {
+                let startDateFY = new Date(startDate);
+                endDateFY = new Date(startDateFY);
+                // Add 12 months to the start date
+                endDateFY.setMonth(startDateFY.getMonth() + 12);
+                // Subtract 1 day to get the last day of the fiscal year
+                endDateFY.setDate(endDateFY.getDate() - 1);
+                // Format the end date as 'YYYY-MM-DD'
+                endDateFY = endDateFY.toISOString().slice(0, 10);
+                return endDateFY;
             }
             return endDateFY;
         }
@@ -438,92 +435,23 @@ $(function () {
             return result;
         }
 
-        function loadBoxEmployee() {
-            boxEmployee.empty();
-            if (boxGroup.val()) {
-                boxEmployee.initSelect2({
-                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
-                    'allowClear': true,
-                });
-            } else {
-                boxEmployee.initSelect2({
-                    'allowClear': true,
-                });
+        function formatStartEndDate(startDate, endDate) {
+            if (startDate && endDate) {
+                startDate = startDate + ' 00:00:00';
+                endDate = endDate + ' 23:59:59';
+                return {startDate, endDate};
             }
-        }
-
-        function loadBoxSO() {
-            boxSO.empty();
-            if (boxGroup.val()) {
-                boxSO.initSelect2({
-                    'dataParams': {'employee_inherit__group_id__in': boxGroup.val().join(',')},
-                    'allowClear': true,
-                });
-            } else {
-                boxSO.initSelect2({
-                    'allowClear': true,
-                });
-            }
-        }
-
-        function loadBoxYear() {
-            if (eleFiscalYear.val()) {
-                let data = [];
-                let dataFiscalYear = JSON.parse(eleFiscalYear.val());
-                if (dataFiscalYear.length > 0) {
-                    for (let fiscalYear of dataFiscalYear) {
-                        data.push({'id': String(fiscalYear?.['fiscal_year']), 'title': String(fiscalYear?.['fiscal_year'])})
-                    }
-                    boxYear.empty();
-                    boxYear.initSelect2({
-                        data: data,
-                        'allowClear': true,
-                    });
-                }
-            }
-        }
-
-        function loadBoxMonth() {
-            let data = [];
-            let dataMonths = parseMonthJSON();
-            for (let monthYear of dataMonths) {
-                data.push({
-                    'id': monthYear?.['month'],
-                    'title': dataMonth[monthYear?.['month'] - 1][1],
-                    'month': monthYear?.['month'],
-                    'year': monthYear?.['year'],
-                })
-            }
-            data.push({
-                'id': '',
-                'title': 'Select...',
-                'month': 0,
-                'year': 0,
-            })
-            boxMonth.empty();
-            boxMonth.initSelect2({
-                data: data,
-                'allowClear': true,
-                templateResult: function (state) {
-                    let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                    return $(`<span>${state.text} ${groupHTML}</span>`);
-                },
-            });
+            return {startDate: '', endDate: ''};
         }
 
         function getYearRange() {
             if (boxYear.val()) {
-                let year = parseInt(boxYear.val());
-                if (!isNaN(year) && Number.isInteger(year)) {
-                    // Create the first day of the year
-                    let startDate = new Date(year, 0, 1, 0, 0, 0, 0);
-                    // Create the last day of the year, then subtract one millisecond to get the last millisecond of the last day
-                    let endDate = new Date(year + 1, 0, 1, 0, 0, 0, 0) - 1;
-                    // Format the dates as 'YYYY-MM-DD HH:mm:ss'
-                    let formattedStartDate = startDate.toISOString().slice(0, 19).replace('T', ' ');
-                    let formattedEndDate = new Date(endDate).toISOString().slice(0, 19).replace('T', ' ');
-
-                    return {startDate: formattedStartDate, endDate: formattedEndDate};
+                let dataYear = SelectDDControl.get_data_from_idx(boxYear, boxYear.val());
+                if (dataYear) {
+                    let startDate = dataYear?.['start_date'];
+                    let endDate = getFiscalYearEndDate(startDate);
+                    let datesFormat = formatStartEndDate(startDate, endDate);
+                    return {startDate: datesFormat?.['startDate'], endDate: datesFormat?.['endDate']};
                 } else {
                     // Handle invalid input
                     console.error('Invalid year input');
@@ -596,6 +524,83 @@ $(function () {
             return dateObject.toISOString().slice(0, 19).replace('T', ' ');
         }
 
+        function loadBoxEmployee() {
+            boxEmployee.empty();
+            if (boxGroup.val()) {
+                boxEmployee.initSelect2({
+                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
+                    'allowClear': true,
+                });
+            } else {
+                boxEmployee.initSelect2({
+                    'allowClear': true,
+                });
+            }
+        }
+
+        function loadBoxSO() {
+            boxSO.empty();
+            if (boxGroup.val()) {
+                boxSO.initSelect2({
+                    'dataParams': {'employee_inherit__group_id__in': boxGroup.val().join(',')},
+                    'allowClear': true,
+                });
+            } else {
+                boxSO.initSelect2({
+                    'allowClear': true,
+                });
+            }
+        }
+
+        function loadBoxYear() {
+            if (eleFiscalYear.val()) {
+                let data = [];
+                let dataFiscalYear = JSON.parse(eleFiscalYear.val());
+                if (dataFiscalYear.length > 0) {
+                    for (let fiscalYear of dataFiscalYear) {
+                        data.push({
+                            'id': String(fiscalYear?.['fiscal_year']),
+                            'title': String(fiscalYear?.['fiscal_year']),
+                            'start_date': String(fiscalYear?.['start_date']),
+                        })
+                    }
+                    boxYear.empty();
+                    boxYear.initSelect2({
+                        data: data,
+                        'allowClear': true,
+                    });
+                }
+            }
+        }
+
+        function loadBoxMonth() {
+            let data = [];
+            let dataMonths = parseMonthJSON();
+            for (let monthYear of dataMonths) {
+                data.push({
+                    'id': monthYear?.['month'],
+                    'title': dataMonth[monthYear?.['month'] - 1][1],
+                    'month': monthYear?.['month'],
+                    'year': monthYear?.['year'],
+                })
+            }
+            data.push({
+                'id': '',
+                'title': 'Select...',
+                'month': 0,
+                'year': 0,
+            })
+            boxMonth.empty();
+            boxMonth.initSelect2({
+                data: data,
+                'allowClear': true,
+                templateResult: function (state) {
+                    let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
+                    return $(`<span>${state.text} ${groupHTML}</span>`);
+                },
+            });
+        }
+
         // load init
         boxGroup.initSelect2({'allowClear': true,});
         loadBoxEmployee();
@@ -650,6 +655,7 @@ $(function () {
             }
             if (boxYear.val()) {
                 let {startDate, endDate} = getYearRange(parseInt(boxYear.val()));
+
                 dataParams['due_date__gte'] = startDate;
                 dataParams['due_date__lte'] = endDate;
             }

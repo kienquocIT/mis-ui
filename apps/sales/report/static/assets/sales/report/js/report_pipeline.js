@@ -385,7 +385,7 @@ $(function () {
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
                     let startDateFY = new Date(dataFiscalYear[0]?.['start_date']);
-                    let endDateFY = new Date(startDateFY);
+                    endDateFY = new Date(startDateFY);
                     // Add 12 months to the start date
                     endDateFY.setMonth(startDateFY.getMonth() + 12);
                     // Subtract 1 day to get the last day of the fiscal year
@@ -428,66 +428,6 @@ $(function () {
                 });
             }
             return result;
-        }
-
-        function loadBoxEmployee() {
-            boxEmployee.empty();
-            if (boxGroup.val()) {
-                boxEmployee.initSelect2({
-                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
-                    'allowClear': true,
-                });
-            } else {
-                boxEmployee.initSelect2({
-                    'allowClear': true,
-                });
-            }
-        }
-
-        function loadBoxQuarter() {
-            if (eleFiscalYear.val()) {
-                let data = [];
-                let dataFiscalYear = JSON.parse(eleFiscalYear.val());
-                if (dataFiscalYear.length > 0) {
-                    let startDateFY = dataFiscalYear[0]?.['start_date'];
-                    let dateObject = new Date(startDateFY);
-                    let year = dateObject.getFullYear();
-                    for (let quarter of dataQuarter) {
-                        data.push({'id': quarter[0], 'title': quarter[1], 'year': year})
-                    }
-                    boxQuarter.empty();
-                    boxQuarter.initSelect2({
-                        data: data,
-                        'allowClear': true,
-                        templateResult: function (state) {
-                            let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                            return $(`<span>${state.text} ${groupHTML}</span>`);
-                        },
-                    });
-                }
-            }
-        }
-
-        function loadBoxMonth() {
-            let data = [];
-            let dataMonths = parseMonthJSON();
-            for (let monthYear of dataMonths) {
-                data.push({
-                    'id': monthYear?.['month'],
-                    'title': dataMonth[monthYear?.['month'] - 1][1],
-                    'month': monthYear?.['month'],
-                    'year': monthYear?.['year']
-                })
-            }
-            boxMonth.empty();
-            boxMonth.initSelect2({
-                data: data,
-                'allowClear': true,
-                templateResult: function (state) {
-                    let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                    return $(`<span>${state.text} ${groupHTML}</span>`);
-                },
-            });
         }
 
         function getMonthRange(month, year) {
@@ -551,6 +491,66 @@ $(function () {
             let dateObject = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T00:00:00Z`);
             // Format the date to 'YYYY-MM-DD HH:mm:ss'
             return dateObject.toISOString().slice(0, 19).replace('T', ' ');
+        }
+
+        function loadBoxEmployee() {
+            boxEmployee.empty();
+            if (boxGroup.val()) {
+                boxEmployee.initSelect2({
+                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
+                    'allowClear': true,
+                });
+            } else {
+                boxEmployee.initSelect2({
+                    'allowClear': true,
+                });
+            }
+        }
+
+        function loadBoxQuarter() {
+            if (eleFiscalYear.val()) {
+                let data = [];
+                let dataFiscalYear = JSON.parse(eleFiscalYear.val());
+                if (dataFiscalYear.length > 0) {
+                    let startDateFY = dataFiscalYear[0]?.['start_date'];
+                    let dateObject = new Date(startDateFY);
+                    let year = dateObject.getFullYear();
+                    for (let quarter of dataQuarter) {
+                        data.push({'id': quarter[0], 'title': quarter[1], 'year': year})
+                    }
+                    boxQuarter.empty();
+                    boxQuarter.initSelect2({
+                        data: data,
+                        'allowClear': true,
+                        templateResult: function (state) {
+                            let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
+                            return $(`<span>${state.text} ${groupHTML}</span>`);
+                        },
+                    });
+                }
+            }
+        }
+
+        function loadBoxMonth() {
+            let data = [];
+            let dataMonths = parseMonthJSON();
+            for (let monthYear of dataMonths) {
+                data.push({
+                    'id': monthYear?.['month'],
+                    'title': dataMonth[monthYear?.['month'] - 1][1],
+                    'month': monthYear?.['month'],
+                    'year': monthYear?.['year']
+                })
+            }
+            boxMonth.empty();
+            boxMonth.initSelect2({
+                data: data,
+                'allowClear': true,
+                templateResult: function (state) {
+                    let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
+                    return $(`<span>${state.text} ${groupHTML}</span>`);
+                },
+            });
         }
 
         // load init

@@ -5841,6 +5841,10 @@ msgid "Type your content here..."
 msgstr "Nhập nội dung của bạn vào đây..."
 
 #
+msgid "This image encountered an error during loading or does not exist."
+msgstr "Hình ảnh này gặp lỗi trong quá trình tải hoặc không tồn tại."
+
+#
 msgid "Period revenue"
 msgstr "Doanh thu theo kỳ"
 
@@ -5943,3 +5947,39 @@ msgstr "Tùy chỉnh"
 #
 msgid "Pipeline report"
 msgstr "Báo cáo đường dẫn"
+
+#
+msgid "Employee created"
+msgstr "Người tạo"
+
+#
+msgid "Provided"
+msgstr "Đã cấp phát"
+
+#
+msgid "Select item to deliver"
+msgstr "Chọn sản phẩm bàn giao"
+
+#
+msgid "Asset, Tools delivery"
+msgstr "Yêu cầu bàn giao"
+
+#
+msgid "Edit items"
+msgstr "Chọn sản phẩm"
+
+#
+msgid "Warehouse is required"
+msgstr "Kho hàng là bắt buộc"
+
+#
+msgid "Done number is not valid value"
+msgstr "Số hoàn tất không chính xác"
+
+#
+msgid "List of Asset, Tools request is empty"
+msgstr "Danh sách phiếu yêu cầu rỗng"
+
+#
+msgid "Asset, Tools delivery list"
+msgstr "Danh sách phiếu bàn giao"

@@ -8,6 +8,7 @@ $(function () {
         PODataTableHandle.dataTablePurchaseQuotation();
         PODataTableHandle.dataTablePurchaseOrderProductAdd();
         PODataTableHandle.dataTablePurchaseOrderProductRequest();
+        PODataTableHandle.dataTablePaymentStage();
 
         // call ajax get info quotation detail
         $.fn.callAjax2({

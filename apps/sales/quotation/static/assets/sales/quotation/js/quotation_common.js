@@ -956,13 +956,13 @@ class QuotationLoadDataHandle {
                     tableData.push(rowData);
                 } else if (elePromotion) { // PROMOTION
                     let check_none_blank_list = ['', "", null, "undefined"];
-                    rowData['is_promotion'] = true;
-                    rowData['is_shipping'] = false;
                     rowData['product'] = null;
                     if (elePromotion.getAttribute('data-id-product') && !check_none_blank_list.includes(elePromotion.getAttribute('data-id-product'))) {
                         rowData['product'] = elePromotion.getAttribute('data-id-product');
                     }
+                    rowData['is_promotion'] = true;
                     rowData['promotion'] = elePromotion.getAttribute('data-id');
+                    rowData['is_shipping'] = false;
                     rowData['shipping'] = null;
                     rowData['product_title'] = elePromotion.value;
                     rowData['product_code'] = elePromotion.value;
@@ -1017,10 +1017,10 @@ class QuotationLoadDataHandle {
                     }
                     tableData.push(rowData);
                 } else if (eleShipping) { // SHIPPING
-                    rowData['is_shipping'] = true;
-                    rowData['is_promotion'] = false;
                     rowData['product'] = null;
+                    rowData['is_shipping'] = true;
                     rowData['shipping'] = eleShipping.getAttribute('data-id');
+                    rowData['is_promotion'] = false;
                     rowData['promotion'] = null;
                     rowData['product_title'] = eleShipping.value;
                     rowData['product_code'] = eleShipping.value;
@@ -1426,6 +1426,7 @@ class QuotationLoadDataHandle {
                         "product_tax_amount": valueTaxAmount,
                         "product_subtotal_price": valueSubtotal,
                         "is_shipping": false,
+                        "shipping": {},
                     }
                     let newRow = $table.DataTable().row.add(dataAdd).draw().node();
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
@@ -1747,22 +1748,25 @@ class QuotationLoadDataHandle {
         tableExpense.DataTable().rows.add(expenses_data).draw();
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {
-            tablePaymentStage.DataTable().clear().draw();
-            tablePaymentStage.DataTable().rows.add(data?.['sale_order_payment_stage']).draw();
-            tablePaymentStage.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-date')) {
-                    $(row.querySelector('.table-row-date')).daterangepicker({
-                        singleDatePicker: true,
-                        timePicker: true,
-                        showDropdowns: true,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                    });
-                }
-            })
+            if (data?.['sale_order_payment_stage']) {
+                tablePaymentStage.DataTable().clear().draw();
+                tablePaymentStage.DataTable().rows.add(data?.['sale_order_payment_stage']).draw();
+                tablePaymentStage.DataTable().rows().every(function () {
+                    let row = this.node();
+                    if (row.querySelector('.table-row-date')) {
+                        $(row.querySelector('.table-row-date')).daterangepicker({
+                            singleDatePicker: true,
+                            timepicker: false,
+                            showDropdowns: false,
+                            minYear: 2023,
+                            locale: {
+                                format: 'DD/MM/YYYY'
+                            },
+                            maxYear: parseInt(moment().format('YYYY'), 10),
+                        });
+                    }
+                })
+            }
         }
         // load indicators & set attr disabled
         if (is_detail === true) {
@@ -1913,7 +1917,16 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) { // PRODUCT
+                        let itemType = 0  // product
+                        if (row.hasOwnProperty('product') && row.hasOwnProperty('promotion') && row.hasOwnProperty('shipping')) {
+                            if (Object.keys(row['promotion']).length > 0) {
+                                itemType = 1  // promotion
+                            }
+                            if (Object.keys(row['shipping']).length > 0) {
+                                itemType = 2  // shipping
+                            }
+                        }
+                        if (itemType === 0) { // PRODUCT
                             return `<div class="row">
                                         <div class="col-12">
                                             <select 
@@ -1927,7 +1940,7 @@ class QuotationDataTableHandle {
                                             </select>
                                         </div>
                                     </div>`;
-                        } else if (row?.['is_promotion'] === true && row?.['is_shipping'] === false) { // PROMOTION
+                        } else if (itemType === 1) { // PROMOTION
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
                             if (linkDetail) {
@@ -1945,7 +1958,7 @@ class QuotationDataTableHandle {
                                     </span>
                                 </div>
                                 </div>`;
-                        } else if (row?.['is_promotion'] === false && row?.['is_shipping'] === true) { // SHIPPING
+                        } else if (itemType === 2) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
                             if (linkDetail) {
@@ -1990,7 +2003,16 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
+                        let itemType = 0  // product
+                        if (row.hasOwnProperty('product') && row.hasOwnProperty('promotion') && row.hasOwnProperty('shipping')) {
+                            if (Object.keys(row['promotion']).length > 0) {
+                                itemType = 1  // promotion
+                            }
+                            if (Object.keys(row['shipping']).length > 0) {
+                                itemType = 2  // shipping
+                            }
+                        }
+                        if (itemType === 0) {  // product
                             return `<select 
                                         class="form-select table-row-uom"
                                         data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
@@ -2000,7 +2022,7 @@ class QuotationDataTableHandle {
                                         required
                                      >
                                     </select>`;
-                        } else {
+                        } else {  // promotion || shipping
                             return `<select 
                                         class="form-select table-row-uom"
                                         data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
@@ -2101,7 +2123,16 @@ class QuotationDataTableHandle {
                             taxID = row?.['tax']?.['id'];
                             taxRate = row?.['tax']?.['value'];
                         }
-                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
+                        let itemType = 0  // product
+                        if (row.hasOwnProperty('product') && row.hasOwnProperty('promotion') && row.hasOwnProperty('shipping')) {
+                            if (Object.keys(row['promotion']).length > 0) {
+                                itemType = 1  // promotion
+                            }
+                            if (Object.keys(row['shipping']).length > 0) {
+                                itemType = 2  // shipping
+                            }
+                        }
+                        if (itemType === 0) {  // product
                             return `<select 
                                         class="form-select table-row-tax"
                                         data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
@@ -2123,7 +2154,7 @@ class QuotationDataTableHandle {
                                         value="${row?.['product_tax_amount']}"
                                         hidden
                                     >`;
-                        } else {
+                        } else {  // promotion || shipping
                             return `<select class="form-select table-row-tax disabled-custom-show" disabled>
                                         <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                     </select>
@@ -2203,7 +2234,13 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data_readonly";
                         }
-                        if (row.is_shipping === false) {
+                        let itemType = 0  // product
+                        if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
+                            if (Object.keys(row['shipping']).length > 0) {
+                                itemType = 1  // shipping
+                            }
+                        }
+                        if (itemType === 0) {  // product
                             return `<select
                                         class="form-select table-row-item disabled-custom-show"
                                         data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
@@ -2214,7 +2251,7 @@ class QuotationDataTableHandle {
                                         disabled
                                     >
                                     </select>`;
-                        } else {
+                        } else if (itemType === 1) {  // shipping
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
                             if (linkDetail) {
@@ -2273,7 +2310,13 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
-                        if (row.is_shipping === false) {
+                        let itemType = 0  // product
+                        if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
+                            if (Object.keys(row['shipping']).length > 0) {
+                                itemType = 1  // shipping
+                            }
+                        }
+                        if (itemType === 0) {  // product
                             return `<input 
                                         type="text" 
                                         class="form-control mask-money table-row-price" 
@@ -2282,7 +2325,7 @@ class QuotationDataTableHandle {
                                         data-zone="${dataZone}"
                                         required
                                     >`;
-                        } else {
+                        } else if (itemType === 1) {  // shipping
                             return `<input 
                                         type="text" 
                                         class="form-control mask-money table-row-price disabled-custom-show" 
@@ -2303,7 +2346,13 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
-                        if (row.is_shipping === false) {
+                        let itemType = 0  // product
+                        if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
+                            if (Object.keys(row['shipping']).length > 0) {
+                                itemType = 1  // shipping
+                            }
+                        }
+                        if (itemType === 0) {  // product
                             return `<select 
                                         class="form-select table-row-tax"
                                         data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
@@ -2325,7 +2374,7 @@ class QuotationDataTableHandle {
                                         value="${row.product_tax_amount}"
                                         hidden
                                     >`;
-                        } else {
+                        } else if (itemType === 1) {  // shipping
                             return `<select 
                                         class="form-select table-row-tax disabled-custom-show"
                                         data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
@@ -3002,9 +3051,15 @@ class QuotationDataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         if (row?.['date'] !== '') {
-                            return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">`;
+                            return `<div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">
+                                        <div class="input-suffix"><i class="fas fa-calendar-week"></i></div>
+                                    </div>`;
                         } else {
-                            return `<input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">`;
+                            return `<div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">
+                                        <div class="input-suffix"><i class="fas fa-calendar-week"></i></div>
+                                    </div>`;
                         }
                     },
                 },
@@ -3936,18 +3991,21 @@ class QuotationSubmitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
+                rowData['is_promotion'] = false;
                 rowData['promotion'] = null;
+                rowData['is_shipping'] = false;
                 rowData['shipping'] = null;
 
                 result.push(rowData);
             } else if (elePromotion) { // PROMOTION
                 let check_none_blank_list = ['', "", null, "undefined"];
-                rowData['is_promotion'] = true;
                 rowData['product'] = null;
                 if (elePromotion.getAttribute('data-id-product') && !check_none_blank_list.includes(elePromotion.getAttribute('data-id-product'))) {
                     rowData['product'] = elePromotion.getAttribute('data-id-product');
                 }
+                rowData['is_promotion'] = true;
                 rowData['promotion'] = elePromotion.getAttribute('data-id');
+                rowData['is_shipping'] = false;
                 rowData['shipping'] = null;
                 rowData['product_title'] = elePromotion.value;
                 rowData['product_code'] = elePromotion.value;
@@ -4003,9 +4061,10 @@ class QuotationSubmitHandle {
 
                 result.push(rowData);
             } else if (eleShipping) { // SHIPPING
-                rowData['is_shipping'] = true;
                 rowData['product'] = null;
+                rowData['is_shipping'] = true;
                 rowData['shipping'] = eleShipping.getAttribute('data-id');
+                rowData['is_promotion'] = false;
                 rowData['promotion'] = null;
                 rowData['product_title'] = eleShipping.value;
                 rowData['product_code'] = eleShipping.value;
@@ -4123,12 +4182,13 @@ class QuotationSubmitHandle {
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
+                rowData['is_shipping'] = false;
                 rowData['shipping'] = null;
 
                 result.push(rowData);
             } else if (eleShipping) { // SHIPPING
-                rowData['is_shipping'] = true;
                 rowData['product'] = null;
+                rowData['is_shipping'] = true;
                 rowData['shipping'] = eleShipping.getAttribute('data-id');
                 rowData['promotion'] = null;
                 rowData['product_title'] = eleShipping.value;
@@ -4571,7 +4631,16 @@ function filterDataProductNotPromotion(data_products) {
     let order = 0;
     for (let i = 0; i < data_products.length; i++) {
         let dataProd = data_products[i];
-        if (dataProd?.['is_promotion'] === false && dataProd?.['is_shipping'] === false) {
+        let itemType = 0  // product
+        if (dataProd.hasOwnProperty('product') && dataProd.hasOwnProperty('promotion') && dataProd.hasOwnProperty('shipping')) {
+            if (Object.keys(dataProd['promotion']).length > 0) {
+                itemType = 1  // promotion
+            }
+            if (Object.keys(dataProd['shipping']).length > 0) {
+                itemType = 2  // shipping
+            }
+        }
+        if (itemType === 0) {
             order++;
             dataProd['order'] = order;
             finalList.push(dataProd)

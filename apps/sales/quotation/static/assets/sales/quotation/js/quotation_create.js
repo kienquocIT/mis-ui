@@ -179,7 +179,9 @@ $(function () {
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0,
                 "is_promotion": false,
+                "promotion": {},
                 "is_shipping": false,
+                "shipping": {},
             }
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
             // check disable

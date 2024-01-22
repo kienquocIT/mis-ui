@@ -1017,6 +1017,7 @@ class POLoadDataHandle {
         let form = $('#frm_purchase_order_create');
         let tableProductAdd = $('#datable-purchase-order-product-add');
         let tableProductRequest = $('#datable-purchase-order-product-request');
+        let tablePaymentStage = $('#datable-po-payment-stage');
         if (data?.['purchase_requests_data'].length > 0) {
             POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
             POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
@@ -1034,6 +1035,30 @@ class POLoadDataHandle {
                 POLoadDataHandle.loadTableDisabled(tableProductAdd);
             }
         }
+        // payment stage
+        tablePaymentStage.DataTable().clear().draw();
+        tablePaymentStage.DataTable().rows.add(data?.['purchase_order_payment_stage']).draw();
+        POLoadDataHandle.loadTableDropDowns();
+        if (form.attr('data-method') === 'GET') {
+            POLoadDataHandle.loadTableDisabled(tablePaymentStage);
+        }
+        tablePaymentStage.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-due-date')) {
+                $(row.querySelector('.table-row-due-date')).daterangepicker({
+                    singleDatePicker: true,
+                    timepicker: false,
+                    showDropdowns: false,
+                    minYear: 2023,
+                    locale: {
+                        format: 'DD/MM/YYYY'
+                    },
+                    maxYear: parseInt(moment().format('YYYY'), 10),
+                });
+            }
+        })
+        // mask money
+        $.fn.initMaskMoney2();
     };
 
     static loadTotals(data) {
@@ -1096,6 +1121,21 @@ class POLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.del-row')) {
             ele.setAttribute('disabled', 'true');
         }
+        for (let ele of table[0].querySelectorAll('.table-row-remark')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-after-tax')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
+            ele.setAttribute('disabled', 'true');
+        }
     };
 
     static loadDataProductAll() {
@@ -1109,6 +1149,27 @@ class POLoadDataHandle {
                 POCalculateHandle.calculateMain($(table), row);
             }
         }
+    };
+
+    static loadTableDropDowns() {
+        let tablePaymentStage = $('#datable-po-payment-stage');
+        POLoadDataHandle.loadDropDowns(tablePaymentStage);
+    };
+
+    static loadDropDowns($table) {
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleRemark = row.querySelector('.table-row-remark');
+            if (eleRemark) {
+                if (eleRemark.getAttribute('data-row')) {
+                    let dataRow = JSON.parse(eleRemark.getAttribute('data-row'));
+                    if (row.querySelector('.table-row-tax')) {
+                        POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
+                    }
+                }
+            }
+        });
+        return true;
     };
 
 }
@@ -1741,7 +1802,7 @@ class PODataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-ratio valid-number" value="${row?.['payment_ratios'] ? row?.['payment_ratios'] : '0'}">
+                                        <input type="text" class="form-control table-row-ratio valid-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
                                         <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                                     </div>
                                 </div>`
@@ -1780,9 +1841,15 @@ class PODataTableHandle {
                     targets: 5,
                     render: (data, type, row) => {
                         if (row?.['due_date'] !== '') {
-                            return `<input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">`;
+                            return `<div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">
+                                        <div class="input-suffix"><i class="fas fa-calendar-week"></i></div>
+                                    </div>`;
                         } else {
-                            return `<input type="text" class="form-control table-row-due-date" value="">`;
+                            return `<div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-due-date" value="">
+                                        <div class="input-suffix"><i class="fas fa-calendar-week"></i></div>
+                                    </div>`;
                         }
                     }
                 },
@@ -2134,7 +2201,7 @@ class POSubmitHandle {
             if (eleRatio) {
                 rowData['payment_ratio'] = parseFloat(eleRatio.value);
             }
-            let eleValueBT = row.querySelector('.table-row-before-tax');
+            let eleValueBT = row.querySelector('.table-row-value-before-tax');
             if (eleValueBT) {
                 if ($(eleValueBT).valCurrency()) {
                     rowData['value_before_tax'] = parseFloat($(eleValueBT).valCurrency());
@@ -2146,7 +2213,7 @@ class POSubmitHandle {
                     rowData['tax'] = $(eleTax).val();
                 }
             }
-            let eleValueAT = row.querySelector('.table-row-after-tax');
+            let eleValueAT = row.querySelector('.table-row-value-after-tax');
             if (eleValueAT) {
                 if (eleValueAT.getAttribute('data-init-money')) {
                     rowData['value_after_tax'] = parseFloat(eleValueAT.getAttribute('data-init-money'));
@@ -2194,7 +2261,7 @@ class POSubmitHandle {
         // payment stage
         let dataPaymentStage = POSubmitHandle.setupDataPaymentStage();
         if (dataPaymentStage.length > 0) {
-            _form.dataForm['payment_stage'] = dataPaymentStage;
+            _form.dataForm['purchase_order_payment_stage'] = dataPaymentStage;
         }
 
         // system fields

@@ -4,7 +4,9 @@ import subprocess
 import sys
 from dotenv import load_dotenv
 
-print('load_dotenv: ', load_dotenv('.env'))  # load env variable before create_if_exist database.
+# load env variable default
+print('load_dotenv [default]: ', load_dotenv('env/.env.default', override=True))
+print('load_dotenv [extend ]: ', load_dotenv('.env', override=True))  # load env variable before create_if_exist database.
 
 DB_HOST = os.environ.get('DB_HOST')
 DB_PORT = os.environ.get('DB_PORT')

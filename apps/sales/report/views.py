@@ -147,3 +147,30 @@ class ReportPipelineListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.REPORT_PIPELINE_LIST).get(data)
         return resp.auto_return(key_success='report_pipeline_list')
+
+
+# REPORT CASHFLOW
+class ReportCashflowList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/report/report_cashflow.html',
+        menu_active='menu_report_cashflow_list',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {'filter_quarter': FILTER_QUARTER, 'filter_month': FILTER_MONTH}, status.HTTP_200_OK
+
+
+class ReportCashflowListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_CASHFLOW_LIST).get(data)
+        return resp.auto_return(key_success='report_cashflow_list')

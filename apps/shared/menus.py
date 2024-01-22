@@ -428,6 +428,10 @@ class MenuEOffice:
                 name='Provide request', code='menu_asset_provide', view_name='AssetToolsProvideRequestList',
                 icon='<i class="fa-solid fa-hand-holding"></i>',
             ),
+            MenuCommon(
+                name='Asset, Tools delivery', code='menu_asset_delivery', view_name='AssetToolsDeliveryList',
+                icon='<i class="fa-solid fa-truck-fast"></i>',
+            ),
         ]
     )
     MEETING = MenuCommon(
@@ -466,6 +470,12 @@ class MenusReport:
                 code='menu_report_customer_list',
                 view_name='ReportCustomerList',
                 icon='<i class="fas fa-user-tie"></i>',
+            ),
+            MenuCommon(
+                name='Cashflow report',
+                code='menu_report_cashflow_list',
+                view_name='ReportCashflowList',
+                icon='<i class="fas fa-comment-dollar"></i>',
             ),
         ],
     )

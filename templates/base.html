@@ -47,6 +47,10 @@
         <link href="{% static 'vendors/timeline-me/timelineMe.custom.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'vendors/dm-uploader/dist/css/jquery.dm-uploader.min.css' %}" rel="stylesheet" type="text/css">
 
+        <link href="{% static 'vendors/tinymce/skins/ui/oxide/skin.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'vendors/tinymce/skins/ui/oxide/content.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'vendors/tinymce/skins/content/default/content.min.css' %}" rel="stylesheet" type="text/css">
+
         <style>
             html, body {
                 color: rgb(32, 33, 36);
@@ -484,9 +488,6 @@
     </script>
     <!-- // Moment JS -->
 
-    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
-    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
-
     <script src="{% static 'assets/js/init.js' %}"></script>
     {% if base.language == 'vi' %}
         <script src="{% static 'assets/js/cdn-clone/select2/i18n/vi.js' %}"></script>
@@ -653,6 +654,11 @@
     {% block jsFooter %}{% endblock %}
     <!-- // Customize JS -->
 {% endcompress %}
+    <!-- TinyMCE | Not compress because it depends on load another file -->
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+    <!-- // TinyMCE -->
+
     {% block jsFooterUnCompress %}{% endblock %}
 </body>
 </html>

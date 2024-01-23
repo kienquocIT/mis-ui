@@ -5,7 +5,7 @@ from apps.core.hr.views import (
     GroupLevelListAPI, GroupList, GroupListAPI, GroupCreate, GroupUpdate, GroupDetail,
     EmployeeDetailAPI, EmployeeDetail, EmployeeUpdate, EmployeeCompanyListAPI, EmployeeUploadAvatarAPI,
     GroupLevelDetailAPI, RoleUpdateView, RoleUpdateAPI,
-    PlanAppGetAppListAPI, PlanSummaryListAPI, ApplicationSummaryListAPI, PermissionSummaryListAPI,
+    PlanAppGetAppListAPI, PlanSummaryListAPI, ApplicationSummaryListAPI, PermissionSummaryListAPI, EmployeeListAllAPI,
 )
 from apps.core.hr.views import (
     RoleList, RoleListAPI, RoleCreate, RoleDetail, RoleDetailAPI,
@@ -14,6 +14,7 @@ from apps.core.hr.views import (
 urlpatterns = [
     path('employee', EmployeeList.as_view(), name='EmployeeList'),
     path('employee/api', EmployeeListAPI.as_view(), name='EmployeeListAPI'),
+    path('employee/all/api', EmployeeListAllAPI.as_view(), name='EmployeeListAllAPI'),
     path('employee/create', EmployeeCreate.as_view(), name='EmployeeCreate'),
     path('employee/detail/<str:pk>', EmployeeDetail.as_view(), name='EmployeeDetail'),
     path(

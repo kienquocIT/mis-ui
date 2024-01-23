@@ -1,4 +1,8 @@
-{% load i18n %}
+{% load i18n static %}
+<link
+        href="{% static 'comment/css/style.css' %}"
+        rel="stylesheet" type="text/css"
+/>
 <style>
     .comment-list {
         max-height: 300px;
@@ -35,8 +39,28 @@
       }
     }
 
+    .mentions-display {
+        padding: 5px;
+        border: 1px solid #87afbe;
+    }
+
+    .mentions-display-txt {
+        font-size: 0.7rem;
+        padding: 3px;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        margin-right: 0.6rem;
+        margin-bottom: 0.6rem;
+        display: inline-block;
+    }
+
 </style>
-<div class="comment-group" data-url="{% url 'CommentList' pk_doc='__pk_doc__' pk_app='__pk_app__' %}">
+<div class="comment-group"
+     data-url="{% url 'CommentList' pk_doc='__pk_doc__' pk_app='__pk_app__' %}"
+     data-mentions="{% url 'EmployeeListAllAPI' %}"
+
+     data-css-url-render="{% static 'comment/css/style.css' %}"
+>
     <div class="w-100 pb-3 comment-action-all">
         <button
                 class="btn btn-outline-primary btn-xs" data-action="collapse-all" type="button"
@@ -49,6 +73,7 @@
     <div class="w-100 min-h-50p comment-list"></div>
     <div class="w-100 comment-add-area pt-3">
 {#        <p class="badge badge-soft-light mb-2">Reply for: All</p>#}
+        <p class="mentions-display" style="display: none;"></p>
         <textarea></textarea>
         <form class="frm-add-new-comment" data-url="{% url 'CommentList' pk_doc='__pk_doc__' pk_app='__pk_app__'  %}" data-method="POST">
             <input type="text" class="d-none" name="doc_id" required/>

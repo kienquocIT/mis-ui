@@ -48,6 +48,15 @@ class EmployeeList(View):
         return {}, status.HTTP_200_OK
 
 
+class EmployeeListAllAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.EMPLOYEE_ALL_LIST, user=request.user).get(
+            data=request.query_params.dict()
+        )
+        return resp.auto_return(key_success='employee_list')
+
+
 class EmployeeListAPI(APIView):
     @classmethod
     def params_custom(cls, request):

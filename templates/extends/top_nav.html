@@ -128,6 +128,7 @@
                                 data-url="{% url 'MyNotifyAllAPI' %}"
                                 data-method="GET"
                         >
+                            {{ base.app_name_translate|json_script:'app_name_translate' }}
                             <span
                                     id="idxNotifyBell"
                                     data-url="{% url 'MyNotifyNoDoneCountAPI' %}"

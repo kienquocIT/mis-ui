@@ -91,9 +91,10 @@ PLAN_APP_OF_SALE = {
         ).data,
     },
     'task': {
-        'opportunitytask': ReverseUrlCommon(
-            list_view_name='OpportunityTaskList', detail_view_name='OpportunityTaskDetailAPI'
-        ).data,
+        # Task.OpportunityTask not has page detail!
+        # 'opportunitytask': ReverseUrlCommon(
+        #     list_view_name='OpportunityTaskList', detail_view_name='OpportunityTaskDetailAPI'
+        # ).data,
     },
     'quotation': {
         'quotation': ReverseUrlCommon(list_view_name='QuotationList', detail_view_name='QuotationDetail').data,

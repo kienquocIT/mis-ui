@@ -76,19 +76,40 @@ $(function () {
                         targets: 2,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 2;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -96,19 +117,40 @@ $(function () {
                         targets: 3,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 3;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -116,19 +158,40 @@ $(function () {
                         targets: 4,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 4;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -136,19 +199,40 @@ $(function () {
                         targets: 5,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 5;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -156,19 +240,40 @@ $(function () {
                         targets: 6,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 6;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -176,19 +281,40 @@ $(function () {
                         targets: 7,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 7;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -196,19 +322,40 @@ $(function () {
                         targets: 8,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 8;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -216,19 +363,40 @@ $(function () {
                         targets: 9,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 9;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -236,19 +404,40 @@ $(function () {
                         targets: 10,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 10;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -256,19 +445,40 @@ $(function () {
                         targets: 11,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 11;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -276,19 +486,40 @@ $(function () {
                         targets: 12,
                         width: '8.06%',
                         render: (data, type, row) => {
-                            let month = 1;
+                            let month = 12;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
                             if (row?.['cashflow_type'] !== 0) {
-                                return `<div class="row">
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                        <div class="col-4"><span class="mask-money table-row-revenue" data-init-money="${0}"></span></div>
-                                    </div>`;
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+                                        </div>`;
+                                } else {
+                                    return `<div class="row">
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+                                        </div>`;
+                                }
                             } else {
                                 return `<div class="row">
-                                        <div class="col-4">Estimate</div>
-                                        <div class="col-4">Actual</div>
-                                        <div class="col-4">Variance</div>
-                                    </div>`;
+                                            <div class="col-4">Estimate</div>
+                                            <div class="col-4">Actual</div>
+                                            <div class="col-4">Variance</div>
+                                        </div>`;
                             }
                         }
                     },
@@ -672,9 +903,22 @@ $(function () {
         });
 
         $table.on('change', '.table-row-value-estimate', function () {
-            let value = $(this).valCurrency();
-            let month = this.getAttribute('data-month');
-            calculateIfChangeBeginning(value, month);
+            let startValue = $(this).valCurrency();
+            let startMonth = parseInt(this.getAttribute('data-month'));
+            calculateIfChangeBeginning(startValue, startMonth);
+
+
+            for (let month = (startMonth + 1); month <= 12; month++) {
+                let eleTypeBegin = $table[0].querySelector('.table-row-type[data-type="1"]');
+                if (eleTypeBegin) {
+                    let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
+                    if (eleEstimateBegin.getAttribute('data-init-money')) {
+                        let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
+                        calculateIfChangeBeginning(value, month);
+                    }
+
+                }
+            }
             return true;
         });
 
@@ -688,6 +932,14 @@ $(function () {
                     if (eleEstimateNet.getAttribute('data-init-money')) {
                         let endValue = parseFloat(value) + parseFloat(eleEstimateNet.getAttribute('data-init-money'));
                         $(eleEstimateEnd).attr('data-init-money', String(endValue));
+                        // set next beginning value
+                        let eleTypeBegin = $table[0].querySelector('.table-row-type[data-type="1"]');
+                        if (eleTypeBegin) {
+                            let eleEstimateBeginNext = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month + 1}"]`);
+                            if (eleEstimateBeginNext) {
+                                $(eleEstimateBeginNext).attr('data-init-money', String(endValue));
+                            }
+                        }
                     }
                 }
             }

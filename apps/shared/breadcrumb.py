@@ -98,11 +98,17 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ADVANCE_PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     ADVANCE_PAYMENT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    # Advance
+    # AR invoice
     AR_INVOICE_LIST_PAGE = BreadcrumbChildren(_('AR invoice'), 'ARInvoiceList')
     AR_INVOICE_CREATE_PAGE = BreadcrumbChildren(_('AR invoice create'), 'ARInvoiceCreate')
     AR_INVOICE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     AR_INVOICE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
+    # AP invoice
+    AP_INVOICE_LIST_PAGE = BreadcrumbChildren(_('AP invoice'), 'APInvoiceList')
+    AP_INVOICE_CREATE_PAGE = BreadcrumbChildren(_('AP invoice create'), 'APInvoiceCreate')
+    AP_INVOICE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    AP_INVOICE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     # Payment
     PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Payment'), 'PaymentList')
@@ -502,6 +508,13 @@ class BreadcrumbView:
     AR_INVOICE_CREATE_PAGE = AR_INVOICE_LIST_PAGE + [BreadcrumbItem.AR_INVOICE_CREATE_PAGE]
     AR_INVOICE_DETAIL_PAGE = AR_INVOICE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     AR_INVOICE_UPDATE_PAGE = AR_INVOICE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    AP_INVOICE_LIST_PAGE = [
+        BreadcrumbItem.AP_INVOICE_LIST_PAGE
+    ]
+    AP_INVOICE_CREATE_PAGE = AP_INVOICE_LIST_PAGE + [BreadcrumbItem.AP_INVOICE_CREATE_PAGE]
+    AP_INVOICE_DETAIL_PAGE = AP_INVOICE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    AP_INVOICE_UPDATE_PAGE = AP_INVOICE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PAYMENT_LIST_PAGE = [
         BreadcrumbItem.PAYMENT_LIST_PAGE

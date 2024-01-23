@@ -54,6 +54,7 @@ class WarehouseLoadPage {
             'agency': agencyEle.val(),
             'full_address': $('#warehouseAddress').val(),
             'is_active': $('#inputActive').is(':checked'),
+            'is_dropship': $('#checkDropShip').prop('checked')
         }
         if (type !== '3') {
             delete data['agency']
@@ -116,6 +117,7 @@ class WarehouseLoadPage {
             'agency': agencyEle.val(),
             'full_address': $('#warehouseAddress').val(),
             'is_active': $('#inputActive').is(':checked'),
+            'is_dropship': $('#checkDropShip').prop('checked')
         }
         if (type !== '3') {
             data['agency'] = null;

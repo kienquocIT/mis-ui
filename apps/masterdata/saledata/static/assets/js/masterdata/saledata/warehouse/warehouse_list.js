@@ -36,13 +36,11 @@ $(document).ready(function () {
                 (resp)=>{
                     console.log(resp);
                     $.fn.switcherResp(resp);
-                    if (resp.status === 204){
-                        setTimeout(()=>{
-                            window.location.reload();
-                        }, 1000);
-                    }
+                    setTimeout(()=>{
+                        window.location.reload();
+                    }, 1000);
                 },
-                (errs)=>{
+                (errs)=> {
                     console.log(errs);
                     WindowControl.hideLoading();
                 }
@@ -56,6 +54,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
             useDataServer: true,
+            rowIdx: true,
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -63,42 +62,41 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    orderable: false,
+                    className: 'wrap-text w-5',
                     render: (data, type, row, meta) => {
                         return ''
                     },
                 }, {
                     data: 'code',
+                    className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<a href="{0}"><span class="badge badge-soft-primary">{1}</span></a>`.format_by_idx(
-                            urlEle.data('url-detail').format_url_with_uuid(row.id),data
-                        );
+                        const link = urlEle.attr('data-url-detail').replace('0', row.id);
+                        return `<a href="${link}"><span class="text-primary">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                     },
                 }, {
                     data: 'title',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-30',
                     render: (data, type, row) => {
-                        return data;
+                        const link = urlEle.attr('data-url-detail').replace('0', row.id);
+                        return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
                     },
                 }, {
                     data: 'remarks',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-20',
                     render: (data, type, row) => {
-                        return `<p class="wrap-text">{0}</p>`.format_by_idx(data);
+                        return `<p class="wrap-text">${data}</p>`;
                     },
                 }, {
                     data: 'is_active',
+                    className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return (`<div class="form-check form-switch mb-1"><input type="checkbox" class="form-check-input" {0} disabled></div>`).format_by_idx((data === true ? "checked" : ""))
+                        return `<div class="form-check form-switch mb-1"><input type="checkbox" class="form-check-input" ${(data === true ? "checked" : "")} disabled></div>`
                     },
                 }, {
                     data: 'id',
-                    // orderable: false,
-                    className: 'action-center',
+                    className: 'action-center wrap-text w-15',
                     render: (data, type, row, meta) => {
-                        let btnEdit = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" href="${urlEle.data('url-update').format_url_with_uuid(data)}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                        let btnRemove = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row" ><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                        return `<div>` + btnEdit + btnRemove + `</div>`;
+                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row" ><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     }
                 }
             ]

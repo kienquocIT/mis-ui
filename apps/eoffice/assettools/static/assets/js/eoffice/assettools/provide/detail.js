@@ -106,9 +106,9 @@ $(document).ready(function(){
                     let calcTax = 0
                     api.rows().every(function () {
                         let data = this.data()
-                        if (data?.['tax_data']?.['rate'] && data?.['tax_data']?.['rate'] > 0 && data?.['price'] > 0 &&
-                            data?.['quantity'] > 0)
-                            calcTax += data.price * data.quantity / 100 * data.tax_data.rate
+                        let taxRate = data?.tax?.rate ? data.tax.rate : data?.['tax_data']?.['rate'] ? data.tax_data.rate : 0
+                        if (taxRate && data?.['price'] > 0 && data?.['quantity'] > 0)
+                            calcTax += data.price * data.quantity / 100 * taxRate
                         if (data?.['price'] > 0 && data?.['quantity'] > 0)
                             totalPrice += parseInt(data.price) * parseInt(data.quantity)
                         if (data?.['subtotal']) allSubtotal += parseInt(data.subtotal)

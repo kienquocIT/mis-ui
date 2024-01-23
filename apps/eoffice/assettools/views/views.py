@@ -93,7 +93,7 @@ class AssetToolsProvideRequestCreate(View):
         response = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_CONFIG).get()
         resp_config = response.result if response.state else {}
         return {
-                   'product_type': resp_config['product_type']['id'],
+                   'product_type': resp_config['product_type']['id'] if 'product_type' in resp_config else '',
                    'employee': current_emp,
                    'list_from_app': 'assettools.assettoolsprovide.create'
                }, status.HTTP_200_OK

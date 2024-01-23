@@ -71,7 +71,7 @@ selectCustomerBtn.on('click', function () {
 })
 
 customerSelectBtn.on('click', function () {
-    // loadSaleOrder({})
+    loadSaleOrder({})
 })
 
 function loadTableSelectDelivery(sale_order_filter) {

@@ -665,6 +665,10 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 .min-w-2000p {
     min-width: 2000px;
 }
+
+.min-w-8000p {
+    min-width: 8000px;
+}
 /* -- Extend Bootstrap Advance */
 
 /* File upload */

@@ -127,6 +127,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ROLE_DETAIL_PK = StringUrl('hr/role/{pk}')
     ROLE_DETAIL_APP_LIST = StringUrl('hr/role/{pk}/app')
 
+    # comment
+    COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
+
     # base
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
@@ -475,3 +478,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Revenue plan
     REVENUE_PLAN_LIST = StringUrl('revenue-plans/list')
     REVENUE_PLAN_DETAIL = StringUrl('revenue-plans/detail/{pk}')
+
+    # AR Invoice
+    DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
+    AR_INVOICE_LIST = StringUrl('ar-invoice/list')
+    AR_INVOICE_DETAIL = StringUrl('ar-invoice/detail/{pk}')

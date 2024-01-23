@@ -5064,6 +5064,281 @@ class FileControl {
     }
 }
 
+class CommentControl {
+    constructor(ele$) {
+        this.ele$ = ele$;
+        this.ele_list$ = ele$.find('.comment-list');
+        this.ele_add = ele$.find('.comment-add-area');
+        this.ele_action_all = ele$.find('.comment-action-all');
+
+        this.pk_doc = null;
+        this.pk_app = null;
+        this.pageSize = 10;
+    }
+
+    __current_page(data){
+        let next = data.page_next;
+        let previous = data.page_previous;
+        let current = 0;
+        if (next === 0 && previous === 0) current = 1;
+        else if (next === 0 && previous !== 0) current = previous + 1;
+        else if (next !== 0 && previous === 0) current = next - 1;
+        else if (next !== 0 && previous !== 0) current = previous + 1;
+
+        return {
+            'prev': previous,
+            'current': current,
+            'next': next,
+        }
+    }
+
+    item_add_event(eleItem$) {
+        eleItem$.find('.icon-collapse').on('click', function (){
+            $(this).find('.fa-solid').toggleClass('d-none');
+            $(this).closest('.comment-item').find('.comment-content').fadeToggle('fast');
+        })
+    }
+
+    item_get_html(kwargs){
+        return `
+            <div class="w-100 min-h-50p comment-item p-2">
+                <div class="w-100 min-h-15p d-flex align-items-center">
+                    <span class="icon-collapse" style="max-width: 1.2rem; cursor: pointer">
+                        <i class="fa-solid fa-xs fa-chevron-right mr-3 ml-1 d-none"></i>
+                        <i class="fa-solid fa-xs fa-chevron-up mr-3 ml-1"></i>
+                    </span>
+                    <img
+                            src="${kwargs?.['avatar_img'] || '/static/assets/images/systems/file-not-found.png'}" 
+                            alt="${kwargs?.employee_created?.full_name || ''}"
+                            style="width: 2rem;"
+                            class="mr-1"
+                    >
+                    <small class="mr-1">${kwargs?.employee_created?.full_name || ''}</small>
+                    <small class="px-2">-</small>
+                    <small class="mr-1">${kwargs?.['date_relative'] || ''}</small>
+                </div>
+                <div class="w-100 min-h-35p pt-3 pb-1 comment-content">
+                    ${kwargs?.contents || ''}
+                    <p><small>${kwargs?.date_output || ''}</small></p>
+                </div>
+            </div>
+            <!-- <button class="btn btn-xs btn-light btn-load-replies">{} more replies</button> -->
+        `;
+    }
+
+    init_structure(){
+        let clsThis = this;
+        if (this.ele$.attr('data-structure-inited') !== true){
+            // init event collapse/expand
+            let ele_this = this.ele_list$;
+            this.ele_action_all.find('button').on('click', function (){
+                let action = $(this).attr('data-action');
+                if (action === 'collapse-all'){
+                    ele_this.find('.icon-collapse').each(function (){
+                        if (!$(this).find('.fa-chevron-up').hasClass('d-none')){
+                            $(this).trigger('click');
+                        }
+                    })
+                } else if (action === 'expand-all') {
+                    ele_this.find('.icon-collapse').each(function (){
+                        if ($(this).find('.fa-chevron-up').hasClass('d-none')){
+                            $(this).trigger('click');
+                        }
+                    })
+                }
+            })
+
+            // init add new comment / event click button add
+            let textarea = this.ele_add.find('textarea');
+            textarea.tinymce( {
+                menubar: false,
+                plugins: 'lists',
+                toolbar: 'styleselect forecolor bold italic strikethrough | outdent indent numlist bullist',
+            });
+            this.ele_add.find('form.frm-add-new-comment').on('submit', function (event){
+                $(this).find('button[type=submit]').prop('disabled', true);
+                event.preventDefault();
+
+                let doc_id = $(this).find('input[name="doc_id"]').val();
+                let app_id = $(this).find('input[name="application"]').val();
+                let data = {
+                    "mentions": $(this).find('input[name="mentions"]').val(),
+                    'contents': textarea.tinymce().getContent(),
+                };
+                let url = $(this).attr('data-url').replace('__pk_doc__', doc_id).replace('__pk_app__', app_id);
+                let method = $(this).attr('data-method');
+
+                if (url && method && data && doc_id && app_id){
+                    $.fn.callAjax2({
+                        url: url,
+                        method: method,
+                        data: data,
+                    }).then(
+                        resp => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data){
+                                clsThis.render_comment_item(data?.['comment_detail'] || {}, 'pre');
+                                clsThis.render_record_showing({'plus_num': 1});
+                                clsThis.ele_list$.scrollTop(0);
+                                textarea.tinymce().setContent('');
+                            }
+                            $(this).find('button[type=submit]').prop('disabled', false);
+                        },
+                        errs => {
+                            console.log(errs);
+                            $(this).find('button[type=submit]').prop('disabled', false);
+                        },
+                    )
+                }
+
+                return false;
+            })
+
+            this.ele$.attr('data-structure-inited', true);
+        }
+    }
+
+    render_comment_item(data, ap_or_pre='ap', effect_newest=true){
+        if (data && typeof data === 'object'){
+            let dateRelateData = UtilControl.displayRelativeTime(data.date_created, {
+                'callback': function (data){
+                    return {
+                        'relate': data.relate,
+                        'output': data.output,
+                    }
+                }
+            })
+            let kwargs = {
+                'avatar_img': data?.['employee_created']?.['avatar_img'] || '/static/assets/images/systems/file-not-found.png',
+                'employee_created': {
+                    'full_name': data?.['employee_created']?.['full_name'] || '',
+                },
+                'date_relative': dateRelateData.relate,
+                'date_output': dateRelateData.output,
+                'contents': data.contents || '',
+            }
+
+            let html$ = $(this.item_get_html(kwargs));
+            if (ap_or_pre === 'ap'){
+                this.ele_list$.append(html$);  // API sorting -date_created.
+            } else {
+                this.ele_list$.prepend(html$);  // render add new success
+            }
+            this.item_add_event(html$);
+            if (effect_newest === true){
+                html$.addClass('comment-item-newest');
+                setTimeout(
+                    () => {
+                        html$.removeClass('comment-item-newest');
+                    },
+                    2000
+                )
+            }
+        }
+    }
+
+    render_btn_load_more(){
+        let clsThis = this;
+        let eleTotal = this.ele_action_all.find('.total-comment');
+        let nextNum = eleTotal.attr('data-page-next');
+        if (nextNum && nextNum > 0){
+            let btnLoadMore = $(`<button class="btn btn-xs btn-light my-3 comment-load-more">Load more</button>`);
+            this.ele_list$.append(btnLoadMore);
+            btnLoadMore.on('click', function (){
+                $(btnLoadMore).remove();
+                clsThis.fetch_all({
+                    'page': nextNum,
+                });
+            })
+        }
+    }
+
+    render_record_showing(opts){
+        let plus_num= opts?.plus_num || 0;
+        let total= opts?.total || 0;
+        let current= opts?.current || 0;
+        let next= opts?.next || 0;
+
+        let eleTotal = this.ele_action_all.find('.total-comment');
+
+        eleTotal.attr('data-total', total);
+        eleTotal.attr('data-page-current', current)
+        eleTotal.attr('data-page-next', next)
+
+        if (plus_num > 0) eleTotal.attr('data-total', Number.parseInt(eleTotal.attr('data-total')) + plus_num);
+
+        let recordTotal = eleTotal.attr('data-total');
+        let recordLoaded = next === 0 ? recordTotal: eleTotal.attr('data-page-current') * this.pageSize;
+        eleTotal.text(
+            eleTotal.attr('data-pattern').replace("{}", `${recordLoaded}/${recordTotal}`)
+        ).fadeIn('fast');
+    }
+
+    fetch_all(params = {}) {
+        let clsThis = this;
+        let url = this.ele$.attr('data-url');
+        if (url) {
+            url = url.replace('__pk_doc__', this.pk_doc).replace('__pk_app__', this.pk_app);
+            $.fn.callAjax2({
+                url: url + '?' + $.param({
+                    'parent_n__isnull': true,
+                    'pageSize': clsThis.pageSize,
+                    'page': 1,
+                    ...params,
+                }),
+                method: 'GET',
+                isLoading: true,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data.hasOwnProperty('comment_list')) {
+                        let comment_list = data.comment_list;
+                        comment_list.map(
+                            (item) => {
+                                clsThis.render_comment_item(item);
+                            }
+                        );
+                        let dataPage = clsThis.__current_page(data);
+                        clsThis.render_record_showing({
+                            'total': data.page_count,
+                            'current': dataPage.current,
+                            'next': dataPage.next,
+                        });
+                        clsThis.render_btn_load_more();
+                    }
+                },
+                (errs) => console.log(errs),
+            )
+        } else {
+            throw Error('Comment list is not provide url');
+        }
+
+    }
+
+    init(pk_doc, pk_app, data) {
+        this.pk_doc = pk_doc;
+        this.ele_add.find('form.frm-add-new-comment').find('input[name="doc_id"]').val(pk_doc);
+        this.pk_app = pk_app;
+        this.ele_add.find('form.frm-add-new-comment').find('input[name="application"]').val(pk_app);
+
+        this.init_structure();
+        this.ele_list$.empty();
+
+        if (data && Array.isArray(data)) {
+            data.map(item => {
+                this.render_comment_item(item);
+            })
+            this.render_record_showing({
+                'total': data.length,
+                'current': 1,
+                'next': 0,
+            });
+        } else {
+            this.fetch_all();
+        }
+    }
+}
+
 let $x = {
     cls: {
         frm: SetupFormSubmit,
@@ -5077,6 +5352,7 @@ let $x = {
         excelToJSON: ExcelToJSON,
         datetime: DateTimeControl,
         file: FileControl,
+        cmt: CommentControl,
     },
     fn: {
         fileInit: FileUtils.init,

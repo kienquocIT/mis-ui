@@ -70,6 +70,7 @@ INSTALLED_APPS = \
         'apps.core.workflow',
         'apps.core.process',
         'apps.core.programme',
+        'apps.core.comment',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',
@@ -86,6 +87,7 @@ INSTALLED_APPS = \
         'apps.sales.acceptance',
         'apps.sales.dashboard',
         'apps.sales.revenueplan',
+        'apps.sales.arinvoice'
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',

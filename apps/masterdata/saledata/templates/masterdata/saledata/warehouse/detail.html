@@ -21,37 +21,31 @@
 {% block pageContent %}
     <form id="frmDetail" data-method="GET" data-url-detail="{% url 'WareHouseDetailAPI' pk=0 %}" data-url-redirect="{% url 'WareHouseList' %}">
         <div class="row">
-            <div class="form-group col-6">
-                <label class="form-label required">
-                    {% trans 'Name' %}
-                </label>
+            <div class="col-6 form-group">
+                <label class="form-label required" for="inpTitle">{% trans 'Name' %}</label>
                 <input type="text" class="form-control" name="title" id="inpTitle" disabled>
             </div>
-
             <div class="col-2 form-check mt-5">
                 <input type="checkbox" id="checkDropShip" class="form-check-input checkType" disabled>
                 <label class="form-label" for="checkDropShip">{% trans 'Drop Ship' %}</label>
             </div>
-
             <div class="col-2 form-check mt-5">
                 <input type="checkbox" id="checkBinLocation" class="form-check-input checkType" disabled>
                 <label class="form-label" for="checkBinLocation">{% trans 'Bin Location' %}</label>
             </div>
-
             <div class="col-2 form-check mt-5">
                 <input type="checkbox" id="checkAgencyLocation" class="form-check-input checkType" disabled>
-                <label class="form-label" for="checkAgencyLocation">{% trans 'Agency / Parner Location' %}</label>
+                <label class="form-label" for="checkAgencyLocation">{% trans 'Agency/Partner Location' %}</label>
             </div>
         </div>
         <div class="row">
             <div class="col-6 form-group">
-                <label class="form-label">{% trans 'Description' %}</label>
+                <label class="form-label" for="inpRemarks">{% trans 'Description' %}</label>
                 <textarea class="form-control" name="remarks" id="inpRemarks" disabled></textarea>
             </div>
             <div class="col-6 form-group hidden">
-                <label class="form-label">{% trans 'Agency / Partner' %}</label>
-                <select
-                        id="boxSelectAgency"
+                <label class="form-label" for="boxSelectAgency">{% trans 'Agency/Partner' %}</label>
+                <select id="boxSelectAgency"
                         class="form-select"
                         name="agency"
                         data-method="GET"
@@ -67,7 +61,6 @@
                 <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
             </div>
         </div>
-
         <div class="row">
             <ul class="nav nav-light nav-tabs" id="tab-select">
                 <li class="nav-item">
@@ -86,7 +79,7 @@
             <div class="tab-pane fade show active" id="tab-address">
                 <div class="row">
                     <div class="col-3">
-                        <label class="form-label required">{% trans "Warehouse Address" %}</label>
+                        <label class="form-label" for="warehouseAddress">{% trans "Warehouse Address" %}</label>
                     </div>
                     <div class="col-7"></div>
                     <div class="col-2 text-right">

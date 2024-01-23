@@ -339,10 +339,14 @@ $(function () {
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
+                            resetFormTask()
                             if (!$('#drawer_task_create').hasClass('open'))
                                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
-                            $formElm.append(taskIDElm)
+                            $formElm.append(taskIDElm);
+
+                            $formElm.attr('data-id-loaded', data.id);
+
                             $('#inputTextTitle').val(data.title)
                             $('#inputTextCode').val(data.code)
                             const stt = data.task_status

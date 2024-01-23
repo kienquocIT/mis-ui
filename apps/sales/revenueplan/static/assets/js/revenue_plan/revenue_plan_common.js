@@ -483,6 +483,7 @@ function LoadDetailRevenuePlan(option) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['revenue_plan_detail'];
+                $x.fn.renderCodeBreadcrumb(data);
                 // console.log(data)
                 getMonthOrder(data?.['period_mapped']?.['space_month'])
 

@@ -3162,6 +3162,18 @@ msgid "Collapse"
 msgstr "Thu gọn/Mở rộng"
 
 #
+msgid "Collapse All"
+msgstr "Thu gọn tất cả"
+
+#
+msgid "Expand All"
+msgstr "Mở rộng tất cả"
+
+#
+msgid "Showing {} records"
+msgstr "Đang hiển thị {} dữ liệu"
+
+#
 msgid "Sale order config update successfully"
 msgstr "Cập nhật cấu hình đơn hàng thành công"
 
@@ -5983,3 +5995,19 @@ msgstr "Danh sách phiếu yêu cầu rỗng"
 #
 msgid "Asset, Tools delivery list"
 msgstr "Danh sách phiếu bàn giao"
+
+#
+msgid "Total day off is 0 please verify again"
+msgstr "Tồng ngày nghỉ là 0, vui lòng kiểm tra lại"
+
+#
+msgid "Date To need large then Date From"
+msgstr "Ngày kết thúc nhỏ hơn ngày bắt đầu"
+
+#
+msgid "Please choose an available day off"
+msgstr "Vui lòng chọn một ngày còn phép"
+
+#
+msgid "Leave type is required"
+msgstr "Loại phép là bắt buộc"

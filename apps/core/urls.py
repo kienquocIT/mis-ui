@@ -11,4 +11,5 @@ urlpatterns = [
     path('attachment/', include('apps.core.attachment.urls')),
     path('sale-process/', include('apps.core.process.urls')),
     path('calendar/', include('apps.core.programme.urls')),
+    path('comment/', include('apps.core.comment.urls')),
 ]

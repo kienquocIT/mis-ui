@@ -218,4 +218,23 @@
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
+
+    <script>
+        $('#CommentModal').on('shown.bs.modal', function () {
+            let frmOppTask = $('#formOpportunityTask');
+            let commentListEle = $('.comment-group');
+            if (commentListEle.length > 0) {
+                let app_id = "e66cfb5ab3ce4694a4da47618f53de4c";  // Application: task - OpportunityTask
+                let doc_id = frmOppTask.attr('data-id-loaded');
+                if (doc_id) {
+                    let cls = new $x.cls.cmt(commentListEle);
+                    cls.init(doc_id, app_id);
+                } else {
+                    $.fn.notifyB({
+                        'description': 'Document is not selected.',
+                    }, 'failure');
+                }
+            }
+        })
+    </script>
 {% endblock %}

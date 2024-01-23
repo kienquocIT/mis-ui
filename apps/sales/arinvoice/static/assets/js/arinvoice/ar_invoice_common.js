@@ -77,6 +77,7 @@ customerSelectBtn.on('click', function () {
 function loadTableSelectDelivery(sale_order_filter) {
     tableSelectDeliveryEle.DataTable().destroy()
     tableSelectDeliveryEle.DataTableDefault({
+        dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
         useDataServer: true,
         rowIdx: true,
         reloadCurrency: true,
@@ -220,6 +221,7 @@ function SelectDeliveryOnChange() {
 function loadTableSelectDetailProduct(datasource=[]) {
     tableDetailProductEle.DataTable().clear().destroy()
     tableDetailProductEle.DataTableDefault({
+        dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
@@ -457,6 +459,7 @@ function loadTableSelectCustomer() {
     if (!$.fn.DataTable.isDataTable('#table-select-customer')) {
         let frm = new SetupFormSubmit(tableSelectCustomerEle);
         tableSelectCustomerEle.DataTableDefault({
+            dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
             useDataServer: true,
             rowIdx: true,
             reloadCurrency: true,

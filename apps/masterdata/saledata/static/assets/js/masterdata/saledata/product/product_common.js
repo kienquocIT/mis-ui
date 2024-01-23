@@ -1159,6 +1159,7 @@ function LoadDetailProduct(option) {
                  // `)
                 }
                 table_Variant_Items.DataTableDefault({
+                    dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
                     reloadCurrency: true,
                     paging: false,
                     data: data_table_Variant_Items ? data_table_Variant_Items : [],

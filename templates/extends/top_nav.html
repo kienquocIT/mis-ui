@@ -150,7 +150,7 @@
                                 </span>
                             </span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end p-0 mw-275p">
+                        <div class="dropdown-menu dropdown-menu-end p-0">
                             <h6 class="dropdown-header px-4 fs-6">
                                 {% trans 'Notifications' %}
                                 <div>
@@ -178,8 +178,8 @@
                                     </button>
                                 </div>
                             </h6>
-                            <div data-simplebar class="dropdown-body p-2">
-                                <div id="idxNotifyShowData"></div>
+                            <div data-simplebar class="dropdown-body p-2" style="height: 38rem;">
+                                <div id="idxNotifyShowData" data-url-done-notify="{% url 'ResolveNotifyItemAPI' pk='__pk__' %}"></div>
                             </div>
                             <div class="dropdown-footer hidden"><a href="#"><u>{% trans 'View all notifications' %}</u></a>
                             </div>

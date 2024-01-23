@@ -259,3 +259,10 @@ class GatewayViewNameParseView(APIView):
                     return redirect(link_data)
                 return {'url': link_data}, status.HTTP_200_OK
         return {}, status.HTTP_404_NOT_FOUND
+
+
+class ResolveNotifyItemAPI(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        ReverseUrlCommon.update_done_notify(request.user, pk)
+        return {}, status.HTTP_200_OK

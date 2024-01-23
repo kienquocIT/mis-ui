@@ -415,10 +415,24 @@ class NotifyController {
                             'redirect': true,
                             'notify_id': item['id']
                         },);
+                        let relatve_time_html = $x.fn.displayRelativeTime(item?.['date_created'], {
+                            'callback': function (data) {
+                                return `<p>${data.relate}</p><small class="ml-auto">${data.output}</small>`;
+                            }
+                        });
+                        let btn_reply_mentions = !item?.['comment_mentions_id'] ? ``: `
+                            <button 
+                                class="btn btn-xs btn-primary btn-notify-reply-comment" 
+                                type="button"
+                                data-notify-id="${item?.['id']}"
+                                data-doc-id="${item?.['doc_id']}"
+                                data-app-id="${item?.['application_id']}"
+                                data-comment-id="${item?.['comment_mentions_id']}" 
+                            ><i class="fa-solid fa-reply"></i> Reply</button>
+                        `;
                         let tmp = `
-                            <a 
-                                href="${urlData}" 
-                                class="dropdown-item mb-1 border border-light ${item?.['is_done'] === true ? '' : 'bg-light'}"
+                            <div 
+                                class="dropdown-item mb-1 bell-menu-item ${item?.['is_done'] === true ? '' : 'bg-light'}"
                             >
                                 <div class="media">
                                     <div class="media-head">
@@ -435,13 +449,17 @@ class NotifyController {
                                                 <small class="text-muted">${item?.['msg']}</small>
                                             </div>
                                             <div class="notifications-info">
-                                                 <span class="badge badge-primary noti-custom">${resolve_app_name(item?.['doc_app'])}</span>
-                                                 <div class="notifications-time mt-2">${$x.fn.displayRelativeTime(item?.['date_created'])}</div>
+                                                 <span class="badge badge-primary badge-outline mb-1 noti-custom">${resolve_app_name(item?.['doc_app'])}</span>
+                                                 <div class="notifications-time mb-1 w-100 d-flex justify-content-start">${relatve_time_html}</div>
                                             </div>
+                                        </div>
+                                        <div>
+                                            <a href="${urlData}" class="btn btn-xs btn-primary" type="button"><i class="fa-solid fa-right-to-bracket"></i> Goto </a>
+                                            ${btn_reply_mentions}
                                         </div>
                                     </div>
                                 </div>
-                            </a>
+                            </div>
                         `;
                         if (item?.['is_done'] === true) arr_seen.push(tmp); else arr_no_seen.push(tmp);
                     })
@@ -451,6 +469,22 @@ class NotifyController {
                 } else {
                     dataArea.append(`<small class="text-muted">${$.fn.transEle.attr('data-no-data')}</small>`);
                 }
+                dataArea.find('button.btn-notify-reply-comment').on('click', function (){
+                    let urlNotifyDone = dataArea.attr('data-url-done-notify').replace('__pk__', $(this).attr('data-notify-id'));
+                    if (urlNotifyDone){
+                        $.fn.callAjax2({
+                            url: urlNotifyDone,
+                            method: 'GET'
+                        });
+                    }
+                    let modalEle = $('#ReplyCommentModal');
+                    new $x.cls.cmt(modalEle.find('.comment-group')).init(
+                        $(this).attr('data-doc-id'),
+                        $(this).attr('data-app-id'),
+                    )
+                    modalEle.modal('show');
+                })
+
                 WindowControl.hideLoadingWaitResponse(dataArea);
             }, (errs) => {
                 WindowControl.hideLoadingWaitResponse(dataArea);

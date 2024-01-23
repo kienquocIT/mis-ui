@@ -126,6 +126,12 @@ div.inline {
     clear: both;
 }
 
+/* menu */
+.bell-menu-item {
+    border-bottom: 1px solid #f1f1f1;
+}
+
+
 /*data table css */
 
 .dataTables_paginate .paginate_button i {

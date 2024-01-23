@@ -95,19 +95,19 @@
             <div class="row">
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="customCheck1">
+                        <input type="checkbox" class="form-check-input" id="customCheck1" checked>
                         <label class="form-check-label" for="customCheck1">{% trans 'Estimate' %}</label>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="customCheck1">
+                        <input type="checkbox" class="form-check-input" id="customCheck1" disabled>
                         <label class="form-check-label" for="customCheck1">{% trans 'Actual' %}</label>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="customCheck1">
+                        <input type="checkbox" class="form-check-input" id="customCheck1" disabled>
                         <label class="form-check-label" for="customCheck1">{% trans 'Variance' %}</label>
                     </div>
                 </div>
@@ -125,26 +125,25 @@
 
     <table
             id="table_report_cashflow_list"
-            class="table nowrap min-w-2000p w-100 mb-5"
+            class="table nowrap min-w-8000p w-100 mb-5"
             data-url="{% url 'ReportCashflowListAPI' %}"
             data-method="get"
     >
         <thead>
-        <tr>
-            <th>{% trans 'Group' %}</th>
-            <th>{% trans 'Sale Person' %}</th>
-            <th>{% trans 'Opp code' %}</th>
-            <th>{% trans 'Customer' %}</th>
-            <th>{% trans 'Stage' %}</th>
-            <th>% {% trans 'Win' %}</th>
-            <th>{% trans 'Open Date' %}</th>
-            <th>{% trans 'Close Date' %}</th>
-            <th>{% trans 'Opp value' %}</th>
-            <th>{% trans 'Forecast value' %}</th>
-            <th>{% trans 'Call' %}</th>
-            <th>{% trans 'Email' %}</th>
-            <th>{% trans 'Meeting' %}</th>
-            <th>{% trans 'Document' %}</th>
+        <tr class="table-thead-tr">
+            <th style="text-align: center">{% trans 'Type' %}</th>
+            <th style="text-align: center">{% trans 'January' %}</th>
+            <th style="text-align: center">{% trans 'February' %}</th>
+            <th style="text-align: center">{% trans 'March' %}</th>
+            <th style="text-align: center">{% trans 'April' %}</th>
+            <th style="text-align: center">{% trans 'May' %}</th>
+            <th style="text-align: center">{% trans 'June' %}</th>
+            <th style="text-align: center">{% trans 'July' %}</th>
+            <th style="text-align: center">{% trans 'August' %}</th>
+            <th style="text-align: center">{% trans 'September' %}</th>
+            <th style="text-align: center">{% trans 'October' %}</th>
+            <th style="text-align: center">{% trans 'November' %}</th>
+            <th style="text-align: center">{% trans 'December' %}</th>
         </tr>
         </thead>
         <tbody>

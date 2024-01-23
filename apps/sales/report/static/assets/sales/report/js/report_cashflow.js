@@ -962,7 +962,7 @@ $(function () {
             }
             let dataEBalance = {
                 'cashflow_type': 5,
-                'type_title': 'Ending balance'
+                'type_title': 'Ending balance',
             }
             result = [dataOperation, dataBBalance, dataSale, dataCost, dataNet, dataEBalance];
 
@@ -1284,7 +1284,6 @@ $(function () {
             let startMonth = parseInt(this.getAttribute('data-month'));
             calculateIfChangeBeginning(startValue, startMonth);
 
-
             for (let month = (startMonth + 1); month <= 12; month++) {
                 let eleTypeBegin = $table[0].querySelector('.table-row-type[data-type="1"]');
                 if (eleTypeBegin) {
@@ -1293,7 +1292,6 @@ $(function () {
                         let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
                         calculateIfChangeBeginning(value, month);
                     }
-
                 }
             }
             return true;
@@ -1354,6 +1352,11 @@ $(function () {
                     if (data) {
                         if (data.hasOwnProperty('report_cashflow_list') && Array.isArray(data.report_cashflow_list)) {
                             setupDataLoadTable(data.report_cashflow_list);
+                            let eleTypeBegin = $table[0].querySelector('.table-row-type[data-type="1"]');
+                            if (eleTypeBegin) {
+                                let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="1"]`);
+                                $(eleEstimateBegin).change();
+                            }
                         }
                     }
                 }

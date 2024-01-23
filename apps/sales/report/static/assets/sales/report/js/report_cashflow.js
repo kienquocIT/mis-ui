@@ -52,15 +52,15 @@ $(function () {
                             if (row?.['cashflow_type'] !== 0) {
                                 if (row?.['cashflow_type'] !== 1) {
                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money" data-init-money="${valueEstimate}"></span></div>
+                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
                                             <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
                                             <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
                                         </div>`;
                                 } else {
                                     return `<div class="row">
-                                            <div class="col-4"><div class="row"><input type="text" class="form-control mask-money table-row-beginning-balance" value="${0}" data-return-type="number"></div></div>
-                                            <div class="col-4 mt-2"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4 mt-2"><span class="mask-money" data-init-money="${0}"></span></div>
+                                            <div class="col-4"><div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div></div>
+                                            <div class="col-4 mt-2"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+                                            <div class="col-4 mt-2"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
                                         </div>`;
                                 }
                             } else {
@@ -377,7 +377,7 @@ $(function () {
                 }
             }
 
-
+            // init money
             $.fn.initMaskMoney2();
             return true;
         }
@@ -670,6 +670,31 @@ $(function () {
                 ele.removeAttribute('disabled');
             }
         });
+
+        $table.on('change', '.table-row-value-estimate', function () {
+            let value = $(this).valCurrency();
+            let month = this.getAttribute('data-month');
+            calculateIfChangeBeginning(value, month);
+            return true;
+        });
+
+        function calculateIfChangeBeginning(value, month) {
+            let eleTypeNet = $table[0].querySelector('.table-row-type[data-type="4"]');
+            let eleTypeEnd = $table[0].querySelector('.table-row-type[data-type="5"]');
+            if (eleTypeNet && eleTypeEnd) {
+                let eleEstimateNet = eleTypeNet.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
+                let eleEstimateEnd = eleTypeEnd.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
+                if (eleEstimateNet && eleEstimateEnd) {
+                    if (eleEstimateNet.getAttribute('data-init-money')) {
+                        let endValue = parseFloat(value) + parseFloat(eleEstimateNet.getAttribute('data-init-money'));
+                        $(eleEstimateEnd).attr('data-init-money', String(endValue));
+                    }
+                }
+            }
+            // init money
+            $.fn.initMaskMoney2();
+            return true;
+        }
 
         btnView.on('click', function () {
             let dataParams = {};

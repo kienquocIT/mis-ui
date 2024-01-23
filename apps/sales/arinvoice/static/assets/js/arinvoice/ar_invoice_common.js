@@ -71,7 +71,7 @@ selectCustomerBtn.on('click', function () {
 })
 
 customerSelectBtn.on('click', function () {
-    loadSaleOrder({})
+    // loadSaleOrder({})
 })
 
 function loadTableSelectDelivery(sale_order_filter) {
@@ -652,7 +652,6 @@ function calculatePrice() {
 class ARInvoiceHandle {
     load() {
         loadTableSelectCustomer()
-        loadSaleOrder()
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle))

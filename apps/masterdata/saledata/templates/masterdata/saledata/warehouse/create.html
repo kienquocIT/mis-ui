@@ -22,14 +22,12 @@
           data-url-redirect="{% url 'WareHouseList' %}">
         <div class="row">
             <div class="form-group col-6">
-                <label class="form-label required">
-                    {% trans 'Name' %}
-                </label>
+                <label class="form-label required" for="inpTitle">{% trans 'Name' %}</label>
                 <input type="text" class="form-control" name="title" id="inpTitle">
             </div>
 
             <div class="col-2 form-check mt-5">
-                <input type="checkbox" id="checkDropShip" class="form-check-input checkType" disabled>
+                <input type="checkbox" id="checkDropShip" class="form-check-input checkType">
                 <label class="form-label" for="checkDropShip">{% trans 'Drop Ship' %}</label>
             </div>
 
@@ -40,17 +38,17 @@
 
             <div class="col-2 form-check mt-5">
                 <input type="checkbox" id="checkAgencyLocation" class="form-check-input checkType">
-                <label class="form-label" for="checkAgencyLocation">{% trans 'Agency / Parner Location' %}</label>
+                <label class="form-label" for="checkAgencyLocation">{% trans 'Agency/Partner Location' %}</label>
             </div>
             <input class="hidden" value="0" id="warehouseType">
         </div>
         <div class="row">
             <div class="col-6 form-group">
-                <label class="form-label">{% trans 'Description' %}</label>
+                <label class="form-label" for="inpRemarks">{% trans 'Description' %}</label>
                 <textarea class="form-control" name="remarks" id="inpRemarks"></textarea>
             </div>
             <div class="col-6 form-group hidden">
-                <label class="form-label">{% trans 'Agency / Partner' %}</label>
+                <label class="form-label" for="boxSelectAgency">{% trans 'Agency/Partner' %}</label>
                 <select
                         id="boxSelectAgency"
                         class="form-select"
@@ -87,22 +85,17 @@
             <div class="tab-pane fade show active" id="tab-address">
                 <div class="row">
                     <div class="col-3">
-                        <label class="form-label required">{% trans "Warehouse Address" %}</label>
+                        <label class="form-label" for="warehouseAddress">{% trans "Warehouse Address" %}</label>
                     </div>
                     <div class="col-7"></div>
                     <div class="col-2 text-right">
-                        <button
-                                data-bs-toggle="modal" data-bs-target="#modalWarehouseAddress"
-                                type="button" style="background: none;border: none; color: #007D88"
-                        >
-                        <span
-                                class="btn-add-tenant" id="btnEditAddress" data-bs-toggle="tooltip"
-                                data-bs-placement="bottom"
-                                title="{% trans 'Edit Work address' %}"
-                        >
-                            <i class="fas fa-plus-circle"></i>
-                            {% trans 'Edit' %}
-                        </span>
+                        <button data-bs-toggle="modal" data-bs-target="#modalWarehouseAddress"
+                                type="button" style="background: none;border: none; color: #007D88">
+                            <span class="btn-add-tenant" id="btnEditAddress" data-bs-toggle="tooltip"
+                                  data-bs-placement="bottom"
+                                  title="{% trans 'Edit Work address' %}">
+                                <i class="fas fa-plus-circle"></i>{% trans 'Edit' %}
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -112,10 +105,8 @@
             </div>
         </div>
 
-        <div
-                class="modal fade" id="modalWarehouseAddress" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalCenter" aria-hidden="true"
-        >
+        <div class="modal fade" id="modalWarehouseAddress" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -128,18 +119,15 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Address" %}</label>
-                                    <input
-                                            class="form-control" type="text" id="addressDetail"
-                                            placeholder="Number 20, 22 street, Him Lam residential area"
-                                    >
+                                    <label class="form-label" for="addressDetail">{% trans "Address" %}</label>
+                                    <input class="form-control" type="text" id="addressDetail"
+                                           placeholder="Number 20, 22 street, Him Lam residential area">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Province" %}</label>
-                                    <select
-                                            class="form-select" id="warehouseCity" aria-label=".form-select-sm"
+                                    <select class="form-select" id="warehouseCity" aria-label=".form-select-sm"
                                             data-url="{% url "CityListAPI" %}" data-method="GET"
                                     ></select>
                                 </div>
@@ -147,8 +135,7 @@
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "District" %}</label>
-                                    <select
-                                            class="form-select" id="warehouseDistrict" aria-label=".form-select-sm"
+                                    <select class="form-select" id="warehouseDistrict" aria-label=".form-select-sm"
                                             data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
                                     ></select>
                                 </div>
@@ -156,8 +143,7 @@
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Ward" %}</label>
-                                    <select
-                                            class="form-select" id="warehouseWard" aria-label=".form-select-sm"
+                                    <select class="form-select" id="warehouseWard" aria-label=".form-select-sm"
                                             data-url="{% url "WardAllListAPI" %}" data-method="GET"
                                     ></select>
                                 </div>

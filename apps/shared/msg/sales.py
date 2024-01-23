@@ -44,3 +44,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     FINAL_ACCEPTANCE_UPDATE = _('Final acceptance update successfully')
     RP_CREATE = _('Revenue plan create successfully')
     RP_UPDATE = _('Revenue plan update successfully')
+    AR_INVOICE_CREATE = _('AR invoice create successfully')
+    AR_INVOICE_UPDATE = _('AR invoice update successfully')

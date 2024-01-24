@@ -144,6 +144,9 @@ $(function () {
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
+            if (boxCustomer.val()) {
+                dataParams['customer_id__in'] = boxCustomer.val().join(',');
+            }
             let date = $('#report-customer-date-approved').val();
             if (date) {
                 let dateStrings = date.split(' - ');

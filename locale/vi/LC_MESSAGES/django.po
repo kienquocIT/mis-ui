@@ -53,6 +53,10 @@ msgstr "Địa chỉ email liên hệ"
 msgid "Select Company"
 msgstr "Chọn công ty"
 
+#
+msgid "Click to switch company"
+msgstr "Nhấn vào để thay đổi công ty hiện hành"
+
 #: .\apps\core\account\templates\core\account\user_create.html:89
 msgid "Select your company"
 msgstr "Chọn công ty của bạn"
@@ -2664,6 +2668,10 @@ msgid "Calendar day"
 msgstr "Ngày dương lịch"
 
 #
+msgid "Contract"
+msgstr "Hợp đồng"
+
+#
 msgid "Contract date"
 msgstr "Ngày ký hợp đồng"
 
@@ -3380,6 +3388,7 @@ msgstr "Lấy"
 #
 msgid "Picking"
 msgstr "Lấy hàng"
+
 #
 msgid "Picking list"
 msgstr "Danh sách lấy hàng"
@@ -3862,6 +3871,10 @@ msgstr "Chọn ở đây để tải lên tài liệu"
 #
 msgid "Add Document"
 msgstr "Thêm tài liệu"
+
+#
+msgid "Document For Customers"
+msgstr "Tài liệu"
 
 #
 msgid "Product introduction document for customers"
@@ -5637,6 +5650,14 @@ msgid "Unplanned expenses"
 msgstr "Các khoản đã chi ngoài kế hoạch"
 
 #
+msgid "Expenses"
+msgstr "Chi phí"
+
+#
+msgid "Expenses Item"
+msgstr ""
+
+#
 msgid "Calendar"
 msgstr "Lịch sự kiện"
 
@@ -5778,6 +5799,10 @@ msgstr "Quay về trang danh sách"
 
 #
 msgid "Provide request"
+msgstr "Yêu cầu cấp phát"
+
+#
+msgid "Asset, Tools provide"
 msgstr "Yêu cầu cấp phát"
 
 #
@@ -5995,3 +6020,19 @@ msgstr "Danh sách phiếu yêu cầu rỗng"
 #
 msgid "Asset, Tools delivery list"
 msgstr "Danh sách phiếu bàn giao"
+
+#
+msgid "Total day off is 0 please verify again"
+msgstr "Tồng ngày nghỉ là 0, vui lòng kiểm tra lại"
+
+#
+msgid "Date To need large then Date From"
+msgstr "Ngày kết thúc nhỏ hơn ngày bắt đầu"
+
+#
+msgid "Please choose an available day off"
+msgstr "Vui lòng chọn một ngày còn phép"
+
+#
+msgid "Leave type is required"
+msgstr "Loại phép là bắt buộc"

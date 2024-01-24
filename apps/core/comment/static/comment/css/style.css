@@ -1,0 +1,8 @@
+.mention-person[data-mention="true"] {
+    padding: 2px;
+    border: 1px solid #54add6;
+    border-radius: 5px;
+    margin-right: 0.1rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}

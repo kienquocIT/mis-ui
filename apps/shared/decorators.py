@@ -15,6 +15,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from .apis import RespData, PermCheck
+from .apps_code_to_txt import AppsCodeToList
 from .exceptions import handle_exception_all_view
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
@@ -117,6 +118,7 @@ class ArgumentDecorator:
                 'avatar': user.avatar_url,
                 'domain_cloud': f'{settings.MEDIA_PUBLIC_DOMAIN}',
                 'avatar_prefix': 'p/f/avatar/',
+                'app_name_translate': AppsCodeToList.get_data(),
             }
         return {}
 

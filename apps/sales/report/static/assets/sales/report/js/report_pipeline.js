@@ -139,7 +139,7 @@ $(function () {
         }
         loadDbl();
 
-        function setupData(dataList) {
+        function setupDataLoadTable(dataList) {
             let result = [];
             let dataGroup = {};
             let dataGroupTotal = {};
@@ -351,8 +351,6 @@ $(function () {
             // custom total row
             if ($table.DataTable().data().count() !== 0) {
                 let firstRow = $table.DataTable().row(0).node();
-                // $(firstRow).css('background-color', '#ebfcf5');
-                // $(firstRow).css('color', '#00ab66');
                 $(firstRow).css('background-color', '#ebf5f5');
                 $(firstRow).css('color', '#007D88');
             }
@@ -648,7 +646,7 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('report_pipeline_list') && Array.isArray(data.report_pipeline_list)) {
-                            setupData(data.report_pipeline_list);
+                            setupDataLoadTable(data.report_pipeline_list);
                         }
                     }
                 }

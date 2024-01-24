@@ -339,6 +339,7 @@ $(function () {
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
+                            resetFormTask()
                             if (!$('#drawer_task_create').hasClass('open'))
                                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)

@@ -28,8 +28,6 @@ function ConvertToTotal(data){
         Math.floor(dTo.getTime() / (3600 * 24 * 1000)) -
         Math.floor(dFrom.getTime() / (3600 * 24 * 1000))
     ) + 1 // cộng 1 cho kết quả vì, khi cộng, phép toán ko tính ngày bắt đầu.
-    if (!data.morning_shift_f) tempTotal = tempTotal - 0.5
-    if (data.morning_shift_t) tempTotal = tempTotal - 0.5
     return tempTotal
 }
 function filterWorkingDay(){
@@ -38,6 +36,7 @@ function filterWorkingDay(){
     let convert_list = []
     for (let key in ws.working_days){
         const item = ws.working_days[key]
+        item.work = !!item?.['work']
         if (!item?.work ||(!item?.aft.to || !item?.aft.from || !item?.mor.to || !item?.mor.from)) convert_list[key] = item
     }
     return convert_list
@@ -56,27 +55,41 @@ function dateRangeToList(data){
 function yearList(){
     let lsYear = {}
     const ws = JSON.parse($('#ws_data').text()).years
-    if (ws) for (let item of ws) {
-        lsYear[item["config_year"]] = item["list_holiday"]
-    }
+    if (ws)
+        for (let item of ws) {
+            lsYear[item["config_year"]] = item["list_holiday"]
+        }
     return lsYear
 }
-
+function checkHalfDay(item, data, dayMapWs, total){
+    if (item === data.date_from){
+        if (dayMapWs){
+            if (dayMapWs?.['work'])
+                if (dayMapWs.mor.to && dayMapWs.mor.from) //nếu làm buổi sáng
+                    total -= !data.morning_shift_f ?  1 : 0.5
+                else // làm buổi chiều
+                    total -= 0.5
+            return total
+        }
+        else if (!data.morning_shift_f) total -= 0.5
+    }
+    else
+        if (dayMapWs){
+            if (dayMapWs?.['work'])
+                if (dayMapWs.mor.to && dayMapWs.mor.from) //nếu làm buổi sáng
+                    total -= 1
+                else // làm buổi chiều
+                    total -= data.morning_shift_t ? 0.5 : 1
+            return total
+        }
+        else if (data.morning_shift_t) total -= 0.5
+    return total
+}
 class detailTab {
     static $tableElm = $('#leave_detail_tbl')
 
-    // - loop trong danh sách ngày làm việc lấy ra các ngày ko làm or làm nửa buổi => wsLsConvert
-    // - từ range ngày convert thành list ngày.
-    // - check range ngày nghỉ trong ngày làm việc
-    //     + loop trong ds ngày nghỉ convert thành "thứ"(2,3,4,5,6,7,cn) cụ thể trong tuần
-    //         => loop trong ds ds_da_convert trừ total nếu "thứ" đó có trong ds này.
-    // - check range ngày nghỉ trong ngày holidays
-    //     + từ range ngày lấy ra năm đăng ký của ds holiday theo năm
-    //     + loop trong ds ngày nghỉ convert thành "thứ"(2,3,4,5,6,7,cn) cụ thể trong tuần
-    //         => loop trong ds holiday nếu "thứ" trùng vs holiday thì trừ total
     static PrepareReturn(data) {
         let tempTotal = 0
-        // $.fn.notifyB({description: $transElm.attr('data-dayoff-error')}, 'failure')
         if (data.date_from === "Invalid date" || data.date_to === "Invalid date") return tempTotal
         const wsLsConvert = filterWorkingDay()
         const wsLsyear = yearList()
@@ -88,30 +101,38 @@ class detailTab {
         const dateList = dateRangeToList(data)
 
         for (let item of dateList){
-            // check range ngày nghỉ trong ngày làm việc
             const day = new Date(item).getDay()
             const dayMapWs = wsLsConvert?.[day];
-            if (dayMapWs){
-                if (!dayMapWs?.work) tempTotal -= 1
-                else if (!dayMapWs?.aft?.to || !dayMapWs?.aft?.from || !dayMapWs?.mor?.to || !dayMapWs?.mor?.from)
-                    tempTotal -= 0.5
-            }
+            // check range ngày nghỉ trong ngày làm việc, nếu ngày nghỉ trùng ngày ko làm => trừ 1 trong tổng ngày
+            if (dayMapWs && !dayMapWs?.['work']) tempTotal -= 1
+
             // check range ngày nghỉ trong ngày holidays
             const year = moment(item).year()
-            if (wsLsyear[year]){
+            let isHoliday = false
+            if (wsLsyear[year])
                 for (let holiday of wsLsyear[year]){
+                    // nếu ngày lễ ko trùng ngày nghỉ thì trừ 1 ngày
                     if (item === holiday.holiday_date_to) {
-                        const hDay = new Date(holiday.holiday_date_to).getDay()
-                        let dayMapWs = wsLsConvert?.[hDay];
-                        if (!dayMapWs) tempTotal -= 1
-                        else if (!dayMapWs?.aft?.to || !dayMapWs?.aft?.from || !dayMapWs?.mor?.to || !dayMapWs?.mor?.from)
-                            tempTotal -= 0.5
+                        if (dayMapWs){
+                            if (dayMapWs?.['work']) tempTotal -= 1
+                        }else tempTotal -= 1
+                        isHoliday = !isHoliday
                         break;
                     }
+                    // trừ phép ngày làm nữa buổi và ko phải start/end day
+                    if (item !== holiday.holiday_date_to && item !== data.date_from && item !== data.date_to){
+                        if (dayMapWs){
+                             if (dayMapWs?.['work'] && (!dayMapWs.aft.to || !dayMapWs.aft.from || !dayMapWs.mor.to || !dayMapWs.aft.from)){
+                                tempTotal -= 0.5
+                                break;
+                             }
+                        }
+                    }
                 }
-            }
+            // check nghỉ nữa ngày
+            if ((item === data.date_from || item === data.date_to) && !isHoliday)
+                tempTotal = checkHalfDay(item, data, dayMapWs, tempTotal)
         }
-
         return tempTotal
     }
 
@@ -131,8 +152,13 @@ class detailTab {
         if (data.date_from && data.date_to && data.date_from !== 'Invalid date' &&
             data.date_to !== 'Invalid date') {
             const leave_available = data['leave_available']
+            if (!leave_available){
+                $.fn.notifyB({description: $transElm.attr('data-empty_leave')}, 'failure')
+                return false
+            }
+
             data.subtotal = detailTab.PrepareReturn(data)
-            if ((data.subtotal > leave_available.available && leave_available.check_balance) || !detailTab.checkIsExp(data)
+            if ((leave_available.check_balance && data.subtotal > leave_available.available) || !detailTab.checkIsExp(data)
                 || (['FF', 'MY', 'MC'].includes(leave_available.leave_type.code) && data.subtotal > data['leave_available'].total))
                 $.fn.notifyB({description: $transElm.attr('data-out-of-stock')}, 'failure')
 
@@ -284,6 +310,7 @@ class detailTab {
                     })
                     .on('select2:select', function (e) {
                         data.leave_available = e.params.data.data
+                        detailTab.validDate(data, row)
                     })
 
                 // remark trigger on change

@@ -133,7 +133,7 @@
                         </tfoot>
                     </table>
                     <br>
-                    <button class="btn btn-outline-primary" type="button" id="add_new_line" disabled>
+                    <button class="btn btn-outline-primary" type="button" id="add_new_line" disabled data-zone="detail_data">
                         <span>
                             <span>{% trans 'Add date' %}</span>
                             <span class="icon">
@@ -174,13 +174,14 @@
            data-dayoff-error="{% trans 'Please choose an available day off' %}"
            data-out-of-stock="{% trans 'Not enough leave or no leave available' %}"
            data-err-date-setup="{% trans 'Ordinal date in detail tab is in complex setup' %}"
+           data-empty_leave="{% trans 'Leave type is required' %}"
     >
     <div class="wrap-template">
         <div class="delete_btn">
             <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row">
-                    <span class="btn-icon-wrap">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </span>
+                <span class="btn-icon-wrap">
+                    <i class="fa-solid fa-trash-can"></i>
+                </span>
             </a>
         </div>
         <div class="date_from">

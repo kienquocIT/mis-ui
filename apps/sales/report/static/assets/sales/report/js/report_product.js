@@ -65,6 +65,31 @@ $(function () {
             });
         }
 
+        function setupDataLoadTable(dataList) {
+            let result = [];
+            let dataByProduct = {};
+            for (let data of dataList) {
+                if (data?.['product']?.['id']) {
+                    if (!dataByProduct.hasOwnProperty(data?.['product']?.['id'])) {
+                        dataByProduct[data?.['product']?.['id']] = data;
+                    } else {
+                        dataByProduct[data?.['product']?.['id']]['revenue'] += data?.['revenue'];
+                        dataByProduct[data?.['product']?.['id']]['gross_profit'] += data?.['gross_profit'];
+                        dataByProduct[data?.['product']?.['id']]['net_income'] += data?.['net_income'];
+                    }
+                }
+            }
+            for (let keyProduct in dataByProduct) {
+                result.push(dataByProduct[keyProduct]);
+            }
+            $table.DataTable().clear().draw();
+            $table.DataTable().rows.add(result).draw();
+            // init money
+            $.fn.initMaskMoney2();
+            loadTotal();
+            return true;
+        }
+
         function loadTotal() {
             let newRevenue = 0;
             let newGrossProfit = 0;
@@ -164,6 +189,9 @@ $(function () {
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
+            if (boxProduct.val()) {
+                dataParams['product_id__in'] = boxProduct.val().join(',');
+            }
             let date = $('#report-product-date-approved').val();
             if (date) {
                 let dateStrings = date.split(' - ');
@@ -183,9 +211,7 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('report_product_list') && Array.isArray(data.report_product_list)) {
-                            $table.DataTable().clear().draw();
-                            $table.DataTable().rows.add(data.report_product_list).draw();
-                            loadTotal();
+                            setupDataLoadTable(data.report_product_list);
                         }
                     }
                 }

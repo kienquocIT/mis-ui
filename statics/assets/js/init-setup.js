@@ -381,8 +381,12 @@ class NotifyController {
                     let data = $.fn.switcherResp(resp);
                     if (data){
                         let counter = Number.parseInt(clsThis.bellCount.text());
-                        if (counter > 0){
-                            clsThis.bellCount.text(counter - 1);
+                        if (counter > 0) counter -= 1;
+
+                        if (counter > 0) clsThis.bellCount.text(counter);
+                        else {
+                            clsThis.bellCount.text('0').fadeOut();
+                            clsThis.bellIdxIcon.removeClass('my-bell-ring');
                         }
                     }
                 },
@@ -511,7 +515,7 @@ class NotifyController {
 
                     // seen
                     let isDone = bellNotifyItem.attr('data-is-done') === 'true';
-                    if (isDone === true) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
+                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
 
                     //
                     let modalEle = $('#ReplyCommentModal');
@@ -523,7 +527,7 @@ class NotifyController {
                     let notifyIdx = bellNotifyItem.attr('data-notify-id');
                     // seen
                     let isDone = bellNotifyItem.attr('data-is-done') === 'true';
-                    if (isDone === true) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
+                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
                 })
 
                 WindowControl.hideLoadingWaitResponse(dataArea);

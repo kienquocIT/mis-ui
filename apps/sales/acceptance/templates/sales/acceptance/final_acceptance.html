@@ -31,7 +31,7 @@
             {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
         </div>
         <div class="row">
-            <div class="col-12 col-md-3 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
                     <select
@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-3 col-lg-3">
                 <div class="d-flex mt-5">
                     <button
                             type="button"
@@ -72,20 +72,20 @@
         <div class="row">
             <table
                     id="table_final_acceptance_list"
-                    class="table nowrap w-100 mb-5"
+                    class="table nowrap min-w-1500p w-100 mb-5"
                     data-url="{% url 'FinalAcceptanceListAPI' %}"
                     data-method="get"
             >
                 <thead>
                 <tr>
-                    <th class="w-15">{% trans 'Indicator' %}</th>
-                    <th class="w-5">{% trans 'Items code' %}</th>
-                    <th class="w-10">{% trans 'Items name' %}</th>
-                    <th class="w-15">{% trans 'Planed value' %}</th>
-                    <th class="w-15">{% trans 'Actual value' %}</th>
-                    <th class="w-15">{% trans 'Different value' %}</th>
-                    <th class="w-10">{% trans '%' %}</th>
-                    <th class="w-15">{% trans 'Note' %}</th>
+                    <th>{% trans 'Indicator' %}</th>
+                    <th>{% trans 'Items code' %}</th>
+                    <th>{% trans 'Items name' %}</th>
+                    <th>{% trans 'Planed value' %}</th>
+                    <th>{% trans 'Actual value' %}</th>
+                    <th>{% trans 'Different value' %}</th>
+                    <th>{% trans '%' %}</th>
+                    <th>{% trans 'Note' %}</th>
                 </tr>
                 </thead>
                 <tbody>

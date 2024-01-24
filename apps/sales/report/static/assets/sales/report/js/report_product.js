@@ -92,30 +92,26 @@ $(function () {
 
         function loadBoxEmployee() {
             boxEmployee.empty();
+            let dataParams = {};
             if (boxGroup.val()) {
-                boxEmployee.initSelect2({
-                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
-                    'allowClear': true,
-                });
-            } else {
-                boxEmployee.initSelect2({
-                    'allowClear': true,
-                });
+                dataParams['group_id__in'] = boxGroup.val().join(',');
             }
+            boxEmployee.initSelect2({
+                'dataParams': dataParams,
+                'allowClear': true,
+            });
         }
 
         function loadBoxProduct() {
             boxProduct.empty();
+            let dataParams = {};
             if (boxCategory.val()) {
-                boxProduct.initSelect2({
-                    'dataParams': {'category_id__in': boxCategory.val().join(',')},
-                    'allowClear': true,
-                });
-            } else {
-                boxProduct.initSelect2({
-                    'allowClear': true,
-                });
+                dataParams['category_id__in'] = boxCategory.val().join(',');
             }
+            boxProduct.initSelect2({
+                'dataParams': dataParams,
+                'allowClear': true,
+            });
         }
 
         boxGroup.initSelect2({'allowClear': true,});

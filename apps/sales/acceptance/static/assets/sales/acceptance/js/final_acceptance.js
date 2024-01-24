@@ -16,9 +16,12 @@ $(function () {
                 searching: false,
                 info: false,
                 paging: false,
-                columns: [
+                autoWidth: true,
+                scrollX: true,
+                columns: [  // 200,150,200,200,200,200,100,250 (1500p)
                     {
                         targets: 0,
+                        width: '13.33%',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_indicator'] === true) {
@@ -34,6 +37,7 @@ $(function () {
                     },
                     {
                         targets: 1,
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['is_sale_order'] === true) {
                                 return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
@@ -49,6 +53,7 @@ $(function () {
                     },
                     {
                         targets: 2,
+                        width: '13.33%',
                         render: (data, type, row) => {
                             if (row?.['is_sale_order'] === true) {
                                 return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
@@ -64,6 +69,7 @@ $(function () {
                     },
                     {
                         targets: 3,
+                        width: '13.33%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
                                 return `<b><span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span></b>`;
@@ -74,6 +80,7 @@ $(function () {
                     },
                     {
                         targets: 4,
+                        width: '13.33%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) { // INDICATOR ROWS
                                 if (row?.['indicator']?.['acceptance_affect_by'] === 2) { // Plan value
@@ -114,6 +121,7 @@ $(function () {
                     },
                     {
                         targets: 5,
+                        width: '13.33%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
                                 return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
@@ -124,6 +132,7 @@ $(function () {
                     },
                     {
                         targets: 6,
+                        width: '6.66%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
                                 return `<p class="table-row-rate-value" data-value="${row?.['rate_value']}">${row?.['rate_value']} %</p>`;
@@ -134,6 +143,7 @@ $(function () {
                     },
                     {
                         targets: 7,
+                        width: '16.66%',
                         render: (data, type, row) => {
                             return `<input class="form-control" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
                         }
@@ -153,6 +163,7 @@ $(function () {
                     'method': $table.attr('data-method'),
                     'data': {'sale_order_id': boxSO.val()},
                     'isDropdown': true,
+                    isLoading: true,
                 }
             ).then(
                 (resp) => {
@@ -476,14 +487,22 @@ $(function () {
             boxEmployee.empty();
             boxEmployee.initSelect2({
                 data: dataEmployee,
+                'allowClear': true,
             });
         }
         loadEmployee();
 
-        function loadSO(dataSO = {}) {
+        function loadSO() {
             boxSO.empty();
+            let dataParams = {};
+            if (boxOpp.val()) {
+                dataParams['opportunity_id'] = boxOpp.val();
+            }
+            if (boxEmployee.val()) {
+                dataParams['employee_inherit_id'] = boxEmployee.val();
+            }
             boxSO.initSelect2({
-                data: dataSO,
+                'dataParams': dataParams,
                 'allowClear': true,
             });
         }
@@ -506,13 +525,11 @@ $(function () {
 
         // Events
         boxOpp.on('change', function () {
-            if (boxOpp.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(boxOpp, boxOpp.val());
-                if (dataSelected) {
-                    loadSO(dataSelected?.['sale_order']);
-                    // loadEmployee(dataSelected?.['sale_person']);
-                }
-            }
+            loadSO();
+        });
+
+        boxEmployee.on('change', function () {
+            loadSO();
         });
 
         boxSO.on('change', function () {

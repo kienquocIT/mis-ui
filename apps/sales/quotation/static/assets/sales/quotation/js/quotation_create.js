@@ -238,6 +238,10 @@ $(function () {
             if ($(this).hasClass('table-row-item')) {
                 QuotationLoadDataHandle.loadDataProductSelect($(this));
             }
+            // validate number
+            if ($(this).hasClass('table-row-quantity') && $(this).hasClass('validated-number')) {
+                validateNumber(this);
+            }
             // Clear table COST if item or quantity change
             if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
                 // load again table cost
@@ -259,17 +263,6 @@ $(function () {
             // load again table cost
             QuotationLoadDataHandle.loadDataTableCost();
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
-        });
-
-// Check valid number for input
-        $('#tab-content-quotation-product').on('change', '.validated-number', function () {
-            let value = this.value;
-            // Replace non-digit characters with an empty string
-            value = value.replace(/[^0-9.]/g, '');
-            // Remove unnecessary zeros from the integer part
-            value = value.replace("-", "").replace(/^0+(?=\d)/, '');
-            // Update value of input
-            this.value = value;
         });
 
 // Action on change discount rate on Total of product
@@ -493,6 +486,10 @@ $(function () {
                        $(row.querySelector('.table-row-price')).attr('value', String(dataSelected?.['price_list'][0]?.['price_value']));
                     }
                 }
+            }
+            // validate number
+            if ($(this).hasClass('table-row-quantity') && $(this).hasClass('validated-number')) {
+                validateNumber(this);
             }
             QuotationCalculateCaseHandle.commonCalculate(tableExpense, row, false, false, true);
         });

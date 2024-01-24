@@ -8,11 +8,9 @@ $(function () {
         let boxMonth = $('#box-report-cashflow-month');
         let boxFrom = $('#report-cashflow-date-from');
         let boxTo = $('#report-cashflow-date-to');
-        let eleAreaPeriodAll = $('#area-period-all');
         let eleFiscalYear = $('#data-fiscal-year');
         let btnView = $('#btn-view');
         let $table = $('#table_report_cashflow_list');
-        let dataQuarter = JSON.parse($('#filter_quarter').text());
         let dataMonth = JSON.parse($('#filter_month').text());
 
         // function loadDbl(data) {
@@ -532,6 +530,8 @@ $(function () {
         // }
 
         // loadDbl();
+
+
 
 
 
@@ -1160,30 +1160,30 @@ $(function () {
 
         function loadBoxEmployee() {
             boxEmployee.empty();
+            let dataParams = {};
             if (boxGroup.val()) {
-                boxEmployee.initSelect2({
-                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
-                    'allowClear': true,
-                });
-            } else {
-                boxEmployee.initSelect2({
-                    'allowClear': true,
-                });
+                dataParams['group_id__in'] = boxGroup.val().join(',');
             }
+            boxEmployee.initSelect2({
+                'dataParams': dataParams,
+                'allowClear': true,
+            });
         }
 
         function loadBoxSO() {
             boxSO.empty();
+            let dataParams = {};
             if (boxGroup.val()) {
-                boxSO.initSelect2({
-                    'dataParams': {'employee_inherit__group_id__in': boxGroup.val().join(',')},
-                    'allowClear': true,
-                });
-            } else {
-                boxSO.initSelect2({
-                    'allowClear': true,
-                });
+                dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }
+            if (boxEmployee.val()) {
+                dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
+            }
+            boxSO.initSelect2({
+                'dataParams': dataParams,
+                'allowClear': true,
+
+            });
         }
 
         function loadBoxYear() {
@@ -1259,10 +1259,16 @@ $(function () {
         // Events
         boxGroup.on('change', function () {
             loadBoxEmployee();
+            loadBoxSO();
             $table.DataTable().clear().draw();
         });
 
         boxEmployee.on('change', function () {
+            loadBoxSO();
+            $table.DataTable().clear().draw();
+        });
+
+        boxSO.on('change', function () {
             $table.DataTable().clear().draw();
         });
 

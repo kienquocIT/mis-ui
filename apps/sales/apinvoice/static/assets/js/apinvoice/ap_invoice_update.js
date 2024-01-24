@@ -1,12 +1,12 @@
 $(document).ready(function () {
-    new ARInvoiceHandle().load();
+    new APInvoiceHandle().load();
 
-    LoadDetailARInvoice('update');
+    LoadDetailAPInvoice('update');
 
     let pk = $.fn.getPkDetail();
-    $('#form-detail-ar-invoice').submit(function (event) {
+    $('#form-detail-ap-invoice').submit(function (event) {
         event.preventDefault();
-        let combinesData = new ARInvoiceHandle().combinesData($(this), true);
+        let combinesData = new APInvoiceHandle().combinesData($(this), true);
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

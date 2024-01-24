@@ -14,7 +14,6 @@ const documentDateEle = $('#document-date')
 const invoiceDateEle= $('#invoice-date')
 const supplierSelectBtn = $('#supplier-select-btn')
 
-
 postingDateEle.daterangepicker({
     singleDatePicker: true,
     timePicker: true,
@@ -160,15 +159,24 @@ $(document).on("change", '.selected-goods-receipt', function () {
 })
 
 function SelectGoodsReceiptOnChange() {
+    let data_product_already = []
+    $('.selected-goods-receipt').each(function () {
+        if ($(this).prop('checked') && $(this).attr('data-already') === '1') {
+            data_product_already = data_product_already.concat(JSON.parse($(this).closest('div').find('.details').text()))
+        }
+    })
+
     let data_product = []
     $('.selected-goods-receipt').each(function () {
-        if ($(this).prop('checked')) {
+        if ($(this).prop('checked') && $(this).attr('data-already') === '0') {
             let data_po = JSON.parse($(this).closest('div').find('.total_quantity').text())
             let temp = JSON.parse($(this).closest('div').find('.details').text())
             temp[0]['quantity_import_total'] = data_po.filter(function (item) {
                 return item.product_id === temp[0]?.['product_data']?.['id']
             })[0]?.['product_quantity_order_actual']
-            temp[0]['quantity_imported_before'] = 0
+            temp[0]['quantity_imported_before'] = data_product_already
+                .filter(item => item?.['product_data']?.['id'] === temp[0]?.['product_data']?.['id'])
+                .reduce((sum, item) => sum + item?.['quantity_import'], 0)
             data_product = data_product.concat(temp)
         }
     })
@@ -288,11 +296,6 @@ function loadTableLineDetail(datasource=[]) {
                     return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal_price']}"></span>`
                 }
             },
-            {
-                render: () => {
-                    return ``
-                }
-            },
         ],
         initComplete: function(settings, json) {
             calculatePrice()
@@ -315,87 +318,45 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
                 }
             },
             {
-                data: 'product__title',
+                data: 'product_data__title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="product-id" data-id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</span>`
-                    }
-                    else {
-                        return `<input class="discount-name form-control" value="${row?.['discount_name']}">`
-                    }
+                    return `<span class="product-id" data-id="${row?.['product_data']?.['id']}">${row?.['product_data']?.['title']}</span>`
                 }
             },
             {
-                data: 'product_uom__title',
+                data: 'uom_data__title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="uom-id" data-id="${row?.['product_uom']?.['id']}">${row?.['product_uom']?.['title']}</span>`
-                    }
-                    else {
-                        return `<input class="discount-uom form-control" value="${row?.['discount_uom']}">`
-                    }
+                    return `<span class="uom-id" data-id="${row?.['uom_data']?.['id']}">${row?.['uom_data']?.['title']}</span>`
                 }
             },
             {
-                data: 'product_quantity',
+                data: 'quantity_import',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="picked_quantity">${row?.['product_quantity']}</span>`
-                    }
-                    else {
-                        return `<input type="number" class="discount-quantity form-control" value="${row?.['discount_quantity']}">`
-                    }
+                    return `<span class="quantity_import">${row?.['quantity_import']}</span>`
                 }
             },
             {
                 data: 'product_unit_price',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<input class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
-                    }
-                    else {
-                        return `<input class="discount-unit-price mask-money form-control"  value="${row?.['discount_unit_price']}">`
-                    }
+                    return `<input class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
                 }
             },
             {
                 data: 'product_tax_value',
-                className: 'wrap-text text-center',
-                render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_tax_value']}"></span>`
-                    }
-                    else {
-                        return `<span class="mask-money text-danger" data-init-money="0"></span>`
-                    }
-                }
-            },
-            {
-                data: 'product_subtotal',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal']}"></span>`
-                    }
-                    else {
-                        return `<span class="discount-subtotal-price mask-money text-danger" data-init-money="${row?.['discount_subtotal']}"></span>`
-                    }
+                    return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_tax_value']}"></span>`
                 }
             },
             {
+                data: 'product_subtotal_price',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return ``
-                    }
-                    else {
-                        return `<button class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs del-discount">
-                            <span class="icon"><i class="bi bi-trash-fill"></i></span>
-                        </button>`;
-                    }
+                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal_price']}"></span>`
                 }
             },
         ],
@@ -409,7 +370,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
 }
 
 $(document).on("change", '.product_unit_price', function () {
-    let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.picked_quantity').text())
+    let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.quantity_import').text())
     $(this).closest('tr').find('.product_subtotal_price').attr('data-init-money', subtotal)
     $.fn.initMaskMoney2()
 
@@ -522,7 +483,7 @@ $('#add-product-btn').on('click', function () {
     $('#select-goods-receipt-offcanvas').offcanvas('hide')
     let data_product = []
     $('.selected-goods-receipt').each(function () {
-        if ($(this).prop('checked')) {
+        if ($(this).prop('checked') && $(this).attr('data-already') === '0') {
             data_product.push($(this).attr('data-id'))
         }
     })
@@ -554,36 +515,10 @@ $('#btn-add-row-line-detail-discount').on('click', function () {
     `)
 })
 
-$(document).on("change", '.discount-quantity', function () {
-    let subtotal = parseFloat($(this).val()) * parseFloat($(this).closest('tr').find('.discount-unit-price').attr('value'))
-    $(this).closest('tr').find('.discount-subtotal-price').attr('data-init-money', subtotal)
-    $.fn.initMaskMoney2()
-
-    calculatePrice()
-})
-
-$(document).on("change", '.discount-unit-price', function () {
-    let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.discount-quantity').val())
-    $(this).closest('tr').find('.discount-subtotal-price').attr('data-init-money', subtotal)
-    $.fn.initMaskMoney2()
-
-    calculatePrice()
-})
-
-$(document).on("click", '.del-discount', function () {
-    $(this).closest('tr').remove()
-    tabLineDetailTable.find('tbody tr').each(function (index) {
-        $(this).find('td:first-child').text(index+1)
-    })
-
-    calculatePrice()
-})
-
 function calculatePrice() {
     let sum_unit_price = 0
     let sum_taxes = 0
     let sum_subtotal_price = 0
-    let sum_discount = 0
     tabLineDetailTable.find('tbody tr').each(function () {
         if ($(this).find('.product_unit_price').length > 0) {
             sum_unit_price += parseFloat($(this).find('.product_unit_price').attr('value'))
@@ -591,17 +526,13 @@ function calculatePrice() {
         if ($(this).find('.product_subtotal_price').length > 0) {
             sum_subtotal_price += parseFloat($(this).find('.product_subtotal_price').attr('data-init-money'))
         }
-        if ($(this).find('.discount-subtotal-price').length > 0) {
-            sum_discount += parseFloat($(this).find('.discount-subtotal-price').attr('data-init-money'))
-        }
         if ($(this).find('.product_taxes').length > 0) {
             sum_taxes += parseFloat($(this).find('.product_taxes').attr('data-init-money'))
         }
     })
     $('#pretax-value').attr('data-init-money', sum_subtotal_price)
     $('#taxes-value').attr('data-init-money', sum_taxes)
-    $('#discount-all').attr('data-init-money', sum_discount)
-    $('#total-value').attr('data-init-money', sum_subtotal_price + sum_taxes - sum_discount)
+    $('#total-value').attr('data-init-money', sum_subtotal_price + sum_taxes)
 
     $.fn.initMaskMoney2()
 }
@@ -667,7 +598,6 @@ function Disabled(option) {
         $('#collapse-area input').prop('readonly', true).prop('disabled', true)
         $('#collapse-area select').prop('disabled', true)
         $('tr input').prop('readonly', true).prop('disabled', true)
-        $('.del-discount').addClass('disabled')
         supplierSelectBtn.addClass('disabled')
         $('#btn-add-row-line-detail').remove()
         $('#btn-add-row-line-detail-discount').remove()
@@ -681,14 +611,14 @@ function LoadDetailAPInvoice(option) {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                data = data['ar_invoice_detail'];
+                data = data['ap_invoice_detail'];
                 console.log(data)
                 $x.fn.renderCodeBreadcrumb(data);
 
                 $('#name').val(data?.['title'])
-                supplierCodeEle.val(data?.['customer_mapped']?.['name'])
-                supplierCodeEle.attr('data-id', data?.['customer_mapped']?.['id'])
-                loadPurchaseOrder(data?.['sale_order_mapped'])
+                supplierCodeEle.val(data?.['supplier_mapped']?.['name'])
+                supplierCodeEle.attr('data-id', data?.['supplier_mapped']?.['id'])
+                loadPurchaseOrder(data?.['po_mapped'])
                 postingDateEle.val(data?.['posting_date'].split(' ')[0])
                 documentDateEle.val(data?.['document_date'].split(' ')[0])
                 invoiceDateEle.val(data?.['invoice_date'].split(' ')[0])
@@ -696,9 +626,9 @@ function LoadDetailAPInvoice(option) {
                 $('#invoice-number').val(data?.['invoice_number'])
                 $('#invoice-exp').val(data?.['invoice_example'])
 
-                tabLineDetailTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
+                tabLineDetailTable.attr('data-goods-receipt-selected', data?.['goods_receipt_mapped'].map(item => item.id).join(','))
 
-                loadTableLineDetailForDetailPage(data?.['item_and_discount_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                loadTableLineDetailForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
 
                 Disabled(option)
 

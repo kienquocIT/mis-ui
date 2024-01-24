@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    LoadDetailARInvoice('detail');
+    LoadDetailAPInvoice('detail');
 })

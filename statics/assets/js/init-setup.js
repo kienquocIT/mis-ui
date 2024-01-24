@@ -370,6 +370,27 @@ class NotifyController {
         });
     }
 
+    callDoneNotify(urlNotifyDone) {
+        let clsThis = this;
+        if (urlNotifyDone) {
+            $.fn.callAjax2({
+                url: urlNotifyDone,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data){
+                        let counter = Number.parseInt(clsThis.bellCount.text());
+                        if (counter > 0){
+                            clsThis.bellCount.text(counter - 1);
+                        }
+                    }
+                },
+                (errs) => {},
+            );
+        }
+    }
+
     // main
     active() {
         new NotifyPopup().cleanChildNotifyBlock();
@@ -423,18 +444,24 @@ class NotifyController {
                         let stickyUnseen = item?.['is_done'] === true ? `` : `
                             <span class="badge badge-warning badge-indicator badge-indicator-xl position-top-start-overflow-1"></span>
                         `;
+                        let btnSeenItem = item?.['is_done'] === true ? `` : `
+                            <button class="btn btn-xs btn-primary btn-seen-notify"><i class="fa-brands fa-readme"></i> Seen</button>
+                        `;
                         let btn_reply_mentions = !item?.['comment_mentions_id'] ? ``: `
                             <button 
                                 class="btn btn-xs btn-primary btn-notify-reply-comment" 
                                 type="button"
+                            ><i class="fa-solid fa-reply"></i> Reply</button>
+                        `;
+                        let tmp = `
+                            <div 
+                                class="dropdown-item mb-1 bell-menu-item"
+                                data-is-done="${item?.['is_done']}"
                                 data-notify-id="${item?.['id']}"
                                 data-doc-id="${item?.['doc_id']}"
                                 data-app-id="${item?.['application_id']}"
                                 data-comment-id="${item?.['comment_mentions_id']}" 
-                            ><i class="fa-solid fa-reply"></i> Reply</button>
-                        `;
-                        let tmp = `
-                            <div class="dropdown-item mb-1 bell-menu-item">
+                            >
                                 <div class="media">
                                     <div class="media-head">
                                         <div class="avatar avatar-soft-primary avatar-rounded avatar-sm position-relative">
@@ -458,6 +485,7 @@ class NotifyController {
                                         <div>
                                             <a href="${urlData}" class="btn btn-xs btn-primary" type="button"><i class="fa-solid fa-right-to-bracket"></i> Goto </a>
                                             ${btn_reply_mentions}
+                                            ${btnSeenItem}
                                         </div>
                                     </div>
                                 </div>
@@ -476,19 +504,26 @@ class NotifyController {
                     {'imgReplace': globeAvatarNotFoundImg},
                 );
                 dataArea.find('button.btn-notify-reply-comment').on('click', function (){
-                    let urlNotifyDone = dataArea.attr('data-url-done-notify').replace('__pk__', $(this).attr('data-notify-id'));
-                    if (urlNotifyDone){
-                        $.fn.callAjax2({
-                            url: urlNotifyDone,
-                            method: 'GET'
-                        });
-                    }
+                    let bellNotifyItem = $(this).closest('.bell-menu-item');
+                    let notifyIdx = bellNotifyItem.attr('data-notify-id');
+                    let docIdx = bellNotifyItem.attr('data-doc-id');
+                    let appIdx = bellNotifyItem.attr('data-app-id');
+
+                    // seen
+                    let isDone = bellNotifyItem.attr('data-is-done') === 'true';
+                    if (isDone === true) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
+
+                    //
                     let modalEle = $('#ReplyCommentModal');
-                    new $x.cls.cmt(modalEle.find('.comment-group')).init(
-                        $(this).attr('data-doc-id'),
-                        $(this).attr('data-app-id'),
-                    )
+                    new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
                     modalEle.modal('show');
+                });
+                dataArea.find('button.btn-seen-notify').on('click', function (){
+                    let bellNotifyItem = $(this).closest('.bell-menu-item');
+                    let notifyIdx = bellNotifyItem.attr('data-notify-id');
+                    // seen
+                    let isDone = bellNotifyItem.attr('data-is-done') === 'true';
+                    if (isDone === true) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
                 })
 
                 WindowControl.hideLoadingWaitResponse(dataArea);
@@ -2922,38 +2957,6 @@ class DTBControl {
             0
         );
     }
-
-    // static parseFilter(dtb) {
-    //     let dtbInited = $(dtb).DataTable();
-    //
-    //     let rowCustomFilter = $(`div.row-custom-filter[data-dtb-id="#` + dtb.attr('id') + `"]`);
-    //
-    //     let dtbWrapper = $(dtb).closest('.dataTables_wrapper');
-    //     let dtbFilter = $(dtbWrapper).find('.dataTables_filter');
-    //     let dtbFilterInput = $(dtbFilter).find('input[type="search"]');
-    //
-    //     rowCustomFilter.each(function () {
-    //         $(this).find('select').each(function () {
-    //             DTBControl.__fillDefaultSelect2Filter($(this)).initSelect2();
-    //         }).on('select2:close', function () {
-    //             dtbInited.table().ajax.reload();
-    //         }).on('select2:clear', function () {
-    //             dtbInited.table().ajax.reload();
-    //         }).on('select2:unselect', function () {
-    //             dtbInited.table().ajax.reload();
-    //         });
-    //
-    //         let customFilterEle = $(this).find('.custom-filter-dtb');
-    //         if (dtbFilterInput && dtbFilterInput.length > 0 && customFilterEle && customFilterEle.length > 0) {
-    //             // dtbFilter.addClass('hidden');
-    //             $(this).find('.custom-filter-dtb').on('keyup', function () {
-    //                 $(dtbFilterInput).val($(this).val()).trigger('keyup');
-    //             });
-    //         } else {
-    //             customFilterEle.remove();
-    //         }
-    //     })
-    // }
 
     static _summaryFilterToText(textFilterEle, manualFilterEle = null, textManual = []) {
         if (textFilterEle) {

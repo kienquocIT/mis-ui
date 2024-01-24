@@ -759,6 +759,8 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    //
+                    changeTDTableMonthByWeeks();
                 },
             });
         }
@@ -1368,12 +1370,20 @@ $(function () {
             return result;
         }
 
-        function formatDate(date) {
+        function formatDateYYYYMMDD(date) {
             // Format the date as 'YYYY-MM-DD'
             let year = date.getFullYear();
             let month = (date.getMonth() + 1).toString().padStart(2, '0');
             let day = date.getDate().toString().padStart(2, '0');
             return `${year}-${month}-${day}`;
+        }
+
+        function formatDateDDMMYYYY(date) {
+            // Format date as DD/MM/YYYY
+            let day = date.getDate().toString().padStart(2, '0');
+            let month = (date.getMonth() + 1).toString().padStart(2, '0');
+            let year = date.getFullYear();
+            return `${day}/${month}/${year}`;
         }
 
         function formatStartEndDate(startDate, endDate) {
@@ -1438,12 +1448,39 @@ $(function () {
                 let endDate = new Date(currentDay);
                 endDate.setDate(currentDay.getDate() + 6);
                 // Format the dates as 'YYYY-MM-DD'
-                let formattedStartDate = formatDate(startDate);
-                let formattedEndDate = formatDate(endDate);
+                let formattedStartDate = formatDateYYYYMMDD(startDate);
+                let formattedEndDate = formatDateYYYYMMDD(endDate);
                 let datesFormat = formatStartEndDate(formattedStartDate, formattedEndDate);
                 // Add the week to the result object
                 // weeks[`week${weekIndex}`] = {startDate: datesFormat?.['startDate'], endDate: datesFormat?.['endDate']};
                 weeks[`${weekIndex}`] = {start_date: datesFormat?.['startDate'], end_date: datesFormat?.['endDate']};
+                // Move to the next week
+                currentDay.setDate(currentDay.getDate() + 7);
+                weekIndex++;
+            }
+            return weeks;
+        }
+
+        function getWeeksOfMonthShow(month, year) {
+            // Create a date object for the first day of the given month and year
+            let firstDay = new Date(year, month - 1, 1);
+            // Find the last day of the month
+            let lastDay = new Date(year, month, 0);
+            // Initialize the result object
+            let weeks = {};
+            // Loop through the days of the month
+            let currentDay = firstDay;
+            let weekIndex = 1;
+            while (currentDay <= lastDay) {
+                // Determine the start and end dates of the current week
+                let startDate = new Date(currentDay);
+                let endDate = new Date(currentDay);
+                endDate.setDate(currentDay.getDate() + 6);
+                // Format the dates as 'YYYY-MM-DD'
+                let formattedStartDate = formatDateDDMMYYYY(startDate);
+                let formattedEndDate = formatDateDDMMYYYY(endDate);
+                // Add the week to the result object
+                weeks[`${weekIndex}`] = {start_date: formattedStartDate, end_date: formattedEndDate};
                 // Move to the next week
                 currentDay.setDate(currentDay.getDate() + 7);
                 weekIndex++;
@@ -1610,7 +1647,7 @@ $(function () {
             let startMonth = parseInt(this.getAttribute('data-month'));
             calculateIfChangeBeginning($tableMonth, startValue, startMonth);
 
-            for (let month = (startMonth + 1); month <= 12; month++) {
+            for (let month = (startMonth + 1); month <= 5; month++) {
                 let eleTypeBegin = $tableMonth[0].querySelector('.table-row-type[data-type="1"]');
                 if (eleTypeBegin) {
                     let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
@@ -1647,6 +1684,16 @@ $(function () {
             // init money
             $.fn.initMaskMoney2();
             return true;
+        }
+
+        function changeTDTableMonthByWeeks() {
+            // append date range to td
+            let weeksOfMonthShow = getWeeksOfMonthShow(parseInt(month), parseInt(year));
+            for (let keyShow in weeksOfMonthShow) {
+                let classMap = '.week-' + keyShow;
+                $tableMonth[0].querySelector(classMap).innerHTML = 'Week 1' + '(' + String(weeksOfMonthShow[keyShow]?.['start_date']) + '-' + String(weeksOfMonthShow[keyShow]?.['end_date']);
+            }
+            return true
         }
 
         btnView.on('click', function () {

@@ -64,6 +64,31 @@ $(function () {
             });
         }
 
+        function setupDataLoadTable(dataList) {
+            let result = [];
+            let dataByCustomer = {};
+            for (let data of dataList) {
+                if (data?.['customer']?.['id']) {
+                    if (!dataByCustomer.hasOwnProperty(data?.['customer']?.['id'])) {
+                        dataByCustomer[data?.['customer']?.['id']] = data;
+                    } else {
+                        dataByCustomer[data?.['customer']?.['id']]['revenue'] += data?.['revenue'];
+                        dataByCustomer[data?.['customer']?.['id']]['gross_profit'] += data?.['gross_profit'];
+                        dataByCustomer[data?.['customer']?.['id']]['net_income'] += data?.['net_income'];
+                    }
+                }
+            }
+            for (let keyCustomer in dataByCustomer) {
+                result.push(dataByCustomer[keyCustomer]);
+            }
+            $table.DataTable().clear().draw();
+            $table.DataTable().rows.add(result).draw();
+            // init money
+            $.fn.initMaskMoney2();
+            loadTotal();
+            return true;
+        }
+
         function loadTotal() {
             let newRevenue = 0;
             let newGrossProfit = 0;
@@ -166,9 +191,7 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('report_customer_list') && Array.isArray(data.report_customer_list)) {
-                            $table.DataTable().clear().draw();
-                            $table.DataTable().rows.add(data.report_customer_list).draw();
-                            loadTotal();
+                            setupDataLoadTable(data.report_customer_list);
                         }
                     }
                 }

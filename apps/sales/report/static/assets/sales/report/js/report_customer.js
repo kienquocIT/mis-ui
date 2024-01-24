@@ -114,7 +114,6 @@ $(function () {
         }
         loadDbl();
 
-
         function formatStartEndDate(startDate, endDate) {
             if (startDate && endDate) {
                 startDate = startDate + ' 00:00:00';

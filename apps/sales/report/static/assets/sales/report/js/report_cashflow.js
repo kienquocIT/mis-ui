@@ -1687,11 +1687,14 @@ $(function () {
         }
 
         function changeTDTableMonthByWeeks() {
-            // append date range to td
-            let weeksOfMonthShow = getWeeksOfMonthShow(parseInt(month), parseInt(year));
-            for (let keyShow in weeksOfMonthShow) {
-                let classMap = '.week-' + keyShow;
-                $tableMonth[0].querySelector(classMap).innerHTML = 'Week 1' + '(' + String(weeksOfMonthShow[keyShow]?.['start_date']) + '-' + String(weeksOfMonthShow[keyShow]?.['end_date']);
+            let year = boxYear.val();
+            let month = boxMonth.val();
+            if (year && month) {
+                let weeksOfMonthShow = getWeeksOfMonthShow(parseInt(month), parseInt(year));
+                for (let keyShow in weeksOfMonthShow) {
+                    let classMap = '.week-' + keyShow;
+                    $tableMonth[0].querySelector(classMap).innerHTML = 'Week 1' + '(' + String(weeksOfMonthShow[keyShow]?.['start_date']) + '-' + String(weeksOfMonthShow[keyShow]?.['end_date']);
+                }
             }
             return true
         }

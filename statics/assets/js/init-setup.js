@@ -5163,7 +5163,19 @@ class CommentControl {
     item_add_event(eleItem$) {
         eleItem$.find('.icon-collapse').on('click', function (){
             $(this).find('.fa-solid').toggleClass('d-none');
-            $(this).closest('.comment-item').find('.comment-content').fadeToggle('fast');
+            let commentItemEle = $(this).closest('.comment-item');
+            commentItemEle.find('.comment-content').fadeToggle('fast');
+            commentItemEle.find('.comment-mentions').fadeToggle('fast');
+            if (
+                !$(this).find('.fa-chevron-right').hasClass('d-none')
+            ){
+                commentItemEle.find('.comment-replies').fadeOut('fast');
+            }
+
+        });
+        eleItem$.find('.btn-comment-action-show-replies').on('click', function (){
+            let counter = Number.parseInt($(this).attr('data-counter'));
+            if (counter > 0) $(this).closest('.comment-item').find('.comment-replies').fadeToggle('fast');
         })
         ListeningEventController.listenImageLoad(
             eleItem$.find('img'),
@@ -5180,44 +5192,68 @@ class CommentControl {
                         <i class="fa-solid fa-xs fa-chevron-up mr-3 ml-1"></i>
                     </span>
                     <img
-                            src="${kwargs?.['avatar_img'] || this.default_avt}" 
-                            alt="${kwargs?.employee_created?.full_name || ''}"
-                            style="width: 2rem;"
-                            class="mr-1"
+                        src="${kwargs?.['avatar_img'] || this.default_avt}" 
+                        alt="${kwargs?.employee_created?.full_name || ''}"
+                        style="width: 2rem;object-fit: contain;"
+                        class="mr-1"
                     >
                     <small class="mr-1">${kwargs?.employee_created?.full_name || ''}</small>
                     <small class="px-2">-</small>
                     <small class="mr-1">${kwargs?.['date_relative'] || ''}</small>
+                    <small class="mr-1">(${kwargs?.date_output || ''})</small>
                 </div>
                 <div class="w-100 min-h-35p pt-3 pb-1 comment-content">
                     ${kwargs?.contents || ''}
-                    <p><small>${kwargs?.date_output || ''}</small></p>
+                </div>
+                <div class="comment-mentions">
+                    <img
+                        src="${kwargs?.['avatar_img'] || this.default_avt}" 
+                        alt="${kwargs?.employee_created?.full_name || ''}"
+                        class="mr-1"
+                        data-bs-toggle="tooltip"
+                        title="${kwargs?.employee_created?.full_name || ''}"
+                    >
+                    <small>have been mentioned.</small>
+                </div>
+                <div class="d-flex comment-action">
+                    <small class="btn-comment-action btn-load-replies">Reply</small>
+                    <small 
+                        class="btn-comment-action btn-comment-action-show-replies d-flex align-items-center"
+                        data-counter="${kwargs?.['children_count'] || 0}"
+                    >
+                        <small class="mr-2 btn-load-replies">${kwargs?.['children_count'] || 0} more replies</small>
+                        <img
+                            src="${kwargs?.['avatar_img'] || this.default_avt}" 
+                            alt="${kwargs?.employee_created?.full_name || ''}"
+                            class="avatar-img mr-1"
+                            data-bs-toggle="tooltip"
+                            title="${kwargs?.employee_created?.full_name || ''}"
+                        >
+                    </small>
+                </div>
+                <div class="comment-replies ml-2" style="display: none;">
+                    <div class="min-h-50p w-100"></div>
                 </div>
             </div>
-            <!-- <button class="btn btn-xs btn-light btn-load-replies">{} more replies</button> -->
         `;
     }
 
     init_structure(){
         let clsThis = this;
-        if (this.ele$.attr('data-structure-inited') !== true){
+        if (this.ele$.attr('data-structure-inited') !== 'true'){
+            this.ele$.attr('data-structure-inited', 'true');
+
             // init event collapse/expand
             let ele_this = this.ele_list$;
-            this.ele_action_all.find('button').on('click', function (){
-                let action = $(this).attr('data-action');
-                if (action === 'collapse-all'){
-                    ele_this.find('.icon-collapse').each(function (){
-                        if (!$(this).find('.fa-chevron-up').hasClass('d-none')){
-                            $(this).trigger('click');
-                        }
-                    })
-                } else if (action === 'expand-all') {
-                    ele_this.find('.icon-collapse').each(function (){
-                        if ($(this).find('.fa-chevron-up').hasClass('d-none')){
-                            $(this).trigger('click');
-                        }
-                    })
-                }
+            this.ele_action_all.find('button[data-action="collapse-all"]').on('click', function (){
+                ele_this.find('.icon-collapse').filter(function (){
+                    return $(this).find('.fa-chevron-right').hasClass('d-none');
+                }).trigger('click');
+            })
+            this.ele_action_all.find('button[data-action="expand-all"]').on('click', function (){
+                ele_this.find('.icon-collapse').filter(function (){
+                    return $(this).find('.fa-chevron-up').hasClass('d-none');
+                }).trigger('click');
             })
 
             // init add new comment / event click button add
@@ -5404,8 +5440,6 @@ class CommentControl {
 
                 return false;
             })
-
-            this.ele$.attr('data-structure-inited', true);
         }
     }
 
@@ -5427,12 +5461,13 @@ class CommentControl {
                 'date_relative': dateRelateData.relate,
                 'date_output': dateRelateData.output,
                 'contents': data.contents || '',
+                'children_count': data?.['children_count'] || 0,
             }
 
             let html$ = $(this.item_get_html(kwargs));
             if (effect_newest === true) html$.addClass('comment-item-newest');
-            ap_or_pre === 'ap' ? this.ele_list$.append(html$) : this.ele_list$.prepend(html$);  // API sorting -date_created. : render add new success
             this.item_add_event(html$);
+            ap_or_pre === 'ap' ? this.ele_list$.append(html$) : this.ele_list$.prepend(html$);  // API sorting -date_created. : render add new success
             setTimeout(
                 () => html$.removeClass('comment-item-newest'),
                 2000
@@ -5446,13 +5481,13 @@ class CommentControl {
         let nextNum = eleTotal.attr('data-page-next');
         if (nextNum && nextNum > 0){
             let btnLoadMore = $(`<button class="btn btn-xs btn-light my-3 comment-load-more">${$.fn.transEle.attr('data-msg-show-more')}</button>`);
-            this.ele_list$.append(btnLoadMore);
             btnLoadMore.on('click', function (){
-                $(btnLoadMore).remove();
+                $(this).remove();
                 clsThis.fetch_all({
                     'page': nextNum,
                 });
             })
+            this.ele_list$.append(btnLoadMore);
         }
     }
 

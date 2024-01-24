@@ -1,3 +1,56 @@
+.comment-list {
+    height: 300px;
+    overflow-y: auto;
+    resize: both;
+    overflow-x: hidden;
+}
+
+.comment-list > .comment-item {
+    padding-left: 5px;
+    border-left: 5px solid rgb(0, 0, 0, 0);
+    padding-bottom: 1px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.comment-list > .comment-item:hover {
+    border-left-color: #505f9b;
+    border-bottom-color: #505f9b;
+    /*background-color: #f8fcff;*/
+    border-radius: 0 0 7px 7px;
+}
+
+.comment-list > .comment-item:not(:last-child) {
+    margin-bottom: 1rem;
+}
+
+.comment-list > .comment-item.comment-item-newest {
+    animation: comment-newest 2s ease-in-out;
+}
+
+@keyframes comment-newest {
+    0% {
+        background-color: #dcf5fd;
+    }
+    100% {
+        background-color: inherit;
+    }
+}
+
+.mentions-display {
+    padding: 5px;
+    border: 1px solid #87afbe;
+}
+
+.mentions-display-txt {
+    font-size: 0.7rem;
+    padding: 3px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    margin-right: 0.6rem;
+    margin-bottom: 0.6rem;
+    display: inline-block;
+}
+
 .mention-person[data-mention="true"] {
     padding: 2px;
     border: 1px solid #54add6;
@@ -5,4 +58,40 @@
     margin-right: 0.1rem;
     margin-bottom: 0.5rem;
     display: inline-block;
+}
+
+.comment-action > .btn-comment-action {
+    padding: 0.3rem 0;
+    cursor: pointer;
+}
+
+.comment-action > .btn-comment-action:hover {
+    color: #0a58ca;
+}
+
+.comment-action > .btn-comment-action::after {
+    text-decoration: none;
+}
+
+.comment-action > .btn-comment-action:not(:last-child)::after {
+    content: "●";
+    color: #1e7936;
+    padding: 0 0.5rem;
+    cursor: default;
+}
+
+.comment-mentions img, .comment-action img {
+    width: 1rem;
+    max-height: 1rem;
+    object-fit: contain;
+}
+
+.comment-replies {
+    padding-left: 3px;
+    border-left: 3px solid rgb(0, 0, 0, 0);
+    padding-bottom: 1px;
+    border-bottom: 1px solid #e8e8e8;
+    border-radius: 0 0 7px 7px;
+    border-left-color: #cad8e3;
+    border-bottom-color: #cad8e3;
 }

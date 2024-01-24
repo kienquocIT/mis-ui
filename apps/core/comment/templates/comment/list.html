@@ -3,58 +3,6 @@
         href="{% static 'comment/css/style.css' %}"
         rel="stylesheet" type="text/css"
 />
-<style>
-    .comment-list {
-        max-height: 300px;
-        overflow-y: auto;
-    }
-
-    .comment-list > .comment-item {
-        padding-left: 5px;
-        border-left: 5px solid rgb(0, 0, 0, 0);
-
-        padding-bottom: 2px;
-        border-bottom: 2px solid #e8e8e8;
-    }
-
-    .comment-list > .comment-item:hover {
-        border-left-color: #3572b0;
-        background-color: #ebfaff;
-    }
-
-    .comment-list > .comment-item:not(:last-child) {
-        margin-bottom: 1rem;
-    }
-
-    .comment-list > .comment-item.comment-item-newest {
-        animation: comment-newest 2s ease-in-out;
-    }
-
-    @keyframes comment-newest {
-      0% {
-        background-color: #dcf5fd;
-      }
-      100% {
-        background-color: inherit;
-      }
-    }
-
-    .mentions-display {
-        padding: 5px;
-        border: 1px solid #87afbe;
-    }
-
-    .mentions-display-txt {
-        font-size: 0.7rem;
-        padding: 3px;
-        background-color: #f1f1f1;
-        border-radius: 5px;
-        margin-right: 0.6rem;
-        margin-bottom: 0.6rem;
-        display: inline-block;
-    }
-
-</style>
 <div class="comment-group"
      data-url="{% url 'CommentList' pk_doc='__pk_doc__' pk_app='__pk_app__' %}"
      data-mentions="{% url 'EmployeeListAllAPI' %}"

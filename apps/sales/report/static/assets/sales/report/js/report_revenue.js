@@ -115,6 +115,15 @@ $(function () {
         }
         loadDbl();
 
+        function formatStartEndDate(startDate, endDate) {
+            if (startDate && endDate) {
+                startDate = startDate + ' 00:00:00';
+                endDate = endDate + ' 23:59:59';
+                return {startDate, endDate};
+            }
+            return {startDate: '', endDate: ''};
+        }
+
         function loadBoxEmployee() {
             boxEmployee.empty();
             let dataParams = {};
@@ -167,10 +176,11 @@ $(function () {
             let date = $('#report-revenue-date-approved').val();
             if (date) {
                 let dateStrings = date.split(' - ');
-                let dateStart = dateStrings[0] + " 00:00:00";
-                let dateEnd = dateStrings[1] + " 23:59:59";
-                dataParams['date_approved__gte'] = moment(dateStart, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
-                dataParams['date_approved__lte'] = moment(dateEnd, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
+                let dateStart = moment(dateStrings[0], 'DD/MM/YYYY').format('YYYY-MM-DD');
+                let dateEnd = moment(dateStrings[1], 'DD/MM/YYYY').format('YYYY-MM-DD');
+                let datesFormat = formatStartEndDate(dateStart, dateEnd);
+                dataParams['date_approved__gte'] = datesFormat?.['startDate'];
+                dataParams['date_approved__lte'] = datesFormat?.['endDate'];
             }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),

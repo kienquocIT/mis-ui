@@ -6,21 +6,11 @@
 <div class="comment-group"
      data-url="{% url 'CommentList' pk_doc='__pk_doc__' pk_app='__pk_app__' %}"
      data-mentions="{% url 'EmployeeListAllAPI' %}"
-
+     data-url-employee-detail="{% url 'EmployeeDetail' pk='__pk__' %}"
+     data-url-replies="{% url 'CommentRepliesAPI' pk='__pk__' %}"
      data-css-url-render="{% static 'comment/css/style.css' %}"
 >
-    <div class="w-100 pb-3 comment-action-all">
-        <button
-                class="btn btn-outline-primary btn-xs" data-action="collapse-all" type="button"
-        >{% trans 'Collapse All' %}</button>
-        <button
-                class="btn btn-outline-primary btn-xs" data-action="expand-all" type="button"
-        >{% trans 'Expand All' %}</button>
-        <p><small class="total-comment" style="display: none;" data-pattern="{% trans 'Showing {} records' %}"></small></p>
-    </div>
-    <div class="w-100 min-h-50p comment-list"></div>
-    <div class="w-100 comment-add-area pt-3">
-{#        <p class="badge badge-soft-light mb-2">Reply for: All</p>#}
+    <div class="w-100 comment-add-area pb-1">
         <p class="mentions-display" style="display: none;"></p>
         <textarea></textarea>
         <form class="frm-add-new-comment" data-url="{% url 'CommentList' pk_doc='__pk_doc__' pk_app='__pk_app__'  %}" data-method="POST">
@@ -30,4 +20,21 @@
             <button class="w-100 btn btn-primary btn-square btn-add-new-comment" type="submit">{% trans 'Add' %}</button>
         </form>
     </div>
+    <button
+        class="w-100 btn btn-xs mb-1 p-0 comment-all-collapse-editor"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Hide/Show editor' %}"
+    >
+        <i class="fa-solid fa-angles-up"></i>
+        <i class="fa-solid fa-angles-down d-none"></i>
+    </button>
+    <div class="w-100 pb-3 comment-action-all">
+        <small class="total-comment" style="display: none;" data-pattern="{% trans 'Showing {} records' %}"></small>
+        <button
+                class="btn btn-outline-primary btn-xs" data-action="collapse-all" type="button"
+        >{% trans 'Collapse All' %}</button>
+        <button
+                class="btn btn-outline-primary btn-xs" data-action="expand-all" type="button"
+        >{% trans 'Expand All' %}</button>
+    </div>
+    <div class="w-100 comment-list"></div>
 </div>

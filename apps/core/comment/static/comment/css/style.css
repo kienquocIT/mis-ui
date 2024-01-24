@@ -1,5 +1,5 @@
 .comment-list {
-    height: 300px;
+    height: 400px;
     overflow-y: auto;
     resize: both;
     overflow-x: hidden;
@@ -63,6 +63,10 @@
 .comment-action > .btn-comment-action {
     padding: 0.3rem 0;
     cursor: pointer;
+
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }
 
 .comment-action > .btn-comment-action:hover {
@@ -89,9 +93,23 @@
 .comment-replies {
     padding-left: 3px;
     border-left: 3px solid rgb(0, 0, 0, 0);
-    padding-bottom: 1px;
-    border-bottom: 1px solid #e8e8e8;
     border-radius: 0 0 7px 7px;
     border-left-color: #cad8e3;
-    border-bottom-color: #cad8e3;
+}
+
+.comment-replies .comment-item {
+    padding-bottom: 1px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.comment-replies > .comment-item:hover {
+    background-color: #f9f9f9;
+}
+
+.comment-replies > .comment-item.comment-item-newest {
+    animation: comment-newest 2s ease-in-out;
+}
+
+.comment-all-collapse-editor:hover {
+    color: #0a58ca;
 }

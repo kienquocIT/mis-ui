@@ -173,6 +173,10 @@ msgid "Close"
 msgstr "Đóng"
 
 #
+msgid "Hide/Show editor"
+msgstr "Hiển thị/ẩn trình chỉnh sửa"
+
+#
 msgid "Sign in to your account"
 msgstr "Đăng nhập vào tài khoản của bạn"
 

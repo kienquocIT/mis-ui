@@ -130,6 +130,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
+    COMMENT_REPLIES_LIST = StringUrl('comment/reply/{pk}/list')
 
     # base
     PLAN_LIST = StringUrl('base/plans')

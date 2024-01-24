@@ -5142,6 +5142,8 @@ class CommentControl {
 
         this.default_avt = '/static/assets/images/systems/file-not-found.png';
         this.default_person_avt = '/static/assets/images/systems/person-avt.png';
+
+        this.url_employee_detail = ele$.attr('data-url-employee-detail')
     }
 
     __current_page(data){
@@ -5160,32 +5162,160 @@ class CommentControl {
         }
     }
 
-    item_add_event(eleItem$) {
+    item_add_event(eleItem$, has_replies=true) {
+        let clsThis = this;
+        function get_url(){
+            let urlBase = clsThis.ele$.attr('data-url-replies');
+            let pk = eleItem$.attr('data-comment-id');
+            return urlBase && pk ? urlBase.replace('__pk__', pk) : null;
+        }
+
         eleItem$.find('.icon-collapse').on('click', function (){
             $(this).find('.fa-solid').toggleClass('d-none');
-            let commentItemEle = $(this).closest('.comment-item');
-            commentItemEle.find('.comment-content').fadeToggle('fast');
-            commentItemEle.find('.comment-mentions').fadeToggle('fast');
-            if (
-                !$(this).find('.fa-chevron-right').hasClass('d-none')
-            ){
-                commentItemEle.find('.comment-replies').fadeOut('fast');
+
+            if (!$(this).find('.fa-chevron-right').hasClass('d-none')){
+                eleItem$.find('.comment-content').fadeOut('fast');
+                eleItem$.find('.comment-mentions').fadeOut('fast');
+                eleItem$.find('.comment-replies').fadeOut('fast');
+                eleItem$.find('.comment-reply-new').fadeOut('fast');
+            } else {
+                eleItem$.find('.comment-content').fadeIn('fast');
+                eleItem$.find('.comment-mentions').fadeIn('fast');
+                eleItem$.find('.comment-replies').fadeIn('fast');
             }
 
         });
-        eleItem$.find('.btn-comment-action-show-replies').on('click', function (){
-            let counter = Number.parseInt($(this).attr('data-counter'));
-            if (counter > 0) $(this).closest('.comment-item').find('.comment-replies').fadeToggle('fast');
-        })
+        if (has_replies ===  true){
+            let commentRepliesEle = eleItem$.find('.comment-replies');
+            let eleReplyComment = eleItem$.find('.comment-reply-new');
+
+            eleItem$.find('.btn-comment-action-show-replies').on('click', function (){
+                let counter = Number.parseInt($(this).attr('data-counter'));
+                if (counter > 0) commentRepliesEle.fadeToggle('fast');
+
+                if (!$(this).attr('data-url')){
+                    let urlResolved = get_url();
+                    if (urlResolved) {
+                        $(this).attr('data-url', urlResolved);
+                        $.fn.callAjax2({
+                            url: urlResolved,
+                            method: 'GET',
+                        }).then(
+                            resp => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data){
+                                    let replies_list = data?.['comment_replies_list'] || [];
+                                    replies_list.map(
+                                        (item) => {
+                                            clsThis.render_comment_item(item, {
+                                                'ele_push_group': commentRepliesEle,
+                                                'get_html_opts': {
+                                                    action_enabled: false,
+                                                    replies_enabled: false,
+                                                    add_comment_enabled: false,
+                                                }
+                                            })
+                                        }
+                                    )
+                                }
+                            },
+                            errs => console.log(errs),
+                        )
+                    }
+                }
+            })
+
+            eleItem$.find('.btn-comment-reply-new').on('click', function (){
+                if (eleReplyComment.length > 0){
+                    let urlResolved = get_url();
+                    if (urlResolved) {
+                        eleReplyComment.fadeToggle('fast');
+                        if (!$(this).attr('data-url')){
+                            $(this).attr('data-url', urlResolved);
+                            clsThis.init_box_comment({
+                                urlSubmit: urlResolved,
+                                textarea: eleReplyComment.find('textarea'),
+                                frmInsideAdd: eleReplyComment.find('form.frm-add-new-comment'),
+                                showingMentions: eleReplyComment.find('.mentions-display'),
+                                render_comment_opts: {
+                                    'ele_push_group': commentRepliesEle,
+                                    'get_html_opts': {
+                                        action_enabled: false,
+                                        replies_enabled: false,
+                                        add_comment_enabled: false,
+                                    },
+                                },
+                                render_record_showing: false,
+                                rendered_scroll_top: false,
+                                rendered_plus_replies_ele: eleItem$.find('.btn-comment-action-show-replies'),
+                            })
+                        }
+                    }
+                }
+            })
+        }
         ListeningEventController.listenImageLoad(
             eleItem$.find('img'),
             {'imgReplace': globeAvatarNotFoundImg},
         );
     }
 
-    item_get_html(kwargs){
+    item_get_html(kwargs, opts={}){
+        let {action_enabled, replies_enabled, mentions_enabled, add_comment_enabled} = {
+            mentions_enabled: true,
+            action_enabled: true,
+            replies_enabled: true,
+            add_comment_enabled: true,
+            ...opts,
+        }
+        let htmlMentions = mentions_enabled === true ? `
+            <div class="comment-mentions">
+                <img
+                    src="${kwargs?.['avatar_img'] || this.default_avt}" 
+                    alt="${kwargs?.employee_created?.full_name || ''}"
+                    class="mr-1"
+                    data-bs-toggle="tooltip"
+                    title="${kwargs?.employee_created?.full_name || ''}"
+                >
+                <small>have been mentioned.</small>
+            </div>
+        ` : ``;
+        let htmlAction = action_enabled === true ? `
+            <div class="d-flex comment-action">
+                <small class="btn-comment-action btn-comment-reply-new">Reply</small>
+                <small 
+                    class="btn-comment-action btn-comment-action-show-replies d-flex align-items-center"
+                    data-counter="${kwargs?.['children_count'] || 0}"
+                >
+                    <small class="mr-2"><span class="comment-num-counter">${kwargs?.['children_count'] || 0}</span> more replies</small>
+                    <img
+                        src="${kwargs?.['avatar_img'] || this.default_avt}" 
+                        alt="${kwargs?.employee_created?.full_name || ''}"
+                        class="avatar-img mr-1"
+                        data-bs-toggle="tooltip"
+                        title="${kwargs?.employee_created?.full_name || ''}"
+                    >
+                </small>
+            </div>
+        ` : '';
+        let htmlReplies = replies_enabled === true ? `
+            <div class="comment-replies mx-5 min-h-50p" style="display: none; width: calc(96% - 2rem);"></div>
+        ` : ``;
+        let htmlAddNew = add_comment_enabled === true ? `
+            <div class="comment-reply-new mx-5 mt-2" style="display: none; width: calc(96% - 2rem);">
+                <p class="mentions-display" style="display: none;"></p>
+                <textarea></textarea>
+                <form class="frm-add-new-comment" data-method="POST">
+                    <input type="text" class="d-none" name="mentions" value="{}"/>
+                    <button class="w-100 btn btn-primary btn-square btn-add-new-comment" type="submit">${$.fn.transEle.attr('data-add')}</button>
+                </form>
+            </div>
+        ` : ``;
         return `
-            <div class="w-100 min-h-50p comment-item p-2">
+            <div 
+                class="w-100 min-h-50p comment-item p-2"
+                data-comment-id="${kwargs['id']}"
+            >
                 <div class="w-100 min-h-15p d-flex align-items-center">
                     <span class="icon-collapse" style="max-width: 1.2rem; cursor: pointer">
                         <i class="fa-solid fa-xs fa-chevron-right mr-3 ml-1 d-none"></i>
@@ -5205,37 +5335,243 @@ class CommentControl {
                 <div class="w-100 min-h-35p pt-3 pb-1 comment-content">
                     ${kwargs?.contents || ''}
                 </div>
-                <div class="comment-mentions">
-                    <img
-                        src="${kwargs?.['avatar_img'] || this.default_avt}" 
-                        alt="${kwargs?.employee_created?.full_name || ''}"
-                        class="mr-1"
-                        data-bs-toggle="tooltip"
-                        title="${kwargs?.employee_created?.full_name || ''}"
-                    >
-                    <small>have been mentioned.</small>
-                </div>
-                <div class="d-flex comment-action">
-                    <small class="btn-comment-action btn-load-replies">Reply</small>
-                    <small 
-                        class="btn-comment-action btn-comment-action-show-replies d-flex align-items-center"
-                        data-counter="${kwargs?.['children_count'] || 0}"
-                    >
-                        <small class="mr-2 btn-load-replies">${kwargs?.['children_count'] || 0} more replies</small>
-                        <img
-                            src="${kwargs?.['avatar_img'] || this.default_avt}" 
-                            alt="${kwargs?.employee_created?.full_name || ''}"
-                            class="avatar-img mr-1"
-                            data-bs-toggle="tooltip"
-                            title="${kwargs?.employee_created?.full_name || ''}"
-                        >
-                    </small>
-                </div>
-                <div class="comment-replies ml-2" style="display: none;">
-                    <div class="min-h-50p w-100"></div>
-                </div>
+                ${htmlMentions}
+                ${htmlAction}
+                ${htmlAddNew}
+                ${htmlReplies}
             </div>
         `;
+    }
+
+    init_box_comment(opts){
+        let clsThis = this;
+        let {
+            urlSubmit, textarea, frmInsideAdd, showingMentions,
+            render_comment_opts, render_record_showing, rendered_scroll_top, rendered_plus_replies_ele,
+        } = {
+            urlSubmit: null,
+            textarea: this.ele_add.find('textarea'),
+            frmInsideAdd: this.ele_add.find('form.frm-add-new-comment'),
+            showingMentions: this.ele_add.find('.mentions-display'),
+            render_comment_opts: {},
+            render_record_showing: true,
+            rendered_scroll_top: true,
+            rendered_plus_replies_ele: null,
+            ...opts
+        }
+        let inputMentions = frmInsideAdd.find('input[name="mentions"]');
+
+        function setupDisplayMentionsInEditor(item){
+            return `
+                <a 
+                    href="${clsThis.url_employee_detail.replace('__pk__', item.id)}" 
+                    target="_blank"
+                >@${item.full_name} (${item.code})</a>
+            `;
+        }
+
+        function setupDisplayMentionsInSummary(item){
+            return $(`
+                <span class="mentions-display-txt">
+                    <a 
+                        href="${clsThis.url_employee_detail.replace('__pk__', item.id)}" 
+                        target="_blank"
+                    >
+                        ${item.full_name} 
+                        <small>(${item.code} - ${item.email})</small>
+                    </a>
+                </span>
+            `)
+        }
+
+        let tinymceEditor = null;
+        textarea.tinymce( {
+            menubar: false,
+            height: 120,
+            plugins: 'advlist autolink lists mention',
+            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | outdent indent numlist bullist | removeformat ',
+            content_css: clsThis.ele$.attr('data-css-url-render'),
+            content_style: `
+                @import url(\'//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap\');
+                body { font-family:"Google Sans", "Roboto", "Roboto Mono", sans-serif; font-size: 14px; }
+            `,
+            mentions: {
+                queryBy: 'email',
+                items: 10,
+                source: function (query, process, delimiter) {
+                    // Do your ajax call
+                    // When using multiple delimiters you can alter the query depending on the delimiter used
+                    if (delimiter === '@') {
+                        let params = $.param(
+                            {
+                                'page': 1,
+                                'pageSize': 10,
+                                'ordering': 'first_name',
+                                ...(
+                                    query ? {'search': query} : {}
+                                )
+                            }
+                        )
+                       $.fn.callAjax2({
+                           url: clsThis.ele$.attr('data-mentions') + '?' + params,
+                           cache: true,
+                       }).then(
+                           (resp) => {
+                               let data = $.fn.switcherResp(resp);
+                               if (data){
+                                   let resource = (data?.['employee_list'] || []).map(
+                                       (item) => {
+                                           if (!item.avatar_img) item.avatar_img = clsThis.default_person_avt;
+                                           return item;
+                                       }
+                                   )
+                                   process(resource);
+                               }
+                           },
+                           (errs) => console.log(errs),
+                       )
+                    }
+                },
+                insert: function (item) {
+                    return `<span 
+                        class="mention-person"
+                        data-mention="true"
+                        data-mention-id="${item.id}" 
+                        data-mention-email="${item.email}"
+                        data-mention-full-name="${item.full_name}" 
+                        data-mention-code="${item.code}" 
+                    >${setupDisplayMentionsInEditor(item)}</span>\u200B&nbsp;`
+                },
+                render: function(item) {
+                    return `
+                        <li>
+                            <a href="javascript:;">
+                                <img src="${item.avatar_img}" width="20px" alt=""/>
+                                <span>${item.full_name} - ${item.email} <small>(${item.code})</small></span>
+                            </a>
+                        </li>
+                    `
+                },
+                renderDropdown: function() {
+                    return '<ul class="rte-autocomplete dropdown-menu"></ul>';
+                }
+            },
+            setup: function(editor) {
+                tinymceEditor = editor;
+                editor.on('change', function() {
+                    let content = editor.getContent();
+
+                    let parser = new DOMParser();
+                    let doc = parser.parseFromString(content, 'text/html');
+
+                    let mentionsIds = [];
+                    let mentionsTxt = [];
+                    let mentions = doc.querySelectorAll('[data-mention="true"]');
+                    Array.from(mentions).map(function(mention) {
+                        let idx = mention.getAttribute('data-mention-id');
+                        let email = mention.getAttribute('data-mention-email');
+                        let fullName = mention.getAttribute('data-mention-full-name')
+                        let code = mention.getAttribute('data-mention-code')
+                        if (mentionsIds.indexOf(idx) === -1){
+                            mentionsIds.push(idx);
+                            mentionsTxt.push(setupDisplayMentionsInSummary({
+                                'id': idx,
+                                'email': email,
+                                'full_name': fullName,
+                                'code': code,
+                            }))
+                        }
+                    });
+                    inputMentions.val(JSON.stringify(mentionsIds));
+
+                    //
+                    showingMentions.empty()
+                    if (mentionsTxt.length === 0) showingMentions.fadeOut('fast');
+                    else {
+                        mentionsTxt.map(
+                            (item) => {
+                                showingMentions.append(item);
+                            }
+                        )
+                        showingMentions.fadeIn('fast');
+                    }
+                });
+                editor.on('keydown', function(e) {
+                    if (e.key === 'Backspace' || e.key === 'Delete') {
+                        let node = editor.selection.getNode();
+                        if (node.getAttribute("data-mention") === "true") {
+                            e.preventDefault();
+                            node.remove();
+                            if (editor.getContent() === '') editor.setContent('<p>&nbsp;</p>');
+                            editor.fire('change');
+                        }
+                    }
+                });
+            },
+        });
+        frmInsideAdd.on('submit', function (event){
+            $(this).find('button[type=submit]').prop('disabled', true);
+            event.preventDefault();
+
+            let url = urlSubmit;
+            if (!urlSubmit){
+                let doc_id = $(this).find('input[name="doc_id"]').val();
+                let app_id = $(this).find('input[name="application"]').val();
+                url = $(this).attr('data-url').replace('__pk_doc__', doc_id).replace('__pk_app__', app_id)
+            }
+            let mention_data = $(this).find('input[name="mentions"]').val();
+            let data = {
+                "mentions": mention_data ? JSON.parse(mention_data) : [],
+                'contents': textarea.tinymce().getContent(),
+            };
+            let method = $(this).attr('data-method');
+
+            if (url && method && data){
+                $.fn.callAjax2({
+                    url: url,
+                    method: method,
+                    data: data,
+                }).then(
+                    resp => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data){
+                            // reset editor
+                            textarea.tinymce().setContent('');
+                            if (tinymceEditor) tinymceEditor.fire('change');
+
+                            //
+                            $.fn.notifyB({'description': $.fn.transEle.attr('data-success')}, 'success');
+
+                            // render comment with detail API
+                            clsThis.render_comment_item(data?.['comment_detail'] || {}, {'ap_or_pre': 'pre', ...render_comment_opts});
+
+                            // increase records of all
+                            if (render_record_showing === true) clsThis.render_record_showing({'plus_num': 1});
+
+                            // scoll to top
+                            if (rendered_scroll_top === true) clsThis.ele_list$.scrollTop(0);
+
+                            // increatese records of replies
+                            if (rendered_plus_replies_ele){
+                                let counter = Number.parseInt(rendered_plus_replies_ele.attr('data-counter'));
+                                counter += 1;
+                                rendered_plus_replies_ele.attr('data-counter', counter);
+                                rendered_plus_replies_ele.find('.comment-num-counter').text(counter);
+                            }
+                        }
+                        $(this).find('button[type=submit]').prop('disabled', false);
+                    },
+                    errs => {
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-fail'),
+                        }, 'failure');
+                        $(this).find('button[type=submit]').prop('disabled', false);
+                    },
+                )
+            }
+
+            return false;
+        })
     }
 
     init_structure(){
@@ -5244,7 +5580,7 @@ class CommentControl {
             this.ele$.attr('data-structure-inited', 'true');
 
             // init event collapse/expand
-            let ele_this = this.ele_list$;
+            let ele_this = this.ele$;
             this.ele_action_all.find('button[data-action="collapse-all"]').on('click', function (){
                 ele_this.find('.icon-collapse').filter(function (){
                     return $(this).find('.fa-chevron-right').hasClass('d-none');
@@ -5257,193 +5593,30 @@ class CommentControl {
             })
 
             // init add new comment / event click button add
-            let textarea = this.ele_add.find('textarea');
-            let frmInsideAdd = this.ele_add.find('form.frm-add-new-comment');
-            let inputMentions = frmInsideAdd.find('input[name="mentions"]');
-            let showingMentions = this.ele_add.find('.mentions-display');
+            this.init_box_comment();
 
-            function setupDisplayMentionsInEditor(item){
-                return `@${item.full_name} (${item.code})`;
-            }
-
-            function setupDisplayMentionsInSummary(item){
-                return $(`
-                    <span class="mentions-display-txt">
-                        ${item.full_name} 
-                        <small>(${item.code} - ${item.email})</small>
-                    </span>
-                `)
-            }
-
-            textarea.tinymce( {
-                menubar: false,
-                plugins: 'advlist autolink lists mention',
-                toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | outdent indent numlist bullist | removeformat ',
-                content_css: clsThis.ele$.attr('data-css-url-render'),
-                content_style: `
-                    @import url(\'//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap\');
-                    body { font-family:"Google Sans", "Roboto", "Roboto Mono", sans-serif; font-size: 14px; }
-                `,
-                mentions: {
-                    queryBy: 'email',
-                    items: 10,
-                    source: function (query, process, delimiter) {
-                        // Do your ajax call
-                        // When using multiple delimiters you can alter the query depending on the delimiter used
-                        if (delimiter === '@') {
-                            let params = $.param(
-                                {
-                                    'page': 1,
-                                    'pageSize': 10,
-                                    'ordering': 'first_name',
-                                    ...(
-                                        query ? {'search': query} : {}
-                                    )
-                                }
-                            )
-                           $.fn.callAjax2({
-                               url: clsThis.ele$.attr('data-mentions') + '?' + params,
-                               cache: true,
-                           }).then(
-                               (resp) => {
-                                   let data = $.fn.switcherResp(resp);
-                                   if (data){
-                                       let resource = (data?.['employee_list'] || []).map(
-                                           (item) => {
-                                               if (!item.avatar_img) item.avatar_img = clsThis.default_person_avt;
-                                               return item;
-                                           }
-                                       )
-                                       process(resource);
-                                   }
-                               },
-                               (errs) => console.log(errs),
-                           )
-                        }
-                    },
-                    insert: function (item) {
-                        return `<span 
-                            class="mention-person"
-                            data-mention="true"
-                            data-mention-id="${item.id}" 
-                            data-mention-email="${item.email}"
-                            data-mention-full-name="${item.full_name}" 
-                            data-mention-code="${item.code}" 
-                        >${setupDisplayMentionsInEditor(item)}</span>\u200B&nbsp;`
-                    },
-                    render: function(item) {
-                        return `
-                            <li>
-                                <a href="javascript:;">
-                                    <img src="${item.avatar_img}" width="20px" alt=""/>
-                                    <span>${item.full_name} - ${item.email} <small>(${item.code})</small></span>
-                                </a>
-                            </li>
-                        `
-                    },
-                    renderDropdown: function() {
-                        return '<ul class="rte-autocomplete dropdown-menu"></ul>';
-                    }
-                },
-                setup: function(editor) {
-                    editor.on('change', function() {
-                        let content = editor.getContent();
-
-                        let parser = new DOMParser();
-                        let doc = parser.parseFromString(content, 'text/html');
-
-                        let mentionsIds = [];
-                        let mentionsTxt = [];
-                        let mentions = doc.querySelectorAll('[data-mention="true"]');
-                        Array.from(mentions).map(function(mention) {
-                            let idx = mention.getAttribute('data-mention-id');
-                            let email = mention.getAttribute('data-mention-email');
-                            let fullName = mention.getAttribute('data-mention-full-name')
-                            let code = mention.getAttribute('data-mention-code')
-                            if (mentionsIds.indexOf(idx) === -1){
-                                mentionsIds.push(idx);
-                                mentionsTxt.push(setupDisplayMentionsInSummary({
-                                    'email': email,
-                                    'full_name': fullName,
-                                    'code': code,
-                                }))
-                            }
-                        });
-                        inputMentions.val(JSON.stringify(mentionsIds));
-
-                        //
-                        showingMentions.empty()
-                        if (mentionsTxt.length === 0) showingMentions.fadeOut('fast');
-                        else {
-                            mentionsTxt.map(
-                                (item) => {
-                                    showingMentions.append(item);
-                                }
-                            )
-                            showingMentions.fadeIn('fast');
-                        }
-                    });
-                    editor.on('keydown', function(e) {
-                        if (e.key === 'Backspace' || e.key === 'Delete') {
-                            let node = editor.selection.getNode();
-                            if (node.getAttribute("data-mention") === "true") {
-                                e.preventDefault();
-                                node.remove();
-                                if (editor.getContent() === '') editor.setContent('<p>&nbsp;</p>');
-                                editor.fire('change');
-                            }
-                        }
-                    });
-                },
-            });
-            frmInsideAdd.on('submit', function (event){
-                $(this).find('button[type=submit]').prop('disabled', true);
-                event.preventDefault();
-
-                let doc_id = $(this).find('input[name="doc_id"]').val();
-                let app_id = $(this).find('input[name="application"]').val();
-                let mention_data = $(this).find('input[name="mentions"]').val();
-                let data = {
-                    "mentions": mention_data ? JSON.parse(mention_data) : [],
-                    'contents': textarea.tinymce().getContent(),
-                };
-                let url = $(this).attr('data-url').replace('__pk_doc__', doc_id).replace('__pk_app__', app_id);
-                let method = $(this).attr('data-method');
-
-                if (url && method && data && doc_id && app_id){
-                    $.fn.callAjax2({
-                        url: url,
-                        method: method,
-                        data: data,
-                    }).then(
-                        resp => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data){
-                                $.fn.notifyB({
-                                    'description': $.fn.transEle.attr('data-success'),
-                                }, 'success');
-                                clsThis.render_comment_item(data?.['comment_detail'] || {}, 'pre', true);
-                                clsThis.render_record_showing({'plus_num': 1});
-                                clsThis.ele_list$.scrollTop(0);
-                                textarea.tinymce().setContent('');
-                            }
-                            $(this).find('button[type=submit]').prop('disabled', false);
-                        },
-                        errs => {
-                            $.fn.notifyB({
-                                'description': $.fn.transEle.attr('data-fail'),
-                            }, 'failure');
-                            $(this).find('button[type=submit]').prop('disabled', false);
-                        },
-                    )
-                }
-
-                return false;
+            // init collapse editor all
+            this.ele$.find('.comment-all-collapse-editor').on('click', function (){
+                clsThis.ele_add.fadeToggle('fast');
+                $(this).find('.fa-solid').toggleClass('d-none');
             })
         }
     }
 
-    render_comment_item(data, ap_or_pre='ap', effect_newest=true){
+    render_comment_item(data, opts={}) {
+        let {
+            ap_or_pre,
+            effect_newest,
+            ele_push_group,
+            get_html_opts,
+        } = {
+            ap_or_pre: 'ap',
+            effect_newest: true,
+            ele_push_group: null,
+            get_html_opts: {},
+            ...opts
+        }
+
         if (data && typeof data === 'object'){
             let dateRelateData = UtilControl.displayRelativeTime(data.date_created, {
                 'callback': function (data){
@@ -5454,6 +5627,7 @@ class CommentControl {
                 }
             })
             let kwargs = {
+                'id': data?.['id'] || '',
                 'avatar_img': data?.['employee_created']?.['avatar_img'] || this.default_person_avt,
                 'employee_created': {
                     'full_name': data?.['employee_created']?.['full_name'] || '',
@@ -5464,10 +5638,14 @@ class CommentControl {
                 'children_count': data?.['children_count'] || 0,
             }
 
-            let html$ = $(this.item_get_html(kwargs));
+            let html$ = $(this.item_get_html(kwargs, get_html_opts));
             if (effect_newest === true) html$.addClass('comment-item-newest');
             this.item_add_event(html$);
-            ap_or_pre === 'ap' ? this.ele_list$.append(html$) : this.ele_list$.prepend(html$);  // API sorting -date_created. : render add new success
+
+            let elePushTo = (
+                ele_push_group ? ele_push_group : this.ele_list$
+            )
+            ap_or_pre === 'ap' ? elePushTo.append(html$) : elePushTo.prepend(html$);  // API sorting -date_created. : render add new success
             setTimeout(
                 () => html$.removeClass('comment-item-newest'),
                 2000

@@ -324,7 +324,6 @@ class MenusCRM:
         name='AR Invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
         icon='<i class="bi bi-receipt"></i>',
     )
-
     TASK = MenuCommon(
         name='Task', code='menu_opportunity_task', view_name='OpportunityTaskList',
         icon='<i class="fa-solid fa-list-check"></i>',
@@ -394,6 +393,11 @@ class MenusPurchase:
                 icon='<i class="fas fa-file-export"></i>',
             ),
         ],
+    )
+
+    AP_INVOICE = MenuCommon(
+        name='AP Invoice', code='id_menu_ap_invoice', view_name='APInvoiceList',
+        icon='<i class="fas fa-file-invoice"></i>',
     )
 
 
@@ -563,7 +567,8 @@ class SpaceItem:
             menus=[
                 MenusPurchase.HOME,
                 MenusPurchase.PURCHASE,
-                MenusPurchase.INVENTORY
+                MenusPurchase.INVENTORY,
+                MenusPurchase.AP_INVOICE
             ],
         ),
         'hrm': SpaceCommon(

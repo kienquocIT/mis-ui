@@ -4694,3 +4694,15 @@ function calculateDate(dateString, opts = {}) {
         return `${padWithZero(newDate.getDate())}/${padWithZero(newDate.getMonth() + 1)}/${newDate.getFullYear()}`;
     }
 }
+
+// validate
+function validateNumber(ele) {
+    let value = ele.value;
+    // Replace non-digit characters with an empty string
+    value = value.replace(/[^0-9.]/g, '');
+    // Remove unnecessary zeros from the integer part
+    value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+    // Update value of input
+    ele.value = value;
+    return true;
+}

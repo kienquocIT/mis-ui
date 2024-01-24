@@ -1,19 +1,18 @@
 const scriptUrlEle = $('#script-url')
 const scriptTransEle = $('#script-trans')
-const tableSelectCustomerEle = $('#table-select-customer')
-const selectCustomerBtn = $('#select-customer-btn')
-const customerCodeEle = $('#customer-code')
-const customerSelectModal = $('#customer-select-modal')
-const saleOrderEle = $('#sale-order')
-const tableSelectDeliveryEle = $('#table-select-delivery')
+const tableSelectSupplierEle = $('#table-select-supplier')
+const selectSupplierBtn = $('#select-supplier-btn')
+const supplierCodeEle = $('#supplier-code')
+const supplierSelectModal = $('#supplier-select-modal')
+const purchaseOrderEle = $('#purchase-order')
+const tableSelectGoodsReceiptEle = $('#table-select-goods-receipt')
 const tableDetailProductEle = $('#table-product-detail')
 const dataLineDetailTableScript = $('#data-line-detail-table')
 const tabLineDetailTable = $('#tab_line_detail_datatable')
 const postingDateEle = $('#posting-date')
 const documentDateEle = $('#document-date')
 const invoiceDateEle= $('#invoice-date')
-const customerSelectBtn = $('#customer-select-btn')
-
+const supplierSelectBtn = $('#supplier-select-btn')
 
 postingDateEle.daterangepicker({
     singleDatePicker: true,
@@ -51,52 +50,46 @@ invoiceDateEle.daterangepicker({
     maxYear: parseInt(moment().format('YYYY'), 10)
 }).val('');
 
-selectCustomerBtn.on('click', function () {
+selectSupplierBtn.on('click', function () {
     let selected_id = null
     let selected_name = ''
-    $('input[name="customer-selected-radio"]').each(function () {
+    $('input[name="supplier-selected-radio"]').each(function () {
         if ($(this).prop('checked')) {
             selected_id = $(this).attr('data-id')
             selected_name = $(this).attr('data-name')
         }
     })
     if (selected_id) {
-        customerCodeEle.val(selected_name)
-        customerCodeEle.attr('data-id', selected_id)
-        customerSelectModal.modal('hide')
+        supplierCodeEle.val(selected_name)
+        supplierCodeEle.attr('data-id', selected_id)
+        supplierSelectModal.modal('hide')
     }
     else {
         $.fn.notifyB({description: 'Nothing selected'}, 'warning');
     }
 })
 
-customerSelectBtn.on('click', function () {
-    // loadSaleOrder({})
+supplierSelectBtn.on('click', function () {
+    // loadPurchaseOrder({})
 })
 
-function loadTableSelectDelivery(sale_order_filter) {
-    tableSelectDeliveryEle.DataTable().destroy()
-    tableSelectDeliveryEle.DataTableDefault({
+function loadTableSelectGoodsReceipt(gr_filter) {
+    tableSelectGoodsReceiptEle.DataTable().destroy()
+    tableSelectGoodsReceiptEle.DataTableDefault({
         dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
         useDataServer: true,
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
         ajax: {
-            url: scriptUrlEle.attr('data-url-delivery-list') + '?sale_order_id=' + saleOrderEle.val(),
+            url: scriptUrlEle.attr('data-url-goods-receipt-list') + `?purchase_order_id=${purchaseOrderEle.val()}`,
             type: 'GET',
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $('#select-delivery-offcanvas').offcanvas('show')
-                    // console.log(resp.data['delivery_list'])
-                    let res = []
-                    for (let i = 0; i < resp.data['delivery_list'].length; i++) {
-                        if (resp.data['delivery_list'][i].state === 2 && resp.data['delivery_list'][i]?.['sale_order_data']?.['id'] === sale_order_filter) {
-                            res.push(resp.data['delivery_list'][i])
-                        }
-                    }
-                    return res;
+                    $('#select-goods-receipt-offcanvas').offcanvas('show')
+                    console.log(resp.data['goods_receipt_list'])
+                    return resp.data['goods_receipt_list']
                 }
                 return [];
             },
@@ -115,23 +108,10 @@ function loadTableSelectDelivery(sale_order_filter) {
                 }
             },
             {
-                data: 'name',
+                data: 'title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    let content = ''
-                    if (row.times === 1) {
-                        content = `${scriptTransEle.attr('data-trans-delivery-for')} 1st ${scriptTransEle.attr('data-trans-delivery-time')}`
-                    }
-                    else if (row.times === 2) {
-                        content = `${scriptTransEle.attr('data-trans-delivery-for')} 2nd ${scriptTransEle.attr('data-trans-delivery-time')}`
-                    }
-                    else if (row.times === 3) {
-                        content = `${scriptTransEle.attr('data-trans-delivery-for')} 3rd ${scriptTransEle.attr('data-trans-delivery-time')}`
-                    }
-                    else {
-                        content = `${scriptTransEle.attr('data-trans-delivery-for')} ${row?.['times']}th ${scriptTransEle.attr('data-trans-delivery-time')}`
-                    }
-                    return `${content}`
+                    return row.title
                 }
             },
             {
@@ -150,20 +130,22 @@ function loadTableSelectDelivery(sale_order_filter) {
                 data: 'select',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
+                    let details = JSON.stringify(row.details)
+                    let total_quantity = JSON.stringify(row.purchase_order.detail)
                     if (parseInt(row?.['already']) > 0) {
-                        let details = JSON.stringify(row.details)
                         return `<div class="form-check" hidden>
-                                    <input checked data-already="1" data-id="${row.id}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery">
+                                    <input checked data-already="1" data-id="${row.id}" type="checkbox" name="selected-goods-receipt" class="form-check-input selected-goods-receipt">
                                     <label class="form-check-label"></label>
                                     <script class="details">${details}</script>
+                                    <script class="total_quantity">${total_quantity}</script>
                                 </div>`
                     }
                     else {
-                        let details = JSON.stringify(row.details)
                         return `<div class="form-check">
-                                    <input data-already="0" data-id="${row.id}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery">
+                                    <input data-already="0" data-id="${row.id}" type="checkbox" name="selected-goods-receipt" class="form-check-input selected-goods-receipt">
                                     <label class="form-check-label"></label>
                                     <script class="details">${details}</script>
+                                    <script class="total_quantity">${total_quantity}</script>
                                 </div>`
                     }
                 }
@@ -172,47 +154,34 @@ function loadTableSelectDelivery(sale_order_filter) {
     });
 }
 
-$(document).on("change", '.selected-delivery', function () {
-    SelectDeliveryOnChange()
+$(document).on("change", '.selected-goods-receipt', function () {
+    SelectGoodsReceiptOnChange()
 })
 
-function SelectDeliveryOnChange() {
+function SelectGoodsReceiptOnChange() {
     let data_product_already = []
-    $('.selected-delivery').each(function () {
+    $('.selected-goods-receipt').each(function () {
         if ($(this).prop('checked') && $(this).attr('data-already') === '1') {
             data_product_already = data_product_already.concat(JSON.parse($(this).closest('div').find('.details').text()))
         }
     })
 
     let data_product = []
-    $('.selected-delivery').each(function () {
+    $('.selected-goods-receipt').each(function () {
         if ($(this).prop('checked') && $(this).attr('data-already') === '0') {
-            data_product = data_product.concat(JSON.parse($(this).closest('div').find('.details').text()))
+            let data_po = JSON.parse($(this).closest('div').find('.total_quantity').text())
+            let temp = JSON.parse($(this).closest('div').find('.details').text())
+            temp[0]['quantity_import_total'] = data_po.filter(function (item) {
+                return item.product_id === temp[0]?.['product_data']?.['id']
+            })[0]?.['product_quantity_order_actual']
+            temp[0]['quantity_imported_before'] = data_product_already
+                .filter(item => item?.['product_data']?.['id'] === temp[0]?.['product_data']?.['id'])
+                .reduce((sum, item) => sum + item?.['quantity_import'], 0)
+            data_product = data_product.concat(temp)
         }
     })
 
-    const merged_data_product = {};
-    data_product.forEach(entry => {
-        const productId = entry.product_data.id;
-
-        if (!merged_data_product[productId]) {
-            merged_data_product[productId] = {
-                product_data: entry.product_data,
-                uom_data: entry.uom_data,
-                delivery_quantity: entry.delivery_quantity,
-                delivered_quantity_before: data_product_already
-                    .filter(item => item?.['product_data']?.['id'] === productId)
-                    .reduce((sum, item) => sum + item?.['picked_quantity'], 0),
-                picked_quantity: 0,
-                product_unit_price: entry.product_unit_price,
-                product_tax_value: entry.product_tax_value,
-            };
-        }
-
-        merged_data_product[productId].picked_quantity += entry.picked_quantity;
-    });
-    data_product = Object.values(merged_data_product);
-    // console.log(data_product)
+    console.log(data_product)
 
     loadTableSelectDetailProduct(data_product)
     dataLineDetailTableScript.text(JSON.stringify(data_product))
@@ -247,24 +216,24 @@ function loadTableSelectDetailProduct(datasource=[]) {
                 }
             },
             {
-                data: 'delivery_quantity',
+                data: 'quantity_import_total',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    return `<b>${row?.['delivery_quantity']}</b>`
+                    return `<b>${row?.['quantity_import_total']}</b>`
                 }
             },
             {
-                data: 'delivered_quantity_before',
+                data: 'quantity_imported_before',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    return row?.['delivered_quantity_before']
+                    return row?.['quantity_imported_before']
                 }
             },
             {
-                data: 'picked_quantity',
+                data: 'quantity_import',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    return `<span class="text-primary"><b>${row?.['picked_quantity']}</b></span>`
+                    return `<span class="text-primary"><b>${row?.['quantity_import']}</b></span>`
                 }
             },
         ],
@@ -300,10 +269,10 @@ function loadTableLineDetail(datasource=[]) {
                 }
             },
             {
-                data: 'picked_quantity',
+                data: 'quantity_import',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="picked_quantity">${row?.['picked_quantity']}</span>`
+                    return `<span class="quantity_import">${row?.['quantity_import']}</span>`
                 }
             },
             {
@@ -315,21 +284,16 @@ function loadTableLineDetail(datasource=[]) {
             },
             {
                 data: 'product_tax_value',
-                className: 'wrap-text text-center',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_tax_value']}"></span>`
+                    return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_subtotal_price_after_tax'] - row?.['product_subtotal_price']}"></span>`
                 }
             },
             {
                 data: 'product_subtotal_price',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_unit_price'] * row?.['picked_quantity']}"></span>`
-                }
-            },
-            {
-                render: () => {
-                    return ``
+                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal_price']}"></span>`
                 }
             },
         ],
@@ -354,87 +318,45 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
                 }
             },
             {
-                data: 'product__title',
+                data: 'product_data__title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="product-id" data-id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</span>`
-                    }
-                    else {
-                        return `<input class="discount-name form-control" value="${row?.['discount_name']}">`
-                    }
+                    return `<span class="product-id" data-id="${row?.['product_data']?.['id']}">${row?.['product_data']?.['title']}</span>`
                 }
             },
             {
-                data: 'product_uom__title',
+                data: 'uom_data__title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="uom-id" data-id="${row?.['product_uom']?.['id']}">${row?.['product_uom']?.['title']}</span>`
-                    }
-                    else {
-                        return `<input class="discount-uom form-control" value="${row?.['discount_uom']}">`
-                    }
+                    return `<span class="uom-id" data-id="${row?.['uom_data']?.['id']}">${row?.['uom_data']?.['title']}</span>`
                 }
             },
             {
-                data: 'product_quantity',
+                data: 'quantity_import',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="picked_quantity">${row?.['product_quantity']}</span>`
-                    }
-                    else {
-                        return `<input type="number" class="discount-quantity form-control" value="${row?.['discount_quantity']}">`
-                    }
+                    return `<span class="quantity_import">${row?.['quantity_import']}</span>`
                 }
             },
             {
                 data: 'product_unit_price',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<input class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
-                    }
-                    else {
-                        return `<input class="discount-unit-price mask-money form-control"  value="${row?.['discount_unit_price']}">`
-                    }
+                    return `<input class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
                 }
             },
             {
                 data: 'product_tax_value',
-                className: 'wrap-text text-center',
-                render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_tax_value']}"></span>`
-                    }
-                    else {
-                        return `<span class="mask-money text-danger" data-init-money="0"></span>`
-                    }
-                }
-            },
-            {
-                data: 'product_subtotal',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal']}"></span>`
-                    }
-                    else {
-                        return `<span class="discount-subtotal-price mask-money text-danger" data-init-money="${row?.['discount_subtotal']}"></span>`
-                    }
+                    return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_tax_value']}"></span>`
                 }
             },
             {
+                data: 'product_subtotal_price',
+                className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return ``
-                    }
-                    else {
-                        return `<button class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs del-discount">
-                            <span class="icon"><i class="bi bi-trash-fill"></i></span>
-                        </button>`;
-                    }
+                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal_price']}"></span>`
                 }
             },
         ],
@@ -448,17 +370,17 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
 }
 
 $(document).on("change", '.product_unit_price', function () {
-    let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.picked_quantity').text())
+    let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.quantity_import').text())
     $(this).closest('tr').find('.product_subtotal_price').attr('data-init-money', subtotal)
     $.fn.initMaskMoney2()
 
     calculatePrice()
 })
 
-function loadTableSelectCustomer() {
-    if (!$.fn.DataTable.isDataTable('#table-select-customer')) {
-        let frm = new SetupFormSubmit(tableSelectCustomerEle);
-        tableSelectCustomerEle.DataTableDefault({
+function loadTableSelectSupplier() {
+    if (!$.fn.DataTable.isDataTable('#table-select-supplier')) {
+        let frm = new SetupFormSubmit(tableSelectSupplierEle);
+        tableSelectSupplierEle.DataTableDefault({
             dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
             useDataServer: true,
             rowIdx: true,
@@ -472,7 +394,7 @@ function loadTableSelectCustomer() {
                     if (data) {
                         let res = []
                         for (let i = 0; i < resp.data['account_list'].length; i++) {
-                            if (resp.data['account_list'][i]['account_type'].some(item => item === "Customer")) {
+                            if (resp.data['account_list'][i]['account_type'].some(item => item === "Supplier")) {
                                 res.push(resp.data['account_list'][i])
                             }
                         }
@@ -513,7 +435,7 @@ function loadTableSelectCustomer() {
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<div class="form-check form-check-lg">
-                                    <input data-id="${row.id}" data-name="${row.name}" type="radio" name="customer-selected-radio" class="form-check-input">
+                                    <input data-id="${row.id}" data-name="${row.name}" type="radio" name="supplier-selected-radio" class="form-check-input">
                                 </div>`
                     }
                 },
@@ -522,60 +444,56 @@ function loadTableSelectCustomer() {
     }
 }
 
-function loadSaleOrder(data) {
-    saleOrderEle.initSelect2({
+function loadPurchaseOrder(data) {
+    purchaseOrderEle.initSelect2({
         allowClear: true,
         ajax: {
-            url: saleOrderEle.attr('data-url'),
+            url: `${purchaseOrderEle.attr('data-url')}`,
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
+            console.log(resp.data[keyResp])
             let result = [];
             for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (resp.data[keyResp][i].system_status === 3 && resp.data[keyResp][i].customer.id === customerCodeEle.attr('data-id')) {
+                if (resp.data[keyResp][i].system_status === 3 && resp.data[keyResp][i]?.['supplier']?.['id'] === supplierCodeEle.attr("data-id")) {
                     result.push(resp.data[keyResp][i])
                 }
             }
             return result;
         },
         templateResult: function(data) {
-            let opp_code = data.data?.['opportunity']?.['code']
-            if (data.data?.['opportunity']?.['code'] === undefined) {
-                opp_code = ''
-            }
             let ele = $('<div class="row"></div>');
-            ele.append(`<div class="col-3"><span class="badge badge-soft-secondary">${opp_code}</span></div>
-                        <div class="col-3"><span class="badge badge-soft-primary">${data.data?.['code']}</span></div>
-                        <div class="col-6">${data.data?.['title']}</div>`);
+            ele.append(`<div class="col-4"><span class="badge badge-soft-primary">${data.data?.['code']}</span></div>
+                        <div class="col-8">${data.data?.['title']}</div>`);
             return ele;
         },
         data: (data ? data : null),
-        keyResp: 'sale_order_list',
+        keyResp: 'purchase_order_list',
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        if (saleOrderEle.val()) {
-            loadTableSelectDelivery(saleOrderEle.val())
+        if (purchaseOrderEle.val()) {
+            loadTableSelectGoodsReceipt(purchaseOrderEle.val())
         }
     })
 }
 
 $('#add-product-btn').on('click', function () {
     loadTableLineDetail(JSON.parse(dataLineDetailTableScript.text()))
-    $('#select-delivery-offcanvas').offcanvas('hide')
+    $('#select-goods-receipt-offcanvas').offcanvas('hide')
     let data_product = []
-    $('.selected-delivery').each(function () {
+    $('.selected-goods-receipt').each(function () {
         if ($(this).prop('checked') && $(this).attr('data-already') === '0') {
             data_product.push($(this).attr('data-id'))
         }
     })
-    tabLineDetailTable.attr('data-delivery-selected', data_product.join(','))
+    tabLineDetailTable.attr('data-goods-receipt-selected', data_product.join(','))
 })
 
 $('#btn-add-row-line-detail').on('click', function () {
-    if (saleOrderEle.val()) {
+    if (purchaseOrderEle.val()) {
         loadTableSelectDetailProduct([])
-        loadTableSelectDelivery(saleOrderEle.val())
+        loadTableSelectGoodsReceipt(purchaseOrderEle.val())
     }
 })
 
@@ -597,36 +515,10 @@ $('#btn-add-row-line-detail-discount').on('click', function () {
     `)
 })
 
-$(document).on("change", '.discount-quantity', function () {
-    let subtotal = parseFloat($(this).val()) * parseFloat($(this).closest('tr').find('.discount-unit-price').attr('value'))
-    $(this).closest('tr').find('.discount-subtotal-price').attr('data-init-money', subtotal)
-    $.fn.initMaskMoney2()
-
-    calculatePrice()
-})
-
-$(document).on("change", '.discount-unit-price', function () {
-    let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.discount-quantity').val())
-    $(this).closest('tr').find('.discount-subtotal-price').attr('data-init-money', subtotal)
-    $.fn.initMaskMoney2()
-
-    calculatePrice()
-})
-
-$(document).on("click", '.del-discount', function () {
-    $(this).closest('tr').remove()
-    tabLineDetailTable.find('tbody tr').each(function (index) {
-        $(this).find('td:first-child').text(index+1)
-    })
-
-    calculatePrice()
-})
-
 function calculatePrice() {
     let sum_unit_price = 0
     let sum_taxes = 0
     let sum_subtotal_price = 0
-    let sum_discount = 0
     tabLineDetailTable.find('tbody tr').each(function () {
         if ($(this).find('.product_unit_price').length > 0) {
             sum_unit_price += parseFloat($(this).find('.product_unit_price').attr('value'))
@@ -634,68 +526,53 @@ function calculatePrice() {
         if ($(this).find('.product_subtotal_price').length > 0) {
             sum_subtotal_price += parseFloat($(this).find('.product_subtotal_price').attr('data-init-money'))
         }
-        if ($(this).find('.discount-subtotal-price').length > 0) {
-            sum_discount += parseFloat($(this).find('.discount-subtotal-price').attr('data-init-money'))
-        }
         if ($(this).find('.product_taxes').length > 0) {
             sum_taxes += parseFloat($(this).find('.product_taxes').attr('data-init-money'))
         }
     })
     $('#pretax-value').attr('data-init-money', sum_subtotal_price)
     $('#taxes-value').attr('data-init-money', sum_taxes)
-    $('#discount-all').attr('data-init-money', sum_discount)
-    $('#total-value').attr('data-init-money', sum_subtotal_price + sum_taxes - sum_discount)
+    $('#total-value').attr('data-init-money', sum_subtotal_price + sum_taxes)
 
     $.fn.initMaskMoney2()
 }
 
-class ARInvoiceHandle {
+class APInvoiceHandle {
     load() {
-        loadTableSelectCustomer()
+        loadTableSelectSupplier()
+        loadPurchaseOrder()
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle))
 
         frm.dataForm['title'] = $('#name').val()
-        frm.dataForm['customer_mapped'] = customerCodeEle.attr('data-id')
-        frm.dataForm['customer_name'] = customerCodeEle.val()
-        frm.dataForm['sale_order_mapped'] = saleOrderEle.val()
+        frm.dataForm['supplier_mapped'] = supplierCodeEle.attr('data-id')
+        frm.dataForm['supplier_name'] = supplierCodeEle.val()
+        frm.dataForm['po_mapped'] = purchaseOrderEle.val()
         frm.dataForm['posting_date'] = postingDateEle.val()
         frm.dataForm['document_date'] = documentDateEle.val()
         frm.dataForm['invoice_date'] = invoiceDateEle.val()
         frm.dataForm['invoice_sign'] = $('#invoice-sign').val()
         frm.dataForm['invoice_number'] = $('#invoice-number').val()
         frm.dataForm['invoice_example'] = $('#invoice-exp').val()
-        frm.dataForm['delivery_mapped_list'] = tabLineDetailTable.attr('data-delivery-selected').split(',')
+        frm.dataForm['goods_receipt_mapped_list'] = tabLineDetailTable.attr('data-goods-receipt-selected').split(',')
 
         frm.dataForm['data_item_list'] = []
-        frm.dataForm['data_discount_list'] = []
         tabLineDetailTable.find('tbody tr').each(function () {
             if ($(this).find('.product-id').length > 0) {
                 frm.dataForm['data_item_list'].push({
                     'item_index': $(this).find('td:first-child').text(),
                     'product_id': $(this).find('.product-id').attr('data-id'),
                     'product_uom_id': $(this).find('.uom-id').attr('data-id'),
-                    'product_quantity': $(this).find('.picked_quantity').text(),
+                    'product_quantity': $(this).find('.quantity_import').text(),
                     'product_unit_price': $(this).find('.product_unit_price').attr('value'),
                     'product_tax_value': $(this).find('.product_taxes').attr('data-init-money'),
                     'product_subtotal': $(this).find('.product_subtotal_price').attr('data-init-money'),
                 })
             }
-            else {
-                frm.dataForm['data_discount_list'].push({
-                    'item_index': $(this).find('td:first-child').text(),
-                    'discount_name': $(this).find('.discount-name').val(),
-                    'discount_uom': $(this).find('.discount-uom').val(),
-                    'discount_quantity': $(this).find('.discount-quantity').val(),
-                    'discount_unit_price': $(this).find('.discount-unit-price').attr('value'),
-                    'discount_subtotal': $(this).find('.discount-subtotal-price').attr('data-init-money'),
-                })
-            }
         })
 
         // frm.dataForm['system_status'] = 1;
-
         if (frm.dataForm['data_item_list'].length === 0) {
             $.fn.notifyB({description: "No item in tab line detail"}, 'failure')
         }
@@ -724,28 +601,27 @@ function Disabled(option) {
         $('#collapse-area input').prop('readonly', true).prop('disabled', true)
         $('#collapse-area select').prop('disabled', true)
         $('tr input').prop('readonly', true).prop('disabled', true)
-        $('.del-discount').addClass('disabled')
-        customerSelectBtn.addClass('disabled')
+        supplierSelectBtn.addClass('disabled')
         $('#btn-add-row-line-detail').remove()
         $('#btn-add-row-line-detail-discount').remove()
     }
 }
 
-function LoadDetailARInvoice(option) {
+function LoadDetailAPInvoice(option) {
     let pk = $.fn.getPkDetail()
-    let url_loaded = $('#form-detail-ar-invoice').attr('data-url-detail-api').replace(0, pk);
+    let url_loaded = $('#form-detail-ap-invoice').attr('data-url-detail-api').replace(0, pk);
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                data = data['ar_invoice_detail'];
+                data = data['ap_invoice_detail'];
                 console.log(data)
                 $x.fn.renderCodeBreadcrumb(data);
 
                 $('#name').val(data?.['title'])
-                customerCodeEle.val(data?.['customer_mapped']?.['name'])
-                customerCodeEle.attr('data-id', data?.['customer_mapped']?.['id'])
-                loadSaleOrder(data?.['sale_order_mapped'])
+                supplierCodeEle.val(data?.['supplier_mapped']?.['name'])
+                supplierCodeEle.attr('data-id', data?.['supplier_mapped']?.['id'])
+                loadPurchaseOrder(data?.['po_mapped'])
                 postingDateEle.val(data?.['posting_date'].split(' ')[0])
                 documentDateEle.val(data?.['document_date'].split(' ')[0])
                 invoiceDateEle.val(data?.['invoice_date'].split(' ')[0])
@@ -753,9 +629,9 @@ function LoadDetailARInvoice(option) {
                 $('#invoice-number').val(data?.['invoice_number'])
                 $('#invoice-exp').val(data?.['invoice_example'])
 
-                tabLineDetailTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
+                tabLineDetailTable.attr('data-goods-receipt-selected', data?.['goods_receipt_mapped'].map(item => item.id).join(','))
 
-                loadTableLineDetailForDetailPage(data?.['item_and_discount_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                loadTableLineDetailForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
 
                 Disabled(option)
 

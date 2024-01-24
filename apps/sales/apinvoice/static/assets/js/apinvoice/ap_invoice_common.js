@@ -573,6 +573,9 @@ class APInvoiceHandle {
         })
 
         // frm.dataForm['system_status'] = 1;
+        if (frm.dataForm['data_item_list'].length === 0) {
+            $.fn.notifyB({description: "No item in tab line detail"}, 'failure')
+        }
 
         console.log(frm.dataForm)
         if (for_update) {

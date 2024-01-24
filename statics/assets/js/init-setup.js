@@ -410,16 +410,19 @@ class NotifyController {
                 let arr_seen = [];
                 if (data && data.hasOwnProperty('notify_data')) {
                     data['notify_data'].map((item) => {
-                        let senderData = item?.['sender_full_name'] || '';
+                        let senderData = item?.['employee_sender_data'] || {};
                         let urlData = UrlGatewayReverse.get_url(item['doc_id'], item['doc_app'], {
                             'redirect': true,
                             'notify_id': item['id']
                         },);
-                        let relatve_time_html = $x.fn.displayRelativeTime(item?.['date_created'], {
+                        let relative_time_html = $x.fn.displayRelativeTime(item?.['date_created'], {
                             'callback': function (data) {
                                 return `<p>${data.relate}</p><small class="ml-auto">${data.output}</small>`;
                             }
                         });
+                        let stickyUnseen = item?.['is_done'] === true ? `` : `
+                            <span class="badge badge-warning badge-indicator badge-indicator-xl position-top-start-overflow-1"></span>
+                        `;
                         let btn_reply_mentions = !item?.['comment_mentions_id'] ? ``: `
                             <button 
                                 class="btn btn-xs btn-primary btn-notify-reply-comment" 
@@ -431,13 +434,12 @@ class NotifyController {
                             ><i class="fa-solid fa-reply"></i> Reply</button>
                         `;
                         let tmp = `
-                            <div 
-                                class="dropdown-item mb-1 bell-menu-item ${item?.['is_done'] === true ? '' : 'bg-light'}"
-                            >
+                            <div class="dropdown-item mb-1 bell-menu-item">
                                 <div class="media">
                                     <div class="media-head">
-                                        <div class="avatar avatar-rounded avatar-sm">
-                                            <span class="initial-wrap">${senderData ? $.fn.shortName(senderData) : '<i class="fa-solid fa-gear"></i>'}</span>
+                                        <div class="avatar avatar-soft-primary avatar-rounded avatar-sm position-relative">
+                                            <span class="initial-wrap">${senderData ? $x.fn.renderAvatar(senderData) : '<i class="fa-solid fa-gear"></i>'}</span>
+                                            ${stickyUnseen}
                                         </div>
                                     </div>
                                     <div class="media-body">
@@ -450,7 +452,7 @@ class NotifyController {
                                             </div>
                                             <div class="notifications-info">
                                                  <span class="badge badge-primary badge-outline mb-1 noti-custom">${resolve_app_name(item?.['doc_app'])}</span>
-                                                 <div class="notifications-time mb-1 w-100 d-flex justify-content-start">${relatve_time_html}</div>
+                                                 <div class="notifications-time mb-1 w-100 d-flex justify-content-start">${relative_time_html}</div>
                                             </div>
                                         </div>
                                         <div>
@@ -469,6 +471,10 @@ class NotifyController {
                 } else {
                     dataArea.append(`<small class="text-muted">${$.fn.transEle.attr('data-no-data')}</small>`);
                 }
+                ListeningEventController.listenImageLoad(
+                    $(dataArea).find('img'),
+                    {'imgReplace': globeAvatarNotFoundImg},
+                );
                 dataArea.find('button.btn-notify-reply-comment').on('click', function (){
                     let urlNotifyDone = dataArea.attr('data-url-done-notify').replace('__pk__', $(this).attr('data-notify-id'));
                     if (urlNotifyDone){
@@ -1415,7 +1421,7 @@ class ListeningEventController {
         })
     }
 
-    static listenImageLoad(imgEle = null, add_margin=false){
+    static listenImageLoad(imgEle = null, opts={}){
         function resolve_title_tooltip(_ele){
             let parentTxt = '';
             if ($(_ele).parent().attr('data-toggle') === 'tooltip' || $(_ele).parent().attr('data-bs-toggle') === 'tooltip') {
@@ -1424,12 +1430,13 @@ class ListeningEventController {
             return `${parentTxt ? parentTxt + "." : ""} ${globeFileNotFoundAlt}`
         }
 
+        let imgReplace = opts?.['imgReplace'] || globeFileNotFoundImg;
         (
             imgEle ? imgEle : $('img')
         ).each(function (){
             if ($(this)[0].complete === true && $(this)[0].naturalWidth === 0 && $(this)[0].naturalHeight === 0) {
                 $(this).attr('data-old-src', $(this).attr('src'));
-                $(this).attr('src', globeFileNotFoundImg);
+                $(this).attr('src', imgReplace);
                 $(this).attr('data-toggle', 'tooltip');
                 $(this).attr('title', resolve_title_tooltip($(this)));
                 $(this).tooltip();
@@ -1439,7 +1446,7 @@ class ListeningEventController {
                 $(this).attr('data-old-src', $(this).attr('src'));
                 $(this).attr('data-toggle', 'tooltip');
                 $(this).attr('title', resolve_title_tooltip($(this)));
-                $(this).attr('src', globeFileNotFoundImg);
+                $(this).attr('src', imgReplace);
             });
         })
     }
@@ -3700,7 +3707,6 @@ class DTBControl {
         return function (settings, json) {
             ListeningEventController.listenImageLoad(
                 $(this.api().table().container()).find('img'),
-                true,
             );
 
             $(this.api().table().container()).find('input').attr('autocomplete', 'off');
@@ -5152,6 +5158,10 @@ class CommentControl {
             $(this).find('.fa-solid').toggleClass('d-none');
             $(this).closest('.comment-item').find('.comment-content').fadeToggle('fast');
         })
+        ListeningEventController.listenImageLoad(
+            eleItem$.find('img'),
+            {'imgReplace': globeAvatarNotFoundImg},
+        );
     }
 
     item_get_html(kwargs){
@@ -5369,7 +5379,7 @@ class CommentControl {
                                 $.fn.notifyB({
                                     'description': $.fn.transEle.attr('data-success'),
                                 }, 'success');
-                                clsThis.render_comment_item(data?.['comment_detail'] || {}, 'pre');
+                                clsThis.render_comment_item(data?.['comment_detail'] || {}, 'pre', true);
                                 clsThis.render_record_showing({'plus_num': 1});
                                 clsThis.ele_list$.scrollTop(0);
                                 textarea.tinymce().setContent('');
@@ -5413,21 +5423,13 @@ class CommentControl {
             }
 
             let html$ = $(this.item_get_html(kwargs));
-            if (ap_or_pre === 'ap'){
-                this.ele_list$.append(html$);  // API sorting -date_created.
-            } else {
-                this.ele_list$.prepend(html$);  // render add new success
-            }
+            if (effect_newest === true) html$.addClass('comment-item-newest');
+            ap_or_pre === 'ap' ? this.ele_list$.append(html$) : this.ele_list$.prepend(html$);  // API sorting -date_created. : render add new success
             this.item_add_event(html$);
-            if (effect_newest === true){
-                html$.addClass('comment-item-newest');
-                setTimeout(
-                    () => {
-                        html$.removeClass('comment-item-newest');
-                    },
-                    2000
-                )
-            }
+            setTimeout(
+                () => html$.removeClass('comment-item-newest'),
+                2000
+            )
         }
     }
 

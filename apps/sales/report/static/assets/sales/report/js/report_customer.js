@@ -91,16 +91,14 @@ $(function () {
 
         function loadBoxEmployee() {
             boxEmployee.empty();
+            let dataParams = {};
             if (boxGroup.val()) {
-                boxEmployee.initSelect2({
-                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
-                    'allowClear': true,
-                });
-            } else {
-                boxEmployee.initSelect2({
-                    'allowClear': true,
-                });
+                dataParams['group_id__in'] = boxGroup.val().join(',');
             }
+            boxEmployee.initSelect2({
+                'dataParams': dataParams,
+                'allowClear': true,
+            });
         }
 
         boxGroup.initSelect2({'allowClear': true,});
@@ -145,6 +143,9 @@ $(function () {
             }
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
+            }
+            if (boxCustomer.val()) {
+                dataParams['customer_id__in'] = boxCustomer.val().join(',');
             }
             let date = $('#report-customer-date-approved').val();
             if (date) {

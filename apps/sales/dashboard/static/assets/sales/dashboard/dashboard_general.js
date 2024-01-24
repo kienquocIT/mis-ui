@@ -580,13 +580,13 @@ $(document).ready(function () {
         if (group_filter) {
             let group_found_data = profit_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
             if (group_found_data) {
-                let group_expected_data = group_found_data?.['group_month_target']
+                let group_expected_data = group_found_data?.['group_month_profit_target']
                 for (let i = 0; i < group_expected_data.length; i++) {
-                    profit_expected_data_DF.push(group_expected_data[i] / cast_billion)
+                    profit_expected_data.push(group_expected_data[i] / cast_billion)
                 }
             }
             else {
-                profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                profit_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             }
         }
         else {
@@ -597,10 +597,10 @@ $(document).ready(function () {
 
         return {
             series: [
-                // {
-                //     name: "Expected",
-                //     data: profit_expected_data
-                // },
+                {
+                    name: "Expected",
+                    data: profit_expected_data
+                },
                 {
                     name: "Reality",
                     data: profit_chart_data
@@ -622,7 +622,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                // '#5a9a9a',
+                '#5a9a9a',
                 '#E92990'
             ],
             dataLabels: {
@@ -719,13 +719,13 @@ $(document).ready(function () {
         if (group_filter) {
             let group_found_data = profit_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
             if (group_found_data) {
-                let group_expected_data = group_found_data?.['group_month_target']
+                let group_expected_data = group_found_data?.['group_month_profit_target']
                 for (let i = 0; i < group_expected_data.length; i++) {
-                    profit_expected_data_DF.push(group_expected_data[i] / cast_billion)
+                    profit_expected_data.push(group_expected_data[i] / cast_billion)
                 }
             }
             else {
-                profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                profit_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             }
         }
         else {
@@ -743,10 +743,10 @@ $(document).ready(function () {
         }
         return {
             series: [
-                // {
-                //     name: "Expected",
-                //     data: profit_expected_data
-                // },
+                {
+                    name: "Expected",
+                    data: profit_expected_data
+                },
                 {
                     name: "Reality",
                     data: profit_chart_data
@@ -768,7 +768,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                // '#5a9a9a',
+                '#5a9a9a',
                 '#E92990'
             ],
             dataLabels: {
@@ -959,7 +959,7 @@ $(document).ready(function () {
         Promise.all([profit_chart_ajax, company_revenue_plan_list_ajax]).then(
             (results) => {
                 profit_chart_list_DF = results[0];
-                profit_expected_data_DF = results[1]?.['company_month_target'];
+                profit_expected_data_DF = results[1]?.['company_month_profit_target'];
                 profit_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
 
                 period_selected_Setting = results[1]?.['period_mapped']

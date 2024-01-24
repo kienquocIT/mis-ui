@@ -14,4 +14,5 @@ urlpatterns = [
     path('dashboard/', include('apps.sales.dashboard.urls')),
     path('revenue-plan/', include('apps.sales.revenueplan.urls')),
     path('ar-invoice/', include('apps.sales.arinvoice.urls')),
+    path('ap-invoice/', include('apps.sales.apinvoice.urls')),
 ]

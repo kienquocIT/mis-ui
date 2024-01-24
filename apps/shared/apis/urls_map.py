@@ -484,3 +484,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')
     AR_INVOICE_DETAIL = StringUrl('ar-invoice/detail/{pk}')
+
+    # AP Invoice
+    GOOD_RECEIPT_LIST_AP_INVOICE = StringUrl('ap-invoice/get-goods-receipts')
+    AP_INVOICE_LIST = StringUrl('ap-invoice/list')
+    AP_INVOICE_DETAIL = StringUrl('ap-invoice/detail/{pk}')

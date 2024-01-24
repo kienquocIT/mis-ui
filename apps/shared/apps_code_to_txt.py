@@ -17,7 +17,7 @@ class AppsCodeToList:
             'leaverequest': _('Leave request')
         },
         'businesstrip': {
-            'businessrequest': _('Business request')
+            'businessrequest': _('Business trip')
         },
         'assettools': {
             'assettoolsprovide': _('Asset, Tools provide'),

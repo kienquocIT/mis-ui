@@ -118,34 +118,58 @@
             </div>
         </div>
     </div>
+    <div class="row" id="area-year">
+        <table
+                id="table_report_cashflow_year_list"
+                class="table nowrap min-w-8000p w-100 mb-5"
+{#                class="table nowrap min-w-4000p w-100 mb-5"#}
+                data-url="{% url 'ReportCashflowListAPI' %}"
+                data-method="get"
+        >
+            <thead>
+            <tr>
+                <th style="text-align: center">{% trans 'Type' %}</th>
+                <th style="text-align: center">{% trans 'January' %}</th>
+                <th style="text-align: center">{% trans 'February' %}</th>
+                <th style="text-align: center">{% trans 'March' %}</th>
+                <th style="text-align: center">{% trans 'April' %}</th>
+                <th style="text-align: center">{% trans 'May' %}</th>
+                <th style="text-align: center">{% trans 'June' %}</th>
+                <th style="text-align: center">{% trans 'July' %}</th>
+                <th style="text-align: center">{% trans 'August' %}</th>
+                <th style="text-align: center">{% trans 'September' %}</th>
+                <th style="text-align: center">{% trans 'October' %}</th>
+                <th style="text-align: center">{% trans 'November' %}</th>
+                <th style="text-align: center">{% trans 'December' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="row" id="area-month" hidden>
+        <table
+                id="table_report_cashflow_month_list"
+{#                class="table nowrap min-w-8000p w-100 mb-5"#}
+                class="table nowrap min-w-4000p w-100 mb-5"
+                data-url="{% url 'ReportCashflowListAPI' %}"
+                data-method="get"
+        >
+            <thead>
+            <tr>
+                <th style="text-align: center">{% trans 'Type' %}</th>
+                <th style="text-align: center">{% trans 'Week 1' %}</th>
+                <th style="text-align: center">{% trans 'Week 2' %}</th>
+                <th style="text-align: center">{% trans 'Week 3' %}</th>
+                <th style="text-align: center">{% trans 'Week 4' %}</th>
+                <th style="text-align: center">{% trans 'Week 5' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 
-    <table
-            id="table_report_cashflow_list"
-{#            class="table nowrap min-w-8000p w-100 mb-5"#}
-            class="table nowrap min-w-4000p w-100 mb-5"
-            data-url="{% url 'ReportCashflowListAPI' %}"
-            data-method="get"
-    >
-        <thead>
-        <tr class="table-thead-tr">
-            <th style="text-align: center">{% trans 'Type' %}</th>
-            <th style="text-align: center">{% trans 'January' %}</th>
-            <th style="text-align: center">{% trans 'February' %}</th>
-            <th style="text-align: center">{% trans 'March' %}</th>
-            <th style="text-align: center">{% trans 'April' %}</th>
-            <th style="text-align: center">{% trans 'May' %}</th>
-            <th style="text-align: center">{% trans 'June' %}</th>
-            <th style="text-align: center">{% trans 'July' %}</th>
-            <th style="text-align: center">{% trans 'August' %}</th>
-            <th style="text-align: center">{% trans 'September' %}</th>
-            <th style="text-align: center">{% trans 'October' %}</th>
-            <th style="text-align: center">{% trans 'November' %}</th>
-            <th style="text-align: center">{% trans 'December' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
 {% endblock %}
 {% block dataHiddenGroup %}
     <input

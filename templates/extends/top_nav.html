@@ -300,28 +300,25 @@
                             {% if base.company_current_data %}
                                 <a
                                         id="company-current-id"
-                                        class="dropdown-item" href="#"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="{{ base.company_current_data.title }}"
+                                        class="dropdown-item" href="javascript:void(0);"
+                                        data-bs-toggle="tooltip" data-bs-placement="left"
+                                        title="{% trans 'Click to switch company' %}"
                                         data-id="{{ base.company_current_data.id }}"
                                         style="max-width: 20em;overflow: hidden;text-overflow: ellipsis;"
                                 >
-                                    <span id="btnChangeCurrentCompany" class="dropdown-icon" data-bs-toggle="modal" data-bs-target="#switchMyCompany">
-                                        <i
-                                                class="fa-solid fa-retweet"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="left"
-                                                title="Click to switch company"
-                                        ></i>
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-retweet"></i>
                                     </span>
-                                    <span> {{ base.company_current_data.code }} - {{ base.company_current_data.title }} </span>
+                                    <span
+                                        id="btnChangeCurrentCompany" data-bs-toggle="modal" data-bs-target="#switchMyCompany"
+                                    > {{ base.company_current_data.code }} - {{ base.company_current_data.title }} </span>
                                 </a>
                                 {% if base.employee_current_data %}
                                     <a
                                             class="dropdown-item"
                                             href="{% url 'EmployeeDetail' pk=base.employee_current_data.id %}"
                                             data-value-id="{{ base.employee_current_data.id }}"
-                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            data-bs-toggle="tooltip" data-bs-placement="left"
                                             title="{% trans 'Profile' %}"
                                     >
                                         <span class="dropdown-icon feather-icon">
@@ -338,7 +335,7 @@
 
                             <a
                                     id="link-language" class="dropdown-item" href="#"
-                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    data-bs-toggle="tooltip" data-bs-placement="left"
                                     title="{% trans 'Language' %}"
                                     data-url="{% url 'MyLanguageAPI' %}"
                                     data-value="{{base.language}}"

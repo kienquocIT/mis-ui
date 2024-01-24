@@ -53,6 +53,10 @@ msgstr "Địa chỉ email liên hệ"
 msgid "Select Company"
 msgstr "Chọn công ty"
 
+#
+msgid "Click to switch company"
+msgstr "Nhấn vào để thay đổi công ty hiện hành"
+
 #: .\apps\core\account\templates\core\account\user_create.html:89
 msgid "Select your company"
 msgstr "Chọn công ty của bạn"

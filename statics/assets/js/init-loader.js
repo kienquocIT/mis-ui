@@ -459,6 +459,9 @@ $(document).ready(function () {
     $('#idxRealAction').removeClass('hidden');
     new NotifyController().active();
     new ListeningEventController().active();
+
+
+    window.isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent));
 });
 
 

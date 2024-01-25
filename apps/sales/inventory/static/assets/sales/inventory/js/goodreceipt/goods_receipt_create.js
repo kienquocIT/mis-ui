@@ -60,7 +60,7 @@ $(function () {
 
         // Action on change dropdown supplier
         GRLoadDataHandle.supplierSelectEle.on('change', function () {
-            GRLoadDataHandle.loadMoreInformation($(this));
+            // GRLoadDataHandle.loadMoreInformation($(this));
         });
 
         btnEdit.on('click', function () {

@@ -173,6 +173,10 @@ msgid "Close"
 msgstr "Đóng"
 
 #
+msgid "Comments"
+msgstr "Bình luận"
+
+#
 msgid "Hide/Show editor"
 msgstr "Hiển thị/ẩn trình chỉnh sửa"
 

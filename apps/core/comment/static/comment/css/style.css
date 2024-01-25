@@ -74,7 +74,7 @@
     user-select: none; /* Standard syntax */
 }
 
-.comment-action > .btn-comment-action:hover {
+.comment-action .btn-comment-reply-new:hover, .comment-action .btn-comment-action-show-replies:hover {
     color: #0a58ca;
 }
 

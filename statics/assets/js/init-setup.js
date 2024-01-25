@@ -5306,6 +5306,7 @@ class CommentControl {
     }
 
     item_get_html(kwargs, opts={}){
+        let clsThis = this;
         let {action_enabled, replies_enabled, mentions_enabled, add_comment_enabled} = {
             mentions_enabled: true,
             action_enabled: true,
@@ -5313,39 +5314,103 @@ class CommentControl {
             add_comment_enabled: true,
             ...opts,
         }
-        let htmlMentions = mentions_enabled === true ? `
-            <div class="comment-mentions">
-                <img
-                    src="${kwargs?.['avatar_img'] || this.default_avt}" 
-                    alt="${kwargs?.employee_created?.full_name || ''}"
-                    class="mr-1"
-                    data-bs-toggle="tooltip"
-                    title="${kwargs?.employee_created?.full_name || ''}"
-                >
-                <small>have been mentioned.</small>
-            </div>
-        ` : ``;
+
+        // mentions
+        function getFullHTMLMentionsPerson(_mentions, _mentions_data){
+            let htmlMentionsFullPerson = [];
+            if (
+                _mentions && typeof _mentions === 'object' && typeof Array.isArray(_mentions)
+                && _mentions_data && typeof _mentions_data === 'object'
+            ){
+                _mentions.map(
+                    (item) => {
+                        if (item){
+                            let _data_tmp = _mentions_data?.[item] || {};
+                            if (_data_tmp){
+                                htmlMentionsFullPerson.push(
+                                    `<a href="${clsThis.url_employee_detail.replace('__pk__', item)}" target="_blank">
+                                        <img src="${_data_tmp?.['avatar_img'] || clsThis.default_person_avt}" 
+                                        alt="${_data_tmp?.['full_name'] || ''}" class="mr-1" data-bs-toggle="tooltip" 
+                                        title="${_data_tmp?.['full_name'] || ''} (${_data_tmp?.['group__title'] || ''})"/>
+                                    </a>`
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+            return htmlMentionsFullPerson;
+        }
+
+        let htmlMentions = ``;
+        if (mentions_enabled === true) {
+            let htmlMentionsGot = getFullHTMLMentionsPerson(kwargs?.['mentions'] || [], kwargs?.['mentions_data'] || {});
+            if (htmlMentionsGot.length > 0){
+                htmlMentions =  `
+                <div class="comment-mentions">
+                    ${htmlMentionsGot.join("")}
+                    <small>${clsThis.ele$.attr('data-msg-been-mentioned')}</small>
+                </div>
+                `;
+            }
+        }
+
+        // latest reply datetime
+        function getHTMLLatestReplyDatetime(){
+            let replies_latest = kwargs['replies_latest'] || null;
+            let relateTime = $x.fn.displayRelativeTime(replies_latest, {
+                'callback': function (data){
+                    return `${data.relate} (${data.output})`
+                }
+            })
+            return  replies_latest ? `<small class="d-flex align-items-center">${clsThis.ele$.attr('data-msg-latest')}: ${relateTime} </small>` : ``;
+        }
+
+        // action
+        function getFullPersonReplied(){
+            let replies_persons = kwargs?.['replies_persons'] || {};
+            if (replies_persons && typeof replies_persons === 'object'){
+                return Object.keys(replies_persons).map(
+                    (idx) => {
+                        let dataOfIdx = replies_persons[idx];
+                        return `
+                            <a href="${clsThis.url_employee_detail.replace('__pk__', idx)}" target="_blank">
+                                <img
+                                    src="${dataOfIdx?.['avatar_img'] || this.default_avt}" 
+                                    alt="${dataOfIdx?.['full_name'] || ''}"
+                                    class="avatar-img mr-1"
+                                    data-bs-toggle="tooltip"
+                                    title="${dataOfIdx?.full_name || ''}  (${dataOfIdx?.['group__title'] || ''}"
+                                >
+                            </a>
+                        `
+                    }
+                ).join("")
+            }
+            return ``;
+        }
+
         let htmlAction = action_enabled === true ? `
             <div class="d-flex comment-action">
-                <small class="btn-comment-action btn-comment-reply-new">Reply</small>
+                <small class="btn-comment-action btn-comment-reply-new">${clsThis.ele$.attr('data-msg-more-reply')}</small>
                 <small 
-                    class="btn-comment-action btn-comment-action-show-replies d-flex align-items-center"
-                    data-counter="${kwargs?.['children_count'] || 0}"
+                    class="btn-comment-action d-flex align-items-center"
                 >
-                    <small class="mr-2"><span class="comment-num-counter">${kwargs?.['children_count'] || 0}</span> more replies</small>
-                    <img
-                        src="${kwargs?.['avatar_img'] || this.default_avt}" 
-                        alt="${kwargs?.employee_created?.full_name || ''}"
-                        class="avatar-img mr-1"
-                        data-bs-toggle="tooltip"
-                        title="${kwargs?.employee_created?.full_name || ''}"
-                    >
+                    <span class="mr-2 btn-comment-action-show-replies" data-counter="${kwargs?.['children_count'] || 0}">
+                        <span class="comment-num-counter">${kwargs?.['children_count'] || 0}</span> ${clsThis.ele$.attr('data-msg-more-replies')}
+                    </span>
+                    ${getFullPersonReplied()}
                 </small>
+                ${getHTMLLatestReplyDatetime()}
             </div>
         ` : '';
+
+        // replies
         let htmlReplies = replies_enabled === true ? `
             <div class="comment-replies mx-5" style="display: none; width: calc(96% - 2rem);"></div>
         ` : ``;
+
+        // add new
         let htmlAddNew = add_comment_enabled === true ? `
             <div class="comment-reply-new mx-5 mt-2" style="display: none; width: calc(96% - 2rem);">
                 <p class="mentions-display" style="display: none;"></p>
@@ -5356,6 +5421,16 @@ class CommentControl {
                 </form>
             </div>
         ` : ``;
+
+        // date created
+        function getHTMLDateCreated(){
+            return `
+                <small class="px-2">-</small>
+                <small class="mr-1">${kwargs?.['date_relative'] || ''}</small>
+                <small class="mr-1">(${kwargs?.date_output || ''})</small>
+            `
+        }
+
         return `
             <div 
                 class="w-100 min-h-50p comment-item p-2"
@@ -5372,10 +5447,10 @@ class CommentControl {
                         style="width: 2rem;object-fit: contain;"
                         class="mr-1"
                     >
-                    <small class="mr-1">${kwargs?.employee_created?.full_name || ''}</small>
-                    <small class="px-2">-</small>
-                    <small class="mr-1">${kwargs?.['date_relative'] || ''}</small>
-                    <small class="mr-1">(${kwargs?.date_output || ''})</small>
+                    <a href="${clsThis.url_employee_detail.replace('__pk__', kwargs?.employee_created?.id)}" target="_blank">
+                        <b class="mr-1">${kwargs?.employee_created?.full_name || ''}</b>
+                    </a>
+                    ${getHTMLDateCreated()}
                 </div>
                 <div class="w-100 min-h-35p pt-3 pb-1 comment-content">
                     ${kwargs?.contents || ''}
@@ -5433,8 +5508,11 @@ class CommentControl {
         textarea.tinymce( {
             menubar: false,
             height: 120,
-            plugins: 'advlist autolink lists mention',
-            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | outdent indent numlist bullist | removeformat ',
+            plugins: 'advlist autolink lists insertdatetime hr emoticons table mention',
+            toolbar: [
+                'styleselect | bold italic strikethrough | forecolor backcolor | outdent indent numlist bullist | table tabledelete | hr emoticons insertdatetime | removeformat ',
+            ],
+            insertdatetime_formats: ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', '%H:%M:%S', '%I:%M:%S %p'],
             content_css: clsThis.ele$.attr('data-css-url-render'),
             content_style: `
                 @import url(\'//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap\');
@@ -5685,12 +5763,17 @@ class CommentControl {
                 'id': data?.['id'] || '',
                 'avatar_img': data?.['employee_created']?.['avatar_img'] || this.default_person_avt,
                 'employee_created': {
+                    'id': data?.['employee_created']?.['id'] || '',
                     'full_name': data?.['employee_created']?.['full_name'] || '',
                 },
                 'date_relative': dateRelateData.relate,
                 'date_output': dateRelateData.output,
                 'contents': data.contents || '',
                 'children_count': data?.['children_count'] || 0,
+                'mentions': data?.['mentions'] || [],
+                'mentions_data': data?.['mentions_data'] || {},
+                'replies_persons': data?.['replies_persons'] || {},
+                'replies_latest': data?.['replies_latest'] || null,
             }
 
             let html$ = $(this.item_get_html(kwargs, get_html_opts));

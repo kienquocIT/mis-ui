@@ -665,6 +665,22 @@ msgid "Holder"
 msgstr "Holder"
 
 #
+msgid "have been mentioned"
+msgstr "đã được đề cập đến"
+
+#
+msgid "more replies"
+msgstr "câu trả lời"
+
+#
+msgid "Reply"
+msgstr "Trả lời"
+
+#
+msgid "Latest"
+msgstr "Mới nhất"
+
+#
 msgid "Status"
 msgstr "Trạng thái"
 

@@ -9,6 +9,10 @@
      data-url-employee-detail="{% url 'EmployeeDetail' pk='__pk__' %}"
      data-url-replies="{% url 'CommentRepliesAPI' pk='__pk__' %}"
      data-css-url-render="{% static 'comment/css/style.css' %}"
+     data-msg-been-mentioned="{% trans 'have been mentioned' %}"
+     data-msg-more-replies="{% trans 'more replies' %}"
+     data-msg-more-reply="{% trans 'Reply' %}"
+     data-msg-latest="{% trans 'Latest' %}"
 >
     <div class="w-100 comment-add-area pb-1">
         <p class="mentions-display" style="display: none;"></p>

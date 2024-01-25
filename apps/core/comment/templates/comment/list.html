@@ -1,54 +1,17 @@
-{% load i18n %}
-<style>
-    .comment-list {
-        max-height: 300px;
-        overflow-y: auto;
-    }
-
-    .comment-list > .comment-item {
-        padding-left: 5px;
-        border-left: 5px solid rgb(0, 0, 0, 0);
-
-        padding-bottom: 2px;
-        border-bottom: 2px solid #e8e8e8;
-    }
-
-    .comment-list > .comment-item:hover {
-        border-left-color: #3572b0;
-        background-color: #ebfaff;
-    }
-
-    .comment-list > .comment-item:not(:last-child) {
-        margin-bottom: 1rem;
-    }
-
-    .comment-list > .comment-item.comment-item-newest {
-        animation: comment-newest 2s ease-in-out;
-    }
-
-    @keyframes comment-newest {
-      0% {
-        background-color: #dcf5fd;
-      }
-      100% {
-        background-color: inherit;
-      }
-    }
-
-</style>
-<div class="comment-group" data-url="{% url 'CommentList' pk_doc='__pk_doc__' pk_app='__pk_app__' %}">
-    <div class="w-100 pb-3 comment-action-all">
-        <button
-                class="btn btn-outline-primary btn-xs" data-action="collapse-all" type="button"
-        >{% trans 'Collapse All' %}</button>
-        <button
-                class="btn btn-outline-primary btn-xs" data-action="expand-all" type="button"
-        >{% trans 'Expand All' %}</button>
-        <p><small class="total-comment" style="display: none;" data-pattern="{% trans 'Showing {} records' %}"></small></p>
-    </div>
-    <div class="w-100 min-h-50p comment-list"></div>
-    <div class="w-100 comment-add-area pt-3">
-{#        <p class="badge badge-soft-light mb-2">Reply for: All</p>#}
+{% load i18n static %}
+<link
+        href="{% static 'comment/css/style.css' %}"
+        rel="stylesheet" type="text/css"
+/>
+<div class="comment-group"
+     data-url="{% url 'CommentList' pk_doc='__pk_doc__' pk_app='__pk_app__' %}"
+     data-mentions="{% url 'EmployeeListAllAPI' %}"
+     data-url-employee-detail="{% url 'EmployeeDetail' pk='__pk__' %}"
+     data-url-replies="{% url 'CommentRepliesAPI' pk='__pk__' %}"
+     data-css-url-render="{% static 'comment/css/style.css' %}"
+>
+    <div class="w-100 comment-add-area pb-1">
+        <p class="mentions-display" style="display: none;"></p>
         <textarea></textarea>
         <form class="frm-add-new-comment" data-url="{% url 'CommentList' pk_doc='__pk_doc__' pk_app='__pk_app__'  %}" data-method="POST">
             <input type="text" class="d-none" name="doc_id" required/>
@@ -57,4 +20,21 @@
             <button class="w-100 btn btn-primary btn-square btn-add-new-comment" type="submit">{% trans 'Add' %}</button>
         </form>
     </div>
+    <button
+        class="w-100 btn btn-xs mb-1 p-0 comment-all-collapse-editor"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Hide/Show editor' %}"
+    >
+        <i class="fa-solid fa-angles-up"></i>
+        <i class="fa-solid fa-angles-down d-none"></i>
+    </button>
+    <div class="w-100 pb-3 comment-action-all">
+        <small class="total-comment" style="display: none;" data-pattern="{% trans 'Showing {} records' %}"></small>
+        <button
+                class="btn btn-outline-primary btn-xs" data-action="collapse-all" type="button"
+        >{% trans 'Collapse All' %}</button>
+        <button
+                class="btn btn-outline-primary btn-xs" data-action="expand-all" type="button"
+        >{% trans 'Expand All' %}</button>
+    </div>
+    <div class="w-100 comment-list"></div>
 </div>

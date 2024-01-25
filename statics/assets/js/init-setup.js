@@ -370,6 +370,31 @@ class NotifyController {
         });
     }
 
+    callDoneNotify(urlNotifyDone) {
+        let clsThis = this;
+        if (urlNotifyDone) {
+            $.fn.callAjax2({
+                url: urlNotifyDone,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data){
+                        let counter = Number.parseInt(clsThis.bellCount.text());
+                        if (counter > 0) counter -= 1;
+
+                        if (counter > 0) clsThis.bellCount.text(counter);
+                        else {
+                            clsThis.bellCount.text('0').fadeOut();
+                            clsThis.bellIdxIcon.removeClass('my-bell-ring');
+                        }
+                    }
+                },
+                (errs) => {},
+            );
+        }
+    }
+
     // main
     active() {
         new NotifyPopup().cleanChildNotifyBlock();
@@ -383,6 +408,39 @@ class NotifyController {
             let dataUrl = $(this).attr('data-url');
             let dataMethod = $(this).attr('data-method');
 
+            let appNameTranslate = $("#app_name_translate").text();
+            appNameTranslate = appNameTranslate ? JSON.parse(appNameTranslate): {};
+
+            function get_app_name(_code_app){
+                 if (_code_app){
+                    let _arr = _code_app.split(".");
+                    if (_arr.length === 2){
+                        let appData = appNameTranslate?.[_arr[0].toLowerCase()];
+                        if (appData && typeof appData === 'object'){
+                            let featureData = appNameTranslate?.[_arr[0].toLowerCase()][_arr[1].toLowerCase()];
+                            if (featureData && typeof  featureData === 'object') return featureData;
+                        }
+                    }
+                }
+                return {};
+            }
+
+            function resolve_app_name(_code_app){
+                if (_code_app){
+                    let appData = get_app_name(_code_app);
+                    if (appData && appData.hasOwnProperty('title')) return appData['title'];
+                }
+                return _code_app;
+            }
+
+            function has_active_app(_code_app){
+                if (_code_app){
+                    let appData = get_app_name(_code_app);
+                    if (appData && appData.hasOwnProperty('is_active')) return appData['is_active'];
+                }
+                return true;
+            }
+
             $.fn.callAjax2({
                 url: dataUrl,
                 method: dataMethod,
@@ -392,20 +450,43 @@ class NotifyController {
                 let arr_seen = [];
                 if (data && data.hasOwnProperty('notify_data')) {
                     data['notify_data'].map((item) => {
-                        let senderData = item?.['employee_sender_data']?.['full_name'];
+                        let senderData = item?.['employee_sender_data'] || {};
                         let urlData = UrlGatewayReverse.get_url(item['doc_id'], item['doc_app'], {
                             'redirect': true,
                             'notify_id': item['id']
                         },);
+                        let relative_time_html = $x.fn.displayRelativeTime(item?.['date_created'], {
+                            'callback': function (data) {
+                                return `<p>${data.relate}</p><small class="ml-auto">${data.output}</small>`;
+                            }
+                        });
+                        let stickyUnseen = item?.['is_done'] === true ? `` : `
+                            <span class="badge badge-warning badge-indicator badge-indicator-xl position-top-start-overflow-1"></span>
+                        `;
+                        let btnSeenItem = item?.['is_done'] === true ? `` : `
+                            <button class="btn btn-xs btn-primary btn-seen-notify"><i class="fa-brands fa-readme"></i> Seen</button>
+                        `;
+                        let btn_reply_mentions = !item?.['comment_mentions_id'] ? ``: `
+                            <button 
+                                class="btn btn-xs btn-primary btn-notify-reply-comment" 
+                                type="button"
+                            ><i class="fa-solid fa-reply"></i> Reply</button>
+                        `;
+                        let btn_goto = has_active_app(item?.['doc_app']) === true ? `<a href="${urlData}" class="btn btn-xs btn-primary" type="button"><i class="fa-solid fa-right-to-bracket"></i> Goto </a>` : ``;
                         let tmp = `
-                            <a 
-                                href="${urlData}" 
-                                class="dropdown-item mb-1 border border-light ${item?.['is_done'] === true ? '' : 'bg-light'}"
+                            <div 
+                                class="dropdown-item mb-1 bell-menu-item"
+                                data-is-done="${item?.['is_done']}"
+                                data-notify-id="${item?.['id']}"
+                                data-doc-id="${item?.['doc_id']}"
+                                data-app-id="${item?.['application_id']}"
+                                data-comment-id="${item?.['comment_mentions_id']}" 
                             >
                                 <div class="media">
                                     <div class="media-head">
-                                        <div class="avatar avatar-rounded avatar-sm">
-                                            <span class="initial-wrap">${senderData ? $.fn.shortName(senderData) : '<i class="fa-solid fa-gear"></i>'}</span>
+                                        <div class="avatar avatar-soft-primary avatar-rounded avatar-sm position-relative">
+                                            <span class="initial-wrap">${senderData ? $x.fn.renderAvatar(senderData) : '<i class="fa-solid fa-gear"></i>'}</span>
+                                            ${stickyUnseen}
                                         </div>
                                     </div>
                                     <div class="media-body">
@@ -413,17 +494,22 @@ class NotifyController {
                                             <div class="notifications-text">
                                                 <span class="text-primary title">${item?.['title']}</span>
                                             </div>
-                                            <div class="notifications-text mb-3">
+                                            <div class="notifications-text mb-1">
                                                 <small class="text-muted">${item?.['msg']}</small>
                                             </div>
                                             <div class="notifications-info">
-                                                 <span class="badge badge-soft-success noti-custom">${item?.['doc_app']}</span>
-                                                 <div class="notifications-time">${item?.['date_created']}</div>
+                                                 <span class="badge badge-primary badge-outline mb-1 noti-custom">${resolve_app_name(item?.['doc_app'])}</span>
+                                                 <div class="notifications-time mb-1 w-100 d-flex justify-content-start">${relative_time_html}</div>
                                             </div>
+                                        </div>
+                                        <div>
+                                            ${btn_goto}
+                                            ${btn_reply_mentions}
+                                            ${btnSeenItem}
                                         </div>
                                     </div>
                                 </div>
-                            </a>
+                            </div>
                         `;
                         if (item?.['is_done'] === true) arr_seen.push(tmp); else arr_no_seen.push(tmp);
                     })
@@ -433,6 +519,33 @@ class NotifyController {
                 } else {
                     dataArea.append(`<small class="text-muted">${$.fn.transEle.attr('data-no-data')}</small>`);
                 }
+                ListeningEventController.listenImageLoad(
+                    $(dataArea).find('img'),
+                    {'imgReplace': globeAvatarNotFoundImg},
+                );
+                dataArea.find('button.btn-notify-reply-comment').on('click', function (){
+                    let bellNotifyItem = $(this).closest('.bell-menu-item');
+                    let notifyIdx = bellNotifyItem.attr('data-notify-id');
+                    let docIdx = bellNotifyItem.attr('data-doc-id');
+                    let appIdx = bellNotifyItem.attr('data-app-id');
+
+                    // seen
+                    let isDone = bellNotifyItem.attr('data-is-done') === 'true';
+                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
+
+                    //
+                    let modalEle = $('#CommentModal');
+                    new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
+                    modalEle.modal('show');
+                });
+                dataArea.find('button.btn-seen-notify').on('click', function (){
+                    let bellNotifyItem = $(this).closest('.bell-menu-item');
+                    let notifyIdx = bellNotifyItem.attr('data-notify-id');
+                    // seen
+                    let isDone = bellNotifyItem.attr('data-is-done') === 'true';
+                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
+                })
+
                 WindowControl.hideLoadingWaitResponse(dataArea);
             }, (errs) => {
                 WindowControl.hideLoadingWaitResponse(dataArea);
@@ -1363,7 +1476,7 @@ class ListeningEventController {
         })
     }
 
-    static listenImageLoad(imgEle = null, add_margin=false){
+    static listenImageLoad(imgEle = null, opts={}){
         function resolve_title_tooltip(_ele){
             let parentTxt = '';
             if ($(_ele).parent().attr('data-toggle') === 'tooltip' || $(_ele).parent().attr('data-bs-toggle') === 'tooltip') {
@@ -1372,12 +1485,13 @@ class ListeningEventController {
             return `${parentTxt ? parentTxt + "." : ""} ${globeFileNotFoundAlt}`
         }
 
+        let imgReplace = opts?.['imgReplace'] || globeFileNotFoundImg;
         (
             imgEle ? imgEle : $('img')
         ).each(function (){
             if ($(this)[0].complete === true && $(this)[0].naturalWidth === 0 && $(this)[0].naturalHeight === 0) {
                 $(this).attr('data-old-src', $(this).attr('src'));
-                $(this).attr('src', globeFileNotFoundImg);
+                $(this).attr('src', imgReplace);
                 $(this).attr('data-toggle', 'tooltip');
                 $(this).attr('title', resolve_title_tooltip($(this)));
                 $(this).tooltip();
@@ -1387,7 +1501,7 @@ class ListeningEventController {
                 $(this).attr('data-old-src', $(this).attr('src'));
                 $(this).attr('data-toggle', 'tooltip');
                 $(this).attr('title', resolve_title_tooltip($(this)));
-                $(this).attr('src', globeFileNotFoundImg);
+                $(this).attr('src', imgReplace);
             });
         })
     }
@@ -2667,6 +2781,20 @@ class UtilControl {
             .replace(/[^\w ]+/g, "")
             .replace(/ +/g, "-");
     }
+
+    static flattenObject(obj, parentKey = '', result = {}) {
+        // {a: {b: 1}, c: 2} => {a__b: 1, c: 2}
+        for (let key in obj) {
+            let newKey = parentKey ? `${parentKey}__${key}` : key;
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+                UtilControl.flattenObject(obj[key], newKey, result);
+            } else {
+                result[newKey] = obj[key];
+            }
+        }
+        return result;
+    }
+
 }
 
 class DTBControl {
@@ -2863,38 +2991,6 @@ class DTBControl {
             0
         );
     }
-
-    // static parseFilter(dtb) {
-    //     let dtbInited = $(dtb).DataTable();
-    //
-    //     let rowCustomFilter = $(`div.row-custom-filter[data-dtb-id="#` + dtb.attr('id') + `"]`);
-    //
-    //     let dtbWrapper = $(dtb).closest('.dataTables_wrapper');
-    //     let dtbFilter = $(dtbWrapper).find('.dataTables_filter');
-    //     let dtbFilterInput = $(dtbFilter).find('input[type="search"]');
-    //
-    //     rowCustomFilter.each(function () {
-    //         $(this).find('select').each(function () {
-    //             DTBControl.__fillDefaultSelect2Filter($(this)).initSelect2();
-    //         }).on('select2:close', function () {
-    //             dtbInited.table().ajax.reload();
-    //         }).on('select2:clear', function () {
-    //             dtbInited.table().ajax.reload();
-    //         }).on('select2:unselect', function () {
-    //             dtbInited.table().ajax.reload();
-    //         });
-    //
-    //         let customFilterEle = $(this).find('.custom-filter-dtb');
-    //         if (dtbFilterInput && dtbFilterInput.length > 0 && customFilterEle && customFilterEle.length > 0) {
-    //             // dtbFilter.addClass('hidden');
-    //             $(this).find('.custom-filter-dtb').on('keyup', function () {
-    //                 $(dtbFilterInput).val($(this).val()).trigger('keyup');
-    //             });
-    //         } else {
-    //             customFilterEle.remove();
-    //         }
-    //     })
-    // }
 
     static _summaryFilterToText(textFilterEle, manualFilterEle = null, textManual = []) {
         if (textFilterEle) {
@@ -3648,7 +3744,6 @@ class DTBControl {
         return function (settings, json) {
             ListeningEventController.listenImageLoad(
                 $(this.api().table().container()).find('img'),
-                true,
             );
 
             $(this.api().table().container()).find('input').attr('autocomplete', 'off');
@@ -4084,6 +4179,14 @@ class PersonControl {
                 ${appendHtml}
             </div>
         `;
+    }
+
+    static getEmployeeCurrentID(default_val=null){
+        let ele = $('#idx-link-to-current-employee');
+        if (ele.length > 0){
+            return ele.attr('data-value-id');
+        }
+        return default_val;
     }
 }
 
@@ -5065,7 +5168,9 @@ class FileControl {
 }
 
 class CommentControl {
-    constructor(ele$) {
+    constructor(ele$, opts={}) {
+        let {owner_id} = {owner_id: $x.fn.getEmployeeCurrentID(), ...opts}
+        this.owner_id = owner_id;
         this.ele$ = ele$;
         this.ele_list$ = ele$.find('.comment-list');
         this.ele_add = ele$.find('.comment-add-area');
@@ -5074,6 +5179,11 @@ class CommentControl {
         this.pk_doc = null;
         this.pk_app = null;
         this.pageSize = 10;
+
+        this.default_avt = '/static/assets/images/systems/file-not-found.png';
+        this.default_person_avt = '/static/assets/images/systems/person-avt.png';
+
+        this.url_employee_detail = ele$.attr('data-url-employee-detail')
     }
 
     __current_page(data){
@@ -5092,113 +5202,476 @@ class CommentControl {
         }
     }
 
-    item_add_event(eleItem$) {
-        eleItem$.find('.icon-collapse').on('click', function (){
-            $(this).find('.fa-solid').toggleClass('d-none');
-            $(this).closest('.comment-item').find('.comment-content').fadeToggle('fast');
-        })
+    get_url_replies(pk){
+        let urlBase = this.ele$.attr('data-url-replies');
+        return urlBase && pk ? urlBase.replace('__pk__', pk) : null;
     }
 
-    item_get_html(kwargs){
+    item_add_event(eleItem$, has_replies=true) {
+        let clsThis = this;
+        function get_url(){
+            let pk = eleItem$.attr('data-comment-id');
+            return clsThis.get_url_replies(pk);
+        }
+
+        eleItem$.find('.icon-collapse').on('click', function (){
+            $(this).find('.fa-solid').toggleClass('d-none');
+
+            if (!$(this).find('.fa-chevron-right').hasClass('d-none')){
+                eleItem$.find('.comment-content').fadeOut('fast');
+                eleItem$.find('.comment-mentions').fadeOut('fast');
+                eleItem$.find('.comment-replies').fadeOut('fast');
+                eleItem$.find('.comment-reply-new').fadeOut('fast');
+            } else {
+                eleItem$.find('.comment-content').fadeIn('fast');
+                eleItem$.find('.comment-mentions').fadeIn('fast');
+                eleItem$.find('.comment-replies').fadeIn('fast');
+            }
+
+        });
+        if (has_replies ===  true){
+            let commentRepliesEle = eleItem$.find('.comment-replies');
+            let eleReplyComment = eleItem$.find('.comment-reply-new');
+
+            eleItem$.find('.btn-comment-action-show-replies').on('click', function (){
+                let counter = Number.parseInt($(this).attr('data-counter'));
+                if (counter > 0) commentRepliesEle.fadeToggle('fast');
+
+                if (!$(this).attr('data-url')){
+                    let urlResolved = get_url();
+                    if (urlResolved) {
+                        $(this).attr('data-url', urlResolved);
+                        $.fn.callAjax2({
+                            url: urlResolved,
+                            method: 'GET',
+                        }).then(
+                            resp => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data){
+                                    let replies_list = data?.['comment_replies_list'] || [];
+                                    replies_list.map(
+                                        (item) => {
+                                            clsThis.render_comment_item(item, {
+                                                'ele_push_group': commentRepliesEle,
+                                                'get_html_opts': {
+                                                    action_enabled: false,
+                                                    replies_enabled: false,
+                                                    add_comment_enabled: false,
+                                                }
+                                            })
+                                        }
+                                    )
+                                }
+                            },
+                            errs => console.log(errs),
+                        )
+                    }
+                }
+            })
+
+            eleItem$.find('.btn-comment-reply-new').on('click', function (){
+                if (eleReplyComment.length > 0){
+                    let urlResolved = get_url();
+                    if (urlResolved) {
+                        eleReplyComment.fadeToggle('fast');
+                        if (!$(this).attr('data-url')){
+                            $(this).attr('data-url', urlResolved);
+                            clsThis.init_box_comment({
+                                urlSubmit: urlResolved,
+                                textarea: eleReplyComment.find('textarea'),
+                                frmInsideAdd: eleReplyComment.find('form.frm-add-new-comment'),
+                                showingMentions: eleReplyComment.find('.mentions-display'),
+                                render_comment_opts: {
+                                    'ele_push_group': commentRepliesEle,
+                                    'get_html_opts': {
+                                        action_enabled: false,
+                                        replies_enabled: false,
+                                        add_comment_enabled: false,
+                                    },
+                                },
+                                render_record_showing: false,
+                                rendered_scroll_top: false,
+                                rendered_plus_replies_ele: eleItem$.find('.btn-comment-action-show-replies'),
+                            })
+                        }
+                    }
+                }
+            })
+        }
+        ListeningEventController.listenImageLoad(
+            eleItem$.find('img'),
+            {'imgReplace': globeAvatarNotFoundImg},
+        );
+        if (clsThis.owner_id) eleItem$.find(`[data-mention-id="${clsThis.owner_id}"]`).addClass('mentions-is-me');
+    }
+
+    item_get_html(kwargs, opts={}){
+        let {action_enabled, replies_enabled, mentions_enabled, add_comment_enabled} = {
+            mentions_enabled: true,
+            action_enabled: true,
+            replies_enabled: true,
+            add_comment_enabled: true,
+            ...opts,
+        }
+        let htmlMentions = mentions_enabled === true ? `
+            <div class="comment-mentions">
+                <img
+                    src="${kwargs?.['avatar_img'] || this.default_avt}" 
+                    alt="${kwargs?.employee_created?.full_name || ''}"
+                    class="mr-1"
+                    data-bs-toggle="tooltip"
+                    title="${kwargs?.employee_created?.full_name || ''}"
+                >
+                <small>have been mentioned.</small>
+            </div>
+        ` : ``;
+        let htmlAction = action_enabled === true ? `
+            <div class="d-flex comment-action">
+                <small class="btn-comment-action btn-comment-reply-new">Reply</small>
+                <small 
+                    class="btn-comment-action btn-comment-action-show-replies d-flex align-items-center"
+                    data-counter="${kwargs?.['children_count'] || 0}"
+                >
+                    <small class="mr-2"><span class="comment-num-counter">${kwargs?.['children_count'] || 0}</span> more replies</small>
+                    <img
+                        src="${kwargs?.['avatar_img'] || this.default_avt}" 
+                        alt="${kwargs?.employee_created?.full_name || ''}"
+                        class="avatar-img mr-1"
+                        data-bs-toggle="tooltip"
+                        title="${kwargs?.employee_created?.full_name || ''}"
+                    >
+                </small>
+            </div>
+        ` : '';
+        let htmlReplies = replies_enabled === true ? `
+            <div class="comment-replies mx-5" style="display: none; width: calc(96% - 2rem);"></div>
+        ` : ``;
+        let htmlAddNew = add_comment_enabled === true ? `
+            <div class="comment-reply-new mx-5 mt-2" style="display: none; width: calc(96% - 2rem);">
+                <p class="mentions-display" style="display: none;"></p>
+                <textarea></textarea>
+                <form class="frm-add-new-comment" data-method="POST">
+                    <input type="text" class="d-none" name="mentions" value="{}"/>
+                    <button class="w-100 btn btn-primary btn-square btn-add-new-comment" type="submit">${$.fn.transEle.attr('data-add')}</button>
+                </form>
+            </div>
+        ` : ``;
         return `
-            <div class="w-100 min-h-50p comment-item p-2">
+            <div 
+                class="w-100 min-h-50p comment-item p-2"
+                data-comment-id="${kwargs['id']}"
+            >
                 <div class="w-100 min-h-15p d-flex align-items-center">
                     <span class="icon-collapse" style="max-width: 1.2rem; cursor: pointer">
                         <i class="fa-solid fa-xs fa-chevron-right mr-3 ml-1 d-none"></i>
                         <i class="fa-solid fa-xs fa-chevron-up mr-3 ml-1"></i>
                     </span>
                     <img
-                            src="${kwargs?.['avatar_img'] || '/static/assets/images/systems/file-not-found.png'}" 
-                            alt="${kwargs?.employee_created?.full_name || ''}"
-                            style="width: 2rem;"
-                            class="mr-1"
+                        src="${kwargs?.['avatar_img'] || this.default_avt}" 
+                        alt="${kwargs?.employee_created?.full_name || ''}"
+                        style="width: 2rem;object-fit: contain;"
+                        class="mr-1"
                     >
                     <small class="mr-1">${kwargs?.employee_created?.full_name || ''}</small>
                     <small class="px-2">-</small>
                     <small class="mr-1">${kwargs?.['date_relative'] || ''}</small>
+                    <small class="mr-1">(${kwargs?.date_output || ''})</small>
                 </div>
                 <div class="w-100 min-h-35p pt-3 pb-1 comment-content">
                     ${kwargs?.contents || ''}
-                    <p><small>${kwargs?.date_output || ''}</small></p>
                 </div>
+                ${htmlMentions}
+                ${htmlAction}
+                ${htmlAddNew}
+                ${htmlReplies}
             </div>
-            <!-- <button class="btn btn-xs btn-light btn-load-replies">{} more replies</button> -->
         `;
+    }
+
+    init_box_comment(opts){
+        let clsThis = this;
+        let {
+            urlSubmit, textarea, frmInsideAdd, showingMentions,
+            render_comment_opts, render_record_showing, rendered_scroll_top, rendered_plus_replies_ele,
+        } = {
+            urlSubmit: null,
+            textarea: this.ele_add.find('textarea'),
+            frmInsideAdd: this.ele_add.find('form.frm-add-new-comment'),
+            showingMentions: this.ele_add.find('.mentions-display'),
+            render_comment_opts: {},
+            render_record_showing: true,
+            rendered_scroll_top: true,
+            rendered_plus_replies_ele: null,
+            ...opts
+        }
+        let inputMentions = frmInsideAdd.find('input[name="mentions"]');
+
+        function setupDisplayMentionsInEditor(item){
+            return `
+                <a 
+                    href="${clsThis.url_employee_detail.replace('__pk__', item.id)}" 
+                    target="_blank"
+                >@${item.full_name}</a>
+            `;
+        }
+
+        function setupDisplayMentionsInSummary(item){
+            return $(`
+                <span class="mentions-display-txt">
+                    <a 
+                        href="${clsThis.url_employee_detail.replace('__pk__', item.id)}" 
+                        target="_blank"
+                    >
+                        ${item.full_name} 
+                        <small>(${item.group_title})</small>
+                    </a>
+                </span>
+            `)
+        }
+
+        let tinymceEditor = null;
+        textarea.tinymce( {
+            menubar: false,
+            height: 120,
+            plugins: 'advlist autolink lists mention',
+            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | outdent indent numlist bullist | removeformat ',
+            content_css: clsThis.ele$.attr('data-css-url-render'),
+            content_style: `
+                @import url(\'//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap\');
+                body { font-family:"Google Sans", "Roboto", "Roboto Mono", sans-serif; font-size: 14px; }
+            `,
+            mentions: {
+                queryBy: 'email',
+                items: 10,
+                source: function (query, process, delimiter) {
+                    // Do your ajax call
+                    // When using multiple delimiters you can alter the query depending on the delimiter used
+                    if (delimiter === '@') {
+                        let params = $.param(
+                            {
+                                'page': 1,
+                                'pageSize': 10,
+                                'ordering': 'first_name',
+                                ...(
+                                    query ? {'search': query} : {}
+                                )
+                            }
+                        )
+                       $.fn.callAjax2({
+                           url: clsThis.ele$.attr('data-mentions') + '?' + params,
+                           cache: true,
+                       }).then(
+                           (resp) => {
+                               let data = $.fn.switcherResp(resp);
+                               if (data){
+                                   let resource = (data?.['employee_list'] || []).map(
+                                       (item) => {
+                                           if (!item.avatar_img) item.avatar_img = clsThis.default_person_avt;
+                                           return UtilControl.flattenObject(item);
+                                       }
+                                   )
+                                   process(resource);
+                               }
+                           },
+                           (errs) => console.log(errs),
+                       )
+                    }
+                },
+                insert: function (item) {
+                    return `<span 
+                        class="mention-person"
+                        data-mention="true"
+                        data-mention-id="${item.id}" 
+                        data-mention-email="${item.email}"
+                        data-mention-full-name="${item.full_name}" 
+                        data-mention-code="${item.code}" 
+                        data-group-title="${item?.['group__title'] || ''}"
+                    >${setupDisplayMentionsInEditor(item)}</span>\u200B&nbsp;`
+                },
+                render: function(item) {
+                    return `
+                        <li style="cursor: pointer;" class="d-flex align-items-center">
+                            <img src="${item.avatar_img}" width="20px" alt="" class="m-3"/>
+                            <div  style="display: inline-block;">
+                                <div class="mention-person-item-title">
+                                    <span style="color: #000038">${item.full_name}</span>
+                                    <b>${item?.['group__title'] || ''}</b>
+                                </div>
+                            </div>
+                        </li>
+                    `
+                    // <div><small>${item.email} - ${item.code}</small></div>
+                },
+                renderDropdown: function() {
+                    return '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>';
+                }
+            },
+            setup: function(editor) {
+                tinymceEditor = editor;
+                editor.on('change', function() {
+                    let content = editor.getContent();
+
+                    let parser = new DOMParser();
+                    let doc = parser.parseFromString(content, 'text/html');
+
+                    let mentionsIds = [];
+                    let mentionsTxt = [];
+                    let mentions = doc.querySelectorAll('[data-mention="true"]');
+                    Array.from(mentions).map(function(mention) {
+                        let idx = mention.getAttribute('data-mention-id');
+                        let email = mention.getAttribute('data-mention-email');
+                        let fullName = mention.getAttribute('data-mention-full-name');
+                        let code = mention.getAttribute('data-mention-code');
+                        let groupTitle = mention.getAttribute('data-group-title');
+                        if (mentionsIds.indexOf(idx) === -1){
+                            mentionsIds.push(idx);
+                            mentionsTxt.push(setupDisplayMentionsInSummary({
+                                'id': idx,
+                                'email': email,
+                                'full_name': fullName,
+                                'code': code,
+                                'group_title': groupTitle,
+                            }))
+                        }
+                    });
+                    inputMentions.val(JSON.stringify(mentionsIds));
+
+                    //
+                    showingMentions.empty()
+                    if (mentionsTxt.length === 0) showingMentions.fadeOut('fast');
+                    else {
+                        mentionsTxt.map(
+                            (item) => {
+                                showingMentions.append(item);
+                            }
+                        )
+                        showingMentions.fadeIn('fast');
+                    }
+                });
+                editor.on('keydown', function(e) {
+                    if (e.key === 'Backspace' || e.key === 'Delete') {
+                        let node = editor.selection.getNode();
+                        if (node.getAttribute("data-mention") === "true") {
+                            e.preventDefault();
+                            node.remove();
+                            if (editor.getContent() === '') editor.setContent('<p>&nbsp;</p>');
+                            editor.fire('change');
+                        }
+                    }
+                });
+            },
+        });
+        frmInsideAdd.on('submit', function (event){
+            $(this).find('button[type=submit]').prop('disabled', true);
+            event.preventDefault();
+
+            let url = urlSubmit;
+            if (!urlSubmit){
+                let doc_id = $(this).find('input[name="doc_id"]').val();
+                let app_id = $(this).find('input[name="application"]').val();
+                url = $(this).attr('data-url').replace('__pk_doc__', doc_id).replace('__pk_app__', app_id)
+            }
+            let mention_data = $(this).find('input[name="mentions"]').val();
+            let data = {
+                "mentions": mention_data ? JSON.parse(mention_data) : [],
+                'contents': textarea.tinymce().getContent(),
+            };
+            let method = $(this).attr('data-method');
+
+            if (url && method && data){
+                $.fn.callAjax2({
+                    url: url,
+                    method: method,
+                    data: data,
+                }).then(
+                    resp => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data){
+                            // reset editor
+                            textarea.tinymce().setContent('');
+                            if (tinymceEditor) tinymceEditor.fire('change');
+
+                            //
+                            $.fn.notifyB({'description': $.fn.transEle.attr('data-success')}, 'success');
+
+                            // render comment with detail API
+                            clsThis.render_comment_item(data?.['comment_detail'] || {}, {'ap_or_pre': 'pre', ...render_comment_opts});
+
+                            // increase records of all
+                            if (render_record_showing === true) clsThis.render_record_showing({'plus_num': 1});
+
+                            // scroll to top
+                            if (rendered_scroll_top === true) clsThis.ele_list$.scrollTop(0);
+
+                            // increase records of replies
+                            if (rendered_plus_replies_ele){
+                                let counter = Number.parseInt(rendered_plus_replies_ele.attr('data-counter'));
+                                if (counter === 0){
+                                    rendered_plus_replies_ele.attr('data-url', 'resolve-with-zero');
+                                }
+                                counter += 1;
+                                rendered_plus_replies_ele.attr('data-counter', counter);
+                                rendered_plus_replies_ele.find('.comment-num-counter').text(counter);
+                            }
+                        }
+                        $(this).find('button[type=submit]').prop('disabled', false);
+                    },
+                    errs => {
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-fail'),
+                        }, 'failure');
+                        $(this).find('button[type=submit]').prop('disabled', false);
+                    },
+                )
+            }
+
+            return false;
+        })
     }
 
     init_structure(){
         let clsThis = this;
-        if (this.ele$.attr('data-structure-inited') !== true){
+        if (this.ele$.attr('data-structure-inited') !== 'true'){
+            this.ele$.attr('data-structure-inited', 'true');
+
             // init event collapse/expand
-            let ele_this = this.ele_list$;
-            this.ele_action_all.find('button').on('click', function (){
-                let action = $(this).attr('data-action');
-                if (action === 'collapse-all'){
-                    ele_this.find('.icon-collapse').each(function (){
-                        if (!$(this).find('.fa-chevron-up').hasClass('d-none')){
-                            $(this).trigger('click');
-                        }
-                    })
-                } else if (action === 'expand-all') {
-                    ele_this.find('.icon-collapse').each(function (){
-                        if ($(this).find('.fa-chevron-up').hasClass('d-none')){
-                            $(this).trigger('click');
-                        }
-                    })
-                }
+            let ele_this = this.ele$;
+            this.ele_action_all.find('button[data-action="collapse-all"]').on('click', function (){
+                ele_this.find('.icon-collapse').filter(function (){
+                    return $(this).find('.fa-chevron-right').hasClass('d-none');
+                }).trigger('click');
+            })
+            this.ele_action_all.find('button[data-action="expand-all"]').on('click', function (){
+                ele_this.find('.icon-collapse').filter(function (){
+                    return $(this).find('.fa-chevron-up').hasClass('d-none');
+                }).trigger('click');
             })
 
             // init add new comment / event click button add
-            let textarea = this.ele_add.find('textarea');
-            textarea.tinymce( {
-                menubar: false,
-                plugins: 'lists',
-                toolbar: 'styleselect forecolor bold italic strikethrough | outdent indent numlist bullist',
-            });
-            this.ele_add.find('form.frm-add-new-comment').on('submit', function (event){
-                $(this).find('button[type=submit]').prop('disabled', true);
-                event.preventDefault();
+            this.init_box_comment();
 
-                let doc_id = $(this).find('input[name="doc_id"]').val();
-                let app_id = $(this).find('input[name="application"]').val();
-                let data = {
-                    "mentions": $(this).find('input[name="mentions"]').val(),
-                    'contents': textarea.tinymce().getContent(),
-                };
-                let url = $(this).attr('data-url').replace('__pk_doc__', doc_id).replace('__pk_app__', app_id);
-                let method = $(this).attr('data-method');
-
-                if (url && method && data && doc_id && app_id){
-                    $.fn.callAjax2({
-                        url: url,
-                        method: method,
-                        data: data,
-                    }).then(
-                        resp => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data){
-                                clsThis.render_comment_item(data?.['comment_detail'] || {}, 'pre');
-                                clsThis.render_record_showing({'plus_num': 1});
-                                clsThis.ele_list$.scrollTop(0);
-                                textarea.tinymce().setContent('');
-                            }
-                            $(this).find('button[type=submit]').prop('disabled', false);
-                        },
-                        errs => {
-                            console.log(errs);
-                            $(this).find('button[type=submit]').prop('disabled', false);
-                        },
-                    )
-                }
-
-                return false;
+            // init collapse editor all
+            this.ele$.find('.comment-all-collapse-editor').on('click', function (){
+                clsThis.ele_add.fadeToggle('fast');
+                $(this).find('.fa-solid').toggleClass('d-none');
             })
-
-            this.ele$.attr('data-structure-inited', true);
         }
     }
 
-    render_comment_item(data, ap_or_pre='ap', effect_newest=true){
+    render_comment_item(data, opts={}) {
+        let {
+            ap_or_pre,
+            effect_newest,
+            ele_push_group,
+            get_html_opts,
+        } = {
+            ap_or_pre: 'ap',
+            effect_newest: true,
+            ele_push_group: null,
+            get_html_opts: {},
+            ...opts
+        }
+
         if (data && typeof data === 'object'){
             let dateRelateData = UtilControl.displayRelativeTime(data.date_created, {
                 'callback': function (data){
@@ -5209,31 +5682,29 @@ class CommentControl {
                 }
             })
             let kwargs = {
-                'avatar_img': data?.['employee_created']?.['avatar_img'] || '/static/assets/images/systems/file-not-found.png',
+                'id': data?.['id'] || '',
+                'avatar_img': data?.['employee_created']?.['avatar_img'] || this.default_person_avt,
                 'employee_created': {
                     'full_name': data?.['employee_created']?.['full_name'] || '',
                 },
                 'date_relative': dateRelateData.relate,
                 'date_output': dateRelateData.output,
                 'contents': data.contents || '',
+                'children_count': data?.['children_count'] || 0,
             }
 
-            let html$ = $(this.item_get_html(kwargs));
-            if (ap_or_pre === 'ap'){
-                this.ele_list$.append(html$);  // API sorting -date_created.
-            } else {
-                this.ele_list$.prepend(html$);  // render add new success
-            }
+            let html$ = $(this.item_get_html(kwargs, get_html_opts));
+            if (effect_newest === true) html$.addClass('comment-item-newest');
             this.item_add_event(html$);
-            if (effect_newest === true){
-                html$.addClass('comment-item-newest');
-                setTimeout(
-                    () => {
-                        html$.removeClass('comment-item-newest');
-                    },
-                    2000
-                )
-            }
+
+            let elePushTo = (
+                ele_push_group ? ele_push_group : this.ele_list$
+            )
+            ap_or_pre === 'ap' ? elePushTo.append(html$) : elePushTo.prepend(html$);  // API sorting -date_created. : render add new success
+            setTimeout(
+                () => html$.removeClass('comment-item-newest'),
+                2000
+            )
         }
     }
 
@@ -5242,33 +5713,57 @@ class CommentControl {
         let eleTotal = this.ele_action_all.find('.total-comment');
         let nextNum = eleTotal.attr('data-page-next');
         if (nextNum && nextNum > 0){
-            let btnLoadMore = $(`<button class="btn btn-xs btn-light my-3 comment-load-more">Load more</button>`);
-            this.ele_list$.append(btnLoadMore);
+            let btnLoadMore = $(`<button class="btn btn-xs btn-light my-3 comment-load-more">${$.fn.transEle.attr('data-msg-show-more')}</button>`);
             btnLoadMore.on('click', function (){
-                $(btnLoadMore).remove();
+                $(this).remove();
                 clsThis.fetch_all({
                     'page': nextNum,
                 });
             })
+            this.ele_list$.append(btnLoadMore);
         }
     }
 
     render_record_showing(opts){
-        let plus_num= opts?.plus_num || 0;
-        let total= opts?.total || 0;
-        let current= opts?.current || 0;
-        let next= opts?.next || 0;
-
         let eleTotal = this.ele_action_all.find('.total-comment');
+        let hasReloadAPI = opts?.['reloadAPI'] || false;
+        function get_num(_key, _attr){
+            if (_key){
+                let _tmp = opts?.[_key];
+                if (Number.isInteger(_tmp)) return _tmp;
+            }
+            if (_attr) {
+                let _arrv = eleTotal.attr(_attr);
+                if (_arrv){
+                    try {
+                        return Number.parseInt(_arrv);
+                    } catch (e){}
+                }
+            }
+            return 0;
+        }
+        let plus_num= get_num('plus_num', null);
+        let total= get_num('total', 'data-total');
+        let current= get_num('current', 'data-page-current');
+        let next= get_num('next', 'data-page-next');
+        let loaded = get_num(null, 'data-page-loaded');
 
+        if (plus_num > 0) {
+            if (hasReloadAPI) {
+                if (next === 0) loaded = total;
+                else loaded += plus_num;
+            } else {
+                loaded += plus_num;
+                total += plus_num;
+            }
+        }
         eleTotal.attr('data-total', total);
-        eleTotal.attr('data-page-current', current)
-        eleTotal.attr('data-page-next', next)
-
-        if (plus_num > 0) eleTotal.attr('data-total', Number.parseInt(eleTotal.attr('data-total')) + plus_num);
+        eleTotal.attr('data-page-current', current);
+        eleTotal.attr('data-page-next', next);
 
         let recordTotal = eleTotal.attr('data-total');
-        let recordLoaded = next === 0 ? recordTotal: eleTotal.attr('data-page-current') * this.pageSize;
+        let recordLoaded = next === 0 ? recordTotal: loaded;
+        eleTotal.attr('data-page-loaded', recordLoaded);
         eleTotal.text(
             eleTotal.attr('data-pattern').replace("{}", `${recordLoaded}/${recordTotal}`)
         ).fadeIn('fast');
@@ -5303,6 +5798,8 @@ class CommentControl {
                             'total': data.page_count,
                             'current': dataPage.current,
                             'next': dataPage.next,
+                            'plus_num': clsThis.pageSize,
+                            'reloadAPI': true,
                         });
                         clsThis.render_btn_load_more();
                     }
@@ -5332,6 +5829,7 @@ class CommentControl {
                 'total': data.length,
                 'current': 1,
                 'next': 0,
+                'reloadAPI': false,
             });
         } else {
             this.fetch_all();
@@ -5375,6 +5873,7 @@ let $x = {
 
         shortNameGlobe: PersonControl.shortNameGlobe,
         renderAvatar: PersonControl.renderAvatar,
+        getEmployeeCurrentID: PersonControl.getEmployeeCurrentID,
 
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
@@ -5388,6 +5887,7 @@ let $x = {
         parseJson: UtilControl.parseJson,
         dumpJson: UtilControl.dumpJson,
         convertToSlug: UtilControl.convertToSlug,
+        flattenObject: UtilControl.flattenObject,
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,

@@ -53,6 +53,10 @@ msgstr "Địa chỉ email liên hệ"
 msgid "Select Company"
 msgstr "Chọn công ty"
 
+#
+msgid "Click to switch company"
+msgstr "Nhấn vào để thay đổi công ty hiện hành"
+
 #: .\apps\core\account\templates\core\account\user_create.html:89
 msgid "Select your company"
 msgstr "Chọn công ty của bạn"
@@ -167,6 +171,14 @@ msgstr "Vui lòng chuyển công ty hiện tại sang công ty đã có liên k�
 #
 msgid "Close"
 msgstr "Đóng"
+
+#
+msgid "Comments"
+msgstr "Bình luận"
+
+#
+msgid "Hide/Show editor"
+msgstr "Hiển thị/ẩn trình chỉnh sửa"
 
 #
 msgid "Sign in to your account"
@@ -2664,6 +2676,10 @@ msgid "Calendar day"
 msgstr "Ngày dương lịch"
 
 #
+msgid "Contract"
+msgstr "Hợp đồng"
+
+#
 msgid "Contract date"
 msgstr "Ngày ký hợp đồng"
 
@@ -3380,6 +3396,7 @@ msgstr "Lấy"
 #
 msgid "Picking"
 msgstr "Lấy hàng"
+
 #
 msgid "Picking list"
 msgstr "Danh sách lấy hàng"
@@ -3862,6 +3879,10 @@ msgstr "Chọn ở đây để tải lên tài liệu"
 #
 msgid "Add Document"
 msgstr "Thêm tài liệu"
+
+#
+msgid "Document For Customers"
+msgstr "Tài liệu"
 
 #
 msgid "Product introduction document for customers"
@@ -5637,6 +5658,14 @@ msgid "Unplanned expenses"
 msgstr "Các khoản đã chi ngoài kế hoạch"
 
 #
+msgid "Expenses"
+msgstr "Chi phí"
+
+#
+msgid "Expenses Item"
+msgstr ""
+
+#
 msgid "Calendar"
 msgstr "Lịch sự kiện"
 
@@ -5778,6 +5807,10 @@ msgstr "Quay về trang danh sách"
 
 #
 msgid "Provide request"
+msgstr "Yêu cầu cấp phát"
+
+#
+msgid "Asset, Tools provide"
 msgstr "Yêu cầu cấp phát"
 
 #

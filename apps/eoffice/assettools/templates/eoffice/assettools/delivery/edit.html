@@ -46,7 +46,7 @@
                 <select class="form-select" name="provide" id="selectProvide"
                         data-url="{% url 'AssetToolsProvideRequestListAPI' %}"
                         data-keyResp="asset_provide_list" data-keyText="code" data-keyId="id"
-                        data-params="{'complete_delivered': false}"
+                        data-params="{'complete_delivered': false, 'system_status__gte':2}"
                 >
                 </select>
             </div>

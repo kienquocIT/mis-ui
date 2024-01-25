@@ -91,6 +91,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # employee
     EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/{pk}/upload-avatar')
     EMPLOYEE_LIST = StringUrl('hr/employees')
+    EMPLOYEE_ALL_LIST = StringUrl('hr/employees/all')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')
     EMPLOYEE_DETAIL_APP_LIST = StringUrl('hr/employee/{pk}/app')
@@ -129,6 +130,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # comment
     COMMENT_LIST = StringUrl('comment/doc/{pk_doc}/{pk_app}/list')
+    COMMENT_REPLIES_LIST = StringUrl('comment/reply/{pk}/list')
 
     # base
     PLAN_LIST = StringUrl('base/plans')
@@ -483,3 +485,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')
     AR_INVOICE_DETAIL = StringUrl('ar-invoice/detail/{pk}')
+
+    # AP Invoice
+    GOOD_RECEIPT_LIST_AP_INVOICE = StringUrl('ap-invoice/get-goods-receipts')
+    AP_INVOICE_LIST = StringUrl('ap-invoice/list')
+    AP_INVOICE_DETAIL = StringUrl('ap-invoice/detail/{pk}')

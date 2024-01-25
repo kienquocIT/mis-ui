@@ -222,7 +222,7 @@ $(document).ready(function () {
         };
     }
 
-    function CombineRevenueChartDataAccumulated(group_filter, show_billion, titleY = 'Revenue (million)', titleX = 'Fiscal month', chart_title = 'Revenue chart') {
+    function CombineRevenueChartDataAccumulated(group_filter, show_billion, titleY = 'Revenue (million)', titleX = 'Month', chart_title = 'Revenue chart') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -380,7 +380,7 @@ $(document).ready(function () {
                 group,
                 isBillionChecked,
                 `Revenue (${unitText})`,
-                'Fiscal month',
+                'Month',
                 `Revenue chart of ${group_title} in ${fiscal_year_Setting}`
             )
             revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
@@ -390,7 +390,7 @@ $(document).ready(function () {
                 group,
                 isBillionChecked,
                 `Revenue (${unitText})`,
-                'Fiscal month',
+                'Month',
                 `Revenue chart of ${group_title} in ${fiscal_year_Setting}`
             )
             revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
@@ -436,7 +436,7 @@ $(document).ready(function () {
                         group,
                         isBillionChecked,
                         `Revenue (${unitText})`,
-                        'Fiscal month',
+                        'Month',
                         `Revenue chart of ${group_title} in ${fiscal_year_Setting}`
                     )
                     revenue_chart_DF.updateOptions(options)
@@ -445,7 +445,7 @@ $(document).ready(function () {
                         group,
                         isBillionChecked,
                         `Revenue (${unitText})`,
-                        'Fiscal month',
+                        'Month',
                         `Revenue chart of ${group_title} in ${fiscal_year_Setting}`
                     )
                     revenue_chart_DF.updateOptions(options)
@@ -553,7 +553,7 @@ $(document).ready(function () {
 
     LoadProfitGroup()
 
-    function CombineProfitChartDataPeriod(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Fiscal month', chart_title = 'Profit chart') {
+    function CombineProfitChartDataPeriod(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Month', chart_title = 'Profit chart') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -580,13 +580,13 @@ $(document).ready(function () {
         if (group_filter) {
             let group_found_data = profit_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
             if (group_found_data) {
-                let group_expected_data = group_found_data?.['group_month_target']
+                let group_expected_data = group_found_data?.['group_month_profit_target']
                 for (let i = 0; i < group_expected_data.length; i++) {
-                    profit_expected_data_DF.push(group_expected_data[i] / cast_billion)
+                    profit_expected_data.push(group_expected_data[i] / cast_billion)
                 }
             }
             else {
-                profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                profit_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             }
         }
         else {
@@ -597,10 +597,10 @@ $(document).ready(function () {
 
         return {
             series: [
-                // {
-                //     name: "Expected",
-                //     data: profit_expected_data
-                // },
+                {
+                    name: "Expected",
+                    data: profit_expected_data
+                },
                 {
                     name: "Reality",
                     data: profit_chart_data
@@ -622,7 +622,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                // '#5a9a9a',
+                '#5a9a9a',
                 '#E92990'
             ],
             dataLabels: {
@@ -686,7 +686,7 @@ $(document).ready(function () {
         };
     }
 
-    function CombineProfitChartDataAccumulated(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Fiscal month', chart_title = 'Profit chart') {
+    function CombineProfitChartDataAccumulated(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Month', chart_title = 'Profit chart') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -719,13 +719,13 @@ $(document).ready(function () {
         if (group_filter) {
             let group_found_data = profit_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
             if (group_found_data) {
-                let group_expected_data = group_found_data?.['group_month_target']
+                let group_expected_data = group_found_data?.['group_month_profit_target']
                 for (let i = 0; i < group_expected_data.length; i++) {
-                    profit_expected_data_DF.push(group_expected_data[i] / cast_billion)
+                    profit_expected_data.push(group_expected_data[i] / cast_billion)
                 }
             }
             else {
-                profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                profit_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             }
         }
         else {
@@ -743,10 +743,10 @@ $(document).ready(function () {
         }
         return {
             series: [
-                // {
-                //     name: "Expected",
-                //     data: profit_expected_data
-                // },
+                {
+                    name: "Expected",
+                    data: profit_expected_data
+                },
                 {
                     name: "Reality",
                     data: profit_chart_data
@@ -768,7 +768,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                // '#5a9a9a',
+                '#5a9a9a',
                 '#E92990'
             ],
             dataLabels: {
@@ -846,7 +846,7 @@ $(document).ready(function () {
                 group,
                 isBillionChecked,
                 `Profit (${unitText})`,
-                'Fiscal month',
+                'Month',
                 `Profit chart of ${group_title} in ${fiscal_year_Setting}`
             )
             profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
@@ -856,7 +856,7 @@ $(document).ready(function () {
                 group,
                 isBillionChecked,
                 `Profit (${unitText})`,
-                'Fiscal month',
+                'Month',
                 `Profit chart of ${group_title} in ${fiscal_year_Setting}`
             )
             profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
@@ -902,7 +902,7 @@ $(document).ready(function () {
                         group,
                         isBillionChecked,
                         `Profit (${unitText})`,
-                        'Fiscal month',
+                        'Month',
                         `Profit chart of ${group_title} in ${fiscal_year_Setting}`
                     )
                     profit_chart_DF.updateOptions(options)
@@ -911,7 +911,7 @@ $(document).ready(function () {
                         group,
                         isBillionChecked,
                         `Profit (${unitText})`,
-                        'Fiscal month',
+                        'Month',
                         `Profit chart of ${group_title} in ${fiscal_year_Setting}`
                     )
                     profit_chart_DF.updateOptions(options)
@@ -959,7 +959,7 @@ $(document).ready(function () {
         Promise.all([profit_chart_ajax, company_revenue_plan_list_ajax]).then(
             (results) => {
                 profit_chart_list_DF = results[0];
-                profit_expected_data_DF = results[1]?.['company_month_target'];
+                profit_expected_data_DF = results[1]?.['company_month_profit_target'];
                 profit_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
 
                 period_selected_Setting = results[1]?.['period_mapped']
@@ -1544,7 +1544,7 @@ $(document).ready(function () {
     let top_categories_chart_list_DF = []
     let top_categories_chart_DF = null
 
-    function CombineTopCategoriesChartData(show_billion, titleY = "Revenue (million)", titleX = "Category's name") {
+    function CombineTopCategoriesChartData(show_billion, titleY = "Revenue (million)", titleX = "Category's name", chart_title="Top 5 categories this month") {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -1688,6 +1688,10 @@ $(document).ready(function () {
                     text: titleY
                 },
             },
+            title: {
+                text: chart_title,
+                align: 'left'
+            },
             fill: {
                 opacity: 1
             },
@@ -1711,10 +1715,13 @@ $(document).ready(function () {
     function InitOptionTopCategoriesChart() {
         const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
+        let time = ['this month', 'this quarter', 'this year', '']
+
         let options = CombineTopCategoriesChartData(
             isBillionChecked,
             `Revenue (${unitText})`,
             "Category's name",
+            `Top ${topCategoriesNumberEle.val()} categories ${time[topCategoriesTimeEle.val()]}`
         )
         $('#top-categories-spinner').prop('hidden', true)
         top_categories_chart_DF = new ApexCharts(document.querySelector("#top_categories_chart"), options);
@@ -1724,10 +1731,13 @@ $(document).ready(function () {
     function UpdateOptionTopCategoriesChart() {
         const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
+        let time = ['this month', 'this quarter', 'this year', '']
+
         let options = CombineTopCategoriesChartData(
             isBillionChecked,
             `Revenue (${unitText})`,
             "Category's name",
+            `Top ${topCategoriesNumberEle.val()} categories ${time[topCategoriesTimeEle.val()]}`
         )
         top_categories_chart_DF.updateOptions(options)
     }
@@ -1812,7 +1822,7 @@ $(document).ready(function () {
     let top_products_chart_list_DF = []
     let top_products_chart_DF = null
 
-    function CombineTopProductsChartData(show_billion, titleY = "Revenue (million)", titleX = "Product's name") {
+    function CombineTopProductsChartData(show_billion, titleY = "Revenue (million)", titleX = "Product's name", chart_title="Top 5 products this month") {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -1956,6 +1966,10 @@ $(document).ready(function () {
                     text: titleY
                 },
             },
+            title: {
+                text: chart_title,
+                align: 'left'
+            },
             fill: {
                 opacity: 1
             },
@@ -1979,10 +1993,13 @@ $(document).ready(function () {
     function InitOptionTopProductsChart() {
         const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
+        let time = ['this month', 'this quarter', 'this year', '']
+
         let options = CombineTopProductsChartData(
             isBillionChecked,
             `Revenue (${unitText})`,
             "Product's name",
+            `Top ${topProductsNumberEle.val()} products ${time[topProductsTimeEle.val()]}`
         )
         $('#top-products-spinner').prop('hidden', true)
         top_products_chart_DF = new ApexCharts(document.querySelector("#top_products_chart"), options);
@@ -1992,10 +2009,13 @@ $(document).ready(function () {
     function UpdateOptionTopProductsChart() {
         const isBillionChecked = billionCheckboxEle.prop('checked')
         const unitText = isBillionChecked ? 'billion' : 'million'
+        let time = ['this month', 'this quarter', 'this year', '']
+
         let options = CombineTopProductsChartData(
             isBillionChecked,
             `Revenue (${unitText})`,
             "Product's name",
+            `Top ${topProductsNumberEle.val()} products ${time[topProductsTimeEle.val()]}`
         )
         top_products_chart_DF.updateOptions(options)
     }

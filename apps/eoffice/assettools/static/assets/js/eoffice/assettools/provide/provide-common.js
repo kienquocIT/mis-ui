@@ -11,8 +11,9 @@ class ProductsTable {
     static calcSubtotal(data, index) {
         if (data.price > 0 && data.quantity > 0) {
             let total = parseInt(data.price) * parseInt(data.quantity)
-            if (data.tax_data) {
-                let tax = data?.tax_data?.rate > 0 ? total / 100 * data.tax_data.rate : 0
+            if (data.tax_data || data.tax) {
+                let tempTax = data.tax ? data.tax : data['data_tax'] ? data['data_tax'] : {}
+                let tax = tempTax?.rate > 0 ? total / 100 * tempTax.rate : 0
                 total += tax
             }
             data.subtotal = total
@@ -80,7 +81,7 @@ class ProductsTable {
                         data: 'price',
                         width: '15%',
                         render: (row, type, data, meta) => {
-                            return `<input type="text" class="form-control mask-money" data-zone="products" name="price_${meta.row}" value="${row}">`
+                            return `<input type="text" class="mask-money form-control" data-zone="products" name="price_${meta.row}" data-init-money="${parseFloat(row ? row : 0)}">`
                         }
                     },
                     {
@@ -126,22 +127,24 @@ class ProductsTable {
                         .attr('data-keyId', "id")
                         .initSelect2()
                         .on('select2:select', function (e) {
-                            data.product = e.params.data.data.id
+                            const product = e.params.data.data
+                            data.product = product.id
                             // reset all reference product has selected
                             $('[name*="uom_"]', row).html('').attr('data-params', JSON.stringify({
-                                'group': e.params.data.data.general_uom_group.id
-                            }))
+                                'group': product.general_uom_group.id
+                            })).append(`<option value="${product?.['inventory_uom']?.id}" selected>${product?.['inventory_uom']?.['title']}</option>`)
+                            data.uom = product?.['inventory_uom']?.id
                         })
 
                     // load uom
-                    $('[name*="uom_"]', row).attr('data-url', $urlElm.attr('data-uom-url'))
-                        .attr('data-keyResp', "unit_of_measure")
-                        .attr('data-keyText', "title")
-                        .attr('data-keyId', "id")
-                        .initSelect2()
-                        .on('select2:select', function (e) {
-                            data.uom = e.params.data.data.id
-                        })
+                    // $('[name*="uom_"]', row).attr('data-url', $urlElm.attr('data-uom-url'))
+                    //     .attr('data-keyResp', "unit_of_measure")
+                    //     .attr('data-keyText', "title")
+                    //     .attr('data-keyId', "id")
+                    //     .initSelect2()
+                    //     .on('select2:select', function (e) {
+                    //         data.uom = e.params.data.data.id
+                    //     })
 
                     // load quantity
                     $('[name*="quantity_"]', row).on('change', function () {
@@ -165,7 +168,7 @@ class ProductsTable {
                         .attr('data-keyId', "id")
                         .initSelect2()
                         .on('select2:select', function (e) {
-                            data.tax = e.params.data.data.id
+                            data.tax = e.params.data.data
                             ProductsTable.calcSubtotal(data, index)
                         })
 
@@ -186,9 +189,9 @@ class ProductsTable {
                     let calcTax = 0
                     api.rows().every(function () {
                         let data = this.data()
-                        if (data?.['tax_data']?.['rate'] && data?.['tax_data']?.['rate'] > 0 && data?.['price'] > 0 &&
-                            data?.['quantity'] > 0)
-                            calcTax += data.price * data.quantity / 100 * data.tax_data.rate
+                        let taxRate = data?.tax?.rate ? data.tax.rate : data?.['tax_data']?.['rate'] ? data.tax_data.rate : 0
+                        if (taxRate && data?.['price'] > 0 && data?.['quantity'] > 0)
+                            calcTax += data.price * data.quantity / 100 * taxRate
                         if (data?.['price'] > 0 && data?.['quantity'] > 0)
                             totalPrice += parseInt(data.price) * parseInt(data.quantity)
                         if (data?.['subtotal']) allSubtotal += parseInt(data.subtotal)
@@ -231,12 +234,12 @@ function submitHandleFunc() {
     if (frm.dataMethod.toLowerCase() === 'post') formData.system_status = 1
     formData.employee_inherit_id = $EmpElm.val()
     formData.products = ProductsTable.get_data()
-    if (frm.dataMethod.toLowerCase() === 'put')
-        for(let item of formData.products){
-            if (item['product'].hasOwnProperty('id')) item['product'] = item['product']['id']
-            if (item['uom'].hasOwnProperty('id')) item['uom'] = item['uom']['id']
-            if (item.hasOwnProperty('tax') && item['tax'].hasOwnProperty('id')) item['tax'] = item['tax']['id']
-        }
+    for(let item of formData.products){
+        if (item['product'].hasOwnProperty('id')) item['product'] = item['product']['id']
+        if (item['uom'].hasOwnProperty('id')) item['uom'] = item['uom']['id']
+        if (item.hasOwnProperty('tax') && item['tax'].hasOwnProperty('id')) item['tax'] = item['tax']['id']
+    }
+    // if (frm.dataMethod.toLowerCase() === 'put')
     let $elmFooter = $('.products_detail_tbl_wrapper .dataTables_scrollFootInner table tfoot tr th')
     formData.total = $elmFooter.find('.total').attr('data-init-money')
     formData.taxes = $elmFooter.find('.taxes').attr('data-init-money')

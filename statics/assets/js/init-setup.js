@@ -5508,10 +5508,15 @@ class CommentControl {
         textarea.tinymce( {
             menubar: false,
             height: 120,
-            plugins: 'advlist autolink lists insertdatetime hr emoticons table mention',
-            toolbar: [
-                'styleselect | bold italic strikethrough | forecolor backcolor | outdent indent numlist bullist | table tabledelete | hr emoticons insertdatetime | removeformat ',
-            ],
+            plugins: 'advlist autolink lists insertdatetime hr emoticons table mention link media image preview tabfocus visualchars visualblocks wordcount',
+            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | numlist bullist table | link image media emoticons | formatting ',
+            toolbar_groups: {
+                formatting : {
+                    icon: 'more-drawer',
+                    tooltip: 'My group of buttons',
+                    items: 'outdent indent hr insertdatetime | visualblocks visualchars wordcount removeformat | preview'
+                }
+            },
             insertdatetime_formats: ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', '%H:%M:%S', '%I:%M:%S %p'],
             content_css: clsThis.ele$.attr('data-css-url-render'),
             content_style: `
@@ -5637,7 +5642,20 @@ class CommentControl {
                         }
                     }
                 });
+                editor.on('init', function (){
+                    // https://www.tiny.cloud/blog/tinymce-and-modal-windows/
+                    // Include the following JavaScript into your tiny.init script to prevent the Bootstrap dialog from blocking focus:
+                    document.addEventListener('focusin', (e) => {
+                         if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                            e.stopImmediatePropagation();
+                         }
+                    })
+                })
             },
+            // config of: link
+            default_link_target: '_blank',
+            link_assume_external_targets: true,
+            link_default_protocol: 'https',
         });
         frmInsideAdd.on('submit', function (event){
             $(this).find('button[type=submit]').prop('disabled', true);

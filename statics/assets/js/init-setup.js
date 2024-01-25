@@ -5433,8 +5433,11 @@ class CommentControl {
         textarea.tinymce( {
             menubar: false,
             height: 120,
-            plugins: 'advlist autolink lists mention',
-            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | outdent indent numlist bullist | removeformat ',
+            plugins: 'advlist autolink lists insertdatetime hr emoticons table mention',
+            toolbar: [
+                'styleselect | bold italic strikethrough | forecolor backcolor | outdent indent numlist bullist | table tabledelete | hr emoticons insertdatetime | removeformat ',
+            ],
+            insertdatetime_formats: ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', '%H:%M:%S', '%I:%M:%S %p'],
             content_css: clsThis.ele$.attr('data-css-url-render'),
             content_style: `
                 @import url(\'//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap\');

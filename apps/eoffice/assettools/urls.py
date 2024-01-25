@@ -5,12 +5,15 @@ from apps.eoffice.assettools.views import AssetToolsConfigView, AssetToolsConfig
     AssetToolsProvideRequestCreateAPI, AssetToolsProvideRequestEdit, AssetToolsProvideRequestEditAPI, \
     AssetToolsProvideRequestDetailAPI, AssetToolsDeliveryCreate, AssetProductListByProvideIDAPI, \
     AssetToolsDeliveryCreateAPI, AssetToolsDeliveryList, AssetToolsDeliveryListAPI, AssetToolsDeliveryDetail, \
-    AssetToolsDeliveryEdit, AssetToolsDeliveryDetailAPI, AssetToolsDeliveryEditAPI
+    AssetToolsDeliveryEdit, AssetToolsDeliveryDetailAPI, AssetToolsDeliveryEditAPI, AssetToolsList, AssetToolsListAPI
 
 urlpatterns = [
     # config
     path('config', AssetToolsConfigView.as_view(), name='AssetToolsConfigView'),
     path('config-api', AssetToolsConfigViewAPI.as_view(), name='AssetToolsConfigViewAPI'),
+    # ASSET, TOOLS LIST
+    path('list', AssetToolsList.as_view(), name='AssetToolsList'),
+    path('list-api', AssetToolsListAPI.as_view(), name='AssetToolsListAPI'),
     # provide
     path('provide/list', AssetToolsProvideRequestList.as_view(), name='AssetToolsProvideRequestList'),
     path('provide/list-api', AssetToolsProvideRequestListAPI.as_view(), name='AssetToolsProvideRequestListAPI'),

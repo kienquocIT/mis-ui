@@ -15,7 +15,7 @@ $(function () {
         let dataMonth = JSON.parse($('#filter_month').text());
         let eleTrans = $('#app-trans-factory');
 
-        // year (by month)
+        // year (by months)
         // function loadDbl(data) {
         //     $table.DataTableDefault({
         //         data: data ? data : [],
@@ -534,7 +534,7 @@ $(function () {
 
         // loadDbl();
 
-        // month (by week)
+        // month (by weeks)
         // function loadDblMonth(data) {
         //     $tableMonth.DataTableDefault({
         //         data: data ? data : [],
@@ -760,6 +760,8 @@ $(function () {
         //         drawCallback: function () {
         //             // mask money
         //             $.fn.initMaskMoney2();
+        //             // change Td by weeks
+        //             changeTDTableMonthByWeeks();
         //         },
         //     });
         // }
@@ -1320,7 +1322,7 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
-                    //
+                    // change Td by weeks
                     changeTDTableMonthByWeeks();
                 },
             });

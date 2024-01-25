@@ -572,6 +572,7 @@ class GRLoadDataHandle {
                 for (let lot_data of eleWHData?.['lot_data']) {
                     let newRow = GRDataTableHandle.tableLot.DataTable().row.add(lot_data).draw().node();
                     GRLoadDataHandle.loadDDLot(newRow.querySelector('.dropdown-menu-lot'), lot_data?.['lot']);
+                    GRLoadDataHandle.loadLotSerialDatePickerExist(newRow);
                 }
             }
         }
@@ -689,6 +690,10 @@ class GRLoadDataHandle {
                     GRDataTableHandle.tableSerial.DataTable().rows.add(eleWHData?.['serial_data']).draw();
                 }
             }
+            GRDataTableHandle.tableSerial.DataTable().rows().every(function () {
+                let row = this.node();
+                GRLoadDataHandle.loadLotSerialDatePickerExist(row);
+            })
         }
     };
 
@@ -904,52 +909,106 @@ class GRLoadDataHandle {
     static loadLotSerialDatePicker(newRow) {
         if (newRow.querySelector('.table-row-expire-date')) {
             $(newRow.querySelector('.table-row-expire-date')).daterangepicker({
-                minYear: 1901,
                 singleDatePicker: true,
-                timePicker: true,
-                showDropdowns: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
                 locale: {
                     format: 'DD/MM/YYYY'
-                }
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
             });
             $(newRow.querySelector('.table-row-expire-date')).val(null).trigger('change');
         }
         if (newRow.querySelector('.table-row-manufacture-date')) {
             $(newRow.querySelector('.table-row-manufacture-date')).daterangepicker({
-                minYear: 1901,
                 singleDatePicker: true,
-                timePicker: true,
-                showDropdowns: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
                 locale: {
                     format: 'DD/MM/YYYY'
-                }
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
             });
             $(newRow.querySelector('.table-row-manufacture-date')).val(null).trigger('change');
         }
-
         if (newRow.querySelector('.table-row-warranty-start')) {
             $(newRow.querySelector('.table-row-warranty-start')).daterangepicker({
-                minYear: 1901,
                 singleDatePicker: true,
-                timePicker: true,
-                showDropdowns: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
                 locale: {
                     format: 'DD/MM/YYYY'
-                }
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
             });
             $(newRow.querySelector('.table-row-warranty-start')).val(null).trigger('change');
         }
         if (newRow.querySelector('.table-row-warranty-end')) {
             $(newRow.querySelector('.table-row-warranty-end')).daterangepicker({
-                minYear: 1901,
                 singleDatePicker: true,
-                timePicker: true,
-                showDropdowns: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
                 locale: {
                     format: 'DD/MM/YYYY'
-                }
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
             });
             $(newRow.querySelector('.table-row-warranty-end')).val(null).trigger('change');
+        }
+    };
+
+    static loadLotSerialDatePickerExist(newRow) {
+        if (newRow.querySelector('.table-row-expire-date')) {
+            $(newRow.querySelector('.table-row-expire-date')).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+            });
+        }
+        if (newRow.querySelector('.table-row-manufacture-date')) {
+            $(newRow.querySelector('.table-row-manufacture-date')).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+            });
+        }
+        if (newRow.querySelector('.table-row-warranty-start')) {
+            $(newRow.querySelector('.table-row-warranty-start')).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+            });
+        }
+        if (newRow.querySelector('.table-row-warranty-end')) {
+            $(newRow.querySelector('.table-row-warranty-end')).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+            });
         }
     };
 
@@ -1080,16 +1139,16 @@ class GRLoadDataHandle {
         dataWarehouse['warehouse'] = dataWarehouse?.['warehouse']?.['id'];
         for (let dataLot of dataWarehouse?.['lot_data']) {
             dataLot['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
-            dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY hh:mm A');
-            dataLot['manufacture_date'] = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
+            dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');
+            dataLot['manufacture_date'] = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY');
             dataLot['lot'] = dataLot?.['lot_id'];
         }
         for (let dataSerial of dataWarehouse?.['serial_data']) {
             dataSerial['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
-            dataSerial['expire_date'] = moment(dataSerial?.['expire_date']).format('DD/MM/YYYY hh:mm A');
-            dataSerial['manufacture_date'] = moment(dataSerial?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
-            dataSerial['warranty_start'] = moment(dataSerial?.['warranty_start']).format('DD/MM/YYYY hh:mm A');
-            dataSerial['warranty_end'] = moment(dataSerial?.['warranty_end']).format('DD/MM/YYYY hh:mm A');
+            dataSerial['expire_date'] = moment(dataSerial?.['expire_date']).format('DD/MM/YYYY');
+            dataSerial['manufacture_date'] = moment(dataSerial?.['manufacture_date']).format('DD/MM/YYYY');
+            dataSerial['warranty_start'] = moment(dataSerial?.['warranty_start']).format('DD/MM/YYYY');
+            dataSerial['warranty_end'] = moment(dataSerial?.['warranty_end']).format('DD/MM/YYYY');
         }
     };
 

@@ -1871,7 +1871,7 @@ $(function () {
                         for (let keyShow in weeksOfMonthShow) {
                             let classMap = '.week-' + keyShow;
                             if (tableMonthHd.querySelector(classMap)) {
-                                tableMonthHd.querySelector(classMap).innerHTML = 'Week ' + keyShow + ' (' + String(weeksOfMonthShow[keyShow]?.['start_date']) + '-' + String(weeksOfMonthShow[keyShow]?.['end_date']) + ')';
+                                tableMonthHd.querySelector(classMap).innerHTML = eleTrans.attr('data-week') + ' ' + keyShow + ' (' + String(weeksOfMonthShow[keyShow]?.['start_date']) + '-' + String(weeksOfMonthShow[keyShow]?.['end_date']) + ')';
                             }
                         }
                     }

@@ -4017,7 +4017,7 @@ msgstr "Ngày kết thúc"
 
 #
 msgid "Estimate"
-msgstr "Dự tính hoàn thành"
+msgstr "Ước tính"
 
 #
 msgid "An estimate of how much time you have spent working."
@@ -6120,3 +6120,7 @@ msgstr "Hóa đơn AR"
 #
 msgid "Value after tax"
 msgstr "Giá trị sau thuế"
+
+#
+msgid "Product category"
+msgstr "Danh mục sản phẩm"

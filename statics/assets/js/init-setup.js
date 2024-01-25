@@ -5448,7 +5448,7 @@ class CommentControl {
                         class="mr-1"
                     >
                     <a href="${clsThis.url_employee_detail.replace('__pk__', kwargs?.employee_created?.id)}" target="_blank">
-                        <small class="mr-1">${kwargs?.employee_created?.full_name || ''}</small>
+                        <b class="mr-1">${kwargs?.employee_created?.full_name || ''}</b>
                     </a>
                     ${getHTMLDateCreated()}
                 </div>

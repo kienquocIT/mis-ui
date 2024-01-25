@@ -47,8 +47,13 @@
     background-color: #f1f1f1;
     border-radius: 5px;
     margin-right: 0.6rem;
-    margin-bottom: 0.6rem;
+    margin-top: 0.1rem;
+    margin-bottom: 0.1rem;
     display: inline-block;
+}
+
+.mentions-is-me * {
+    color: #f66d00;
 }
 
 .mention-person[data-mention="true"] {
@@ -112,4 +117,22 @@
 
 .comment-all-collapse-editor:hover {
     color: #0a58ca;
+}
+
+/* mention person */
+.mention-person-list li {
+    padding: 0.2rem 0.2rem;
+}
+.mention-person-list li:not(:last-child){
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.mention-person-list li:hover {
+    background-color: #f1f1f1;
+}
+.mention-person-list li .mention-person-item-title span:after {
+    content: "▸";
+    color: #005413;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }

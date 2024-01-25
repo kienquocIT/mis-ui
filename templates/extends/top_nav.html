@@ -315,6 +315,7 @@
                                 </a>
                                 {% if base.employee_current_data %}
                                     <a
+                                            id="idx-link-to-current-employee"
                                             class="dropdown-item"
                                             href="{% url 'EmployeeDetail' pk=base.employee_current_data.id %}"
                                             data-value-id="{{ base.employee_current_data.id }}"

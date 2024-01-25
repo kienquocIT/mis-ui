@@ -2765,6 +2765,20 @@ class UtilControl {
             .replace(/[^\w ]+/g, "")
             .replace(/ +/g, "-");
     }
+
+    static flattenObject(obj, parentKey = '', result = {}) {
+        // {a: {b: 1}, c: 2} => {a__b: 1, c: 2}
+        for (let key in obj) {
+            let newKey = parentKey ? `${parentKey}__${key}` : key;
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+                UtilControl.flattenObject(obj[key], newKey, result);
+            } else {
+                result[newKey] = obj[key];
+            }
+        }
+        return result;
+    }
+
 }
 
 class DTBControl {
@@ -4150,6 +4164,14 @@ class PersonControl {
             </div>
         `;
     }
+
+    static getEmployeeCurrentID(default_val=null){
+        let ele = $('#idx-link-to-current-employee');
+        if (ele.length > 0){
+            return ele.attr('data-value-id');
+        }
+        return default_val;
+    }
 }
 
 class DocumentControl {
@@ -5130,7 +5152,9 @@ class FileControl {
 }
 
 class CommentControl {
-    constructor(ele$) {
+    constructor(ele$, opts={}) {
+        let {owner_id} = {owner_id: $x.fn.getEmployeeCurrentID(), ...opts}
+        this.owner_id = owner_id;
         this.ele$ = ele$;
         this.ele_list$ = ele$.find('.comment-list');
         this.ele_add = ele$.find('.comment-add-area');
@@ -5258,6 +5282,7 @@ class CommentControl {
             eleItem$.find('img'),
             {'imgReplace': globeAvatarNotFoundImg},
         );
+        if (clsThis.owner_id) eleItem$.find(`[data-mention-id="${clsThis.owner_id}"]`).addClass('mentions-is-me');
     }
 
     item_get_html(kwargs, opts={}){
@@ -5366,7 +5391,7 @@ class CommentControl {
                 <a 
                     href="${clsThis.url_employee_detail.replace('__pk__', item.id)}" 
                     target="_blank"
-                >@${item.full_name} (${item.code})</a>
+                >@${item.full_name}</a>
             `;
         }
 
@@ -5378,7 +5403,7 @@ class CommentControl {
                         target="_blank"
                     >
                         ${item.full_name} 
-                        <small>(${item.code} - ${item.email})</small>
+                        <small>(${item.group_title})</small>
                     </a>
                 </span>
             `)
@@ -5422,7 +5447,7 @@ class CommentControl {
                                    let resource = (data?.['employee_list'] || []).map(
                                        (item) => {
                                            if (!item.avatar_img) item.avatar_img = clsThis.default_person_avt;
-                                           return item;
+                                           return UtilControl.flattenObject(item);
                                        }
                                    )
                                    process(resource);
@@ -5440,20 +5465,25 @@ class CommentControl {
                         data-mention-email="${item.email}"
                         data-mention-full-name="${item.full_name}" 
                         data-mention-code="${item.code}" 
+                        data-group-title="${item?.['group__title'] || ''}"
                     >${setupDisplayMentionsInEditor(item)}</span>\u200B&nbsp;`
                 },
                 render: function(item) {
                     return `
-                        <li>
-                            <a href="javascript:;">
-                                <img src="${item.avatar_img}" width="20px" alt=""/>
-                                <span>${item.full_name} - ${item.email} <small>(${item.code})</small></span>
-                            </a>
+                        <li style="cursor: pointer;" class="d-flex align-items-center">
+                            <img src="${item.avatar_img}" width="20px" alt="" class="m-3"/>
+                            <div  style="display: inline-block;">
+                                <div class="mention-person-item-title">
+                                    <span style="color: #000038">${item.full_name}</span>
+                                    <b>${item?.['group__title'] || ''}</b>
+                                </div>
+                            </div>
                         </li>
                     `
+                    // <div><small>${item.email} - ${item.code}</small></div>
                 },
                 renderDropdown: function() {
-                    return '<ul class="rte-autocomplete dropdown-menu"></ul>';
+                    return '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>';
                 }
             },
             setup: function(editor) {
@@ -5470,8 +5500,9 @@ class CommentControl {
                     Array.from(mentions).map(function(mention) {
                         let idx = mention.getAttribute('data-mention-id');
                         let email = mention.getAttribute('data-mention-email');
-                        let fullName = mention.getAttribute('data-mention-full-name')
-                        let code = mention.getAttribute('data-mention-code')
+                        let fullName = mention.getAttribute('data-mention-full-name');
+                        let code = mention.getAttribute('data-mention-code');
+                        let groupTitle = mention.getAttribute('data-group-title');
                         if (mentionsIds.indexOf(idx) === -1){
                             mentionsIds.push(idx);
                             mentionsTxt.push(setupDisplayMentionsInSummary({
@@ -5479,6 +5510,7 @@ class CommentControl {
                                 'email': email,
                                 'full_name': fullName,
                                 'code': code,
+                                'group_title': groupTitle,
                             }))
                         }
                     });
@@ -5548,10 +5580,10 @@ class CommentControl {
                             // increase records of all
                             if (render_record_showing === true) clsThis.render_record_showing({'plus_num': 1});
 
-                            // scoll to top
+                            // scroll to top
                             if (rendered_scroll_top === true) clsThis.ele_list$.scrollTop(0);
 
-                            // increatese records of replies
+                            // increase records of replies
                             if (rendered_plus_replies_ele){
                                 let counter = Number.parseInt(rendered_plus_replies_ele.attr('data-counter'));
                                 counter += 1;
@@ -5818,6 +5850,7 @@ let $x = {
 
         shortNameGlobe: PersonControl.shortNameGlobe,
         renderAvatar: PersonControl.renderAvatar,
+        getEmployeeCurrentID: PersonControl.getEmployeeCurrentID,
 
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
@@ -5831,6 +5864,7 @@ let $x = {
         parseJson: UtilControl.parseJson,
         dumpJson: UtilControl.dumpJson,
         convertToSlug: UtilControl.convertToSlug,
+        flattenObject: UtilControl.flattenObject,
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,

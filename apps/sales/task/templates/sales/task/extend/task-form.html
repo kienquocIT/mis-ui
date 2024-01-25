@@ -22,22 +22,6 @@
     }
 </style>
 
-<div class="modal fade pt-10" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="CommentModal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-	<div class="modal-dialog modal-xl" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLongTitle">{% trans 'Comments' %}</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				{% include 'comment/list.html' %}
-			</div>
-		</div>
-	</div>
-</div>
-
 <div
         data-simplebar
         class="ntt-drawer ntt-drawer-right nicescroll-bar"
@@ -280,7 +264,7 @@
                     </button>
                 </div>
                 <div class="mt-2">
-                    <button type="button" class="btn btn-soft-primary" data-bs-toggle="modal" data-bs-target="#CommentModal">Comments</button>
+                    <button type="button" class="btn btn-soft-primary" id="btn-open-comment-task">Comments</button>
                 </div>
             </form>
         </div>

@@ -220,15 +220,15 @@
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
 
     <script>
-        $('#CommentModal').on('shown.bs.modal', function () {
+        $('#btn-open-comment-task').on('click', function (){
             let frmOppTask = $('#formOpportunityTask');
-            let commentListEle = $('.comment-group');
-            if (commentListEle.length > 0) {
-                let app_id = "e66cfb5ab3ce4694a4da47618f53de4c";  // Application: task - OpportunityTask
-                let doc_id = frmOppTask.attr('data-id-loaded');
-                if (doc_id) {
-                    let cls = new $x.cls.cmt(commentListEle);
-                    cls.init(doc_id, app_id);
+            if (frmOppTask.length > 0){
+                let appIdx = "e66cfb5ab3ce4694a4da47618f53de4c";  // Application: task - OpportunityTask
+                let docIdx = frmOppTask.attr('data-id-loaded');
+                if (docIdx){
+                    let modalEle = $('#CommentModal');
+                    new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
+                    modalEle.modal('show');
                 } else {
                     $.fn.notifyB({
                         'description': 'Document is not selected.',

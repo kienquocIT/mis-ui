@@ -518,7 +518,7 @@ class NotifyController {
                     if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
 
                     //
-                    let modalEle = $('#ReplyCommentModal');
+                    let modalEle = $('#CommentModal');
                     new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
                     modalEle.modal('show');
                 });

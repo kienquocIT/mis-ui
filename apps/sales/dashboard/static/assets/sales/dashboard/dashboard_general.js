@@ -3,6 +3,10 @@ $(document).ready(function () {
         "handle": ".modal-header"
     });
 
+    function padZero(number) {
+        return number < 10 ? '0' + number : number.toString();
+    }
+
     const scriptUrlEle = $('#script-url')
     const trans_script = $('#trans-url')
     const moneyRadioEle = $('.money-radio')
@@ -134,17 +138,22 @@ $(document).ready(function () {
             }
         }
 
+        let series_data = [
+            {name: "Expected", data: revenue_expected_data},
+            {name: "Reality", data: revenue_chart_data}
+        ]
+        if (new Date().getFullYear() === fiscal_year_Setting) {
+            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+                revenue_chart_data[i] = null;
+            }
+            series_data = [
+                {name: "Expected", data: revenue_expected_data},
+                {name: "Reality", data: revenue_chart_data}
+            ]
+        }
+
         return {
-            series: [
-                {
-                    name: "Expected",
-                    data: revenue_expected_data
-                },
-                {
-                    name: "Reality",
-                    data: revenue_chart_data
-                }
-            ],
+            series: series_data,
             chart: {
                 height: 230,
                 type: 'line',
@@ -278,17 +287,23 @@ $(document).ready(function () {
             }
             revenue_expected_data[i] += last_sum
         }
+
+        let series_data = [
+            {name: "Expected", data: revenue_expected_data},
+            {name: "Reality", data: revenue_chart_data}
+        ]
+        if (new Date().getFullYear() === fiscal_year_Setting) {
+            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+                revenue_chart_data[i] = null;
+            }
+            series_data = [
+                {name: "Expected", data: revenue_expected_data},
+                {name: "Reality", data: revenue_chart_data}
+            ]
+        }
+
         return {
-            series: [
-                {
-                    name: "Expected",
-                    data: revenue_expected_data
-                },
-                {
-                    name: "Reality",
-                    data: revenue_chart_data
-                }
-            ],
+            series: series_data,
             chart: {
                 height: 230,
                 type: 'line',
@@ -423,6 +438,7 @@ $(document).ready(function () {
         Promise.all([company_revenue_plan_list_ajax]).then(
             (results) => {
                 revenue_expected_data_DF = results[0]?.['company_month_target'];
+                revenue_expected_data_detail_DF = results[0]?.['company_month_target_detail'];
                 let group = revenueGroupEle.val()
                 let group_title = SelectDDControl.get_data_from_idx(revenueGroupEle, revenueGroupEle.val())['title']
                 if (!group_title) {
@@ -527,6 +543,7 @@ $(document).ready(function () {
 
     const profitGroupEle = $('#profit-group')
     const profitTypeEle = $('#profit-type')
+    const netIncomeEle = $('#net-income')
     let profit_chart_list_DF = []
     let profit_chart_DF = null
     let profit_expected_data_DF = []
@@ -553,7 +570,7 @@ $(document).ready(function () {
 
     LoadProfitGroup()
 
-    function CombineProfitChartDataPeriod(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Month', chart_title = 'Profit chart') {
+    function CombineProfitChartDataPeriod(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Month', chart_title = 'Profit chart', profit_type='gross_profit') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -567,10 +584,10 @@ $(document).ready(function () {
             const year = dateApproved.getFullYear()
             if (year === fiscal_year_Setting) {
                 if (!group_filter) {
-                    profit_chart_data[month] += (item?.['gross_profit'] ? item?.['gross_profit'] : 0) / cast_billion
+                    profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        profit_chart_data[month] += (item?.['gross_profit'] ? item?.['gross_profit'] : 0) / cast_billion
+                        profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                     }
                 }
             }
@@ -595,17 +612,22 @@ $(document).ready(function () {
             }
         }
 
+        let series_data = [
+            {name: "Expected", data: profit_expected_data},
+            {name: "Reality", data: profit_chart_data}
+        ]
+        if (new Date().getFullYear() === fiscal_year_Setting) {
+            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+                profit_chart_data[i] = null;
+            }
+            series_data = [
+                {name: "Expected", data: profit_expected_data},
+                {name: "Reality", data: profit_chart_data}
+            ]
+        }
+
         return {
-            series: [
-                {
-                    name: "Expected",
-                    data: profit_expected_data
-                },
-                {
-                    name: "Reality",
-                    data: profit_chart_data
-                }
-            ],
+            series: series_data,
             chart: {
                 height: 230,
                 type: 'line',
@@ -686,7 +708,7 @@ $(document).ready(function () {
         };
     }
 
-    function CombineProfitChartDataAccumulated(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Month', chart_title = 'Profit chart') {
+    function CombineProfitChartDataAccumulated(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Month', chart_title = 'Profit chart', profit_type='gross_profit') {
         let cast_billion = 1e6
         if (show_billion) {
             cast_billion = 1e9
@@ -699,10 +721,10 @@ $(document).ready(function () {
             const year = dateApproved.getFullYear();
             if (year === fiscal_year_Setting) {
                 if (!group_filter) {
-                    profit_chart_data[month] += (item?.['gross_profit'] ? item?.['gross_profit'] : 0) / cast_billion
+                    profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        profit_chart_data[month] += (item?.['gross_profit'] ? item?.['gross_profit'] : 0) / cast_billion
+                        profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                     }
                 }
             }
@@ -741,17 +763,23 @@ $(document).ready(function () {
             }
             profit_expected_data[i] += last_sum
         }
+
+        let series_data = [
+            {name: "Expected", data: profit_expected_data},
+            {name: "Reality", data: profit_chart_data}
+        ]
+        if (new Date().getFullYear() === fiscal_year_Setting) {
+            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+                profit_chart_data[i] = null;
+            }
+            series_data = [
+                {name: "Expected", data: profit_expected_data},
+                {name: "Reality", data: profit_chart_data}
+            ]
+        }
+
         return {
-            series: [
-                {
-                    name: "Expected",
-                    data: profit_expected_data
-                },
-                {
-                    name: "Reality",
-                    data: profit_chart_data
-                }
-            ],
+            series: series_data,
             chart: {
                 height: 230,
                 type: 'line',
@@ -888,7 +916,11 @@ $(document).ready(function () {
 
         Promise.all([company_revenue_plan_list_ajax]).then(
             (results) => {
-                profit_expected_data_DF = results[0]?.['company_month_target'];
+                profit_expected_data_DF = results[0]?.['company_month_profit_target'];
+                if (!(results[0]?.['profit_target_type'] * netIncomeEle.prop('checked'))) {
+                    profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                }
+                profit_expected_data_detail_DF = results[0]?.['company_month_target_detail'];
                 let group = profitGroupEle.val()
                 let group_title = SelectDDControl.get_data_from_idx(profitGroupEle, profitGroupEle.val())['title']
                 if (!group_title) {
@@ -897,13 +929,19 @@ $(document).ready(function () {
                 let calculate_type = profitTypeEle.val()
                 const isBillionChecked = billionCheckboxEle.prop('checked')
                 const unitText = isBillionChecked ? 'billion' : 'million'
+                let profit_type = 'gross_profit'
+                if (netIncomeEle.prop('checked')) {
+                    profit_type = 'net_income'
+                }
+
                 if (calculate_type === '0') {
                     let options = CombineProfitChartDataPeriod(
                         group,
                         isBillionChecked,
                         `Profit (${unitText})`,
                         'Month',
-                        `Profit chart of ${group_title} in ${fiscal_year_Setting}`
+                        `Profit chart of ${group_title} in ${fiscal_year_Setting}`,
+                        profit_type
                     )
                     profit_chart_DF.updateOptions(options)
                 } else {
@@ -912,7 +950,8 @@ $(document).ready(function () {
                         isBillionChecked,
                         `Profit (${unitText})`,
                         'Month',
-                        `Profit chart of ${group_title} in ${fiscal_year_Setting}`
+                        `Profit chart of ${group_title} in ${fiscal_year_Setting}`,
+                        profit_type
                     )
                     profit_chart_DF.updateOptions(options)
                 }
@@ -960,6 +999,7 @@ $(document).ready(function () {
             (results) => {
                 profit_chart_list_DF = results[0];
                 profit_expected_data_DF = results[1]?.['company_month_profit_target'];
+                netIncomeEle.prop('checked', results[1]?.['profit_target_type'])
                 profit_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
 
                 period_selected_Setting = results[1]?.['period_mapped']
@@ -986,6 +1026,10 @@ $(document).ready(function () {
     })
 
     $('.timechart-profit').on('change', function () {
+        UpdateOptionProfitChart()
+    })
+
+    $('input[name="profit-type"]').on('change', function () {
         UpdateOptionProfitChart()
     })
 
@@ -1263,6 +1307,7 @@ $(document).ready(function () {
     })
 
     // Top customers chart
+
     const topCustomersTimeFilterYearEle = $('#top-customers-time-filter-year')
     const topCustomersTimeFilterMMQQEle = $('#top-customers-time-filter-mm-qq')
     const topCustomersTimeFilterSelectEle = $('#top-customers-time-filter-select')

@@ -8,63 +8,162 @@ from django.utils.translation import gettext_lazy as _
 class AppsCodeToList:
     mapping = {
         'quotation': {
-            'quotation': _('Quotation')
+            'quotation': {
+                'title': _('Quotation'),
+                'is_active': True,
+            }
         },
         'saleorder': {
-            'saleorder': _('Sale Order')
+            'saleorder': {
+                'title': _('Sale Order'),
+                'is_active': True,
+            },
         },
         'leave': {
-            'leaverequest': _('Leave request')
+            'leaverequest': {
+                'title': _('Leave request'),
+                'is_active': True,
+            },
         },
         'businesstrip': {
-            'businessrequest': _('Business trip')
+            'businessrequest': {
+                'title': _('Business trip'),
+                'is_active': True,
+            },
         },
         'assettools': {
-            'assettoolsprovide': _('Asset, Tools provide'),
-            'assettoolsdelivery': _('Asset, Tools delivery'),
+            'assettoolsprovide': {
+                'title': _('Asset, Tools provide'),
+                'is_active': True,
+            },
+            'assettoolsdelivery': {
+                'title': _('Asset, Tools delivery'),
+                'is_active': True,
+            },
         },
         'task': {
-            'opportunitytask': _('Task')
+            'opportunitytask': {
+                'title': _('Task'),
+                'is_active': False,
+            },
         },
         'saledata': {
-            'contact': _('Contact'),
-            'account': _('Account'),
-            'product': _('Product'),
-            'expenses': _('Expenses'),
-            'expenseitem': _('Expenses Item'),
-            'warehouse': _('Warehouse'),
-            'goodreceipt': _('Good receipt'),
-            'price': _('Price'),
-            'shipping': _('Shipping'),
-            'paymentterm': _('Payment Terms'),
+            'contact': {
+                'title': _('Contact'),
+                'is_active': True,
+            },
+            'account': {
+                'title': _('Account'),
+                'is_active': True,
+            },
+            'product': {
+                'title': _('Product'),
+                'is_active': True,
+            },
+            'expenses': {
+                'title': _('Expenses'),
+                'is_active': True,
+            },
+            'expenseitem': {
+                'title': _('Expenses Item'),
+                'is_active': True,
+            },
+            'warehouse': {
+                'title': _('Warehouse'),
+                'is_active': True,
+            },
+            'goodreceipt': {
+                'title': _('Good receipt'),
+                'is_active': True,
+            },
+            'price': {
+                'title': _('Price'),
+                'is_active': True,
+            },
+            'shipping': {
+                'title': _('Shipping'),
+                'is_active': True,
+            },
+            'paymentterm': {
+                'title': _('Payment Terms'),
+                'is_active': True,
+            },
         },
         'opportunity': {
-            'opportunity': _('Opportunity'),
-            'documentforcustomer': _('Document For Customers'),
-            'opportunitycall': _('Call Log'),
-            'opportunityemail': _('Email Log'),
-            'meetingwithcustomer': _('Metting Log'),
+            'opportunity': {
+                'title': _('Opportunity'),
+                'is_active': True,
+            },
+            'documentforcustomer': {
+                'title': _('Document For Customers'),
+                'is_active': True,
+            },
+            'opportunitycall': {
+                'title': _('Call Log'),
+                'is_active': True,
+            },
+            'opportunityemail': {
+                'title': _('Email Log'),
+                'is_active': True,
+            },
+            'meetingwithcustomer': {
+                'title': _('Metting Log'),
+                'is_active': True,
+            },
         },
         'delivery': {
-            'orderpickingsub': _('Delivery'),
-            'orderdeliverysub': _('Picking'),
+            'orderpickingsub': {
+                'title': _('Delivery'),
+                'is_active': True,
+            },
+            'orderdeliverysub': {
+                'title': _('Picking'),
+                'is_active': True,
+            },
         },
         'promotion': {
-            'promotion': _('Promotion'),
+            'promotion': {
+                'title': _('Promotion'),
+                'is_active': True,
+            },
         },
         'cashoutflow': {
-            'advancepayment': _('Advance Payment'),
-            'payment': _('Payment'),
-            'returnadvance': _('Return Advance'),
+            'advancepayment': {
+                'title': _('Advance Payment'),
+                'is_active': True,
+            },
+            'payment': {
+                'title': _('Payment'),
+                'is_active': True,
+            },
+            'returnadvance': {
+                'title': _('Return Advance'),
+                'is_active': True,
+            },
         },
         'contract': {
-            'contract': _('Contract'),
+            'contract': {
+                'title': _('Contract'),
+                'is_active': True,
+            },
         },
         'purchasing': {
-            'purchasequotationrequest': _('Purchase quotation request'),
-            'purchasequotation': _('Purchase quotation'),
-            'purchaseorder': _('Purchase order'),
-            'purchaserequest': _('Purchase request'),
+            'purchasequotationrequest': {
+                'title': _('Purchase quotation request'),
+                'is_active': True,
+            },
+            'purchasequotation': {
+                'title': _('Purchase quotation'),
+                'is_active': True,
+            },
+            'purchaseorder': {
+                'title': _('Purchase order'),
+                'is_active': True,
+            },
+            'purchaserequest': {
+                'title': _('Purchase request'),
+                'is_active': True,
+            },
         },
     }
 

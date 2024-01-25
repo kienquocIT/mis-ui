@@ -411,19 +411,34 @@ class NotifyController {
             let appNameTranslate = $("#app_name_translate").text();
             appNameTranslate = appNameTranslate ? JSON.parse(appNameTranslate): {};
 
-            function resolve_app_name(_code_app){
-                if (_code_app){
+            function get_app_name(_code_app){
+                 if (_code_app){
                     let _arr = _code_app.split(".");
                     if (_arr.length === 2){
                         let appData = appNameTranslate?.[_arr[0].toLowerCase()];
                         if (appData && typeof appData === 'object'){
                             let featureData = appNameTranslate?.[_arr[0].toLowerCase()][_arr[1].toLowerCase()];
-                            if (featureData) return featureData;
+                            if (featureData && typeof  featureData === 'object') return featureData;
                         }
                     }
-                    return _code_app
                 }
-                return '';
+                return {};
+            }
+
+            function resolve_app_name(_code_app){
+                if (_code_app){
+                    let appData = get_app_name(_code_app);
+                    if (appData && appData.hasOwnProperty('title')) return appData['title'];
+                }
+                return _code_app;
+            }
+
+            function has_active_app(_code_app){
+                if (_code_app){
+                    let appData = get_app_name(_code_app);
+                    if (appData && appData.hasOwnProperty('is_active')) return appData['is_active'];
+                }
+                return true;
             }
 
             $.fn.callAjax2({
@@ -457,6 +472,7 @@ class NotifyController {
                                 type="button"
                             ><i class="fa-solid fa-reply"></i> Reply</button>
                         `;
+                        let btn_goto = has_active_app(item?.['doc_app']) === true ? `<a href="${urlData}" class="btn btn-xs btn-primary" type="button"><i class="fa-solid fa-right-to-bracket"></i> Goto </a>` : ``;
                         let tmp = `
                             <div 
                                 class="dropdown-item mb-1 bell-menu-item"
@@ -487,7 +503,7 @@ class NotifyController {
                                             </div>
                                         </div>
                                         <div>
-                                            <a href="${urlData}" class="btn btn-xs btn-primary" type="button"><i class="fa-solid fa-right-to-bracket"></i> Goto </a>
+                                            ${btn_goto}
                                             ${btn_reply_mentions}
                                             ${btnSeenItem}
                                         </div>
@@ -5186,12 +5202,16 @@ class CommentControl {
         }
     }
 
+    get_url_replies(pk){
+        let urlBase = this.ele$.attr('data-url-replies');
+        return urlBase && pk ? urlBase.replace('__pk__', pk) : null;
+    }
+
     item_add_event(eleItem$, has_replies=true) {
         let clsThis = this;
         function get_url(){
-            let urlBase = clsThis.ele$.attr('data-url-replies');
             let pk = eleItem$.attr('data-comment-id');
-            return urlBase && pk ? urlBase.replace('__pk__', pk) : null;
+            return clsThis.get_url_replies(pk);
         }
 
         eleItem$.find('.icon-collapse').on('click', function (){
@@ -5324,7 +5344,7 @@ class CommentControl {
             </div>
         ` : '';
         let htmlReplies = replies_enabled === true ? `
-            <div class="comment-replies mx-5 min-h-50p" style="display: none; width: calc(96% - 2rem);"></div>
+            <div class="comment-replies mx-5" style="display: none; width: calc(96% - 2rem);"></div>
         ` : ``;
         let htmlAddNew = add_comment_enabled === true ? `
             <div class="comment-reply-new mx-5 mt-2" style="display: none; width: calc(96% - 2rem);">
@@ -5586,6 +5606,9 @@ class CommentControl {
                             // increase records of replies
                             if (rendered_plus_replies_ele){
                                 let counter = Number.parseInt(rendered_plus_replies_ele.attr('data-counter'));
+                                if (counter === 0){
+                                    rendered_plus_replies_ele.attr('data-url', 'resolve-with-zero');
+                                }
                                 counter += 1;
                                 rendered_plus_replies_ele.attr('data-counter', counter);
                                 rendered_plus_replies_ele.find('.comment-num-counter').text(counter);

@@ -5374,13 +5374,15 @@ class CommentControl {
                     (idx) => {
                         let dataOfIdx = replies_persons[idx];
                         return `
-                            <img
-                                src="${dataOfIdx?.['avatar_img'] || this.default_avt}" 
-                                alt="${dataOfIdx?.['full_name'] || ''}"
-                                class="avatar-img mr-1"
-                                data-bs-toggle="tooltip"
-                                title="${dataOfIdx?.full_name || ''}  (${dataOfIdx?.['group__title'] || ''}"
-                            >
+                            <a href="${clsThis.url_employee_detail.replace('__pk__', idx)}" target="_blank">
+                                <img
+                                    src="${dataOfIdx?.['avatar_img'] || this.default_avt}" 
+                                    alt="${dataOfIdx?.['full_name'] || ''}"
+                                    class="avatar-img mr-1"
+                                    data-bs-toggle="tooltip"
+                                    title="${dataOfIdx?.full_name || ''}  (${dataOfIdx?.['group__title'] || ''}"
+                                >
+                            </a>
                         `
                     }
                 ).join("")
@@ -5392,10 +5394,9 @@ class CommentControl {
             <div class="d-flex comment-action">
                 <small class="btn-comment-action btn-comment-reply-new">${clsThis.ele$.attr('data-msg-more-reply')}</small>
                 <small 
-                    class="btn-comment-action btn-comment-action-show-replies d-flex align-items-center"
-                    data-counter="${kwargs?.['children_count'] || 0}"
+                    class="btn-comment-action d-flex align-items-center"
                 >
-                    <span class="mr-2">
+                    <span class="mr-2 btn-comment-action-show-replies" data-counter="${kwargs?.['children_count'] || 0}">
                         <span class="comment-num-counter">${kwargs?.['children_count'] || 0}</span> ${clsThis.ele$.attr('data-msg-more-replies')}
                     </span>
                     ${getFullPersonReplied()}
@@ -5446,7 +5447,9 @@ class CommentControl {
                         style="width: 2rem;object-fit: contain;"
                         class="mr-1"
                     >
-                    <small class="mr-1">${kwargs?.employee_created?.full_name || ''}</small>
+                    <a href="${clsThis.url_employee_detail.replace('__pk__', kwargs?.employee_created?.id)}" target="_blank">
+                        <small class="mr-1">${kwargs?.employee_created?.full_name || ''}</small>
+                    </a>
                     ${getHTMLDateCreated()}
                 </div>
                 <div class="w-100 min-h-35p pt-3 pb-1 comment-content">
@@ -5760,6 +5763,7 @@ class CommentControl {
                 'id': data?.['id'] || '',
                 'avatar_img': data?.['employee_created']?.['avatar_img'] || this.default_person_avt,
                 'employee_created': {
+                    'id': data?.['employee_created']?.['id'] || '',
                     'full_name': data?.['employee_created']?.['full_name'] || '',
                 },
                 'date_relative': dateRelateData.relate,

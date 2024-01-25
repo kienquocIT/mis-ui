@@ -13,771 +13,9 @@ $(function () {
         let $table = $('#table_report_cashflow_year_list');
         let $tableMonth = $('#table_report_cashflow_month_list');
         let dataMonth = JSON.parse($('#filter_month').text());
+        let eleTrans = $('#app-trans-factory');
 
         // year (by month)
-        function loadDbl(data) {
-            $table.DataTableDefault({
-                data: data ? data : [],
-                ordering: false,
-                paging: false,
-                info: false,
-                autoWidth: true,
-                scrollX: true,
-                columns: [  // 260, <7740> (8000p)
-                    {
-                        targets: 0,
-                        width: '3.25%',
-                        render: (data, type, row) => {
-                            return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 1,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 1;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div></div>
-                                            <div class="col-4 mt-2"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4 mt-2"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 2,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 2;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 3,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 3;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 4,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 4;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 5,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 5;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 6,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 6;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 7,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 7;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 8,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 8;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 9,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 9;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 10,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 10;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 11,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 11;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 12,
-                        width: '8.06%',
-                        render: (data, type, row) => {
-                            let month = 12;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_month']) {
-                                let dataMonth = row?.['data_by_month'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataMonth[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                ],
-                drawCallback: function () {
-                    // mask money
-                    $.fn.initMaskMoney2();
-                },
-            });
-        }
-
-        loadDbl();
-
-        // month (by week)
-        function loadDblMonth(data) {
-            $tableMonth.DataTableDefault({
-                data: data ? data : [],
-                ordering: false,
-                paging: false,
-                info: false,
-                autoWidth: true,
-                scrollX: true,
-                columns: [  // 260, <7740> (8000p)
-                    {
-                        targets: 0,
-                        width: '7.5%',
-                        render: (data, type, row) => {
-                            return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 1,
-                        width: '18.5%',
-                        render: (data, type, row) => {
-                            let month = 1;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_week']) {
-                                let dataWeek = row?.['data_by_week'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataWeek[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div></div>
-                                            <div class="col-4 mt-2"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4 mt-2"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 2,
-                        width: '18.5%',
-                        render: (data, type, row) => {
-                            let month = 2;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_week']) {
-                                let dataWeek = row?.['data_by_week'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataWeek[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 3,
-                        width: '18.5%',
-                        render: (data, type, row) => {
-                            let month = 3;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_week']) {
-                                let dataWeek = row?.['data_by_week'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataWeek[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 4,
-                        width: '18.5%',
-                        render: (data, type, row) => {
-                            let month = 4;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_week']) {
-                                let dataWeek = row?.['data_by_week'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataWeek[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                    {
-                        targets: 5,
-                        width: '18.5%',
-                        render: (data, type, row) => {
-                            let month = 5;
-                            let valueEstimate = 0;
-                            if (row?.['data_by_week']) {
-                                let dataWeek = row?.['data_by_week'];
-                                if (row?.['cashflow_type'] === 2) {
-                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
-                                }
-                                if (row?.['cashflow_type'] === 3) {
-                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
-                                }
-                                if (row?.['cashflow_type'] === 4) {
-                                    valueEstimate = dataWeek[month]['value_estimate_net'];
-                                }
-                            }
-                            if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                            <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
-                                        </div>`;
-                                } else {
-                                    return `<div class="row">
-                                            <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-                                            <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-                                        </div>`;
-                                }
-                            } else {
-                                return `<div class="row">
-                                            <div class="col-4">Estimate</div>
-                                            <div class="col-4">Actual</div>
-                                            <div class="col-4">Variance</div>
-                                        </div>`;
-                            }
-                        }
-                    },
-                ],
-                drawCallback: function () {
-                    // mask money
-                    $.fn.initMaskMoney2();
-                    //
-                    changeTDTableMonthByWeeks();
-                },
-            });
-        }
-
-        loadDblMonth();
-
-
-
-
-
-
-
-
-
-
-
-
         // function loadDbl(data) {
         //     $table.DataTableDefault({
         //         data: data ? data : [],
@@ -786,17 +24,17 @@ $(function () {
         //         info: false,
         //         autoWidth: true,
         //         scrollX: true,
-        //         columns: [  // 260, <7740> (2000p)
+        //         columns: [  // 260, <7740> (8000p)
         //             {
         //                 targets: 0,
-        //                 width: '10%',
+        //                 width: '3.25%',
         //                 render: (data, type, row) => {
         //                     return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
         //                 }
         //             },
         //             {
         //                 targets: 1,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 1;
         //                     let valueEstimate = 0;
@@ -814,18 +52,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div></div>
+        //                                     <div class="col-4 mt-2"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4 mt-2"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 2,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 2;
         //                     let valueEstimate = 0;
@@ -843,18 +93,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 3,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 3;
         //                     let valueEstimate = 0;
@@ -872,18 +134,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 4,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 4;
         //                     let valueEstimate = 0;
@@ -901,18 +175,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 5,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 5;
         //                     let valueEstimate = 0;
@@ -930,18 +216,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 6,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 6;
         //                     let valueEstimate = 0;
@@ -959,18 +257,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 7,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 7;
         //                     let valueEstimate = 0;
@@ -988,18 +298,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 8,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 8;
         //                     let valueEstimate = 0;
@@ -1017,18 +339,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 9,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 9;
         //                     let valueEstimate = 0;
@@ -1046,18 +380,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 10,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 10;
         //                     let valueEstimate = 0;
@@ -1075,18 +421,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 11,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 11;
         //                     let valueEstimate = 0;
@@ -1104,18 +462,30 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
         //             {
         //                 targets: 12,
-        //                 width: '7.5%',
+        //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 12;
         //                     let valueEstimate = 0;
@@ -1133,12 +503,24 @@ $(function () {
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
         //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
         //                         } else {
-        //                             return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
         //                         }
         //                     } else {
-        //                         return `<div class="row">Estimate</div>`;
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
         //                     }
         //                 }
         //             },
@@ -1151,6 +533,800 @@ $(function () {
         // }
 
         // loadDbl();
+
+        // month (by week)
+        // function loadDblMonth(data) {
+        //     $tableMonth.DataTableDefault({
+        //         data: data ? data : [],
+        //         ordering: false,
+        //         paging: false,
+        //         info: false,
+        //         autoWidth: true,
+        //         scrollX: true,
+        //         columns: [  // 260, <7740> (8000p)
+        //             {
+        //                 targets: 0,
+        //                 width: '7.5%',
+        //                 render: (data, type, row) => {
+        //                     return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
+        //                 }
+        //             },
+        //             {
+        //                 targets: 1,
+        //                 width: '18.5%',
+        //                 render: (data, type, row) => {
+        //                     let month = 1;
+        //                     let valueEstimate = 0;
+        //                     if (row?.['data_by_week']) {
+        //                         let dataWeek = row?.['data_by_week'];
+        //                         if (row?.['cashflow_type'] === 2) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_sale'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 3) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_cost'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 4) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_net'];
+        //                         }
+        //                     }
+        //                     if (row?.['cashflow_type'] !== 0) {
+        //                         if (row?.['cashflow_type'] !== 1) {
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
+        //                         } else {
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div></div>
+        //                                     <div class="col-4 mt-2"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4 mt-2"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
+        //                         }
+        //                     } else {
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
+        //                     }
+        //                 }
+        //             },
+        //             {
+        //                 targets: 2,
+        //                 width: '18.5%',
+        //                 render: (data, type, row) => {
+        //                     let month = 2;
+        //                     let valueEstimate = 0;
+        //                     if (row?.['data_by_week']) {
+        //                         let dataWeek = row?.['data_by_week'];
+        //                         if (row?.['cashflow_type'] === 2) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_sale'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 3) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_cost'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 4) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_net'];
+        //                         }
+        //                     }
+        //                     if (row?.['cashflow_type'] !== 0) {
+        //                         if (row?.['cashflow_type'] !== 1) {
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
+        //                         } else {
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
+        //                         }
+        //                     } else {
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
+        //                     }
+        //                 }
+        //             },
+        //             {
+        //                 targets: 3,
+        //                 width: '18.5%',
+        //                 render: (data, type, row) => {
+        //                     let month = 3;
+        //                     let valueEstimate = 0;
+        //                     if (row?.['data_by_week']) {
+        //                         let dataWeek = row?.['data_by_week'];
+        //                         if (row?.['cashflow_type'] === 2) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_sale'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 3) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_cost'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 4) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_net'];
+        //                         }
+        //                     }
+        //                     if (row?.['cashflow_type'] !== 0) {
+        //                         if (row?.['cashflow_type'] !== 1) {
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
+        //                         } else {
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
+        //                         }
+        //                     } else {
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
+        //                     }
+        //                 }
+        //             },
+        //             {
+        //                 targets: 4,
+        //                 width: '18.5%',
+        //                 render: (data, type, row) => {
+        //                     let month = 4;
+        //                     let valueEstimate = 0;
+        //                     if (row?.['data_by_week']) {
+        //                         let dataWeek = row?.['data_by_week'];
+        //                         if (row?.['cashflow_type'] === 2) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_sale'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 3) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_cost'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 4) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_net'];
+        //                         }
+        //                     }
+        //                     if (row?.['cashflow_type'] !== 0) {
+        //                         if (row?.['cashflow_type'] !== 1) {
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
+        //                         } else {
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
+        //                         }
+        //                     } else {
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
+        //                     }
+        //                 }
+        //             },
+        //             {
+        //                 targets: 5,
+        //                 width: '18.5%',
+        //                 render: (data, type, row) => {
+        //                     let month = 5;
+        //                     let valueEstimate = 0;
+        //                     if (row?.['data_by_week']) {
+        //                         let dataWeek = row?.['data_by_week'];
+        //                         if (row?.['cashflow_type'] === 2) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_sale'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 3) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_cost'];
+        //                         }
+        //                         if (row?.['cashflow_type'] === 4) {
+        //                             valueEstimate = dataWeek[month]['value_estimate_net'];
+        //                         }
+        //                     }
+        //                     if (row?.['cashflow_type'] !== 0) {
+        //                         if (row?.['cashflow_type'] !== 1) {
+        //                            return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
+        //                                 </div>`;
+        //                         } else {
+        //                             return `<div class="row">
+        //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                     <div class="col-4"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
+        //                                 </div>`;
+        //                         }
+        //                     } else {
+        //                         return `<div class="row">
+        //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-actual')}</div>
+        //                                     <div class="col-4">${eleTrans.attr('data-variance')}</div>
+        //                                 </div>`;
+        //                     }
+        //                 }
+        //             },
+        //         ],
+        //         drawCallback: function () {
+        //             // mask money
+        //             $.fn.initMaskMoney2();
+        //         },
+        //     });
+        // }
+
+        // loadDblMonth();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function loadDbl(data) {
+            $table.DataTableDefault({
+                data: data ? data : [],
+                ordering: false,
+                paging: false,
+                info: false,
+                autoWidth: true,
+                scrollX: true,
+                columns: [  // 280, <310x12=3720> (4000p)
+                    {
+                        targets: 0,
+                        width: '7%',
+                        render: (data, type, row) => {
+                            return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 1;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 2,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 2;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 3,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 3;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 4,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 4;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 5,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 5;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 6,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 6;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 7,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 7;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 8,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 8;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 9,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 9;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 10,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 10;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 11,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 11;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 12,
+                        width: '7.75%',
+                        render: (data, type, row) => {
+                            let month = 12;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_month']) {
+                                let dataMonth = row?.['data_by_month'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataMonth[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataMonth[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataMonth[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                ],
+                drawCallback: function () {
+                    // mask money
+                    $.fn.initMaskMoney2();
+                },
+            });
+        }
+
+        loadDbl();
+
+
+        function loadDblMonth(data) {
+            $tableMonth.DataTableDefault({
+                data: data ? data : [],
+                ordering: false,
+                paging: false,
+                info: false,
+                autoWidth: true,
+                scrollX: true,
+                columns: [  // 260, <7740> (2000p)
+                    {
+                        targets: 0,
+                        width: '15%',
+                        render: (data, type, row) => {
+                            return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        width: '17%',
+                        render: (data, type, row) => {
+                            let month = 1;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_week']) {
+                                let dataWeek = row?.['data_by_week'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataWeek[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 2,
+                        width: '17%',
+                        render: (data, type, row) => {
+                            let month = 2;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_week']) {
+                                let dataWeek = row?.['data_by_week'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataWeek[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 3,
+                        width: '17%',
+                        render: (data, type, row) => {
+                            let month = 3;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_week']) {
+                                let dataWeek = row?.['data_by_week'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataWeek[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 4,
+                        width: '17%',
+                        render: (data, type, row) => {
+                            let month = 4;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_week']) {
+                                let dataWeek = row?.['data_by_week'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataWeek[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                    {
+                        targets: 5,
+                        width: '17%',
+                        render: (data, type, row) => {
+                            let month = 5;
+                            let valueEstimate = 0;
+                            if (row?.['data_by_week']) {
+                                let dataWeek = row?.['data_by_week'];
+                                if (row?.['cashflow_type'] === 2) {
+                                    valueEstimate = dataWeek[month]['value_estimate_sale'];
+                                }
+                                if (row?.['cashflow_type'] === 3) {
+                                    valueEstimate = dataWeek[month]['value_estimate_cost'];
+                                }
+                                if (row?.['cashflow_type'] === 4) {
+                                    valueEstimate = dataWeek[month]['value_estimate_net'];
+                                }
+                            }
+                            if (row?.['cashflow_type'] !== 0) {
+                                if (row?.['cashflow_type'] !== 1) {
+                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
+                                } else {
+                                    return `<span class="mask-money table-row-value-estimate" data-init-money="${0}" data-month="${month}"></span>`;
+                                }
+                            } else {
+                                return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
+                            }
+                        }
+                    },
+                ],
+                drawCallback: function () {
+                    // mask money
+                    $.fn.initMaskMoney2();
+                    //
+                    changeTDTableMonthByWeeks();
+                },
+            });
+        }
+
+        loadDblMonth();
 
         function setupDataLoadTable(dataList) {
             let result = [];
@@ -1182,7 +1358,7 @@ $(function () {
             let year = boxYear.val();
             let month = boxMonth.val();
             if (year) {
-                if (month) {
+                if (month) {  // month by weeks
                     eleYearArea[0].setAttribute('hidden', 'true');
                     eleMonthArea[0].removeAttribute('hidden');
                     $eleTable = $tableMonth;
@@ -1209,7 +1385,7 @@ $(function () {
                     for (let keyWeek in dataByWeek) {
                         dataByWeek[keyWeek]['value_estimate_net'] = parseFloat(dataByWeek[keyWeek]['value_estimate_sale']) - parseFloat(dataByWeek[keyWeek]['value_estimate_cost']);
                     }
-                } else {
+                } else {  // year by months
                     eleMonthArea[0].setAttribute('hidden', 'true');
                     eleYearArea[0].removeAttribute('hidden');
                     $eleTable.DataTable().destroy();
@@ -1229,39 +1405,35 @@ $(function () {
                 }
 
             }
-
-
-
-
             let dataOperation = {
                 'cashflow_type': 0,
-                'type_title': 'Operation'
+                'type_title': eleTrans.attr('data-operation'),
             }
             let dataBBalance = {
                 'cashflow_type': 1,
-                'type_title': 'Beginning balance'
+                'type_title': eleTrans.attr('data-beginning-balance'),
             }
             let dataSale = {
                 'cashflow_type': 2,
-                'type_title': 'Cash sales',
+                'type_title': eleTrans.attr('data-cash-sales'),
                 'data_by_month': dataByMonth,
                 'data_by_week': dataByWeek,
             }
             let dataCost = {
                 'cashflow_type': 3,
-                'type_title': 'Product/ service costs',
+                'type_title': eleTrans.attr('data-product-service-costs'),
                 'data_by_month': dataByMonth,
                 'data_by_week': dataByWeek,
             }
             let dataNet = {
                 'cashflow_type': 4,
-                'type_title': 'Net cash flow',
+                'type_title': eleTrans.attr('data-net-cash-flow'),
                 'data_by_month': dataByMonth,
                 'data_by_week': dataByWeek,
             }
             let dataEBalance = {
                 'cashflow_type': 5,
-                'type_title': 'Ending balance',
+                'type_title': eleTrans.attr('data-ending-balance'),
             }
             result = [dataOperation, dataBBalance, dataSale, dataCost, dataNet, dataEBalance];
 
@@ -1687,11 +1859,21 @@ $(function () {
         }
 
         function changeTDTableMonthByWeeks() {
-            // append date range to td
-            let weeksOfMonthShow = getWeeksOfMonthShow(parseInt(month), parseInt(year));
-            for (let keyShow in weeksOfMonthShow) {
-                let classMap = '.week-' + keyShow;
-                $tableMonth[0].querySelector(classMap).innerHTML = 'Week 1' + '(' + String(weeksOfMonthShow[keyShow]?.['start_date']) + '-' + String(weeksOfMonthShow[keyShow]?.['end_date']);
+            let year = boxYear.val();
+            let month = boxMonth.val();
+            if (year && month) {
+                if ($tableMonth[0].closest('.dataTables_scroll')) {
+                    let tableMonthHd = $tableMonth[0].closest('.dataTables_scroll').querySelector('.dataTables_scrollHead');
+                    if (tableMonthHd) {
+                        let weeksOfMonthShow = getWeeksOfMonthShow(parseInt(month), parseInt(year));
+                        for (let keyShow in weeksOfMonthShow) {
+                            let classMap = '.week-' + keyShow;
+                            if (tableMonthHd.querySelector(classMap)) {
+                                tableMonthHd.querySelector(classMap).innerHTML = 'Week ' + keyShow + ' (' + String(weeksOfMonthShow[keyShow]?.['start_date']) + '-' + String(weeksOfMonthShow[keyShow]?.['end_date']) + ')';
+                            }
+                        }
+                    }
+                }
             }
             return true
         }

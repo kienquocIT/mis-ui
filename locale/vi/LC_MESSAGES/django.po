@@ -5991,7 +5991,7 @@ msgstr "Tùy chỉnh"
 
 #
 msgid "Pipeline report"
-msgstr "Báo cáo đường dẫn"
+msgstr "Báo cáo pipeline"
 
 #
 msgid "Employee created"
@@ -6044,3 +6044,63 @@ msgstr "Vui lòng chọn một ngày còn phép"
 #
 msgid "Leave type is required"
 msgstr "Loại phép là bắt buộc"
+
+#
+msgid "Cashflow report"
+msgstr "Báo cáo dòng tiền"
+
+#
+msgid "Actual"
+msgstr "Thực tế"
+
+#
+msgid "Variance"
+msgstr "Phương sai"
+
+#
+msgid "Operation"
+msgstr "Hoạt động"
+
+#
+msgid "Beginning balance"
+msgstr "Số dư đầu kỳ"
+
+#
+msgid "Cash sales"
+msgstr "Tiền bán hàng"
+
+#
+msgid "Product/service costs"
+msgstr "Chi phí sản phẩm/dịch vụ"
+
+#
+msgid "Net cash flow"
+msgstr "Dòng tiền ròng"
+
+#
+msgid "Ending balance"
+msgstr "Số dư cuối kỳ"
+
+#
+msgid "Payment term date type"
+msgstr "Loại kỳ hạn thanh toán"
+
+#
+msgid "Payment ratio"
+msgstr "Tỷ lệ thanh toán"
+
+#
+msgid "Value before tax"
+msgstr "Giá trị trước thuế"
+
+#
+msgid "Due date"
+msgstr "Ngày đến hạn"
+
+#
+msgid "AR invoice"
+msgstr "Hóa đơn AR"
+
+#
+msgid "Value after tax"
+msgstr "Giá trị sau thuế"

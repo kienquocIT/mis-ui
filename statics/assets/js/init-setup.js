@@ -390,6 +390,12 @@ class NotifyController {
                         }
 
                         btnEle$.closest('.bell-menu-item').find('.notify-flag-unseen').remove();
+                        btnEle$.fadeOut({
+                            'duration': 'fast',
+                            'always': function (){
+                               btnEle$.remove();
+                            }
+                        });
                     }
                 },
                 (errs) => {},

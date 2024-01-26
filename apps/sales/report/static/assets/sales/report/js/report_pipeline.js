@@ -401,14 +401,23 @@ $(function () {
             if (eleFiscalYear.val()) {
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
-                    let startDateFY = new Date(dataFiscalYear[0]?.['start_date']);
-                    let currentDate = new Date(startDateFY);
-                    // Loop for 12 months
-                    for (let i = 0; i < 12; i++) {
-                        let formattedMonth = currentDate.toISOString().slice(0, 7);
-                        months.push(formattedMonth);
-                        // Move to the next month
-                        currentDate.setMonth(currentDate.getMonth() + 1);
+                    let currentDate = new Date();
+                    let currentYear = currentDate.getFullYear();
+                    for (let fiscal of dataFiscalYear) {
+                        let startDateFY = new Date(fiscal?.['start_date']);
+                        let dateObject = new Date(startDateFY);
+                        let year = dateObject.getFullYear();
+                        let currentDateFY = new Date(startDateFY);
+                        if (year === currentYear) {
+                            // Loop for 12 months
+                            for (let i = 0; i < 12; i++) {
+                                let formattedMonth = currentDateFY.toISOString().slice(0, 7);
+                                months.push(formattedMonth);
+                                // Move to the next month
+                                currentDateFY.setMonth(currentDateFY.getMonth() + 1);
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -417,6 +426,7 @@ $(function () {
 
         function parseMonthJSON() {
             let result = [];
+            let resultReverse = [];
             let dataMonths = getAllMonthsFiscalYear();
             for (let monthYear of dataMonths) {
                 const [year, month] = monthYear.split('-').map(Number);
@@ -425,7 +435,8 @@ $(function () {
                     month,
                 });
             }
-            return result;
+            resultReverse = result.reverse();
+            return resultReverse;
         }
 
         function getMonthRange(month, year) {
@@ -447,27 +458,34 @@ $(function () {
             if (eleFiscalYear.val()) {
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
-                    let startDateFY = dataFiscalYear[0]?.['start_date'];
-                    let dateObject = new Date(startDateFY);
-                    let year = dateObject.getFullYear();
-                    let month = dateObject.getMonth() + 1;
-                    // Ensure quarter is within valid range (1 to 4)
-                    if (quarter < 1 || quarter > 4) {
-                        throw new Error('Invalid quarter');
+                    let currentDate = new Date();
+                    let currentYear = currentDate.getFullYear();
+                    for (let fiscal of dataFiscalYear) {
+                        let startDateFY = fiscal?.['start_date'];
+                        let dateObject = new Date(startDateFY);
+                        let year = dateObject.getFullYear();
+                        let month = dateObject.getMonth() + 1;
+                        if (year === currentYear) {
+                            // Ensure quarter is within valid range (1 to 4)
+                            if (quarter < 1 || quarter > 4) {
+                                throw new Error('Invalid quarter');
+                            }
+                            // Calculate the start and end months of the quarter
+                            let startMonth = (quarter - 1) * 3 + month;
+                            let endMonth = startMonth + 2;
+                            // Create the first day of the quarter
+                            let startDate = new Date(Date.UTC(year, startMonth - 1, 1, 0, 0, 0));
+                            // Create the last day of the quarter, then subtract one millisecond to get the last millisecond of the last day
+                            let endDate = new Date(Date.UTC(year, endMonth, 0, 23, 59, 59, 999));
+                            // Format the dates
+                            let formattedStartDate = startDate.toISOString().slice(0, 19).replace('T', ' ');
+                            let formattedEndDate = endDate.toISOString().slice(0, 19).replace('T', ' ');
+                            return {startDate: formattedStartDate, endDate: formattedEndDate};
+                        }
                     }
-                    // Calculate the start and end months of the quarter
-                    let startMonth = (quarter - 1) * 3 + month;
-                    let endMonth = startMonth + 2;
-                    // Create the first day of the quarter
-                    let startDate = new Date(Date.UTC(year, startMonth - 1, 1, 0, 0, 0));
-                    // Create the last day of the quarter, then subtract one millisecond to get the last millisecond of the last day
-                    let endDate = new Date(Date.UTC(year, endMonth, 0, 23, 59, 59, 999));
-                    // Format the dates
-                    let formattedStartDate = startDate.toISOString().slice(0, 19).replace('T', ' ');
-                    let formattedEndDate = endDate.toISOString().slice(0, 19).replace('T', ' ');
-                    return {startDate: formattedStartDate, endDate: formattedEndDate};
                 }
             }
+            return {startDate: '', endDate: ''};
         }
 
         function getDateFrom() {
@@ -506,23 +524,32 @@ $(function () {
         function loadBoxQuarter() {
             if (eleFiscalYear.val()) {
                 let data = [];
+                let dataReverse = [];
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
-                    let startDateFY = dataFiscalYear[0]?.['start_date'];
-                    let dateObject = new Date(startDateFY);
-                    let year = dateObject.getFullYear();
-                    for (let quarter of dataQuarter) {
-                        data.push({'id': quarter[0], 'title': quarter[1], 'year': year})
+                    let currentDate = new Date();
+                    let currentYear = currentDate.getFullYear();
+                    for (let fiscal of dataFiscalYear) {
+                        let startDateFY = fiscal?.['start_date'];
+                        let dateObject = new Date(startDateFY);
+                        let year = dateObject.getFullYear();
+                        if (year === currentYear) {
+                            for (let quarter of dataQuarter) {
+                                data.push({'id': quarter[0], 'title': quarter[1], 'year': year})
+                            }
+                            dataReverse = data.reverse();
+                            boxQuarter.empty();
+                            boxQuarter.initSelect2({
+                                data: dataReverse,
+                                'allowClear': true,
+                                templateResult: function (state) {
+                                    let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
+                                    return $(`<span>${state.text} ${groupHTML}</span>`);
+                                },
+                            });
+                            break;
+                        }
                     }
-                    boxQuarter.empty();
-                    boxQuarter.initSelect2({
-                        data: data,
-                        'allowClear': true,
-                        templateResult: function (state) {
-                            let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                            return $(`<span>${state.text} ${groupHTML}</span>`);
-                        },
-                    });
                 }
             }
         }
@@ -624,15 +651,6 @@ $(function () {
                     dataParams['opportunity__close_date__lte'] = endDate;
                 }
             }
-
-            // let date = $('#report-pipeline-date-approved').val();
-            // if (date) {
-            //     let dateStrings = date.split(' - ');
-            //     let dateStart = dateStrings[0] + " 00:00:00";
-            //     let dateEnd = dateStrings[1] + " 23:59:59";
-            //     dataParams['date_approved__gte'] = moment(dateStart, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
-            //     dataParams['date_approved__lte'] = moment(dateEnd, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
-            // }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),

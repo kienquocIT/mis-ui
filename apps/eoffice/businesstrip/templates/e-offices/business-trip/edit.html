@@ -211,7 +211,7 @@
            data-expense-url="{% url 'ExpenseItemListAPI' %}"
            data-tax-url="{% url 'TaxListAPI' %}"
     >
-    <input type="text" id="trans-factory"
+    <input type="text" id="trans-factory" data-error-time="{% trans 'Wrong date time range setup' %}"
     >
 {% endblock %}
 {% block jsFooter %}

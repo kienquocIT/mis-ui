@@ -115,7 +115,7 @@ $(function () {
                         targets: 10,
                         width: '7.5%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
+                            return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
                         }
                     },
                     {

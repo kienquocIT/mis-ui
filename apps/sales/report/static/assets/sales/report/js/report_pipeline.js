@@ -21,52 +21,49 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 10,
-                columns: [  // 50,250,300,350,150,50,100,100,150,150,150,50,50,50,50 (2000p)
+                columns: [  // 100,200,200,300,150,100,125,125,250,250,250,100,100,100,100 (2500p)
                     {
                         targets: 0,
-                        width: '2.5%',
+                        width: '4%',
                         render: (data, type, row) => {
-                            if (row?.['group']?.['title']) {
-                                if (row?.['type_group_by'] === 0) {
-                                    return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
-                                }
-                                return `<div class="row"><span class="badge badge-primary">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span></div>`;
-                            } else {
+                            if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
+                            } else {
+                                return `<div class="row"><span class="badge badge-primary">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span></div>`;
                             }
                         }
                     },
                     {
                         targets: 1,
-                        width: '12.5%',
+                        width: '8%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</p>`;
+                            return `<div class="row"><span class="badge badge-primary  badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '15%',
+                        width: '8%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '17.5%',
+                        width: '12%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '7.5%',
+                        width: '6%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '2.5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if ([0, 1, 2].includes(row?.['group_by'])) {
                                 return `<p></p>`;
@@ -99,49 +96,49 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '7.5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
                         }
                     },
                     {
                         targets: 9,
-                        width: '7.5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span>`;
                         }
                     },
                     {
                         targets: 10,
-                        width: '7.5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 11,
-                        width: '2.5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
                         }
                     },
                     {
                         targets: 12,
-                        width: '2.5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
                         }
                     },
                     {
                         targets: 13,
-                        width: '2.5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
                         }
                     },
                     {
                         targets: 14,
-                        width: '2.5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
                         }

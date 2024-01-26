@@ -370,7 +370,7 @@ class NotifyController {
         });
     }
 
-    callDoneNotify(urlNotifyDone) {
+    callDoneNotify(urlNotifyDone, btnEle$) {
         let clsThis = this;
         if (urlNotifyDone) {
             $.fn.callAjax2({
@@ -388,6 +388,8 @@ class NotifyController {
                             clsThis.bellCount.text('0').fadeOut();
                             clsThis.bellIdxIcon.removeClass('my-bell-ring');
                         }
+
+                        btnEle$.closest('.bell-menu-item').find('.notify-flag-unseen').remove();
                     }
                 },
                 (errs) => {},
@@ -441,6 +443,21 @@ class NotifyController {
                 return true;
             }
 
+            function minimal_msg(item){
+                let msg = item?.['msg'];
+                if (msg.length > 100){
+                    let minimal_txt = msg.slice(0, 100);
+                    let more_txt = msg.slice(100);
+                    return `<div class="mb-1">
+                        <small class="text-muted">${minimal_txt}</small>
+                        <small class="notify-minimal-msg text-muted">...</small>
+                        <button class="btn btn-flush-light btn-xs notify-btn-show-full-msg">${$.fn.transEle.attr('data-msg-more')}</button>
+                        <small class="notify-full-msg text-muted" style="display: none">${more_txt}</small>
+                    </div>`
+                }
+                return `<div class="mb-1"><small class="text-muted">${msg}</small></div>`;
+            }
+
             $.fn.callAjax2({
                 url: dataUrl,
                 method: dataMethod,
@@ -457,11 +474,11 @@ class NotifyController {
                         },);
                         let relative_time_html = $x.fn.displayRelativeTime(item?.['date_created'], {
                             'callback': function (data) {
-                                return `<p>${data.relate}</p><small class="ml-auto">${data.output}</small>`;
+                                return `<small>${data.relate}</small><small class="ml-auto">${data.output}</small>`;
                             }
                         });
                         let stickyUnseen = item?.['is_done'] === true ? `` : `
-                            <span class="badge badge-warning badge-indicator badge-indicator-xl position-top-start-overflow-1"></span>
+                            <span class="notify-flag-unseen badge badge-warning badge-indicator badge-indicator-xl position-top-start-overflow-1"></span>
                         `;
                         let btnSeenItem = item?.['is_done'] === true ? `` : `
                             <button class="btn btn-xs btn-primary btn-seen-notify"><i class="fa-brands fa-readme"></i> Seen</button>
@@ -474,7 +491,7 @@ class NotifyController {
                         `;
                         let btn_goto = has_active_app(item?.['doc_app']) === true ? `<a href="${urlData}" class="btn btn-xs btn-primary" type="button"><i class="fa-solid fa-right-to-bracket"></i> Goto </a>` : ``;
                         let tmp = `
-                            <div 
+                            <div
                                 class="dropdown-item mb-1 bell-menu-item"
                                 data-is-done="${item?.['is_done']}"
                                 data-notify-id="${item?.['id']}"
@@ -490,23 +507,19 @@ class NotifyController {
                                         </div>
                                     </div>
                                     <div class="media-body">
-                                        <div>
-                                            <div class="notifications-text">
-                                                <span class="text-primary title">${item?.['title']}</span>
-                                            </div>
-                                            <div class="notifications-text mb-1">
-                                                <small class="text-muted">${item?.['msg']}</small>
-                                            </div>
-                                            <div class="notifications-info">
-                                                 <span class="badge badge-primary badge-outline mb-1 noti-custom">${resolve_app_name(item?.['doc_app'])}</span>
-                                                 <div class="notifications-time mb-1 w-100 d-flex justify-content-start">${relative_time_html}</div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            ${btn_goto}
-                                            ${btn_reply_mentions}
-                                            ${btnSeenItem}
-                                        </div>
+                                        <p class="text-primary title">${item?.['title']}</p>
+                                        <small class="badge badge-primary badge-outline badge-sm mb-1">${resolve_app_name(item?.['doc_app'])}</small>
+                                    </div>
+                                </div>
+                                <div>
+                                    ${minimal_msg(item)}
+                                    <div class="notifications-info">
+                                         <div class="notifications-time mb-1 w-100 d-flex justify-content-start">${relative_time_html}</div>
+                                    </div>
+                                    <div>
+                                        ${btn_goto}
+                                        ${btn_reply_mentions}
+                                        ${btnSeenItem}
                                     </div>
                                 </div>
                             </div>
@@ -523,7 +536,9 @@ class NotifyController {
                     $(dataArea).find('img'),
                     {'imgReplace': globeAvatarNotFoundImg},
                 );
-                dataArea.find('button.btn-notify-reply-comment').on('click', function (){
+                dataArea.find('button.btn-notify-reply-comment').on('click', function (event){
+                    // event.stopPropagation();
+
                     let bellNotifyItem = $(this).closest('.bell-menu-item');
                     let notifyIdx = bellNotifyItem.attr('data-notify-id');
                     let docIdx = bellNotifyItem.attr('data-doc-id');
@@ -531,19 +546,29 @@ class NotifyController {
 
                     // seen
                     let isDone = bellNotifyItem.attr('data-is-done') === 'true';
-                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
+                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx), $(this));
 
                     //
                     let modalEle = $('#CommentModal');
                     new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
                     modalEle.modal('show');
                 });
-                dataArea.find('button.btn-seen-notify').on('click', function (){
+                dataArea.find('button.btn-seen-notify').on('click', function (event){
+                    event.stopPropagation();
+
                     let bellNotifyItem = $(this).closest('.bell-menu-item');
                     let notifyIdx = bellNotifyItem.attr('data-notify-id');
                     // seen
                     let isDone = bellNotifyItem.attr('data-is-done') === 'true';
-                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx));
+                    if (isDone === false) realThis.callDoneNotify(dataArea.attr('data-url-done-notify').replace('__pk__', notifyIdx), $(this));
+                })
+
+                dataArea.find('button.notify-btn-show-full-msg').on('click', function (event){
+                    event.stopPropagation();
+
+                    $(this).siblings('.notify-minimal-msg').fadeOut('fast');
+                    $(this).siblings('.notify-full-msg').fadeIn('fast');
+                    $(this).fadeOut('fast');
                 })
 
                 WindowControl.hideLoadingWaitResponse(dataArea);
@@ -5306,6 +5331,7 @@ class CommentControl {
     }
 
     item_get_html(kwargs, opts={}){
+        let clsThis = this;
         let {action_enabled, replies_enabled, mentions_enabled, add_comment_enabled} = {
             mentions_enabled: true,
             action_enabled: true,
@@ -5313,39 +5339,103 @@ class CommentControl {
             add_comment_enabled: true,
             ...opts,
         }
-        let htmlMentions = mentions_enabled === true ? `
-            <div class="comment-mentions">
-                <img
-                    src="${kwargs?.['avatar_img'] || this.default_avt}" 
-                    alt="${kwargs?.employee_created?.full_name || ''}"
-                    class="mr-1"
-                    data-bs-toggle="tooltip"
-                    title="${kwargs?.employee_created?.full_name || ''}"
-                >
-                <small>have been mentioned.</small>
-            </div>
-        ` : ``;
+
+        // mentions
+        function getFullHTMLMentionsPerson(_mentions, _mentions_data){
+            let htmlMentionsFullPerson = [];
+            if (
+                _mentions && typeof _mentions === 'object' && typeof Array.isArray(_mentions)
+                && _mentions_data && typeof _mentions_data === 'object'
+            ){
+                _mentions.map(
+                    (item) => {
+                        if (item){
+                            let _data_tmp = _mentions_data?.[item] || {};
+                            if (_data_tmp){
+                                htmlMentionsFullPerson.push(
+                                    `<a href="${clsThis.url_employee_detail.replace('__pk__', item)}" target="_blank">
+                                        <img src="${_data_tmp?.['avatar_img'] || clsThis.default_person_avt}" 
+                                        alt="${_data_tmp?.['full_name'] || ''}" class="mr-1" data-bs-toggle="tooltip" 
+                                        title="${_data_tmp?.['full_name'] || ''} (${_data_tmp?.['group__title'] || ''})"/>
+                                    </a>`
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+            return htmlMentionsFullPerson;
+        }
+
+        let htmlMentions = ``;
+        if (mentions_enabled === true) {
+            let htmlMentionsGot = getFullHTMLMentionsPerson(kwargs?.['mentions'] || [], kwargs?.['mentions_data'] || {});
+            if (htmlMentionsGot.length > 0){
+                htmlMentions =  `
+                <div class="comment-mentions">
+                    ${htmlMentionsGot.join("")}
+                    <small>${clsThis.ele$.attr('data-msg-been-mentioned')}</small>
+                </div>
+                `;
+            }
+        }
+
+        // latest reply datetime
+        function getHTMLLatestReplyDatetime(){
+            let replies_latest = kwargs['replies_latest'] || null;
+            let relateTime = $x.fn.displayRelativeTime(replies_latest, {
+                'callback': function (data){
+                    return `${data.relate} (${data.output})`
+                }
+            })
+            return  replies_latest ? `<small class="d-flex align-items-center">${clsThis.ele$.attr('data-msg-latest')}: ${relateTime} </small>` : ``;
+        }
+
+        // action
+        function getFullPersonReplied(){
+            let replies_persons = kwargs?.['replies_persons'] || {};
+            if (replies_persons && typeof replies_persons === 'object'){
+                return Object.keys(replies_persons).map(
+                    (idx) => {
+                        let dataOfIdx = replies_persons[idx];
+                        return `
+                            <a href="${clsThis.url_employee_detail.replace('__pk__', idx)}" target="_blank">
+                                <img
+                                    src="${dataOfIdx?.['avatar_img'] || this.default_avt}" 
+                                    alt="${dataOfIdx?.['full_name'] || ''}"
+                                    class="avatar-img mr-1"
+                                    data-bs-toggle="tooltip"
+                                    title="${dataOfIdx?.full_name || ''}  (${dataOfIdx?.['group__title'] || ''}"
+                                >
+                            </a>
+                        `
+                    }
+                ).join("")
+            }
+            return ``;
+        }
+
         let htmlAction = action_enabled === true ? `
             <div class="d-flex comment-action">
-                <small class="btn-comment-action btn-comment-reply-new">Reply</small>
+                <small class="btn-comment-action btn-comment-reply-new">${clsThis.ele$.attr('data-msg-more-reply')}</small>
                 <small 
-                    class="btn-comment-action btn-comment-action-show-replies d-flex align-items-center"
-                    data-counter="${kwargs?.['children_count'] || 0}"
+                    class="btn-comment-action d-flex align-items-center"
                 >
-                    <small class="mr-2"><span class="comment-num-counter">${kwargs?.['children_count'] || 0}</span> more replies</small>
-                    <img
-                        src="${kwargs?.['avatar_img'] || this.default_avt}" 
-                        alt="${kwargs?.employee_created?.full_name || ''}"
-                        class="avatar-img mr-1"
-                        data-bs-toggle="tooltip"
-                        title="${kwargs?.employee_created?.full_name || ''}"
-                    >
+                    <span class="mr-2 btn-comment-action-show-replies" data-counter="${kwargs?.['children_count'] || 0}">
+                        <span class="comment-num-counter">${kwargs?.['children_count'] || 0}</span> ${clsThis.ele$.attr('data-msg-more-replies')}
+                    </span>
+                    ${getFullPersonReplied()}
                 </small>
+                ${getHTMLLatestReplyDatetime()}
             </div>
         ` : '';
+
+        // replies
         let htmlReplies = replies_enabled === true ? `
             <div class="comment-replies mx-5" style="display: none; width: calc(96% - 2rem);"></div>
         ` : ``;
+
+        // add new
         let htmlAddNew = add_comment_enabled === true ? `
             <div class="comment-reply-new mx-5 mt-2" style="display: none; width: calc(96% - 2rem);">
                 <p class="mentions-display" style="display: none;"></p>
@@ -5356,6 +5446,16 @@ class CommentControl {
                 </form>
             </div>
         ` : ``;
+
+        // date created
+        function getHTMLDateCreated(){
+            return `
+                <small class="px-2">-</small>
+                <small class="mr-1">${kwargs?.['date_relative'] || ''}</small>
+                <small class="mr-1">(${kwargs?.date_output || ''})</small>
+            `
+        }
+
         return `
             <div 
                 class="w-100 min-h-50p comment-item p-2"
@@ -5372,10 +5472,10 @@ class CommentControl {
                         style="width: 2rem;object-fit: contain;"
                         class="mr-1"
                     >
-                    <small class="mr-1">${kwargs?.employee_created?.full_name || ''}</small>
-                    <small class="px-2">-</small>
-                    <small class="mr-1">${kwargs?.['date_relative'] || ''}</small>
-                    <small class="mr-1">(${kwargs?.date_output || ''})</small>
+                    <a href="${clsThis.url_employee_detail.replace('__pk__', kwargs?.employee_created?.id)}" target="_blank">
+                        <b class="mr-1">${kwargs?.employee_created?.full_name || ''}</b>
+                    </a>
+                    ${getHTMLDateCreated()}
                 </div>
                 <div class="w-100 min-h-35p pt-3 pb-1 comment-content">
                     ${kwargs?.contents || ''}
@@ -5433,8 +5533,16 @@ class CommentControl {
         textarea.tinymce( {
             menubar: false,
             height: 120,
-            plugins: 'advlist autolink lists mention',
-            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | outdent indent numlist bullist | removeformat ',
+            plugins: 'advlist autolink lists insertdatetime hr emoticons table mention link media image preview tabfocus visualchars visualblocks wordcount',
+            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | numlist bullist table | link image media emoticons | formatting ',
+            toolbar_groups: {
+                formatting : {
+                    icon: 'more-drawer',
+                    tooltip: 'My group of buttons',
+                    items: 'outdent indent hr insertdatetime | visualblocks visualchars wordcount removeformat | preview'
+                }
+            },
+            insertdatetime_formats: ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', '%H:%M:%S', '%I:%M:%S %p'],
             content_css: clsThis.ele$.attr('data-css-url-render'),
             content_style: `
                 @import url(\'//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap\');
@@ -5559,7 +5667,20 @@ class CommentControl {
                         }
                     }
                 });
+                editor.on('init', function (){
+                    // https://www.tiny.cloud/blog/tinymce-and-modal-windows/
+                    // Include the following JavaScript into your tiny.init script to prevent the Bootstrap dialog from blocking focus:
+                    document.addEventListener('focusin', (e) => {
+                         if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                            e.stopImmediatePropagation();
+                         }
+                    })
+                })
             },
+            // config of: link
+            default_link_target: '_blank',
+            link_assume_external_targets: true,
+            link_default_protocol: 'https',
         });
         frmInsideAdd.on('submit', function (event){
             $(this).find('button[type=submit]').prop('disabled', true);
@@ -5574,7 +5695,11 @@ class CommentControl {
             let mention_data = $(this).find('input[name="mentions"]').val();
             let data = {
                 "mentions": mention_data ? JSON.parse(mention_data) : [],
-                'contents': textarea.tinymce().getContent(),
+                "contents": textarea.tinymce().getContent({"format": "html"}),
+                "contents_txt": textarea.tinymce().getContent({"format": "text"})
+                    .trim()
+                    .replaceAll('\n', '. ')
+                    .replaceAll('\t', ' '),
             };
             let method = $(this).attr('data-method');
 
@@ -5685,12 +5810,17 @@ class CommentControl {
                 'id': data?.['id'] || '',
                 'avatar_img': data?.['employee_created']?.['avatar_img'] || this.default_person_avt,
                 'employee_created': {
+                    'id': data?.['employee_created']?.['id'] || '',
                     'full_name': data?.['employee_created']?.['full_name'] || '',
                 },
                 'date_relative': dateRelateData.relate,
                 'date_output': dateRelateData.output,
                 'contents': data.contents || '',
                 'children_count': data?.['children_count'] || 0,
+                'mentions': data?.['mentions'] || [],
+                'mentions_data': data?.['mentions_data'] || {},
+                'replies_persons': data?.['replies_persons'] || {},
+                'replies_latest': data?.['replies_latest'] || null,
             }
 
             let html$ = $(this.item_get_html(kwargs, get_html_opts));
@@ -5806,13 +5936,30 @@ class CommentControl {
                 },
                 (errs) => console.log(errs),
             )
-        } else {
-            throw Error('Comment list is not provide url');
-        }
+        } else throw Error('Comment list is not provide url');
 
     }
 
-    init(pk_doc, pk_app, data) {
+    fetch_room_of_idx(){
+        let commentIdx = this.opts.comment_id;
+        if (commentIdx){
+            $.fn.callAjax2({}).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data){
+                        //
+                    }
+                },
+                (errs) => {},
+            )
+        }
+    }
+
+    init(pk_doc, pk_app, opts={}) {
+        this.opts = {
+            comment_id: null,
+            ...opts
+        }
         this.pk_doc = pk_doc;
         this.ele_add.find('form.frm-add-new-comment').find('input[name="doc_id"]').val(pk_doc);
         this.pk_app = pk_app;
@@ -5821,19 +5968,7 @@ class CommentControl {
         this.init_structure();
         this.ele_list$.empty();
 
-        if (data && Array.isArray(data)) {
-            data.map(item => {
-                this.render_comment_item(item);
-            })
-            this.render_record_showing({
-                'total': data.length,
-                'current': 1,
-                'next': 0,
-                'reloadAPI': false,
-            });
-        } else {
-            this.fetch_all();
-        }
+        this.fetch_all();
     }
 }
 

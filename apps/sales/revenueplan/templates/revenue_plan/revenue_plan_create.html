@@ -88,7 +88,7 @@
                 <div class="row">
                     <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-check">
-                            <input class="form-check-input" id="monthly" type="checkbox" checked>
+                            <input class="form-check-input" id="monthly" type="checkbox" disabled checked>
                             <label class="form-check-label" for="monthly">{% trans 'Monthly' %}</label>
                         </div>
                     </div>
@@ -98,10 +98,22 @@
                             <label class="form-check-label" for="quarterly">{% trans 'Quarterly' %}</label>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-check">
                             <input class="form-check-input" id="equal" type="checkbox" checked disabled>
                             <label class="form-check-label" for="equal">{% trans 'Period target equals total of sub period targets' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-check">
+                            <input class="form-check-input" name='profit-type' id="gross-profit" type="radio" checked>
+                            <label class="form-check-label" for="gross-profit">{% trans 'Gross profit' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-check">
+                            <input class="form-check-input" name='profit-type' id="net-income" type="radio">
+                            <label class="form-check-label" for="net-income">{% trans 'Net income' %}</label>
                         </div>
                     </div>
                 </div>
@@ -176,7 +188,7 @@
                         </tr>
                     </thead>
                     <tbody></tbody>
-                    <tfoot>
+                                        <tfoot>
                         <tr class="bg-overlay bg-primary bg-opacity-10 company-row">
                             <td><span class="text-primary"><b>{% trans 'Company' %}</b></span></td>
                             <td></td>

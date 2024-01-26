@@ -1843,12 +1843,12 @@ class PODataTableHandle {
                         if (row?.['due_date'] !== '') {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="fas fa-calendar-week"></i></div>
+                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
                                     </div>`;
                         } else {
                             return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-due-date" value="">
-                                        <div class="input-suffix"><i class="fas fa-calendar-week"></i></div>
+                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
                                     </div>`;
                         }
                     }

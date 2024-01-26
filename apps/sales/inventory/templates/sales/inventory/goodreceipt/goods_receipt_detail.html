@@ -67,7 +67,7 @@
                                     <input type="text" name="date_received" id="good-receipt-date-received"
                                            class="form-control date-picker" autocomplete="off" disabled>
                                     <div class="input-suffix">
-                                        <i class="fas fa-calendar-week"></i>
+                                        <i class="far fa-calendar"></i>
                                     </div>
                                 </div>
                             </div>
@@ -410,7 +410,7 @@
                     <div class="modal-body">
                         <div class="row ml-2"><h6>{% trans 'Product list' %}</h6></div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-5">
                                 <div class="row mb-2">
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                         <table
@@ -421,13 +421,13 @@
                                         >
                                             <thead>
                                             <tr>
-                                                <th></th>
-                                                <th>{% trans 'Product' %}</th>
-                                                <th>{% trans 'UOM' %} (PO)</th>
-                                                <th>{% trans 'Quantity' %} (PO)</th>
-                                                <th>{% trans 'Received' %}</th>
-                                                <th>{% trans 'Remain' %}</th>
-                                                <th>{% trans 'This time' %}</th>
+                                                <th class="w-5"></th>
+                                                <th class="w-25">{% trans 'Product' %}</th>
+                                                <th class="w-15">{% trans 'UOM' %} (PO)</th>
+                                                <th class="w-15">{% trans 'Quantity' %} (PO)</th>
+                                                <th class="w-15">{% trans 'Received' %}</th>
+                                                <th class="w-10">{% trans 'Remain' %}</th>
+                                                <th class="w-15">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -445,13 +445,13 @@
                                         >
                                             <thead>
                                             <tr>
-                                                <th></th>
-                                                <th>PR</th>
-                                                <th>{% trans 'UOM' %}</th>
-                                                <th>{% trans 'Quantity' %}</th>
-                                                <th>{% trans 'Received' %}</th>
-                                                <th>{% trans 'Remain' %}</th>
-                                                <th>{% trans 'This time' %}</th>
+                                                <th class="w-5"></th>
+                                                <th class="w-20">PR</th>
+                                                <th class="w-15">{% trans 'UOM' %}</th>
+                                                <th class="w-15">{% trans 'Quantity' %}</th>
+                                                <th class="w-15">{% trans 'Received' %}</th>
+                                                <th class="w-15">{% trans 'Remain' %}</th>
+                                                <th class="w-15">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -460,7 +460,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-7">
                                 <div class="row mb-2">
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                         <table
@@ -471,12 +471,12 @@
                                         >
                                             <thead>
                                             <tr>
-                                                <th></th>
-                                                <th>{% trans 'Code' %} WH</th>
-                                                <th>{% trans 'Name' %} WH</th>
-                                                <th>{% trans 'Note' %}</th>
-                                                <th>{% trans 'Quantity' %}</th>
-                                                <th>{% trans 'UOM' %}</th>
+                                                <th class="w-5"></th>
+                                                <th class="w-20">{% trans 'Code' %} WH</th>
+                                                <th class="w-30">{% trans 'Name' %} WH</th>
+                                                <th class="w-20">{% trans 'Note' %}</th>
+                                                <th class="w-20">{% trans 'Quantity' %}</th>
+                                                <th class="w-5">{% trans 'UOM' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -546,19 +546,19 @@
                                         <div id="table-good-receipt-manage-serial-area" hidden>
                                             <table
                                                 id="datable-good-receipt-manage-serial"
-                                                class="table nowrap w-100"
+                                                class="table nowrap min-w-1000p w-100"
                                                 data-url=""
                                                 data-method="GET"
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th class="required">{% trans 'Vendor serial no.' %}</th>
-                                                    <th class="required">{% trans 'Serial no.' %}</th>
-                                                    <th>{% trans 'UOM' %}</th>
-                                                    <th>{% trans 'Expiration date' %}</th>
-                                                    <th>{% trans 'Mfr date' %}</th>
-                                                    <th>{% trans 'Warranty start' %}</th>
-                                                    <th>{% trans 'Warranty end' %}</th>
+                                                    <th class="w-15">{% trans 'Vendor serial no.' %}</th>
+                                                    <th class="w-15">{% trans 'Serial no.' %}</th>
+                                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                                    <th class="w-15">{% trans 'Expiration date' %}</th>
+                                                    <th class="w-15">{% trans 'Mfr date' %}</th>
+                                                    <th class="w-15">{% trans 'Warranty start' %}</th>
+                                                    <th class="w-15">{% trans 'Warranty end' %}</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>

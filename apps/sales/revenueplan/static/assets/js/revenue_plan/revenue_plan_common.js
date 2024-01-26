@@ -13,6 +13,7 @@ if ($('#revenue_plan_config').text() !== '') {
 const QUARTER_1 = ['m1', 'm2', 'm3']
 const QUARTER_2 = ['m4', 'm5', 'm6']
 const QUARTER_3 = ['m7', 'm8', 'm9']
+const QUARTER_4 = ['m10', 'm11', 'm12']
 const trans_script = $('#trans-url')
 
 function getMonthOrder(space_month) {
@@ -103,55 +104,6 @@ function calculatePlanProfit(this_row) {
 
     $.fn.initMaskMoney2()
 }
-
-$('#monthly').on('change', function () {
-    let readonly1 = 'readonly'
-    if ($(this).prop('checked')) {
-        readonly1 = ''
-    }
-
-    revenuePlanTable.find('.mtarget-td').each(function () {
-        $(this).html('')
-        let quarter_belong = getQuarterBelong($(this).closest('td').attr('data-type'))
-        $(this).append(`<input ${readonly1} value="0" data-return-type="number" class="mask-money form-control month-target ${quarter_belong} ${$(this).closest('td').attr('data-type')}targetvalue">`)
-    })
-
-    let readonly2 = 'readonly'
-    if ($('#quarterly').prop('checked')) {
-        readonly2 = ''
-    }
-    revenuePlanTable.find('.qtarget-td').each(function () {
-        $(this).html('')
-        $(this).append(`<input ${readonly2} value="0" data-return-type="number" class="mask-money form-control quarter-target ${$(this).closest('td').attr('data-type')}targetvalue">`)
-    })
-
-    $.fn.initMaskMoney2()
-})
-
-$('#quarterly').on('change', function () {
-    let readonly1 = 'readonly'
-    if ($(this).prop('checked')) {
-        readonly1 = ''
-    }
-
-    revenuePlanTable.find('.qtarget-td').each(function () {
-        $(this).html('')
-        $(this).append(`<input ${readonly1} value="0" data-return-type="number" class="mask-money form-control quarter-target ${$(this).closest('td').attr('data-type')}targetvalue">`)
-    })
-
-    let readonly2 = 'readonly'
-    if ($(this).prop('checked')) {
-        readonly2 = ''
-    }
-
-    revenuePlanTable.find('.mtarget-td').each(function () {
-        $(this).html('')
-        let quarter_belong = getQuarterBelong($(this).closest('td').attr('data-type'))
-        $(this).append(`<input ${readonly2} value="0" data-return-type="number" class="mask-money form-control month-target ${quarter_belong} ${$(this).closest('td').attr('data-type')}targetvalue">`)
-    })
-
-    $.fn.initMaskMoney2()
-})
 
 $(document).on("change", '.month-target', function () {
     calculatePlan($(this).closest('tr'))
@@ -310,6 +262,10 @@ $(document).on("change", '.month-target-profit', function () {
 })
 
 function UpdateTablePlan(group_employee_list, group_selected) {
+    let profit_type = 'Gross profit'
+    if ($('#net-income').prop('checked')) {
+        profit_type = 'Net income'
+    }
     let group_employee_valid = group_employee_list.filter(function (item) {
         return item.role.some(function (role) {
             return revenue_plan_config_list.includes(role.id);
@@ -320,23 +276,96 @@ function UpdateTablePlan(group_employee_list, group_selected) {
             `<tr class="bg-overlay bg-secondary bg-opacity-10" data-row="group-sum-row" data-group-id="${group_selected.id}">
                 <td><span class="text-primary"><b>${group_selected.title}</b></span></td>
                 <td></td>
-                <td class="sum-m1"></td>
-                <td class="sum-m2"></td>
-                <td class="sum-m3"></td>
-                <td class="sum-q1"></td>
-                <td class="sum-m4"></td>
-                <td class="sum-m5"></td>
-                <td class="sum-m6"></td>
-                <td class="sum-q2"></td>
-                <td class="sum-m7"></td>
-                <td class="sum-m8"></td>
-                <td class="sum-m9"></td>
-                <td class="sum-q3"></td>
-                <td class="sum-m10"></td>
-                <td class="sum-m11"></td>
-                <td class="sum-m12"></td>
-                <td class="sum-q4"></td>
-                <td class="sum-year"></td>
+                <td>
+                    <label class="col-form-label text-primary">Revenue</label>
+                    <div class="my-1"></div>
+                    <label class="profit-type-span col-form-label text-success">${profit_type}</label>
+                </td>
+                <td class="sum-m1">
+                    <span class="sum-group-m1 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m1-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m2">
+                    <span class="sum-group-m2 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m2-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m3">
+                    <span class="sum-group-m3 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m3-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-q1">
+                    <span class="sum-group-q1 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-q1-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m4">
+                    <span class="sum-group-m4 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m4-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m5">
+                    <span class="sum-group-m5 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m5-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m6">
+                    <span class="sum-group-m6 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m6-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-q2">
+                    <span class="sum-group-q2 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-q2-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m7">
+                    <span class="sum-group-m7 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m7-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m8">
+                    <span class="sum-group-m8 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m8-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m9">
+                    <span class="sum-group-m9 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m9-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-q3">
+                    <span class="sum-group-q3 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-q3-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m10">
+                    <span class="sum-group-m10 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m10-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m11">
+                    <span class="sum-group-m11 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m11-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-m12">
+                    <span class="sum-group-m12 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-m12-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-q4">
+                    <span class="sum-group-q4 mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-q4-profit mask-money text-success" data-init-money="0"></span>
+                </td>
+                <td class="sum-year">
+                    <span class="sum-group-year mask-money text-primary" data-init-money="0"></span>
+                    <div class="my-3"></div>
+                    <span class="sum-group-year-profit mask-money text-success" data-init-money="0"></span>
+                </td>
             </tr>`
         )
         for (let i = 0; i < group_employee_valid.length; i++) {
@@ -344,6 +373,11 @@ function UpdateTablePlan(group_employee_list, group_selected) {
                 `<tr class="${group_selected.id}">
                     <td></td>
                     <td class="employee-mapped" data-employee-id="${group_employee_valid[i]?.['id']}"><b>${group_employee_valid[i]?.['full_name']}</b></td>
+                    <td>
+                        <label class="col-form-label text-primary">Revenue</label>
+                        <div class="my-1"></div>
+                        <label class="profit-type-span col-form-label text-success">${profit_type}</label>
+                    </td>
                     <td class="mtarget-td" data-type="m1"></td>
                     <td class="mtarget-td" data-type="m2"></td>
                     <td class="mtarget-td" data-type="m3"></td>
@@ -369,14 +403,30 @@ function UpdateTablePlan(group_employee_list, group_selected) {
             revenuePlanTable.find('.mtarget-td').each(function () {
                 if ($(this).html() === '') {
                     let quarter_belong = getQuarterBelong($(this).closest('td').attr('data-type'))
-                    $(this).append(`<input value="0" data-return-type="number" class="mask-money form-control month-target ${quarter_belong} ${$(this).closest('td').attr('data-type')}targetvalue">`)
+                    $(this).append(`
+                        <input value="0" data-return-type="number" class="mb-1 mask-money form-control month-target ${quarter_belong} ${$(this).closest('td').attr('data-type')}targetvalue">
+                        <input value="0" data-return-type="number" class="is-valid mask-money form-control month-target-profit ${quarter_belong}-profit ${$(this).closest('td').attr('data-type')}targetvalue-profit">
+                    `)
                 }
             })
             revenuePlanTable.find('.qtarget-td').each(function () {
                 if ($(this).html() === '') {
-                    $(this).append(`<input readonly value="0" data-return-type="number" class="mask-money form-control quarter-target ${$(this).closest('td').attr('data-type')}targetvalue">`)
+                    $(this).append(`
+                        <input readonly value="0" data-return-type="number" class="mb-1 mask-money form-control quarter-target ${$(this).closest('td').attr('data-type')}targetvalue">
+                        <input readonly value="0" data-return-type="number" class="is-valid mask-money form-control quarter-target-profit ${$(this).closest('td').attr('data-type')}targetvalue-profit">
+                    `)
                 }
             })
+            revenuePlanTable.find('.ytarget-td').each(function () {
+                if ($(this).html() === '') {
+                    $(this).append(`
+                        <span class="mask-money text-primary yeartargetvalue" data-init-money="0"></span>
+                        <div class="my-3"></div>
+                        <span class="mask-money text-success yeartargetvalue-profit" data-init-money="0"></span>
+                    `)
+                }
+            })
+
             $.fn.initMaskMoney2()
         }
     }
@@ -669,6 +719,7 @@ function LoadDetailRevenuePlan(option) {
                     let group_month_profit_target = data?.['revenue_plan_group_data'][i]?.['group_month_profit_target']
                     let group_quarter_profit_target = data?.['revenue_plan_group_data'][i]?.['group_quarter_profit_target']
                     let group_year_profit_target = data?.['revenue_plan_group_data'][i]?.['group_year_profit_target']
+                    console.log(group_month_profit_target)
                     revenuePlanTable.find('tbody').append(
                         `<tr class="bg-overlay bg-secondary bg-opacity-10" data-row="group-sum-row" data-group-id="${group_selected.id}">
                             <td><span class="text-primary"><b>${group_selected.title}</b></span></td>

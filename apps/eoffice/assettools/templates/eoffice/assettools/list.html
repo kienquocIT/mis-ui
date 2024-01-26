@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Asset, Tools list' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/css/eoffice/assettools/list.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'AssetToolsProvideRequestCreate' %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Create' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="container-fluid">
+        <div class="row">
+            <ul class="nav nav-light nav-tabs nav-line">
+                <li class="nav-item">
+                    <a href="#employee_list" class="nav-link active" data-bs-toggle="tab">
+                        <span class="nav-link-text">{% trans 'List by User' %}</span>
+                    </a>
+                </li>
+                {% if data.is_view %}
+                <li class="nav-item">
+                    <a href="#list_by_product" class="nav-link" data-bs-toggle="tab">
+                        <span class="nav-link-text">
+                            {% trans 'List by Asset/Tools' %}
+                        </span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="employee_list">
+                    <div class="content_left is_active">
+                        <div class="emp-list-sp">{% trans 'show/hide user list' %}</div>
+                        <table class="table w-100 min-w-610p" id="employee_tbl">
+                            <thead>
+                            <tr>
+                                <th>{% trans 'Employee name' %}</th>
+                                <th>{% trans 'Code' %}</th>
+                                <th>{% trans 'Group name' %}</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="content_right">
+                        <table class="table w-100 min-w-1000p" id="asset_tbl">
+                            <thead>
+                            <tr>
+                                <th>{% trans 'Name' %}</th>
+                                <th>{% trans 'Code' %}</th>
+                                <th>{% trans 'UoM' %}</th>
+                                <th>{% trans 'Quantity' %}</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                {% if data.is_view %}
+                <div class="tab-pane fade" id="list_by_product">
+                    <table id="product_list_tb" class="table nowrap w-100 mb-5 min-w-1784p">
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Name' %}</th>
+                            <th>{% trans 'Code' %}</th>
+                            <th>{% trans 'UoM' %}</th>
+                            <th>{% trans 'Total' %}</th>
+                            <th>{% trans 'Using Total' %}</th>
+                            <th>{% trans 'Available' %}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory" aria-label="url-factory"
+           data-employee-list="{% url 'EmployeeListAPI' %}"
+           data-asset-list="{% url 'AssetToolsListAPI' %}"
+           data-product-asset-list="{% url 'ProductWarehouseAssetList' %}"
+    >
+    <input type="text" id="trans-factory" aria-label="trans-factory"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/eoffice/assettools/asset-list.js' %}"></script>
+{% endblock %}

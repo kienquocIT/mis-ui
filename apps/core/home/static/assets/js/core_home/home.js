@@ -208,7 +208,7 @@ function loadTabTodo() {
                     data: 'app_code',
                     render: (data, type, row) => {
                         let temp = data.toLowerCase().split('.')
-                        let txtTran = appList?.[temp[0]]?.[temp[1]] || data
+                        let txtTran = appList?.[temp[0]]?.[temp[1]]?.['title'] || data
                         return data ? `<span class="badge badge-light">${txtTran}</span>` : '';
                     }
                 }, {
@@ -252,6 +252,7 @@ function loadTabTodo() {
 function loadTabFollowing() {
     let tbl = $('#tbl_following_data');
     let dataLoaded = tbl.attr('data-loaded');
+    let appList = JSON.parse($('#app_list').text())
     if (!dataLoaded) {
         tbl.attr('data-loaded', true);
         WindowControl.showLoadingWaitResponse(tbl);
@@ -288,7 +289,9 @@ function loadTabFollowing() {
                     data: 'app_code',
                     width: "10%",
                     render: (data, type, row) => {
-                        return data ? `<span class="badge badge-light">${data ? data : ''}</span>` : '';
+                        let temp = data.toLowerCase().split('.')
+                        let txtTran = appList?.[temp[0]]?.[temp[1]]?.['title'] || data
+                        return data ? `<span class="badge badge-light">${txtTran ? txtTran : ''}</span>` : '';
                     }
                 },
                 {

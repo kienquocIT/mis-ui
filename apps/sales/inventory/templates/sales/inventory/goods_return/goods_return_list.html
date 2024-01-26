@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Goods Return List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'GoodsReturnCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Inventory Adjustment' %}"
+       id="create_inventory_adjustment_button"
+       data-bs-original-title="Add Inventory Adjustment">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div>
+        <table id="goods_return_list" class="table nowrap w-100 mb-5" data-method="GET"
+               data-url="{% url 'InventoryAdjustmentListAPI' %}"
+               data-url-detail="{% url 'InventoryAdjustmentDetail' '0' %}"
+        >
+            <thead>
+            <th></th>
+            <th>{% trans "Code" %}</th>
+            <th>{% trans "Customer" %}</th>
+            <th>{% trans "Sale person" %}</th>
+            <th>{% trans "Sale order" %}</th>
+            <th>{% trans "Delivery" %}</th>
+            <th>{% trans "Created date" %}</th>
+            <th>{% trans "Status" %}</th>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/inventory/js/goods_return/goods_return_list.js' %}"></script>
+{% endblock %}

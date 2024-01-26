@@ -308,7 +308,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 
     REVENUE_PLAN_LIST_PAGE = BreadcrumbChildren(_('Revenue plan list'), 'RevenuePlanList')
-    REVENUE_PLAN_CREATE_PAGE = BreadcrumbChildren(_('Revenue plan create'), 'RevenuePlanDetail')
+    REVENUE_PLAN_CREATE_PAGE = BreadcrumbChildren(_('Revenue plan create'), 'RevenuePlanCreate')
     REVENUE_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     REVENUE_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
@@ -319,6 +319,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     REPORT_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline report'), 'ReportPipelineList')
     REPORT_CASHFLOW_LIST_PAGE = BreadcrumbChildren(_('Cashflow report'), 'ReportCashflowList')
 
+    GOODS_RETURN_LIST_PAGE = BreadcrumbChildren(_('Goods return list'), 'GoodsReturnList')
+    GOODS_RETURN_CREATE_PAGE = BreadcrumbChildren(_('Goods return create'), 'GoodsReturnCreate')
+    GOODS_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -824,3 +829,8 @@ class BreadcrumbView:
     REPORT_CASHFLOW_LIST_PAGE = [
         BreadcrumbItem.REPORT_CASHFLOW_LIST_PAGE
     ]
+
+    GOODS_RETURN_LIST_PAGE = [BreadcrumbItem.GOODS_RETURN_LIST_PAGE]
+    GOODS_RETURN_CREATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    GOODS_RETURN_DETAIL_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

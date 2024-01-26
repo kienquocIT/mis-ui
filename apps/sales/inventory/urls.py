@@ -6,7 +6,9 @@ from apps.sales.inventory.views import (
     InventoryAdjustmentList, InventoryAdjustmentCreate, InventoryAdjustmentListAPI,
     InventoryAdjustmentListAPI, InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail,
     InventoryAdjustmentOtherListAPI, GoodsIssueList, GoodsIssueCreate, GoodsIssueDetail, GoodsIssueListAPI,
-    GoodsIssueDetailAPI, InventoryAdjustmentProductListAPI, GoodsIssueUpdate
+    GoodsIssueDetailAPI, InventoryAdjustmentProductListAPI, GoodsIssueUpdate,
+    GoodsReturnList, GoodsReturnCreate, GoodsReturnDetail, GoodsReturnUpdate, SaleOrderListAPIForGoodsReturn,
+    DeliveryListForGoodsReturnAPI, DeliveryProductsForGoodsReturnAPI
 )
 from apps.sales.inventory.views.goods_transfer import GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate, \
     GoodsTransferListAPI, GoodsTransferDetailAPI
@@ -57,4 +59,17 @@ urlpatterns += [
     path('goods-issue/list/api', GoodsIssueListAPI.as_view(), name='GoodsIssueListAPI'),
     path('goods-issue/detail/api/<str:pk>', GoodsIssueDetailAPI.as_view(), name='GoodsIssueDetailAPI'),
     path('goods-issue/update/<str:pk>', GoodsIssueUpdate.as_view(), name='GoodsIssueUpdate'),
+]
+
+# goods return
+urlpatterns += [
+    path('goods-return/list', GoodsReturnList.as_view(), name='GoodsReturnList'),
+    path('goods-return/create', GoodsReturnCreate.as_view(), name='GoodsReturnCreate'),
+    path('goods-return/detail/<str:pk>', GoodsReturnDetail.as_view(), name='GoodsReturnDetail'),
+    # path('goods-return/list/api', GoodsReturnListAPI.as_view(), name='GoodsReturnListAPI'),
+    # path('goods-return/detail/api/<str:pk>', GoodsReturnDetailAPI.as_view(), name='GoodsReturnDetailAPI'),
+    path('goods-return/update/<str:pk>', GoodsReturnUpdate.as_view(), name='GoodsReturnUpdate'),
+    path('sale-orders-for-goods-return/list', SaleOrderListAPIForGoodsReturn.as_view(), name='SaleOrderListAPIForGoodsReturn'),
+    path('deliveries/api', DeliveryListForGoodsReturnAPI.as_view(), name='DeliveryListForGoodsReturnAPI'),
+    path('delivery-products/api/<str:pk>', DeliveryProductsForGoodsReturnAPI.as_view(), name='DeliveryProductsForGoodsReturnAPI'),
 ]

@@ -36,7 +36,7 @@ class ReportRevenueList(View):
         auth_require=True,
         template='sales/report/report_revenue.html',
         menu_active='menu_report_revenue_list',
-        breadcrumb='',
+        breadcrumb='REPORT_REVENUE_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -63,7 +63,7 @@ class ReportProductList(View):
         auth_require=True,
         template='sales/report/report_product.html',
         menu_active='menu_report_product_list',
-        breadcrumb='',
+        breadcrumb='REPORT_PRODUCT_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -90,7 +90,7 @@ class ReportCustomerList(View):
         auth_require=True,
         template='sales/report/report_customer.html',
         menu_active='menu_report_customer_list',
-        breadcrumb='',
+        breadcrumb='REPORT_CUSTOMER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -130,7 +130,7 @@ class ReportPipelineList(View):
         auth_require=True,
         template='sales/report/report_pipeline.html',
         menu_active='menu_report_pipeline_list',
-        breadcrumb='',
+        breadcrumb='REPORT_PIPELINE_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {'filter_quarter': FILTER_QUARTER, 'filter_month': FILTER_MONTH}, status.HTTP_200_OK
@@ -157,7 +157,7 @@ class ReportCashflowList(View):
         auth_require=True,
         template='sales/report/report_cashflow.html',
         menu_active='menu_report_cashflow_list',
-        breadcrumb='',
+        breadcrumb='REPORT_CASHFLOW_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {'filter_quarter': FILTER_QUARTER, 'filter_month': FILTER_MONTH}, status.HTTP_200_OK

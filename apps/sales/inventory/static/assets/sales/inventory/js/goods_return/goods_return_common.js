@@ -92,31 +92,19 @@ $(document).on("change", '.selected-delivery', function () {
 })
 
 $(document).on("change", '.selected-product', function () {
+    tableProductLOT.closest('div').prop('hidden', $(this).attr('data-type') === '1')
+    tableProductSN.closest('div').prop('hidden', $(this).attr('data-type') === '2')
     if ($(this).attr('data-type') === '1') {
-        let product_id_selected = $(this).attr('data-id')
-        tableProductSN.closest('div').prop('hidden', true)
-        tableProductLOT.closest('div').prop('hidden', false)
-        loadTableSelectProductSerial(
-            DELIVERY_PRODUCT_NOW.filter(function (item) {
-                console.log(item.product.id, product_id_selected)
-                return item.product.id === product_id_selected
-            })
-        )
+        alert('LOT has not available now')
     }
     else if ($(this).attr('data-type') === '2') {
         let product_id_selected = $(this).attr('data-id')
-        tableProductSN.closest('div').prop('hidden', false)
-        tableProductLOT.closest('div').prop('hidden', true)
         loadTableSelectProductSerial(
             DELIVERY_PRODUCT_NOW.filter(function (item) {
                 console.log(item.product.id, product_id_selected)
                 return item.product.id === product_id_selected
             })
         )
-    }
-    else {
-        tableProductSN.closest('div').prop('hidden', true)
-        tableProductLOT.closest('div').prop('hidden', true)
     }
 })
 

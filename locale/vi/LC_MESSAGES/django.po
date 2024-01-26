@@ -2119,7 +2119,7 @@ msgstr "Chuyển khoản"
 
 #
 msgid "More"
-msgstr "Thêm"
+msgstr "Xem thêm"
 
 #
 msgid "Beneficiary"
@@ -5795,23 +5795,23 @@ msgstr "Trạng thái tạm ứng"
 
 #
 msgid "Asset, Tools"
-msgstr "Công cụ, Dụng cụ"
+msgstr "Tài sản, Công cụ"
 
 #
 msgid "Asset, Tools config"
-msgstr "Cấu hình Công cụ, Dụng cụ"
+msgstr "Cấu hình tài sản, công cụ"
 
 #
 msgid "Choose product type is referred as an asset or tool"
-msgstr "Chọn loại sản phẩm là tài sản công cụ, dụng cụ"
+msgstr "Chọn loại sản phẩm là tài sản, công cụ"
 
 #
 msgid "Which warehouse is used for an asset or tool"
-msgstr "Chọn những kho chứa công cụ, dụng cụ"
+msgstr "Chọn những kho chứa tài sản, công cụ"
 
 #
 msgid "Select employee who can view all tools list"
-msgstr "Chọn những nhân viên có thể xem toàn bộ danh sách công cụ, dụng cụ"
+msgstr "Chọn những nhân viên có thể xem toàn bộ danh sách tài sản, công cụ"
 
 #
 msgid "To time need larger than From time"
@@ -6124,3 +6124,27 @@ msgstr "Giá trị sau thuế"
 #
 msgid "Product category"
 msgstr "Danh mục sản phẩm"
+
+#
+msgid "Asset, Tools list"
+msgstr "Danh sách tài sản, công cụ"
+
+#
+msgid "List by User"
+msgstr "Danh sách theo người dùng"
+
+#
+msgid "List by Asset/Tools"
+msgstr "Danh sách theo tài sản, công cụ"
+
+#
+msgid "show/hide user list"
+msgstr "ẩn/hiện danh sách người dùng"
+
+#
+msgid "Using Total"
+msgstr "Đang sử dụng"
+
+#
+msgid "Date time range is required"
+msgstr "Số ngày công tác không chính xác"

@@ -209,7 +209,7 @@ $(document).ready(function () {
                 'method': 'GET',
                 'data': {'employee': Employee_ID}
             }).then((resp) => {
-                    let data = $.fn.switcherResp(resp).leave_available_history;
+                    let data = $.fn.switcherResp(resp)?.['leave_available_history'];
                     EmployeeHandle.LoadHistoryTable(data)
                 },
                 (err) => $.fn.notifyB({description: err.data.errors}, 'failure')

@@ -288,6 +288,10 @@ $(document).ready(function () {
         }
         if (method === 'post')
             formData.date_created = $x.fn.reformatData(formData.date_created, 'DD/MM/YYYY', 'YYYY-MM-DD')
+        if (parseInt(formData.total_day) <= 0){
+            $.fn.notifyB({description: $('#trans-factory').attr('data-error-time')}, 'failure');
+            return false
+        }
         if (formData.employee_on_trip) formData.employee_on_trip = OriginalList
         if (formData.attachment) formData.attachment = $x.cls.file.get_val(formData.attachment, [])
         formData.pretax_amount = parseInt(formData.pretax_amount)

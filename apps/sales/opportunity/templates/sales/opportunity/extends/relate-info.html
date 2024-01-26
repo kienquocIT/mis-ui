@@ -262,22 +262,40 @@
                                     <td colspan="3"></td>
                                     <td colspan="4">
                                         <div class="row mt-3 mb-2">
-                                            <div class="col-6"><label for="input-product-pretax-amount" class="form-check-label">{% trans 'Pretax Amount' %}</label></div>
-                                            <div class="col-6 readonly">
+                                            <div class="col-7"><label for="input-product-pretax-amount" class="form-check-label">{% trans 'Pretax Amount' %}</label></div>
+                                            <div class="col-5 readonly">
                                                 <input id="input-product-pretax-amount" type="text" class="form-control mask-money" data-return-type="number" readonly>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-6"><label for="input-product-taxes" class="form-check-label">{% trans 'Taxes' %}</label></div>
-                                            <div class="col-6 readonly">
+                                            <div class="col-7"><label for="input-product-taxes" class="form-check-label">{% trans 'Taxes' %}</label></div>
+                                            <div class="col-5 readonly">
                                                 <input id="input-product-taxes" type="text" class="form-control mask-money" data-return-type="number" readonly>
                                             </div>
                                         </div>
                                         <div class="dropdown-divider"></div>
                                         <div class="row mb-2">
-                                            <div class="col-6"><label for="input-product-total" class="form-check-label">{% trans 'Total' %}</label></div>
-                                            <div class="col-6 readonly">
+                                            <div class="col-7"><label for="input-product-total" class="form-check-label">{% trans 'Total' %}</label></div>
+                                            <div class="col-5 readonly">
                                                 <input id="input-product-total" type="text" class="form-control mask-money" data-return-type="number" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-7">
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <label for="estimated-gross-profit-value">{% trans 'Estimated gross profit' %}</label>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <span class="input-affix-wrapper">
+                                                            <input id="estimated-gross-profit-percent" type="number" min="0" max="100" class="form-control">
+                                                            <span class="input-suffix"><i class="fas fa-percent"></i></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5 readonly">
+                                                <input id="estimated-gross-profit-value" type="text" class="form-control mask-money" data-return-type="number" readonly>
                                             </div>
                                         </div>
                                     </td>

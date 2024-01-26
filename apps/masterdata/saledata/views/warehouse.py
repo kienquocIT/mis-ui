@@ -6,7 +6,7 @@ from apps.shared import mask_view, ApiURL, ServerAPI
 __all__ = [
     'WareHouseList', 'WareHouseListAPI', 'WareHouseDetailAPI',
     'WarehouseProductAPI', 'WareHouseListForInventoryAdjustmentAPI',
-    'WareHouseCreate', 'WareHouseDetail', 'WareHouseUpdate'
+    'WareHouseCreate', 'WareHouseDetail', 'WareHouseUpdate', 'ProductWarehouseAssetList'
 ]
 
 
@@ -156,3 +156,13 @@ class WarehouseSerialListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_SERIAL_LIST).get(data)
         return resp.auto_return(key_success='warehouse_serial_list')
+
+
+class ProductWarehouseAssetList(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_ASSET_LIST).get({'is_asset': True})
+        return resp.auto_return(key_success='warehouse_product_asset_list')

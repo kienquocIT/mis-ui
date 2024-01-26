@@ -179,7 +179,12 @@
                                 </div>
                             </h6>
                             <div data-simplebar class="dropdown-body p-2" style="height: 38rem;">
-                                <div id="idxNotifyShowData" data-url-done-notify="{% url 'ResolveNotifyItemAPI' pk='__pk__' %}"></div>
+                                <div id="idxNotifyShowData"
+                                     data-url-done-notify="{% url 'ResolveNotifyItemAPI' pk='__pk__' %}"
+                                     data-msg-reply="{% trans 'Reply' %}"
+                                     data-msg-seen="{% trans 'Mask seen' %}"
+                                     data-msg-goto="{% trans 'Goto' %}"
+                                ></div>
                             </div>
                             <div class="dropdown-footer hidden"><a href="#"><u>{% trans 'View all notifications' %}</u></a>
                             </div>

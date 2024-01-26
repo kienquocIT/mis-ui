@@ -487,15 +487,15 @@ class NotifyController {
                             <span class="notify-flag-unseen badge badge-warning badge-indicator badge-indicator-xl position-top-start-overflow-1"></span>
                         `;
                         let btnSeenItem = item?.['is_done'] === true ? `` : `
-                            <button class="btn btn-xs btn-primary btn-seen-notify"><i class="fa-brands fa-readme"></i> Seen</button>
+                            <button class="btn btn-xs btn-primary text-no-capital btn-seen-notify"><i class="fa-brands fa-readme"></i> ${dataArea.attr('data-msg-seen')}</button>
                         `;
                         let btn_reply_mentions = !item?.['comment_mentions_id'] ? ``: `
                             <button 
-                                class="btn btn-xs btn-primary btn-notify-reply-comment" 
+                                class="btn btn-xs btn-primary text-no-capital btn-notify-reply-comment" 
                                 type="button"
-                            ><i class="fa-solid fa-reply"></i> Reply</button>
+                            ><i class="fa-solid fa-reply"></i> ${dataArea.attr('data-msg-reply')}</button>
                         `;
-                        let btn_goto = has_active_app(item?.['doc_app']) === true ? `<a href="${urlData}" class="btn btn-xs btn-primary" type="button"><i class="fa-solid fa-right-to-bracket"></i> Goto </a>` : ``;
+                        let btn_goto = has_active_app(item?.['doc_app']) === true ? `<a href="${urlData}" class="btn btn-xs btn-primary text-no-capital" type="button"><i class="fa-solid fa-right-to-bracket"></i> ${dataArea.attr('data-msg-goto')} </a>` : ``;
                         let tmp = `
                             <div
                                 class="dropdown-item mb-1 bell-menu-item"

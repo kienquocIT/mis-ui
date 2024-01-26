@@ -135,6 +135,9 @@ div.inline {
     background-color: #f1fbff !important;
 }
 
+.text-no-capital {
+    text-transform: initial;
+}
 
 /*data table css */
 

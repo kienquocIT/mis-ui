@@ -181,6 +181,14 @@ msgid "Full"
 msgstr "Xem tất cả"
 
 #
+msgid "Mask seen"
+msgstr "Đánh dấu đã đọc"
+
+#
+msgid "Goto"
+msgstr "Đi đến"
+
+#
 msgid "Hide/Show editor"
 msgstr "Hiển thị/ẩn trình chỉnh sửa"
 

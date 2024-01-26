@@ -78,6 +78,10 @@ $(document).ready(function () {
             let paramString = {}
 
             console.log(opportunity_detail_data)
+
+            $('#estimated-gross-profit-percent').val(opportunity_detail_data?.['estimated_gross_profit_percent'])
+            $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
+
             async function loadDetail(opportunity_detail) {
                 $x.fn.renderCodeBreadcrumb(opportunity_detail);
 

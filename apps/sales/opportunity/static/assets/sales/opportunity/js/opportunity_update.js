@@ -78,6 +78,10 @@ $(document).ready(function () {
             let paramString = {}
 
             console.log(opportunity_detail_data)
+
+            $('#estimated-gross-profit-percent').val(opportunity_detail_data?.['estimated_gross_profit_percent'])
+            $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
+
             async function loadDetail(opportunity_detail) {
                 $x.fn.renderCodeBreadcrumb(opportunity_detail);
 
@@ -1584,7 +1588,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.redirectUrl(frm.dataUrlRedirect.format_url_with_uuid($.fn.getPkDetail()), 1000);
                     }
                 },
                 (errs) => {

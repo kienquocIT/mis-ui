@@ -312,6 +312,14 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     REVENUE_PLAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     REVENUE_PLAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    # Report
+    REPORT_REVENUE_LIST_PAGE = BreadcrumbChildren(_('Revenue report'), 'ReportRevenueList')
+    REPORT_PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product report'), 'ReportProductList')
+    REPORT_CUSTOMER_LIST_PAGE = BreadcrumbChildren(_('Customer report'), 'ReportCustomerList')
+    REPORT_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline report'), 'ReportPipelineList')
+    REPORT_CASHFLOW_LIST_PAGE = BreadcrumbChildren(_('Cashflow report'), 'ReportCashflowList')
+
+
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -799,3 +807,20 @@ class BreadcrumbView:
     REVENUE_PLAN_CREATE_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     REVENUE_PLAN_DETAIL_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     REVENUE_PLAN_UPDATE_PAGE = REVENUE_PLAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Report
+    REPORT_REVENUE_LIST_PAGE = [
+        BreadcrumbItem.REPORT_REVENUE_LIST_PAGE
+    ]
+    REPORT_PRODUCT_LIST_PAGE = [
+        BreadcrumbItem.REPORT_PRODUCT_LIST_PAGE
+    ]
+    REPORT_CUSTOMER_LIST_PAGE = [
+        BreadcrumbItem.REPORT_CUSTOMER_LIST_PAGE
+    ]
+    REPORT_PIPELINE_LIST_PAGE = [
+        BreadcrumbItem.REPORT_PIPELINE_LIST_PAGE
+    ]
+    REPORT_CASHFLOW_LIST_PAGE = [
+        BreadcrumbItem.REPORT_CASHFLOW_LIST_PAGE
+    ]

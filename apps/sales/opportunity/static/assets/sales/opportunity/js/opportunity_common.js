@@ -232,6 +232,8 @@ class OpportunityLoadDetail {
         $('#input-product-pretax-amount').attr('value', total_pretax);
         $('#input-product-taxes').attr('value', tax_value);
         $('#input-product-total').attr('value', total_pretax + tax_value);
+        let value = parseFloat($('#input-product-total').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
+        $('#estimated-gross-profit-value').attr('value', value)
         $.fn.initMaskMoney2();
     }
 
@@ -732,6 +734,8 @@ class OpportunityLoadDetail {
         data_form['total_product'] = $('#input-product-total').valCurrency();
         data_form['total_product_pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
         data_form['total_product_tax'] = $('#input-product-taxes').valCurrency();
+        data_form['estimated_gross_profit_percent'] = $('#estimated-gross-profit-percent').val();
+        data_form['estimated_gross_profit_value'] = $('#estimated-gross-profit-value').valCurrency();
 
         if (OpportunityLoadDetail.productTableEle.hasClass('tag-change')) {
             data_form['opportunity_product_datas'] = list_product_data;
@@ -1633,3 +1637,9 @@ function sortStage(list_stage) {
 
     return list_result
 }
+
+$('#estimated-gross-profit-percent').on('change', function () {
+    let value = parseFloat($('#input-product-total').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
+    $('#estimated-gross-profit-value').attr('value', value)
+    $.fn.initMaskMoney2()
+})

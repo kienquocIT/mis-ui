@@ -13,51 +13,57 @@ $(function () {
         let $table = $('#table_report_pipeline_list');
         let dataQuarter = JSON.parse($('#filter_quarter').text());
         let dataMonth = JSON.parse($('#filter_month').text());
+        let eleTrans = $('#app-trans-factory');
 
         function loadDbl(data) {
             $table.DataTableDefault({
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                columns: [  // 150,200,150,250,150,100,150,150,150,150,100,100,100,100 (2000p)
+                pageLength: 10,
+                columns: [  // 100,200,200,300,150,100,125,125,250,250,250,100,100,100,100 (2500p)
                     {
                         targets: 0,
-                        width: '7.5%',
+                        width: '4%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
+                            if (row?.['type_group_by'] === 0) {
+                                return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
+                            } else {
+                                return `<div class="row"><span class="badge badge-primary">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span></div>`;
+                            }
                         }
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '8%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</p>`;
+                            return `<div class="row"><span class="badge badge-primary  badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '7.5%',
+                        width: '8%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '12.5%',
+                        width: '12%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '7.5%',
+                        width: '6%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if ([0, 1, 2].includes(row?.['group_by'])) {
                                 return `<p></p>`;
@@ -68,7 +74,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '7.5%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['open_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['open_date'] ? row?.['opportunity']?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -79,7 +85,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '7.5%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['close_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['close_date'] ? row?.['opportunity']?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -90,42 +96,49 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '7.5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
                         }
                     },
                     {
                         targets: 9,
-                        width: '7.5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span>`;
                         }
                     },
                     {
                         targets: 10,
-                        width: '5%',
+                        width: '10%',
+                        render: (data, type, row) => {
+                            return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
+                        }
+                    },
+                    {
+                        targets: 11,
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
                         }
                     },
                     {
-                        targets: 11,
-                        width: '5%',
+                        targets: 12,
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
                         }
                     },
                     {
-                        targets: 12,
-                        width: '5%',
+                        targets: 13,
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
                         }
                     },
                     {
-                        targets: 13,
-                        width: '5%',
+                        targets: 14,
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
                         }
@@ -158,6 +171,7 @@ $(function () {
             // total
             let totalValue = 0;
             let totalForecastValue = 0;
+            let totalGrossProfit = 0;
             let totalWinRate = 0;
             let totalCall = 0;
             let totalEmail = 0;
@@ -169,6 +183,9 @@ $(function () {
                 }
                 if (data?.['opportunity']?.['forecast_value']) {
                     totalForecastValue += data?.['opportunity']?.['forecast_value'];
+                }
+                if (data?.['opportunity']?.['gross_profit']) {
+                    totalGrossProfit += data?.['opportunity']?.['gross_profit'];
                 }
                 if (data?.['opportunity']?.['win_rate']) {
                     totalWinRate += data?.['opportunity']?.['win_rate'];
@@ -193,12 +210,15 @@ $(function () {
                     }
                     // data group total
                     if (!dataGroupTotal.hasOwnProperty(data?.['group']?.['id'])) {
-                        dataGroupTotal[data?.['group']?.['id']] = {'value': 0, 'forecast_value': 0}
+                        dataGroupTotal[data?.['group']?.['id']] = {'value': 0, 'forecast_value': 0, 'gross_profit': 0}
                         if (data?.['opportunity']?.['value']) {
                             dataGroupTotal[data?.['group']?.['id']]['value'] = data?.['opportunity']?.['value'];
                         }
                         if (data?.['opportunity']?.['forecast_value']) {
-                            dataGroupTotal[data?.['group']?.['id']]['forecast_value'] = data?.['opportunity']?.['value'];
+                            dataGroupTotal[data?.['group']?.['id']]['forecast_value'] = data?.['opportunity']?.['forecast_value'];
+                        }
+                        if (data?.['opportunity']?.['gross_profit']) {
+                            dataGroupTotal[data?.['group']?.['id']]['gross_profit'] = data?.['opportunity']?.['gross_profit'];
                         }
                     } else {
                         if (data?.['opportunity']?.['value']) {
@@ -206,6 +226,9 @@ $(function () {
                         }
                         if (data?.['opportunity']?.['forecast_value']) {
                             dataGroupTotal[data?.['group']?.['id']]['forecast_value'] += data?.['opportunity']?.['forecast_value'];
+                        }
+                        if (data?.['opportunity']?.['gross_profit']) {
+                            dataGroupTotal[data?.['group']?.['id']]['gross_profit'] += data?.['opportunity']?.['gross_profit'];
                         }
                     }
                     // data group win rate
@@ -247,12 +270,15 @@ $(function () {
                     }
                     // data employee total
                     if (!dataEmployeeTotal.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                        dataEmployeeTotal[data?.['employee_inherit']?.['id']] = {'value': 0, 'forecast_value': 0}
+                        dataEmployeeTotal[data?.['employee_inherit']?.['id']] = {'value': 0, 'forecast_value': 0, 'gross_profit': 0}
                         if (data?.['opportunity']?.['value']) {
                             dataEmployeeTotal[data?.['employee_inherit']?.['id']]['value'] = data?.['opportunity']?.['value'];
                         }
                         if (data?.['opportunity']?.['forecast_value']) {
-                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['forecast_value'] = data?.['opportunity']?.['value'];
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['forecast_value'] = data?.['opportunity']?.['forecast_value'];
+                        }
+                        if (data?.['opportunity']?.['gross_profit']) {
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['gross_profit'] = data?.['opportunity']?.['gross_profit'];
                         }
                     } else {
                         if (data?.['opportunity']?.['value']) {
@@ -260,6 +286,9 @@ $(function () {
                         }
                         if (data?.['opportunity']?.['forecast_value']) {
                             dataEmployeeTotal[data?.['employee_inherit']?.['id']]['forecast_value'] += data?.['opportunity']?.['forecast_value'];
+                        }
+                        if (data?.['opportunity']?.['gross_profit']) {
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['gross_profit'] += data?.['opportunity']?.['gross_profit'];
                         }
                     }
                     // data employee win rate
@@ -298,13 +327,15 @@ $(function () {
                 'opportunity': {
                     'value': totalValue,
                     'forecast_value': totalForecastValue,
+                    'gross_profit': totalGrossProfit,
                     'call': totalCall,
                     'email': totalEmail,
                     'meeting': totalMeeting,
                     'document': totalDocument,
                 },
-                'group': {'title': 'Total'},
+                'group': {'title': eleTrans.attr('data-total')},
                 'group_by': 0,
+                'type_group_by': 0,  // total
             }
             result.push(dataTotal);  // push data total
             for (let groupKey in dataGroup) {  // push data group
@@ -313,6 +344,7 @@ $(function () {
                     'opportunity': {
                         'value': dataGroupTotal?.[groupKey]?.['value'],
                         'forecast_value': dataGroupTotal?.[groupKey]?.['forecast_value'],
+                        'gross_profit': dataGroupTotal?.[groupKey]?.['gross_profit'],
                         // 'win_rate': dataGroupWinRate?.[groupKey],
                         'call': dataGroupCall?.[groupKey],
                         'email': dataGroupEmail?.[groupKey],
@@ -328,6 +360,7 @@ $(function () {
                             'opportunity': {
                                 'value': dataEmployeeTotal?.[employeeKey]?.['value'],
                                 'forecast_value': dataEmployeeTotal?.[employeeKey]?.['forecast_value'],
+                                'gross_profit': dataEmployeeTotal?.[employeeKey]?.['gross_profit'],
                                 // 'win_rate': dataEmployeeWinRate?.[employeeKey],
                                 'call': dataEmployeeCall?.[employeeKey],
                                 'email': dataEmployeeEmail?.[employeeKey],
@@ -351,8 +384,11 @@ $(function () {
             // custom total row
             if ($table.DataTable().data().count() !== 0) {
                 let firstRow = $table.DataTable().row(0).node();
-                $(firstRow).css('background-color', '#ebf5f5');
-                $(firstRow).css('color', '#007D88');
+                $(firstRow).css({
+                    'background-color': '#ebf5f5',
+                    'color': '#007D88',
+                    'font-weight': 'bold'
+                });
             }
 
             $.fn.initMaskMoney2();

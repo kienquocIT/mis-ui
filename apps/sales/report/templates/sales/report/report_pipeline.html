@@ -133,11 +133,12 @@
             <th>{% trans 'Opp code' %}</th>
             <th>{% trans 'Customer' %}</th>
             <th>{% trans 'Stage' %}</th>
-            <th>% {% trans 'Win' %}</th>
+            <th>%{% trans 'Win' %}</th>
             <th>{% trans 'Open Date' %}</th>
             <th>{% trans 'Close Date' %}</th>
             <th>{% trans 'Opp value' %}</th>
             <th>{% trans 'Forecast value' %}</th>
+            <th>{% trans 'Gross profit' %}</th>
             <th>{% trans 'Call' %}</th>
             <th>{% trans 'Email' %}</th>
             <th>{% trans 'Meeting' %}</th>
@@ -149,6 +150,12 @@
     </table>
 {% endblock %}
 {% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-total="{% trans 'Total' %}"
+    >
+
     <input
             type="text"
             id="data-fiscal-year"

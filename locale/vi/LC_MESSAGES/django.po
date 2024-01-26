@@ -2119,7 +2119,7 @@ msgstr "Chuyển khoản"
 
 #
 msgid "More"
-msgstr "Thêm"
+msgstr "Xem thêm"
 
 #
 msgid "Beneficiary"

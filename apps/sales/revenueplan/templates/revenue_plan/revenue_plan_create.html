@@ -4,12 +4,28 @@
 {% block title %}{% trans 'Revenue Plan Create' %}{% endblock %}
 {% block cssHeader %}
     <style>
-        .money-td {
+        td, th {
             min-width: 230px;
         }
-        .is-valid, .is-valid:read-only {
-            border-color: #28a745;
-            box-shadow: 0 0 0 0.2rem rgba(35, 150, 75, 0.25);
+        .month-target, .month-target:read-only, .quarter-target, .quarter-target:read-only {
+            color: rgba(0, 125, 136, var(--bs-text-opacity)) !important;
+        }
+
+        .fixed_header tbody {
+            display: block;
+            width: 100%;
+            overflow: auto;
+            max-height: 400px;
+        }
+        .fixed_header thead {
+            display: block;
+            width: 100%;
+            overflow: auto;
+        }
+        .fixed_header tfoot {
+            display: block;
+            width: 100%;
+            overflow: auto;
         }
     </style>
 {% endblock %}
@@ -132,30 +148,31 @@
         </div>
         <div class="row mt-5 mb-10">
             <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
-                <table class="table nowrap w-100" id="revenue-plan-table"
+                <table class="table nowrap w-100 fixed_header" id="revenue-plan-table"
                        data-group-url="{% url 'GroupDetailAPI' '0' %}"
                 >
                     <thead>
                         <tr>
-                            <td><b>{% trans 'Group' %}</b></td>
-                            <td><b>{% trans 'Employee' %}</b></td>
-                            <td class="money-td" id="m1th"></td>
-                            <td class="money-td" id="m2th"></td>
-                            <td class="money-td" id="m3th"></td>
-                            <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 1</b></span></td>
-                            <td class="money-td" id="m4th"></td>
-                            <td class="money-td" id="m5th"></td>
-                            <td class="money-td" id="m6th"></td>
-                            <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 2</b></span></td>
-                            <td class="money-td" id="m7th"></td>
-                            <td class="money-td" id="m8th"></td>
-                            <td class="money-td" id="m9th"></td>
-                            <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 3</b></span></td>
-                            <td class="money-td" id="m10th"></td>
-                            <td class="money-td" id="m11th"></td>
-                            <td class="money-td" id="m12th"></td>
-                            <td class="money-td"><span class="text-primary"><b>{% trans 'Quarter' %} 4</b></span></td>
-                            <td class="money-td"><span class="text-primary"><b>{% trans 'Year' %}</b></span></td>
+                            <th>{% trans 'Group' %}</th>
+                            <th>{% trans 'Employee' %}</th>
+                            <th>{% trans 'Target item' %}</th>
+                            <th id="m1th"></th>
+                            <th id="m2th"></th>
+                            <th id="m3th"></th>
+                            <th><span class="text-primary"><b>{% trans 'Quarter' %} 1</b></span></th>
+                            <th id="m4th"></th>
+                            <th id="m5th"></th>
+                            <th id="m6th"></th>
+                            <th><span class="text-primary"><b>{% trans 'Quarter' %} 2</b></span></th>
+                            <th id="m7th"></th>
+                            <th id="m8th"></th>
+                            <th id="m9th"></th>
+                            <th><span class="text-primary"><b>{% trans 'Quarter' %} 3</b></span></th>
+                            <th id="m10th"></th>
+                            <th id="m11th"></th>
+                            <th id="m12th"></th>
+                            <th><span class="text-primary"><b>{% trans 'Quarter' %} 4</b></span></th>
+                            <th><span class="text-primary"><b>{% trans 'Year' %}</b></span></th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -163,23 +180,96 @@
                         <tr class="bg-overlay bg-primary bg-opacity-10 company-row">
                             <td><span class="text-primary"><b>{% trans 'Company' %}</b></span></td>
                             <td></td>
-                            <td class="sum-m1"><span class="sum-company-m1 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m2"><span class="sum-company-m2 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m3"><span class="sum-company-m3 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-q1"><span class="sum-company-q1 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m4"><span class="sum-company-m4 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m5"><span class="sum-company-m5 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m6"><span class="sum-company-m6 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-q2"><span class="sum-company-q2 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m7"><span class="sum-company-m7 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m8"><span class="sum-company-m8 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m9"><span class="sum-company-m9 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-q3"><span class="sum-company-q3 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m10"><span class="sum-company-m10 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m11"><span class="sum-company-m11 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-m12"><span class="sum-company-m12 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-q4"><span class="sum-company-q4 mask-money text-primary" data-init-money="0"></span></td>
-                            <td class="sum-year"><span class="sum-company-year mask-money text-primary" data-init-money="0"></span></td>
+                            <td>
+                                <label class="col-form-label text-primary">{% trans 'Revenue' %}</label>
+                                <div class="my-1"></div>
+                                <label class="profit-type-span col-form-label text-secondary">{% trans 'Gross profit' %}</label>
+                            </td>
+                            <td class="sum-m1">
+                                <span class="sum-company-m1 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m1-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m2">
+                                <span class="sum-company-m2 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m2-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m3">
+                                <span class="sum-company-m3 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m3-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-q1">
+                                <span class="sum-company-q1 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-q1-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m4">
+                                <span class="sum-company-m4 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m4-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m5">
+                                <span class="sum-company-m5 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m5-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m6">
+                                <span class="sum-company-m6 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m6-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-q2">
+                                <span class="sum-company-q2 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-q2-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m7">
+                                <span class="sum-company-m7 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m7-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m8">
+                                <span class="sum-company-m8 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m8-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m9">
+                                <span class="sum-company-m9 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m9-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-q3">
+                                <span class="sum-company-q3 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-q3-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m10">
+                                <span class="sum-company-m10 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m10-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m11">
+                                <span class="sum-company-m11 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m11-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-m12">
+                                <span class="sum-company-m12 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-m12-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-q4">
+                                <span class="sum-company-q4 mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-q4-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
+                            <td class="sum-year">
+                                <span class="sum-company-year mask-money text-primary" data-init-money="0"></span>
+                                <div class="my-3"></div>
+                                <span class="sum-company-year-profit mask-money text-secondary" data-init-money="0"></span>
+                            </td>
                         </tr>
                     </tfoot>
                 </table>

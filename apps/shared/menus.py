@@ -392,6 +392,12 @@ class MenusPurchase:
                 view_name='GoodsIssueList',
                 icon='<i class="fas fa-file-export"></i>',
             ),
+            MenuCommon(
+                name='Goods return',
+                code='menu_goods_return',
+                view_name='GoodsReturnList',
+                icon='<i class="far fa-arrow-alt-circle-left"></i>',
+            ),
         ],
     )
 

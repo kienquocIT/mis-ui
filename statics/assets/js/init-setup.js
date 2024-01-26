@@ -5311,14 +5311,12 @@ class CommentControl {
                     commentRepliesEle.fadeToggle({
                         duration: 'fast',
                         start: function (){
-                            if (!!$(this).attr('data-url') === false) commentRepliesEle.empty();
+                            if (!!$(btnShowReplies).attr('data-url') === false) commentRepliesEle.empty();
                         },
                         always: function (){
                             if (commentRepliesEle.is(':visible') === true) loadData(btnShowReplies);
                         },
                     });
-
-
                 }
             })
 
@@ -5374,6 +5372,7 @@ class CommentControl {
                 }
             })
         }
+
         ListeningEventController.listenImageLoad(
             eleItem$.find('img'),
             {'imgReplace': globeAvatarNotFoundImg},
@@ -5591,6 +5590,7 @@ class CommentControl {
         }
 
         let tinymceEditor = null;
+
         textarea.tinymce( {
             menubar: false,
             height: 120,
@@ -5743,6 +5743,7 @@ class CommentControl {
             link_assume_external_targets: true,
             link_default_protocol: 'https',
         });
+
         frmInsideAdd.on('submit', function (event){
             $(this).find('button[type=submit]').prop('disabled', true);
             event.preventDefault();
@@ -6014,16 +6015,18 @@ class CommentControl {
                     if (data && data.hasOwnProperty('room_data')){
                         let room_data = data.room_data;
                         if (room_data){
+                            let siblingCount = room_data?.['siblings_count'] || 0;
                             // parent data
                             let parentData = room_data?.['parent'] || {};
                             if (parentData && typeof parentData === 'object' && Object.keys(parentData).length > 0){
                                 let eleParent = clsThis.render_comment_item(parentData, {
                                     'get_html_opts': {
-                                        'btn_full_enabled': true,
+                                        'btn_full_enabled': siblingCount && siblingCount > 1 ? true : false,
                                     },
                                 });
                                 // child data
                                 if (eleParent.length > 0){
+                                    let childCount = room_data?.['children_count'] || 0;
                                     let childData = room_data?.['child'] || {};
                                     let eleRepliesOfChild = eleParent.find('.comment-replies');
                                     if (childData && typeof childData === 'object' && Object.keys(childData).length > 0 && eleRepliesOfChild.length > 0){
@@ -6033,7 +6036,7 @@ class CommentControl {
                                                 'action_enabled': false,
                                                 'replies_enabled': false,
                                                 'add_comment_enabled': false,
-                                                'btn_full_enabled': true,
+                                                'btn_full_enabled': childCount && childCount > 1 ? true : false,
                                             },
                                         });
                                         eleRepliesOfChild.fadeIn('fast');

@@ -1418,8 +1418,6 @@ $(document).ready(function () {
                             render: (data, type, row) => {
                                 if (row?.['log_type'] === 0) {
                                     if (row?.['app_code']) {
-                                        // return `<span class="badge badge-soft-success">${activityMapApp[row?.['app_code']]}</span>`;
-
                                         let status = ``;
                                         if (row?.['app_code'] === 'quotation.quotation') {
                                             if (opportunity_detail_data?.['quotation']?.['id'] === row?.['doc_id']) {
@@ -1449,10 +1447,14 @@ $(document).ready(function () {
                             render: (data, type, row) => {
                                 let link = '';
                                 let title = '';
-                                if (row?.['app_code'] && row?.['doc_id']) {
-                                    link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
-                                    title = row?.['title'];
-                                    return `<a href="${link}" target="_blank"><p>${title}</p></a>`;
+                                if (row?.['log_type'] === 0) {
+                                    if (row?.['app_code'] && row?.['doc_id']) {
+                                        link = urlMapApp[row?.['app_code']].format_url_with_uuid(row?.['doc_id']);
+                                        title = row?.['title'];
+                                        return `<a href="${link}" target="_blank"><p>${title}</p></a>`;
+                                    } else {
+                                        return `<p></p>`;
+                                    }
                                 }
                                 if (row?.['log_type'] === 1) {
                                     title = row?.['task']?.['subject'];

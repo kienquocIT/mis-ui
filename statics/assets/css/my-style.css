@@ -821,11 +821,9 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     border-radius: 4px;
     border: dashed 1px #ff0000;
     background: rgb(247 247 247 / 30%);
-    font-style: italic;
 }
 
 .hidden-zone::placeholder {
-    font-style: italic;
     color: #bfcbd0;
 }
 /* -- Workflow */

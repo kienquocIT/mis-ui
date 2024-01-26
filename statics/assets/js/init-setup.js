@@ -2476,7 +2476,7 @@ class WFRTControl {
                         $(ele$).attr('value', '');
                     }
                     // add class hidden-zone (for use css in my-style.css)
-                    $(ele$).attr('placeholder', $.fn.transEle.attr('data-hidden-by-workflow-config'));
+                    $(ele$).attr('placeholder', '');
                     $(ele$).addClass('hidden-zone');
                 }
                 if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible")) {  // if select2

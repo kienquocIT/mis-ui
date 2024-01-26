@@ -527,6 +527,7 @@ class NotifyController {
                         if (item?.['is_done'] === true) arr_seen.push(tmp); else arr_no_seen.push(tmp);
                     })
                 }
+
                 if (arr_no_seen.length > 0 || arr_seen.length > 0) {
                     dataArea.append(arr_no_seen.join("") + arr_seen.join(""));
                 } else {
@@ -536,6 +537,7 @@ class NotifyController {
                     $(dataArea).find('img'),
                     {'imgReplace': globeAvatarNotFoundImg},
                 );
+
                 dataArea.find('button.btn-notify-reply-comment').on('click', function (event){
                     // event.stopPropagation();
 
@@ -543,6 +545,7 @@ class NotifyController {
                     let notifyIdx = bellNotifyItem.attr('data-notify-id');
                     let docIdx = bellNotifyItem.attr('data-doc-id');
                     let appIdx = bellNotifyItem.attr('data-app-id');
+                    let commentIdx = bellNotifyItem.attr('data-comment-id');
 
                     // seen
                     let isDone = bellNotifyItem.attr('data-is-done') === 'true';
@@ -550,9 +553,11 @@ class NotifyController {
 
                     //
                     let modalEle = $('#CommentModal');
-                    new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
+                    new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx, {'comment_id': commentIdx ? commentIdx : null})
+                    // new $x.cls.cmt(modalEle.find('.comment-group')).init(docIdx, appIdx)
                     modalEle.modal('show');
                 });
+
                 dataArea.find('button.btn-seen-notify').on('click', function (event){
                     event.stopPropagation();
 
@@ -5234,10 +5239,8 @@ class CommentControl {
 
     item_add_event(eleItem$, has_replies=true) {
         let clsThis = this;
-        function get_url(){
-            let pk = eleItem$.attr('data-comment-id');
-            return clsThis.get_url_replies(pk);
-        }
+        let pk = eleItem$.attr('data-comment-id');
+        let urlResolved = clsThis.get_url_replies(pk);
 
         eleItem$.find('.icon-collapse').on('click', function (){
             $(this).find('.fa-solid').toggleClass('d-none');
@@ -5254,20 +5257,27 @@ class CommentControl {
             }
 
         });
+
         if (has_replies ===  true){
             let commentRepliesEle = eleItem$.find('.comment-replies');
             let eleReplyComment = eleItem$.find('.comment-reply-new');
 
-            eleItem$.find('.btn-comment-action-show-replies').on('click', function (){
-                let counter = Number.parseInt($(this).attr('data-counter'));
-                if (counter > 0) commentRepliesEle.fadeToggle('fast');
+            function loadData(btnThis, opts={}){
+                let {
+                    override_url, override_push_ele_group, force_run
+                } = {
+                    override_url: urlResolved,
+                    override_push_ele_group: commentRepliesEle,
+                    force_run: false,
+                    ...opts
+                }
 
-                if (!$(this).attr('data-url')){
-                    let urlResolved = get_url();
-                    if (urlResolved) {
-                        $(this).attr('data-url', urlResolved);
+                let stateDataUrl = !!$(btnThis).attr('data-url');
+                if (stateDataUrl === false || force_run === true){
+                    if (override_url) {
+                        $(btnThis).attr('data-url', override_url);
                         $.fn.callAjax2({
-                            url: urlResolved,
+                            url: override_url,
                             method: 'GET',
                         }).then(
                             resp => {
@@ -5275,9 +5285,9 @@ class CommentControl {
                                 if (data){
                                     let replies_list = data?.['comment_replies_list'] || [];
                                     replies_list.map(
-                                        (item) => {
+                                        item => {
                                             clsThis.render_comment_item(item, {
-                                                'ele_push_group': commentRepliesEle,
+                                                'ele_push_group': override_push_ele_group,
                                                 'get_html_opts': {
                                                     action_enabled: false,
                                                     replies_enabled: false,
@@ -5292,11 +5302,28 @@ class CommentControl {
                         )
                     }
                 }
+            }
+
+            let btnShowReplies = eleItem$.find('.btn-comment-action-show-replies');
+            btnShowReplies.on('click', function (){
+                let counter = Number.parseInt($(this).attr('data-counter'));
+                if (counter > 0) {
+                    commentRepliesEle.fadeToggle({
+                        duration: 'fast',
+                        start: function (){
+                            if (!!$(this).attr('data-url') === false) commentRepliesEle.empty();
+                        },
+                        always: function (){
+                            if (commentRepliesEle.is(':visible') === true) loadData(btnShowReplies);
+                        },
+                    });
+
+
+                }
             })
 
             eleItem$.find('.btn-comment-reply-new').on('click', function (){
                 if (eleReplyComment.length > 0){
-                    let urlResolved = get_url();
                     if (urlResolved) {
                         eleReplyComment.fadeToggle('fast');
                         if (!$(this).attr('data-url')){
@@ -5322,6 +5349,30 @@ class CommentControl {
                     }
                 }
             })
+
+            eleItem$.siblings('.btn-comment-load-full').on('click', function (){
+                let parentEle = $(this).parent();
+                if (parentEle.hasClass('comment-replies')){
+                    $(this).remove();
+                    let eleItemParent = parentEle.closest('.comment-item');
+                    let urlSelected = eleItemParent.attr('data-comment-id');
+                    let eleRepliesParent = eleItemParent.find('.comment-replies');
+                    if (urlSelected && eleRepliesParent.length > 0){
+                        eleRepliesParent.empty();
+                        loadData(btnShowReplies, {
+                            override_url: clsThis.get_url_replies(urlSelected),
+                            override_push_ele_group: eleRepliesParent,
+                            force_run: true,
+                        });
+                    }
+                } else if (parentEle.hasClass('comment-list')) {
+                    $(this).remove();
+                    parentEle.empty();
+                    clsThis.fetch_all();
+                } else {
+                    throw Error('Outside parent of Full Button');
+                }
+            })
         }
         ListeningEventController.listenImageLoad(
             eleItem$.find('img'),
@@ -5332,11 +5383,15 @@ class CommentControl {
 
     item_get_html(kwargs, opts={}){
         let clsThis = this;
-        let {action_enabled, replies_enabled, mentions_enabled, add_comment_enabled} = {
+        let {
+            action_enabled, replies_enabled, mentions_enabled, add_comment_enabled,
+            btn_full_enabled,
+        } = {
             mentions_enabled: true,
             action_enabled: true,
             replies_enabled: true,
             add_comment_enabled: true,
+            btn_full_enabled: false,
             ...opts,
         }
 
@@ -5401,7 +5456,7 @@ class CommentControl {
                         return `
                             <a href="${clsThis.url_employee_detail.replace('__pk__', idx)}" target="_blank">
                                 <img
-                                    src="${dataOfIdx?.['avatar_img'] || this.default_avt}" 
+                                    src="${dataOfIdx?.['avatar_img'] || clsThis.default_person_avt}" 
                                     alt="${dataOfIdx?.['full_name'] || ''}"
                                     class="avatar-img mr-1"
                                     data-bs-toggle="tooltip"
@@ -5456,6 +5511,11 @@ class CommentControl {
             `
         }
 
+        // btn load full
+        function getHTMLBtnLoadFull(){
+            return btn_full_enabled === true ? `<button class="btn btn-xs btn-primary my-1 btn-comment-load-full">${clsThis.ele$.attr('data-msg-full')}</button>` : ``;
+        }
+
         return `
             <div 
                 class="w-100 min-h-50p comment-item p-2"
@@ -5467,7 +5527,7 @@ class CommentControl {
                         <i class="fa-solid fa-xs fa-chevron-up mr-3 ml-1"></i>
                     </span>
                     <img
-                        src="${kwargs?.['avatar_img'] || this.default_avt}" 
+                        src="${kwargs?.['avatar_img'] || clsThis.default_person_avt}" 
                         alt="${kwargs?.employee_created?.full_name || ''}"
                         style="width: 2rem;object-fit: contain;"
                         class="mr-1"
@@ -5485,6 +5545,7 @@ class CommentControl {
                 ${htmlAddNew}
                 ${htmlReplies}
             </div>
+            ${getHTMLBtnLoadFull()}
         `;
     }
 
@@ -5834,7 +5895,8 @@ class CommentControl {
             setTimeout(
                 () => html$.removeClass('comment-item-newest'),
                 2000
-            )
+            );
+            return html$;
         }
     }
 
@@ -5940,14 +6002,45 @@ class CommentControl {
 
     }
 
-    fetch_room_of_idx(){
-        let commentIdx = this.opts.comment_id;
+    fetch_room_of_idx(commentIdx){
+        let clsThis = this;
         if (commentIdx){
-            $.fn.callAjax2({}).then(
+            $.fn.callAjax2({
+                url: clsThis.ele$.attr('data-url-room-reply').replaceAll('__pk__', commentIdx),
+                method: 'GET',
+            }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    if (data){
-                        //
+                    if (data && data.hasOwnProperty('room_data')){
+                        let room_data = data.room_data;
+                        if (room_data){
+                            // parent data
+                            let parentData = room_data?.['parent'] || {};
+                            if (parentData && typeof parentData === 'object' && Object.keys(parentData).length > 0){
+                                let eleParent = clsThis.render_comment_item(parentData, {
+                                    'get_html_opts': {
+                                        'btn_full_enabled': true,
+                                    },
+                                });
+                                // child data
+                                if (eleParent.length > 0){
+                                    let childData = room_data?.['child'] || {};
+                                    let eleRepliesOfChild = eleParent.find('.comment-replies');
+                                    if (childData && typeof childData === 'object' && Object.keys(childData).length > 0 && eleRepliesOfChild.length > 0){
+                                        clsThis.render_comment_item(childData, {
+                                            'ele_push_group': eleRepliesOfChild,
+                                            'get_html_opts': {
+                                                'action_enabled': false,
+                                                'replies_enabled': false,
+                                                'add_comment_enabled': false,
+                                                'btn_full_enabled': true,
+                                            },
+                                        });
+                                        eleRepliesOfChild.fadeIn('fast');
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 (errs) => {},
@@ -5968,7 +6061,7 @@ class CommentControl {
         this.init_structure();
         this.ele_list$.empty();
 
-        this.fetch_all();
+        this.opts.comment_id ? this.fetch_room_of_idx(this.opts.comment_id) : this.fetch_all();
     }
 }
 

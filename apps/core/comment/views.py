@@ -40,3 +40,13 @@ class CommentRepliesAPI(APIView):
             comment_detail = ServerAPI(request=request, user=request.user, url=url).post(data=request.data)
             return comment_detail.auto_return(key_success='comment_detail')
         return RespData.resp_404()
+
+
+class CommentRoomRepliesList(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.COMMENT_ROOM_REPLIES_LIST.fill_key(pk=pk)
+            room_data = ServerAPI(request=request, user=request.user, url=url).get()
+            return room_data.auto_return(key_success='room_data')
+        return RespData.resp_404()

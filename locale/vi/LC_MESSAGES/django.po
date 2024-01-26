@@ -177,6 +177,10 @@ msgid "Comments"
 msgstr "Bình luận"
 
 #
+msgid "Full"
+msgstr "Xem tất cả"
+
+#
 msgid "Hide/Show editor"
 msgstr "Hiển thị/ẩn trình chỉnh sửa"
 

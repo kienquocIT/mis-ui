@@ -8,6 +8,7 @@ const dataLineDetailTableScript = $('#data-line-detail-table')
 const lineDetailTable = $('#tab_line_detail_datatable')
 const scriptUrlEle = $('#script-url')
 const tableProductSN = $('#table-product-sn')
+const tableProductLOT = $('#table-product-lot')
 let DELIVERY_PRODUCT_NOW = null
 
 function LoadDate() {
@@ -91,9 +92,10 @@ $(document).on("change", '.selected-delivery', function () {
 })
 
 $(document).on("change", '.selected-product', function () {
-    if ($(this).attr('data-type') === '2') {
+    if ($(this).attr('data-type') === '1') {
         let product_id_selected = $(this).attr('data-id')
-        tableProductSN.closest('div').prop('hidden', false)
+        tableProductSN.closest('div').prop('hidden', true)
+        tableProductLOT.closest('div').prop('hidden', false)
         loadTableSelectProductSerial(
             DELIVERY_PRODUCT_NOW.filter(function (item) {
                 console.log(item.product.id, product_id_selected)
@@ -101,65 +103,88 @@ $(document).on("change", '.selected-product', function () {
             })
         )
     }
+    else if ($(this).attr('data-type') === '2') {
+        let product_id_selected = $(this).attr('data-id')
+        tableProductSN.closest('div').prop('hidden', false)
+        tableProductLOT.closest('div').prop('hidden', true)
+        loadTableSelectProductSerial(
+            DELIVERY_PRODUCT_NOW.filter(function (item) {
+                console.log(item.product.id, product_id_selected)
+                return item.product.id === product_id_selected
+            })
+        )
+    }
+    else {
+        tableProductSN.closest('div').prop('hidden', true)
+        tableProductLOT.closest('div').prop('hidden', true)
+    }
 })
 
 $('#add-product-btn').on('click', function () {
-    let data_line_detail_table = []
-    tableProductSN.find('tbody tr').each(function () {
-        let serial_data = $(this).find('.serial-data-span')
-        let delivery_code = serial_data.attr('data-delivery-code')
-        let is_return = $(this).find('.return-check').prop('checked')
-        let is_redelivery = $(this).find('.redelivery-check').prop('checked')
-        let serial_number = serial_data.attr('data-serial-number')
-        let vendor_serial_number = serial_data.attr('data-vendor-serial-number')
-        let serial_id = serial_data.attr('data-serial-id')
-        let product_id = serial_data.attr('data-product-id')
-        let product_code = serial_data.attr('data-product-code')
-        let product_title = serial_data.attr('data-product-title')
-        let uom_id = serial_data.attr('data-uom-id')
-        let uom_title = serial_data.attr('data-uom-title')
-        let product_unit_price = serial_data.attr('data-unit-price')
-        if (is_return) {
-            data_line_detail_table.push({
-                'serial_number': serial_number,
-                'delivery_code': delivery_code,
-                'vendor_serial_number': vendor_serial_number,
-                'serial_id': serial_id,
-                'product_id': product_id,
-                'product_title': product_title,
-                'product_code': product_code,
-                'uom_id': uom_id,
-                'uom_title': uom_title,
-                'product_unit_price': product_unit_price,
-                'is_return': is_return,
-                'is_redelivery': is_redelivery
-            })
+    let data_type = '0'
+    tableDetailProductEle.find('.selected-product').each(function () {
+        if ($(this).prop('checked')) {
+            data_type = $(this).attr('data-type')
         }
     })
-    dataLineDetailTableScript.text(JSON.stringify(data_line_detail_table))
-    let processed_data = {}
-    for (const item of data_line_detail_table) {
-        if (processed_data[item.product_id] !== undefined) {
-            processed_data[item.product_id].vendor_serial_number_with_serial_number.push(`${item.vendor_serial_number} (serial: ${item.serial_number})`)
-            processed_data[item.product_id].is_redelivery.push(item.is_redelivery)
-            processed_data[item.product_id].is_return.push(item.is_return)
-        } else {
-            processed_data[item.product_id] = {
-                'delivery_code': item.delivery_code,
-                'product_code': item.product_code,
-                'product_title': item.product_title,
-                'uom_title': item.uom_title,
-                'vendor_serial_number_with_serial_number': [`${item.vendor_serial_number} (serial: ${item.serial_number})`],
-                'is_return': [item.is_return],
-                'is_redelivery': [item.is_redelivery],
-                'product_unit_price': parseFloat(item.product_unit_price),
+    if (data_type === '2') {
+        let data_line_detail_table = []
+        tableProductSN.find('tbody tr').each(function () {
+            let serial_data = $(this).find('.serial-data-span')
+            let delivery_code = serial_data.attr('data-delivery-code')
+            let is_return = $(this).find('.return-check').prop('checked')
+            let is_redelivery = $(this).find('.redelivery-check').prop('checked')
+            let serial_number = serial_data.attr('data-serial-number')
+            let vendor_serial_number = serial_data.attr('data-vendor-serial-number')
+            let serial_id = serial_data.attr('data-serial-id')
+            let product_id = serial_data.attr('data-product-id')
+            let product_code = serial_data.attr('data-product-code')
+            let product_title = serial_data.attr('data-product-title')
+            let uom_id = serial_data.attr('data-uom-id')
+            let uom_title = serial_data.attr('data-uom-title')
+            let product_unit_price = serial_data.attr('data-unit-price')
+            if (is_return) {
+                data_line_detail_table.push({
+                    'serial_number': serial_number,
+                    'delivery_code': delivery_code,
+                    'vendor_serial_number': vendor_serial_number,
+                    'serial_id': serial_id,
+                    'product_id': product_id,
+                    'product_title': product_title,
+                    'product_code': product_code,
+                    'uom_id': uom_id,
+                    'uom_title': uom_title,
+                    'product_unit_price': product_unit_price,
+                    'is_return': is_return,
+                    'is_redelivery': is_redelivery
+                })
+            }
+        })
+        dataLineDetailTableScript.text(JSON.stringify(data_line_detail_table))
+        let processed_data = {}
+        for (const item of data_line_detail_table) {
+            if (processed_data[item.product_id] !== undefined) {
+                processed_data[item.product_id].vendor_serial_number_with_serial_number.push(`${item.vendor_serial_number} (serial: ${item.serial_number})`)
+                processed_data[item.product_id].is_redelivery.push(item.is_redelivery)
+                processed_data[item.product_id].is_return.push(item.is_return)
+            } else {
+                processed_data[item.product_id] = {
+                    'delivery_code': item.delivery_code,
+                    'product_code': item.product_code,
+                    'product_title': item.product_title,
+                    'uom_title': item.uom_title,
+                    'vendor_serial_number_with_serial_number': [`${item.vendor_serial_number} (serial: ${item.serial_number})`],
+                    'is_return': [item.is_return],
+                    'is_redelivery': [item.is_redelivery],
+                    'product_unit_price': parseFloat(item.product_unit_price),
+                }
             }
         }
+        let processed_data_list = Object.values(processed_data)
+        console.log(JSON.parse(dataLineDetailTableScript.text()))
+        console.log(processed_data_list)
+        loadTableLineDetail(processed_data_list)
     }
-    let processed_data_list = Object.values(processed_data)
-    console.log(JSON.parse(dataLineDetailTableScript.text()))
-    console.log(processed_data_list)
-    loadTableLineDetail(processed_data_list)
 })
 
 function loadTableLineDetail(data_source=[]) {
@@ -414,7 +439,7 @@ function loadTableSelectProductSerial(datasource=[]) {
                 data: '',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    return `<div class="form-check">
+                    return `<div class="form-check" hidden>
                                 <input type="checkbox" class="form-check-input redelivery-check">
                                 <label class="form-check-label"></label>
                             </div>`
@@ -423,6 +448,50 @@ function loadTableSelectProductSerial(datasource=[]) {
         ],
     });
 }
+
+$(document).on("change", '.return-check', function () {
+    if ($(this).prop('checked')) {
+        $(this).closest('tr').find('.redelivery-check').prop('checked', false).closest('div').prop('hidden', false)
+    }
+    else {
+        $(this).closest('tr').find('.redelivery-check').prop('checked', false).closest('div').prop('hidden', true)
+    }
+    let sum_return = 0
+    let sum_re_delivery = 0
+    $('.return-check').each(function () {
+        if ($(this).prop('checked')) {
+            sum_return += 1
+            if ($(this).closest('tr').find('.redelivery-check').prop('checked')) {
+                sum_re_delivery += 1
+            }
+        }
+    })
+    tableDetailProductEle.find('.selected-product').each(function () {
+        if ($(this).prop('checked')) {
+            $(this).closest('tr').find('.return-number-input').val(sum_return)
+            $(this).closest('tr').find('.re-delivery-number-input').val(sum_re_delivery)
+        }
+    })
+})
+
+$(document).on("change", '.redelivery-check', function () {
+    let sum_return = 0
+    let sum_re_delivery = 0
+    $('.return-check').each(function () {
+        if ($(this).prop('checked')) {
+            sum_return += 1
+            if ($(this).closest('tr').find('.redelivery-check').prop('checked')) {
+                sum_re_delivery += 1
+            }
+        }
+    })
+    tableDetailProductEle.find('.selected-product').each(function () {
+        if ($(this).prop('checked')) {
+            $(this).closest('tr').find('.return-number-input').val(sum_return)
+            $(this).closest('tr').find('.re-delivery-number-input').val(sum_re_delivery)
+        }
+    })
+})
 
 function LoadSaleOrder(data) {
     saleOrderEle.initSelect2({

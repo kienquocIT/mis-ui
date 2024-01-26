@@ -6144,3 +6144,7 @@ msgstr "ẩn/hiện danh sách người dùng"
 #
 msgid "Using Total"
 msgstr "Đang sử dụng"
+
+#
+msgid "Date time range is required"
+msgstr "Số ngày công tác không chính xác"

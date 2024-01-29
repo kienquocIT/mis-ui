@@ -5880,9 +5880,7 @@ class CommentControl {
                 if (appIdx && docIdx){
                     let appData = UrlGatewayReverse.get_app_name_pk_app(appIdx);
                     if (appData && UrlGatewayReverse.has_active_app(appData)){
-                        let urlData = UrlGatewayReverse.get_url_pk_app(docIdx, appIdx, {'redirect': true});
-                        console.log('urlData:', urlData, clsThis.ele$.find('input[name="doc_id"]').val(), clsThis.ele$.find('input[name="application"]').val());
-                        return urlData;
+                        return UrlGatewayReverse.get_url_pk_app(docIdx, appIdx, {'redirect': true});
                     }
                 }
                 return null;

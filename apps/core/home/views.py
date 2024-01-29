@@ -240,6 +240,23 @@ class GatewayMiddleDetailView(APIView):
         return {}, status.HTTP_404_NOT_FOUND
 
 
+class GatewayPKMiddleDetailView(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, pk_app, pk_doc, **kwargs):
+        ReverseUrlCommon.update_done_notify(request.user, request.query_params.get('notify_id', None))
+        is_redirect = TypeCheck.get_bool(
+            request.query_params.get('redirect', False)
+        )
+        link_data = ReverseUrlCommon.get_link_by_app_id(app_id=pk_app, pk=pk_doc.lower())
+        if link_data:
+            if is_redirect is True:
+                return redirect(link_data)
+            return {'url': link_data}, status.HTTP_200_OK
+        if is_redirect is True:
+            return redirect('NotFoundView')
+        return {}, status.HTTP_404_NOT_FOUND
+
+
 class GatewayViewNameListView(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):

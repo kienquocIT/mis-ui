@@ -47,6 +47,10 @@ class AppsCodeToList:
                 'is_active': False,
             },
         },
+        'e66cfb5a-b3ce-4694-a4da-47618f53de4c': {
+            'title': _('Task'),
+            'is_active': False,
+        },
         'saledata': {
             'contact': {
                 'title': _('Contact'),

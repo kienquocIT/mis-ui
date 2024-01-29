@@ -15,6 +15,8 @@
      data-msg-latest="{% trans 'Latest' %}"
      data-url-room-reply="{% url 'CommentRoomRepliesList' pk='__pk__' %}"
      data-msg-full="{% trans 'Full' %}"
+     data-msg-available="{% trans 'Available' %}"
+     data-msg-unavailable="{% trans 'Unavailable' %}"
 >
     <div class="w-100 comment-add-area pb-1">
         <p class="mentions-display" style="display: none;"></p>
@@ -33,6 +35,7 @@
         <i class="fa-solid fa-angles-up"></i>
         <i class="fa-solid fa-angles-down d-none"></i>
     </button>
+    <small class="text-warning pb-2 d-block">{% trans 'Note' %}: {% trans 'You can only see the comments that you are allowed to based on your permissions, which could be all or only those comments that mention you.' %}</small>
     <div class="w-100 pb-3 comment-action-all">
         <small class="total-comment" style="display: none;" data-pattern="{% trans 'Showing {} records' %}"></small>
         <button
@@ -41,6 +44,7 @@
         <button
                 class="btn btn-outline-primary btn-xs" data-action="expand-all" type="button"
         >{% trans 'Expand All' %}</button>
+        <button class="btn btn-outline-primary btn-xs" data-action="goto" type="button"><i class="fa-solid fa-right-to-bracket"></i> {% trans 'Goto' %}</button>
     </div>
     <div class="w-100 comment-list"></div>
 </div>

@@ -48,6 +48,12 @@ class ReverseUrlCommon:
                         pass
         return None
 
+    @classmethod
+    def get_link_by_app_id(cls, app_id, pk=None):
+        if app_id in APP_ID_MAP_PLAN_APP:
+            return cls.get_link(plan=APP_ID_MAP_PLAN_APP[app_id]['plan'], app=APP_ID_MAP_PLAN_APP[app_id]['app'], pk=pk)
+        return None
+
     def __init__(self, list_view_name, detail_view_name, key_pk=None):
         self.list_view_name = list_view_name
         self.detail_view_name = detail_view_name
@@ -167,4 +173,8 @@ PLAN_APP_OF_E_OFFICE = {
 PLAN_APP_MAP_VIEW = {
     **PLAN_APP_OF_SALE,
     **PLAN_APP_OF_E_OFFICE,
+}
+
+APP_ID_MAP_PLAN_APP = {
+    'e66cfb5a-b3ce-4694-a4da-47618f53de4c': {'plan': 'task', 'app': 'OpportunityTask'},
 }

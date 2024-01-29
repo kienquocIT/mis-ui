@@ -177,6 +177,10 @@ msgid "Comments"
 msgstr "Bình luận"
 
 #
+msgid "You can only see the comments that you are allowed to based on your permissions, which could be all or only those comments that mention you."
+msgstr "Bạn chỉ có thể xem những nhận xét mà bạn được phép dựa trên quyền của bạn, đó có thể là tất cả hoặc chỉ những nhận xét đề cập đến bạn."
+
+#
 msgid "Full"
 msgstr "Xem tất cả"
 
@@ -1964,6 +1968,10 @@ msgstr "Hàng tồn"
 #
 msgid "Available"
 msgstr "Khả dụng"
+
+#
+msgid "Unavailable"
+msgstr "Không khả dụng"
 
 #
 msgid "wait for delivery"

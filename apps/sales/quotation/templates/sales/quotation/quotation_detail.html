@@ -565,6 +565,14 @@
             </div>
         </div>
     </form>
+
+    <div class="p-3">
+        <h6>{% trans 'Comments' %}</h6>
+        <button class="btn btn-primary" id="btn-show-comment">{% trans 'Load comments' %}</button>
+        <div id="comment-group" style="display:none;">
+            {% include 'comment/list.html' %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block dataHiddenGroup %}
@@ -691,4 +699,27 @@
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>
 {#    <script src="{% static 'assets/sales/quotation/js/quotation_print.js' %}"></script>#}
+    <script>
+        $(document).ready(function (){
+            $('#btn-show-comment').on('click', function (){
+                $(this).fadeOut({
+                    duration: 'fast',
+                    always: function (){
+                        $(this).remove();
+                        let appIdx = "b9650500-aba7-44e3-b6e0-2542622702a3";  // Application: Quotation - Quotation
+                        let docIdx = $.fn.getPkDetail();
+                        if (docIdx){
+                            let modalEle = $('#comment-group');
+                            new $x.cls.cmt(modalEle.find('.comment-group'), {'btn_goto_enabled': false}).init(docIdx, appIdx)
+                            modalEle.fadeIn('fast');
+                        } else {
+                            $.fn.notifyB({
+                                'description': `{% trans 'Document is not selected.' %}`,
+                            }, 'failure');
+                        }
+                    }
+                })
+            })
+        })
+    </script>
 {% endblock %}

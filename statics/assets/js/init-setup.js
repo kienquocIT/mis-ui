@@ -5242,8 +5242,10 @@ class FileControl {
 
 class CommentControl {
     constructor(ele$, opts={}) {
-        let {owner_id} = {owner_id: $x.fn.getEmployeeCurrentID(), ...opts}
+        let {owner_id, btn_goto_enabled} = {owner_id: $x.fn.getEmployeeCurrentID(), btn_goto_enabled: true, ...opts}
         this.owner_id = owner_id;
+        this.btn_goto_enabled = btn_goto_enabled;
+
         this.ele$ = ele$;
         this.ele_list$ = ele$.find('.comment-list');
         this.ele_add = ele$.find('.comment-add-area');
@@ -5879,7 +5881,7 @@ class CommentControl {
 
                 if (appIdx && docIdx){
                     let appData = UrlGatewayReverse.get_app_name_pk_app(appIdx);
-                    if (appData && UrlGatewayReverse.has_active_app(appData)){
+                    if (appData && typeof appData === 'object' && Object.keys(appData).length > 0 && UrlGatewayReverse.has_active_app(appData)){
                         return UrlGatewayReverse.get_url_pk_app(docIdx, appIdx, {'redirect': true});
                     }
                 }
@@ -5902,14 +5904,18 @@ class CommentControl {
             // goto
             let btnGoto = this.ele_action_all.find('button[data-action="goto"]');
             let urlGoto = resolve_btn_goto();
-            if (urlGoto) {
-                this.ele_action_all.find('button[data-action="goto"]').on('click', function () {
-                    open(urlGoto)
-                })
+            if (urlGoto && this.btn_goto_enabled === true) {
+                btnGoto.attr('data-bs-toggle', 'tooltip');
+                btnGoto.attr('title', clsThis.ele$.attr('data-msg-goto-detail'));
+                btnGoto.on('click', () => open(urlGoto))
             } else {
-                btnGoto.prop('disabled', true);
+                btnGoto.prop('disabled', true).fadeOut({
+                    duration: 'fast',
+                    always: function (){
+                        $(this).remove();
+                    }
+                });
             }
-
 
             // init add new comment / event click button add
             this.init_box_comment();

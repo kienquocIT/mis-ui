@@ -177,4 +177,5 @@ PLAN_APP_MAP_VIEW = {
 
 APP_ID_MAP_PLAN_APP = {
     'e66cfb5a-b3ce-4694-a4da-47618f53de4c': {'plan': 'task', 'app': 'OpportunityTask'},
+    'b9650500-aba7-44e3-b6e0-2542622702a3': {'plan': 'quotation', 'app': 'quotation'},
 }

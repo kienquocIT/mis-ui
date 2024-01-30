@@ -616,7 +616,6 @@ $(function () {
                     let dataRaw = JSON.parse(eleDataCopy.val());
                     QuotationLoadDataHandle.loadAPIDetailQuotation(dataRaw.id);
                     checkElementValuesBeforeLoadDataCopy();
-                    // checkOppLoaded();
                 }
             }
         }

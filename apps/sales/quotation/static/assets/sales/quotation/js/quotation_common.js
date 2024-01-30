@@ -1553,6 +1553,8 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
             // Set form novalidate
             formSubmit[0].setAttribute('novalidate', 'novalidate');
+
+            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
         } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
             // create URL and add to href
             let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -3621,7 +3623,6 @@ class indicatorHandle {
                     'method': method,
                     'isDropdown': true,
                 }
-                // url, method
             ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -3641,7 +3642,6 @@ class indicatorHandle {
                 indicatorHandle.calculateIndicator(data_list);
             }
         }
-
     }
 
     static calculateIndicator(indicator_list) {

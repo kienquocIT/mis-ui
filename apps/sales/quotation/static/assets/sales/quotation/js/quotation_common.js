@@ -74,7 +74,7 @@ class QuotationLoadDataHandle {
 
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
-        if (form.attr('data-method') === 'POST') {
+        if (form.attr('data-method').toLowerCase() === 'post') {
             let dataInitOppRaw = $('#data-init-opportunity').val();
             if (dataInitOppRaw) {
                 let dataInitOpp = JSON.parse(dataInitOppRaw);
@@ -199,7 +199,7 @@ class QuotationLoadDataHandle {
             }
         }
         // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
-        if (form.attr('data-method') !== 'GET') {
+        if (form.attr('data-method').toLowerCase() !== 'get') {
             if (!dataCustomer?.['is_copy']) {
                 QuotationLoadDataHandle.loadDataProductAll();
             }
@@ -1592,7 +1592,7 @@ class QuotationLoadDataHandle {
         }
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
-                if (form.getAttribute('data-method') === 'GET') {
+                if (form.getAttribute('data-method').toLowerCase() === 'get') {
                     let btnCopy = document.getElementById('btn-copy-quotation');
                     if (btnCopy) {
                         btnCopy.setAttribute('disabled', 'true');
@@ -1671,6 +1671,16 @@ class QuotationLoadDataHandle {
         }
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
+        // show print button
+        if ($(form).attr('data-method').toLowerCase() === 'get') {
+            let employeeCurrentRaw = $('#data-init-quotation-create-request-employee').val();
+            if (employeeCurrentRaw) {
+                let employeeCurrent = JSON.parse(employeeCurrentRaw);
+                if (employeeCurrent?.['id'] === data?.['sale_person']?.['id'] && [2, 3].includes(data?.['system_status'])) {
+                    $('#print-document')[0].removeAttribute('hidden');
+                }
+            }
+        }
         // load totals
         QuotationLoadDataHandle.loadTotal(data, true, false, false);
         QuotationLoadDataHandle.loadTotal(data, false, true, false);

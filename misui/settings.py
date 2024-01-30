@@ -36,8 +36,12 @@ GG_RECAPTCHA_CLIENT_KEY = os.environ.get('GG_RECAPTCHA_CLIENT_KEY', '6LfNp8YnAAA
 DEBUG = True
 DEBUG_JS = True
 DEBUG_NOTIFY_KEY = True
-GA_COLLECTION_ENABLED = True if os.environ.get('GA_COLLECTION_ENABLED', '0') in [1, '1'] else False
 ALLOWED_HOSTS = []
+
+# Google Analytics
+GA_COLLECTION_ENABLED = True if os.environ.get('GA_COLLECTION_ENABLED', '0') in [1, '1'] else False
+GA_SCRIPT = os.environ.get('GA_SCRIPT', '')
+GA_CODE = os.environ.get('GA_CODE', '')
 
 IS_SERVER_MAINTAINING = True if os.environ.get('IS_SERVER_MAINTAINING', '0') in [1, '1'] else False
 

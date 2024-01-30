@@ -6180,3 +6180,11 @@ msgstr "Đang sử dụng"
 #
 msgid "Date time range is required"
 msgstr "Số ngày công tác không chính xác"
+
+#
+msgid "Sale order"
+msgstr "Đơn hàng"
+
+#
+msgid "Copy successfully"
+msgstr "Sao chép thành công"

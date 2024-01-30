@@ -45,7 +45,7 @@ let current_row_variant_item = null;
 
 productImageEle.dropify({
     messages: {
-        'default': 'Drag and drop your file here.',
+        'default': '',
     },
     tpl: {
         message: '<div class="dropify-message">' +
@@ -84,7 +84,12 @@ $(document).on("change", '#length', function () {
     let width = widthEle.val();
     let height = heightEle.val();
     let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-    volumeEle.val(volume.toFixed(2));
+    if (!isNaN(volume)) {
+        volumeEle.val(volume.toFixed(5));
+    }
+    else {
+        volumeEle.val('');
+    }
 })
 
 $(document).on("change", '#width', function () {
@@ -92,7 +97,12 @@ $(document).on("change", '#width', function () {
     let width = widthEle.val();
     let height = heightEle.val();
     let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-    volumeEle.val(volume.toFixed(2));
+    if (!isNaN(volume)) {
+        volumeEle.val(volume.toFixed(5));
+    }
+    else {
+        volumeEle.val('');
+    }
 })
 
 $(document).on("change", '#height', function () {
@@ -100,7 +110,12 @@ $(document).on("change", '#height', function () {
     let width = widthEle.val();
     let height = heightEle.val();
     let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-    volumeEle.val(volume.toFixed(2));
+    if (!isNaN(volume)) {
+        volumeEle.val(volume.toFixed(5));
+    }
+    else {
+        volumeEle.val('');
+    }
 })
 
 $(document).on('change', '.select_price_list', function () {
@@ -738,6 +753,24 @@ function getDataForm() {
     data['height'] = parseFloat(heightEle.val());
     data['volume'] = parseFloat(volumeEle.val());
     data['weight'] = parseFloat(weightEle.val());
+
+    if (isNaN(data['length']) && lengthEle.val() !== '') {
+        $.fn.notifyB({description: 'Length values in General tab is not valid'}, 'failure');
+        return false
+    }
+    if (isNaN(data['width']) && widthEle.val() !== '') {
+        $.fn.notifyB({description: 'Width values in General tab is not valid'}, 'failure');
+        return false
+    }
+    if (isNaN(data['height']) && heightEle.val() !== '') {
+        $.fn.notifyB({description: 'Height values in General tab is not valid'}, 'failure');
+        return false
+    }
+    if (isNaN(data['weight']) && weightEle.val() !== '') {
+        $.fn.notifyB({description: 'Weight values in General tab is not valid'}, 'failure');
+        return false
+    }
+
     data['volume_id'] = volumeEle.attr('data-id');
     data['weight_id'] = weightEle.attr('data-id');
     data['product_types_mapped_list'] = generalProductTypeEle.val();
@@ -900,10 +933,10 @@ function getDataForm() {
     }
 
     if (data['product_choice'].includes(1)) {
-        if (lengthEle.val() === '' || widthEle.val() === '' || heightEle.val() === '' || volumeEle.val() === '' || weightEle.val() === '') {
-            $.fn.notifyB({description: 'Tab inventory is selected, product size must not null'}, 'failure');
-            return false
-        }
+        // if (lengthEle.val() === '' || widthEle.val() === '' || heightEle.val() === '' || volumeEle.val() === '' || weightEle.val() === '') {
+        //     $.fn.notifyB({description: 'Tab inventory is selected, product size must not null'}, 'failure');
+        //     return false
+        // }
 
         if (!data['inventory_uom']) {
             $.fn.notifyB({description: 'Some fields in Inventory tab is missing'}, 'failure');
@@ -1228,6 +1261,24 @@ function LoadDetailProduct(option) {
             }
         })
 }
+
+$('#to-fix-left').on('click', function () {
+    let now = volumeEle.val().split('.')[1].length
+    if (now - 1 > 0) {
+        volumeEle.val(parseFloat(volumeEle.val()).toFixed(now - 1))
+    }
+})
+
+$('#to-fix-right').on('click', function () {
+    let now = volumeEle.val().split('.')[1].length
+    if (now < 5) {
+        let length = lengthEle.val();
+        let width = widthEle.val();
+        let height = heightEle.val();
+        let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+        volumeEle.val(volume.toFixed(now + 1))
+    }
+})
 
 // variants
 

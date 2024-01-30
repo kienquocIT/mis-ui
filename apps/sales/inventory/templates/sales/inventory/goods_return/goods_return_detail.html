@@ -17,7 +17,203 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-
+    <script id="script-url"
+            data-url-delivery="{% url 'DeliveryListForGoodsReturnAPI' %}"
+            data-url-delivery-products="{% url 'DeliveryProductsForGoodsReturnAPI' '0' %}"
+    >
+    </script>
+    <script id="script-trans">
+    </script>
+    <form id="frm_goods_return_detail" data-url="{% url 'GoodsReturnDetailAPI' '0' %}">
+        {% csrf_token %}
+        <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label for="title" class="form-label required">{% trans 'Title' %}</label>
+                        <input type="text" class="form-control" id="title" placeholder="Goods return for defective orders">
+                    </div>
+                    <div class="form-group">
+                        <label for="sale-order" class="form-label required">{% trans 'Sale order' %}</label>
+                        <select data-method="GET" data-url="{% url 'SaleOrderListAPIForGoodsReturn' %}" class="form-select select2" id="sale-order"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer" class="form-label required">{% trans 'Customer' %}</label>
+                        <input readonly class="form-control" id="customer">
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label for="date" class="form-label required">{% trans 'Date' %}</label>
+                        <input type="text" class="form-control" id="date" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="note" class="form-label">{% trans 'Note' %}</label>
+                        <textarea class="form-control" id="note"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="offcanvas offcanvas-end w-90 mt-9" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
+                <div class="offcanvas-header px-5 pt-5">
+                    <h5 id="offcanvasRightLabel">
+                        {% trans 'Goods return create' %}&nbsp;
+                        <i class="fas fa-angle-right"></i>&nbsp;
+                        <span class="badge badge-primary">
+                            <span>
+                                <span class="icon"><span class="feather-icon"><i data-feather="package"></i></span></span>
+                                {% trans 'Select delivery' %}
+                            </span>
+                        </span>
+                    </h5>
+                </div>
+                <div class="offcanvas-body px-5">
+                    <div class="row">
+                        <div class="col-7 border rounded-3 px-2 py-2">
+                            <div class="table-responsive" style="max-height: 200px;">
+                                <label>1. {% trans 'Select 1 delivery' %}</label>
+                                <table class="table w-100 nowrap" id="table-select-delivery">
+                                    <thead class="bg-primary-light-5">
+                                    <tr>
+                                        <td class="w-5"></td>
+                                        <td class="w-50">{% trans 'Delivery code' %}</td>
+                                        <td class="w-35">{% trans 'Date' %}</td>
+                                        <td class="w-10 text-center">{% trans 'Select' %}</td>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="table-responsive mt-5" style="max-height: 400px;">
+                                <label>2. {% trans 'Select 1 product' %}</label>
+                                <table class="table w-100 nowrap" id="table-product-detail">
+                                    <thead class="bg-secondary-light-5">
+                                    <tr>
+                                        <td class="w-5"></td>
+                                        <td class="w-30">{% trans 'Product' %}</td>
+                                        <td class="w-10">{% trans 'UOM' %}</td>
+                                        <td class="w-25" style="min-width: 100px">{% trans 'Total order' %} / {% trans 'Delivered' %}</td>
+                                        <td class="w-10" style="min-width: 100px">{% trans 'Return' %}</td>
+                                        <td class="w-10" style="min-width: 100px">{% trans 'Re-delivery' %}</td>
+                                        <td class="w-10 text-center">{% trans 'Select' %}</td>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-5 border rounded-3 px-2 py-2">
+                            <div class="table-responsive" style="max-height: 600px;" id="table-product-lot-wrap" hidden>
+                                <label>3. {% trans 'Select LOT No.' %}</label>
+                                <table class="table w-100 nowrap" id="table-product-lot">
+                                    <thead class="bg-blue-light-5">
+                                    <tr>
+                                        <td class="w-5"></td>
+                                        <td class="w-30">{% trans 'LOT number' %}</td>
+                                        <td class="w-15">{% trans 'Quantity' %}</td>
+                                        <td class="w-25">{% trans 'Return' %}</td>
+                                        <td class="w-25">{% trans 'Re-delivery' %}</td>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="table-responsive" style="max-height: 600px;" id="table-product-sn-wrap" hidden>
+                                <label>3. {% trans 'Select serial No.' %}</label>
+                                <table class="table w-100 nowrap" id="table-product-sn">
+                                    <thead class="bg-blue-light-5">
+                                    <tr>
+                                        <td class="w-5"></td>
+                                        <td class="w-35">{% trans 'Vendor serial No.' %}</td>
+                                        <td class="w-25">{% trans 'Serial No.' %}</td>
+                                        <td class="w-15">{% trans 'Return' %}</td>
+                                        <td class="w-20">{% trans 'Re-delivery' %}</td>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right mt-10">
+                        <button type="button" id="add-product-btn" class="btn btn-custom btn-gradient-primary btn-wth-icon btn-rounded">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+                <span class="icon">
+                    <i class="fas fa-angle-double-up text-primary"></i>
+                </span>
+            </button>
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-file-alt"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_line_detail">
+                        <div class="row">
+                            <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                                <script id="data-line-detail-table"></script>
+                                <table id="tab_line_detail_datatable" class="table nowrap w-100"
+                                   data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                                   data-url-tax-list="{% url 'TaxListAPI' %}">
+                                <thead>
+                                <tr>
+                                    <th class="text-center" style="min-width: 30px"></th>
+                                    <th class="required" style="min-width: 200px">{% trans 'Product' %}</th>
+                                    <th class="required" style="min-width: 100px">{% trans 'UoM' %}</th>
+                                    <th class="required" style="min-width: 100px">{% trans 'Delivery' %}</th>
+                                    <th style="min-width: 180px">{% trans 'Lot No.' %}</th>
+                                    <th style="min-width: 280px">{% trans 'Vendor serial (Serial)' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Return' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Re-delivery' %}</th>
+{#                                    <th class="required" style="min-width: 180px">{% trans 'Cost' %}</th>#}
+{#                                    <th class="required" style="min-width: 180px">{% trans 'Subtotal price' %}</th>#}
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-7">
+                                <button class="btn btn-outline-primary" type="button" id="btn-add-row-line-detail">
+                                    <span>
+                                        <span class="icon">
+                                            <span class="feather-icon"><i class="far fa-edit"></i></span>
+                                        </span>
+                                        <span>{% trans 'Edit' %} {% trans 'items' %}</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_attachment">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="w-100" id="attachment">
+                                    {% include 'extends/files/all.html' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

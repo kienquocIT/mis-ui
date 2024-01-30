@@ -130,7 +130,7 @@
     {% endcompress %}
 
     {% if is_ga_enabled %}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4GDQQTC98X"></script>
+        <script async src="{{ ga_config.script }}"></script>
     {% endif %}
     {% compress js %}
         {% if is_ga_enabled %}
@@ -143,7 +143,7 @@
 
                 gtag('js', new Date());
 
-                gtag('config', 'G-4GDQQTC98X', {
+                gtag('config', '{{ ga_config.code }}', {
                     'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
                 });
             </script>

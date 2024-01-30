@@ -13,8 +13,7 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            return []
-                            // return resp.data['goods_return_list'] ? resp.data['goods_return_list'] : [];
+                            return resp.data['goods_return_list'] ? resp.data['goods_return_list'] : [];
                         }
                         return [];
                     },
@@ -38,42 +37,43 @@ $(document).ready(function () {
                         data: 'customer',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return ``
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}" class="text-primary"><b>${row.title}</b></a>`;
                         }
                     },
                     {
                         data: 'sale_person',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return ``
+                            return `${row?.['sale_order']?.['sale_person']?.['fullname']}`
                         }
                     },
                     {
                         data: 'sale_order',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return ``
+                            return `<span class="badge badge-blue badge-sm">${row?.['sale_order']?.['code']}</span>&nbsp;${row?.['sale_order']?.['title']}`
                         }
                     },
                     {
                         data: 'delivery_mapped',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return ``
+                            return `<i class="bi bi-truck"></i>&nbsp;&nbsp;<span class="text-secondary"><b>${row?.['delivery']?.['code']}</b></span>`
                         }
                     },
                     {
                         data: 'date_created',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return ``
+                            return `${row.date_created.split(' ')[0]}`
                         }
                     },
                     {
                         data: 'status',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `Done`
+                            return `<span class="badge-success badge">Done</span>`
                         }
                     },
                 ],

@@ -24,7 +24,7 @@
     </script>
     <script id="script-trans">
     </script>
-    <form id="frm_goods_return_create" data-url="{% url 'APInvoiceListAPI' %}" data-method="POST" data-url-redirect="{% url "GoodsReturnList" %}">
+    <form id="frm_goods_return_create" data-url="{% url 'GoodsReturnListAPI' %}" data-method="POST" data-url-redirect="{% url "GoodsReturnList" %}">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
@@ -106,10 +106,10 @@
                                     <thead class="bg-blue-light-5">
                                     <tr>
                                         <td class="w-5"></td>
-                                        <td class="w-40">{% trans 'LOT number' %}</td>
-                                        <td class="w-20">{% trans 'Quantity' %}</td>
-                                        <td class="w-15">{% trans 'Return' %}</td>
-                                        <td class="w-20">{% trans 'Re-delivery' %}</td>
+                                        <td class="w-30">{% trans 'LOT number' %}</td>
+                                        <td class="w-15">{% trans 'Quantity' %}</td>
+                                        <td class="w-25">{% trans 'Return' %}</td>
+                                        <td class="w-25">{% trans 'Re-delivery' %}</td>
                                     </tr>
                                     </thead>
                                 </table>
@@ -178,9 +178,10 @@
                                     <th class="required" style="min-width: 100px">{% trans 'Delivery' %}</th>
                                     <th style="min-width: 180px">{% trans 'Lot No.' %}</th>
                                     <th style="min-width: 280px">{% trans 'Vendor serial (Serial)' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Return' %}</th>
                                     <th style="min-width: 100px">{% trans 'Re-delivery' %}</th>
-                                    <th class="required" style="min-width: 180px">{% trans 'Cost' %}</th>
-                                    <th class="required" style="min-width: 180px">{% trans 'Subtotal price' %}</th>
+{#                                    <th class="required" style="min-width: 180px">{% trans 'Cost' %}</th>#}
+{#                                    <th class="required" style="min-width: 180px">{% trans 'Subtotal price' %}</th>#}
                                 </tr>
                                 </thead>
                                 <tbody></tbody>

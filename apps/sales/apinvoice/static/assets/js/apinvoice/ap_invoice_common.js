@@ -73,7 +73,7 @@ supplierSelectBtn.on('click', function () {
     // loadPurchaseOrder({})
 })
 
-function loadTableSelectGoodsReceipt(gr_filter) {
+function loadTableSelectGoodsReceipt() {
     tableSelectGoodsReceiptEle.DataTable().destroy()
     tableSelectGoodsReceiptEle.DataTableDefault({
         dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
@@ -88,7 +88,7 @@ function loadTableSelectGoodsReceipt(gr_filter) {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $('#select-goods-receipt-offcanvas').offcanvas('show')
-                    console.log(resp.data['goods_receipt_list'])
+                    // console.log(resp.data['goods_receipt_list'])
                     return resp.data['goods_receipt_list']
                 }
                 return [];
@@ -473,7 +473,7 @@ function loadPurchaseOrder(data) {
         keyText: 'title',
     }).on('change', function () {
         if (purchaseOrderEle.val()) {
-            loadTableSelectGoodsReceipt(purchaseOrderEle.val())
+            loadTableSelectGoodsReceipt()
         }
     })
 }
@@ -493,7 +493,10 @@ $('#add-product-btn').on('click', function () {
 $('#btn-add-row-line-detail').on('click', function () {
     if (purchaseOrderEle.val()) {
         loadTableSelectDetailProduct([])
-        loadTableSelectGoodsReceipt(purchaseOrderEle.val())
+        loadTableSelectGoodsReceipt()
+    }
+    else {
+        $.fn.notifyB({description: "You have not selected Purchase order yet"}, 'warning')
     }
 })
 
@@ -575,6 +578,7 @@ class APInvoiceHandle {
         // frm.dataForm['system_status'] = 1;
         if (frm.dataForm['data_item_list'].length === 0) {
             $.fn.notifyB({description: "No item in tab line detail"}, 'failure')
+            return false
         }
 
         console.log(frm.dataForm)

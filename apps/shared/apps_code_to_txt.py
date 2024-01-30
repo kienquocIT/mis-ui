@@ -13,6 +13,10 @@ class AppsCodeToList:
                 'is_active': True,
             }
         },
+        'b9650500-aba7-44e3-b6e0-2542622702a3': {
+            'title': _('Quotation'),
+            'is_active': True,
+        },
         'saleorder': {
             'saleorder': {
                 'title': _('Sale Order'),
@@ -46,6 +50,10 @@ class AppsCodeToList:
                 'title': _('Task'),
                 'is_active': False,
             },
+        },
+        'e66cfb5a-b3ce-4694-a4da-47618f53de4c': {
+            'title': _('Task'),
+            'is_active': False,
         },
         'saledata': {
             'contact': {

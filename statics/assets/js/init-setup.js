@@ -191,9 +191,58 @@ class UrlGatewayReverse {
         let arrAppCode = docAppCode.split(".");
         let urlData = '#';
         if (docID && arrAppCode.length === 2) {
-            urlData = globeGatewayMiddleDetailView.replaceAll('_plan_', arrAppCode[0]).replaceAll('_app_', arrAppCode[1]).replaceAll('_pk_', docID) + "?" + $.param(params);
+            urlData = globeGatewayMiddleDetailView
+                .replaceAll('_plan_', arrAppCode[0])
+                .replaceAll('_app_', arrAppCode[1])
+                .replaceAll('_pk_', docID) + "?" + $.param(params);
         }
         return urlData;
+    }
+
+    static get_url_pk_app(doc_id, app_id, params){
+        let urlData = '#';
+        if (app_id && doc_id){
+            urlData = globeGatewayPKMiddleDetailView
+                .replaceAll('__pk_app__', app_id)
+                .replaceAll('__pk_doc__', doc_id) + "?" + $.param(params);
+        }
+        return urlData;
+    }
+
+    static get_app_translate_full(){
+        let appNameTranslate = $("#app_name_translate").text();
+        return appNameTranslate ? JSON.parse(appNameTranslate): {};
+    }
+
+    static get_app_name(code_app){
+         if (code_app){
+            let _arr = code_app.split(".");
+            if (_arr.length === 2){
+                let appNameTranslate = UrlGatewayReverse.get_app_translate_full()
+                let appData = appNameTranslate?.[_arr[0].toLowerCase()];
+                if (appData && typeof appData === 'object'){
+                    let featureData = appNameTranslate?.[_arr[0].toLowerCase()][_arr[1].toLowerCase()];
+                    if (featureData && typeof  featureData === 'object') return featureData;
+                }
+            }
+        }
+        return {};
+    }
+
+    static get_app_name_pk_app(pk_app){
+        if (pk_app){
+            let appNameTranslate = UrlGatewayReverse.get_app_translate_full()
+            let appData = appNameTranslate?.[pk_app];
+            if (appData) return appData;
+        }
+        return {}
+    }
+
+    static has_active_app(appData){
+        if (appData){
+            if (appData && appData.hasOwnProperty('is_active')) return appData['is_active'];
+        }
+        return true;
     }
 }
 
@@ -419,23 +468,9 @@ class NotifyController {
             let appNameTranslate = $("#app_name_translate").text();
             appNameTranslate = appNameTranslate ? JSON.parse(appNameTranslate): {};
 
-            function get_app_name(_code_app){
-                 if (_code_app){
-                    let _arr = _code_app.split(".");
-                    if (_arr.length === 2){
-                        let appData = appNameTranslate?.[_arr[0].toLowerCase()];
-                        if (appData && typeof appData === 'object'){
-                            let featureData = appNameTranslate?.[_arr[0].toLowerCase()][_arr[1].toLowerCase()];
-                            if (featureData && typeof  featureData === 'object') return featureData;
-                        }
-                    }
-                }
-                return {};
-            }
-
             function resolve_app_name(_code_app){
                 if (_code_app){
-                    let appData = get_app_name(_code_app);
+                    let appData = UrlGatewayReverse.get_app_name(_code_app);
                     if (appData && appData.hasOwnProperty('title')) return appData['title'];
                 }
                 return _code_app;
@@ -443,8 +478,8 @@ class NotifyController {
 
             function has_active_app(_code_app){
                 if (_code_app){
-                    let appData = get_app_name(_code_app);
-                    if (appData && appData.hasOwnProperty('is_active')) return appData['is_active'];
+                    let appData = UrlGatewayReverse.get_app_name(_code_app);
+                    return UrlGatewayReverse.has_active_app(appData);
                 }
                 return true;
             }
@@ -495,7 +530,9 @@ class NotifyController {
                                 type="button"
                             ><i class="fa-solid fa-reply"></i> ${dataArea.attr('data-msg-reply')}</button>
                         `;
-                        let btn_goto = has_active_app(item?.['doc_app']) === true ? `<a href="${urlData}" class="btn btn-xs btn-primary text-no-capital" type="button"><i class="fa-solid fa-right-to-bracket"></i> ${dataArea.attr('data-msg-goto')} </a>` : ``;
+                        let btn_goto = has_active_app(item?.['doc_app']) !== true ?  `` : `
+                            <a href="${urlData}" class="btn btn-xs btn-primary text-no-capital" type="button"><i class="fa-solid fa-right-to-bracket"></i> ${dataArea.attr('data-msg-goto')} </a>
+                        `;
                         let tmp = `
                             <div
                                 class="dropdown-item mb-1 bell-menu-item"
@@ -5205,8 +5242,10 @@ class FileControl {
 
 class CommentControl {
     constructor(ele$, opts={}) {
-        let {owner_id} = {owner_id: $x.fn.getEmployeeCurrentID(), ...opts}
+        let {owner_id, btn_goto_enabled} = {owner_id: $x.fn.getEmployeeCurrentID(), btn_goto_enabled: true, ...opts}
         this.owner_id = owner_id;
+        this.btn_goto_enabled = btn_goto_enabled;
+
         this.ele$ = ele$;
         this.ele_list$ = ele$.find('.comment-list');
         this.ele_add = ele$.find('.comment-add-area');
@@ -5270,11 +5309,14 @@ class CommentControl {
 
             function loadData(btnThis, opts={}){
                 let {
-                    override_url, override_push_ele_group, force_run
+                    override_url, override_push_ele_group, force_run,
+                    success_callback, fail_callback,
                 } = {
                     override_url: urlResolved,
                     override_push_ele_group: commentRepliesEle,
                     force_run: false,
+                    success_callback: function (){},
+                    fail_callback: function (){},
                     ...opts
                 }
 
@@ -5289,6 +5331,7 @@ class CommentControl {
                             resp => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data){
+                                    success_callback(resp);
                                     let replies_list = data?.['comment_replies_list'] || [];
                                     replies_list.map(
                                         item => {
@@ -5304,7 +5347,7 @@ class CommentControl {
                                     )
                                 }
                             },
-                            errs => console.log(errs),
+                            errs => fail_callback(errs),
                         )
                     }
                 }
@@ -5357,22 +5400,27 @@ class CommentControl {
             eleItem$.siblings('.btn-comment-load-full').on('click', function (){
                 let parentEle = $(this).parent();
                 if (parentEle.hasClass('comment-replies')){
-                    $(this).remove();
                     let eleItemParent = parentEle.closest('.comment-item');
                     let urlSelected = eleItemParent.attr('data-comment-id');
                     let eleRepliesParent = eleItemParent.find('.comment-replies');
                     if (urlSelected && eleRepliesParent.length > 0){
-                        eleRepliesParent.empty();
                         loadData(btnShowReplies, {
                             override_url: clsThis.get_url_replies(urlSelected),
                             override_push_ele_group: eleRepliesParent,
                             force_run: true,
+                            success_callback: function (){
+                                $(this).remove();
+                                eleRepliesParent.empty();
+                            },
                         });
                     }
                 } else if (parentEle.hasClass('comment-list')) {
-                    $(this).remove();
-                    parentEle.empty();
-                    clsThis.fetch_all();
+                    clsThis.fetch_all({}, {
+                        success_callback: function (){
+                            $(this).remove();
+                            parentEle.empty();
+                        },
+                    });
                 } else {
                     throw Error('Outside parent of Full Button');
                 }
@@ -5827,6 +5875,19 @@ class CommentControl {
         if (this.ele$.attr('data-structure-inited') !== 'true'){
             this.ele$.attr('data-structure-inited', 'true');
 
+            function resolve_btn_goto(){
+                let appIdx = clsThis.ele$.find('input[name="application"]').val();
+                let docIdx = clsThis.ele$.find('input[name="doc_id"]').val();
+
+                if (appIdx && docIdx){
+                    let appData = UrlGatewayReverse.get_app_name_pk_app(appIdx);
+                    if (appData && typeof appData === 'object' && Object.keys(appData).length > 0 && UrlGatewayReverse.has_active_app(appData)){
+                        return UrlGatewayReverse.get_url_pk_app(docIdx, appIdx, {'redirect': true});
+                    }
+                }
+                return null;
+            }
+
             // init event collapse/expand
             let ele_this = this.ele$;
             this.ele_action_all.find('button[data-action="collapse-all"]').on('click', function (){
@@ -5839,6 +5900,22 @@ class CommentControl {
                     return $(this).find('.fa-chevron-up').hasClass('d-none');
                 }).trigger('click');
             })
+
+            // goto
+            let btnGoto = this.ele_action_all.find('button[data-action="goto"]');
+            let urlGoto = resolve_btn_goto();
+            if (urlGoto && this.btn_goto_enabled === true) {
+                btnGoto.attr('data-bs-toggle', 'tooltip');
+                btnGoto.attr('title', clsThis.ele$.attr('data-msg-goto-detail'));
+                btnGoto.on('click', () => open(urlGoto))
+            } else {
+                btnGoto.prop('disabled', true).fadeOut({
+                    duration: 'fast',
+                    always: function (){
+                        $(this).remove();
+                    }
+                });
+            }
 
             // init add new comment / event click button add
             this.init_box_comment();
@@ -5968,7 +6045,14 @@ class CommentControl {
         ).fadeIn('fast');
     }
 
-    fetch_all(params = {}) {
+    fetch_all(params = {}, opts={}) {
+        let {
+            success_callback, fail_callback,
+        } = {
+            success_callback: function (){},
+            fail_callback: function (){},
+            ...opts
+        }
         let clsThis = this;
         let url = this.ele$.attr('data-url');
         if (url) {
@@ -5982,10 +6066,12 @@ class CommentControl {
                 }),
                 method: 'GET',
                 isLoading: true,
+                sweetAlertOpts: {'allowOutsideClick': true},
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && data.hasOwnProperty('comment_list')) {
+                        success_callback(resp);
                         let comment_list = data.comment_list;
                         comment_list.map(
                             (item) => {
@@ -6003,7 +6089,7 @@ class CommentControl {
                         clsThis.render_btn_load_more();
                     }
                 },
-                (errs) => console.log(errs),
+                (errs) => fail_callback(errs),
             )
         } else throw Error('Comment list is not provide url');
 
@@ -6015,6 +6101,7 @@ class CommentControl {
             $.fn.callAjax2({
                 url: clsThis.ele$.attr('data-url-room-reply').replaceAll('__pk__', commentIdx),
                 method: 'GET',
+                sweetAlertOpts: {'allowOutsideClick': true},
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);

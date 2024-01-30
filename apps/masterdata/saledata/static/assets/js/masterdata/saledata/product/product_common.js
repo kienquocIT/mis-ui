@@ -753,17 +753,22 @@ function getDataForm() {
     data['height'] = parseFloat(heightEle.val());
     data['volume'] = parseFloat(volumeEle.val());
     data['weight'] = parseFloat(weightEle.val());
-    if (lengthEle.val() + widthEle.val() + heightEle.val() !== '') {
-        if (isNaN(data['length'] * data['width'] * data['height'])) {
-            $.fn.notifyB({description: 'Size values in General tab is not valid'}, 'failure');
-            return false
-        }
+
+    if (isNaN(data['length']) && lengthEle.val() !== '') {
+        $.fn.notifyB({description: 'Length values in General tab is not valid'}, 'failure');
+        return false
     }
-    if (weightEle.val() !== '') {
-        if (isNaN(data['weight'])) {
-            $.fn.notifyB({description: 'Size values in General tab is not valid'}, 'failure');
-            return false
-        }
+    if (isNaN(data['width']) && widthEle.val() !== '') {
+        $.fn.notifyB({description: 'Width values in General tab is not valid'}, 'failure');
+        return false
+    }
+    if (isNaN(data['height']) && heightEle.val() !== '') {
+        $.fn.notifyB({description: 'Height values in General tab is not valid'}, 'failure');
+        return false
+    }
+    if (isNaN(data['weight']) && weightEle.val() !== '') {
+        $.fn.notifyB({description: 'Weight values in General tab is not valid'}, 'failure');
+        return false
     }
 
     data['volume_id'] = volumeEle.attr('data-id');

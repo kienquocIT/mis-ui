@@ -1945,7 +1945,7 @@ class WFRTControl {
                                     <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
-                                    <input type="checkbox" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
+                                    <input type="radio" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
                                 </div>
                             </div><hr class="bg-teal">`;
         }

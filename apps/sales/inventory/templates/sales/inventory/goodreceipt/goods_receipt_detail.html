@@ -249,11 +249,11 @@
                                     <thead>
                                     <tr>
                                         <th class="w-5">#</th>
-                                        <th class="w-5 required">{% trans 'Product' %}</th>
+                                        <th class="w-15 required">{% trans 'Product' %}</th>
                                         <th class="w-10">{% trans 'Description' %}</th>
-                                        <th class="w-5 required">UoM</th>
+                                        <th class="w-5 required">{% trans 'UOM' %}</th>
                                         <th class="w-10 required">{% trans 'Quantity' %}</th>
-                                        <th class="w-35 required">{% trans 'Unit Price' %}</th>
+                                        <th class="w-25 required">{% trans 'Unit Price' %}</th>
                                         <th class="w-5">{% trans 'Tax' %}</th>
                                         <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                         <th class="w-5"></th>
@@ -314,13 +314,13 @@
                                     <thead>
                                     <tr>
                                         <th class="w-5">#</th>
-                                        <th class="w-5">{% trans 'Product' %}</th>
+                                        <th class="w-15">{% trans 'Product' %}</th>
                                         <th class="w-10">{% trans 'Description' %}</th>
-                                        <th class="w-5">UoM</th>
+                                        <th class="w-5">{% trans 'UOM' %}</th>
                                         <th class="w-15">{% trans 'Quantity' %}</th>
-                                        <th class="w-5">{% trans 'Warehouse' %}</th>
-                                        <th class="w-30">{% trans 'Unit Cost' %}</th>
-                                        <th class="w-25">{% trans 'Subtotal Price' %}</th>
+                                        <th class="w-10">{% trans 'Warehouse' %}</th>
+                                        <th class="w-25">{% trans 'Unit Cost' %}</th>
+                                        <th class="w-15">{% trans 'Subtotal Price' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -350,58 +350,6 @@
                 </div>
             </div>
         </div>
-
-        <input
-            type="hidden"
-            id="app-trans-factory"
-            data-view-detail-info="{% trans 'View detail' %}"
-            data-more-information="{% trans 'More information' %}"
-            data-validate-import="{% trans 'Quantity import must be less than equal remain quantity' %}"
-            data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
-            data-select="{% trans 'Select' %}"
-            data-lot-exist="{% trans 'Lot number is exist' %}"
-            data-serial-exist="{% trans 'Serial number is exist' %}"
-            data-lot-different="{% trans 'Lot number must be different' %}"
-            data-serial-different="{% trans 'Serial number must be different' %}"
-            data-for-po="{% trans 'For purchase order' %}"
-            data-for-ia="{% trans 'For inventory adjustment' %}"
-            data-for-product="{% trans 'For production' %}"
-        >
-        <input
-            type="hidden"
-            id="data-init-product"
-            data-url="{% url "ProductForSaleListAPI" %}"
-            data-link-detail="{% url "ProductDetail" 1 %}"
-            data-method="GET"
-        >
-        <input
-            type="hidden"
-            id="data-init-uom"
-            data-url="{% url "UnitOfMeasureListAPI" %}"
-            data-method="GET"
-        >
-        <input
-            type="hidden"
-            id="data-init-tax"
-            data-url="{% url "TaxListAPI" %}"
-            data-method="GET"
-        >
-        <input
-            type="hidden"
-            id="data-init-purchase-order-products"
-        >
-        <input
-            type="hidden"
-            id="data-submit-pr-warehouse"
-        >
-        <input
-            type="hidden"
-            id="data-detail-page"
-        >
-        <input type="hidden" id="url-factory"
-           data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
-           data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
-        >
 
 
         <div class="modal fade mt-5" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">
@@ -581,6 +529,59 @@
     </form>
 {% endblock %}
 
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-view-detail-info="{% trans 'View detail' %}"
+            data-more-information="{% trans 'More information' %}"
+            data-validate-import="{% trans 'Quantity import must be less than equal remain quantity' %}"
+            data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
+            data-select="{% trans 'Select' %}"
+            data-lot-exist="{% trans 'Lot number is exist' %}"
+            data-serial-exist="{% trans 'Serial number is exist' %}"
+            data-lot-different="{% trans 'Lot number must be different' %}"
+            data-serial-different="{% trans 'Serial number must be different' %}"
+            data-for-po="{% trans 'For purchase order' %}"
+            data-for-ia="{% trans 'For inventory adjustment' %}"
+            data-for-product="{% trans 'For production' %}"
+        >
+        <input
+            type="text"
+            id="data-init-product"
+            data-url="{% url "ProductForSaleListAPI" %}"
+            data-link-detail="{% url "ProductDetail" 1 %}"
+            data-method="GET"
+        >
+        <input
+            type="text"
+            id="data-init-uom"
+            data-url="{% url "UnitOfMeasureListAPI" %}"
+            data-method="GET"
+        >
+        <input
+            type="text"
+            id="data-init-tax"
+            data-url="{% url "TaxListAPI" %}"
+            data-method="GET"
+        >
+        <input
+            type="text"
+            id="data-init-purchase-order-products"
+        >
+        <input
+            type="text"
+            id="data-submit-pr-warehouse"
+        >
+        <input
+            type="text"
+            id="data-detail-page"
+        >
+        <input type="text" id="url-factory"
+           data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
+           data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
+        >
+{% endblock %}
 
 {% block jsFooter %}
 

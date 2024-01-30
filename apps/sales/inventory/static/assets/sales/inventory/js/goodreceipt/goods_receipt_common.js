@@ -281,57 +281,59 @@ class GRLoadDataHandle {
 
     static loadModalProduct(is_detail = false) {
         let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
-        if (GRDataTableHandle.tablePOProduct[0].querySelector('.dataTables_empty')) {
-            $.fn.callAjax2({
-                    'url': frm.dataUrl,
-                    'method': frm.dataMethod,
-                    'data': {'purchase_order_id': GRLoadDataHandle.POSelectEle.val()},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('purchase_order_product_list') && Array.isArray(data.purchase_order_product_list)) {
-                            if (is_detail === true) {
-                                let data_detail = JSON.parse($('#data-detail-page').val());
-                                if (GRLoadDataHandle.POSelectEle.val()) {
-                                    for (let data_product of data_detail?.['goods_receipt_product']) {
-                                        for (let dataPOProduct of data.purchase_order_product_list) {
-                                            if (dataPOProduct?.['id'] === data_product?.['purchase_order_product_id']) {
-                                                dataPOProduct['quantity_import'] = data_product?.['quantity_import'];
-                                                // If PO have PR
-                                                for (let dataPRProduct of dataPOProduct?.['purchase_request_products_data']) {
-                                                    dataPRProduct['id'] = dataPRProduct?.['purchase_request_product']?.['id'];
-                                                    for (let dataPR of data_product?.['purchase_request_products_data']) {
-                                                        if (dataPRProduct['id'] === dataPR?.['purchase_request_product']?.['id']) {
-                                                            dataPRProduct['quantity_import'] = dataPR?.['quantity_import'];
-                                                            for (let dataWarehouse of dataPR?.['warehouse_data']) {
-                                                                dataWarehouse['purchase_request_product_id'] = dataPR?.['purchase_request_product']?.['id'];
-                                                                GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
+        if (GRLoadDataHandle.POSelectEle.val()) {
+            if (GRDataTableHandle.tablePOProduct[0].querySelector('.dataTables_empty')) {
+                $.fn.callAjax2({
+                        'url': frm.dataUrl,
+                        'method': frm.dataMethod,
+                        'data': {'purchase_order_id': GRLoadDataHandle.POSelectEle.val()},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('purchase_order_product_list') && Array.isArray(data.purchase_order_product_list)) {
+                                if (is_detail === true) {
+                                    let data_detail = JSON.parse($('#data-detail-page').val());
+                                    if (GRLoadDataHandle.POSelectEle.val()) {
+                                        for (let data_product of data_detail?.['goods_receipt_product']) {
+                                            for (let dataPOProduct of data.purchase_order_product_list) {
+                                                if (dataPOProduct?.['id'] === data_product?.['purchase_order_product_id']) {
+                                                    dataPOProduct['quantity_import'] = data_product?.['quantity_import'];
+                                                    // If PO have PR
+                                                    for (let dataPRProduct of dataPOProduct?.['purchase_request_products_data']) {
+                                                        dataPRProduct['id'] = dataPRProduct?.['purchase_request_product']?.['id'];
+                                                        for (let dataPR of data_product?.['purchase_request_products_data']) {
+                                                            if (dataPRProduct['id'] === dataPR?.['purchase_request_product']?.['id']) {
+                                                                dataPRProduct['quantity_import'] = dataPR?.['quantity_import'];
+                                                                for (let dataWarehouse of dataPR?.['warehouse_data']) {
+                                                                    dataWarehouse['purchase_request_product_id'] = dataPR?.['purchase_request_product']?.['id'];
+                                                                    GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
+                                                                }
+                                                                dataPRProduct['warehouse_data'] = dataPR?.['warehouse_data'];
                                                             }
-                                                            dataPRProduct['warehouse_data'] = dataPR?.['warehouse_data'];
                                                         }
                                                     }
+                                                    // If PO doesn't have PR
+                                                    for (let dataWarehouse of data_product?.['warehouse_data']) {
+                                                        dataWarehouse['purchase_order_product_id'] = data_product?.['purchase_order_product_id'];
+                                                        GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
+                                                    }
+                                                    dataPOProduct['warehouse_data'] = data_product?.['warehouse_data'];
                                                 }
-                                                // If PO doesn't have PR
-                                                for (let dataWarehouse of data_product?.['warehouse_data']) {
-                                                    dataWarehouse['purchase_order_product_id'] = data_product?.['purchase_order_product_id'];
-                                                    GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
-                                                }
-                                                dataPOProduct['warehouse_data'] = data_product?.['warehouse_data'];
                                             }
                                         }
                                     }
                                 }
+                                GRLoadDataHandle.initPOProductEle.val(JSON.stringify(data.purchase_order_product_list));
+                                GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                                GRDataTableHandle.tablePOProduct.DataTable().rows.add(data.purchase_order_product_list).draw();
                             }
-                            GRLoadDataHandle.initPOProductEle.val(JSON.stringify(data.purchase_order_product_list));
-                            GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                            GRDataTableHandle.tablePOProduct.DataTable().rows.add(data.purchase_order_product_list).draw();
                         }
                     }
-                }
-            )
+                )
+            }
         }
         return true;
     };

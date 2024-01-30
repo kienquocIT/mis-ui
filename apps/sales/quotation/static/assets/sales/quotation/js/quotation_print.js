@@ -176,7 +176,7 @@ ${htmlTableProduct}
 
     static loadAddEventPrint() {
         let editor = tinymce.get('quotation-tinymce');
-        document.getElementById('printButton').addEventListener('click', function () {
+        document.getElementById('print-document').addEventListener('click', function () {
             if (editor) {
                 editor.execCommand('mcePrint');
             }

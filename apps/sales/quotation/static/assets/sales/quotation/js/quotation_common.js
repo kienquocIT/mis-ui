@@ -1088,9 +1088,6 @@ class QuotationLoadDataHandle {
             }
         }
         $table.DataTable().rows.add(tableData).draw();
-        if ($form.attr('data-method').toLowerCase() === 'get') {
-            QuotationLoadDataHandle.loadTableDisabled($table);
-        }
         // load dropdowns
         QuotationLoadDataHandle.loadDropDowns($table);
         // check config & load price list for rows
@@ -1099,7 +1096,10 @@ class QuotationLoadDataHandle {
             QuotationCheckConfigHandle.checkConfig(false, row);
             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
         })
-
+        // load disabled if page detail
+        if ($form.attr('data-method').toLowerCase() === 'get') {
+            QuotationLoadDataHandle.loadTableDisabled($table);
+        }
         $.fn.initMaskMoney2();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();

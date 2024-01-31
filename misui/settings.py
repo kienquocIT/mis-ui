@@ -75,6 +75,7 @@ INSTALLED_APPS = \
         'apps.core.process',
         'apps.core.programme',
         'apps.core.comment',
+        'apps.core.extends',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',

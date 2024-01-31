@@ -20,21 +20,21 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'wrap-text',
                         render: () => {
                             return ``;
                         }
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-15',
+                        className: 'wrap-text',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
-                        data: 'customer',
+                        data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
@@ -42,6 +42,13 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        data: 'customer',
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `${row?.['sale_order']?.['customer']?.['name']}`
+                        }
+                    },
+                                        {
                         data: 'sale_person',
                         className: 'wrap-text',
                         render: (data, type, row) => {

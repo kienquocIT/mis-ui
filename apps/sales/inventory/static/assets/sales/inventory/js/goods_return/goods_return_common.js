@@ -888,22 +888,22 @@ class GoodsReturnHandle {
         frm.dataForm['sale_order'] = $('#sale-order').val()
         frm.dataForm['note'] = $('#note').val()
 
-        let date_item = JSON.parse(dataLineDetailTableScript.text())
+        let data_item = JSON.parse(dataLineDetailTableScript.text())
 
-        frm.dataForm['delivery'] = date_item[0]?.['delivery_id']
-        frm.dataForm['product'] = date_item[0]?.['product_id']
-        frm.dataForm['uom'] = date_item[0]?.['uom_id']
+        frm.dataForm['delivery'] = data_item[0]?.['delivery_id']
+        frm.dataForm['product'] = data_item[0]?.['product_id']
+        frm.dataForm['uom'] = data_item[0]?.['uom_id']
 
         let product_detail_list = []
-        if (date_item[0]?.['type'] === 0) {
+        if (data_item[0]?.['type'] === 0) {
             product_detail_list.push({
                 'type': 0,
-                'default_return_number': parseFloat(date_item[0]?.['is_return']),
-                'default_redelivery_number': parseFloat(date_item[0]?.['is_redelivery'])
+                'default_return_number': parseFloat(data_item[0]?.['is_return']),
+                'default_redelivery_number': parseFloat(data_item[0]?.['is_redelivery'])
             })
         }
-        else if (date_item[0]?.['type'] === 1) {
-            for (let item of date_item) {
+        else if (data_item[0]?.['type'] === 1) {
+            for (let item of data_item) {
                 product_detail_list.push({
                     'type': 1,
                     'lot_no_id': item?.['lot_id'],
@@ -912,8 +912,8 @@ class GoodsReturnHandle {
                 })
             }
         }
-        else if (date_item[0]?.['type'] === 2) {
-            for (let item of date_item) {
+        else if (data_item[0]?.['type'] === 2) {
+            for (let item of 1) {
                 product_detail_list.push({
                     'type': 2,
                     'serial_no_id': item?.['serial_id'],

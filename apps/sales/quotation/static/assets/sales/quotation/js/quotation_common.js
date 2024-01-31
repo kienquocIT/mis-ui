@@ -74,7 +74,7 @@ class QuotationLoadDataHandle {
 
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
-        if (form.attr('data-method') === 'POST') {
+        if (form.attr('data-method').toLowerCase() === 'post') {
             let dataInitOppRaw = $('#data-init-opportunity').val();
             if (dataInitOppRaw) {
                 let dataInitOpp = JSON.parse(dataInitOppRaw);
@@ -199,7 +199,7 @@ class QuotationLoadDataHandle {
             }
         }
         // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
-        if (form.attr('data-method') !== 'GET') {
+        if (form.attr('data-method').toLowerCase() !== 'get') {
             if (!dataCustomer?.['is_copy']) {
                 QuotationLoadDataHandle.loadDataProductAll();
             }
@@ -1088,9 +1088,6 @@ class QuotationLoadDataHandle {
             }
         }
         $table.DataTable().rows.add(tableData).draw();
-        if ($form.attr('data-method').toLowerCase() === 'get') {
-            QuotationLoadDataHandle.loadTableDisabled($table);
-        }
         // load dropdowns
         QuotationLoadDataHandle.loadDropDowns($table);
         // check config & load price list for rows
@@ -1099,7 +1096,10 @@ class QuotationLoadDataHandle {
             QuotationCheckConfigHandle.checkConfig(false, row);
             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
         })
-
+        // load disabled if page detail
+        if ($form.attr('data-method').toLowerCase() === 'get') {
+            QuotationLoadDataHandle.loadTableDisabled($table);
+        }
         $.fn.initMaskMoney2();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
@@ -1553,6 +1553,8 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
             // Set form novalidate
             formSubmit[0].setAttribute('novalidate', 'novalidate');
+
+            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
         } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
             // create URL and add to href
             let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -1592,7 +1594,7 @@ class QuotationLoadDataHandle {
         }
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
-                if (form.getAttribute('data-method') === 'GET') {
+                if (form.getAttribute('data-method').toLowerCase() === 'get') {
                     let btnCopy = document.getElementById('btn-copy-quotation');
                     if (btnCopy) {
                         btnCopy.setAttribute('disabled', 'true');
@@ -1671,6 +1673,16 @@ class QuotationLoadDataHandle {
         }
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
+        // show print button
+        if ($(form).attr('data-method').toLowerCase() === 'get') {
+            let employeeCurrentRaw = $('#data-init-quotation-create-request-employee').val();
+            if (employeeCurrentRaw) {
+                let employeeCurrent = JSON.parse(employeeCurrentRaw);
+                if (employeeCurrent?.['id'] === data?.['sale_person']?.['id'] && [2, 3].includes(data?.['system_status'])) {
+                    $('#print-document')[0].removeAttribute('hidden');
+                }
+            }
+        }
         // load totals
         QuotationLoadDataHandle.loadTotal(data, true, false, false);
         QuotationLoadDataHandle.loadTotal(data, false, true, false);
@@ -3611,7 +3623,6 @@ class indicatorHandle {
                     'method': method,
                     'isDropdown': true,
                 }
-                // url, method
             ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -3631,7 +3642,6 @@ class indicatorHandle {
                 indicatorHandle.calculateIndicator(data_list);
             }
         }
-
     }
 
     static calculateIndicator(indicator_list) {

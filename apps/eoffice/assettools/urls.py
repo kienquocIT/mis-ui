@@ -5,7 +5,9 @@ from apps.eoffice.assettools.views import AssetToolsConfigView, AssetToolsConfig
     AssetToolsProvideRequestCreateAPI, AssetToolsProvideRequestEdit, AssetToolsProvideRequestEditAPI, \
     AssetToolsProvideRequestDetailAPI, AssetToolsDeliveryCreate, AssetProductListByProvideIDAPI, \
     AssetToolsDeliveryCreateAPI, AssetToolsDeliveryList, AssetToolsDeliveryListAPI, AssetToolsDeliveryDetail, \
-    AssetToolsDeliveryEdit, AssetToolsDeliveryDetailAPI, AssetToolsDeliveryEditAPI, AssetToolsList, AssetToolsListAPI
+    AssetToolsDeliveryEdit, AssetToolsDeliveryDetailAPI, AssetToolsDeliveryEditAPI, AssetToolsList, AssetToolsListAPI, \
+    AssetToolsReturnCreate, AssetToolsReturnList, AssetToolsReturnCreateAPI, AssetToolsReturnListAPI, \
+    AssetToolsReturnDetail, AssetToolsReturnDetailAPI, AssetToolsReturnEditAPI, AssetToolsReturnEdit
 
 urlpatterns = [
     # config
@@ -41,4 +43,14 @@ urlpatterns = [
     path('delivery/detail-api/<str:pk>', AssetToolsDeliveryDetailAPI.as_view(), name='AssetToolsDeliveryDetailAPI'),
     path('delivery/update/<str:pk>', AssetToolsDeliveryEdit.as_view(), name='AssetToolsDeliveryEdit'),
     path('delivery/update-api/<str:pk>', AssetToolsDeliveryEditAPI.as_view(), name='AssetToolsDeliveryEditAPI'),
+    # asset return
+    path('return/create', AssetToolsReturnCreate.as_view(), name='AssetToolsReturnCreate'),
+    path('return/create-api', AssetToolsReturnCreateAPI.as_view(), name='AssetToolsReturnCreateAPI'),
+    path('return/list', AssetToolsReturnList.as_view(), name='AssetToolsReturnList'),
+    path('return/list-api', AssetToolsReturnListAPI.as_view(), name='AssetToolsReturnListAPI'),
+    path('return/detail/<str:pk>', AssetToolsReturnDetail.as_view(), name='AssetToolsReturnDetail'),
+    path('return/detail-api/<str:pk>', AssetToolsReturnDetailAPI.as_view(), name='AssetToolsReturnDetailAPI'),
+    path('return/update/<str:pk>', AssetToolsReturnEdit.as_view(), name='AssetToolsReturnEdit'),
+    path('return/update-api/<str:pk>', AssetToolsReturnEditAPI.as_view(), name='AssetToolsReturnEditAPI'),
+
 ]

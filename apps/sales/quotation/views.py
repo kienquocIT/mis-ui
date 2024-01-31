@@ -100,10 +100,14 @@ class QuotationDetail(View):
         breadcrumb='QUOTATION_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk},
-                'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
-                'form_id': 'frm_quotation_create',
-                }, status.HTTP_200_OK
+        return {
+                   'data': {
+                       'doc_id': pk,
+                       'employee_current': json.dumps(request.user.employee_current_data),
+                   },
+                   'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
+                   'form_id': 'frm_quotation_create',
+               }, status.HTTP_200_OK
 
 
 class QuotationUpdate(View):

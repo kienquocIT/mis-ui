@@ -306,6 +306,9 @@ def mask_view(**parent_kwargs):
                             case _:
                                 ctx['pk'] = pk
                                 ctx['is_ga_enabled'] = settings.GA_COLLECTION_ENABLED
+                                ctx['ga_config'] = {
+                                    'script': settings.GA_SCRIPT, 'code': settings.GA_CODE
+                                } if settings.GA_COLLECTION_ENABLED else {}
                                 ctx['is_debug_src'] = settings.DEBUG
                                 ctx['is_debug'] = settings.DEBUG_JS
                                 # ctx['is_notify_key'] = 1 if is_notify_key is True else 0

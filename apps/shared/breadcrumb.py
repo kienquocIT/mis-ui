@@ -294,6 +294,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ASSET_TOOLS_CONFIG = BreadcrumbChildren(_('Asset, Tools config'), 'AssetToolsConfigView')
     ASSET_TOOLS_PROVIDE_LIST = BreadcrumbChildren(_('Asset, Tools provide list'), 'AssetToolsProvideRequestList')
     ASSET_TOOLS_DELIVERY_LIST = BreadcrumbChildren(_('Asset, Tools delivery list'), 'AssetToolsDeliveryList')
+    ASSET_TOOLS_RETURN_LIST = BreadcrumbChildren(_('Asset, Tools return list'), 'AssetToolsReturnList')
 
     MEETING_SCHEDULE_LIST_PAGE = BreadcrumbChildren(_('Meeting schedule list'), 'MeetingScheduleList')
     MEETING_SCHEDULE_CREATE_PAGE = BreadcrumbChildren(_('Meeting schedule create'), 'MeetingScheduleCreate')
@@ -794,6 +795,13 @@ class BreadcrumbView:
     ASSET_TOOLS_DELIVERY_CREATE = ASSET_TOOLS_DELIVERY_LIST + [BreadcrumbItem.BASTION_CREATE]
     ASSET_TOOLS_DELIVERY_DETAIL = ASSET_TOOLS_DELIVERY_LIST + [BreadcrumbItem.BASTION_DETAIL]
     ASSET_TOOLS_DELIVERY_EDIT = ASSET_TOOLS_DELIVERY_LIST + [BreadcrumbItem.BASTION_UPDATE]
+    ASSET_TOOLS_RETURN_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.ASSET_TOOLS_RETURN_LIST
+    ]
+    ASSET_TOOLS_RETURN_CREATE = ASSET_TOOLS_RETURN_LIST + [BreadcrumbItem.BASTION_CREATE]
+    ASSET_TOOLS_RETURN_DETAIL = ASSET_TOOLS_RETURN_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    ASSET_TOOLS_RETURN_EDIT = ASSET_TOOLS_RETURN_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
     MEETING_SCHEDULE_LIST_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE]
     MEETING_SCHEDULE_CREATE_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE,

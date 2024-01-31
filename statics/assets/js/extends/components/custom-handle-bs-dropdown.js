@@ -6,8 +6,7 @@
 class DropdownBSHandle {
     static init(){
         $('.info-btn').off().on('click', function () {
-            if ($(this).parents('.dropdown').hasClass('show'))
-                $(this).parents('.dropdown').removeClass('show')
+            if ($(this).parents('.dropdown').hasClass('show')) $(this).parents('.dropdown').removeClass('show')
             else{
                 $(this).parents('.dropdown').addClass('show')
                 let self = window.innerHeight - $(this).offset().top
@@ -28,7 +27,8 @@ class DropdownBSHandle {
                     )
             }
         });
-        $(document).off().on('click', function (e) {
+        $(document).on('click', function (e) {
+            e.stopPropagation()
             let container = $(".dropdown.show"); // Give you class or ID
             if (!container.is(e.target) && container.has(e.target).length === 0) // ... nor a descendant-child of the container
             {

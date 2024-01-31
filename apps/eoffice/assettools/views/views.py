@@ -175,6 +175,24 @@ class AssetToolsProvideRequestEditAPI(APIView):
 
 
 class AssetProductListByProvideIDAPI(APIView):
+    @classmethod
+    def get_callback_success(cls, result):
+        new_lst = []
+        compare_id = {}
+        for item in result:
+            if item['product']['id'] in compare_id:
+                current_item = compare_id[item['product']['id']]
+                current_item['quantity'] += item['quantity']
+                current_item['delivered'] += item['delivered']
+            else:
+                compare_id[item['product']['id']] = item
+        for idx in compare_id:
+            new_lst.append(compare_id[idx])
+        new_lst.sort(key=lambda x: x['order'])
+        return {
+            'asset_provide_product_list': new_lst,
+        }
+
     @mask_view(
         login_require=True,
         is_api=True
@@ -183,4 +201,4 @@ class AssetProductListByProvideIDAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_PRODUCT_LIST_BY_PROVIDE).get(
             request.query_params.dict()
         )
-        return resp.auto_return(key_success='asset_provide_product_list')
+        return resp.auto_return(callback_success=self.get_callback_success)

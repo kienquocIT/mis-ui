@@ -167,6 +167,9 @@ PLAN_APP_OF_E_OFFICE = {
         'assettoolsdelivery': ReverseUrlCommon(
             list_view_name='AssetToolsDeliveryList', detail_view_name='AssetToolsProvideRequestDetail'
         ).data,
+        'assettoolsreturn': ReverseUrlCommon(
+            list_view_name='AssetToolsReturnList', detail_view_name='AssetToolsReturnDetail'
+        ).data,
     }
 }
 

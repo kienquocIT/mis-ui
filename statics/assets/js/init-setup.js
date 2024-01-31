@@ -6181,13 +6181,14 @@ var DataTableAction = {
 
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {
-            let value = data[key.value]
-            if (data.hasOwnProperty(key.value)) htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${value}</p></div>`;
-            if (key.value.split('.').length >= 2){
-                value = data[key.value.split('.')[0]]?.[key.value.split('.')[1]]
-                if (data.hasOwnProperty(key.value.split('.')[0]))
-                    htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${value}</p></div>`;
+            let isValue = data[key.value] ? data[key.value] : '--'
+            const keyParts = key.value.split('.')
+            if (keyParts.length >= 2){
+                const temp = data[keyParts[0]]?.[keyParts[1]]
+                if (temp) isValue = temp
+                else isValue = '--'
             }
+            htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${isValue}</p></div>`;
         }
         if (link) {
             link = link.format_url_with_uuid(data['id']);

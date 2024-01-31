@@ -40,6 +40,10 @@ class AppsCodeToList:
                 'title': _('Asset, Tools delivery'),
                 'is_active': True,
             },
+            'assettoolsreturn': {
+                'title': _('Asset, Tools return'),
+                'is_active': True,
+            },
         },
         'task': {
             'opportunitytask': {

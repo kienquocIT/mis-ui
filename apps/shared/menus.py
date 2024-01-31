@@ -440,6 +440,10 @@ class MenuEOffice:
                 name='Asset, Tools list', code='menu_asset_list', view_name='AssetToolsList',
                 icon='<i class="fa-solid fa-list"></i>',
             ),
+            MenuCommon(
+                name='Asset, Tools return list', code='menu_asset_return', view_name='AssetToolsReturnList',
+                icon='<i class="fa-solid fa-backward-fast"></i>',
+            ),
         ]
     )
     MEETING = MenuCommon(

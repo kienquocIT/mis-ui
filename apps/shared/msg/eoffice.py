@@ -28,6 +28,7 @@ class AssetToolsMsg:
     ASSET_TOOLS = _('Asset, Tools')
     PROVIDE = _('Provide')
     DELIVERY = _('Delivery')
+    RETURN = _('Return')
 
 
 class MeetingScheduleMsg:

@@ -88,8 +88,7 @@ class DeliveryTableHandle {
                             if (!row && data?.['warehouse_data']) row = data['warehouse_data']
                             if (row && Object.keys(row).length > 0) dataLoad.push({...row, selected: true})
                             let params = {
-                                product_id: data.product.id,
-                                is_asset: true
+                                product_id: data.product.id
                             }
                             let html = $(`<select>`).addClass('form-select row_warehouse')
                                 .attr('name', `warehouse_${meta.row}`).attr('data-zone', 'products').attr(

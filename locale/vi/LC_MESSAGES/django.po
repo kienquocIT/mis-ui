@@ -6188,3 +6188,35 @@ msgstr "Đơn hàng"
 #
 msgid "Copy successfully"
 msgstr "Sao chép thành công"
+
+#
+msgid "Asset, Tools return list"
+msgstr "Danh sách thu hồi tài sản"
+
+#
+msgid "Asset return"
+msgstr "Thu hồi tài sản"
+
+#
+msgid "Asset, Tools used by employee"
+msgstr "Tài sản sử dụng bởi người dùng"
+
+#
+msgid "Using"
+msgstr "Đang sử dụng"
+
+#
+msgid "Return No."
+msgstr "Số thu hồi"
+
+#
+msgid "List product return is empty"
+msgstr "Số lượng sản phẩm đang trống"
+
+#
+msgid "Return No. is empty"
+msgstr "Số thu hồi đang trống"
+
+#
+msgid "Return No. is greater than Using No."
+msgstr "Số thu hồi lớn hơn số đang sử dụng"

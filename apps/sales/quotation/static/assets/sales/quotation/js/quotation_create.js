@@ -145,7 +145,7 @@ $(function () {
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            deleteRow($(this).closest('tr'), tableProduct);
+            deleteRow(this.closest('tr'), tableProduct);
             // Re order
             reOrderSTT(tableProduct);
             // Delete all promotion rows
@@ -153,7 +153,10 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // ReCalculate Total
-            QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
+            QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
+            // load again table cost
+            QuotationLoadDataHandle.loadDataTableCost();
+            QuotationLoadDataHandle.loadSetWFRuntimeZone();
         });
 
 // Action on click price list's option
@@ -232,7 +235,7 @@ $(function () {
                 if ($(eleGroup).attr('aria-expanded') === 'false') {
                     $(eleGroup).click();
                 }
-                deleteRow($(this).closest('tr'), tableProduct);
+                deleteRow(this.closest('tr'), tableProduct);
                 // Re order
                 reOrderSTT(tableProduct);
             }
@@ -330,7 +333,7 @@ $(function () {
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            deleteRow($(this).closest('tr'), tableExpense);
+            deleteRow(this.closest('tr'), tableExpense);
             // Re order
             reOrderSTT(tableExpense);
             QuotationCalculateCaseHandle.updateTotal(tableExpense[0], false, false, true);

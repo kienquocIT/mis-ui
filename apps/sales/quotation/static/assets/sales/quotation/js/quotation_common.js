@@ -1098,20 +1098,20 @@ class QuotationLoadDataHandle {
                         rowData['order'] = parseInt(eleOrder.innerHTML);
                     }
                     rowData['is_promotion'] = false;
-                    rowData['promotion'] = null;
+                    rowData['promotion'] = {};
                     rowData['is_shipping'] = false;
-                    rowData['shipping'] = null;
+                    rowData['shipping'] = {};
                     tableData.push(rowData);
                 } else if (elePromotion) { // PROMOTION
                     let check_none_blank_list = ['', "", null, "undefined"];
-                    rowData['product'] = null;
+                    rowData['product'] = {};
                     if (elePromotion.getAttribute('data-id-product') && !check_none_blank_list.includes(elePromotion.getAttribute('data-id-product'))) {
                         rowData['product'] = elePromotion.getAttribute('data-id-product');
                     }
                     rowData['is_promotion'] = true;
-                    rowData['promotion'] = elePromotion.getAttribute('data-id');
+                    rowData['promotion'] = {'id': elePromotion.getAttribute('data-id')};
                     rowData['is_shipping'] = false;
-                    rowData['shipping'] = null;
+                    rowData['shipping'] = {};
                     rowData['product_title'] = elePromotion.value;
                     rowData['product_code'] = elePromotion.value;
                     rowData['unit_of_measure'] = null;
@@ -1165,11 +1165,11 @@ class QuotationLoadDataHandle {
                     }
                     tableData.push(rowData);
                 } else if (eleShipping) { // SHIPPING
-                    rowData['product'] = null;
+                    rowData['product'] = {};
                     rowData['is_shipping'] = true;
-                    rowData['shipping'] = eleShipping.getAttribute('data-id');
+                    rowData['shipping'] = {'id': eleShipping.getAttribute('data-id')};
                     rowData['is_promotion'] = false;
-                    rowData['promotion'] = null;
+                    rowData['promotion'] = {};
                     rowData['product_title'] = eleShipping.value;
                     rowData['product_code'] = eleShipping.value;
                     rowData['unit_of_measure'] = null;
@@ -2423,7 +2423,6 @@ class QuotationDataTableHandle {
                 },
             ],
         });
-
     };
 
     static dataTableCost(data) {

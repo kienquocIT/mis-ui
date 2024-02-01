@@ -7,14 +7,16 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button id="update-goods-return" class="btn btn-outline-primary" type="submit" form="frm_goods_return_detail">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
+{#    <a href="{% url 'GoodsIssueUpdate' pk=pk %}">#}
+{#        <button class="btn btn-outline-primary" id="btn-enable-edit">#}
+{#            <span>#}
+{#                <span>{% trans 'Edit' %}</span>#}
+{#                <span class="icon">#}
+{#                    <i class="fa-regular fa-pen-to-square"></i>#}
+{#                </span>#}
+{#            </span>#}
+{#        </button>#}
+{#    </a>#}
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"

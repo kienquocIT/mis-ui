@@ -887,6 +887,327 @@ function LoadSaleOrder(data) {
     })
 }
 
+function loadTableDetailPageLOT(data_source=[]) {
+    lineDetailTable.DataTable().clear().destroy()
+    lineDetailTable.DataTableDefault({
+        dom: "",
+        columnDefs : [{
+            visible: false, targets: [5]
+        }],
+        rowIdx: true,
+        reloadCurrency: true,
+        paging: false,
+        data: data_source,
+        columns: [
+            {
+                'render': () => {
+                    return ``;
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-secondary badge-sm">${row?.['product']?.['code']}</span><br>${row?.['product']?.['title']}`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `${row?.['uom']?.['title']}`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="text-primary">${row?.['delivery']?.['code']}</span>`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary mb-1">${row?.['data_detail'][0]?.['lot_no']?.['lot_number']}</span><br>`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    // if (row?.['type'] === 2) {
+                        // let html = ``
+                        // for (let i = 0; i < row?.['vendor_serial_number_with_serial_number'].length; i++) {
+                        //     html += `<span class="text-secondary mb-1">${row?.['vendor_serial_number_with_serial_number'][i]}</span><br>`
+                        // }
+                        // return html
+                    // }
+                    return ``
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary mb-1">${row?.['data_detail'][0]?.['lot_return_number']}</span><br>`
+                    // else if (row?.['type'] === 2) {
+                    //     let html = ``
+                    //     for (let i = 0; i < row?.['is_return'].length; i++) {
+                    //         html += `<span class="text-secondary mb-1">${row?.['is_return'][i] ? 'Yes' : 'No'}</span><br>`
+                    //     }
+                    //     return html
+                    // }
+                    // else {
+                    //     return row?.['is_return']
+                    // }
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary mb-1">${row?.['data_detail'][0]?.['lot_redelivery_number']}</span><br>`
+
+                    // else if (row?.['type'] === 2) {
+                    //     let html = ``
+                    //     for (let i = 0; i < row?.['is_redelivery'].length; i++) {
+                    //         html += `<span class="text-secondary mb-1">${row?.['is_redelivery'][i] ? 'Yes' : 'No'}</span><br>`
+                    //     }
+                    //     return html
+                    // }
+                    // else {
+                    //     return row?.['is_redelivery']
+                    // }
+                }
+            },
+            // {
+            //     data: '',
+            //     className: 'wrap-text',
+            //     render: (data, type, row) => {
+            //         return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price']}"></span>`
+            //     }
+            // },
+            // {
+            //     data: '',
+            //     className: 'wrap-text',
+            //     render: (data, type, row) => {
+            //         if (row?.['type'] === 1) {
+            //             let sum = data_source[0]?.['is_return'].reduce(function (acc, current) {
+            //                 return acc + current;
+            //             }, 0);
+            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * sum}"></span>`
+            //         }
+            //         else if (row?.['type'] === 2) {
+            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return'].length}"></span>`
+            //         }
+            //         else {
+            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return']}"></span>`
+            //         }
+            //     }
+            // }
+        ],
+    });
+}
+
+function loadTableDetailPageSN(data_source=[]) {
+    lineDetailTable.DataTable().clear().destroy()
+    lineDetailTable.DataTableDefault({
+        dom: "",
+        columnDefs : [{
+            visible: false, targets: [4, 6]
+        }],
+        rowIdx: true,
+        reloadCurrency: true,
+        paging: false,
+        data: data_source,
+        columns: [
+            {
+                'render': () => {
+                    return ``;
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-secondary badge-sm">${row?.['product']?.['code']}</span><br>${row?.['product']?.['title']}`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `${row?.['uom']?.['title']}`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="text-primary">${row?.['delivery']?.['code']}</span>`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    let html = ``
+                    for (let i = 0; i < row?.['data_detail'].length; i++) {
+                        html += `<span class="text-secondary mb-1">${row?.['data_detail'][i]?.['serial_no']?.['vendor_serial_number']} (${row?.['data_detail'][i]?.['serial_no']?.['serial_number']})</span><br>`
+                    }
+                    return html
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    let html = ``
+                    for (let i = 0; i < row?.['data_detail'].length; i++) {
+                        html += `<span class="text-secondary mb-1">${row?.['data_detail'][i]?.['is_redelivery'] ? 'Yes' : 'No'}</span><br>`
+                    }
+                    return html
+                }
+            },
+            // {
+            //     data: '',
+            //     className: 'wrap-text',
+            //     render: (data, type, row) => {
+            //         return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price']}"></span>`
+            //     }
+            // },
+            // {
+            //     data: '',
+            //     className: 'wrap-text',
+            //     render: (data, type, row) => {
+            //         if (row?.['type'] === 1) {
+            //             let sum = data_source[0]?.['is_return'].reduce(function (acc, current) {
+            //                 return acc + current;
+            //             }, 0);
+            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * sum}"></span>`
+            //         }
+            //         else if (row?.['type'] === 2) {
+            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return'].length}"></span>`
+            //         }
+            //         else {
+            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return']}"></span>`
+            //         }
+            //     }
+            // }
+        ],
+    });
+}
+
+function loadTableDetailPageDefault(data_source=[]) {
+    lineDetailTable.DataTable().clear().destroy()
+    lineDetailTable.DataTableDefault({
+        dom: "",
+        columnDefs : [{
+            visible: false, targets: [4, 5]
+        }],
+        rowIdx: true,
+        reloadCurrency: true,
+        paging: false,
+        data: data_source,
+        columns: [
+            {
+                'render': () => {
+                    return ``;
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-secondary badge-sm">${row?.['product']?.['code']}</span><br>${row?.['product']?.['title']}`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `${row?.['uom']?.['title']}`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="text-primary">${row?.['delivery']?.['code']}</span>`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `${row?.['data_detail'][0]?.['default_return_number']}`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `${row?.['data_detail'][0]?.['default_redelivery_number']}`
+                }
+            },
+            // {
+            //     data: '',
+            //     className: 'wrap-text',
+            //     render: (data, type, row) => {
+            //         return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price']}"></span>`
+            //     }
+            // },
+            // {
+            //     data: '',
+            //     className: 'wrap-text',
+            //     render: (data, type, row) => {
+            //         if (row?.['type'] === 1) {
+            //             let sum = data_source[0]?.['is_return'].reduce(function (acc, current) {
+            //                 return acc + current;
+            //             }, 0);
+            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * sum}"></span>`
+            //         }
+            //         else if (row?.['type'] === 2) {
+            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return'].length}"></span>`
+            //         }
+            //         else {
+            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return']}"></span>`
+            //         }
+            //     }
+            // }
+        ],
+    });
+}
+
 class GoodsReturnHandle {
     load() {
         LoadSaleOrder()
@@ -966,8 +1287,41 @@ function Disable() {
     $('.form-select').prop('disabled', true).css({color: 'black'});
     $('.select2').prop('disabled', true);
     $('#collapse-area input').prop('disabled', true);
+    $('#btn-add-row-line-detail').remove();
 }
 
 function LoadDetailGoodsReturn(option) {
+    let pk = $.fn.getPkDetail()
+    let url_loaded = $('#frm_goods_return_detail').attr('data-url').replace(0, pk);
+    $.fn.callAjax(url_loaded, 'GET').then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                WFRTControl.setWFRuntimeID(data['good_return_detail']?.['good_return_detail']);
+                data = data['good_return_detail'];
+                console.log(data)
+                $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(data);
 
+                $('#title').val(data?.['title'])
+                LoadSaleOrder(data?.['sale_order'])
+                $('#customer').val(data?.['sale_order']?.['customer_name'])
+                $('#date').val(data?.['date_created'].split(' ')[0])
+                $('#note').val(data?.['note'])
+
+                if (data?.['data_detail'][0]?.['type'] === 1) {
+                    loadTableDetailPageLOT([data])
+                }
+                else if (data?.['data_detail'][0]?.['type'] === 2) {
+                    loadTableDetailPageSN([data])
+                }
+                else if (data?.['data_detail'][0]?.['type'] === 0) {
+                    loadTableDetailPageDefault([data])
+                }
+
+                $.fn.initMaskMoney2();
+
+                Disable(option);
+            }
+        })
 }

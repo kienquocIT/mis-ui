@@ -247,11 +247,11 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-1500p w-100 mb-5"
+                                            class="table nowrap min-w-2000p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr>
-                                            <th>#</th>
+                                            <th></th>
                                             <th>{% trans 'Product' %}</th>
                                             <th>{% trans 'Description' %}</th>
                                             <th>{% trans 'UoM' %}</th>
@@ -270,10 +270,10 @@
                                             <th colspan="5"></th>
                                             <th colspan="5">
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                     </div>
-                                                    <div class="col-3"></div>
+                                                    <div class="col-2"></div>
                                                     <div class="col-4">
                                                         <span class="mask-money font-3 quotation-create-product-pretax-amount" data-init-money="0" data-zone="quotation_products_data"></span>
                                                         <input type="text" class="form-control quotation-create-product-pretax-amount-raw" value="0" hidden>
@@ -281,10 +281,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Discount' %}:</p>
                                                     </div>
-                                                    <div class="col-3">
+                                                    <div class="col-2">
                                                         <div class="input-group">
                                                             <span class="input-affix-wrapper">
                                                                 <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="quotation_products_data">
@@ -298,10 +298,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
                                                     </div>
-                                                    <div class="col-3"></div>
+                                                    <div class="col-2"></div>
                                                     <div class="col-4">
                                                         <span class="mask-money font-3 quotation-create-product-taxes" data-init-money="0" data-zone="quotation_products_data"></span>
                                                         <input type="text" class="form-control quotation-create-product-taxes-raw" value="0" hidden>
@@ -309,10 +309,10 @@
                                                 </div>
                                                 <hr class="bg-teal">
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
                                                     </div>
-                                                    <div class="col-3"></div>
+                                                    <div class="col-2"></div>
                                                     <div class="col-4">
                                                         <span class="mask-money font-3 quotation-create-product-total" data-init-money="0" data-zone="quotation_products_data"></span>
                                                         <input type="text" class="form-control quotation-create-product-total-raw" value="0" hidden>
@@ -326,9 +326,16 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-6">
                                         <div class="d-flex">
-                                            <button type="button" class="btn btn-outline-primary mr-5" id="btn-add-product-quotation-create" data-zone="quotation_products_data">
+                                            <button type="button" class="btn btn-outline-primary mr-2" id="btn-add-product-quotation-create" data-zone="quotation_products_data">
                                                 <span><span>{% trans 'Add Product' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
+                                            <button type="button" class="btn btn-outline-primary" id="btn-add-product-group-quotation" data-zone="quotation_products_data">
+                                                <span><span>{% trans 'Add group title' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="d-flex justify-content-end">
                                             <button
                                                 type="button"
                                                 class="btn btn-outline-primary mr-2"

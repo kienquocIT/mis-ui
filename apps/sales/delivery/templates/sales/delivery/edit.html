@@ -43,20 +43,11 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5 fw" type="submit" form="delivery_form"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="Save" data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
-            </span>
-        </span>
-    </button>
-    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
-            data-bs-placement="top" title="Back" data-bs-original-title="Back"
-            onclick="window.history.go(-1); return false;">
-        <span class="icon">
-            <span class="feather-icon">
-                <i class="fas fa-step-backward"></i>
+    <button class="btn btn-outline-primary" type="submit" form="delivery_form">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
     </button>
@@ -80,10 +71,10 @@
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="inputDeliveryDate"
-                           class="form-label">{% trans 'Estimated Delivery Date' %}</label>
+                           class="form-label required">{% trans 'Estimated Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                               class="form-control date-picker" autocomplete="off">
+                               class="form-control date-picker" autocomplete="off" required>
                         <span class="input-suffix">
                             <i class="fa-solid fa-calendar-days"></i>
                         </span>
@@ -109,10 +100,10 @@
 
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                    <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
+                    <label for="inputActualDate" class="form-label required">{% trans 'Actual Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="actual_delivery_date" id="inputActualDate"
-                               class="form-control date-picker" autocomplete="off">
+                               class="form-control date-picker" autocomplete="off" required>
                         <span class="input-suffix">
                             <i class="fa-solid fa-calendar-days"></i>
                         </span>

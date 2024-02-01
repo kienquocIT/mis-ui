@@ -535,26 +535,7 @@ function submitHandleFunc() {
         $.fn.notifyB({description: $transElm.attr('data-detail-tab')}, 'failure');
         return false
     }
-    $.fn.callAjax2({
-        'url': frm.dataUrl,
-        'method': frm.dataMethod,
-        'data': formData,
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && (data['status'] === 201 || data['status'] === 200)) {
-                $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
-                setTimeout(() => {
-                    window.location.replace($FormElm.attr('data-url-redirect'));
-                }, 1000);
-            }
-        }, (err) => {
-            setTimeout(() => {
-                WindowControl.hideLoading();
-            }, 1000)
-            $.fn.notifyB({description: err.data.errors}, 'failure');
-        }
-    )
+    WFRTControl.callWFSubmitForm(frm);
 }
 
 function employeeTemplate(state) {

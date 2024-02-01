@@ -4858,6 +4858,26 @@ msgid "Preview"
 msgstr "Xem trước"
 
 #
+msgid "Preview full"
+msgstr "Xem bản đầy đủ"
+
+#
+msgid "Print Preview"
+msgstr "Xem trước bản in"
+
+#
+msgid "Page __page__/__total_page__"
+msgstr "Trang __page__/__total_page__"
+
+#
+msgid "Displaying the PDF will take time depending on the size of the print template and the number of images to be printed."
+msgstr "Việc hiển thị tệp PDF sẽ mất thời gian tùy thuộc vào kích thước của mẫu in và số lượng hình ảnh cần in."
+
+#
+msgid "Download"
+msgstr "Tải xuống"
+
+#
 msgid "Fullscreen"
 msgstr "Toàn màn hình"
 

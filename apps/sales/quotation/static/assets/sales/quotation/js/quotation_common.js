@@ -266,6 +266,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadInitQuotationProduct() {
+        let finalData = [];
         let ele = QuotationDataTableHandle.productInitEle;
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -279,7 +280,14 @@ class QuotationLoadDataHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                        ele.val(JSON.stringify(data.product_sale_list))
+                        for (let product of data.product_sale_list) {
+                            if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
+                                if (product['product_choice'].includes(0)) {
+                                    finalData.push(product);
+                                }
+                            }
+                        }
+                        ele.val(JSON.stringify(finalData));
                     }
                 }
             }

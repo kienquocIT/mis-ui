@@ -20,38 +20,12 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
-                columnDefs: [
-                    {
-                        "width": "10%",
-                        "targets": 0
-                    }, {
-                        "width": "20%",
-                        "targets": 1
-                    }, {
-                        "width": "20%",
-                        "targets": 2
-                    }, {
-                        "width": "15%",
-                        "targets": 3
-                    }, {
-                        "width": "10%",
-                        "targets": 4
-                    }, {
-                        "width": "10%",
-                        "targets": 5,
-                    },
-                    {
-                        "width": "10%",
-                        "targets": 6,
-                    },
-                    {
-                        "width": "5%",
-                        "targets": 7,
-                    }
-                ],
-                columns: [
+                autoWidth: true,
+                scrollX: true,
+                columns: [  // 200, 250, 250, 200, 150, 250, 100, 100 (1500p)
                     {
                         targets: 0,
+                        width: '13.33%',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
@@ -59,6 +33,7 @@ $(function () {
                     },
                     {
                         targets: 1,
+                        width: '16.66%',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -66,6 +41,7 @@ $(function () {
                     },
                     {
                         targets: 2,
+                        width: '16.66%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['customer']).length !== 0) {
@@ -76,6 +52,7 @@ $(function () {
                     },
                     {
                         targets: 3,
+                        width: '13.33%',
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row?.['sale_person']).length !== 0) {
@@ -86,8 +63,9 @@ $(function () {
                     },
                     {
                         targets: 4,
+                        width: '10%',
                         data: "date_created",
-                        render: (data, type, row) => {
+                        render: (data) => {
                             return $x.fn.displayRelativeTime(data, {
                                 'outputFormat': 'DD-MM-YYYY',
                             });
@@ -95,12 +73,14 @@ $(function () {
                     },
                     {
                         targets: 5,
+                        width: '16.66%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${parseFloat(row?.['total_product'])}"></span>`
+                            return `<span class="mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`
                         }
                     },
                     {
                         targets: 6,
+                        width: '6.66%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
@@ -115,6 +95,7 @@ $(function () {
                     },
                     {
                         targets: 7,
+                        width: '6.66%',
                         className: 'action-center',
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])

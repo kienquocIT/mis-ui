@@ -924,7 +924,7 @@ class GoodsReturnHandle {
             }
         }
         else if (data_item[0]?.['type'] === 2) {
-            for (let item of 1) {
+            for (let item of data_item) {
                 product_detail_list.push({
                     'type': 2,
                     'serial_no_id': item?.['serial_id'],

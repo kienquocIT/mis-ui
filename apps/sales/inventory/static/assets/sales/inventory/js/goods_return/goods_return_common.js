@@ -567,6 +567,7 @@ function loadTableSelectDetailProduct(datasource=[]) {
                                         data-uom-id="${row?.['uom_data']?.['id']}"
                                         data-uom-title="${row?.['uom_data']?.['title']}"
                                         data-unit-price="${row?.['product_unit_price']}"
+                                        data-amount="${row?.['delivered_quantity']}"
                                 >
                                 <label class="form-check-label"></label>
                                 <script class="product-details">${product_delivery_data}</script>
@@ -760,6 +761,7 @@ $(document).on("change", '.redelivery-check', function () {
 })
 
 $(document).on("change", '.return-lot-input', function () {
+    let ele = $(this)
     if (!$(this).val()) {$(this).val(0)}
     $(this).closest('tr').find('.redelivery-lot-input').val(0)
     let sum_return = 0
@@ -776,8 +778,17 @@ $(document).on("change", '.return-lot-input', function () {
     })
     tableDetailProductEle.find('.selected-product').each(function () {
         if ($(this).prop('checked')) {
-            $(this).closest('tr').find('.return-number-input').val(sum_return)
-            $(this).closest('tr').find('.re-delivery-number-input').val(sum_re_delivery)
+            if (parseFloat($(this).attr('data-amount')) < parseFloat(ele.val())) {
+                $.fn.notifyB({description: `Return amount must not greater than Delivered amount: ${parseFloat(ele.val())} > ${parseFloat($(this).attr('data-amount'))}`}, 'failure')
+                ele.val(0)
+                ele.closest('tr').find('.redelivery-lot-input').val(0)
+                $(this).closest('tr').find('.return-number-input').val(0)
+                $(this).closest('tr').find('.re-delivery-number-input').val(0)
+            }
+            else {
+                $(this).closest('tr').find('.return-number-input').val(sum_return)
+                $(this).closest('tr').find('.re-delivery-number-input').val(sum_re_delivery)
+            }
         }
     })
 })
@@ -805,7 +816,7 @@ $(document).on("change", '.redelivery-lot-input', function () {
         })
     }
     else {
-        $.fn.notifyB({description: "Redelivery number must be smaller or equal Return number"}, 'warning')
+        $.fn.notifyB({description: "Redelivery number must be smaller than Return number or equal"}, 'warning')
         $(this).val(0)
     }
 })

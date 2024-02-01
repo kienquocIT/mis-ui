@@ -9,6 +9,7 @@ const lineDetailTable = $('#tab_line_detail_datatable')
 const scriptUrlEle = $('#script-url')
 const tableProductSN = $('#table-product-sn')
 const tableProductLOT = $('#table-product-lot')
+const btnAddRowLineDetail = $('#btn-add-row-line-detail')
 let DELIVERY_PRODUCT_NOW = null
 
 function LoadDate() {
@@ -21,8 +22,8 @@ function LoadDate() {
         locale: {
             format: 'YYYY-MM-DD'
         },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY')) + 100,
+        cancelClass: "btn-secondary",
+        maxYear: parseInt(moment().format('YYYY')) + 50,
     })
 }
 
@@ -629,7 +630,7 @@ function loadTableSelectProductSerial(datasource=[]) {
             {
                 data: '',
                 className: 'wrap-text text-center',
-                render: (data, type, row) => {
+                render: () => {
                     return `<div class="form-check">
                                 <input type="checkbox" class="form-check-input return-check">
                                 <label class="form-check-label"></label>
@@ -639,7 +640,7 @@ function loadTableSelectProductSerial(datasource=[]) {
             {
                 data: '',
                 className: 'wrap-text text-center',
-                render: (data, type, row) => {
+                render: () => {
                     return `<div class="form-check" hidden>
                                 <input type="checkbox" class="form-check-input redelivery-check">
                                 <label class="form-check-label"></label>
@@ -701,14 +702,14 @@ function loadTableSelectProductLOT(datasource=[]) {
             {
                 data: '',
                 className: 'wrap-text text-center',
-                render: (data, type, row) => {
+                render: () => {
                     return `<input type="number" class="form-control return-lot-input" value="0">`
                 }
             },
             {
                 data: '',
                 className: 'wrap-text text-center',
-                render: (data, type, row) => {
+                render: () => {
                     return `<input type="number" class="form-control redelivery-lot-input" value="0">`
                 }
             }
@@ -834,7 +835,7 @@ $(document).on("change", '.re-delivery-number-input', function () {
     }
 })
 
-$('#btn-add-row-line-detail').on('click', function () {
+btnAddRowLineDetail.on('click', function () {
     if (saleOrderEle.val()) {
         loadTableSelectDetailProduct([])
         loadTableSelectDelivery()
@@ -935,7 +936,7 @@ function loadTableDetailPageLOT(data_source=[]) {
             {
                 data: '',
                 className: 'wrap-text',
-                render: (data, type, row) => {
+                render: () => {
                     // if (row?.['type'] === 2) {
                         // let html = ``
                         // for (let i = 0; i < row?.['vendor_serial_number_with_serial_number'].length; i++) {
@@ -1051,7 +1052,7 @@ function loadTableDetailPageSN(data_source=[]) {
             {
                 data: '',
                 className: 'wrap-text',
-                render: (data, type, row) => {
+                render: () => {
                     return ``
                 }
             },
@@ -1061,7 +1062,7 @@ function loadTableDetailPageSN(data_source=[]) {
                 render: (data, type, row) => {
                     let html = ``
                     for (let i = 0; i < row?.['data_detail'].length; i++) {
-                        html += `<span class="text-secondary mb-1">${row?.['data_detail'][i]?.['serial_no']?.['vendor_serial_number']} (${row?.['data_detail'][i]?.['serial_no']?.['serial_number']})</span><br>`
+                        html += `<span class="text-secondary mb-1">${row?.['data_detail'][i]?.['serial_no']?.['vendor_serial_number']} (serial: ${row?.['data_detail'][i]?.['serial_no']?.['serial_number']})</span><br>`
                     }
                     return html
                 }
@@ -1069,7 +1070,7 @@ function loadTableDetailPageSN(data_source=[]) {
             {
                 data: '',
                 className: 'wrap-text',
-                render: (data, type, row) => {
+                render: () => {
                     return ``
                 }
             },
@@ -1154,14 +1155,14 @@ function loadTableDetailPageDefault(data_source=[]) {
             {
                 data: '',
                 className: 'wrap-text',
-                render: (data, type, row) => {
+                render: () => {
                     return ``
                 }
             },
             {
                 data: '',
                 className: 'wrap-text',
-                render: (data, type, row) => {
+                render: () => {
                     return ``
                 }
             },
@@ -1217,7 +1218,7 @@ class GoodsReturnHandle {
         let frm = new SetupFormSubmit($(frmEle))
 
         frm.dataForm['title'] = $('#title').val()
-        frm.dataForm['sale_order'] = $('#sale-order').val()
+        frm.dataForm['sale_order'] = saleOrderEle.val()
         frm.dataForm['note'] = $('#note').val()
 
         let data_item = JSON.parse(dataLineDetailTableScript.text())
@@ -1287,7 +1288,7 @@ function Disable() {
     $('.form-select').prop('disabled', true).css({color: 'black'});
     $('.select2').prop('disabled', true);
     $('#collapse-area input').prop('disabled', true);
-    $('#btn-add-row-line-detail').remove();
+    btnAddRowLineDetail.remove();
 }
 
 function LoadDetailGoodsReturn(option) {

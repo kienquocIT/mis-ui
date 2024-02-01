@@ -145,7 +145,9 @@ $(function () {
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableProduct);
+            deleteRow($(this).closest('tr'), tableProduct);
+            // Re order
+            reOrderSTT(tableProduct);
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
@@ -220,6 +222,20 @@ $(function () {
 
         tableProduct.on('click', '.btn-edit-group', function () {
             QuotationLoadDataHandle.loadOnClickBtnEditGroup(this);
+        });
+
+        tableProduct.on('click', '.btn-del-group', function () {
+            // show product first then delete
+            let row = this.closest('tr');
+            let eleGroup = row.querySelector('.table-row-group');
+            if (eleGroup) {
+                if ($(eleGroup).attr('aria-expanded') === 'false') {
+                    $(eleGroup).click();
+                }
+                deleteRow($(this).closest('tr'), tableProduct);
+                // Re order
+                reOrderSTT(tableProduct);
+            }
         });
 
 // Action on change discount rate on Total of product
@@ -314,8 +330,10 @@ $(function () {
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense);
-            QuotationCalculateCaseHandle.updateTotal(tableExpense[0], false, false, true)
+            deleteRow($(this).closest('tr'), tableExpense);
+            // Re order
+            reOrderSTT(tableExpense);
+            QuotationCalculateCaseHandle.updateTotal(tableExpense[0], false, false, true);
         });
 
 // Action on click price list's option

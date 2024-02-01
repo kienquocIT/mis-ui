@@ -2090,7 +2090,8 @@ class QuotationDataTableHandle {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
                                     <div class="d-flex hidden area-group-show">
                                         <b><p class="text-primary text-uppercase mt-2 table-row-group-title-show">${row?.['group_title']}</p></b>
-                                        <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-edit-group"><span class="icon"><i class="fas fa-edit"></i></span></button>
+                                        <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-edit-group"><span class="icon"><i class="far fa-edit"></i></span></button>
+                                        <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                     </div>`;
                         }
 
@@ -2417,7 +2418,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -2640,7 +2641,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },
             ],
@@ -2848,7 +2849,7 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },
             ],
@@ -4818,17 +4819,15 @@ class QuotationSubmitHandle {
 }
 
 // *** COMMON FUNCTIONS ***
-function deleteRow(currentRow, tableBody, table) {
+function deleteRow(currentRow, table) {
     // Get the index of the current row within the DataTable
     let rowIndex = table.DataTable().row(currentRow).index();
     let row = table.DataTable().row(rowIndex);
     // Delete current row
     row.remove().draw();
-    // Re order
-    reOrderSTT(tableBody, table);
 }
 
-function reOrderSTT(tableBody, table) {
+function reOrderSTT(table) {
     let order = 1;
     let itemCount = table[0].querySelectorAll('.table-row-order').length;
     if (itemCount === 0) {
@@ -4848,9 +4847,13 @@ function deletePromotionRows(table, is_promotion = false, is_shipping = false) {
     for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
         let row = table[0].tBodies[0].rows[i];
         if (row.querySelector('.table-row-promotion') && is_promotion === true) {
-            deleteRow($(row), row.closest('tbody'), table)
+            deleteRow($(row), table);
+            // Re order
+            reOrderSTT(table);
         } else if (row.querySelector('.table-row-shipping') && is_shipping === true) {
-            deleteRow($(row), row.closest('tbody'), table)
+            deleteRow($(row), table);
+            // Re order
+            reOrderSTT(table);
         }
     }
 }

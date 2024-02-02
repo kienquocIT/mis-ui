@@ -14,4 +14,7 @@ class SOMsg:  # pylint: disable=too-few-public-methods
     PAYMENT_STAGE_ACCEPTANCE = _('Final acceptance')
     PAYMENT_DATE_TYPE_CONTRACT = _('Contract date')
     PAYMENT_DATE_TYPE_DELIVERY = _('Delivery date')
+    PAYMENT_DATE_TYPE_INVOICE = _('Invoice date')
     PAYMENT_DATE_TYPE_ACCEPTANCE = _('Acceptance date')
+    PAYMENT_DATE_TYPE_MONTH = _('End of invoice month')
+    PAYMENT_DATE_TYPE_ORDER = _('Order date')

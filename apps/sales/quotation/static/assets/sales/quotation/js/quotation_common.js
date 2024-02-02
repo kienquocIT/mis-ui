@@ -1471,10 +1471,38 @@ class QuotationLoadDataHandle {
     static loadDataTablePaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
         let term = [];
-        let dataSO = {'stage': 0, 'is_ar_invoice': false, 'number_of_day': 0,};
-        let dataContract = {};
-        let dataDelivery = [];
-        let dataAcceptance = [];
+        let dataSO = {
+            'stage': 0,
+            'date_type': '',
+            'payment_ratio': 0,
+            'value_before_tax': 0,
+            'is_ar_invoice': false,
+            'number_of_day': 0,
+        };
+        let dataContract = {
+            'stage': 1,
+            'date_type': '',
+            'payment_ratio': 0,
+            'value_before_tax': 0,
+            'is_ar_invoice': false,
+            'number_of_day': 0,
+        };
+        let dataDelivery = [{
+            'stage': 2,
+            'date_type': '',
+            'payment_ratio': 0,
+            'value_before_tax': 0,
+            'is_ar_invoice': false,
+            'number_of_day': 0,
+        }];
+        let dataAcceptance = [{
+            'stage': 3,
+            'date_type': '',
+            'payment_ratio': 0,
+            'value_before_tax': 0,
+            'is_ar_invoice': false,
+            'number_of_day': 0,
+        }];
         let valueSO = 0;
         let tableProduct = document.getElementById('datable-quotation-create-product');
         if (tableProduct.closest('.dataTables_scroll')) {
@@ -1503,7 +1531,7 @@ class QuotationLoadDataHandle {
                         numberOfDay = parseInt(termData?.['no_of_days']);
                     }
                 }
-                if (termData['after'] === 1) {
+                if (termData['after'] === 1) {  // contract
                     dataContract = {
                         'stage': 1,
                         'date_type': termData['after'],
@@ -1512,7 +1540,7 @@ class QuotationLoadDataHandle {
                         'is_ar_invoice': false,
                         'number_of_day': numberOfDay,
                     }
-                } else if (termData['after'] === 2) {
+                } else if (termData['after'] === 2) {  // delivery
                     dataDelivery.push({
                         'stage': 2,
                         'date_type': termData['after'],
@@ -1521,7 +1549,7 @@ class QuotationLoadDataHandle {
                         'is_ar_invoice': false,
                         'number_of_day': numberOfDay,
                     })
-                } else if (termData['after'] === 4) {
+                } else if (termData['after'] === 4) {  // final acceptance
                     dataAcceptance.push({
                         'stage': 3,
                         'date_type': termData['after'],
@@ -1530,6 +1558,15 @@ class QuotationLoadDataHandle {
                         'is_ar_invoice': false,
                         'number_of_day': numberOfDay,
                     })
+                } else if (termData['after'] === 6) {
+                    dataSO = {
+                        'stage': 0,
+                        'date_type': termData['after'],
+                        'payment_ratio': ratio,
+                        'value_before_tax': value,
+                        'is_ar_invoice': false,
+                        'number_of_day': numberOfDay,
+                    }
                 }
             }
             if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
@@ -3376,41 +3413,25 @@ class QuotationDataTableHandle {
                     targets: 3,
                     render: (data, type, row) => {
                         let dataDateType = JSON.parse($('#payment_date_type').text());
-                        if (row?.['stage'] !== 0) {
-                            return `<span class="table-row-date-type" data-date-type="${row?.['date_type']}">${dataDateType[row?.['date_type']][1]}</span>`;
-                        } else {
-                            return `<span></span>`;
-                        }
+                        return `<span class="table-row-date-type" data-date-type="${row?.['date_type']}">${dataDateType[row?.['date_type']][1]}</span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        if (row?.['stage'] !== 0) {
-                            return `<span class="table-row-ratio" data-ratio="${row?.['payment_ratio']}">${row?.['payment_ratio']} %</span>`;
-                        } else {
-                            return `<span></span>`;
-                        }
+                        return `<span class="table-row-ratio" data-ratio="${row?.['payment_ratio']}">${row?.['payment_ratio']} %</span>`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        if (row?.['stage'] !== 0) {
-                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}"></span>`;
-                        } else {
-                            return `<span></span>`;
-                        }
+                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}"></span>`;
                     }
                 },
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        if (row?.['due_date']) {
-                            return `<p class="table-row-due-date">${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
-                        } else {
-                            return `<p class="table-row-due-date"></p>`;
-                        }
+                        return `<p class="table-row-due-date">${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
                     }
                 },
                 {
@@ -4440,7 +4461,7 @@ class QuotationSubmitHandle {
             // result.push(rowData);
         }
         return result
-    }
+    };
 
     static setupDataCost() {
         let result = [];
@@ -4559,7 +4580,7 @@ class QuotationSubmitHandle {
             // result.push(rowData);
         }
         return result
-    }
+    };
 
     static setupDataExpense() {
         let result = [];
@@ -4645,14 +4666,14 @@ class QuotationSubmitHandle {
             result.push(rowData);
         }
         return result
-    }
+    };
 
     static setupDataLogistic() {
         return {
             'shipping_address': $('#quotation-create-shipping-address').val(),
             'billing_address': $('#quotation-create-billing-address').val(),
         }
-    }
+    };
 
     static setupDataIndicator() {
         let result = [];
@@ -4687,7 +4708,7 @@ class QuotationSubmitHandle {
             }
         }
         return result
-    }
+    };
 
     static setupDataPaymentStage() {
         let result = [];
@@ -4746,7 +4767,7 @@ class QuotationSubmitHandle {
             }
         });
         return result;
-    }
+    };
 
     static setupDataSubmit(_form, is_sale_order = false) {
         let quotation_products_data = 'quotation_products_data';
@@ -4909,7 +4930,7 @@ class QuotationSubmitHandle {
         // if (_form.dataMethod === "POST") {
         //     _form.dataForm['system_status'] = 1;
         // }
-    }
+    };
 }
 
 // *** COMMON FUNCTIONS ***

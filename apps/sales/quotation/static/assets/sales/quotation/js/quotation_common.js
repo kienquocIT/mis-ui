@@ -632,32 +632,42 @@ class QuotationLoadDataHandle {
         let $table = $('#datable-quotation-create-product');
         let dataTarget = ele.getAttribute('data-bs-target');
         let dataTargetNoDot = dataTarget.replace(".", "");
-        let dataGrOrder = ele.getAttribute('data-group-order');
         if (dataTarget) {
-            let upperGroupClass = QuotationLoadDataHandle.decrementGroupString(dataTargetNoDot);
-            for (let row of $table[0].querySelectorAll(dataTarget)) {
-                // Update the class
-                row.classList.remove(dataTargetNoDot);
-                row.classList.add(upperGroupClass);
-                // Update the data attribute
-                row.setAttribute('data-group', dataGrOrder);
+            let upperGroupsClass = QuotationLoadDataHandle.decrementGroupString(dataTargetNoDot);
+            for (let upperGroupClass of upperGroupsClass) {
+                let upperGroupClassDot = '.' + upperGroupClass;
+                let dataGrOrder = upperGroupClass.replace("group-", "");
+                if ($table[0].querySelector(`[data-bs-target="${upperGroupClassDot}"]`)) {
+                    for (let row of $table[0].querySelectorAll(dataTarget)) {
+                        // Update the class
+                        row.classList.remove(dataTargetNoDot);
+                        row.classList.add(upperGroupClass);
+                        // Update the data attribute
+                        row.setAttribute('data-group', dataGrOrder);
+                    }
+                    break;
+                }
             }
         }
     };
 
     static decrementGroupString(str) {
-        // Extract the numeric part of the string
         let match = str.match(/(\d+)$/);
         if (match) {
             let number = parseInt(match[0], 10);
             if (!isNaN(number) && number > 1) {
-                // Decrement the number and replace it in the original string
-                return str.replace(/\d+$/, number - 1);
+                let result = [];
+                let resultFinal = [];
+                for (let i = 1; i < number; i++) {
+                    let strLower = str.replace(/\d+$/, i);
+                    result.push(strLower);
+                }
+                resultFinal = result.reverse();
+                return resultFinal;
             }
         }
-        // Return the original string if no valid numeric part found or if it's 1
-        return str;
-    }
+        return [str];
+    };
 
     static loadAddRowProduct() {
         let tableProduct = $('#datable-quotation-create-product');

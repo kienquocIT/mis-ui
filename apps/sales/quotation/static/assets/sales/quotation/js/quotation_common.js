@@ -1473,7 +1473,7 @@ class QuotationLoadDataHandle {
         let term = [];
         let dataSO = {
             'stage': 0,
-            'date_type': '',
+            'date_type': 6,
             'payment_ratio': 0,
             'value_before_tax': 0,
             'is_ar_invoice': false,
@@ -1481,7 +1481,7 @@ class QuotationLoadDataHandle {
         };
         let dataContract = {
             'stage': 1,
-            'date_type': '',
+            'date_type': 1,
             'payment_ratio': 0,
             'value_before_tax': 0,
             'is_ar_invoice': false,
@@ -1489,7 +1489,7 @@ class QuotationLoadDataHandle {
         };
         let dataDelivery = [{
             'stage': 2,
-            'date_type': '',
+            'date_type': 2,
             'payment_ratio': 0,
             'value_before_tax': 0,
             'is_ar_invoice': false,
@@ -1497,7 +1497,7 @@ class QuotationLoadDataHandle {
         }];
         let dataAcceptance = [{
             'stage': 3,
-            'date_type': '',
+            'date_type': 4,
             'payment_ratio': 0,
             'value_before_tax': 0,
             'is_ar_invoice': false,

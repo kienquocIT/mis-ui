@@ -236,8 +236,8 @@ $(function () {
                     $(eleGroup).click();
                 }
                 deleteRow(this.closest('tr'), tableProduct);
-                // Re order
-                reOrderSTT(tableProduct);
+                // load products to another group after del group
+                QuotationLoadDataHandle.loadProductAfterDelGroup(row.querySelector('.table-row-group'));
             }
         });
 

@@ -628,6 +628,37 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadProductAfterDelGroup(ele) {
+        let $table = $('#datable-quotation-create-product');
+        let dataTarget = ele.getAttribute('data-bs-target');
+        let dataTargetNoDot = dataTarget.replace(".", "");
+        let dataGrOrder = ele.getAttribute('data-group-order');
+        if (dataTarget) {
+            let upperGroupClass = QuotationLoadDataHandle.decrementGroupString(dataTargetNoDot);
+            for (let row of $table[0].querySelectorAll(dataTarget)) {
+                // Update the class
+                row.classList.remove(dataTargetNoDot);
+                row.classList.add(upperGroupClass);
+                // Update the data attribute
+                row.setAttribute('data-group', dataGrOrder);
+            }
+        }
+    };
+
+    static decrementGroupString(str) {
+        // Extract the numeric part of the string
+        let match = str.match(/(\d+)$/);
+        if (match) {
+            let number = parseInt(match[0], 10);
+            if (!isNaN(number) && number > 1) {
+                // Decrement the number and replace it in the original string
+                return str.replace(/\d+$/, number - 1);
+            }
+        }
+        // Return the original string if no valid numeric part found or if it's 1
+        return str;
+    }
+
     static loadAddRowProduct() {
         let tableProduct = $('#datable-quotation-create-product');
         // delete all Promotion rows
@@ -691,11 +722,13 @@ class QuotationLoadDataHandle {
             let lastGroup = eleGroups[eleGroups.length - 1];
             if (lastGroup) {
                 let classGroupDot = lastGroup.getAttribute('data-bs-target');
+                let dataGroupOrder = lastGroup.getAttribute('data-group-order');
                 if (classGroupDot) {
                     let classGroup = classGroupDot.replace(".", "");
                     newRow.classList.add('collapse');
                     newRow.classList.add(classGroup);
                     newRow.classList.add('show');
+                    newRow.setAttribute('data-group', dataGroupOrder);
                 }
             }
         }
@@ -1036,10 +1069,20 @@ class QuotationLoadDataHandle {
             $table.DataTable().rows().every(function () {
                 let rowData = {};
                 let row = this.node();
+                let eleProductGr = row.querySelector('.table-row-group');
                 let eleProduct = row.querySelector('.table-row-item');
                 let elePromotion = row.querySelector('.table-row-promotion');
                 let eleShipping = row.querySelector('.table-row-shipping');
-                if ($(eleProduct).val()) { // PRODUCT
+                if (eleProductGr) {  // PRODUCT GROUP
+                    rowData['is_group'] = true;
+                    if (eleProductGr.getAttribute('data-group-order')) {
+                        rowData['group_order'] = parseInt(eleProductGr.getAttribute('data-group-order'));
+                    }
+                    let eleGroupTitle = row.querySelector('.table-row-group-title-edit');
+                    if (eleGroupTitle) {
+                        rowData['group_title'] = eleGroupTitle.value;
+                    }
+                } else if ($(eleProduct).val()) { // PRODUCT
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
                         rowData['product'] = dataProduct;
@@ -2082,6 +2125,7 @@ class QuotationDataTableHandle {
                                         data-bs-placement="top"
                                         aria-expanded="true"
                                         aria-controls="newGroup"
+                                        data-group-order="${row?.['group_order']}"
                                     >
                                         <span class="icon"><i class="fas fa-chevron-down"></i></span>
                                     </button>`;

@@ -275,7 +275,7 @@ $(function () {
         }
     }
 
-    // task util class
+    // kanban view handle
     class kanbanHandle {
         taskList = []
 
@@ -736,6 +736,7 @@ $(function () {
         }
     }
 
+    // list view handle
     class listViewTask {
 
         constructor() {
@@ -1009,6 +1010,19 @@ $(function () {
             dataCurrent[index] = data
             cls.setTaskList = dataCurrent
             tbl.DataTable().row(index).data(data).draw(true)
+        }
+    }
+
+    class GanttViewTask {
+        static taskList = []
+        static saveTaskList(data){
+            let temp = GanttViewTask.taskList
+            if (!data || !data.length) return false
+            for (let item of data){
+            }
+        }
+        static init(){
+
         }
     }
 

@@ -1092,6 +1092,7 @@ class QuotationLoadDataHandle {
                     if (eleGroupTitle) {
                         rowData['group_title'] = eleGroupTitle.value;
                     }
+                    tableData.push(rowData);
                 } else if ($(eleProduct).val()) { // PRODUCT
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
@@ -1162,6 +1163,10 @@ class QuotationLoadDataHandle {
                     rowData['promotion'] = {};
                     rowData['is_shipping'] = false;
                     rowData['shipping'] = {};
+                    let dataGroupRaw = row.getAttribute('data-group');
+                    if (dataGroupRaw) {
+                        rowData['product_group'] = parseInt(dataGroupRaw);
+                    }
                     tableData.push(rowData);
                 } else if (elePromotion) { // PROMOTION
                     let check_none_blank_list = ['', "", null, "undefined"];
@@ -1303,8 +1308,25 @@ class QuotationLoadDataHandle {
         $table.DataTable().rows().every(function () {
             let row = this.node();
             QuotationCheckConfigHandle.checkConfig(false, row);
-            QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
-        })
+            if (row.querySelector('.table-row-item')) {
+                QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+                let eleOrder = row.querySelector('.table-row-order');
+                if (eleOrder) {
+                    let dataRowRaw = eleOrder.getAttribute('data-row');
+                    if (dataRowRaw) {
+                        let dataRow = JSON.parse(dataRowRaw);
+                        let dataGroup = dataRow?.['product_group'];
+                        if (dataGroup) {
+                            let classGroup = 'group-' + dataGroup;
+                            row.classList.add('collapse');
+                            row.classList.add(classGroup);
+                            row.classList.add('show');
+                            row.setAttribute('data-group', dataGroup);
+                        }
+                    }
+                }
+            }
+        });
         // load disabled if page detail
         if ($form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled($table);
@@ -2017,9 +2039,9 @@ class QuotationLoadDataHandle {
     };
 
     static loadDropDowns(table, is_expense = false) {
-        if (!table[0].querySelector('.dataTables_empty')) {
-            for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-                let row = table[0].tBodies[0].rows[i];
+        table.DataTable().rows().every(function () {
+            let row = this.node();
+            if (!row.querySelector('.table-row-group')) {
                 let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
                 if (is_expense === false) { // PRODUCT
                     $(row.querySelector('.table-row-item')).empty();
@@ -2037,7 +2059,7 @@ class QuotationLoadDataHandle {
                 $(row.querySelector('.table-row-tax')).empty();
                 QuotationLoadDataHandle.loadBoxQuotationTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
             }
-        }
+        });
         return true;
     };
 

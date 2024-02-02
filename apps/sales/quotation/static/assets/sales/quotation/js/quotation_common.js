@@ -1308,6 +1308,17 @@ class QuotationLoadDataHandle {
         $table.DataTable().rows().every(function () {
             let row = this.node();
             QuotationCheckConfigHandle.checkConfig(false, row);
+            if (row.querySelector('.table-row-group')) {
+                let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
+                let areaGroupShow = row.querySelector('.area-group-show');
+                if (eleGroupEdit && areaGroupShow) {
+                    let groupShow = areaGroupShow.querySelector('.table-row-group-title-show');
+                    if (groupShow) {
+                        areaGroupShow.classList.remove('hidden');
+                        eleGroupEdit.setAttribute('hidden', 'true');
+                    }
+                }
+            }
             if (row.querySelector('.table-row-item')) {
                 QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                 let eleOrder = row.querySelector('.table-row-order');

@@ -1471,38 +1471,11 @@ class QuotationLoadDataHandle {
     static loadDataTablePaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
         let term = [];
-        let dataSO = {
-            'stage': 0,
-            'date_type': 6,
-            'payment_ratio': 0,
-            'value_before_tax': 0,
-            'is_ar_invoice': false,
-            'number_of_day': 0,
-        };
-        let dataContract = {
-            'stage': 1,
-            'date_type': 1,
-            'payment_ratio': 0,
-            'value_before_tax': 0,
-            'is_ar_invoice': false,
-            'number_of_day': 0,
-        };
-        let dataDelivery = [{
-            'stage': 2,
-            'date_type': 2,
-            'payment_ratio': 0,
-            'value_before_tax': 0,
-            'is_ar_invoice': false,
-            'number_of_day': 0,
-        }];
-        let dataAcceptance = [{
-            'stage': 3,
-            'date_type': 4,
-            'payment_ratio': 0,
-            'value_before_tax': 0,
-            'is_ar_invoice': false,
-            'number_of_day': 0,
-        }];
+        let dataSO = {};
+        let dataContract = {};
+        let dataDelivery = [];
+        let dataAcceptance = [];
+        let dataInvoice = {};
         let valueSO = 0;
         let tableProduct = document.getElementById('datable-quotation-create-product');
         if (tableProduct.closest('.dataTables_scroll')) {
@@ -1522,7 +1495,8 @@ class QuotationLoadDataHandle {
                 let value = 0;
                 let ratio = 0;
                 let numberOfDay = 0;
-                if (termData?.['unit_type'] === 0) {
+                let is_balance = false;
+                if (termData?.['unit_type'] === 0) {  // ratio
                     if (termData?.['value']) {
                        ratio = parseFloat(termData?.['value']);
                        value = (ratio * valueSO) / 100;
@@ -1530,6 +1504,8 @@ class QuotationLoadDataHandle {
                     if (termData?.['no_of_days']) {
                         numberOfDay = parseInt(termData?.['no_of_days']);
                     }
+                } else if (termData?.['unit_type'] === 2) {  // balance
+                    is_balance = true;
                 }
                 if (termData['after'] === 1) {  // contract
                     dataContract = {
@@ -1539,6 +1515,8 @@ class QuotationLoadDataHandle {
                         'value_before_tax': value,
                         'is_ar_invoice': false,
                         'number_of_day': numberOfDay,
+                        'is_active': true,
+                        'is_balance': is_balance,
                     }
                 } else if (termData['after'] === 2) {  // delivery
                     dataDelivery.push({
@@ -1548,7 +1526,20 @@ class QuotationLoadDataHandle {
                         'value_before_tax': value,
                         'is_ar_invoice': false,
                         'number_of_day': numberOfDay,
+                        'is_active': true,
+                        'is_balance': is_balance,
                     })
+                } else if (termData['after'] === 3) {  // invoice
+                    dataInvoice = {
+                        'stage': 4,
+                        'date_type': termData['after'],
+                        'payment_ratio': ratio,
+                        'value_before_tax': value,
+                        'is_ar_invoice': false,
+                        'number_of_day': numberOfDay,
+                        'is_active': true,
+                        'is_balance': is_balance,
+                    }
                 } else if (termData['after'] === 4) {  // final acceptance
                     dataAcceptance.push({
                         'stage': 3,
@@ -1557,8 +1548,10 @@ class QuotationLoadDataHandle {
                         'value_before_tax': value,
                         'is_ar_invoice': false,
                         'number_of_day': numberOfDay,
+                        'is_active': true,
+                        'is_balance': is_balance,
                     })
-                } else if (termData['after'] === 6) {
+                } else if (termData['after'] === 6) {  // so
                     dataSO = {
                         'stage': 0,
                         'date_type': termData['after'],
@@ -1566,24 +1559,87 @@ class QuotationLoadDataHandle {
                         'value_before_tax': value,
                         'is_ar_invoice': false,
                         'number_of_day': numberOfDay,
+                        'is_active': true,
+                        'is_balance': is_balance,
                     }
                 }
             }
             if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
-                let data = [dataSO];
+                let data = [];
+                if (Object.keys(dataSO).length > 0) {
+                    data.push(dataSO);
+                } else {
+                    data.push({
+                        'stage': 0,
+                        'date_type': 6,
+                        'payment_ratio': 0,
+                        'value_before_tax': 0,
+                        'is_ar_invoice': false,
+                        'number_of_day': 0,
+                        'is_active': false,
+                    });
+                }
                 if (Object.keys(dataContract).length > 0) {
                     data.push(dataContract);
+                } else {
+                    data.push({
+                        'stage': 1,
+                        'date_type': 1,
+                        'payment_ratio': 0,
+                        'value_before_tax': 0,
+                        'is_ar_invoice': false,
+                        'number_of_day': 0,
+                        'is_active': false,
+                    });
                 }
-                for (let deli of dataDelivery) {
+                if (dataDelivery.length > 0) {
+                    for (let deli of dataDelivery) {
                     if (Object.keys(deli).length > 0) {
                         data.push(deli);
                     }
                 }
-                for (let acc of dataAcceptance) {
-                    if (Object.keys(acc).length > 0) {
-                        data.push(acc);
-                    }
+                } else {
+                    data.push([{
+                        'stage': 2,
+                        'date_type': 2,
+                        'payment_ratio': 0,
+                        'value_before_tax': 0,
+                        'is_ar_invoice': false,
+                        'number_of_day': 0,
+                        'is_active': false,
+                    }]);
                 }
+                if (dataAcceptance.length > 0) {
+                    for (let acc of dataAcceptance) {
+                        if (Object.keys(acc).length > 0) {
+                            data.push(acc);
+                        }
+                    }
+                } else {
+                    data.push([{
+                        'stage': 3,
+                        'date_type': 4,
+                        'payment_ratio': 0,
+                        'value_before_tax': 0,
+                        'is_ar_invoice': false,
+                        'number_of_day': 0,
+                        'is_active': false,
+                    }]);
+                }
+                if (Object.keys(dataInvoice).length > 0) {
+                    data.push(dataInvoice);
+                } else {
+                    data.push({
+                        'stage': 4,
+                        'date_type': 3,
+                        'payment_ratio': 0,
+                        'value_before_tax': 0,
+                        'is_ar_invoice': false,
+                        'number_of_day': 0,
+                        'is_active': false,
+                    });
+                }
+                let totalRatio = 0;
                 $table.DataTable().clear().draw();
                 $table.DataTable().rows.add(data).draw();
                 // load date picker
@@ -1603,7 +1659,24 @@ class QuotationLoadDataHandle {
                         $(row.querySelector('.table-row-date')).val(null).trigger('change');
                         row.querySelector('.table-row-due-date').innerHTML = '';
                     }
+                    // calculate total ratio
+                    let eleRatio = row.querySelector('.table-row-ratio');
+                    if (eleRatio) {
+                        if (eleRatio.getAttribute('data-ratio')) {
+                            totalRatio += parseFloat(eleRatio.getAttribute('data-ratio'));
+                        }
+                    }
                 })
+                // check is_balance then update ratio for row balance
+                let eleBalance = $table[0].querySelector('[data-balance="true"]');
+                if (eleBalance) {
+                    let row = eleBalance.closest('tr');
+                    let eleRatio = row.querySelector('.table-row-ratio');
+                    if (eleRatio) {
+                        eleRatio.setAttribute('data-ratio', (100 - totalRatio));
+                        eleRatio.innerHTML = String((100 - totalRatio)) + ' %';
+                    }
+                }
             } else {  // if dataTable is not empty then update data
                 $table.DataTable().rows().every(function () {
                     let row = this.node();
@@ -3384,26 +3457,37 @@ class QuotationDataTableHandle {
                     render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let dataStage = JSON.parse($('#payment_term_stage').text());
-                        return `<span class="table-row-stage" data-row="${dataRow}" data-stage="${row?.['stage']}" data-order="${(meta.row + 1)}">${dataStage[row?.['stage']][1]}</span>`;
+                        return `<span class="table-row-stage" data-row="${dataRow}" data-stage="${row?.['stage']}" data-order="${(meta.row + 1)}" data-active="${row?.['is_active']}" data-balance="${row?.['is_balance']}">${dataStage[row?.['stage']][1]}</span>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                        if (row?.['is_active'] === true) {
+                            return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                        } else {
+                            return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}" disabled>`;
+                        }
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (row?.['date'] !== '') {
-                            return `<div class="input-affix-wrapper">
+                        if (row?.['is_active'] === true) {
+                            if (row?.['date'] !== '') {
+                                return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">
                                         <div class="input-suffix"><i class="far fa-calendar"></i></div>
                                     </div>`;
+                            } else {
+                                return `<div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">
+                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                    </div>`;
+                            }
                         } else {
                             return `<div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">
+                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="" disabled>
                                         <div class="input-suffix"><i class="far fa-calendar"></i></div>
                                     </div>`;
                         }
@@ -3419,28 +3503,44 @@ class QuotationDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-ratio" data-ratio="${row?.['payment_ratio']}">${row?.['payment_ratio']} %</span>`;
+                        if (row?.['is_active'] === true) {
+                            return `<span class="table-row-ratio" data-ratio="${row?.['payment_ratio']}">${row?.['payment_ratio']} %</span>`;
+                        } else {
+                            return `<span class="table-row-ratio" data-ratio="${row?.['payment_ratio']}" hidden>${row?.['payment_ratio']} %</span>`;
+                        }
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}"></span>`;
+                        if (row?.['is_active'] === true) {
+                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}"></span>`;
+                        } else {
+                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}" hidden></span>`;
+                        }
                     }
                 },
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<p class="table-row-due-date">${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
+                        if (row?.['is_active'] === true) {
+                            return `<p class="table-row-due-date">${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
+                        } else {
+                            return `<p class="table-row-due-date" hidden>${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
+                        }
                     }
                 },
                 {
                     targets: 7,
                     render: (data, type, row) => {
-                        if (row?.['is_ar_invoice'] === true) {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
+                        if (row?.['is_active'] === true) {
+                            if (row?.['is_ar_invoice'] === true) {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
+                            } else {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
+                            }
                         } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" disabled></div>`;
                         }
                     }
                 },

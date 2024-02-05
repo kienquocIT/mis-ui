@@ -1615,6 +1615,11 @@ class WFRTControl {
         if ((btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext')
             && WFRTControl.getWFRuntimeID() && WFRTControl.getTaskWF() && pk && url.includes(pk) && method.toLowerCase() === 'put') {
             let taskID = WFRTControl.getTaskWF();
+            let isEditAllZone = WFRTControl.getIsEditAllZone();
+            if (isEditAllZone === 'true') {
+                reqBodyData['task_id'] = taskID;
+                return reqBodyData;
+            }
             let keyOk = WFRTControl.getZoneKeyData();
             let keyOkRelated = WFRTControl.getZoneKeyRelatedData();
             let newData = {};

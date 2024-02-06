@@ -19,6 +19,11 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script id="trans-script"
+            data-trans-opening="{% trans 'Opening' %}"
+            data-trans-waiting="{% trans 'Waiting' %}"
+            data-trans-closed="{% trans 'Closed' %}"
+    ></script>
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100" id="table-revenue-plan-list"

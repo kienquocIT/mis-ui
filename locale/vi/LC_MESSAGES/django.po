@@ -6352,3 +6352,11 @@ msgstr "Lưới"
 #
 msgid "View mode"
 msgstr "Chế độ xem"
+
+#
+msgid "Opening"
+msgstr "Đang mở"
+
+#
+msgid "Closed"
+msgstr "Đã đóng"

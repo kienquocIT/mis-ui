@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    const transEle = $('#trans-script')
     function loadRevenuePlanList() {
         if (!$.fn.DataTable.isDataTable('#table-revenue-plan-list')) {
             let dtb = $('#table-revenue-plan-list');
@@ -69,10 +70,13 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row) => {
                             if (row.status === 'Opening') {
-                                return `<span class="badge badge-success">${row.status}</span>`
+                                return `<span class="badge badge-success">${transEle.attr('data-trans-opening')}</span>`
+                            }
+                            else if (row.status === 'Waiting') {
+                                return `<span class="badge badge-warning">${transEle.attr('data-trans-waiting')}</span>`
                             }
                             else {
-                                return `<span class="badge badge-secondary">${row.status}</span>`
+                                return `<span class="badge badge-secondary">${transEle.attr('data-trans-closed')}</span>`
                             }
                         }
                     }

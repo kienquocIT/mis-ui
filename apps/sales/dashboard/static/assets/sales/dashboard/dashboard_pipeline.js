@@ -173,6 +173,7 @@ $(document).ready(function () {
             },
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: true,
                     horizontal: true,
@@ -457,6 +458,7 @@ $(document).ready(function () {
             ],
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: false,
                     horizontal: true,
@@ -707,6 +709,7 @@ $(document).ready(function () {
             ],
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: false,
                     horizontal: true,
@@ -898,6 +901,7 @@ $(document).ready(function () {
             ],
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: false,
                     horizontal: true,
@@ -1167,6 +1171,7 @@ $(document).ready(function () {
             }],
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: false,
                     horizontal: true,

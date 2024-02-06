@@ -48,7 +48,7 @@ $(document).ready(function () {
                             return `${row?.['sale_order']?.['customer']?.['name']}`
                         }
                     },
-                                        {
+                    {
                         data: 'sale_person',
                         className: 'wrap-text',
                         render: (data, type, row) => {
@@ -59,14 +59,7 @@ $(document).ready(function () {
                         data: 'sale_order',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-blue badge-sm">${row?.['sale_order']?.['code']}</span>&nbsp;${row?.['sale_order']?.['title']}`
-                        }
-                    },
-                    {
-                        data: 'delivery_mapped',
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<i class="bi bi-truck"></i>&nbsp;&nbsp;<span class="text-secondary"><b>${row?.['delivery']?.['code']}</b></span>`
+                            return `${row?.['sale_order']?.['title']} - <span class="text-blue"><i class="bi bi-truck"></i>&nbsp;<b>${row?.['delivery']?.['code']}</b></span>`
                         }
                     },
                     {

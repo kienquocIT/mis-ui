@@ -1577,10 +1577,6 @@ msgid "Copy From PO"
 msgstr "Sao chép từ đơn mua hàng"
 
 #
-msgid "Posting date"
-msgstr "Ngày hạch toán"
-
-#
 msgid "Line Detail"
 msgstr "Chi tiết"
 
@@ -6166,10 +6162,6 @@ msgid "Due date"
 msgstr "Ngày đến hạn"
 
 #
-msgid "AR invoice"
-msgstr "Hóa đơn AR"
-
-#
 msgid "Value after tax"
 msgstr "Giá trị sau thuế"
 
@@ -6240,3 +6232,123 @@ msgstr "Số thu hồi đang trống"
 #
 msgid "Return No. is greater than Using No."
 msgstr "Số thu hồi lớn hơn số đang sử dụng"
+
+#
+msgid "Total pipeline"
+msgstr "Tổng pipeline"
+
+#
+msgid "Dashboard setting"
+msgstr "Tuỳ chỉnh Dashboard"
+
+#
+msgid "Money display"
+msgstr "Hiển thị tiền theo:"
+
+#
+msgid "Money round"
+msgstr "Làm tròn tiền:"
+
+#
+msgid "Forecast"
+msgstr "Dự tính"
+
+#
+msgid "Customer activities"
+msgstr "Hoạt động khách hàng"
+
+#
+msgid "Sale person"
+msgstr "Người bán hàng"
+
+#
+msgid "Period"
+msgstr "Kì"
+
+#
+msgid "Target item"
+msgstr "Mục tiêu"
+
+#
+msgid "Quarterly"
+msgstr "Hằng quý"
+
+#
+msgid "Period target equals total of sub period targets"
+msgstr "Mục tiêu cả kì bằng tổng mục tiêu các kì con của nó"
+
+#
+msgid "Periods"
+msgstr "Kì"
+
+#
+msgid "Fiscal year"
+msgstr "Năm tài chính"
+
+#
+msgid "Start month"
+msgstr "Tháng bắt đầu"
+
+#
+msgid "Update period"
+msgstr "Cập nhập kì"
+
+#
+msgid "New period"
+msgstr "Thêm kì mới"
+
+#
+msgid "Select role(s) that has permission to create revenue plans"
+msgstr "Chọn (những) vai trò được tạo kế hoạch doanh thu"
+
+#
+msgid "You have not configured any role for Revenue plan. Go to Settings > Revenue plan config (admin)"
+msgstr "Bạn chưa có cấu hình (những) vai trò nào được tạo Kế hoạch doanh thu. Đi đến Settings > Cấu hình Kế hoạch doanh thu (cho admin)."
+
+#
+msgid "Revenue plan config"
+msgstr "Cấu hình Kế hoạch doanh thu"
+
+#
+msgid "Revenue plan"
+msgstr "Kế hoạch doanh thu"
+
+#
+msgid "Add group plan"
+msgstr "Thêm phòng ban cần giao chỉ tiêu"
+
+#
+msgid "Select group"
+msgstr "Chọn phòng ban"
+
+#
+msgid "Invoice number"
+msgstr "Số hoá đơn"
+
+#
+msgid "Tax value"
+msgstr "Thuế"
+
+#
+msgid "Tax number"
+msgstr "Mã số thuế"
+
+#
+msgid "Click the button to select"
+msgstr "Nhấn vào nút để lựa chọn"
+
+#
+msgid "Supplier code"
+msgstr "Mã nhà cung cấp"
+
+#
+msgid "for revenue chart & profit chart"
+msgstr "Cho Biểu đồ Doanh thu & Biểu đồ Lợi nhuận"
+
+#
+msgid "Grid"
+msgstr "Lưới"
+
+#
+msgid "View mode"
+msgstr "Chế độ xem"

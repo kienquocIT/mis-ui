@@ -4,12 +4,7 @@
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'GoodsReturnCreate' %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Inventory Adjustment' %}"
-       id="create_inventory_adjustment_button"
-       data-bs-original-title="Add Inventory Adjustment">
+    <a href="{% url 'GoodsReturnCreate' %}">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -33,7 +28,6 @@
             <th>{% trans "Customer" %}</th>
             <th>{% trans "Sale person" %}</th>
             <th>{% trans "Sale order" %}</th>
-            <th>{% trans "Delivery" %}</th>
             <th>{% trans "Created date" %}</th>
             <th>{% trans "Status" %}</th>
             </thead>

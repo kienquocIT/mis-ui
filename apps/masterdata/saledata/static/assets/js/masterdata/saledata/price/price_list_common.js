@@ -217,6 +217,7 @@ class PriceListLoadPage {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     let price_list_detail = data?.['price'];
+                    console.log(price_list_detail)
                     $('#data_detail').text(JSON.stringify(price_list_detail));
                     $.fn.compareStatusShowPageAction(price_list_detail)
 

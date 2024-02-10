@@ -52,22 +52,21 @@
         <!-- Tab add item -->
         <div class="tab-pane fade show active" id="tab-item-list">
             <div class="row">
-                <div class="col-12 text-left">
-                </div>
+                <div class="col-12 text-left"></div>
             </div>
             <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
                   data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}"
                   data-method="PUT">
                 <table id="datatable-item-list" class="table nowrap w-100">
-                    <tr>
-                        <thead>
-                        <th>#</th>
-                        <th>{% trans "Code" %}</th>
-                        <th>{% trans "Item name" %}</th>
-                        <th>{% trans "UoM group" %}</th>
-                        <th>{% trans "UoM" %}</th>
-                        </thead>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>{% trans "Code" %}</th>
+                            <th>{% trans "Item name" %}</th>
+                            <th>{% trans "UoM group" %}</th>
+                            <th>{% trans "UoM" %}</th>
+                        </tr>
+                    </thead>
                 </table>
             </form>
         </div>

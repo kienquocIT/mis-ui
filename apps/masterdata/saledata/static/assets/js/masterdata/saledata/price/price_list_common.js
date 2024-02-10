@@ -39,15 +39,19 @@ class PriceListAction {
     static generateColCurrency(product_mapped, currencies, pk) {
         let table = $('#datatable-item-list');
         currencies.forEach(function (value, index) {
-            table.find('thead tr').append(`<th>{0} {1}</th>`.format_by_idx(transEle.data('trans-price'), value.abbreviation))
+            table.find('thead tr').append(`<th>${transEle.data('trans-price')} ${value.abbreviation}</th>`)
             columns.push(
                 {
                     data: 'price',
                     render: (data, type, row, meta) => {
+                        let price_get = row.price.filter(function (item) {
+                            return item.id === value.id
+                        })[0]
+
                         if (row.is_auto_update) {
-                            return `<input class="form-control mask-money w-150p" data-id-currency="${data[index].id}" value="${data[index].value}" readonly/>`
+                            return `<input class="form-control mask-money w-150p" data-id-currency="${price_get.id}" value="${price_get.value}" readonly/>`
                         } else {
-                            return `<input class="form-control mask-money w-150p" data-id-currency="${data[index].id}" value="${data[index].value}" />`
+                            return `<input class="form-control mask-money w-150p" data-id-currency="${price_get.id}" value="${price_get.value}" />`
                         }
                     }
                 },
@@ -72,7 +76,6 @@ class PriceListAction {
     static addRow(table, data) {
         data.map(function (item) {
             table.DataTable().row.add(item).draw();
-
         })
     }
 

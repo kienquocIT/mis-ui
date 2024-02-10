@@ -61,8 +61,10 @@
                     </button>
                 </div>
             </div>
-            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
-                  data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}" data-url-redirect="{% url 'PriceList' %}"
+            <form id="form-update-item-price"
+                  data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
+                  data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}"
+                  data-url-redirect="{% url "PriceListDetail" '0' %}"
                   data-method="PUT">
                 <table id="datatable-item-list" class="table nowrap w-100">
                     <tr>
@@ -83,7 +85,7 @@
             <h6 id="notify" class="text-red" style="font-style: italic"></h6>
             <form id="form-update-price-list" data-method="PUT"
                   data-url="{% url "PriceDetailAPI" pk=0 %}"
-                  data-url-redirect="{% url "PriceList" %}"
+                  data-url-redirect="{% url "PriceListDetail" '0' %}"
                   data-url-list="{% url "PriceListAPI" %}"
             >
                 {% csrf_token %}

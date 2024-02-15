@@ -1517,6 +1517,7 @@ class QuotationLoadDataHandle {
                         'number_of_day': numberOfDay,
                         'is_active': true,
                         'is_balance': is_balance,
+                        'is_system': true,
                     }
                 } else if (termData['after'] === 2) {  // delivery
                     dataDelivery.push({
@@ -1528,6 +1529,7 @@ class QuotationLoadDataHandle {
                         'number_of_day': numberOfDay,
                         'is_active': true,
                         'is_balance': is_balance,
+                        'is_system': true,
                     })
                 } else if (termData['after'] === 3) {  // invoice
                     dataInvoice = {
@@ -1539,6 +1541,7 @@ class QuotationLoadDataHandle {
                         'number_of_day': numberOfDay,
                         'is_active': true,
                         'is_balance': is_balance,
+                        'is_system': true,
                     }
                 } else if (termData['after'] === 4) {  // final acceptance
                     dataAcceptance.push({
@@ -1550,6 +1553,7 @@ class QuotationLoadDataHandle {
                         'number_of_day': numberOfDay,
                         'is_active': true,
                         'is_balance': is_balance,
+                        'is_system': true,
                     })
                 } else if (termData['after'] === 6) {  // so
                     dataSO = {
@@ -1561,6 +1565,7 @@ class QuotationLoadDataHandle {
                         'number_of_day': numberOfDay,
                         'is_active': true,
                         'is_balance': is_balance,
+                        'is_system': true,
                     }
                 }
             }
@@ -1577,6 +1582,8 @@ class QuotationLoadDataHandle {
                         'is_ar_invoice': false,
                         'number_of_day': 0,
                         'is_active': false,
+                        'is_balance': false,
+                        'is_system': true,
                     });
                 }
                 if (Object.keys(dataContract).length > 0) {
@@ -1590,16 +1597,18 @@ class QuotationLoadDataHandle {
                         'is_ar_invoice': false,
                         'number_of_day': 0,
                         'is_active': false,
+                        'is_balance': false,
+                        'is_system': true,
                     });
                 }
                 if (dataDelivery.length > 0) {
                     for (let deli of dataDelivery) {
-                    if (Object.keys(deli).length > 0) {
-                        data.push(deli);
+                        if (Object.keys(deli).length > 0) {
+                            data.push(deli);
+                        }
                     }
-                }
                 } else {
-                    data.push([{
+                    data.push({
                         'stage': 2,
                         'date_type': 2,
                         'payment_ratio': 0,
@@ -1607,7 +1616,9 @@ class QuotationLoadDataHandle {
                         'is_ar_invoice': false,
                         'number_of_day': 0,
                         'is_active': false,
-                    }]);
+                        'is_balance': false,
+                        'is_system': true,
+                    });
                 }
                 if (dataAcceptance.length > 0) {
                     for (let acc of dataAcceptance) {
@@ -1616,7 +1627,7 @@ class QuotationLoadDataHandle {
                         }
                     }
                 } else {
-                    data.push([{
+                    data.push({
                         'stage': 3,
                         'date_type': 4,
                         'payment_ratio': 0,
@@ -1624,7 +1635,9 @@ class QuotationLoadDataHandle {
                         'is_ar_invoice': false,
                         'number_of_day': 0,
                         'is_active': false,
-                    }]);
+                        'is_balance': false,
+                        'is_system': true,
+                    });
                 }
                 if (Object.keys(dataInvoice).length > 0) {
                     data.push(dataInvoice);
@@ -1637,6 +1650,8 @@ class QuotationLoadDataHandle {
                         'is_ar_invoice': false,
                         'number_of_day': 0,
                         'is_active': false,
+                        'is_balance': false,
+                        'is_system': true,
                     });
                 }
                 let totalRatio = 0;
@@ -1664,6 +1679,14 @@ class QuotationLoadDataHandle {
                     if (eleRatio) {
                         if (eleRatio.getAttribute('data-ratio')) {
                             totalRatio += parseFloat(eleRatio.getAttribute('data-ratio'));
+                        }
+                    }
+                    // add data stage to row
+                    let eleStage = row.querySelector('.table-row-stage');
+                    if (eleStage) {
+                        let dataStage = eleStage.getAttribute('data-stage');
+                        if (dataStage) {
+                            row.setAttribute('data-row-stage', dataStage);
                         }
                     }
                 })
@@ -1711,6 +1734,44 @@ class QuotationLoadDataHandle {
         if (date && numberOfDay && eleDueDate) {
             eleDueDate.innerHTML = calculateDate(date, {'number_day_after': parseInt(numberOfDay)});
         }
+        return true;
+    };
+
+    static loadAddPaymentStage() {
+        let $table = $('#datable-quotation-payment-stage');
+        let dataAdd = {
+            'stage': 2,
+            'date_type': 2,
+            'payment_ratio': 0,
+            'value_before_tax': 0,
+            'is_ar_invoice': false,
+            'number_of_day': 0,
+            'is_active': true,
+            'is_balance': false,
+            'is_system': false,
+        };
+        let newRow = $table.DataTable().row.add(dataAdd).node();
+        let FARow = $table[0].querySelector('[data-row-stage="3"]');
+        if (newRow && FARow) {
+            $(newRow).detach().insertBefore(FARow);
+            // load datePicker
+            if (newRow.querySelector('.table-row-date')) {
+                $(newRow.querySelector('.table-row-date')).daterangepicker({
+                    singleDatePicker: true,
+                    timepicker: false,
+                    showDropdowns: false,
+                    minYear: 2023,
+                    locale: {
+                        format: 'DD/MM/YYYY'
+                    },
+                    maxYear: parseInt(moment().format('YYYY'), 10),
+                });
+                $(newRow.querySelector('.table-row-date')).val(null).trigger('change');
+                newRow.querySelector('.table-row-due-date').innerHTML = '';
+            }
+        }
+        // mask money
+        $.fn.initMaskMoney2();
         return true;
     };
 
@@ -3454,24 +3515,12 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    render: (data, type, row, meta) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        let dataStage = JSON.parse($('#payment_term_stage').text());
-                        return `<span class="table-row-stage" data-row="${dataRow}" data-stage="${row?.['stage']}" data-order="${(meta.row + 1)}" data-active="${row?.['is_active']}" data-balance="${row?.['is_balance']}">${dataStage[row?.['stage']][1]}</span>`;
+                    render: (data, type, row) => {
+                        return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
                     }
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
-                        if (row?.['is_active'] === true) {
-                            return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
-                        } else {
-                            return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}" disabled>`;
-                        }
-                    }
-                },
-                {
-                    targets: 2,
                     render: (data, type, row) => {
                         if (row?.['is_active'] === true) {
                             if (row?.['date'] !== '') {
@@ -3494,24 +3543,25 @@ class QuotationDataTableHandle {
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         let dataDateType = JSON.parse($('#payment_date_type').text());
                         return `<span class="table-row-date-type" data-date-type="${row?.['date_type']}">${dataDateType[row?.['date_type']][1]}</span>`;
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
-                        if (row?.['is_active'] === true) {
-                            return `<span class="table-row-ratio" data-ratio="${row?.['payment_ratio']}">${row?.['payment_ratio']} %</span>`;
-                        } else {
-                            return `<span class="table-row-ratio" data-ratio="${row?.['payment_ratio']}" hidden>${row?.['payment_ratio']} %</span>`;
-                        }
+                        return `<div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-ratio validated-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
+                                        <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                                    </div>
+                                </div>`;
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     render: (data, type, row) => {
                         if (row?.['is_active'] === true) {
                             return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}"></span>`;
@@ -3521,7 +3571,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 5,
                     render: (data, type, row) => {
                         if (row?.['is_active'] === true) {
                             return `<p class="table-row-due-date">${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -3531,7 +3581,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 7,
+                    targets: 6,
                     render: (data, type, row) => {
                         if (row?.['is_active'] === true) {
                             if (row?.['is_ar_invoice'] === true) {

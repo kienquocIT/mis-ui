@@ -12,59 +12,6 @@ class POLoadDataHandle {
     static finalRevenueBeforeTaxRequest = document.getElementById('purchase-order-request-final-revenue-before-tax');
     static transEle = $('#app-trans-factory');
 
-    static loadMoreInformation(ele, is_span = false) {
-        let optionSelected;
-        if (is_span === false) {
-            optionSelected = ele;
-        } else {
-            optionSelected = ele[0]
-        }
-        let eleInfo = ele[0].closest('.more-information-group').querySelector('.more-information');
-        let dropdownContent = ele[0].closest('.more-information-group').querySelector('.dropdown-menu');
-        dropdownContent.innerHTML = ``;
-        eleInfo.setAttribute('disabled', true);
-        let link = "";
-        if (optionSelected) {
-            let data = {};
-            if (is_span === false) {
-                data = SelectDDControl.get_data_from_idx(ele, ele.val());
-            } else {
-                let eleData = optionSelected.querySelector('.data-info');
-                if (eleData) {
-                    data = JSON.parse(eleData.value)
-                }
-            }
-            if (Object.keys(data).length !== 0) {
-                // remove attr disabled
-                if (eleInfo) {
-                    eleInfo.removeAttribute('disabled');
-                }
-                // end
-                let info = ``;
-                info += `<h6 class="dropdown-header header-wth-bg">${POLoadDataHandle.transEle.attr('data-more-information')}</h6>`;
-                for (let key in data) {
-                    if (['id', 'title', 'name', 'fullname', 'full_name', 'code'].includes(key)) {
-                        if (key === 'id') {
-                            let linkDetail = ele.data('link-detail');
-                            if (linkDetail) {
-                                link = linkDetail.format_url_with_uuid(data[key]);
-                            }
-                        } else {
-                            info += `<div class="row mb-1"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
-                        }
-                    }
-                }
-                info += `<div class="dropdown-divider"></div>
-                    <div class="row float-right">
-                        <a href="${link}" target="_blank" class="link-primary underline_hover">
-                            <span><span>${POLoadDataHandle.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
-                        </a>
-                    </div>`;
-                dropdownContent.innerHTML = info;
-            }
-        }
-    };
-
     static loadBoxSupplier(dataCustomer = {}) {
         let ele = POLoadDataHandle.supplierSelectEle;
         ele.initSelect2({
@@ -75,7 +22,6 @@ class POLoadDataHandle {
                 return item?.['name'] || '';
             },
         });
-        // POLoadDataHandle.loadMoreInformation(ele);
     };
 
     static loadBoxContact(dataContact = {}, supplierID = null) {
@@ -88,7 +34,6 @@ class POLoadDataHandle {
                 return item?.['fullname'] || '';
             },
         });
-        // POLoadDataHandle.loadMoreInformation(ele);
     };
 
     static loadBoxProduct(ele, dataProduct = {}) {
@@ -130,8 +75,6 @@ class POLoadDataHandle {
                 } else {
                     POLoadDataHandle.loadBoxTax($(tax));
                 }
-                // load modal more information
-                // POLoadDataHandle.loadMoreInformation(ele);
             }
             $.fn.initMaskMoney2();
         }
@@ -1805,7 +1748,7 @@ class PODataTableHandle {
                                         <input type="text" class="form-control table-row-ratio valid-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
                                         <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                                     </div>
-                                </div>`
+                                </div>`;
                     }
                 },
                 {
@@ -1855,7 +1798,7 @@ class PODataTableHandle {
                 },
             ],
         });
-    }
+    };
 
 }
 

@@ -106,8 +106,8 @@ $(function () {
 
         QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                $('#datable-quotation-payment-stage').DataTable().clear().draw();
-                QuotationLoadDataHandle.loadDataTablePaymentStage();
+                // $('#datable-quotation-payment-stage').DataTable().clear().draw();
+                // QuotationLoadDataHandle.loadDataTablePaymentStage();
             }
         });
 
@@ -772,6 +772,10 @@ $(function () {
             $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
+// PAYMENT STAGE
+        $('#btn-add-payment-stage-delivery').on('click', function () {
+            QuotationLoadDataHandle.loadAddPaymentStage();
+        });
 
 
 

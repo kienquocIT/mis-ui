@@ -49,9 +49,9 @@ class PriceListAction {
                         })[0]
 
                         if (row.is_auto_update) {
-                            return `<input class="form-control mask-money w-150p" data-id-currency="${price_get.id}" value="${price_get.value}" readonly/>`
+                            return `<input class="form-control mask-money w-150p money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" readonly/>`
                         } else {
-                            return `<input class="form-control mask-money w-150p" data-id-currency="${price_get.id}" value="${price_get.value}" />`
+                            return `<input class="form-control mask-money w-150p money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" />`
                         }
                     }
                 },
@@ -88,6 +88,11 @@ class PriceListAction {
                 data: data,
                 paging: false,
                 columns: columns,
+                // initComplete: function(settings, json) {
+                //     $('.money-input-value').each(function () {
+                //         $(this).val($(this).attr('data-abb'))
+                //     });
+                // }
             });
         }
     }

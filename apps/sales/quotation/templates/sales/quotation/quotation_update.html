@@ -156,11 +156,6 @@
                                         <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item tab-logistic">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
-                                        <span class="nav-link-text">{% trans 'Logistics' %}</span>
-                                    </a>
-                                </li>
                                 <li class="nav-item tab-cost">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
                                         <span class="nav-link-text">{% trans 'Cost' %}</span>
@@ -169,6 +164,11 @@
                                 <li class="nav-item tab-expense">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
                                         <span class="nav-link-text">{% trans 'Expense' %}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item tab-logistic">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
+                                        <span class="nav-link-text">{% trans 'Logistics' %}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -380,76 +380,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_logistic">
-                                <div class="row logistics-body">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Shipping Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" id="btn-edit-shipping" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="quotation_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
-                                        </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="quotation_logistic_data_readonly" disabled></textarea>
-                                        <input type="text" id="quotation-create-customer-shipping" hidden>
-                                    </div>
-                                    <div
-                                            class="modal fade" id="shippingModalCenter" tabindex="-1"
-                                            role="dialog" aria-labelledby="shippingModalCenter"
-                                            aria-hidden="true"
-                                    >
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                            <div class="modal-content" id="quotation-create-modal-shipping-body">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">{% trans 'Shipping Address' %}</h5>
-                                                    <button
-                                                            type="button" class="btn-close"
-                                                            data-bs-dismiss="modal" aria-label="Close"
-                                                    >
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body"></div>
-                                                <div class="modal-footer">
-                                                    <button
-                                                            type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal"
-                                                    >{% trans 'Close' %}</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Billing Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" id="btn-edit-billing" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="quotation_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
-                                        </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="quotation_logistic_data_readonly" disabled></textarea>
-                                        <input type="text" id="quotation-create-customer-billing" hidden>
-                                    </div>
-                                    <div
-                                            class="modal fade" id="billingModalCenter" tabindex="-1"
-                                            role="dialog" aria-labelledby="billingModalCenter"
-                                            aria-hidden="true"
-                                    >
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                            <div class="modal-content" id="quotation-create-modal-billing-body">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">{% trans 'Billing Address' %}</h5>
-                                                    <button
-                                                            type="button" class="btn-close"
-                                                            data-bs-dismiss="modal" aria-label="Close"
-                                                    >
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body"></div>
-                                                <div class="modal-footer">
-                                                    <button
-                                                            type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal"
-                                                    >{% trans 'Close' %}</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="tab-pane fade" id="tab_cost">
                                 <div class="row">
                                     <table
@@ -581,6 +511,76 @@
                                             <button type="button" class="btn btn-outline-primary" id="btn-add-labor-quotation-create" data-zone="quotation_expenses_data">
                                                 <span><span>{% trans 'Add Labor' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_logistic">
+                                <div class="row logistics-body">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Shipping Address' %}
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" id="btn-edit-shipping" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="quotation_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                        </label>
+                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="quotation_logistic_data_readonly" disabled></textarea>
+                                        <input type="text" id="quotation-create-customer-shipping" hidden>
+                                    </div>
+                                    <div
+                                            class="modal fade" id="shippingModalCenter" tabindex="-1"
+                                            role="dialog" aria-labelledby="shippingModalCenter"
+                                            aria-hidden="true"
+                                    >
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content" id="quotation-create-modal-shipping-body">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{% trans 'Shipping Address' %}</h5>
+                                                    <button
+                                                            type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                    >
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body"></div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                            type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal"
+                                                    >{% trans 'Close' %}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Billing Address' %}
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" id="btn-edit-billing" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="quotation_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                        </label>
+                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="quotation_logistic_data_readonly" disabled></textarea>
+                                        <input type="text" id="quotation-create-customer-billing" hidden>
+                                    </div>
+                                    <div
+                                            class="modal fade" id="billingModalCenter" tabindex="-1"
+                                            role="dialog" aria-labelledby="billingModalCenter"
+                                            aria-hidden="true"
+                                    >
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content" id="quotation-create-modal-billing-body">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{% trans 'Billing Address' %}</h5>
+                                                    <button
+                                                            type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                    >
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body"></div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                            type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal"
+                                                    >{% trans 'Close' %}</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

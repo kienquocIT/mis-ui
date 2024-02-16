@@ -235,11 +235,6 @@
                                         <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item tab-logistic">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
-                                        <span class="nav-link-text">{% trans 'Logistics' %}</span>
-                                    </a>
-                                </li>
                                 <li class="nav-item tab-cost">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
                                         <span class="nav-link-text">{% trans 'Cost' %}</span>
@@ -248,6 +243,16 @@
                                 <li class="nav-item tab-expense">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
                                         <span class="nav-link-text">{% trans 'Expense' %}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item tab-payment">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">
+                                        <span class="nav-link-text">{% trans 'Payment' %}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item tab-logistic">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
+                                        <span class="nav-link-text">{% trans 'Logistics' %}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -468,104 +473,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_logistic">
-                                <div class="row">
-                                    <table
-                                            id="datable-quotation-payment-stage"
-                                            class="table nowrap w-100 mb-5"
-                                    >
-                                        <thead>
-                                        <tr>
-                                            <th class="w-25">{% trans 'Description' %}</th>
-                                            <th class="w-15">{% trans 'Date' %}</th>
-                                            <th class="w-15">{% trans 'Payment term date type' %}</th>
-                                            <th class="w-10">% {% trans 'Payment' %}</th>
-                                            <th class="w-15">{% trans 'Value before tax' %}</th>
-                                            <th class="w-10">{% trans 'Due date' %}</th>
-                                            <th class="w-10">{% trans 'AR invoice' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-6">
-                                        <button type="button" class="btn btn-outline-primary" id="btn-add-payment-stage-delivery" data-zone="sale_order_logistic_data_readonly">
-                                            <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="row logistics-body">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Shipping Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
-                                        </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
-                                        <input type="text" id="quotation-create-customer-shipping" hidden>
-                                    </div>
-                                    <div
-                                            class="modal fade" id="shippingModalCenter" tabindex="-1"
-                                            role="dialog" aria-labelledby="shippingModalCenter"
-                                            aria-hidden="true"
-                                    >
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                            <div class="modal-content" id="quotation-create-modal-shipping-body">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">{% trans 'Shipping Address' %}</h5>
-                                                    <button
-                                                            type="button" class="btn-close"
-                                                            data-bs-dismiss="modal" aria-label="Close"
-                                                    >
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body"></div>
-                                                <div class="modal-footer">
-                                                    <button
-                                                            type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal"
-                                                    >{% trans 'Close' %}</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Billing Address' %}
-                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
-                                        </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
-                                        <input type="text" id="quotation-create-customer-billing" hidden>
-                                    </div>
-                                    <div
-                                            class="modal fade" id="billingModalCenter" tabindex="-1"
-                                            role="dialog" aria-labelledby="billingModalCenter"
-                                            aria-hidden="true"
-                                    >
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                            <div class="modal-content" id="quotation-create-modal-billing-body">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">{% trans 'Billing Address' %}</h5>
-                                                    <button
-                                                            type="button" class="btn-close"
-                                                            data-bs-dismiss="modal" aria-label="Close"
-                                                    >
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body"></div>
-                                                <div class="modal-footer">
-                                                    <button
-                                                            type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal"
-                                                    >{% trans 'Close' %}</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="tab-pane fade" id="tab_cost">
                                 <div class="row">
                                     <table
@@ -697,6 +604,105 @@
                                             <button type="button" class="btn btn-outline-primary" id="btn-add-labor-quotation-create" data-zone="sale_order_expenses_data">
                                                 <span><span>{% trans 'Add Labor' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_payment">
+                                <div class="row">
+                                    <table
+                                            id="datable-quotation-payment-stage"
+                                            class="table nowrap w-100 mb-5"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th class="w-20">{% trans 'Description' %}</th>
+                                            <th class="w-15">{% trans 'Date' %}</th>
+                                            <th class="w-15">{% trans 'Payment term date type' %}</th>
+                                            <th class="w-10">% {% trans 'Payment' %}</th>
+                                            <th class="w-15">{% trans 'Value before tax' %}</th>
+                                            <th class="w-15">{% trans 'Due date' %}</th>
+                                            <th class="w-10">{% trans 'AR invoice' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <button type="button" class="btn btn-outline-primary" id="btn-add-payment-stage" data-zone="sale_order_logistic_data_readonly">
+                                            <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_logistic">
+                                <div class="row logistics-body">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Shipping Address' %}
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                        </label>
+                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
+                                        <input type="text" id="quotation-create-customer-shipping" hidden>
+                                    </div>
+                                    <div
+                                            class="modal fade" id="shippingModalCenter" tabindex="-1"
+                                            role="dialog" aria-labelledby="shippingModalCenter"
+                                            aria-hidden="true"
+                                    >
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content" id="quotation-create-modal-shipping-body">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{% trans 'Shipping Address' %}</h5>
+                                                    <button
+                                                            type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                    >
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body"></div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                            type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal"
+                                                    >{% trans 'Close' %}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Billing Address' %}
+                                            <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
+                                        </label>
+                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
+                                        <input type="text" id="quotation-create-customer-billing" hidden>
+                                    </div>
+                                    <div
+                                            class="modal fade" id="billingModalCenter" tabindex="-1"
+                                            role="dialog" aria-labelledby="billingModalCenter"
+                                            aria-hidden="true"
+                                    >
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content" id="quotation-create-modal-billing-body">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{% trans 'Billing Address' %}</h5>
+                                                    <button
+                                                            type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                    >
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body"></div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                            type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal"
+                                                    >{% trans 'Close' %}</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

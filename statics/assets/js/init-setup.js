@@ -1929,7 +1929,7 @@ class WFRTControl {
                         $.fn.notifyB({description: data.message}, 'success');
                         setTimeout(() => {
                             window.location.replace(_form.dataUrlRedirect);
-                        }, 1000);
+                        }, 3000);
                     }
                 }, (err) => {
                     setTimeout(() => {

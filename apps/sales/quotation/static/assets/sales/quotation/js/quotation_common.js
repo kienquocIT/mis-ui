@@ -218,7 +218,6 @@ class QuotationLoadDataHandle {
             data: dataPayment,
             disabled: !(QuotationLoadDataHandle.paymentSelectEle.attr('data-url')),
         });
-        // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.paymentSelectEle);
     };
 
     static loadDataBySalePerson() {
@@ -1740,20 +1739,12 @@ class QuotationLoadDataHandle {
     static loadAddPaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
         let dataAdd = {
-            'stage': 2,
-            'date_type': 2,
             'payment_ratio': 0,
             'value_before_tax': 0,
             'is_ar_invoice': false,
-            'number_of_day': 0,
-            'is_active': true,
-            'is_balance': false,
-            'is_system': false,
         };
-        let newRow = $table.DataTable().row.add(dataAdd).node();
-        let FARow = $table[0].querySelector('[data-row-stage="3"]');
-        if (newRow && FARow) {
-            $(newRow).detach().insertBefore(FARow);
+        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+        if (newRow) {
             // load datePicker
             if (newRow.querySelector('.table-row-date')) {
                 $(newRow.querySelector('.table-row-date')).daterangepicker({
@@ -1767,12 +1758,72 @@ class QuotationLoadDataHandle {
                     maxYear: parseInt(moment().format('YYYY'), 10),
                 });
                 $(newRow.querySelector('.table-row-date')).val(null).trigger('change');
-                newRow.querySelector('.table-row-due-date').innerHTML = '';
             }
+            if (newRow.querySelector('.table-row-due-date')) {
+                $(newRow.querySelector('.table-row-due-date')).daterangepicker({
+                    singleDatePicker: true,
+                    timepicker: false,
+                    showDropdowns: false,
+                    minYear: 2023,
+                    locale: {
+                        format: 'DD/MM/YYYY'
+                    },
+                    maxYear: parseInt(moment().format('YYYY'), 10),
+                });
+                $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
+            }
+            //
+            let term = [];
+            let isDisabled = true;
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+                if (dataSelected) {
+                    isDisabled = false;
+                    term = dataSelected?.['term'];
+                    let dataDateType = JSON.parse($('#payment_date_type').text());
+                    for (let termData of term) {
+                        termData['title'] = dataDateType[termData?.['after']][1];
+                    }
+                }
+            }
+            if (newRow.querySelector('.table-row-date-type')) {
+                $(newRow.querySelector('.table-row-date-type')).initSelect2({
+                    data: term,
+                    disabled: isDisabled,
+                });
+                $(newRow.querySelector('.table-row-date-type')).val('').trigger('change');
+            }
+            // mask money
+            $.fn.initMaskMoney2();
         }
-        // mask money
-        $.fn.initMaskMoney2();
         return true;
+    };
+
+    static loadChangePaymentTerm() {
+        let formSubmit = $('#frm_quotation_create');
+        if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            let $table = $('#datable-quotation-payment-stage');
+            let term = [];
+            let isDisabled = true;
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+                if (dataSelected) {
+                    term = dataSelected?.['term'];
+                    let dataDateType = JSON.parse($('#payment_date_type').text());
+                    for (let termData of term) {
+                        termData['title'] = dataDateType[termData?.['after']][1];
+                    }
+                }
+            }
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-date-type')) {
+                    row.querySelector('.table-row-date-type').removeAttribute('disabled');
+                    $(row.querySelector('.table-row-date-type')).initSelect2({data: term});
+                    $(row.querySelector('.table-row-date-type')).val('').trigger('change');
+                }
+            });
+        }
     };
 
     static loadDataTableCost() {
@@ -3522,21 +3573,14 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (row?.['is_active'] === true) {
-                            if (row?.['date'] !== '') {
-                                return `<div class="input-affix-wrapper">
+                        if (row?.['date'] !== '') {
+                            return `<div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">
                                         <div class="input-suffix"><i class="far fa-calendar"></i></div>
                                     </div>`;
-                            } else {
-                                return `<div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">
-                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
-                                    </div>`;
-                            }
                         } else {
                             return `<div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="" disabled>
+                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">
                                         <div class="input-suffix"><i class="far fa-calendar"></i></div>
                                     </div>`;
                         }
@@ -3545,8 +3589,10 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let dataDateType = JSON.parse($('#payment_date_type').text());
-                        return `<span class="table-row-date-type" data-date-type="${row?.['date_type']}">${dataDateType[row?.['date_type']][1]}</span>`;
+                        return `<select 
+                                    class="form-select table-row-date-type"
+                                 >
+                                </select>`;
                     }
                 },
                 {
@@ -3563,34 +3609,37 @@ class QuotationDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        if (row?.['is_active'] === true) {
-                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}"></span>`;
-                        } else {
-                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['value_before_tax'] ? row?.['value_before_tax'] : '0')}" hidden></span>`;
-                        }
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-value" 
+                                    value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
+                                    data-return-type="number"
+                                >`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        if (row?.['is_active'] === true) {
-                            return `<p class="table-row-due-date">${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
+                        if (row?.['due_date'] !== '') {
+                            return `<div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">
+                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                    </div>`;
                         } else {
-                            return `<p class="table-row-due-date" hidden>${moment(row?.['due_date'] ? row?.['due_date'] : '').format('DD/MM/YYYY')}</p>`;
+                            return `<div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-due-date" value="">
+                                        <div class="input-suffix"><i class="far fa-calendar"></i></div>
+                                    </div>`;
                         }
                     }
                 },
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        if (row?.['is_active'] === true) {
-                            if (row?.['is_ar_invoice'] === true) {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
-                            } else {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
-                            }
+                        if (row?.['is_ar_invoice'] === true) {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
                         } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" disabled></div>`;
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
                         }
                     }
                 },

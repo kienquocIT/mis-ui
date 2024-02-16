@@ -70,7 +70,7 @@
                     <div class="row">
                         <div class="col-7 border rounded-3 px-2 py-2">
                             <div class="table-responsive" style="max-height: 200px;">
-                                <label>1. {% trans 'Select 1 delivery' %}</label>
+                                <label>1. {% trans 'Select delivery' %}</label>
                                 <table class="table w-100 nowrap" id="table-select-delivery">
                                     <thead class="bg-primary-light-5">
                                     <tr>
@@ -83,14 +83,14 @@
                                 </table>
                             </div>
                             <div class="table-responsive mt-5" style="max-height: 400px;">
-                                <label>2. {% trans 'Select 1 product' %}</label>
+                                <label>2. {% trans 'Select product' %}</label>
                                 <table class="table w-100 nowrap" id="table-product-detail">
                                     <thead class="bg-secondary-light-5">
                                     <tr>
                                         <td class="w-5"></td>
                                         <td class="w-30">{% trans 'Product' %}</td>
                                         <td class="w-10">{% trans 'UOM' %}</td>
-                                        <td class="w-25" style="min-width: 100px">{% trans 'Total order' %} / {% trans 'Delivered' %}</td>
+                                        <td class="w-25" style="min-width: 100px"><b>{% trans 'Total order' %}</b> / {% trans 'Delivered' %}</td>
                                         <td class="w-10" style="min-width: 100px">{% trans 'Return' %}</td>
                                         <td class="w-10" style="min-width: 100px">{% trans 'Re-delivery' %}</td>
                                         <td class="w-10 text-center">{% trans 'Select' %}</td>

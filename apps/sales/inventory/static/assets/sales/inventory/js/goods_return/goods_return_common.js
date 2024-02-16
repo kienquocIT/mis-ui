@@ -243,7 +243,6 @@ $('#add-product-btn').on('click', function () {
             }
         }
         let processed_data_list = Object.values(processed_data)
-        console.log(processed_data_list)
         loadTableLineDetail(processed_data_list, [5])
     }
     else if (data_type === '2') {
@@ -310,7 +309,6 @@ $('#add-product-btn').on('click', function () {
             }
         }
         let processed_data_list = Object.values(processed_data)
-        console.log(processed_data_list)
         loadTableLineDetail(processed_data_list, [4, 6])
     }
 })
@@ -482,8 +480,11 @@ function SelectDeliveryOnChange(delivery_selected_id) {
             if (results[0]?.['products_delivered_data_by_serial'].length > 0) {
                 DELIVERY_PRODUCT_NOW = results[0]?.['products_delivered_data_by_serial']
             }
-            else {
+            else if (results[0]?.['products_delivered_data_by_lot'].length > 0) {
                 DELIVERY_PRODUCT_NOW = results[0]?.['products_delivered_data_by_lot']
+            }
+            else {
+                DELIVERY_PRODUCT_NOW = []
             }
             let data_product = []
             $('.selected-delivery').each(function () {
@@ -491,7 +492,6 @@ function SelectDeliveryOnChange(delivery_selected_id) {
                     data_product = data_product.concat(JSON.parse($(this).closest('div').find('.details').text()))
                 }
             })
-
             loadTableSelectDetailProduct(data_product)
         })
 }
@@ -541,6 +541,13 @@ function loadTableSelectDetailProduct(datasource=[]) {
                         let returned_number_lot = product_row[0]?.['returned_quantity']
                         return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_lot}</span>`
                     }
+                    else if (product_row[0]?.['serial_id'] === undefined && product_row[0]?.['lot_id'] === undefined) {
+                        let product_row = datasource.filter(function (item) {
+                            return item?.['product_data']?.['id'] === row?.['product_data']?.['id']
+                        })
+                        let returned_number_default = product_row[0]?.['returned_quantity_default']
+                        return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="data-max-value text-danger">${returned_number_default}</span>`
+                    }
                     return `---`
                 }
             },
@@ -551,7 +558,11 @@ function loadTableSelectDetailProduct(datasource=[]) {
                     if ([1, 2].includes(row?.['product_general_traceability_method'])) {
                         return `<input value="0" disabled readonly class="form-control return-number-input" type="number" min="0">`
                     }
-                    return `<input value="0" class="form-control return-number-input" type="number" min="0">`
+                    let product_row = datasource.filter(function (item) {
+                        return item?.['product_data']?.['id'] === row?.['product_data']?.['id']
+                    })
+                    let returned_number_default = product_row[0]?.['returned_quantity_default']
+                    return `<input value="0" data-max="${row?.['delivered_quantity'] - returned_number_default}" class="form-control return-number-input" type="number" min="0">`
                 }
             },
             {
@@ -842,6 +853,10 @@ $(document).on("change", '.redelivery-lot-input', function () {
 $(document).on("change", '.return-number-input', function () {
     if (!$(this).val()) {$(this).val(0)}
     $(this).closest('tr').find('.re-delivery-number-input').val(0)
+    if (parseFloat($(this).val()) > parseFloat($(this).attr('data-max'))) {
+        $.fn.notifyB({description: `Return amount must not greater than Delivered amount: ${parseFloat($(this).val())} > ${parseFloat($(this).attr('data-max'))}`}, 'failure')
+        $(this).val(0)
+    }
 })
 
 $(document).on("change", '.re-delivery-number-input', function () {

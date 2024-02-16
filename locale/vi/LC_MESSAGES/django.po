@@ -6574,5 +6574,9 @@ msgid "Select serial No."
 msgstr "Chọn số serial"
 
 #
+msgid "Select LOT No."
+msgstr "Chọn số lô"
+
+#
 msgid "has returned"
 msgstr "Đã trả lại"

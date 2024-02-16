@@ -6556,3 +6556,7 @@ msgstr "Đã diễn ra"
 #
 msgid "Upcoming"
 msgstr "Sắp tới"
+
+#
+msgid "Redelivery"
+msgstr "Giao lại"

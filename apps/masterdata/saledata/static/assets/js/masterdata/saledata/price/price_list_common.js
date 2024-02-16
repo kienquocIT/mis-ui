@@ -88,11 +88,6 @@ class PriceListAction {
                 data: data,
                 paging: false,
                 columns: columns,
-                // initComplete: function(settings, json) {
-                //     $('.money-input-value').each(function () {
-                //         $(this).val($(this).attr('data-abb'))
-                //     });
-                // }
             });
         }
     }

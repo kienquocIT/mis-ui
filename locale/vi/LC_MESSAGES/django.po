@@ -6572,3 +6572,7 @@ msgstr "Chọn sản phẩm"
 #
 msgid "Select serial No."
 msgstr "Chọn số serial"
+
+#
+msgid "has returned"
+msgstr "Đã trả lại"

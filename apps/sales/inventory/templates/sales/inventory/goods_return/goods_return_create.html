@@ -22,7 +22,8 @@
             data-url-delivery-products="{% url 'DeliveryProductsForGoodsReturnAPI' '0' %}"
     >
     </script>
-    <script id="script-trans">
+    <script id="script-trans"
+            data-trans-has-returned="{% trans 'has returned' %}">
     </script>
     <form id="frm_goods_return_create" data-url="{% url 'GoodsReturnListAPI' %}" data-method="POST" data-url-redirect="{% url "GoodsReturnList" %}">
         {% csrf_token %}
@@ -53,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <div class="offcanvas offcanvas-end w-90 mt-9" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
+            <div class="offcanvas offcanvas-end w-95 mt-9" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
                 <div class=""></div>
                 <div class="offcanvas-body pt-4 px-5">
                     <div class="row">
@@ -79,7 +80,7 @@
                                         <td class="w-5"></td>
                                         <td class="w-30">{% trans 'Product' %}</td>
                                         <td class="w-10">{% trans 'UoM' %}</td>
-                                        <td class="w-25" style="min-width: 100px"><b>{% trans 'Total order' %}</b> / {% trans 'Delivered' %}</td>
+                                        <td class="w-25" style="min-width: 100px">{% trans 'Total order' %} - {% trans 'Delivered' %} - {% trans 'Returned' %}</td>
                                         <td class="w-10" style="min-width: 100px">{% trans 'Return' %}</td>
                                         <td class="w-10" style="min-width: 100px">{% trans 'Redelivery' %}</td>
                                         <td class="w-10 text-center">{% trans 'Select' %}</td>

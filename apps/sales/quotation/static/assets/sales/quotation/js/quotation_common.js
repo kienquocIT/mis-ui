@@ -149,9 +149,6 @@ class QuotationLoadDataHandle {
         let tableProduct = $('#datable-quotation-create-product');
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        // load again payment stage because payment change
-        $('#datable-quotation-payment-stage').DataTable().clear().draw();
-        QuotationLoadDataHandle.loadDataTablePaymentStage();
         if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
@@ -1725,17 +1722,6 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadDueDatePaymentStage(ele) {
-        let row = ele.closest('tr');
-        let date = $(ele).val();
-        let numberOfDay = ele.getAttribute('data-number-of-day');
-        let eleDueDate = row.querySelector('.table-row-due-date');
-        if (date && numberOfDay && eleDueDate) {
-            eleDueDate.innerHTML = calculateDate(date, {'number_day_after': parseInt(numberOfDay)});
-        }
-        return true;
-    };
-
     static loadAddPaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
         let dataAdd = {
@@ -1786,15 +1772,67 @@ class QuotationLoadDataHandle {
                     }
                 }
             }
-            if (newRow.querySelector('.table-row-date-type')) {
-                $(newRow.querySelector('.table-row-date-type')).initSelect2({
+            if (newRow.querySelector('.table-row-term')) {
+                $(newRow.querySelector('.table-row-term')).initSelect2({
                     data: term,
                     disabled: isDisabled,
+                    'allowClear': true,
                 });
-                $(newRow.querySelector('.table-row-date-type')).val('').trigger('change');
+                $(newRow.querySelector('.table-row-term')).val('').trigger('change');
             }
             // mask money
             $.fn.initMaskMoney2();
+        }
+        return true;
+    };
+
+    static loadChangePSDate(ele) {
+        let row = ele.closest('tr');
+        let eleDueDate = row.querySelector('.table-row-due-date');
+        let eleTerm = row.querySelector('.table-row-term');
+        if (eleDueDate && eleTerm) {
+            if ($(eleTerm).val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx($(eleTerm), $(eleTerm).val());
+                if (dataSelected) {
+                    let date = $(ele).val();
+                    if (dataSelected?.['no_of_days']) {
+                        let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
+                        if (dueDate) {
+                            $(eleDueDate).val(dueDate);
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadChangePSTerm(ele) {
+        let row = ele.closest('tr');
+        let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
+        let eleRatio = row.querySelector('.table-row-ratio');
+        let eleDate = row.querySelector('.table-row-date');
+        let eleDueDate = row.querySelector('.table-row-due-date');
+        if ($(ele).val()) {
+            if (eleRatio && eleDate && eleDueDate && dataSelected) {
+                eleRatio.setAttribute('disabled', 'true');
+                if (dataSelected?.['value']) {
+                    eleRatio.value = parseFloat(dataSelected?.['value']);
+                }
+                eleDueDate.setAttribute('disabled', 'true');
+                let date = $(eleDate).val();
+                if (dataSelected?.['no_of_days']) {
+                    let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
+                    if (dueDate) {
+                        $(eleDueDate).val(dueDate);
+                    }
+                }
+            }
+        } else {
+            if (eleRatio && eleDueDate) {
+                eleRatio.removeAttribute('disabled');
+                eleDueDate.removeAttribute('disabled');
+            }
         }
         return true;
     };
@@ -1804,7 +1842,6 @@ class QuotationLoadDataHandle {
         if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
             let $table = $('#datable-quotation-payment-stage');
             let term = [];
-            let isDisabled = true;
             if (QuotationLoadDataHandle.paymentSelectEle.val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
                 if (dataSelected) {
@@ -1817,10 +1854,10 @@ class QuotationLoadDataHandle {
             }
             $table.DataTable().rows().every(function () {
                 let row = this.node();
-                if (row.querySelector('.table-row-date-type')) {
-                    row.querySelector('.table-row-date-type').removeAttribute('disabled');
-                    $(row.querySelector('.table-row-date-type')).initSelect2({data: term});
-                    $(row.querySelector('.table-row-date-type')).val('').trigger('change');
+                if (row.querySelector('.table-row-term')) {
+                    row.querySelector('.table-row-term').removeAttribute('disabled');
+                    $(row.querySelector('.table-row-term')).initSelect2({data: term, 'allowClear': true});
+                    $(row.querySelector('.table-row-term')).val('').trigger('change');
                 }
             });
         }
@@ -3567,7 +3604,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                        return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}" required>`;
                     }
                 },
                 {
@@ -3589,10 +3626,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<select 
-                                    class="form-select table-row-date-type"
-                                 >
-                                </select>`;
+                        return `<select class="form-select table-row-term"></select>`;
                     }
                 },
                 {
@@ -3611,7 +3645,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
-                                    class="form-control mask-money table-row-value" 
+                                    class="form-control mask-money table-row-value-before-tax" 
                                     value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
                                     data-return-type="number"
                                 >`;
@@ -4915,13 +4949,6 @@ class QuotationSubmitHandle {
         $table.DataTable().rows().every(function () {
             let rowData = {};
             let row = this.node();
-            let eleStage = row.querySelector('.table-row-stage');
-            if (eleStage) {
-                if (eleStage.getAttribute('data-stage')) {
-                    rowData['stage'] = parseInt(eleStage.getAttribute('data-stage'));
-                    rowData['order'] = parseInt(eleStage.getAttribute('data-order'));
-                }
-            }
             let eleRemark = row.querySelector('.table-row-remark');
             if (eleRemark) {
                 rowData['remark'] = eleRemark.value;
@@ -4931,39 +4958,38 @@ class QuotationSubmitHandle {
                 if (eleDate.value) {
                     rowData['date'] = String(moment(eleDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
                 }
-                rowData['number_of_day'] = parseInt(eleDate.getAttribute('data-number-of-day'));
             }
-            let eleDateType = row.querySelector('.table-row-date-type');
-            if (eleDateType) {
-                if (eleDateType.getAttribute('data-date-type')) {
-                    rowData['date_type'] = parseInt(eleDateType.getAttribute('data-date-type'));
+            let eleTerm = row.querySelector('.table-row-term');
+            if (eleTerm) {
+                if ($(eleTerm).val()) {
+                    let dataSelected = SelectDDControl.get_data_from_idx($(eleTerm), $(eleTerm).val());
+                    if (dataSelected) {
+                        rowData['term_id'] = $(eleTerm).val();
+                        rowData['term_data'] = dataSelected;
+                    }
                 }
             }
             let eleRatio = row.querySelector('.table-row-ratio');
             if (eleRatio) {
-                if (eleRatio.getAttribute('data-ratio')) {
-                    rowData['payment_ratio'] = parseFloat(eleRatio.getAttribute('data-ratio'));
-                }
+                rowData['payment_ratio'] = parseFloat(eleRatio.value);
             }
-            let eleValue = row.querySelector('.table-row-value');
-            if (eleValue) {
-                if (eleValue.getAttribute('data-init-money')) {
-                    rowData['value_before_tax'] = parseFloat(eleValue.getAttribute('data-init-money'));
+            let eleValueBT = row.querySelector('.table-row-value-before-tax');
+            if (eleValueBT) {
+                if ($(eleValueBT).valCurrency()) {
+                    rowData['value_before_tax'] = parseFloat($(eleValueBT).valCurrency());
                 }
             }
             let eleDueDate = row.querySelector('.table-row-due-date');
             if (eleDueDate) {
-                if (eleDueDate.innerHTML) {
-                    rowData['due_date'] = String(moment(eleDueDate.innerHTML, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+                if (eleDueDate.value) {
+                    rowData['due_date'] = String(moment(eleDueDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
                 }
             }
             let eleARInvoice = row.querySelector('.table-row-checkbox-invoice');
             if (eleARInvoice) {
                 rowData['is_ar_invoice'] = eleARInvoice.checked;
             }
-            if (rowData.hasOwnProperty('stage')) {
-                result.push(rowData);
-            }
+            result.push(rowData);
         });
         return result;
     };
@@ -5239,6 +5265,20 @@ function calculateDate(dateString, opts = {}) {
         let padWithZero = (value) => (value < 10 ? `0${value}` : value);
         return `${padWithZero(newDate.getDate())}/${padWithZero(newDate.getMonth() + 1)}/${newDate.getFullYear()}`;
     }
+}
+
+function validateStartEndDate(startDate, endDate) {
+    let parseStartDate = parseDate(startDate);
+    let parseEndDate = parseDate(endDate);
+    // Check if startDate is greater than or equal to endDate
+    return parseEndDate > parseStartDate;
+}
+
+function parseDate(dateString) {
+    const parts = dateString.split('/');
+    // Note: months are 0-based in JavaScript Dates, so subtract 1
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    return new Date(formattedDate);
 }
 
 // validate

@@ -629,7 +629,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-5">
                                     <div class="col-12 col-md-6 col-lg-6">
                                         <button type="button" class="btn btn-outline-primary" id="btn-add-payment-stage" data-zone="sale_order_logistic_data_readonly">
                                             <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
@@ -798,6 +798,7 @@
         data-required-product-uom="{% trans "Product unit of measure is required" %}"
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
+        data-validate-due-date="{% trans "Date must be before due date" %}"
     >
 
     <input

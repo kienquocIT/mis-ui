@@ -1795,7 +1795,7 @@ class QuotationLoadDataHandle {
                 let dataSelected = SelectDDControl.get_data_from_idx($(eleTerm), $(eleTerm).val());
                 if (dataSelected) {
                     let date = $(ele).val();
-                    if (dataSelected?.['no_of_days']) {
+                    if (date && dataSelected?.['no_of_days']) {
                         let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
                         if (dueDate) {
                             $(eleDueDate).val(dueDate);
@@ -1821,7 +1821,7 @@ class QuotationLoadDataHandle {
                 }
                 eleDueDate.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
-                if (dataSelected?.['no_of_days']) {
+                if (date && dataSelected?.['no_of_days']) {
                     let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
                     if (dueDate) {
                         $(eleDueDate).val(dueDate);

@@ -3415,7 +3415,7 @@ msgstr "Ghi chú"
 
 #
 msgid "Total order"
-msgstr "Tổng số lượng"
+msgstr "Tổng số"
 
 #
 msgid "Get Product"
@@ -5680,7 +5680,7 @@ msgstr "Đã giao một phần"
 
 #
 msgid "Delivered"
-msgstr "Đã giao hàng"
+msgstr "Đã giao"
 
 #
 msgid "Partially received"

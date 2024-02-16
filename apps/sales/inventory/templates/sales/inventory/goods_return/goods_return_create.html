@@ -23,7 +23,7 @@
     >
     </script>
     <script id="script-trans"
-            data-trans-has-returned="{% trans 'has returned' %}">
+            data-trans-has-returned="{% trans 'Returned' %}">
     </script>
     <form id="frm_goods_return_create" data-url="{% url 'GoodsReturnListAPI' %}" data-method="POST" data-url-redirect="{% url "GoodsReturnList" %}">
         {% csrf_token %}
@@ -55,8 +55,7 @@
                 </div>
             </div>
             <div class="offcanvas offcanvas-end w-95 mt-9" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
-                <div class=""></div>
-                <div class="offcanvas-body py-5 px-5">
+                <div class="offcanvas-body py-5 pr-5 px-5">
                     <div class="row">
                         <div class="col-7 border rounded-3 px-2 py-2">
                             <div class="table-responsive">

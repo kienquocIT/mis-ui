@@ -1,4 +1,5 @@
 $(function () {
+    "use strict";
     // declare variable
     const $urlFact = $('#url-factory');
     const priority_list = {
@@ -80,6 +81,7 @@ $(function () {
                         const taskList = data?.['task_list']
                         kanban.init(taskList)
                         list.init(list, taskList)
+                        GanttViewTask.saveTaskList(taskList)
                         // Function to wait form create on submit
                         $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
                         let observer = new MutationObserver(callBackModalChange);
@@ -1015,14 +1017,254 @@ $(function () {
 
     class GanttViewTask {
         static taskList = []
+        static bk_taskList = []
         static saveTaskList(data){
-            let temp = GanttViewTask.taskList
+            let bk_list = GanttViewTask.bk_taskList
             if (!data || !data.length) return false
-            for (let item of data){
-            }
-        }
-        static init(){
 
+            for (let item of data){
+                let from = new Date(item.start_date)
+                from.setHours(0);
+                from.setMinutes(0);
+                from.setDate(from.getDate() + 1)
+                let to = new Date(item.end_date)
+                to.setHours(0);
+                to.setMinutes(0);
+                to.setDate(to.getDate() + 1);
+                if ('parent_n' in item && Object.keys(item['parent_n']).length){
+                    // có cấp cha
+                    if (item.parent_n.id in bk_list){
+                        bk_list[item.parent_n.id]['parent_n'].push({
+                            desc: item.title,
+                            values: [{
+                                from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                                to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                                desc: item.remark,
+                                customClass: "ganttGreen",
+                                dataObj: item
+                            }]
+                        })
+                    }
+                    else{
+                        bk_list[item.parent_n.id] = {
+                            name: item.parent_n.title,
+                            desc: '',
+                            values: []
+                        }
+                        bk_list[item.parent_n.id]['parent_n'].push({
+                            desc: item.title,
+                            values: [{
+                                from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                                to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                                desc: item.remark,
+                                customClass: "ganttGreen",
+                                dataObj: item
+                            }]
+                        })
+
+                    }
+                }
+                else {
+                    // ko có cấp cha
+                    bk_list[item.id] = {
+                        name: item.title,
+                        desc: item.remark,
+                        values: [{
+                            from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                            to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                            customClass: "ganttGreen",
+                            dataObj: item
+                        }]
+                    }
+                }
+            }
+
+            let reNewList = []
+            for (let key in bk_list){
+                const item = bk_list[key]
+                item.show_expand = false
+                reNewList.push(item)
+                if ('parent_n' in item && Object.keys(item['parent_n']).length){
+                    // có task con
+                    item.show_expand = true
+                    for (let child in item['parent_n']){
+                        reNewList.push(child)
+                    }
+                }
+            }
+            GanttViewTask.taskList = reNewList
+        }
+        static renderGantt(){
+            const $transElm = $('#trans-factory')
+            let columns_gantt = [
+                {
+                    value: 'name',
+                    label: $transElm.attr('data-name'),
+                    show: true,
+                    detail: '<i class="fa-solid fa-share"></i>'
+                },
+                // {value: 'estimate_change', label: gettext('Estimate'), show: false},
+                {value: 'assignee', label: $transElm.attr('data-assignee'), show: false},
+            ]
+            const sourceDT = GanttViewTask.taskList
+            $(".gantt").gantt({
+                source: sourceDT,
+                navigate: 'scroll',
+                scale: "weeks",
+                maxScale: "months",
+                minScale: "hours",
+                columns: columns_gantt,
+                itemsPerPage: 10,
+                scrollToToday: true,
+                useCookie: true,
+                // final_level_bold: 0,
+                // hover: true,
+                // resizeable: true,
+                // onItemClick: (data) => {
+                // },
+                // onClickParent,
+                // onRowClick: (id) => renderDetailPage(id),
+                // resizeStartDate,
+                // resizeEndDate
+            });
+        }
+
+        static initGantt() {
+            // $('.tab-gantt[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            //     if (!$('.gantt').length) {
+            //         $('.gantt_table').append('<div class="gantt"></div>')
+            //         GanttViewTask.renderGantt()
+            // $('#btn_today').click($.fn.scroll_to_today)
+            // }
+            // else $('#btn_today').click($.fn.scroll_to_today)
+            // })
+            GanttViewTask.renderGantt()
+
+            var demoSource = [
+                {
+                    name: "Sprint 0",
+                    desc: "Analysis",
+                    values: [{
+                        from: 1707801849898,
+                        to: 1822401600000,
+                        label: "Requirement Gathering",
+                        customClass: "ganttRed"
+                    }]
+                },
+                {
+                    desc: "Scoping",
+                    values: [{
+                        from: 1707801849898,
+                        to: 1807801849898,
+                        label: "Scoping",
+                        customClass: "ganttRed"
+                    }]
+                },
+                {
+                    name: "Sprint 1",
+                    desc: "Development",
+                    values: [{
+                        from: 1707801849898,
+                        to: 1807801849898,
+                        label: "Development",
+                        customClass: "ganttGreen"
+                    }]
+                },
+                {
+                    name: " ",
+                    desc: "Showcasing",
+                    values: [{
+                        from: 1707801849898,
+                        to: 1807801849898,
+                        label: "Showcasing",
+                        customClass: "ganttBlue"
+                    }]
+                },
+                {
+                    name: "Sprint 2",
+                    desc: "Development",
+                    values: [{
+                        from: 1707801849898,
+                        to: 1707802849898,
+                        label: "Development",
+                        customClass: "ganttGreen"
+                    }]
+                },
+                {
+                    desc: "Showcasing",
+                    values: [{
+                        from: 1707801849898,
+                        to: 1707803849898,
+                        label: "Showcasing",
+                        customClass: "ganttBlue"
+                    }]
+                },
+                {
+                    name: "Release Stage",
+                    desc: "Training",
+                    values: [{
+                        from: 1707801849898,
+                        to: 1707802849898,
+                        label: "Training",
+                        customClass: "ganttOrange"
+                    }]
+                },
+                {
+                    desc: "Deployment",
+                    values: [{
+                        from: 1707801849898,
+                        to: 1707811849898,
+                        label: "Deployment label",
+                        desc: "Deployment content",
+                        customClass: "ganttOrange"
+                    }]
+                },
+                {
+                    desc: "Warranty Period",
+                    values: [{
+                        from: 1707801849898,
+                        to: 1707801849998,
+                        label: "Warranty Period label",
+                        desc: "Warranty Period content",
+                        customClass: "ganttOrange"
+                    }]
+                }
+            ];
+
+            // shifts dates closer to Date.now()
+
+            // $(".gantt").gantt({
+            //     source: demoSource,
+            //     navigate: "scroll",
+            //     scale: "weeks",
+                // maxScale: "months",
+                // minScale: "hours",
+                // itemsPerPage: 10,
+                // scrollToToday: true,
+                // useCookie: true,
+            //     onItemClick: function (data) {
+            //         alert("Item clicked - show some details");
+            //     },
+            //     onAddClick: function (dt, rowId) {
+            //         alert("Empty space clicked - add an item!");
+            //     },
+            //     onRender: function () {
+            //         if (window.console && typeof console.log === "function") {
+            //             console.log("chart rendered");
+            //         }
+            //     }
+            // });
+
+            // $(".gantt").popover({
+            //     selector: ".bar",
+            //     title: function _getItemText() {
+            //         return this.textContent;
+            //     },
+            //     container: '.gantt',
+            //     content: "Here's some useful information.",
+            //     trigger: "hover",
+            //     placement: "auto right"
+            // });
         }
     }
 
@@ -1033,6 +1275,7 @@ $(function () {
     const kanbanTask = new kanbanHandle()
     const listTask = new listViewTask()
     callDataTaskList(kanbanTask, listTask)
+    GanttViewTask.initGantt()
     // on click save btn log work
     logworkSubmit()
     // init dragula

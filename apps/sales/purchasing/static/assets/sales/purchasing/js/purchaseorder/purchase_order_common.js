@@ -1997,6 +1997,23 @@ class POValidateHandle {
         return true
     };
 
+    static validateEnablePRPQ() {
+        let btnPRModal = $('#btn-purchase-request-modal');
+        let btnPQModal = $('#btn-purchase-quotation-modal');
+        if ($('#purchase-order-title').val() && POLoadDataHandle.supplierSelectEle.val() && POLoadDataHandle.contactSelectEle.val()) {
+            if (btnPRModal && btnPQModal) {
+                btnPRModal[0].removeAttribute('disabled');
+                btnPQModal[0].removeAttribute('disabled');
+            }
+        } else {
+            if (btnPRModal && btnPQModal) {
+                btnPRModal[0].setAttribute('disabled', 'true');
+                btnPQModal[0].setAttribute('disabled', 'true');
+            }
+        }
+        return true;
+    };
+
 }
 
 // Submit Form

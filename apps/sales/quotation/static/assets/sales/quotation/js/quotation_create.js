@@ -771,41 +771,43 @@ $(function () {
         });
 
         $('#datable-quotation-payment-stage').on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-due-date', function () {
-            if ($(this).hasClass('table-row-date')) {
-                let row = this.closest('tr');
-                let isCheck = true;
-                let eleDueDate = row.querySelector('.table-row-due-date');
-                let eleTerm = row.querySelector('.table-row-term');
-                if (eleDueDate && eleTerm) {
-                    if ($(this).val() && $(eleDueDate).val() && !$(eleTerm).val()) {
-                        isCheck = validateStartEndDate($(this).val(), $(eleDueDate).val());
+            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                if ($(this).hasClass('table-row-date')) {
+                    let row = this.closest('tr');
+                    let isCheck = true;
+                    let eleDueDate = row.querySelector('.table-row-due-date');
+                    let eleTerm = row.querySelector('.table-row-term');
+                    if (eleDueDate && eleTerm) {
+                        if ($(this).val() && $(eleDueDate).val() && !$(eleTerm).val()) {
+                            isCheck = validateStartEndDate($(this).val(), $(eleDueDate).val());
+                        }
+                    }
+                    if (isCheck === true) {
+                        QuotationLoadDataHandle.loadChangePSDate(this);
+                    } else {
+                        $(this).val(null);
+                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                        return false;
                     }
                 }
-                if (isCheck === true) {
-                    QuotationLoadDataHandle.loadChangePSDate(this);
-                } else {
-                    $(this).val(null);
-                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
-                    return false;
+                if ($(this).hasClass('table-row-term')) {
+                    QuotationLoadDataHandle.loadChangePSTerm(this);
                 }
-            }
-            if ($(this).hasClass('table-row-term')) {
-                QuotationLoadDataHandle.loadChangePSTerm(this);
-            }
-            if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
-                validateNumber(this);
-            }
-            if ($(this).hasClass('table-row-due-date')) {
-                let row = this.closest('tr');
-                let eleDate = row.querySelector('.table-row-date');
-                let eleTerm = row.querySelector('.table-row-term');
-                if (eleDate && eleTerm) {
-                    if ($(this).val() && $(eleDate).val() && !$(eleTerm).val()) {
-                        let isCheck = validateStartEndDate($(eleDate).val(), $(this).val());
-                        if (isCheck === false) {
-                            $(this).val(null);
-                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
-                            return false;
+                if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
+                    validateNumber(this);
+                }
+                if ($(this).hasClass('table-row-due-date')) {
+                    let row = this.closest('tr');
+                    let eleDate = row.querySelector('.table-row-date');
+                    let eleTerm = row.querySelector('.table-row-term');
+                    if (eleDate && eleTerm) {
+                        if ($(this).val() && $(eleDate).val() && !$(eleTerm).val()) {
+                            let isCheck = validateStartEndDate($(eleDate).val(), $(this).val());
+                            if (isCheck === false) {
+                                $(this).val(null);
+                                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                                return false;
+                            }
                         }
                     }
                 }

@@ -2323,6 +2323,18 @@ class QuotationLoadDataHandle {
                             maxYear: parseInt(moment().format('YYYY'), 10),
                         });
                     }
+                    if (row.querySelector('.table-row-due-date')) {
+                        $(row.querySelector('.table-row-due-date')).daterangepicker({
+                            singleDatePicker: true,
+                            timepicker: false,
+                            showDropdowns: false,
+                            minYear: 2023,
+                            locale: {
+                                format: 'DD/MM/YYYY'
+                            },
+                            maxYear: parseInt(moment().format('YYYY'), 10),
+                        });
+                    }
                 })
             }
         }

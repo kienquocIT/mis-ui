@@ -6095,7 +6095,7 @@ msgstr "Danh sách phiếu bàn giao"
 
 #
 msgid "Total day off is 0 please verify again"
-msgstr "Tồng ngày nghỉ là 0, vui lòng kiểm tra lại"
+msgstr "Tổng ngày nghỉ là 0, vui lòng kiểm tra lại"
 
 #
 msgid "Date To need large then Date From"

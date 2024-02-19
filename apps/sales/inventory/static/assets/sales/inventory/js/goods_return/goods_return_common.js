@@ -1352,6 +1352,11 @@ function LoadDetailGoodsReturn(option) {
                     loadTableDetailPageDefault([data])
                 }
 
+                new $x.cls.file($('#attachment')).init({
+                    enable_edit: option !== 'detail',
+                    data: data.attachment,
+                })
+
                 $.fn.initMaskMoney2();
 
                 Disable(option);

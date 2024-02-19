@@ -1458,7 +1458,7 @@ class QuotationLoadDataHandle {
         if ($form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled($table);
         }
-        QuotationLoadDataHandle.loadDropDowns($table, true);
+        QuotationLoadDataHandle.loadDropDowns($table);
         $.fn.initMaskMoney2();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
@@ -1758,7 +1758,7 @@ class QuotationLoadDataHandle {
                 });
                 $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
             }
-            //
+            // load init data
             let term = [];
             let isDisabled = true;
             if (QuotationLoadDataHandle.paymentSelectEle.val()) {
@@ -1812,12 +1812,26 @@ class QuotationLoadDataHandle {
         let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
         let eleRatio = row.querySelector('.table-row-ratio');
         let eleDate = row.querySelector('.table-row-date');
+        let eleValueBT = row.querySelector('.table-row-value-before-tax');
         let eleDueDate = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
-            if (eleRatio && eleDate && eleDueDate && dataSelected) {
+            if (eleRatio && eleDate && eleValueBT && eleDueDate && dataSelected) {
                 eleRatio.setAttribute('disabled', 'true');
                 if (dataSelected?.['value']) {
                     eleRatio.value = parseFloat(dataSelected?.['value']);
+                }
+                eleValueBT.setAttribute('disabled', 'true');
+                let valueSO = 0;
+                let tableProduct = document.getElementById('datable-quotation-create-product');
+                if (tableProduct.closest('.dataTables_scroll')) {
+                    let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+                    if (tableProductFt.querySelector('.quotation-create-product-total-raw')) {
+                        valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
+                        if (dataSelected?.['value']) {
+                            let value = (parseFloat(dataSelected?.['value']) * valueSO) / 100;
+                            $(eleValueBT).attr('value', String(value));
+                        }
+                    }
                 }
                 eleDueDate.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
@@ -1829,12 +1843,43 @@ class QuotationLoadDataHandle {
                 }
             }
         } else {
-            if (eleRatio && eleDueDate) {
+            if (eleRatio && eleValueBT && eleDueDate) {
                 eleRatio.removeAttribute('disabled');
+                eleValueBT.removeAttribute('disabled');
                 eleDueDate.removeAttribute('disabled');
             }
         }
+        // mask money
+        $.fn.initMaskMoney2();
         return true;
+    };
+
+    static loadChangePSValueBTAll() {
+        let $table = $('#datable-quotation-payment-stage');
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleTerm = row.querySelector('.table-row-term');
+            let eleRatio = row.querySelector('.table-row-ratio');
+            let eleValueBT = row.querySelector('.table-row-value-before-tax');
+            let valueSO = 0;
+            if (eleTerm && eleRatio && eleValueBT) {
+                if ($(eleTerm).val()) {
+                    let tableProduct = document.getElementById('datable-quotation-create-product');
+                    if (tableProduct.closest('.dataTables_scroll')) {
+                        let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+                        if (tableProductFt.querySelector('.quotation-create-product-total-raw')) {
+                            valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
+                            if (eleRatio.value) {
+                                let value = (parseFloat(eleRatio.value) * valueSO) / 100;
+                                $(eleValueBT).attr('value', String(value));
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        // mask money
+        $.fn.initMaskMoney2();
     };
 
     static loadChangePaymentTerm() {
@@ -2114,8 +2159,8 @@ class QuotationLoadDataHandle {
             data['contact']['fullname'] = data['contact']['title'];
             QuotationLoadDataHandle.loadBoxQuotationContact(data?.['contact']);
         }
-        if (data?.['payment_term']) {
-            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term'])
+        if (data?.['payment_term_data']) {
+            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term_data'])
         }
         if (data?.['quotation'] && data?.['sale_person']) {
             QuotationLoadDataHandle.loadBoxSOQuotation(data?.['quotation']);
@@ -2303,33 +2348,67 @@ class QuotationLoadDataHandle {
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
+        let tablePS = $('#datable-quotation-payment-stage');
         QuotationLoadDataHandle.loadDropDowns(tableProduct);
         QuotationLoadDataHandle.loadDropDowns(tableCost);
-        QuotationLoadDataHandle.loadDropDowns(tableExpense, true);
+        QuotationLoadDataHandle.loadDropDowns(tableExpense);
+        QuotationLoadDataHandle.loadDropDowns(tablePS);
     };
 
-    static loadDropDowns(table, is_expense = false) {
-        table.DataTable().rows().every(function () {
-            let row = this.node();
-            if (!row.querySelector('.table-row-group')) {
-                let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
-                if (is_expense === false) { // PRODUCT
+    static loadDropDowns(table) {
+        if (table[0].id === "datable-quotation-create-product" || table[0].id === "datable-quotation-create-cost") {  // PRODUCT || COST
+            table.DataTable().rows().every(function () {
+                let row = this.node();
+                if (!row.querySelector('.table-row-group')) {
+                    let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
                     $(row.querySelector('.table-row-item')).empty();
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
-                } else { // EXPENSE
-                    $(row.querySelector('.table-row-item')).empty();
-                    QuotationLoadDataHandle.loadBoxQuotationExpenseItem($(row.querySelector('.table-row-item')), dataRow?.['expense_item']);
-                    if (row?.querySelector('.table-row-labor-item') && dataRow?.['is_labor'] === true) {
-                        $(row.querySelector('.table-row-labor-item')).empty();
-                        QuotationLoadDataHandle.loadBoxQuotationExpense($(row.querySelector('.table-row-labor-item')), dataRow?.['expense']);
-                    }
+                    $(row.querySelector('.table-row-uom')).empty();
+                    QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow?.['unit_of_measure']);
+                    $(row.querySelector('.table-row-tax')).empty();
+                    QuotationLoadDataHandle.loadBoxQuotationTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
+                }
+            });
+        }
+        if (table[0].id === "datable-quotation-create-expense") {  // EXPENSE
+            table.DataTable().rows().every(function () {
+                let row = this.node();
+                let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
+                $(row.querySelector('.table-row-item')).empty();
+                QuotationLoadDataHandle.loadBoxQuotationExpenseItem($(row.querySelector('.table-row-item')), dataRow?.['expense_item']);
+                if (row?.querySelector('.table-row-labor-item') && dataRow?.['is_labor'] === true) {
+                    $(row.querySelector('.table-row-labor-item')).empty();
+                    QuotationLoadDataHandle.loadBoxQuotationExpense($(row.querySelector('.table-row-labor-item')), dataRow?.['expense']);
                 }
                 $(row.querySelector('.table-row-uom')).empty();
                 QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow?.['unit_of_measure']);
                 $(row.querySelector('.table-row-tax')).empty();
                 QuotationLoadDataHandle.loadBoxQuotationTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
-            }
-        });
+            });
+        }
+        if (table[0].id === "datable-quotation-payment-stage") {  // PAYMENT
+            table.DataTable().rows().every(function () {
+                let row = this.node();
+                let dataRow = JSON.parse(row.querySelector('.table-row-remark')?.getAttribute('data-row'));
+                $(row.querySelector('.table-row-term')).empty();
+                let term = [];
+                if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                    let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+                    if (dataSelected) {
+                        term = dataSelected?.['term'];
+                        let dataDateType = JSON.parse($('#payment_date_type').text());
+                        for (let termData of term) {
+                            termData['title'] = dataDateType[termData?.['after']][1];
+                        }
+                    }
+                }
+                $(row.querySelector('.table-row-term')).initSelect2({
+                    data: term,
+                    'allowClear': true,
+                });
+                $(row.querySelector('.table-row-term')).val(dataRow?.['term_id']).trigger('change');
+            });
+        }
         return true;
     };
 
@@ -2371,6 +2450,18 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-date')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-term')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-checkbox-invoice')) {
@@ -3604,7 +3695,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}" required>`;
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<input type="text" class="form-control table-row-remark" data-row="${dataRow}" value="${row?.['remark'] ? row?.['remark'] : ''}" required>`;
                     }
                 },
                 {
@@ -5145,6 +5237,14 @@ class QuotationSubmitHandle {
             let dataPaymentStage = QuotationSubmitHandle.setupDataPaymentStage();
             if (dataPaymentStage.length > 0) {
                 _form.dataForm['sale_order_payment_stage'] = dataPaymentStage;
+            }
+        }
+
+        // payment term data
+        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
 

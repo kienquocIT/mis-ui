@@ -200,6 +200,8 @@ $(function () {
             deletePromotionRows(tableProduct, false, true);
             // Re Calculate all data of rows & total
             QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
+            // change value before tax table payment
+            QuotationLoadDataHandle.loadChangePSValueBTAll();
         });
 
 // If change product uom then clear table COST
@@ -876,6 +878,7 @@ $(function () {
                 'contact',
                 'employee_inherit_id',
                 'payment_term',
+                'payment_term_data',
                 // total amount of products
                 'total_product_pretax_amount',
                 'total_product_discount_rate',
@@ -913,6 +916,7 @@ $(function () {
                     'contact',
                     'employee_inherit_id',
                     'payment_term',
+                    'payment_term_data',
                     'quotation',
                     // total amount of products
                     'total_product_pretax_amount',
@@ -967,7 +971,6 @@ $(function () {
                 }
             }
             WFRTControl.callWFSubmitForm(_form);
-
 
 
             // WindowControl.showLoading();

@@ -537,20 +537,17 @@ function loadTableSelectDetailProduct(datasource=[]) {
                         let returned_number_sn = product_row.filter(function (item) {
                             return item?.['is_returned'] === true
                         })
-                        let data_remain = parseFloat(row?.['delivered_quantity']) - parseFloat(returned_number_sn.length)
-                        return `<span class="remain-amount" data-remain="${data_remain}"></span><span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_sn.length}</span>`
+                        return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_sn.length}</span>`
                     } else if (product_row[0]?.['lot_id'] !== undefined) {
                         let returned_number_lot = product_row[0]?.['returned_quantity']
-                        let data_remain = parseFloat(row?.['delivered_quantity']) - parseFloat(returned_number_lot)
-                        return `<span class="remain-amount" data-remain="${data_remain}"></span><span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_lot}</span>`
+                        return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_lot}</span>`
                     }
                     else if (product_row[0]?.['serial_id'] === undefined && product_row[0]?.['lot_id'] === undefined) {
                         let product_row = datasource.filter(function (item) {
                             return item?.['product_data']?.['id'] === row?.['product_data']?.['id']
                         })
                         let returned_number_default = product_row[0]?.['returned_quantity_default']
-                        let data_remain = parseFloat(row?.['delivered_quantity']) - parseFloat(returned_number_default)
-                        return `<span class="remain-amount" data-remain="${data_remain}"></span><span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="data-max-value text-danger">${returned_number_default}</span>`
+                        return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="data-max-value text-danger">${returned_number_default}</span>`
                     }
                     return `---`
                 }

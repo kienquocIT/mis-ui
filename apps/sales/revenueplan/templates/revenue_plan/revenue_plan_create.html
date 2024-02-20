@@ -32,7 +32,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-create-revenue-plan">
+    <button id="btn-save-revenue-plan" class="btn btn-outline-primary" type="submit" form="form-create-revenue-plan">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -57,6 +57,9 @@
             data-trans-m10th="{% trans 'October' %}"
             data-trans-m11th="{% trans 'November' %}"
             data-trans-m12th="{% trans 'December' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-net-profit="{% trans 'Net income' %}"
+            data-trans-gross-profit="{% trans 'Gross profit' %}"
     ></script>
 
     <form id="form-create-revenue-plan"
@@ -66,7 +69,14 @@
           data-url-detail="{% url 'RevenuePlanDetail' '0' %}"
           data-url="{% url "RevenuePlanListAPI" %}">
         {% csrf_token %}
-        <div class="row">
+        <div class="row" id="notify">
+            <div class="col-12">
+                <div class="alert alert-warning" role="alert">
+                    {% trans 'You have not configured any role for Revenue plan. Go to Settings > Revenue plan config (admin)' %}
+                </div>
+            </div>
+        </div>
+        <div class="row main">
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="form-group">
                     <label for="revenue-plan-name" class="form-label required">{% trans 'Name' %}</label>
@@ -83,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row main">
             <div class="col-12">
                 <div class="row">
                     <div class="col-12 col-md-2 col-lg-2">
@@ -119,7 +129,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-5">
+        <div class="row mt-5 main">
             <div class="col-12">
                 <button type="button" id="add-group-plan" class="btn btn-custom btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-group-plan-modal">
                     <span>
@@ -158,7 +168,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-5 mb-10">
+        <div class="row mt-5 mb-10 main">
             <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
                 <table class="table nowrap w-100 fixed_header" id="revenue-plan-table"
                        data-group-url="{% url 'GroupDetailAPI' '0' %}"

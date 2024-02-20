@@ -1577,10 +1577,6 @@ msgid "Copy From PO"
 msgstr "Sao chép từ đơn mua hàng"
 
 #
-msgid "Posting date"
-msgstr "Ngày hạch toán"
-
-#
 msgid "Line Detail"
 msgstr "Chi tiết"
 
@@ -3107,7 +3103,7 @@ msgstr "Có thể giao hàng từng phần"
 
 #
 msgid "General"
-msgstr "Chung"
+msgstr "Tổng quan"
 
 #
 msgid "Transition Data Config"
@@ -3419,7 +3415,7 @@ msgstr "Ghi chú"
 
 #
 msgid "Total order"
-msgstr "Tổng số lượng"
+msgstr "Tổng số"
 
 #
 msgid "Get Product"
@@ -5684,7 +5680,7 @@ msgstr "Đã giao một phần"
 
 #
 msgid "Delivered"
-msgstr "Đã giao hàng"
+msgstr "Đã giao"
 
 #
 msgid "Partially received"
@@ -6099,7 +6095,7 @@ msgstr "Danh sách phiếu bàn giao"
 
 #
 msgid "Total day off is 0 please verify again"
-msgstr "Tồng ngày nghỉ là 0, vui lòng kiểm tra lại"
+msgstr "Tổng ngày nghỉ là 0, vui lòng kiểm tra lại"
 
 #
 msgid "Date To need large then Date From"
@@ -6164,10 +6160,6 @@ msgstr "Giá trị trước thuế"
 #
 msgid "Due date"
 msgstr "Ngày đến hạn"
-
-#
-msgid "AR invoice"
-msgstr "Hóa đơn AR"
 
 #
 msgid "Value after tax"
@@ -6240,3 +6232,351 @@ msgstr "Số thu hồi đang trống"
 #
 msgid "Return No. is greater than Using No."
 msgstr "Số thu hồi lớn hơn số đang sử dụng"
+
+#
+msgid "Total pipeline"
+msgstr "Tổng pipeline"
+
+#
+msgid "Dashboard setting"
+msgstr "Tuỳ chỉnh Dashboard"
+
+#
+msgid "Money display"
+msgstr "Hiển thị tiền theo:"
+
+#
+msgid "Money round"
+msgstr "Làm tròn tiền:"
+
+#
+msgid "Forecast"
+msgstr "Dự tính"
+
+#
+msgid "Customer activities"
+msgstr "Hoạt động khách hàng"
+
+#
+msgid "Sale person"
+msgstr "Người bán hàng"
+
+#
+msgid "Period"
+msgstr "Kì"
+
+#
+msgid "Target item"
+msgstr "Mục tiêu"
+
+#
+msgid "Quarterly"
+msgstr "Hằng quý"
+
+#
+msgid "Period target equals total of sub period targets"
+msgstr "Mục tiêu cả kì bằng tổng mục tiêu các kì con của nó"
+
+#
+msgid "Periods"
+msgstr "Kì"
+
+#
+msgid "Fiscal year"
+msgstr "Năm tài chính"
+
+#
+msgid "Start month"
+msgstr "Tháng bắt đầu"
+
+#
+msgid "Update period"
+msgstr "Cập nhập kì"
+
+#
+msgid "New period"
+msgstr "Thêm kì mới"
+
+#
+msgid "Select role(s) that has permission to create revenue plans"
+msgstr "Chọn (những) vai trò được tạo kế hoạch doanh thu"
+
+#
+msgid "You have not configured any role for Revenue plan. Go to Settings > Revenue plan config (admin)"
+msgstr "Bạn chưa có cấu hình (những) vai trò nào được tạo Kế hoạch doanh thu. Đi đến Settings > Cấu hình Kế hoạch doanh thu (cho admin)."
+
+#
+msgid "Revenue plan config"
+msgstr "Cấu hình Kế hoạch doanh thu"
+
+#
+msgid "Revenue plan"
+msgstr "Kế hoạch doanh thu"
+
+#
+msgid "Add group plan"
+msgstr "Thêm phòng ban cần giao chỉ tiêu"
+
+#
+msgid "Select group"
+msgstr "Chọn phòng ban"
+
+#
+msgid "Invoice number"
+msgstr "Số hoá đơn"
+
+#
+msgid "Tax value"
+msgstr "Thuế"
+
+#
+msgid "Tax number"
+msgstr "Mã số thuế"
+
+#
+msgid "Click the button to select"
+msgstr "Nhấn vào nút để lựa chọn"
+
+#
+msgid "Supplier code"
+msgstr "Mã nhà cung cấp"
+
+#
+msgid "for revenue chart & profit chart"
+msgstr "Cho Biểu đồ Doanh thu & Biểu đồ Lợi nhuận"
+
+#
+msgid "Grid"
+msgstr "Lưới"
+
+#
+msgid "View mode"
+msgstr "Chế độ xem"
+
+#
+msgid "Opening"
+msgstr "Đang mở"
+
+#
+msgid "Closed"
+msgstr "Đã đóng"
+
+#
+msgid "Online app meeting"
+msgstr "Ứng dụng họp trực tuyến"
+
+#
+msgid "Meeting content"
+msgstr "Nội dung cuộc họp"
+
+#
+msgid "Internal participants"
+msgstr "Người tham dự nội bộ"
+
+#
+msgid "External participants"
+msgstr "Người tham dự bên ngoài"
+
+#
+msgid "Start time"
+msgstr "Thời gian bắt đầu"
+
+#
+msgid "Duration"
+msgstr "Thời lượng"
+
+#
+msgid "hour(s)"
+msgstr "giờ"
+
+#
+msgid "min(s)"
+msgstr "phút"
+
+#
+msgid "Online meeting changes will be updated after saving this page"
+msgstr "Cuộc họp trực tuyến sẽ được thay đổi sau khi Lưu trang này"
+
+#
+msgid "Online meeting will be created after saving this page"
+msgstr "Cuộc họp trực tuyến sẽ được tạo sau khi Lưu trang này"
+
+#
+msgid "Online meeting"
+msgstr "Cuộc họp trực tuyến"
+
+#
+msgid "Offline meeting"
+msgstr "Cuộc họp trực tiếp"
+
+#
+msgid "Date occur"
+msgstr "Ngày diễn ra"
+
+#
+msgid "Meeting with customer ..."
+msgstr "Cuộc họp với khách hàng ..."
+
+#
+msgid "Meeting type"
+msgstr "Loại cuộc họp"
+
+#
+msgid "Create meeting schedule"
+msgstr "Tạo cuộc họp mới"
+
+#
+msgid "Select app"
+msgstr "Chọn ứng dụng"
+
+#
+msgid "Topic"
+msgstr "Chủ đề"
+
+#
+msgid "Time zone"
+msgstr "Múi giờ"
+
+#
+msgid "Recurring meeting"
+msgstr "Lặp lại cuộc họp"
+
+#
+msgid "Attendees"
+msgstr "Người tham dự"
+
+#
+msgid "Recurrence"
+msgstr "Lặp lại"
+
+#
+msgid "Repeat every"
+msgstr "Lặp lại mỗi"
+
+#
+msgid "day(s)"
+msgstr "ngày"
+
+#
+msgid "week(s)"
+msgstr "tuần"
+
+#
+msgid "month(s)"
+msgstr "tháng"
+
+#
+msgid "of the month"
+msgstr "của tháng"
+
+#
+msgid "First"
+msgstr "Đầu tiên"
+
+#
+msgid "Second"
+msgstr "Thứ hai"
+
+#
+msgid "Third"
+msgstr "Thứ ba"
+
+#
+msgid "Fourth"
+msgstr "Thứ tư"
+
+#
+msgid "Last"
+msgstr "Cuối cùng"
+
+#
+msgid "By"
+msgstr "Trước"
+
+#
+msgid "occurrences"
+msgstr "lần lặp"
+
+#
+msgid "Enable continuous meeting chat"
+msgstr "Cho phép tiếp tục cuộc hội thoại trong cộc họp"
+
+#
+msgid "Added attendees will have access to the Meeting Group Chat before and after the meeting"
+msgstr "Người tham dự được thêm vào sẽ có quyền truy cập vào Group Chat cuộc họp trước và sau khi cuộc họp dễn ra"
+
+#
+msgid "Security"
+msgstr "Bảo mật"
+
+#
+msgid "Only users who have the invite link OR passcode can join the meeting"
+msgstr "Chỉ những người có liên kết HOẶC passcode mới có thể tham dự cuộc họp"
+
+#
+msgid "Waiting room"
+msgstr "Phòng chờ"
+
+#
+msgid "Only users admitted by the host can join the meeting"
+msgstr "Chỉ những người dùng được người chủ trì cuộc họp chấp nhận mới có thể tham gia cuộc họp"
+
+#
+msgid "Save meeting config"
+msgstr "Lưu cấu hình cuộc họp"
+
+#
+msgid "Occurs on"
+msgstr "Lặp lại vào"
+
+#
+msgid "Select internal participants"
+msgstr "Chọn người tham dự nội bộ"
+
+#
+msgid "Select external participants"
+msgstr "Chọn người tham dự bên ngoài"
+
+#
+msgid "Copy invitation"
+msgstr "Sao chép lời mời"
+
+#
+msgid "Edit meeting"
+msgstr "Chỉnh sửa cuộc họp"
+
+#
+msgid "Delete meeting"
+msgstr "Huỷ bỏ cuộc họp"
+
+#
+msgid "Occurred"
+msgstr "Đã diễn ra"
+
+#
+msgid "Upcoming"
+msgstr "Sắp tới"
+
+#
+msgid "Redelivery"
+msgstr "Giao lại"
+
+#
+msgid "Select delivery"
+msgstr "Chọn phiếu giao hàng"
+
+#
+msgid "Select product"
+msgstr "Chọn sản phẩm"
+
+#
+msgid "Select serial No."
+msgstr "Chọn số serial"
+
+#
+msgid "Select LOT No."
+msgstr "Chọn số lô"
+
+#
+msgid "has returned"
+msgstr "Đã trả lại"

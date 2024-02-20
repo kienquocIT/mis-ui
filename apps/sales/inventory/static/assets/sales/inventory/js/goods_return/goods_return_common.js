@@ -7,6 +7,7 @@ const tableDetailProductEle = $('#table-product-detail')
 const dataLineDetailTableScript = $('#data-line-detail-table')
 const lineDetailTable = $('#tab_line_detail_datatable')
 const scriptUrlEle = $('#script-url')
+const scriptTransEle = $('#script-trans')
 const tableProductSN = $('#table-product-sn')
 const tableProductLOT = $('#table-product-lot')
 const btnAddRowLineDetail = $('#btn-add-row-line-detail')
@@ -30,7 +31,7 @@ function LoadDate() {
 function loadTableSelectDelivery() {
     tableSelectDeliveryEle.DataTable().destroy()
     tableSelectDeliveryEle.DataTableDefault({
-        dom: "",
+        dom: '',
         useDataServer: true,
         rowIdx: true,
         reloadCurrency: true,
@@ -86,6 +87,8 @@ function loadTableSelectDelivery() {
 
 $(document).on("change", '.selected-delivery', function () {
     SelectDeliveryOnChange($(this).attr('data-id'))
+    loadTableSelectProductSerial([])
+    loadTableSelectProductLOT([])
 })
 
 $(document).on("change", '.selected-product', function () {
@@ -93,9 +96,6 @@ $(document).on("change", '.selected-product', function () {
     tableProductSN.closest('div').prop('hidden', $(this).attr('data-type') !== '2')
     if ($(this).attr('data-type') === '1') {
         let product_id_selected = $(this).attr('data-id')
-        console.log(DELIVERY_PRODUCT_NOW.filter(function (item) {
-                return item.product.id === product_id_selected
-            }))
         loadTableSelectProductLOT(
             DELIVERY_PRODUCT_NOW.filter(function (item) {
                 return item.product.id === product_id_selected
@@ -243,7 +243,6 @@ $('#add-product-btn').on('click', function () {
             }
         }
         let processed_data_list = Object.values(processed_data)
-        console.log(processed_data_list)
         loadTableLineDetail(processed_data_list, [5])
     }
     else if (data_type === '2') {
@@ -310,7 +309,6 @@ $('#add-product-btn').on('click', function () {
             }
         }
         let processed_data_list = Object.values(processed_data)
-        console.log(processed_data_list)
         loadTableLineDetail(processed_data_list, [4, 6])
     }
 })
@@ -479,12 +477,14 @@ function SelectDeliveryOnChange(delivery_selected_id) {
 
     Promise.all([delivery_products_ajax]).then(
         (results) => {
-            console.log(results[0])
             if (results[0]?.['products_delivered_data_by_serial'].length > 0) {
                 DELIVERY_PRODUCT_NOW = results[0]?.['products_delivered_data_by_serial']
             }
-            else {
+            else if (results[0]?.['products_delivered_data_by_lot'].length > 0) {
                 DELIVERY_PRODUCT_NOW = results[0]?.['products_delivered_data_by_lot']
+            }
+            else {
+                DELIVERY_PRODUCT_NOW = []
             }
             let data_product = []
             $('.selected-delivery').each(function () {
@@ -492,8 +492,6 @@ function SelectDeliveryOnChange(delivery_selected_id) {
                     data_product = data_product.concat(JSON.parse($(this).closest('div').find('.details').text()))
                 }
             })
-            console.log(data_product)
-
             loadTableSelectDetailProduct(data_product)
         })
 }
@@ -530,7 +528,27 @@ function loadTableSelectDetailProduct(datasource=[]) {
                 data: '',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    return `<b>${row?.['total_order']}</b> / ${row?.['delivered_quantity']}`
+                    let product_row = DELIVERY_PRODUCT_NOW.filter(function (item) {
+                        return item?.['product']?.['id'] === row?.['product_data']?.['id']
+                    })
+                    if (product_row[0]?.['serial_id'] !== undefined) {
+                        let returned_number_sn = product_row.filter(function (item) {
+                            return item?.['is_returned'] === true
+                        })
+                        return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_sn.length}</span>`
+                    }
+                    else if (product_row[0]?.['lot_id'] !== undefined) {
+                        let returned_number_lot = product_row[0]?.['returned_quantity']
+                        return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_lot}</span>`
+                    }
+                    else if (product_row[0]?.['serial_id'] === undefined && product_row[0]?.['lot_id'] === undefined) {
+                        let product_row = datasource.filter(function (item) {
+                            return item?.['product_data']?.['id'] === row?.['product_data']?.['id']
+                        })
+                        let returned_number_default = product_row[0]?.['returned_quantity_default']
+                        return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="data-max-value text-danger">${returned_number_default}</span>`
+                    }
+                    return `---`
                 }
             },
             {
@@ -540,7 +558,11 @@ function loadTableSelectDetailProduct(datasource=[]) {
                     if ([1, 2].includes(row?.['product_general_traceability_method'])) {
                         return `<input value="0" disabled readonly class="form-control return-number-input" type="number" min="0">`
                     }
-                    return `<input value="0" class="form-control return-number-input" type="number" min="0">`
+                    let product_row = datasource.filter(function (item) {
+                        return item?.['product_data']?.['id'] === row?.['product_data']?.['id']
+                    })
+                    let returned_number_default = product_row[0]?.['returned_quantity_default']
+                    return `<input value="0" data-max="${row?.['delivered_quantity'] - returned_number_default}" class="form-control return-number-input" type="number" min="0">`
                 }
             },
             {
@@ -630,7 +652,10 @@ function loadTableSelectProductSerial(datasource=[]) {
             {
                 data: '',
                 className: 'wrap-text text-center',
-                render: () => {
+                render: (data, type, row) => {
+                    if (row?.['is_returned'] === true) {
+                        return `<span class="badge badge-sm badge-soft-secondary">${scriptTransEle.attr('data-trans-has-returned')}</span>`
+                    }
                     return `<div class="form-check">
                                 <input type="checkbox" class="form-check-input return-check">
                                 <label class="form-check-label"></label>
@@ -640,7 +665,10 @@ function loadTableSelectProductSerial(datasource=[]) {
             {
                 data: '',
                 className: 'wrap-text text-center',
-                render: () => {
+                render: (data, type, row) => {
+                    if (row?.['is_returned'] === true) {
+                        return ``
+                    }
                     return `<div class="form-check" hidden>
                                 <input type="checkbox" class="form-check-input redelivery-check">
                                 <label class="form-check-label"></label>
@@ -696,7 +724,7 @@ function loadTableSelectProductLOT(datasource=[]) {
                 data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `${row?.['quantity_delivery']}`
+                    return `${row?.['quantity_delivery'] - row?.['returned_quantity']}`
                 }
             },
             {
@@ -825,6 +853,10 @@ $(document).on("change", '.redelivery-lot-input', function () {
 $(document).on("change", '.return-number-input', function () {
     if (!$(this).val()) {$(this).val(0)}
     $(this).closest('tr').find('.re-delivery-number-input').val(0)
+    if (parseFloat($(this).val()) > parseFloat($(this).attr('data-max'))) {
+        $.fn.notifyB({description: `Return amount must not greater than Delivered amount: ${parseFloat($(this).val())} > ${parseFloat($(this).attr('data-max'))}`}, 'failure')
+        $(this).val(0)
+    }
 })
 
 $(document).on("change", '.re-delivery-number-input', function () {
@@ -1319,6 +1351,11 @@ function LoadDetailGoodsReturn(option) {
                 else if (data?.['data_detail'][0]?.['type'] === 0) {
                     loadTableDetailPageDefault([data])
                 }
+
+                new $x.cls.file($('#attachment')).init({
+                    enable_edit: option !== 'detail',
+                    data: data.attachment,
+                })
 
                 $.fn.initMaskMoney2();
 

@@ -648,6 +648,7 @@ function calculatePrice() {
 
 class ARInvoiceHandle {
     load() {
+        loadTableLineDetail([])
         loadTableSelectCustomer()
     }
     combinesData(frmEle, for_update=false) {

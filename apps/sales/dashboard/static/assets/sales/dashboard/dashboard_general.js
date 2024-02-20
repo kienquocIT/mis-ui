@@ -2,10 +2,30 @@ $(document).ready(function () {
     $('#modal-dashboard-setting .modal-dialog').draggable({
         "handle": ".modal-header"
     });
+    const GRID_HEIGHT = 230
+    const FULL_HEIGHT = 410
+    let HEIGHT = GRID_HEIGHT
 
-    function padZero(number) {
-        return number < 10 ? '0' + number : number.toString();
-    }
+    $('.view-radio').on('change', function () {
+        if ($('#grid-view').prop('checked')) {
+            HEIGHT = GRID_HEIGHT
+            $('.px-7').each(function () {
+                $(this).attr('class', 'px-7 mt-3 col-12 col-md-6 col-lg-6')
+            })
+        }
+        else {
+            HEIGHT = FULL_HEIGHT
+            $('.px-7').each(function () {
+                $(this).attr('class', 'px-7 mt-3 col-12 col-md-12 col-lg-12')
+            })
+        }
+        UpdateOptionRevenueChart()
+        UpdateOptionProfitChart()
+        UpdateOptionTopSellersChart()
+        UpdateOptionTopCustomersChart()
+        UpdateOptionTopCategoriesChart()
+        UpdateOptionTopProductsChart()
+    })
 
     const scriptUrlEle = $('#script-url')
     const trans_script = $('#trans-url')
@@ -155,7 +175,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                height: 230,
+                height: HEIGHT,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -305,7 +325,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                height: 230,
+                height: HEIGHT,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -629,7 +649,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                height: 230,
+                height: HEIGHT,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -781,7 +801,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                height: 230,
+                height: HEIGHT,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -1136,7 +1156,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 230
+                height: HEIGHT
             },
             colors: ['#147945'],
             plotOptions: {
@@ -1409,7 +1429,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 230
+                height: HEIGHT
             },
             colors: ['#c07725'],
             plotOptions: {
@@ -1681,7 +1701,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 230
+                height: HEIGHT
             },
             colors: ['#fd8b9f'],
             plotOptions: {
@@ -1959,7 +1979,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 230
+                height: HEIGHT
             },
             colors: ['#28abbe'],
             plotOptions: {

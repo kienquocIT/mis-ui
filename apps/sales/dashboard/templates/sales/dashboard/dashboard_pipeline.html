@@ -13,7 +13,6 @@
     <script id="script-url"
             data-url-pipeline-list="{% url 'ReportPipelineListAPI' %}"
     ></script>
-
     <button class="btn btn-icon btn-rounded btn-xs btn-primary btn-floating position-fixed" data-bs-toggle="modal" data-bs-target="#modal-dashboard-setting">
         <i class="fas fa-cog"></i>
     </button>
@@ -53,6 +52,25 @@
                                 <input id="money-round" type="number" class="form-control" value="1" min="0">
                             </div>
                         </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-check-label">{% trans 'View mode' %}</label>
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="grid-view" name="view-mode" class="form-check-input view-radio">
+                                            <label class="form-check-label" for="grid-view"><i class="bi bi-grid"></i>&nbsp;{% trans 'Grid' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="list-view" name="view-mode" class="form-check-input view-radio">
+                                            <label class="form-check-label" for="list-view"><i class="bi bi-list-stars"></i>&nbsp;{% trans 'List' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -62,7 +80,7 @@
         </div>
     </div>
     <div class="row mb-6">
-        <div class="px-7 col-12 col-md-6 col-lg-6">
+        <div class="px-7 mt-3 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-primary"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Total pipeline' %}</span></label>
@@ -90,7 +108,7 @@
                 </div>
             </div>
         </div>
-        <div class="px-7 col-12 col-md-6 col-lg-6">
+        <div class="px-7 mt-3 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-blue"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Forecast' %}</span></label>
@@ -157,11 +175,9 @@
         </div>
     </div>
 {% endblock %}
-
 {% block jsFooterUnCompress %}
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 {% endblock %}
-
 {% block jsFooter %}
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'assets/sales/dashboard/dashboard_pipeline.js' %}"></script>

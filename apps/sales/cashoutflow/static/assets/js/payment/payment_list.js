@@ -25,7 +25,7 @@ $(document).ready(function () {
                         }
                     }, {
                         data: 'code',
-                        className: 'wrap-text w-15',
+                        className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}" class="text-primary">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;

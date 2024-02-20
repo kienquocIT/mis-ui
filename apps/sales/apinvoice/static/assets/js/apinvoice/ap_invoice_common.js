@@ -544,6 +544,7 @@ class APInvoiceHandle {
     load() {
         loadTableSelectSupplier()
         loadPurchaseOrder()
+        loadTableLineDetail([])
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle))

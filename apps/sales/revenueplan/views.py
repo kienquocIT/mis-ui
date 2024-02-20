@@ -44,7 +44,10 @@ class RevenuePlanDetail(View):
         breadcrumb='REVENUE_PLAN_DETAIL_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp0 = ServerAPI(url=ApiURL.REVENUE_PLAN_CONFIG_LIST, user=request.user).get()
+        return {
+            'revenue_plan_config': resp0.result,
+        }, status.HTTP_200_OK
 
 
 class RevenuePlanUpdate(View):

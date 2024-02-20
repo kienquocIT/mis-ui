@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    const trans_script = $('#translate-script')
+
     function loadMeetingScheduleList() {
         if (!$.fn.DataTable.isDataTable('#meeting-schedule-list')) {
             let dtb = $('#meeting-schedule-list');
@@ -34,39 +36,38 @@ $(document).ready(function () {
                     },
                     {
                         data: 'meeting_type',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center',
                         render: (data, type, row) => {
                             if (!row?.['meeting_type']) {
-                                return 'Online meeting'
+                                return `<span class="text-blue"><i class="fas fa-video"></i></span>`
                             }
                             else {
-                                return 'Offline meeting'
+                                return `<span class="text-secondary"><i class="fas fa-users"></i></span>`
                             }
                         }
                     },
                     {
                         data: 'date_occur',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            return `<i class="bi bi-calendar2"></i> ${row?.['date_occur']}`
+                            return `${row?.['date_occur']}`
                         }
                     },
                     {
                         data: 'meeting_duration',
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            const trans_script = $('#translate-script')
                             let hour = parseInt(row?.['meeting_duration']/60)
                             let min = parseInt(row?.['meeting_duration']%60)
                             if (hour === 0) {
-                                return `<i class="bi bi-clock-history"></i> ${min}${trans_script.attr('data-m')}`
+                                return `<i class="bi bi-clock-history"></i> ${min} ${trans_script.attr('data-minute')}`
                             }
                             else {
                                 if (min === 0) {
-                                    return `<i class="bi bi-clock-history"></i> ${hour}${trans_script.attr('data-h')}`
+                                    return `<i class="bi bi-clock-history"></i> ${hour} ${trans_script.attr('data-hour')}`
                                 }
                                 else {
-                                    return `<i class="bi bi-clock-history"></i> ${hour}${trans_script.attr('data-h')} ${min}${trans_script.attr('data-m')}`
+                                    return `<i class="bi bi-clock-history"></i> ${hour} ${trans_script.attr('data-hour')} ${min} ${trans_script.attr('data-minute')}`
                                 }
                             }
                         }

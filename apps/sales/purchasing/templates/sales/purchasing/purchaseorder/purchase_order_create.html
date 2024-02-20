@@ -361,20 +361,8 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab_attachment">
-                        <div class="form-group">
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <button
-                                            type="button"
-                                            class="form-control btn btn-info btn-file-upload text-white"
-                                            data-f-input-name="attachments"
-                                            data-f-input-required="false"
-                                            data-f-input-disabled="false"
-                                            data-f-name-ele-id="#fileNameTestDisplay"
-                                    >{% trans 'Click here to upload image' %}</button>
-                                    <p id="fileNameTestDisplay"></p>
-                                </div>
-                            </div>
+                        <div class="w-100" id="attachment">
+                            {% include 'extends/files/all.html' %}
                         </div>
                     </div>
                 </div>
@@ -601,4 +589,8 @@
 
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_create.js' %}"></script>
+
+    <script>
+        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+    </script>
 {% endblock %}

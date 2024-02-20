@@ -281,6 +281,7 @@ $(function () {
                 'purchase_order_payment_stage',
                 // system
                 'system_status',
+                'attachment',
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {

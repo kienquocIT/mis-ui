@@ -176,7 +176,6 @@ $('#add-product-btn').on('click', function () {
             }
         }
         let processed_data_list = Object.values(processed_data)
-        console.log(processed_data_list)
         loadTableLineDetail(processed_data_list, [4, 5])
     }
     else if (data_type === '1') {
@@ -489,7 +488,6 @@ function SelectDeliveryOnChange(delivery_selected_id) {
 }
 
 function loadTableSelectDetailProduct(datasource=[]) {
-    console.log(datasource)
     tableDetailProductEle.DataTable().clear().destroy()
     tableDetailProductEle.DataTableDefault({
         dom: "",
@@ -522,7 +520,6 @@ function loadTableSelectDetailProduct(datasource=[]) {
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
                     let product_row = []
-                    console.log(row?.['product_general_traceability_method'])
                     if (row?.['product_general_traceability_method'] === 1) {
                         product_row = DELIVERY_PRODUCT_NOW?.['products_delivered_data_by_lot'].filter(function (item) {
                             return item?.['product']?.['id'] === row?.['product_data']?.['id']
@@ -1293,7 +1290,7 @@ class GoodsReturnHandle {
             return false
         }
 
-        console.log(frm.dataForm)
+        // console.log(frm.dataForm)
         if (for_update) {
             let pk = $.fn.getPkDetail();
             return {
@@ -1329,7 +1326,6 @@ function LoadDetailGoodsReturn(option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['good_return_detail']?.['good_return_detail']);
                 data = data['good_return_detail'];
-                console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 

@@ -97,7 +97,7 @@ $(document).on("change", '.selected-product', function () {
     if ($(this).attr('data-type') === '1') {
         let product_id_selected = $(this).attr('data-id')
         loadTableSelectProductLOT(
-            DELIVERY_PRODUCT_NOW.filter(function (item) {
+            DELIVERY_PRODUCT_NOW?.['products_delivered_data_by_lot'].filter(function (item) {
                 return item.product.id === product_id_selected
             })
         )
@@ -105,7 +105,7 @@ $(document).on("change", '.selected-product', function () {
     else if ($(this).attr('data-type') === '2') {
         let product_id_selected = $(this).attr('data-id')
         loadTableSelectProductSerial(
-            DELIVERY_PRODUCT_NOW.filter(function (item) {
+            DELIVERY_PRODUCT_NOW?.['products_delivered_data_by_serial'].filter(function (item) {
                 return item.product.id === product_id_selected
             })
         )
@@ -176,7 +176,6 @@ $('#add-product-btn').on('click', function () {
             }
         }
         let processed_data_list = Object.values(processed_data)
-        console.log(processed_data_list)
         loadTableLineDetail(processed_data_list, [4, 5])
     }
     else if (data_type === '1') {
@@ -477,15 +476,7 @@ function SelectDeliveryOnChange(delivery_selected_id) {
 
     Promise.all([delivery_products_ajax]).then(
         (results) => {
-            if (results[0]?.['products_delivered_data_by_serial'].length > 0) {
-                DELIVERY_PRODUCT_NOW = results[0]?.['products_delivered_data_by_serial']
-            }
-            else if (results[0]?.['products_delivered_data_by_lot'].length > 0) {
-                DELIVERY_PRODUCT_NOW = results[0]?.['products_delivered_data_by_lot']
-            }
-            else {
-                DELIVERY_PRODUCT_NOW = []
-            }
+            DELIVERY_PRODUCT_NOW = results[0]
             let data_product = []
             $('.selected-delivery').each(function () {
                 if ($(this).prop('checked')) {
@@ -528,16 +519,23 @@ function loadTableSelectDetailProduct(datasource=[]) {
                 data: '',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    let product_row = DELIVERY_PRODUCT_NOW.filter(function (item) {
-                        return item?.['product']?.['id'] === row?.['product_data']?.['id']
-                    })
+                    let product_row = []
+                    if (row?.['product_general_traceability_method'] === 1) {
+                        product_row = DELIVERY_PRODUCT_NOW?.['products_delivered_data_by_lot'].filter(function (item) {
+                            return item?.['product']?.['id'] === row?.['product_data']?.['id']
+                        })
+                    }
+                    else if (row?.['product_general_traceability_method'] === 2) {
+                        product_row = DELIVERY_PRODUCT_NOW?.['products_delivered_data_by_serial'].filter(function (item) {
+                            return item?.['product']?.['id'] === row?.['product_data']?.['id']
+                        })
+                    }
                     if (product_row[0]?.['serial_id'] !== undefined) {
                         let returned_number_sn = product_row.filter(function (item) {
                             return item?.['is_returned'] === true
                         })
                         return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_sn.length}</span>`
-                    }
-                    else if (product_row[0]?.['lot_id'] !== undefined) {
+                    } else if (product_row[0]?.['lot_id'] !== undefined) {
                         let returned_number_lot = product_row[0]?.['returned_quantity']
                         return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_lot}</span>`
                     }
@@ -724,7 +722,7 @@ function loadTableSelectProductLOT(datasource=[]) {
                 data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `${row?.['quantity_delivery'] - row?.['returned_quantity']}`
+                    return `<span class="data-remain-span">${row?.['quantity_delivery'] - row?.['returned_quantity']}</span>`
                 }
             },
             {
@@ -790,36 +788,28 @@ $(document).on("change", '.redelivery-check', function () {
 })
 
 $(document).on("change", '.return-lot-input', function () {
-    let ele = $(this)
-    if (!$(this).val()) {$(this).val(0)}
-    $(this).closest('tr').find('.redelivery-lot-input').val(0)
-    let sum_return = 0
-    let sum_re_delivery = 0
-    $('.return-lot-input').each(function () {
-        if ($(this).val()) {
-            sum_return += parseFloat($(this).val())
+    if ($(this).val() === '') {
+        $(this).val(0)
+    }
+    else {
+        let return_val = parseFloat($(this).val())
+        let remain_val = parseFloat($(this).closest('tr').find('.data-remain-span').text())
+        if (return_val > remain_val) {
+            $.fn.notifyB({description: `Return amount must <= remain amount (${return_val} > ${remain_val})`}, 'failure')
+            $(this).val(0)
         }
-    })
-    $('.redelivery-lot-input').each(function () {
-        if ($(this).val()) {
-            sum_re_delivery += parseFloat($(this).val())
+        else {
+            $(this).val(return_val)
+            $(this).closest('tr').find('.redelivery-lot-input').val(0)
+            let redelivery_val = parseFloat($(this).closest('tr').find('.redelivery-lot-input').val())
+            tableDetailProductEle.find('.selected-product').each(function () {
+                if ($(this).prop('checked')) {
+                    $(this).closest('tr').find('.return-number-input').val(return_val)
+                    $(this).closest('tr').find('.re-delivery-number-input').val(redelivery_val)
+                }
+            })
         }
-    })
-    tableDetailProductEle.find('.selected-product').each(function () {
-        if ($(this).prop('checked')) {
-            if (parseFloat($(this).attr('data-amount')) < parseFloat(ele.val())) {
-                $.fn.notifyB({description: `Return amount must not greater than Delivered amount: ${parseFloat(ele.val())} > ${parseFloat($(this).attr('data-amount'))}`}, 'failure')
-                ele.val(0)
-                ele.closest('tr').find('.redelivery-lot-input').val(0)
-                $(this).closest('tr').find('.return-number-input').val(0)
-                $(this).closest('tr').find('.re-delivery-number-input').val(0)
-            }
-            else {
-                $(this).closest('tr').find('.return-number-input').val(sum_return)
-                $(this).closest('tr').find('.re-delivery-number-input').val(sum_re_delivery)
-            }
-        }
-    })
+    }
 })
 
 $(document).on("change", '.redelivery-lot-input', function () {
@@ -851,11 +841,15 @@ $(document).on("change", '.redelivery-lot-input', function () {
 })
 
 $(document).on("change", '.return-number-input', function () {
-    if (!$(this).val()) {$(this).val(0)}
-    $(this).closest('tr').find('.re-delivery-number-input').val(0)
-    if (parseFloat($(this).val()) > parseFloat($(this).attr('data-max'))) {
-        $.fn.notifyB({description: `Return amount must not greater than Delivered amount: ${parseFloat($(this).val())} > ${parseFloat($(this).attr('data-max'))}`}, 'failure')
+    if ($(this).val() === '') {
         $(this).val(0)
+    }
+    else {
+        if (parseFloat($(this).val()) > parseFloat($(this).attr('data-max'))) {
+            $.fn.notifyB({description: `Return amount must not greater than Delivered amount: ${parseFloat($(this).val())} > ${parseFloat($(this).attr('data-max'))}`}, 'failure')
+            $(this).val(0)
+        }
+        $(this).closest('tr').find('.re-delivery-number-input').val(0)
     }
 })
 
@@ -1296,7 +1290,7 @@ class GoodsReturnHandle {
             return false
         }
 
-        console.log(frm.dataForm)
+        // console.log(frm.dataForm)
         if (for_update) {
             let pk = $.fn.getPkDetail();
             return {
@@ -1332,7 +1326,6 @@ function LoadDetailGoodsReturn(option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['good_return_detail']?.['good_return_detail']);
                 data = data['good_return_detail'];
-                console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 

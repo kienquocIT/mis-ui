@@ -531,6 +531,7 @@ function loadTableSelectDetailProduct(datasource=[]) {
                     let product_row = DELIVERY_PRODUCT_NOW.filter(function (item) {
                         return item?.['product']?.['id'] === row?.['product_data']?.['id']
                     })
+                    console.log(product_row)
                     if (product_row[0]?.['serial_id'] !== undefined) {
                         let returned_number_sn = product_row.filter(function (item) {
                             return item?.['is_returned'] === true
@@ -538,7 +539,10 @@ function loadTableSelectDetailProduct(datasource=[]) {
                         return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_sn.length}</span>`
                     }
                     else if (product_row[0]?.['lot_id'] !== undefined) {
-                        let returned_number_lot = product_row[0]?.['returned_quantity']
+                        let returned_number_lot = 0
+                        for (const prd of product_row) {
+                            returned_number_lot += prd?.['returned_quantity']
+                        }
                         return `<span>${row?.['total_order']}</span> - <span class="text-primary">${row?.['delivered_quantity']}</span> - <span class="text-danger">${returned_number_lot}</span>`
                     }
                     else if (product_row[0]?.['serial_id'] === undefined && product_row[0]?.['lot_id'] === undefined) {
@@ -921,6 +925,7 @@ function LoadSaleOrder(data) {
 }
 
 function loadTableDetailPageLOT(data_source=[]) {
+    console.log(data_source)
     lineDetailTable.DataTable().clear().destroy()
     lineDetailTable.DataTableDefault({
         dom: "",
@@ -962,20 +967,17 @@ function loadTableDetailPageLOT(data_source=[]) {
                 data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary mb-1">${row?.['data_detail'][0]?.['lot_no']?.['lot_number']}</span><br>`
+                    let html = ``
+                    for (const item of row?.['data_detail']) {
+                        html += `<span class="text-secondary mb-1">${item?.['lot_no']?.['lot_number']}</span><br>`
+                    }
+                    return html
                 }
             },
             {
                 data: '',
                 className: 'wrap-text',
                 render: () => {
-                    // if (row?.['type'] === 2) {
-                        // let html = ``
-                        // for (let i = 0; i < row?.['vendor_serial_number_with_serial_number'].length; i++) {
-                        //     html += `<span class="text-secondary mb-1">${row?.['vendor_serial_number_with_serial_number'][i]}</span><br>`
-                        // }
-                        // return html
-                    // }
                     return ``
                 }
             },
@@ -983,62 +985,24 @@ function loadTableDetailPageLOT(data_source=[]) {
                 data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary mb-1">${row?.['data_detail'][0]?.['lot_return_number']}</span><br>`
-                    // else if (row?.['type'] === 2) {
-                    //     let html = ``
-                    //     for (let i = 0; i < row?.['is_return'].length; i++) {
-                    //         html += `<span class="text-secondary mb-1">${row?.['is_return'][i] ? 'Yes' : 'No'}</span><br>`
-                    //     }
-                    //     return html
-                    // }
-                    // else {
-                    //     return row?.['is_return']
-                    // }
+                    let html = ``
+                    for (const item of row?.['data_detail']) {
+                        html += `<span class="text-secondary mb-1">${row?.['data_detail'][0]?.['lot_return_number']}</span><br>`
+                    }
+                    return html
                 }
             },
             {
                 data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary mb-1">${row?.['data_detail'][0]?.['lot_redelivery_number']}</span><br>`
-
-                    // else if (row?.['type'] === 2) {
-                    //     let html = ``
-                    //     for (let i = 0; i < row?.['is_redelivery'].length; i++) {
-                    //         html += `<span class="text-secondary mb-1">${row?.['is_redelivery'][i] ? 'Yes' : 'No'}</span><br>`
-                    //     }
-                    //     return html
-                    // }
-                    // else {
-                    //     return row?.['is_redelivery']
-                    // }
+                    let html = ``
+                    for (const item of row?.['data_detail']) {
+                        html += `<span class="text-secondary mb-1">${row?.['data_detail'][0]?.['lot_redelivery_number']}</span><br>`
+                    }
+                    return html
                 }
-            },
-            // {
-            //     data: '',
-            //     className: 'wrap-text',
-            //     render: (data, type, row) => {
-            //         return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price']}"></span>`
-            //     }
-            // },
-            // {
-            //     data: '',
-            //     className: 'wrap-text',
-            //     render: (data, type, row) => {
-            //         if (row?.['type'] === 1) {
-            //             let sum = data_source[0]?.['is_return'].reduce(function (acc, current) {
-            //                 return acc + current;
-            //             }, 0);
-            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * sum}"></span>`
-            //         }
-            //         else if (row?.['type'] === 2) {
-            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return'].length}"></span>`
-            //         }
-            //         else {
-            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return']}"></span>`
-            //         }
-            //     }
-            // }
+            }
         ],
     });
 }
@@ -1117,31 +1081,6 @@ function loadTableDetailPageSN(data_source=[]) {
                     return html
                 }
             },
-            // {
-            //     data: '',
-            //     className: 'wrap-text',
-            //     render: (data, type, row) => {
-            //         return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price']}"></span>`
-            //     }
-            // },
-            // {
-            //     data: '',
-            //     className: 'wrap-text',
-            //     render: (data, type, row) => {
-            //         if (row?.['type'] === 1) {
-            //             let sum = data_source[0]?.['is_return'].reduce(function (acc, current) {
-            //                 return acc + current;
-            //             }, 0);
-            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * sum}"></span>`
-            //         }
-            //         else if (row?.['type'] === 2) {
-            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return'].length}"></span>`
-            //         }
-            //         else {
-            //             return `<span class="mask-money text-primary" data-init-money="${row?.['product_unit_price'] * data_source[0]?.['is_return']}"></span>`
-            //         }
-            //     }
-            // }
         ],
     });
 }
@@ -1344,11 +1283,9 @@ function LoadDetailGoodsReturn(option) {
 
                 if (data?.['data_detail'][0]?.['type'] === 1) {
                     loadTableDetailPageLOT([data])
-                }
-                else if (data?.['data_detail'][0]?.['type'] === 2) {
+                } else if (data?.['data_detail'][0]?.['type'] === 2) {
                     loadTableDetailPageSN([data])
-                }
-                else if (data?.['data_detail'][0]?.['type'] === 0) {
+                } else if (data?.['data_detail'][0]?.['type'] === 0) {
                     loadTableDetailPageDefault([data])
                 }
 

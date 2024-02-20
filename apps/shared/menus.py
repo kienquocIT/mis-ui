@@ -516,13 +516,13 @@ class MenusReport:
         ],
     )
     INVENTORY_REPORT = MenuCommon(
-        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-chart-bar"></i>',
+        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="bi bi-kanban"></i>',
         child=[
             MenuCommon(
                 name='Items detail report',
                 code='menu_items_detail_report',
                 view_name='ItemsDetailReportList',
-                icon='<i class="far fa-file"></i>',
+                icon='<i class="bi bi-box"></i>',
             ),
         ],
     )

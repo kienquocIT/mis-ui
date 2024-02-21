@@ -1906,18 +1906,16 @@ class POCalculateHandle {
     };
 
     static calculateMain(table, row) {
-        let self = this;
-        self.calculateRow(row);
+        POCalculateHandle.calculateRow(row);
         // calculate total
-        self.calculateTotal(table[0]);
+        POCalculateHandle.calculateTotal(table[0]);
         return true;
     };
 
     static calculateTable(table) {
-        let self = this;
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let row = table[0].tBodies[0].rows[i];
-            self.calculateMain(table, row)
+            POCalculateHandle.calculateMain(table, row)
         }
     };
 

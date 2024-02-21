@@ -6592,3 +6592,7 @@ msgstr "Báo cáo chi tiết mặt hàng"
 #
 msgid "Add group"
 msgstr "Thêm nhóm"
+
+#
+msgid "Select purchase quotation"
+msgstr "Chọn báo giá mua hàng"

@@ -2525,6 +2525,12 @@ class QuotationLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.table-row-checkbox-invoice')) {
             ele.setAttribute('disabled', 'true');
         }
+        for (let ele of table[0].querySelectorAll('.btn-edit-group')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.btn-del-group')) {
+            ele.setAttribute('disabled', 'true');
+        }
     };
 
     static loadReApplyPromotion(data, table) {

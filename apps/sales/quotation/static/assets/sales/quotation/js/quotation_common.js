@@ -1311,7 +1311,7 @@ class QuotationLoadDataHandle {
         $table.DataTable().rows.add(tableData).draw();
         // load dropdowns
         QuotationLoadDataHandle.loadDropDowns($table);
-        // check config & load price list for rows
+        // load product group
         $table.DataTable().rows().every(function () {
             let row = this.node();
             QuotationCheckConfigHandle.checkConfig(false, row);
@@ -1325,6 +1325,7 @@ class QuotationLoadDataHandle {
                         eleGroupEdit.setAttribute('hidden', 'true');
                     }
                 }
+                $(row).find('td:eq(1)').attr('colspan', 2);
             }
             if (row.querySelector('.table-row-item')) {
                 QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));

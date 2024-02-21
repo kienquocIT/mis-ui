@@ -5425,7 +5425,7 @@ msgstr "Kiểm kê định kỳ"
 
 #
 msgid "Default inventory value method"
-msgstr "Phương pháp tính giá tồn mặc định"
+msgstr "Phương pháp tính giá cost hàng tồn kho mặc định"
 
 #
 msgid "FIFO"
@@ -6580,3 +6580,11 @@ msgstr "Chọn số lô"
 #
 msgid "has returned"
 msgstr "Đã trả lại"
+
+#
+msgid "Inventory reports"
+msgstr "Báo cáo tồn kho"
+
+#
+msgid "Items detail report"
+msgstr "Báo cáo chi tiết mặt hàng"

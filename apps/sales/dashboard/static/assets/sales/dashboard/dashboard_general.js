@@ -937,10 +937,11 @@ $(document).ready(function () {
         Promise.all([company_revenue_plan_list_ajax]).then(
             (results) => {
                 profit_expected_data_DF = results[0]?.['company_month_profit_target'];
-                if (!(results[0]?.['profit_target_type'] * netIncomeEle.prop('checked'))) {
+                profit_expected_data_detail_DF = results[0]?.['company_month_target_detail'];
+                let same = results[0]?.['profit_target_type'] + (netIncomeEle.prop('checked') ? 1 : 0)
+                if (same === 1) {
                     profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 }
-                profit_expected_data_detail_DF = results[0]?.['company_month_target_detail'];
                 let group = profitGroupEle.val()
                 let group_title = SelectDDControl.get_data_from_idx(profitGroupEle, profitGroupEle.val())['title']
                 if (!group_title) {

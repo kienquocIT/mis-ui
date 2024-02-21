@@ -12,8 +12,47 @@ $(document).ready(function () {
             format: 'DD/MM/YYYY'
         }
     });
-    
+
+    function LoadItemsSelectBox(ele, data) {
+        ele.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: ele.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp];
+            },
+            data: (data ? data : null),
+            keyResp: 'product_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    LoadItemsSelectBox(items_select_Ele)
+
+    function LoadWarehouseSelectBox(ele, data) {
+        ele.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: ele.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp];
+            },
+            data: (data ? data : null),
+            keyResp: 'warehouse_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+
+        })
+    }
+    LoadWarehouseSelectBox(warehouses_select_Ele)
+
     function CombineDataItems(data_source, selected_id_list) {
+        console.log(data_source)
         let data = []
         for (let idx = 0; idx < selected_id_list.length; idx++){
             data.push({
@@ -38,6 +77,7 @@ $(document).ready(function () {
                 'cumulative_value': ''
             })
         }
+        console.log(data)
         return data;
     }
 
@@ -63,13 +103,13 @@ $(document).ready(function () {
                 {
                     target: 2,
                     render: (data, type, row) => {
-                        return `<div><span class="badge-label text-primary">${row.items_title}</span></div>`;
+                        return `<span class="badge-label text-primary">${row.items_title}</span>`;
                     }
                 },
                 {
                     target: 3,
                     render: (data, type, row) => {
-                        return `<span class="text-muted">${row.description}</span>`;
+                        return `<span class="text-muted small">${row.description}</span>`;
                     }
                 },
                 {
@@ -167,49 +207,11 @@ $(document).ready(function () {
     }
     InitialDB(items_detail_report_table_Ele)
 
-    function LoadItemsSelectBox(ele, data) {
-        ele.initSelect2({
-            allowClear: true,
-            ajax: {
-                url: ele.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp];
-            },
-            data: (data ? data : null),
-            keyResp: 'product_list',
-            keyId: 'id',
-            keyText: 'title',
-        })
-    }
-    LoadItemsSelectBox(items_select_Ele)
-
-    function LoadWarehouseSelectBox(ele, data) {
-        ele.initSelect2({
-            allowClear: true,
-            ajax: {
-                url: ele.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp];
-            },
-            data: (data ? data : null),
-            keyResp: 'warehouse_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-
-        })
-    }
-    LoadWarehouseSelectBox(warehouses_select_Ele)
-
     $('#btn-view').on('click', function () {
-        let item_list_text = $(`#${items_select_Ele.attr('data-idx-data-loaded')}`).text();
-        if (item_list_text) {
-            let item_list = JSON.parse(item_list_text ? item_list_text : [])
-            InitialDB(items_detail_report_table_Ele, CombineDataItems(item_list, items_select_Ele.val()))
+        let item_list_id = items_select_Ele.val()
+        if (item_list_id) {
+            console.log(item_list_id)
+            // InitialDB(items_detail_report_table_Ele, CombineDataItems(item_list, items_select_Ele.val()))
         }
         else {
             $.fn.notifyB({"description": 'No item to view.', "timeout": 3500}, 'warning')

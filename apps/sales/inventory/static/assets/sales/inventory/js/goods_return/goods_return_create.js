@@ -6,7 +6,6 @@ $(document).ready(function () {
     $('#frm_goods_return_create').submit(function (event) {
         event.preventDefault();
         let combinesData = new GoodsReturnHandle().combinesData($(this));
-        console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

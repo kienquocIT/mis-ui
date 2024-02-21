@@ -1796,6 +1796,12 @@ class PODataTableHandle {
                         }
                     }
                 },
+                {
+                    targets: 6,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                    }
+                },
             ],
         });
     };
@@ -2233,7 +2239,7 @@ class POSubmitHandle {
     };
 }
 
-// COMMON FUNCTION
+// *** COMMON FUNCTIONS ***
 function clickCheckBoxAll(ele, table) {
     for (let eleCheck of table[0].querySelectorAll('.table-row-checkbox')) {
         eleCheck.checked = ele[0].checked;
@@ -2364,4 +2370,12 @@ function setupMergeProduct() {
         }
     }
     return data
+}
+
+function deleteRow(currentRow, table) {
+    // Get the index of the current row within the DataTable
+    let rowIndex = table.DataTable().row(currentRow).index();
+    let row = table.DataTable().row(rowIndex);
+    // Delete current row
+    row.remove().draw();
 }

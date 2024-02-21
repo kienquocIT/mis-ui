@@ -211,6 +211,11 @@ $(function () {
             }
         });
 
+        tablePurchaseOrderProductAdd.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), tablePurchaseOrderProductAdd);
+            POCalculateHandle.calculateTotal(tablePurchaseOrderProductAdd[0]);
+        });
+
         // Action on change data on row of tablePurchaseOrderProductRequest
         tablePurchaseOrderProductRequest.on('change', '.table-row-uom-order-actual, .table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
@@ -243,6 +248,10 @@ $(function () {
 
         tablePaymentStage.on('change', '.table-row-value-before-tax, .table-row-tax', function () {
            POCalculateHandle.calculateValueAfterTax(this.closest('tr'));
+        });
+
+        tablePaymentStage.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), tablePaymentStage);
         });
 
         // COMMON

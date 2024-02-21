@@ -41,6 +41,7 @@ $(function () {
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
+        let tablePS = $('#datable-quotation-payment-stage');
         // promotion
         let tablePromotion = $('#datable-quotation-create-promotion');
         // shipping
@@ -770,7 +771,7 @@ $(function () {
             QuotationLoadDataHandle.loadAddPaymentStage();
         });
 
-        $('#datable-quotation-payment-stage').on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-due-date', function () {
+        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-due-date', function () {
             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 if ($(this).hasClass('table-row-date')) {
                     let row = this.closest('tr');
@@ -812,6 +813,10 @@ $(function () {
                     }
                 }
             }
+        });
+
+        tablePS.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), tablePS);
         });
 
 

@@ -233,10 +233,10 @@
                                             <th colspan="5"></th>
                                             <th colspan="5">
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                     </div>
-                                                    <div class="col-3"></div>
+                                                    <div class="col-2"></div>
                                                     <div class="col-4">
                                                         <span class="mask-money font-3 quotation-create-product-pretax-amount" data-init-money="0" data-zone="sale_order_products_data"></span>
                                                         <input type="text" class="form-control quotation-create-product-pretax-amount-raw" value="0" hidden>
@@ -244,10 +244,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Discount' %}:</p>
                                                     </div>
-                                                    <div class="col-3">
+                                                    <div class="col-2">
                                                         <div class="input-group">
                                                             <span class="input-affix-wrapper">
                                                                 <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="sale_order_products_data_readonly" disabled>
@@ -261,10 +261,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
                                                     </div>
-                                                    <div class="col-3"></div>
+                                                    <div class="col-2"></div>
                                                     <div class="col-4">
                                                         <span class="mask-money font-3 quotation-create-product-taxes" data-init-money="0" data-zone="sale_order_products_data"></span>
                                                         <input type="text" class="form-control quotation-create-product-taxes-raw" value="0" hidden>
@@ -272,10 +272,10 @@
                                                 </div>
                                                 <hr class="bg-teal">
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
                                                     </div>
-                                                    <div class="col-3"></div>
+                                                    <div class="col-2"></div>
                                                     <div class="col-4">
                                                         <span class="mask-money font-3 quotation-create-product-total" data-init-money="0" data-zone="sale_order_products_data"></span>
                                                         <input type="text" class="form-control quotation-create-product-total-raw" value="0" hidden>
@@ -424,7 +424,8 @@
                                             <th class="w-10">% {% trans 'Payment' %}</th>
                                             <th class="w-15">{% trans 'Value before tax' %}</th>
                                             <th class="w-15">{% trans 'Due date' %}</th>
-                                            <th class="w-10">{% trans 'AR invoice' %}</th>
+                                            <th class="w-10">{% trans '(AR)invoice' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>

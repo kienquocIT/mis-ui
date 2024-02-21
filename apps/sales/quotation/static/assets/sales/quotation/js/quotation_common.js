@@ -3827,6 +3827,12 @@ class QuotationDataTableHandle {
                         }
                     }
                 },
+                {
+                    targets: 7,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                    }
+                },
             ],
         });
     };

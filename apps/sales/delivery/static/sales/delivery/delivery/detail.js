@@ -79,6 +79,7 @@ $(async function () {
                         }
                     }
                     else if (!config.is_picking && config.is_partial_ship) { // TH: none_picking_many_delivery
+                        // config 2
                         let finalUOMRate = 1;
                         let uomInventoryRatio = item?.['uom']?.['ratio'];
                         let uomDeliveryRatio = prod_data?.['uom_data']?.['ratio'];
@@ -97,54 +98,37 @@ $(async function () {
                                     if (prod_data?.['picked_quantity']) {
                                         item['picked'] = prod_data?.['picked_quantity'];
                                     }
-                                    if (prod_data?.['uom_data']) {
-                                        item['uom_so'] = prod_data?.['uom_data'];
-                                    }
                                     if (val?.['lot_data']) {
                                         item['lot_data'] = val?.['lot_data'];
                                     }
                                     if (val?.['serial_data']) {
                                         item['serial_data'] = val?.['serial_data'];
                                     }
-                                } else {
-                                    if (prod_data?.['picked_quantity']) {
-                                        item['picked'] = prod_data?.['picked_quantity'];
-                                    }
-                                    if (prod_data?.['uom_data']) {
-                                        item['uom_so'] = prod_data?.['uom_data'];
-                                    }
+                                    break;
                                 }
                             }
                         }
                     }
                     else if ((config.is_picking && !config.is_partial_ship) && delivery) { // TH: has_picking_one_delivery
                         // config 3
-                        // item.product_amount = 0
-                        for (const val of delivery) {
+                        item['stock_amount'] = item?.['picked_ready'];
+                        if (prod_data?.['picked_quantity']) {
+                            item['picked'] = prod_data?.['picked_quantity'];
+                        }
+                        if (prod_data?.['uom_data']) {
+                            item['uom_so'] = prod_data?.['uom_data'];
+                        }
+                        for (let val of delivery) {
                             if (val?.['warehouse'] === item?.['warehouse']?.['id']
                                 && val?.['uom'] === prod_data?.['uom_data']?.['id']
                             ) { // Check if warehouse of product warehouse in list warehouse have picked
-                                item['stock_amount'] = item?.['picked_ready'];
-                                if (prod_data?.['picked_quantity']) {
-                                    item['picked'] = prod_data?.['picked_quantity'];
-                                }
-                                if (prod_data?.['uom_data']) {
-                                    item['uom_so'] = prod_data?.['uom_data'];
-                                }
                                 if (val?.['lot_data']) {
                                     item['lot_data'] = val?.['lot_data'];
                                 }
                                 if (val?.['serial_data']) {
                                     item['serial_data'] = val?.['serial_data'];
                                 }
-                            } else {
-                                item['stock_amount'] = item?.['picked_ready'];
-                                if (prod_data?.['picked_quantity']) {
-                                    item['picked'] = prod_data?.['picked_quantity'];
-                                }
-                                if (prod_data?.['uom_data']) {
-                                    item['uom_so'] = prod_data?.['uom_data'];
-                                }
+                                break;
                             }
                         }
                         // change column name stock -> picked
@@ -160,7 +144,7 @@ $(async function () {
                         // nếu ready quantity > 0 => có hàng để giao
                         // lấy delivery
                         if (prod_data?.['ready_quantity'] > 0) {
-                            for (const val of delivery) {
+                            for (let val of delivery) {
                                 if (val?.['warehouse'] === item?.['warehouse']?.['id']
                                     && val?.['uom'] === prod_data?.['uom_data']?.['id']
                                 ) { // Check if warehouse of product warehouse in list warehouse have picked
@@ -442,13 +426,19 @@ $(async function () {
                     table.DataTable().rows.add(newData).draw();
                 }
                 if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
-                    if (prod_data?.['product_data']?.['general_traceability_method'] === 1) {
-                        $('#scroll-table-lot')[0].removeAttribute('hidden');
-                        prodTable.dataTableTableLot();
-                    }
-                    if (prod_data?.['product_data']?.['general_traceability_method'] === 2) {
-                        $('#scroll-table-serial')[0].removeAttribute('hidden');
-                        prodTable.dataTableTableSerial();
+                    let scrollLot = $('#scroll-table-lot');
+                    let scrollSerial = $('#scroll-table-serial');
+                    if (scrollLot && scrollSerial && scrollLot.length > 0 && scrollSerial.length > 0) {
+                        scrollLot[0].setAttribute('hidden', 'true');
+                        scrollSerial[0].setAttribute('hidden', 'true');
+                        if (prod_data?.['product_data']?.['general_traceability_method'] === 1) {
+                            scrollLot[0].removeAttribute('hidden');
+                            prodTable.dataTableTableLot();
+                        }
+                        if (prod_data?.['product_data']?.['general_traceability_method'] === 2) {
+                            scrollSerial[0].removeAttribute('hidden');
+                            prodTable.dataTableTableSerial();
+                        }
                     }
                 }
                 $('#warehouseStockModal').modal('show');

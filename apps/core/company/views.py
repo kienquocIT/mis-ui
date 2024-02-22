@@ -3,7 +3,6 @@ from django.views import View
 from requests_toolbelt import MultipartEncoder
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import get_connection
 

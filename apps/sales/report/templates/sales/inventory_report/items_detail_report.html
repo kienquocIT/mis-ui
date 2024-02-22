@@ -7,64 +7,90 @@
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
+    <script id="trans-script"
+            data-trans-m1th="{% trans 'January' %}"
+            data-trans-m2th="{% trans 'February' %}"
+            data-trans-m3th="{% trans 'March' %}"
+            data-trans-m4th="{% trans 'April' %}"
+            data-trans-m5th="{% trans 'May' %}"
+            data-trans-m6th="{% trans 'June' %}"
+            data-trans-m7th="{% trans 'July' %}"
+            data-trans-m8th="{% trans 'August' %}"
+            data-trans-m9th="{% trans 'September' %}"
+            data-trans-m10th="{% trans 'October' %}"
+            data-trans-m11th="{% trans 'November' %}"
+            data-trans-m12th="{% trans 'December' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-net-profit="{% trans 'Net income' %}"
+            data-trans-gross-profit="{% trans 'Gross profit' %}"
+    ></script>
+
+    <script id="url-script"
+            data-url-inventory-list="{% url 'ReportInventoryDetailListAPI' %}"
+    ></script>
+
     <div class="row">
         <div class="col-12 col-lg-4 col-md-4">
             <div class="form-group">
-                <label class="form-label" for="items_select">{% trans 'Items' %}</label>
+                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
                 <select class="form-select select2 select-multiple" id="items_select" multiple
                         data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
             </div>
         </div>
         <div class="col-12 col-lg-4 col-md-4">
             <div class="form-group">
-                <label class="form-label" for="warehouses_select">{% trans 'Warehouses' %}</label>
+                <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
                 <select class="form-select select2 select-multiple" id="warehouses_select"
                         data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
             </div>
         </div>
         <div class="col-12 col-lg-4 col-md-4">
             <div class="form-group">
-                <label class="form-label" for="report-revenue-date-approved">{% trans 'Date' %}</label>
-                <div class="input-affix-wrapper">
-                    <input type="text" name="date_approved" id="report-revenue-date-approved"
-                           class="form-control date-picker" autocomplete="off">
-                    <div class="input-suffix">
-                        <i class="fas fa-calendar-week"></i>
+                <div class="row">
+                    <div class="col-5">
+                        <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
+                        <select class="form-select select2" id="period-select"
+                                data-url="{% url 'PeriodsConfigListAPI' %}"
+                                data-method="GET"
+                        ></select>
+                    </div>
+                    <div class="col-7">
+                        <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
+                        <select id="period-month" class="form-select"></select>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-5">
         <div class="col-12">
             <button type="button" class="btn btn-gradient-primary" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
 {#            <button type="button" class="btn btn-gradient-dark" id="btn-export"><span><span>{% trans 'Export' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-file-export"></i></span></span></span></button>#}
         </div>
     </div>
     <div class="row">
-        <div class="col-12">
+        <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
             <table class="table nowrap w-100" id="items_detail_report_table">
                 <thead>
                 <tr>
-                    <th></th>
-                    <th>{% trans 'Item code' %}</th>
-                    <th>{% trans 'Item title' %}</th>
-                    <th>{% trans 'Description' %}</th>
+                    <th>{% trans 'Code' %}</th>
+                    <th>{% trans 'Name' %}</th>
                     <th>{% trans 'Valuation method' %}</th>
                     <th>{% trans 'Warehouse' %}</th>
                     <th>{% trans 'System date' %}</th>
-                    <th>{% trans 'Posting date' %}</th>
-                    <th>{% trans 'Document date' %}</th>
+                    <th hidden>{% trans 'Posting date' %}</th>
+                    <th hidden>{% trans 'Document date' %}</th>
                     <th>{% trans 'Trans description' %}</th>
                     <th>{% trans 'Trans code' %}</th>
-                    <th class="text-primary">{% trans 'Stock in quantity' %}</th>
-                    <th class="text-primary">{% trans 'Cost' %}</th>
-                    <th class="text-primary">{% trans 'In value' %}</th>
+                    <th class="text-success">{% trans 'Stock in quantity' %}</th>
+                    <th class="text-success">{% trans 'Cost' %}</th>
+                    <th class="text-success">{% trans 'In value' %}</th>
                     <th class="text-danger">{% trans 'Stock out quantity' %}</th>
                     <th class="text-danger">{% trans 'Cost' %}</th>
                     <th class="text-danger">{% trans 'Out value' %}</th>
-                    <th class="text-success">{% trans 'Cumulative quantity' %}</th>
-                    <th class="text-success">{% trans 'Cumulative value' %}</th>
+                    <th class="text-primary">{% trans 'Cumulative quantity' %}</th>
+                    <th class="text-primary">{% trans 'Cumulative cost' %}</th>
+                    <th class="text-primary">{% trans 'Cumulative value' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>

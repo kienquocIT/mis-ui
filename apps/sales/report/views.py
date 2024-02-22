@@ -109,7 +109,8 @@ class ReportCustomerListAPI(APIView):
         return resp.auto_return(key_success='report_customer_list')
 
 
-class ItemsDetailReportList(View):
+# REPORT INVENTORY DETAIL
+class ReportInventoryDetailList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
@@ -120,6 +121,19 @@ class ItemsDetailReportList(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class ReportInventoryDetailListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_DETAIL_LIST).get(data)
+        return resp.auto_return(key_success='report_inventory_detail_list')
 
 
 # REPORT PIPELINE

@@ -461,6 +461,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')
     REPORT_PIPELINE_LIST = StringUrl('report/pipeline/list')
     REPORT_CASHFLOW_LIST = StringUrl('report/cashflow/list')
+    REPORT_INVENTORY_DETAIL_LIST = StringUrl('report/inventory-detail/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')

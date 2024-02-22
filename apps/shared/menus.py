@@ -519,9 +519,9 @@ class MenusReport:
         name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="bi bi-kanban"></i>',
         child=[
             MenuCommon(
-                name='Items detail report',
+                name='Items Detail Report',
                 code='menu_items_detail_report',
-                view_name='ItemsDetailReportList',
+                view_name='ReportInventoryDetailList',
                 icon='<i class="bi bi-box"></i>',
             ),
         ],

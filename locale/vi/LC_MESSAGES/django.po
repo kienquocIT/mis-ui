@@ -6586,5 +6586,5 @@ msgid "Inventory reports"
 msgstr "Báo cáo tồn kho"
 
 #
-msgid "Items detail report"
+msgid "Items Detail Report"
 msgstr "Báo cáo chi tiết mặt hàng"

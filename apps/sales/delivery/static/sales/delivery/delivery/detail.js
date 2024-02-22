@@ -60,8 +60,8 @@ $(async function () {
                         // config 1, 2
                         if (delivery.length > 0) {
                             for (const val of delivery) {
-                                if (val.warehouse === item?.['warehouse']?.['id']
-                                    && val.uom === prod_data.uom_data.id
+                                if (val?.['warehouse'] === item?.['warehouse']?.['id']
+                                    && val?.['uom'] === prod_data?.['uom_data']?.['id']
                                 ) {
                                     item.picked = val.stock;
                                 }
@@ -86,28 +86,33 @@ $(async function () {
                             finalUOMRate = uomInventoryRatio / uomDeliveryRatio
                         }
                         item['stock_amount'] = item?.['stock_amount'] * finalUOMRate;
-                        for (const val of delivery) {
-                            if (val?.['warehouse'] === item?.['warehouse']?.['id']
-                                && val?.['uom'] === prod_data?.['uom_data']?.['id']
-                            ) { // Check if warehouse of product warehouse in list warehouse have picked
-                                if (prod_data?.['picked_quantity']) {
-                                    item['picked'] = prod_data?.['picked_quantity'];
-                                }
-                                if (prod_data?.['uom_data']) {
-                                    item['uom_so'] = prod_data?.['uom_data'];
-                                }
-                                if (val?.['lot_data']) {
-                                    item['lot_data'] = val?.['lot_data'];
-                                }
-                                if (val?.['serial_data']) {
-                                    item['serial_data'] = val?.['serial_data'];
-                                }
-                            } else {
-                                if (prod_data?.['picked_quantity']) {
-                                    item['picked'] = prod_data?.['picked_quantity'];
-                                }
-                                if (prod_data?.['uom_data']) {
-                                    item['uom_so'] = prod_data?.['uom_data'];
+                        if (prod_data?.['uom_data']) {
+                            item['uom_so'] = prod_data?.['uom_data'];
+                        }
+                        if (delivery) {
+                            for (let val of delivery) {
+                                if (val?.['warehouse'] === item?.['warehouse']?.['id']
+                                    && val?.['uom'] === prod_data?.['uom_data']?.['id']
+                                ) { // Check if warehouse of product warehouse in list warehouse have picked
+                                    if (prod_data?.['picked_quantity']) {
+                                        item['picked'] = prod_data?.['picked_quantity'];
+                                    }
+                                    if (prod_data?.['uom_data']) {
+                                        item['uom_so'] = prod_data?.['uom_data'];
+                                    }
+                                    if (val?.['lot_data']) {
+                                        item['lot_data'] = val?.['lot_data'];
+                                    }
+                                    if (val?.['serial_data']) {
+                                        item['serial_data'] = val?.['serial_data'];
+                                    }
+                                } else {
+                                    if (prod_data?.['picked_quantity']) {
+                                        item['picked'] = prod_data?.['picked_quantity'];
+                                    }
+                                    if (prod_data?.['uom_data']) {
+                                        item['uom_so'] = prod_data?.['uom_data'];
+                                    }
                                 }
                             }
                         }

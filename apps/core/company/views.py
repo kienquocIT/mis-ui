@@ -111,7 +111,11 @@ class CompanyDetailAPI(APIView):
                 fail_silently=False,
             )
             if connection.open():
-                request.data['email_app_password_status'] = True
+                if request.data.get('email_app_password') == '':
+                    request.data['email_app_password_status'] = False
+                else:
+                    request.data['email_app_password_status'] = True
+
                 resp = ServerAPI(
                     request=request, user=request.user, url=ApiURL.COMPANY_DETAIL.push_id(pk)
                 ).put(request.data)
@@ -265,7 +269,10 @@ class TestEmailConnection(APIView):
                 fail_silently=False,
             )
             if connection.open():
-                return {}, status.HTTP_200_OK
+                if request.data.get('email_app_password') == '':
+                    return {}, status.HTTP_502_BAD_GATEWAY
+                else:
+                    return {}, status.HTTP_200_OK
         except Exception as e:
             print(e)
             return {}, status.HTTP_502_BAD_GATEWAY

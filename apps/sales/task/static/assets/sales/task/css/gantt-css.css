@@ -39,8 +39,8 @@
 
 .fn-gantt .row {
     float: left;
-    height: 24px;
-    line-height: 24px;
+    height: 34px;
+    line-height: 34px;
     margin: 0;
 }
 
@@ -71,7 +71,7 @@
 }
 .fn-gantt .leftPanel .name, .fn-gantt .leftPanel .desc {
     float: left;
-    height: 24px;
+    height: 34px;
     width: 50%;
     background-color: #f6f6f6;
 }
@@ -79,7 +79,6 @@
 .fn-gantt .leftPanel .name {
     font-weight: bold;
 }
-
 .fn-gantt .leftPanel .fn-wide, .fn-gantt .leftPanel .fn-wide .fn-label {
     width: 100%;
 }
@@ -88,9 +87,13 @@
     background-color: #f6f6f6;
     width: 100%;
 }
-
-
-
+.fn-gantt .leftPanel .name .fn-label:nth-child(1){
+    padding-left: 10px;
+}
+.icon-scaret{
+    cursor: pointer;
+    margin-right:10px;
+}
 
 /* === RIGHT PANEL === */
 
@@ -101,11 +104,11 @@
 .fn-gantt .dataPanel {
     margin-left: 0;
     outline: 1px solid #DDD;
-    /* TODO: Replace image with gradient?
-    background-size: 24px 24px;
-    background-image: linear-gradient(to left, rgba(221, 221, 221, 0.7) 1px, transparent 1px), linear-gradient(to top, rgba(221, 221, 221, 0.7) 1px, transparent 1px);
-    */
+    /* TODO: Replace image with gradient/png
     background-image: url(../img/grid.png);
+    */
+    background-image: linear-gradient(to left, rgba(221, 221, 221, 0.7) 1px, transparent 1px), linear-gradient(to top, rgba(221, 221, 221, 0.7) 1px, transparent 1px);
+    background-size: 34px 34px;
     background-repeat: repeat;
     position: relative;
 }
@@ -117,8 +120,8 @@
 
 .fn-gantt .day, .fn-gantt .date {
     overflow: visible;
-    width: 24px;
-    line-height: 24px;
+    width: 34px;
+    line-height: 34px;
     text-align: center;
     border-right: 1px solid #DDD;
     border-bottom: 1px solid #DDD;
@@ -129,7 +132,7 @@
 }
 
 .fn-gantt .sa, .fn-gantt .sn, .fn-gantt .wd {
-    height: 24px;
+    height: 34px;
     text-align: center;
 }
 
@@ -146,12 +149,12 @@
 
 .fn-gantt .holiday {
     background-color: #ffd263;
-    height: 24px;
+    height: 34px;
 }
 
 .fn-gantt .today {
     background-color: #fff8da;
-    height: 24px;
+    height: 34px;
     font-weight: bold;
     text-align: center;
 }
@@ -161,7 +164,7 @@
     overflow: hidden;
     border-right: 1px solid #DDD;
     border-bottom: 1px solid #DDD;
-    height: 24px;
+    height: 34px;
     background-color: #f6f6f6;
     font-weight: bold;
     font-size: 11px;
@@ -428,7 +431,15 @@
 .row:after {
     clear: both;
 }
-.fn-gantt .row>*{
+.fn-gantt .row.day>*,
+.fn-gantt .row.date>*{
     padding-right: unset;
     padding-left: unset;
+}
+.leftPanel .column-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    font-weight: 600;
 }

@@ -176,8 +176,8 @@
             maxScale: "months",
             minScale: "hours",
             // callbacks
-            onItemClick: function (data) { return; },
-            onAddClick: function (dt, rowId) { return; },
+            onItemClick: function (data) {  },
+            onAddClick: function (dt, rowId) {  },
             onRender: $.noop
         };
 
@@ -308,53 +308,96 @@
                     .append($('<div class="row spacer"/>')
                     .css("height", tools.getCellSize() * element.headerRows));
 
-                var entries = [];
-                $.each(element.data, function (i, entry) {
+                // create column label
+                let column_labels = $(`<div class="column-header"></div>`),
+                withLeftPanel = 1
+                settings.columns.filter(x => x.show).forEach(x => {
+                    withLeftPanel += parseInt(x.width) + 5
+                    column_labels.append(`<span class="fn-label ${x.value !=='title' ? 'text-center' : ''}" style="width:${x.width}px">${x.label}</span>`);
+                })
+                ganttLeftPanel.find('.row').append(column_labels);
+                const $trans =  $('#trans-factory')
+                let divScroll = $('<div class="left-container"></div>'),
+                    priorityList = {
+                        0: {color: 'success', txt: $trans.attr('data-low')},
+                        1: {color: 'warning', txt: $trans.attr('data-med')},
+                        2: {color: 'danger', txt: $trans.attr('data-hig')}
+                    }
+                let isVisibleList = element.data.filter((item) => item?.is_visible || !item.hasOwnProperty('is_visible'))
+                $.each(isVisibleList, function (i, entry) {
+                    let row = null
                     if (i >= element.pageNum * settings.itemsPerPage &&
                         i < (element.pageNum * settings.itemsPerPage + settings.itemsPerPage)) {
-                        var dataId = ('id' in entry) ? '" data-id="' + entry.id : '';
-                        entries.push(
-                            '<div class="row name row' + i +
-                            (entry.desc ? '' : (' fn-wide '+dataId)) +
-                            '" id="rowheader' + i +
-                            '" data-offset="' + i % settings.itemsPerPage * tools.getCellSize() + '">' +
-                            '<span class="fn-label' +
-                            (entry.cssClass ? ' ' + entry.cssClass : '') + '">' +
-                            (entry.name || '') +
-                            '</span>' +
-                            '</div>');
+                        const dataId = entry?.id || '';
+                        row = $(`<div class="row name row${i} fn-wide" id="rowheader${i}" data-offset="${
+                            i % settings.itemsPerPage * tools.getCellSize()}" data-id="${dataId}"></div>`)
+                        // loop trong danh sách dc show lấy key và show ra danh sách bên trái
+                        if (entry.values){
+                            settings.columns.filter(x => x.show).forEach(x => {
+                                // kiểm tra item có trong danh sách muốn show hay không (x.value là key data)
+                                if (entry.values[0].dataObj.hasOwnProperty(x.value)) {
+                                    // depend content row
+                                    let span = $(`<span class="fn-label" style="width:${x.width}px"></span>`);
+                                    if (entry.desc && x.value === 'title') {
+                                        span.css("padding-left", "80px")
+                                        row.removeClass('name').addClass('desc')
+                                    }
+                                    span.click(function () {
+                                        settings.onClickParent()
+                                    })
+                                    if (entry.show_expand && entry.name && x.value === 'title'){
+                                        // todo here dang lam toi day
+                                        span.addClass('has_child')
+                                            .append(`<span class="icon-scaret text-blue"><i class="icon-collapse ` +
+                                                `fas fa-caret-${entry.is_expand ? 'down': 'right'}"></i></span>`)
+                                    }
 
-                        if (entry.desc) {
-                            entries.push(
-                                '<div class="row desc row' + i +
-                                ' " id="RowdId_' + i + dataId + '">' +
-                                '<span class="fn-label' +
-                                (entry.cssClass ? ' ' + entry.cssClass : '') + '">' +
-                                entry.desc +
-                                '</span>' +
-                                '</div>');
-                        }
-
+                                    if (x.value === 'title')
+                                        span.append(entry.name ? entry.name : entry.desc)
+                                    else {
+                                        let value = entry.values[0].dataObj[x.value],
+                                            valType = $.type(value);
+                                        if (valType === "object") // nếu key là object
+                                            value = value?.['full_name'] ? value.full_name : value?.['title'] ? value.title : ''
+                                        if (x.value === 'priority') {
+                                            const $badge = $(`<span class="badge badge-sm badge-${priorityList[value].color}">${priorityList[value].txt}</span>`);
+                                            span.append($badge).addClass('text-center')
+                                        }
+                                    }
+                                    row.attr('data-id', entry.values[0].dataObj.id).append(span);
+                                }
+                            });
+                            divScroll.append(row)
+                        } // end if (entry.values)
                     }
                 });
-                return ganttLeftPanel.append(entries.join(""));
+                // return ganttLeftPanel.append(entries.join(""));
+                ganttLeftPanel.append(divScroll);
+                ganttLeftPanel.css('width', withLeftPanel)
+
+                return ganttLeftPanel;
             },
 
             // Create and return the data panel element
             dataPanel: function (element, width) {
-                var dataPanel = $('<div class="dataPanel" style="width: ' + width + 'px;"/>');
-
-                // Handle mousewheel events for scrolling the data panel
                 var wheel = 'onwheel' in element ?
                     'wheel' : document.onmousewheel !== undefined ?
-                    'mousewheel' : 'DOMMouseScroll';
-                $(element).on(wheel, function (e) {
-                    core.wheelScroll(element, e);
-                });
+                    'mousewheel' : 'DOMMouseScroll',
+                    dataPanel = $('<div class="dataPanel" style="width: ' + width + 'px;"/>');
+
+                // Handle mousewheel events for scrolling the data panel
+                function callbackWheel(mutations, observer) {
+                    $('.rightPanel', element).on(wheel, function (e) {
+                        core.wheelScroll(element, e);
+                    });
+                    observer.disconnect();
+                }
+
+                let observer = new MutationObserver(callbackWheel);
+                observer.observe(element, {childList: true, subtree: true});
 
                 // Handle click events and dispatch to registered `onAddClick` function
                 dataPanel.click(function (e) {
-
                     e.stopPropagation();
                     var corrX/* <- never used? */, corrY;
                     var leftpanel = $(element).find(".fn-gantt .leftPanel");
@@ -953,7 +996,7 @@
             // Return an element representing a progress of position within the entire chart
             createProgressBar: function (label, desc, classNames, dataObj) {
                 label = label || "";
-                var bar = $('<div class="bar"><div class="fn-label">' + label + '</div></div>')
+                var bar = $(`<div class="bar" data-id="${dataObj.id}"><div class="fn-label">${label}</div></div>`)
                         .data("dataObj", dataObj);
                 if (desc) {
                     bar
@@ -1022,7 +1065,8 @@
                     }
                 };
                 // Loop through the values of each data element and set a row
-                $.each(element.data, function (i, entry) {
+                let dataListVisible = element.data.filter((item) => item?.is_visible || !item.hasOwnProperty('is_visible'))
+                $.each(dataListVisible, function (i, entry) {
                     if (i >= element.pageNum * settings.itemsPerPage &&
                         i < (element.pageNum * settings.itemsPerPage + settings.itemsPerPage)) {
 
@@ -1141,7 +1185,6 @@
                                   left: Math.floor(cFrom),
                                   width: dp + '%'
                                 });
-
                                 datapanel.append(_bar);
                             }
 
@@ -1300,12 +1343,12 @@
                 //               e.originalEvent.deltaY ? e.originalEvent.deltaY / Math.abs(e.originalEvent.deltaY) :
                 //               e.originalEvent.detail );
 
-                var delta = e.detail ? e.detail * (-50) : e.originalEvent.wheelDelta / 120 * 50;
+                var delta = e.detail ? e.detail * (-15) : e.originalEvent.wheelDelta / 120 * 15;
                 // simpler normalization, ignoring per-device/browser/platform acceleration & semantic variations
                 //var delta = e.detail || - (e = e.originalEvent).wheelData || e.deltaY /* || e.deltaX */ || e.detail;
                 //delta = ( delta / Math.abs(delta) ) || 0;
 
-                core.scrollPanel(element, -50 * delta);
+                core.scrollPanel(element, -15 * delta);
 
                 clearTimeout(element.scrollNavigation.repositionDelay);
                 element.scrollNavigation.repositionDelay = setTimeout(core.repositionLabel, 50, element);
@@ -1641,7 +1684,7 @@
                 if (typeof tools._getCellSize === "undefined") {
                     var measure = $('<div style="display: none; position: absolute;" class="fn-gantt"><div class="row"></div></div>');
                     $("body").append(measure);
-                    tools._getCellSize = measure.find(".row").height();
+                    tools._getCellSize = measure.find(".row").outerHeight();
                     measure.empty().remove();
                 }
                 return tools._getCellSize;

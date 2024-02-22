@@ -82,6 +82,7 @@ $(function () {
                         kanban.init(taskList)
                         list.init(list, taskList)
                         GanttViewTask.saveTaskList(taskList)
+                        GanttViewTask.renderGantt()
                         // Function to wait form create on submit
                         $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
                         let observer = new MutationObserver(callBackModalChange);
@@ -95,6 +96,16 @@ $(function () {
             );
     }
 
+    jQuery.fn.reinit_gantt = function (source, rest) {
+        $('#gantt_reload').data('data', {source, ...rest}).trigger('click')
+    }
+
+    jQuery.fn.scroll_to_today = function () {
+        $('#scroll_now').click()
+    }
+    function onClickParent(){
+        console.log('toogle click parent _n')
+    }
 
     class initCommon {
         static initTableLogWork(dataList) {
@@ -1015,13 +1026,14 @@ $(function () {
         }
     }
 
+    // gantt view handle
     class GanttViewTask {
         static taskList = []
         static bk_taskList = []
         static saveTaskList(data){
             let bk_list = GanttViewTask.bk_taskList
             if (!data || !data.length) return false
-
+            // convert data thành dictionary với parent_n là danh sách task con
             for (let item of data){
                 let from = new Date(item.start_date)
                 from.setHours(0);
@@ -1031,12 +1043,14 @@ $(function () {
                 to.setHours(0);
                 to.setMinutes(0);
                 to.setDate(to.getDate() + 1);
+                // kt có cấp cha và danh sách cấp con không rỗng
                 if ('parent_n' in item && Object.keys(item['parent_n']).length){
-                    // có cấp cha
                     if (item.parent_n.id in bk_list){
+                        if (!('parent_n' in bk_list[item.parent_n.id])) bk_list[item.parent_n.id]['parent_n'] = []
                         bk_list[item.parent_n.id]['parent_n'].push({
                             desc: item.title,
                             values: [{
+                                label: item.title,
                                 from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
                                 to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
                                 desc: item.remark,
@@ -1061,7 +1075,6 @@ $(function () {
                                 dataObj: item
                             }]
                         })
-
                     }
                 }
                 else {
@@ -1080,14 +1093,20 @@ $(function () {
             }
 
             let reNewList = []
+            // loop trong danh sách dictionary và duyệt lại thành danh sách task con sau task cha
             for (let key in bk_list){
                 const item = bk_list[key]
                 item.show_expand = false
                 reNewList.push(item)
                 if ('parent_n' in item && Object.keys(item['parent_n']).length){
                     // có task con
+                    // set is_hide = false mặc định cho task con khi click btn ẩn thì set lại thành true
                     item.show_expand = true
-                    for (let child in item['parent_n']){
+                    item.is_expand = true // mặc định show task con "true" otherwise "false" ẩn task con
+                    if (item.values[0].dataObj.code === 'T003') item.is_expand = false
+                    for (let child of item['parent_n']){
+                        child.is_visible = true
+                        if (child.values[0].dataObj.code === 'T004') child.is_visible = false // fake data để test
                         reNewList.push(child)
                     }
                 }
@@ -1098,173 +1117,48 @@ $(function () {
             const $transElm = $('#trans-factory')
             let columns_gantt = [
                 {
-                    value: 'name',
+                    value: 'title',
                     label: $transElm.attr('data-name'),
                     show: true,
-                    detail: '<i class="fa-solid fa-share"></i>'
+                    width: '300'
                 },
-                // {value: 'estimate_change', label: gettext('Estimate'), show: false},
-                {value: 'assignee', label: $transElm.attr('data-assignee'), show: false},
+                {value: 'priority', label: $transElm.attr('data-priority'), show: true, width: '100'},
+                {value: 'employee_created', label: $transElm.attr('data-assigner'), show: false},
+                {value: 'employee_inherit', label: $transElm.attr('data-assignee'), show: false},
+                {value: 'start_date', label: $transElm.attr('data-st-date'), show: false},
+                {value: 'end_date', label: $transElm.attr('data-ed-date'), show: false},
             ]
             const sourceDT = GanttViewTask.taskList
+
             $(".gantt").gantt({
                 source: sourceDT,
                 navigate: 'scroll',
-                scale: "weeks",
-                maxScale: "months",
-                minScale: "hours",
                 columns: columns_gantt,
-                itemsPerPage: 10,
-                scrollToToday: true,
-                useCookie: true,
-                // final_level_bold: 0,
+                itemsPerPage: 100,
                 // hover: true,
                 // resizeable: true,
                 // onItemClick: (data) => {
                 // },
-                // onClickParent,
+                onClickParent,
                 // onRowClick: (id) => renderDetailPage(id),
+                // onRender: function () {
+            //         if (window.console && typeof console.log === "function") {
+            //             console.log("chart rendered");
+            //         }
+            //    },
                 // resizeStartDate,
                 // resizeEndDate
             });
         }
 
         static initGantt() {
-            // $('.tab-gantt[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            //     if (!$('.gantt').length) {
-            //         $('.gantt_table').append('<div class="gantt"></div>')
-            //         GanttViewTask.renderGantt()
-            // $('#btn_today').click($.fn.scroll_to_today)
-            // }
-            // else $('#btn_today').click($.fn.scroll_to_today)
-            // })
-            GanttViewTask.renderGantt()
-
-            var demoSource = [
-                {
-                    name: "Sprint 0",
-                    desc: "Analysis",
-                    values: [{
-                        from: 1707801849898,
-                        to: 1822401600000,
-                        label: "Requirement Gathering",
-                        customClass: "ganttRed"
-                    }]
-                },
-                {
-                    desc: "Scoping",
-                    values: [{
-                        from: 1707801849898,
-                        to: 1807801849898,
-                        label: "Scoping",
-                        customClass: "ganttRed"
-                    }]
-                },
-                {
-                    name: "Sprint 1",
-                    desc: "Development",
-                    values: [{
-                        from: 1707801849898,
-                        to: 1807801849898,
-                        label: "Development",
-                        customClass: "ganttGreen"
-                    }]
-                },
-                {
-                    name: " ",
-                    desc: "Showcasing",
-                    values: [{
-                        from: 1707801849898,
-                        to: 1807801849898,
-                        label: "Showcasing",
-                        customClass: "ganttBlue"
-                    }]
-                },
-                {
-                    name: "Sprint 2",
-                    desc: "Development",
-                    values: [{
-                        from: 1707801849898,
-                        to: 1707802849898,
-                        label: "Development",
-                        customClass: "ganttGreen"
-                    }]
-                },
-                {
-                    desc: "Showcasing",
-                    values: [{
-                        from: 1707801849898,
-                        to: 1707803849898,
-                        label: "Showcasing",
-                        customClass: "ganttBlue"
-                    }]
-                },
-                {
-                    name: "Release Stage",
-                    desc: "Training",
-                    values: [{
-                        from: 1707801849898,
-                        to: 1707802849898,
-                        label: "Training",
-                        customClass: "ganttOrange"
-                    }]
-                },
-                {
-                    desc: "Deployment",
-                    values: [{
-                        from: 1707801849898,
-                        to: 1707811849898,
-                        label: "Deployment label",
-                        desc: "Deployment content",
-                        customClass: "ganttOrange"
-                    }]
-                },
-                {
-                    desc: "Warranty Period",
-                    values: [{
-                        from: 1707801849898,
-                        to: 1707801849998,
-                        label: "Warranty Period label",
-                        desc: "Warranty Period content",
-                        customClass: "ganttOrange"
-                    }]
-                }
-            ];
-
-            // shifts dates closer to Date.now()
-
-            // $(".gantt").gantt({
-            //     source: demoSource,
-            //     navigate: "scroll",
-            //     scale: "weeks",
-                // maxScale: "months",
-                // minScale: "hours",
-                // itemsPerPage: 10,
-                // scrollToToday: true,
-                // useCookie: true,
-            //     onItemClick: function (data) {
-            //         alert("Item clicked - show some details");
-            //     },
-            //     onAddClick: function (dt, rowId) {
-            //         alert("Empty space clicked - add an item!");
-            //     },
-            //     onRender: function () {
-            //         if (window.console && typeof console.log === "function") {
-            //             console.log("chart rendered");
-            //         }
-            //     }
-            // });
-
-            // $(".gantt").popover({
-            //     selector: ".bar",
-            //     title: function _getItemText() {
-            //         return this.textContent;
-            //     },
-            //     container: '.gantt',
-            //     content: "Here's some useful information.",
-            //     trigger: "hover",
-            //     placement: "auto right"
-            // });
+            if (!$('.gantt').length) {
+                $('.gantt_table').append('<div class="gantt"></div>')
+                // GanttViewTask.renderGantt()
+            }
+            $('.tab-gantt[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $('#btn_today').click($.fn.scroll_to_today)
+            });
         }
     }
 

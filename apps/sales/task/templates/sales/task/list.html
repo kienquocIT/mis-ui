@@ -128,12 +128,9 @@
             </div>
         </div>
         <div class="tab-pane fade" id="tab_gantt">
-            <div class="gantt_table">
-                <div class="gantt"></div>
-            </div>
+            <div class="gantt_table"></div>
         </div>
     </div>
-
     <div class="hidden">
         <div class="card-parent_template">
             <div class="card card-simple card-border tasklist">
@@ -218,8 +215,13 @@
                data-logtime="{% url 'OpportunityTaskLogTimeAPI' %}"
                data-change-stt="{% url 'OpportunityTaskStatusAPI' %}"
         />
-        <input type="text" id="trans-factory" data-name="{% trans 'Name' %}"
-        data-assignee="{% trans 'Assignee' %}">
+        <input type="text" id="trans-factory" data-name="{% trans 'Name' %}" data-assigner="{% trans 'Assigner' %}"
+        data-assignee="{% trans 'Assignee' %}" data-priority="{% trans 'Priority' %}"
+               data-st-date="{% trans 'Start date' %}" data-ed-date="{% trans 'End date' %}"
+               data-low="{% trans 'Low' %}"
+               data-med="{% trans 'Medium' %}"
+               data-hig="{% trans 'High' %}"
+        >
         {{ data.task_config|json_script:'task_config' }}
     </div>
     {% include 'sales/task/extend/task-form.html' %}

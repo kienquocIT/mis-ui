@@ -2065,61 +2065,69 @@ class QuotationLoadDataHandle {
         let divCopyOption = $('#copy-quotation-option');
         let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
         let tableProduct = $('#datable-quotation-create-product');
-        let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
-        let dataCopyTo = {'id': dataCopy.id, 'option': 'all'};
-        let type = $(ele)[0].getAttribute('data-copy-type');
-        if (divCopyOption[0].querySelector('.check-option').checked === false) { // if option copy is custom then setup data products & costs for load
-            let result = [];
-            let productCopyTo = [];
-            let order = 0;
-            tableCopyQuotationProduct.DataTable().rows().every(function () {
-                let row = this.node();
-                let check = row.querySelector('.table-row-check-product');
-                if (check.checked === true) {
-                    let quantyInput = row.querySelector('.table-row-quantity-input').value;
-                    let prodID = check.getAttribute('data-id');
-                    for (let i = 0; i < dataCopy.quotation_products_data.length; i++) {
-                        let data = dataCopy.quotation_products_data[i];
-                        if (data.product.id === prodID) {
-                            data['product_quantity'] = parseFloat(quantyInput);
-                            order++
-                            data['order'] = order;
-                            result.push(data);
-                            productCopyTo.push({'id': data.product.id, 'quantity': parseFloat(quantyInput)})
-                            break
+        let eleDataCopy = $('#data-copy-quotation-detail');
+        if (eleDataCopy && eleDataCopy.length > 0) {
+            if (eleDataCopy.val()) {
+                let dataCopy = JSON.parse(eleDataCopy.val());
+                // BEGIN SETUP DATA COPY
+                let dataCopyTo = {'id': dataCopy?.['id'], 'option': 'all'};
+                let type = $(ele)[0].getAttribute('data-copy-type');
+                if (divCopyOption[0].querySelector('.check-option').checked === false) { // if option copy is custom then setup data products & costs for load
+                    let result = [];
+                    let productCopyTo = [];
+                    let order = 0;
+                    tableCopyQuotationProduct.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let check = row.querySelector('.table-row-check-product');
+                        if (check.checked === true) {
+                            let quantyInput = row.querySelector('.table-row-quantity-input').value;
+                            let prodID = check.getAttribute('data-id');
+                            for (let data of dataCopy?.['quotation_products_data']) {
+                                if (data?.['product']?.['id'] === prodID) {
+                                    data['product_quantity'] = parseFloat(quantyInput);
+                                    order++
+                                    data['order'] = order;
+                                    result.push(data);
+                                    productCopyTo.push({
+                                        'id': data?.['product']?.['id'],
+                                        'quantity': parseFloat(quantyInput)
+                                    })
+                                    break
+                                }
+                            }
                         }
-                    }
+                    });
+                    dataCopy['quotation_products_data'] = result;
+                    dataCopyTo['option'] = 'custom';
+                    dataCopyTo['products'] = productCopyTo;
+                    dataCopy['quotation_costs_data'] = [];
+                } else { // if option copy is ALL product
+                    dataCopy['quotation_products_data'] = dataCopy?.['quotation_products_data'];
                 }
-            });
-            dataCopy['quotation_products_data'] = result;
-            dataCopyTo['option'] = 'custom';
-            dataCopyTo['products'] = productCopyTo;
-            dataCopy['quotation_costs_data'] = [];
-        } else { // if option copy is ALL product
-            dataCopy['quotation_products_data'] = dataCopy.quotation_products_data;
-        }
-        if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
-            // Begin load data copy FROM
-            document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
-            QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-            QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-            QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-            // Check promotion -> re calculate
-            QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
-            // load again table cost
-            QuotationLoadDataHandle.loadDataTableCost();
-            QuotationLoadDataHandle.loadSetWFRuntimeZone();
-            // Set form novalidate
-            formSubmit[0].setAttribute('novalidate', 'novalidate');
-
-            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
-        } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
-            // create URL and add to href
-            let eleRedirect = document.getElementById('link-to-sale-order-create');
-            let urlSaleOrder = eleRedirect.getAttribute('data-url') + "?data_copy_to=" + encodeURIComponent(JSON.stringify(dataCopyTo));
-            eleRedirect.setAttribute('href', urlSaleOrder);
-            // active event on click <a>
-            eleRedirect.click();
+                // BEGIN COPY DATA
+                if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
+                    // Begin load data copy FROM
+                    document.getElementById('customer-price-list').value = dataCopy?.['customer']?.['customer_price_list'];
+                    QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+                    QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                    // Check promotion -> re calculate
+                    QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+                    // load again table cost
+                    QuotationLoadDataHandle.loadDataTableCost();
+                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                    // Set form novalidate
+                    formSubmit[0].setAttribute('novalidate', 'novalidate');
+                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+                } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
+                    // create URL and add to href
+                    let eleRedirect = document.getElementById('link-to-sale-order-create');
+                    let urlSaleOrder = eleRedirect.getAttribute('data-url') + "?data_copy_to=" + encodeURIComponent(JSON.stringify(dataCopyTo));
+                    eleRedirect.setAttribute('href', urlSaleOrder);
+                    // active event on click <a>
+                    eleRedirect.click();
+                }
+            }
         }
     };
 
@@ -2407,10 +2415,18 @@ class QuotationLoadDataHandle {
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
         let tablePS = $('#datable-quotation-payment-stage');
-        QuotationLoadDataHandle.loadDropDowns(tableProduct);
-        QuotationLoadDataHandle.loadDropDowns(tableCost);
-        QuotationLoadDataHandle.loadDropDowns(tableExpense);
-        QuotationLoadDataHandle.loadDropDowns(tablePS);
+        if (tableProduct && tableProduct.length > 0) {
+            QuotationLoadDataHandle.loadDropDowns(tableProduct);
+        }
+        if (tableCost && tableCost.length > 0) {
+            QuotationLoadDataHandle.loadDropDowns(tableCost);
+        }
+        if (tableExpense && tableExpense.length > 0) {
+            QuotationLoadDataHandle.loadDropDowns(tableExpense);
+        }
+        if (tablePS && tablePS.length > 0) {
+            QuotationLoadDataHandle.loadDropDowns(tablePS);
+        }
     };
 
     static loadDropDowns(table) {
@@ -2567,7 +2583,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50, 300, 300, 100, 200, 350, 200, 150, 300, 50 (2000p)  // 50, 250, 200, 100, 150, 250, 150, 100, 200, 50 (1500p)
+            columns: [  // 50, 300, 350, 150, 200, 350, 200, 150, 200, 50 (2000p)  // 50, 250, 200, 100, 150, 250, 150, 100, 200, 50 (1500p)
                 {
                     targets: 0,
                     width: '2.5%',
@@ -2674,7 +2690,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '17.5%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2692,7 +2708,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '5%',
+                    width: '7.5%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2892,7 +2908,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '15%',
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;

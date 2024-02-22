@@ -86,20 +86,41 @@ $(async function () {
                             finalUOMRate = uomInventoryRatio / uomDeliveryRatio
                         }
                         item['stock_amount'] = item?.['stock_amount'] * finalUOMRate;
-                        if (prod_data?.['uom_data']) {
-                            item['uom_so'] = prod_data?.['uom_data'];
+                        for (const val of delivery) {
+                            if (val?.['warehouse'] === item?.['warehouse']?.['id']
+                                && val?.['uom'] === prod_data?.['uom_data']?.['id']
+                            ) { // Check if warehouse of product warehouse in list warehouse have picked
+                                if (prod_data?.['picked_quantity']) {
+                                    item['picked'] = prod_data?.['picked_quantity'];
+                                }
+                                if (prod_data?.['uom_data']) {
+                                    item['uom_so'] = prod_data?.['uom_data'];
+                                }
+                                if (val?.['lot_data']) {
+                                    item['lot_data'] = val?.['lot_data'];
+                                }
+                                if (val?.['serial_data']) {
+                                    item['serial_data'] = val?.['serial_data'];
+                                }
+                            } else {
+                                if (prod_data?.['picked_quantity']) {
+                                    item['picked'] = prod_data?.['picked_quantity'];
+                                }
+                                if (prod_data?.['uom_data']) {
+                                    item['uom_so'] = prod_data?.['uom_data'];
+                                }
+                            }
                         }
                     }
                     else if ((config.is_picking && !config.is_partial_ship) && delivery) { // TH: has_picking_one_delivery
                         // config 3
                         // item.product_amount = 0
                         for (const val of delivery) {
-                            if (val.warehouse === item?.['warehouse']?.['id']
-                                && val.uom === prod_data.uom_data.id
-                            ) // Check if warehouse of product warehouse in list warehouse have picked
-                            {
+                            if (val?.['warehouse'] === item?.['warehouse']?.['id']
+                                && val?.['uom'] === prod_data?.['uom_data']?.['id']
+                            ) { // Check if warehouse of product warehouse in list warehouse have picked
                                 item['stock_amount'] = item?.['picked_ready'];
-                                if (prod_data.picked_quantity) {
+                                if (prod_data?.['picked_quantity']) {
                                     item['picked'] = prod_data?.['picked_quantity'];
                                 }
                                 if (prod_data?.['uom_data']) {
@@ -113,7 +134,7 @@ $(async function () {
                                 }
                             } else {
                                 item['stock_amount'] = item?.['picked_ready'];
-                                if (prod_data.picked_quantity) {
+                                if (prod_data?.['picked_quantity']) {
                                     item['picked'] = prod_data?.['picked_quantity'];
                                 }
                                 if (prod_data?.['uom_data']) {
@@ -133,15 +154,14 @@ $(async function () {
                         // config 4
                         // nếu ready quantity > 0 => có hàng để giao
                         // lấy delivery
-                        if (prod_data.ready_quantity > 0) {
+                        if (prod_data?.['ready_quantity'] > 0) {
                             for (const val of delivery) {
-                                if (val.warehouse === item?.['warehouse']?.['id']
-                                    && val.uom === prod_data.uom_data.id
-                                ) // Check if warehouse of product warehouse in list warehouse have picked
-                                {
+                                if (val?.['warehouse'] === item?.['warehouse']?.['id']
+                                    && val?.['uom'] === prod_data?.['uom_data']?.['id']
+                                ) { // Check if warehouse of product warehouse in list warehouse have picked
                                     // item['stock_amount'] = prod_data?.['ready_quantity'];
                                     item['stock_amount'] = item?.['picked_ready'];
-                                    if (prod_data.picked_quantity) {
+                                    if (prod_data?.['picked_quantity']) {
                                         item['picked'] = prod_data?.['picked_quantity'];
                                     }
                                     if (prod_data?.['uom_data']) {
@@ -155,7 +175,7 @@ $(async function () {
                                     }
                                 } else {
                                     item['stock_amount'] = item?.['picked_ready'];
-                                    if (prod_data.picked_quantity) {
+                                    if (prod_data?.['picked_quantity']) {
                                         item['picked'] = prod_data?.['picked_quantity'];
                                     }
                                     if (prod_data?.['uom_data']) {
@@ -173,7 +193,7 @@ $(async function () {
                         }
                     }
                     // Check if table $('#productStockDetail') is not DataTable & page is update page => set lot_data, serial_data = []
-                    if (!table.hasClass('dataTable') && $form.attr('data-method') === 'PUT') {
+                    if (!table.hasClass('dataTable') && $form.attr('data-method').toLowerCase() === 'put') {
                         item['lot_data'] = [];
                         item['serial_data'] = [];
                     }
@@ -240,7 +260,7 @@ $(async function () {
                             class: 'w-20 text-center',
                             data: 'picked',
                             render: (row, type, data, meta) => {
-                                if ($form.attr('data-method') === 'PUT') {
+                                if ($form.attr('data-method').toLowerCase() === 'put') {
                                     let disabled = data.product_amount <= 0 ? 'disabled' : '';
                                     // condition 1 for config 3, condition 2 for config 4
                                     if (config.is_picking && !config.is_partial_ship ||
@@ -332,7 +352,7 @@ $(async function () {
                                     if (data?.['product']?.['general_traceability_method'] === 2) {
                                         let tableSerial = $('#datable-delivery-wh-serial');
                                         let dataParam = {'product_warehouse_id': productWHID, 'is_delete': false};
-                                        if ($form.attr('data-method') === 'GET') {
+                                        if ($form.attr('data-method').toLowerCase() === 'get') {
                                             dataParam = {'product_warehouse_id': productWHID};
                                         }
                                         let detailData = [];
@@ -352,7 +372,7 @@ $(async function () {
                                                                 for (let delivery_serial of data?.['serial_data']) {
                                                                     if (delivery_serial?.['product_warehouse_serial_id'] === serial?.['id']) {
                                                                         serial['is_checked'] = true;
-                                                                        if ($form.attr('data-method') === 'GET') {
+                                                                        if ($form.attr('data-method').toLowerCase() === 'get') {
                                                                             serial['uom_so'] = data?.['uom_so'];
                                                                             detailData.push(serial);
                                                                         }
@@ -362,7 +382,7 @@ $(async function () {
                                                             }
                                                             serial['uom_so'] = data?.['uom_so'];
                                                         }
-                                                        if ($form.attr('data-method') === 'GET') {
+                                                        if ($form.attr('data-method').toLowerCase() === 'get') {
                                                             prodTable.dataTableTableSerial(detailData);
                                                         } else {
                                                             prodTable.dataTableTableSerial(dataSerial.warehouse_serial_list);
@@ -670,7 +690,7 @@ $(async function () {
                         class: 'text-center',
                         data: 'quantity_delivery',
                         render: (row, type, data, meta) => {
-                            if ($form.attr('data-method') === 'PUT') {
+                            if ($form.attr('data-method').toLowerCase() === 'put') {
                                 return `<input class="form-control table-row-quantity-delivery" type="number" value="${row ? row : 0}">`;
                             } else {
                                 return `<input class="form-control table-row-quantity-delivery" type="number" value="${row ? row : 0}" disabled>`;
@@ -696,34 +716,34 @@ $(async function () {
             let tableLot = $('#datable-delivery-wh-serial');
             tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
-                ordering: false,
-                paginate: false,
-                info: false,
+                // ordering: false,
+                // paginate: false,
+                // info: false,
                 columns: [
                     {
                         targets: 0,
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                            if ($form.attr('data-method') === 'PUT') {
+                            if ($form.attr('data-method').toLowerCase() === 'put') {
                                 if (row?.['is_checked'] === true) {
                                     return `<div class="form-check">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input table-row-checkbox"
-                                            data-id="${row?.['id']}"
-                                            data-row="${dataRow}"
-                                            checked
-                                        >
-                                    </div>`;
+                                                <input
+                                                    type="checkbox"
+                                                    class="form-check-input table-row-checkbox"
+                                                    data-id="${row?.['id']}"
+                                                    data-row="${dataRow}"
+                                                    checked
+                                                >
+                                            </div>`;
                                 }
                                 return `<div class="form-check">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input table-row-checkbox"
-                                            data-id="${row?.['id']}"
-                                            data-row="${dataRow}"
-                                        >
-                                    </div>`;
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input table-row-checkbox"
+                                                data-id="${row?.['id']}"
+                                                data-row="${dataRow}"
+                                            >
+                                        </div>`;
                             } else {
                                 if (row?.['is_checked'] === true) {
                                     return `<div class="form-check">

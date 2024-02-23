@@ -40,7 +40,7 @@
         <div class="col-12 col-lg-4 col-md-4">
             <div class="form-group">
                 <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                <select class="form-select select2 select-multiple" id="warehouses_select"
+                <select class="form-select select2 select-multiple" id="warehouses_select" multiple
                         data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
             </div>
         </div>
@@ -82,15 +82,15 @@
                     <th hidden>{% trans 'Document date' %}</th>
                     <th>{% trans 'Trans description' %}</th>
                     <th>{% trans 'Trans code' %}</th>
-                    <th class="text-success">{% trans 'Stock in quantity' %}</th>
-                    <th class="text-success">{% trans 'Cost' %}</th>
-                    <th class="text-success">{% trans 'In value' %}</th>
-                    <th class="text-danger">{% trans 'Stock out quantity' %}</th>
-                    <th class="text-danger">{% trans 'Cost' %}</th>
+                    <th class="text-primary text-center">{% trans 'Stock in quantity' %}</th>
+                    <th class="text-primary">{% trans 'In cost' %}</th>
+                    <th class="text-primary">{% trans 'In value' %}</th>
+                    <th class="text-danger text-center">{% trans 'Stock out quantity' %}</th>
+                    <th class="text-danger">{% trans 'Out cost' %}</th>
                     <th class="text-danger">{% trans 'Out value' %}</th>
-                    <th class="text-primary">{% trans 'Cumulative quantity' %}</th>
-                    <th class="text-primary">{% trans 'Cumulative cost' %}</th>
-                    <th class="text-primary">{% trans 'Cumulative value' %}</th>
+                    <th class="text-secondary text-center">{% trans 'Cumulative quantity' %}</th>
+                    <th class="text-secondary">{% trans 'Cumulative cost' %}</th>
+                    <th class="text-secondary">{% trans 'Cumulative value' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>

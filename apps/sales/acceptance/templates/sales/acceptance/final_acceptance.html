@@ -72,7 +72,7 @@
         <div class="row">
             <table
                     id="table_final_acceptance_list"
-                    class="table nowrap min-w-1500p w-100 mb-5"
+                    class="table nowrap min-w-2000p w-100 mb-5"
                     data-url="{% url 'FinalAcceptanceListAPI' %}"
                     data-method="get"
             >
@@ -84,7 +84,7 @@
                     <th>{% trans 'Planed value' %}</th>
                     <th>{% trans 'Actual value' %}</th>
                     <th>{% trans 'Different value' %}</th>
-                    <th>{% trans '%' %}</th>
+                    <th>{% trans 'Rate' %} %</th>
                     <th>{% trans 'Note' %}</th>
                 </tr>
                 </thead>

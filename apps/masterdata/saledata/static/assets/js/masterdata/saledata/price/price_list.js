@@ -152,7 +152,7 @@ $(document).ready(function () {
             price_list_type: {
                 required: true,
             },
-            price_list_mapped: {
+            price_list_mapped_id: {
                 required: function () {
                     return $("#checkbox-copy-source").is(':checked');
                 }

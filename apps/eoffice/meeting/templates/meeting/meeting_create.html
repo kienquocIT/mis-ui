@@ -61,14 +61,14 @@
           data-url-redirect="{% url "MeetingScheduleList" %}"
     >
     {% csrf_token %}
-        <div class="collapse multi-collapse mb-3 show" id="collapse-area">
+        <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
                 <div class="col-12 col-lg-6 col-md-6">
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="form-label required" for="name">{% trans "Name" %}</label>
-                                <input class="form-control" id="name" placeholder="Meeting with customer ...">
+                                <input class="form-control" id="name" placeholder="{% trans 'Meeting with customer ...' %}">
                             </div>
                         </div>
                     </div>
@@ -264,7 +264,7 @@
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">{% trans 'Select internal employees' %}</h5>
+                            <h5 class="modal-title" id="exampleModalLongTitle">{% trans 'Select internal participants' %}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -296,7 +296,7 @@
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">{% trans 'Select external employees' %}</h5>
+                            <h5 class="modal-title" id="exampleModalLongTitle">{% trans 'Select external participants' %}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -715,7 +715,7 @@
                                                         </form>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                                                         <button type="button" id='btn-save-meeting-info-payload' class="btn btn-gradient-primary">
                                                             <span>
                                                                 <span>{% trans 'Save meeting config' %}</span>

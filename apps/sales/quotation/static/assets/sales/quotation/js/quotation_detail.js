@@ -19,7 +19,7 @@ $(function () {
                     // store data detail
                     eleDataDetail.val(JSON.stringify(data));
                     QuotationLoadDataHandle.loadDetailQuotation(data);
-                    if ($form.attr('data-method') === 'GET') {
+                    if ($form.attr('data-method').toLowerCase() === 'get') {
                         QuotationLoadDataHandle.loadDataTablesAndDropDowns(data, true);
                     } else {
                         QuotationLoadDataHandle.loadDataTablesAndDropDowns(data, false);
@@ -30,7 +30,7 @@ $(function () {
                         $('#data-copy-quotation-detail').val(JSON.stringify(data))
                     }
 
-                    if ($form.attr('data-method') === 'PUT') {
+                    if ($form.attr('data-method').toLowerCase() === 'put') {
                         // Check config when begin edit
                         let check_config = QuotationCheckConfigHandle.checkConfig(true);
                         // load again total products if after check config the price change

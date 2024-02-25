@@ -446,11 +446,33 @@ class MenuEOffice:
                 name='Asset, Tools list', code='menu_asset_list', view_name='AssetToolsList',
                 icon='<i class="fa-solid fa-list"></i>',
             ),
+            MenuCommon(
+                name='Asset, Tools return list', code='menu_asset_return', view_name='AssetToolsReturnList',
+                icon='<i class="fa-solid fa-backward-fast"></i>',
+            ),
         ]
     )
     MEETING = MenuCommon(
         name='Meeting', code='menu_meeting_list', view_name='MeetingScheduleList',
         icon='<i class="fas fa-chalkboard-teacher"></i>',
+    )
+
+
+class MenuDMS:
+    WORK_SPACE = MenuCommon(
+        name='Work space', code='menu_DMS_work_space', view_name='', icon='<i class="fas fa-vector-square"></i>',
+        child=[
+            MenuCommon(
+                name='File',
+                code='menu_report_pipeline_list',
+                view_name='ReportPipelineList',
+                icon='<i class="far fa-file"></i>',
+            )
+        ],
+    )
+    MY_SPACE = MenuCommon(
+        name='My space', code='menu_DMS_my_space', view_name='', icon='<i class="fas fa-user-astronaut"></i>',
+        child=[],
     )
 
 
@@ -494,13 +516,13 @@ class MenusReport:
         ],
     )
     INVENTORY_REPORT = MenuCommon(
-        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-chart-bar"></i>',
+        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="bi bi-kanban"></i>',
         child=[
             MenuCommon(
-                name='Items detail report',
+                name='Items Detail Report',
                 code='menu_items_detail_report',
-                view_name='ItemsDetailReportList',
-                icon='<i class="far fa-file"></i>',
+                view_name='ReportInventoryDetailList',
+                icon='<i class="bi bi-box"></i>',
             ),
         ],
     )
@@ -600,6 +622,15 @@ class SpaceItem:
                 MenuEOffice.MEETING,
             ],
         ),
+        'dms': SpaceCommon(
+            'DMS',
+            'dms',
+            icon='<i class="far fa-folder-open"></i>',
+            menus=[
+                MenuDMS.WORK_SPACE,
+                MenuDMS.MY_SPACE,
+            ],
+        ),
         'report': SpaceCommon(
             'Report',
             'report',
@@ -655,6 +686,7 @@ class SpaceGroup:
             SpaceItem.mapping['purchase'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['e-office'],
+            SpaceItem.mapping['dms'],
             SpaceItem.mapping['report'],
         ]
     )

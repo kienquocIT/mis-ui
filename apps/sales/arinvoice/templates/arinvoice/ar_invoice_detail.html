@@ -60,7 +60,7 @@
                         <label class="form-label required" for="customer-code">{% trans "Customer" %}</label>
                         <div class="input-group">
                             <span class="input-affix-wrapper">
-                                <input readonly type="text" placeholder="Click the button to select" class="form-control" id="customer-code">
+                                <input readonly type="text" placeholder="{% trans 'Click the button to select' %}" class="form-control" id="customer-code">
                             </span>
                             <button type="button" class="btn btn-light" id="customer-select-btn"
                                     data-bs-toggle="modal" data-bs-target="#customer-select-modal"
@@ -98,7 +98,7 @@
                     <div class="row">
                         <div class="col-12 col-lg-12 col-md-12">
                             <div class="form-group">
-                                <label class="form-label required" for="invoice-exp">{% trans "Invoice example" %}</label>
+                                <label class="form-label required" for="invoice-exp">{% trans "Mẫu hoá đơn" %}</label>
                                 <select class="form-select" id="invoice-exp">
                                     <option></option>
                                     <option value="0">01GTKT0/001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn giá trị gia tăng (hoá đơn điện tử)</option>
@@ -115,7 +115,7 @@
                     <div class="row">
                         <div class="col-12 col-lg-6 col-md-6">
                             <div class="form-group">
-                                <label class="form-label required" for="invoice-sign">{% trans "Invoice sign" %}</label>
+                                <label class="form-label required" for="invoice-sign">{% trans "Kí hiệu hoá đơn" %}</label>
                                 <input class="form-control" id="invoice-sign">
                             </div>
                         </div>
@@ -267,7 +267,7 @@
                                         <span class="icon">
                                             <span class="feather-icon"><i class="far fa-edit"></i></span>
                                         </span>
-                                        <span>{% trans 'Edit' %} {% trans 'items' %}</span>
+                                        <span>{% trans 'Edit' %}</span>
                                     </span>
                                 </button>
                                 <button class="btn btn-outline-secondary" type="button" id="btn-add-row-line-detail-discount">

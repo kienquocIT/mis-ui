@@ -25,7 +25,7 @@ $(document).ready(function () {
                 'data': 'code',
                 render: (data, type, row) => {
                     const link = url_detail.replace(0, row.id);
-                    return `<a href="${link}" class="w-70 badge badge-soft-primary">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`
+                    return `<a href="${link}" class="text-primary">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             }, {
                 'data': 'title',

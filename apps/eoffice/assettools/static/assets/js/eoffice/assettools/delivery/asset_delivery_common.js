@@ -88,8 +88,7 @@ class DeliveryTableHandle {
                             if (!row && data?.['warehouse_data']) row = data['warehouse_data']
                             if (row && Object.keys(row).length > 0) dataLoad.push({...row, selected: true})
                             let params = {
-                                product_id: data.product.id,
-                                is_asset: true
+                                product_id: data.product.id
                             }
                             let html = $(`<select>`).addClass('form-select row_warehouse')
                                 .attr('name', `warehouse_${meta.row}`).attr('data-zone', 'products').attr(
@@ -293,26 +292,7 @@ function submitHandleFunc() {
     }
 
     formData.attachments = $x.cls.file.get_val(formData.attachments, []),
-    $.fn.callAjax2({
-        'url': frm.dataUrl,
-        'method': frm.dataMethod,
-        'data': formData,
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && (data['status'] === 201 || data['status'] === 200)) {
-                $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
-                setTimeout(() => {
-                    window.location.replace($FormElm.attr('data-url-redirect'));
-                }, 1000);
-            }
-        }, (err) => {
-            setTimeout(() => {
-                WindowControl.hideLoading();
-            }, 1000)
-            $.fn.notifyB({description: err.data.errors}, 'failure');
-        }
-    )
+    WFRTControl.callWFSubmitForm(frm);
 }
 
 $(document).ready(function(){

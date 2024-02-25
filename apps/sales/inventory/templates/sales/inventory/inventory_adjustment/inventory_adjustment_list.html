@@ -5,11 +5,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'InventoryAdjustmentCreate' %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Inventory Adjustment' %}"
-       id="create_inventory_adjustment_button"
-       data-bs-original-title="Add Inventory Adjustment">
+       id="create_inventory_adjustment_button">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>

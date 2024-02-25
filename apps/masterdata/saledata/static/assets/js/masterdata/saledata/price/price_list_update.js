@@ -76,8 +76,11 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(() => {
+                                window.location.replace(frm.dataUrlRedirect.format_url_with_uuid(pk));
+                                location.reload.bind(location);
+                            }, 1000);
                     }
                 },
                 (errs) => {
@@ -117,8 +120,11 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect.format_url_with_uuid(pk), 1000);
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(() => {
+                                window.location.replace(frm.dataUrlRedirect.format_url_with_uuid(pk));
+                                location.reload.bind(location);
+                            }, 1000);
                     }
                 },
                 (errs) => {
@@ -142,8 +148,11 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(() => {
+                                window.location.replace(frm.dataUrlRedirect.format_url_with_uuid(pk));
+                                location.reload.bind(location);
+                            }, 1000);
                     }
                 },
                 (errs) => {

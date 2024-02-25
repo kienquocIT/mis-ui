@@ -461,6 +461,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')
     REPORT_PIPELINE_LIST = StringUrl('report/pipeline/list')
     REPORT_CASHFLOW_LIST = StringUrl('report/cashflow/list')
+    REPORT_INVENTORY_DETAIL_LIST = StringUrl('report/inventory-detail/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')
@@ -478,6 +479,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ASSET_TOOLS_DELIVERY = StringUrl('asset-tools/delivery')
     ASSET_TOOLS_DELIVERY_DETAIL = StringUrl('asset-tools/delivery/detail')
     ASSET_TOOLS_LIST = StringUrl('asset-tools/list')
+    ASSET_TOOLS_RETURN_LIST = StringUrl('asset-tools/asset-return')
+    ASSET_TOOLS_RETURN_DETAIL = StringUrl('asset-tools/asset-return/detail')
 
     # Revenue plan
     REVENUE_PLAN_LIST = StringUrl('revenue-plans/list')
@@ -497,3 +500,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_LIST_FOR_GOODS_RETURN = StringUrl('inventory/sale-orders-for-goods-return/list')
     DELIVERY_LIST_FOR_GOODS_RETURN = StringUrl('inventory/get-deliveries-for-goods-return')
     DELIVERY_PRODUCTS_FOR_GOODS_RETURN = StringUrl('inventory/get-delivery-products-for-goods-return/{pk}')
+    GOODS_RETURN_LIST = StringUrl('inventory/goods-return/list')
+    GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')

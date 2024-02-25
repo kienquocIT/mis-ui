@@ -691,7 +691,7 @@ function LoadDetailMeetingSchedule() {
                         <div class="col-12 col-lg-6 col-md-6">
                             <div class="row">
                                 <div class="col-12">
-                                    <button data-bs-toggle="tooltip" data-bs-placement="top" title="${translateScriptEle.attr('data-see-invitation')}" class="btn btn-icon btn-flush-secondary flush-soft-hover">
+                                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="${translateScriptEle.attr('data-see-invitation')}" class="btn btn-icon btn-flush-secondary flush-soft-hover">
                                         <span class="icon" data-bs-toggle="collapse" href="#see-meeting-invitation" role="button" aria-expanded="false" aria-controls="see-meeting-invitation"><i class="far fa-eye"></i></span>
                                     </button>
                                     <div class="collapse multi-collapse" id="see-meeting-invitation">

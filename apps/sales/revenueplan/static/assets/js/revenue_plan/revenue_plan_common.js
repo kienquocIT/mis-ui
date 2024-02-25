@@ -9,6 +9,18 @@ if ($('#revenue_plan_config').text() !== '') {
             revenue_plan_config[0]['roles_mapped_list'][i]['id']
         )
     }
+    if (revenue_plan_config_list.length > 0) {
+        $('#notify').attr('hidden', true)
+        $('.main').attr('hidden', false)
+        $('#btn-save-revenue-plan').attr('hidden', false)
+        $('#btn-update-revenue-plan').attr('hidden', false)
+    }
+    else {
+        $('#notify').attr('hidden', false)
+        $('.main').attr('hidden', true)
+        $('#btn-save-revenue-plan').attr('hidden', true)
+        $('#btn-update-revenue-plan').attr('hidden', true)
+    }
 }
 const QUARTER_1 = ['m1', 'm2', 'm3']
 const QUARTER_2 = ['m4', 'm5', 'm6']
@@ -262,9 +274,9 @@ $(document).on("change", '.month-target-profit', function () {
 })
 
 function UpdateTablePlan(group_employee_list, group_selected) {
-    let profit_type = 'Gross profit'
+    let profit_type = trans_script.attr('data-trans-gross-profit')
     if ($('#net-income').prop('checked')) {
-        profit_type = 'Net income'
+        profit_type = trans_script.attr('data-trans-net-profit')
     }
     let group_employee_valid = group_employee_list.filter(function (item) {
         return item.role.some(function (role) {
@@ -277,7 +289,7 @@ function UpdateTablePlan(group_employee_list, group_selected) {
                 <td><span class="text-primary"><b>${group_selected.title}</b></span></td>
                 <td></td>
                 <td>
-                    <label class="col-form-label text-primary">Revenue</label>
+                    <label class="col-form-label text-primary">${trans_script.attr('data-trans-revenue')}</label>
                     <div class="my-1"></div>
                     <label class="profit-type-span col-form-label text-success">${profit_type}</label>
                 </td>
@@ -374,7 +386,7 @@ function UpdateTablePlan(group_employee_list, group_selected) {
                     <td></td>
                     <td class="employee-mapped" data-employee-id="${group_employee_valid[i]?.['id']}"><b>${group_employee_valid[i]?.['full_name']}</b></td>
                     <td>
-                        <label class="col-form-label text-primary">Revenue</label>
+                        <label class="col-form-label text-primary">${trans_script.attr('data-trans-revenue')}</label>
                         <div class="my-1"></div>
                         <label class="profit-type-span col-form-label text-success">${profit_type}</label>
                     </td>
@@ -495,9 +507,9 @@ $('#btn-add-group-plan').on('click', function () {
 })
 
 $('input[name="profit-type"]').on('change', function () {
-    let profit_type = 'Gross profit'
+    let profit_type = trans_script.attr('data-trans-gross-profit')
     if ($('#net-income').prop('checked')) {
-        profit_type = 'Net income'
+        profit_type = trans_script.attr('data-trans-net-profit')
     }
     $('.profit-type-span').text(profit_type)
 })
@@ -705,9 +717,9 @@ function LoadDetailRevenuePlan(option) {
                 revenuePlanTable.find('tfoot .company-row').find(`.sum-company-year-profit`).attr('data-init-money', data?.['company_year_profit_target'])
 
                 $('#net-income').prop('checked', data?.['profit_target_type'])
-                let profit_type = 'Gross profit'
+                let profit_type = trans_script.attr('data-trans-gross-profit')
                 if (data?.['profit_target_type']) {
-                    profit_type = 'Net income'
+                    profit_type = trans_script.attr('data-trans-net-profit')
                 }
                 $('.profit-type-span').text(profit_type)
 
@@ -725,7 +737,7 @@ function LoadDetailRevenuePlan(option) {
                             <td><span class="text-primary"><b>${group_selected.title}</b></span></td>
                             <td></td>
                             <td>
-                                <label class="col-form-label text-primary">Revenue</label>
+                                <label class="col-form-label text-primary">${trans_script.attr('data-trans-revenue')}</label>
                                 <div class="my-1"></div>
                                 <label class="profit-type-span col-form-label text-secondary">${profit_type}</label>
                             </td>
@@ -829,7 +841,7 @@ function LoadDetailRevenuePlan(option) {
                                 <td></td>
                                 <td class="employee-mapped" data-employee-id="${group_employee_valid[j]?.['id']}"><b>${group_employee_valid[j]?.['full_name']}</b></td>
                                 <td>
-                                    <label class="col-form-label text-primary">Revenue</label>
+                                    <label class="col-form-label text-primary">${trans_script.attr('data-trans-revenue')}</label>
                                     <div class="my-1"></div>
                                     <label class="profit-type-span col-form-label text-secondary">${profit_type}</label>
                                 </td>

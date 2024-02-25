@@ -103,7 +103,9 @@ $(document).ready(function(){
                             return ``
                         }
                     }
-                ],
+                ],drawCallback: (row, data, index) =>{
+                    DropdownBSHandle.init()
+                }
             })
             if (data.system_status >= 2) $('#idxRealAction').remove()
 

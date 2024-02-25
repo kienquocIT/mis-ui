@@ -6,7 +6,7 @@ from apps.core.home.views import (
     BookMarkListAPI, BookMarkDetailAPI,
     DocPinedListAPI, DocPinedDetailAPI,
     GatewayMiddleListView, GatewayMiddleDetailView, GatewayViewNameListView, GatewayViewNameParseView, DefaultDataView,
-    OutLayoutNotFoundView, OutLayoutServerOff, ResolveNotifyItemAPI,
+    OutLayoutNotFoundView, OutLayoutServerOff, ResolveNotifyItemAPI, GatewayPKMiddleDetailView,
 )
 
 urlpatterns = [
@@ -39,6 +39,10 @@ urlpatterns = [
     path(
         'gateway/reverse-url/detail/<str:plan>/<str:app>/<str:pk>', GatewayMiddleDetailView.as_view(),
         name='GatewayMiddleDetailView'
+    ),
+    path(
+        'gateway/reverse-url/detail-app/<str:pk_app>/<str:pk_doc>', GatewayPKMiddleDetailView.as_view(),
+        name='GatewayPKMiddleDetailView'
     ),
     path(
         'gateway/done-notify/<str:pk>', ResolveNotifyItemAPI.as_view(), name='ResolveNotifyItemAPI',

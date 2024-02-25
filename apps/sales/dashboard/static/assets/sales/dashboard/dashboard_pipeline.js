@@ -7,6 +7,27 @@ $(document).ready(function () {
     const moneyRadioEle = $('.money-radio')
     const billionCheckboxEle = $('#billion-checkbox')
     const moneyRoundEle = $('#money-round')
+    const GRID_HEIGHT = [400, 500, 450, 280]
+    const FULL_HEIGHT = [410, 410, 450, 400]
+    let HEIGHT = GRID_HEIGHT
+
+    $('.view-radio').on('change', function () {
+        if ($('#grid-view').prop('checked')) {
+            HEIGHT = GRID_HEIGHT
+            $('.px-7').each(function () {
+                $(this).attr('class', 'px-7 mt-3 col-12 col-md-6 col-lg-6')
+            })
+        }
+        else {
+            HEIGHT = FULL_HEIGHT
+            $('.px-7').each(function () {
+                $(this).attr('class', 'px-7 mt-3 col-12 col-md-12 col-lg-12')
+            })
+        }
+        UpdateOptionTotalPipelineChart()
+        UpdateOptionTopSaleByTotalPipelineChart(TOP_FROM, TOP_TO)
+        UpdateOptionForecastChart(parseInt($('#forecast-type').val()))
+    })
 
     moneyRadioEle.on('change', function () {
         UpdateOptionTotalPipelineChart()
@@ -135,7 +156,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 400,
+                height: HEIGHT[0],
                 animations: {
                     enabled: true,
                     easing: 'linear',
@@ -152,6 +173,7 @@ $(document).ready(function () {
             },
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: true,
                     horizontal: true,
@@ -414,7 +436,7 @@ $(document).ready(function () {
             series: series_data_DF,
             chart: {
                 type: 'bar',
-                height: 500,
+                height: HEIGHT[1],
                 stacked: true,
                 animations: {
                     enabled: true,
@@ -436,6 +458,7 @@ $(document).ready(function () {
             ],
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: false,
                     horizontal: true,
@@ -665,7 +688,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 450,
+                height: HEIGHT[2],
                 stacked: true,
                 animations: {
                     enabled: true,
@@ -686,6 +709,7 @@ $(document).ready(function () {
             ],
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: false,
                     horizontal: true,
@@ -856,7 +880,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 450,
+                height: HEIGHT[2],
                 stacked: true,
                 animations: {
                     enabled: true,
@@ -877,6 +901,7 @@ $(document).ready(function () {
             ],
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: false,
                     horizontal: true,
@@ -1109,7 +1134,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 280,
+                height: HEIGHT[3],
                 stacked: true,
                 toolbar: {
                     show: true
@@ -1146,6 +1171,7 @@ $(document).ready(function () {
             }],
             plotOptions: {
                 bar: {
+                    borderRadius: 5,
                     barHeight: '80%',
                     distributed: false,
                     horizontal: true,

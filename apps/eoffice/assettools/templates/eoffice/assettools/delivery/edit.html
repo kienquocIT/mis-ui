@@ -25,7 +25,7 @@
 
 {% block pageContent %}
     <!-- from create-->
-    <form class="container-fluid mt-4" id="asset_delivery_form" method="post" data-method="POST" autocomplete="off"
+    <form class="container-fluid mt-4" id="asset_delivery_form" method="post" data-method="PUT" autocomplete="off"
           data-url-redirect="{% url 'AssetToolsDeliveryList' %}" data-url="{% url 'AssetToolsDeliveryEditAPI' data.pk %}">
         {% csrf_token %}
         <div class="row">

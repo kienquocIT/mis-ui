@@ -74,7 +74,7 @@ customerSelectBtn.on('click', function () {
     // loadSaleOrder({})
 })
 
-function loadTableSelectDelivery(sale_order_filter) {
+function loadTableSelectDelivery() {
     tableSelectDeliveryEle.DataTable().destroy()
     tableSelectDeliveryEle.DataTableDefault({
         dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
@@ -90,13 +90,7 @@ function loadTableSelectDelivery(sale_order_filter) {
                 if (data) {
                     $('#select-delivery-offcanvas').offcanvas('show')
                     // console.log(resp.data['delivery_list'])
-                    let res = []
-                    for (let i = 0; i < resp.data['delivery_list'].length; i++) {
-                        if (resp.data['delivery_list'][i].state === 2 && resp.data['delivery_list'][i]?.['sale_order_data']?.['id'] === sale_order_filter) {
-                            res.push(resp.data['delivery_list'][i])
-                        }
-                    }
-                    return res;
+                    return resp.data['delivery_list'];
                 }
                 return [];
             },
@@ -555,7 +549,7 @@ function loadSaleOrder(data) {
         keyText: 'title',
     }).on('change', function () {
         if (saleOrderEle.val()) {
-            loadTableSelectDelivery(saleOrderEle.val())
+            loadTableSelectDelivery()
         }
     })
 }
@@ -575,7 +569,10 @@ $('#add-product-btn').on('click', function () {
 $('#btn-add-row-line-detail').on('click', function () {
     if (saleOrderEle.val()) {
         loadTableSelectDetailProduct([])
-        loadTableSelectDelivery(saleOrderEle.val())
+        loadTableSelectDelivery()
+    }
+    else {
+        $.fn.notifyB({description: "You have not selected Sale order yet"}, 'warning')
     }
 })
 
@@ -651,6 +648,7 @@ function calculatePrice() {
 
 class ARInvoiceHandle {
     load() {
+        loadTableLineDetail([])
         loadTableSelectCustomer()
     }
     combinesData(frmEle, for_update=false) {
@@ -698,6 +696,7 @@ class ARInvoiceHandle {
 
         if (frm.dataForm['data_item_list'].length === 0) {
             $.fn.notifyB({description: "No item in tab line detail"}, 'failure')
+            return false
         }
 
         console.log(frm.dataForm)

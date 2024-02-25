@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Asset, Tools' %} {% trans 'Asset return' %} {% trans 'List' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .min-w_768p {
+            min-width: 768px;
+        }
+        .pointer {
+            cursor: pointer
+        }
+        .wrap-loading{
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            text-align: center;
+            background: rgb(255 255 255 / 60%);
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="asset_return_form">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
+            </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <!-- from create-->
+    <form class="container-fluid mt-4" id="asset_return_form" method="post" data-method="POST" autocomplete="off"
+          data-url-redirect="{% url 'AssetToolsReturnList' %}" data-url="{% url 'AssetToolsReturnCreateAPI' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
+                <input type="text" name="title" id="titleInput" class="form-control" required>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="dateCreatedInput" class="form-label">{% trans 'Date' %}</label>
+                <div class="input-affix-wrapper">
+                    <input type="text" id="dateCreatedInput" name="date_return" class="form-control date-picker"
+                           autocomplete="off">
+                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="selectEmployeeInherit" class="form-label required">{% trans 'Beneficiary' %}</label>
+                <select class="form-select" name="employee_inherit_id" id="selectEmployeeInherit"
+                        data-url="{% url 'EmployeeListAPI' %}"
+                        data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                        data-params="{'list_from_app':'{{data.list_from_app|escape}}'}"
+                >
+                </select>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="SystemStatusInput" class="form-label">{% trans 'Status' %}</label>
+                <input type="text" name="system_status" id="SystemStatusInput" class="form-control" disabled>
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                <label for="remarkInput" class="form-label">{% trans 'Note' %}</label>
+                <textarea name="remark" id="remarkInput" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-12 col-xs-12">
+                <ul class="nav nav-line nav-light nav-tabs">
+                    <li class="nav-item">
+                        <a href="#asset_return" class="nav-link active" data-bs-toggle="tab">
+                            <span class="nav-link-text">{% trans 'Asset return' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#attachment" class="nav-link" data-bs-toggle="tab">
+                        <span class="nav-link-text">
+                            {% trans 'Attachment' %}
+                        </span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="asset_return">
+                        <table id="products_detail_tbl" class="table nowrap w-100 mb-5 min-w-1500p">
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'Product' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        <div class="clearfix">
+                            <button class="btn btn-outline-primary disabled" type="button" id="add_new_line"
+                            data-bs-toggle="modal" data-bs-target="#provide_product_list">
+                                <span>
+                                    <span>{% trans 'Edit items' %}</span>
+                                    <span class="icon">
+                                        <i class="fa-regular fa-plus"></i>
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="attachment">
+                        {% include 'extends/files/all.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- modal provide product list -->
+    {% include 'eoffice/assettools/assetreturn/modal_product.html' %}
+{% endblock %}
+{% block dataHiddenGroup %}
+    <div class="delete_btn">
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row">
+            <span class="btn-icon-wrap">
+                <i class="fa-solid fa-trash-can"></i>
+            </span>
+        </a>
+    </div>
+    <input type="text" id="url-factory"
+           data-provide_detail-url="{% url 'AssetProductListByProvideIDAPI'%}"
+           data-prod-detail="{% url 'ProductDetail' 1%}"
+    >
+    <input type="text" id="trans-factory"
+           data-uom="{% trans 'UoM' %}"
+           data-available="{% trans 'Available' %}"
+           data-products="{% trans 'List product return is empty' %}"
+           data-err-01="{% trans 'Return No. is empty' %}"
+           data-err-02="{% trans 'Return No. is greater than Using No.' %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/extends/components/custom-handle-bs-dropdown.js' %}"></script>
+    <script src="{% static 'assets/js/eoffice/assettools/asset-return/asset-return-common.js' %}"></script>
+    <script src="{% static 'assets/js/eoffice/assettools/asset-return/create.js' %}"></script>
+{% endblock %}

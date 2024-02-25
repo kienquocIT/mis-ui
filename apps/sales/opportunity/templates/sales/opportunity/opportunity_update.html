@@ -82,7 +82,7 @@
 
     <div class="page-content">
         <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
-              data-url-redirect="{% url 'OpportunityDetail' pk=pk %}">
+              data-url-redirect="{% url 'OpportunityDetail' '0' %}">
             {% csrf_token %}
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-12 mb-3 text-center">
@@ -318,7 +318,7 @@
                         </div>
                         <div class="row mb-3">
                             <label class="form-label required">{% trans 'Subject' %}</label>
-                            <div><input id="email-subject-input" class="form-control"></div>
+                            <div><input id="email-subject-input" class="form-control required"></div>
                         </div>
                         <div class="row mb-3">
                             <label class="col-12 col-form-label">{% trans 'Content' %}</label>
@@ -358,7 +358,7 @@
                     </div>
                     <div class="row mb-3">
                         <label class="form-label required">{% trans 'Subject' %}</label>
-                        <div><input readonly id="detail-email-subject-input" class="form-control"></div>
+                        <div><input readonly id="detail-email-subject-input" class="form-control required"></div>
                     </div>
                     <div class="row mb-3">
                         <label class="form-label">{% trans 'Content' %}</label>

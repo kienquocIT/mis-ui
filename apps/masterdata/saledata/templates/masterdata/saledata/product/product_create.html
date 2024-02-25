@@ -83,34 +83,34 @@
                 <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-hashtag"></i></span></span>
+                            <span class="nav-icon-wrap"></span>
                             <span class="nav-link-text">{% trans 'General' %}</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-up"></i></span></span>
+                            <span class="nav-icon-wrap"></span>
                             <span class="nav-link-text">{% trans 'Sale' %}</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_inventory" id="link-tab-inventory">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-boxes"></i></span></span>
+                            <span class="nav-icon-wrap"></span>
                             <span class="nav-link-text">{% trans 'Inventory' %}</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-long-arrow-alt-down"></i></span></span>
+                            <span class="nav-icon-wrap"></span>
                             <span class="nav-link-text">{% trans 'Purchase' %}</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" id="link-tab-variants" href="#tab_variants">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-splotch"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Variants' %}</span>
-                    </a>
-                </li>
+                        <a class="nav-link" data-bs-toggle="tab" id="link-tab-variants" href="#tab_variants">
+                            <span class="nav-icon-wrap"></span>
+                            <span class="nav-link-text">{% trans 'Variants' %}</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -164,37 +164,46 @@
                         <div class="form-group">
                             <label class="form-label">{% trans "Length" %}</label>
                             <span class="input-affix-wrapper affix-wth-text">
-                                <input type="number" class="form-control inpDimension" id="length" step="0.1">
+                                <input class="form-control inpDimension" id="length">
                                 <span class="input-suffix">cm</span>
                             </span>
                         </div>
                         <div class="form-group">
                             <label class="form-label">{% trans "Width" %}</label>
                             <span class="input-affix-wrapper affix-wth-text">
-                                <input type="number" class="form-control inpDimension" id="width" step="0.1">
+                                <input class="form-control inpDimension" id="width">
                                 <span class="input-suffix">cm</span>
                             </span>
                         </div>
                         <div class="form-group">
                             <label class="form-label">{% trans "Height" %}</label>
                             <span class="input-affix-wrapper affix-wth-text">
-                                <input type="number" class="form-control inpDimension" id="height" step="0.1">
+                                <input class="form-control inpDimension" id="height">
                                 <span class="input-suffix">cm</span>
                             </span>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Volume" %}</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="form-label">{% trans "Volume" %}</label>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <a href="#" id="to-fix-left"><i class="fas fa-caret-left text-primary"></i></a>
+                                    <span style="font-size: small">.00</span>
+                                    <a href="#" id="to-fix-right"><i class="fas fa-caret-right text-primary"></i></a>
+                                </div>
+                            </div>
                             <span class="input-affix-wrapper affix-wth-text">
-                                <input type="number" class="form-control" id="volume" readonly step="0.1">
+                                <input class="form-control" id="volume" readonly>
                                 <span id="VolumeSpan" class="input-suffix"></span>
                             </span>
                         </div>
                         <div class="form-group">
                             <label class="form-label">{% trans "Weight" %}</label>
                             <span class="input-affix-wrapper affix-wth-text">
-                                <input type="number" class="form-control" id="weight" step="0.1">
+                                <input class="form-control" id="weight">
                                 <span id="WeightSpan" class="input-suffix"></span>
                             </span>
                         </div>

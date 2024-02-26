@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ExtendsConfig(AppConfig):
+class PrinterConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.core.extends'
+    name = 'apps.core.printer'

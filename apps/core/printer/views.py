@@ -24,9 +24,11 @@ class PrintTemplateApplicationListAPI(APIView):
         templates_apps_list = ServerAPI(
             request=request, user=request.user,
             url=ApiURL.PRINT_TEMPLATES_LIST
-        ).get(data={
-            'pageSize': -1,  # full records
-        })
+        ).get(
+            data={
+                'pageSize': -1,  # full records
+            }
+        )
         return templates_apps_list.auto_return(key_success='templates_apps_list')
 
 
@@ -55,7 +57,7 @@ class PrintTemplatesListView(View):
     @mask_view(
         login_require=True,
         auth_require=True,
-        template='f_extends/printer/list.html',
+        template='printer/list.html',
         breadcrumb='PRINTER_CONFIG_LIST_PAGE',
         menu_active='menu_print_template',
     )
@@ -90,7 +92,7 @@ class PrintTemplateCreateView(View):
     @mask_view(
         login_require=True,
         auth_require=False,
-        template='f_extends/printer/create.html',
+        template='printer/create.html',
         breadcrumb='PRINTER_CONFIG_CREATE_PAGE',
         # menu_active='menu_company_list',
     )
@@ -123,7 +125,7 @@ class PrintTemplateDetailView(View):
     @mask_view(
         login_require=True,
         auth_require=False,
-        template='f_extends/printer/detail.html',
+        template='printer/detail.html',
         breadcrumb='PRINTER_CONFIG_DETAIL_PAGE',
         # menu_active='menu_company_list',
     )
@@ -169,7 +171,7 @@ class PrintTemplateUpdateView(View):
     @mask_view(
         login_require=True,
         auth_require=False,
-        template='f_extends/printer/update.html',
+        template='printer/update.html',
         breadcrumb='PRINTER_CONFIG_UPDATE_PAGE',
         # menu_active='menu_company_list',
     )

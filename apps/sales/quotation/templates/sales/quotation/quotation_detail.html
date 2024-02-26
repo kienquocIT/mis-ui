@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    {% include 'f_extends/print.html' %}
+    {% include 'printer/print.html' %}
 
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
@@ -709,7 +709,7 @@
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>
 {#    <script src="{% static 'assets/sales/quotation/js/quotation_print.js' %}"></script>#}
-    <script src="{% static 'f_extends/print.js' %}"></script>
+    <script src="{% static 'printer/print.js' %}"></script>
     <script>
         $(document).ready(function (){
             $('#print-document').on('click', function () {

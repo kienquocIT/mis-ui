@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.core.extends.views import (
+from apps.core.printer.views import (
     PrintTemplatesListAPI, PrintTemplatesListView, PrintTemplateUsingDetail,
     PrintTemplateCreateView, PrintTemplateCreateAPI, PrintTemplateDetailView, PrintTemplateDetailAPI,
     PrintTemplateUpdateView, PrintTemplateApplicationListAPI, PrintApplicationTemplateSample,

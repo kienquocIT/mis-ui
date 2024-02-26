@@ -13,17 +13,14 @@
                 </button>
             </div>
             <div class="modal-body">
-                <small class="text-warning">{% trans 'Note' %}: {% trans 'Displaying the PDF will take time depending on the size of the print template and the number of images to be printed.' %}</small>
-                <iframe style="width: 100%;"></iframe>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-action="save-preview-new-tab">
-                    {% trans 'Preview full' %}
-                    <i class="ml-1 fa-regular fa-file-pdf"></i>
-                </button>
-                <button type="button" class="btn btn-primary" data-action="save-print">
-                    {% trans 'Download' %} <i class="ml-1 fa-solid fa-download"></i>
-                </button>
+                <p>
+                    <small class="text-warning">{% trans 'Displaying the PDF will take time depending on the size of the print template and the number of images to be printed.' %}</small>
+                </p>
+                <p>
+                    <small class="text-warning">{% trans 'Please wait for the images to finish loading before proceeding with the print operation.' %}</small>
+                </p>
+                <iframe style="width: 100%;" class="d-none"></iframe>
+                <textarea></textarea>
             </div>
         </div>
     </div>

@@ -317,6 +317,7 @@ $.fn.extend({
             if (!$.fn.isBoolean(isLoading)) isLoading = false;
             if (isLoading) $x.fn.showLoadingPage(loadingOpts);
 
+            // sweetAlertOpts: {'allowOutsideClick': true},
             let sweetAlertOpts = UtilControl.popKey(opts, 'sweetAlertOpts', {}, true);
 
             return new Promise(function (resolve, reject) {

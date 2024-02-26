@@ -17,11 +17,6 @@
     </a>
 {% endblock %}
 
-{% block jsHeaderUnCompress %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-{% endblock %}
-
 {% block pageContent %}
     {% include 'f_extends/print.html' %}
 
@@ -718,8 +713,8 @@
     <script>
         $(document).ready(function (){
             $('#print-document').on('click', function () {
-                new PrintControl().render();
-            })
+                PrintTinymceControl.open_modal();
+            });
 
             $('#btn-show-comment').on('click', function (){
                 $(this).fadeOut({

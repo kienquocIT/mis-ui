@@ -133,6 +133,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     COMMENT_REPLIES_LIST = StringUrl('comment/reply/{pk}/list')
     COMMENT_ROOM_REPLIES_LIST = StringUrl('comment/room/{pk}/list')
 
+    # print templates
+    PRINT_TEMPLATES_APPS_LIST = StringUrl('printer/apps')
+    PRINT_TEMPLATES_LIST = StringUrl('printer/list')
+    PRINT_TEMPLATES_DETAIL = StringUrl('printer/detail/{pk}')
+    PRINT_TEMPLATES_USING = StringUrl('printer/using/{application_id}')
+
     # base
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')

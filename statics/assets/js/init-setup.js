@@ -2580,12 +2580,19 @@ class UtilControl {
         }
     }
 
-    static generateRandomString(length = 32) {
+    static generateRandomString(length = 32, startFromLetter = false) {
         let result = '';
-        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let charactersLength = characters.length;
+        let characterLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        let characterNumber = '0123456789';
+        let characters = characterLetter + characterNumber;
+
+        if (startFromLetter === true) {
+            result += characterLetter.charAt(Math.floor(Math.random() * characterLetter.length));
+            length -= 1;
+        }
+
         for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
         }
         return result;
     }
@@ -2868,6 +2875,21 @@ class UtilControl {
         return result;
     }
 
+    static flattenObjectParams(obj, parentKey = '', result = {}){
+        if (Array.isArray(obj)){
+            result[parentKey] = obj;
+        } else {
+            for (let key in obj) {
+                let newKey = parentKey ? `${parentKey}__${key}` : key;
+                if (typeof obj[key] === 'object' && obj[key] !== null) {
+                    UtilControl.flattenObjectParams(obj[key], newKey, result);
+                } else {
+                    result[newKey] = obj[key];
+                }
+            }
+        }
+        return result;
+    }
 }
 
 class DTBControl {
@@ -4207,6 +4229,13 @@ class WindowControl {
             },
         })
     }
+
+    static scrollToIdx(idxStrOr$, parentEleStrOr$='#idxPageContent .simplebar-content-wrapper'){
+        const ele$ = idxStrOr$ instanceof jQuery ? idxStrOr$ : $(idxStrOr$);
+        let parent$ = parentEleStrOr$ instanceof jQuery ? parentEleStrOr$ : $(parentEleStrOr$);
+        let offsetTop = ele$.offset().top;
+        parent$.animate({scrollTop: offsetTop > 150 ? offsetTop - 150 : offsetTop}, 200);
+    }
 }
 
 class PersonControl {
@@ -4316,6 +4345,11 @@ class DocumentControl {
     static async getCompanyCurrencyConfig() {
         let data = await DocumentControl.getCompanyConfig();
         return data['config']?.['currency_rule'];
+    }
+
+    static async getCompanyCurrencyFull(){
+        let data = await DocumentControl.getCompanyConfig();
+        return data['config'];
     }
 
     static formDetailToUpdateAction() {
@@ -4505,6 +4539,14 @@ class DocumentControl {
         let ele = $(eleCard).closest('.card');
         if (openParentClosest !== null) ele = ele.closest(openParentClosest);
         ele.removeClass('d-none');
+    }
+
+    static numberWithCommas(value) {
+        value = value.toString();
+        let pattern = /(-?\d+)(\d{3})/;
+        while (pattern.test(value))
+            value = value.replace(pattern, "$1,$2");
+        return value;
     }
 }
 
@@ -5646,10 +5688,14 @@ class CommentControl {
         let tinymceEditor = null;
 
         textarea.tinymce( {
+            branding: false,
+            readonly : 0,
             menubar: false,
             height: 120,
             plugins: 'advlist autolink lists insertdatetime hr emoticons table mention link media image preview tabfocus visualchars visualblocks wordcount',
-            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | numlist bullist table | link image media emoticons | formatting ',
+            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | numlist bullist table | link image media emoticons | formatting',
+            pagebreak_split_block: true,
+            pagebreak_separator: '<span class="page-break-here"><!-- my page break --></span>',
             toolbar_groups: {
                 formatting : {
                     icon: 'more-drawer',
@@ -6212,6 +6258,7 @@ let $x = {
         dumpJson: UtilControl.dumpJson,
         convertToSlug: UtilControl.convertToSlug,
         flattenObject: UtilControl.flattenObject,
+        flattenObjectParams: UtilControl.flattenObjectParams,
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,
@@ -6238,7 +6285,12 @@ let $x = {
         convertDateToMoment: DateTimeControl.convertDateToMoment,
         convertDatetimeToMoment: DateTimeControl.convertDatetimeToMoment,
 
-        randomColor: Beautiful.randomColorClass
+        randomColor: Beautiful.randomColorClass,
+
+        pushHashUrl: WindowControl.pushHashUrl,
+        scrollToIdx: WindowControl.scrollToIdx,
+
+        numberWithCommas: DocumentControl.numberWithCommas,
     },
 }
 

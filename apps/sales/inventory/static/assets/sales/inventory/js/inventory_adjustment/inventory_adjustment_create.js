@@ -4,7 +4,6 @@ $(document).ready(function () {
     $('#frm_inventory_adjustment_create').submit(function (event) {
         event.preventDefault();
         let combinesData = new InventoryAdjustmentHandle().combinesDataCreate($(this));
-        console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

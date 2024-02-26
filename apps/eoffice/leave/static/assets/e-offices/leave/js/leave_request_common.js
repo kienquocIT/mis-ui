@@ -72,6 +72,7 @@ function checkHalfDay(item, data, dayMapWs, total){
             return total
         }
         else if (!data.morning_shift_f) total -= 0.5
+        if (item === data.date_to && data.morning_shift_t) total -= 0.5
     }
     else
         if (dayMapWs){
@@ -492,8 +493,10 @@ function submitHandleFunc() {
     let errorRequest = false
     let specialStock = {'FF':0, 'MY':0, 'MC':0}
     for (let idx = 0; idx < formData.detail_data.length; idx++){
-        const value = formData.detail_data[idx]
-        const _type = value.leave_available
+        const value = formData.detail_data[idx],
+            _type = value.leave_available,
+            _dateForm = new Date(value.date_from).getTime(),
+            _dateTo = new Date(value.date_to).getTime();
         if (value.subtotal > _type.available && _type.check_balance){
             isError = true
             break
@@ -506,14 +509,19 @@ function submitHandleFunc() {
             }
         }
 
-        if (!formData.start_day || new Date(value.date_from).getTime() < new Date(formData.start_day).getTime())
+        if (!formData.start_day || _dateForm < new Date(formData.start_day).getTime())
             formData.start_day = value.date_from
         formData.total += value.subtotal
         let nextVal = formData.detail_data[idx + 1]
         if (nextVal) {
-            if (new Date(nextVal.date_from).getTime() < new Date(value.date_to).getTime()
-                || (new Date(nextVal.date_from).getTime() === new Date(value.date_to).getTime()
-                    && !value.morning_shift_t && nextVal.morning_shift_f)) {
+            // 1. nếu ngày bắt đầu tiếp theo bé hơn ngày kết thúc hiện tại
+            // 2. nếu ngày bắt đầu tiếp theo bằng ngày kết thúc hiện tại, và ca kết thúc hiện tại là chiều,
+            // và ca bắt đầu tiếp theo là sáng, và ngày bắt đầu ca chiều trùng ngày kết thúc ca sáng.
+
+            if (new Date(nextVal.date_from).getTime() < _dateTo ||
+                (new Date(nextVal.date_from).getTime() === _dateTo && !value.morning_shift_t && nextVal.morning_shift_f) ||
+                (_dateForm === _dateTo & !value.morning_shift_f && value.morning_shift_t)
+            ){
                 errorRequest = true
                 break
             }
@@ -523,8 +531,10 @@ function submitHandleFunc() {
 
     if (isError || errorRequest){
         let turnOffAlert = setInterval(() => {
-            WindowControl.hideLoading();
-            clearInterval(turnOffAlert);
+            if($('.swal2-container').length){
+                swal.close();
+                clearInterval(turnOffAlert);
+            }
         }, 500);
         if (isError)
             $.fn.notifyB({description: $transElm.attr('data-out-of-stock')}, 'failure');
@@ -535,26 +545,7 @@ function submitHandleFunc() {
         $.fn.notifyB({description: $transElm.attr('data-detail-tab')}, 'failure');
         return false
     }
-    $.fn.callAjax2({
-        'url': frm.dataUrl,
-        'method': frm.dataMethod,
-        'data': formData,
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && (data['status'] === 201 || data['status'] === 200)) {
-                $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
-                setTimeout(() => {
-                    window.location.replace($FormElm.attr('data-url-redirect'));
-                }, 1000);
-            }
-        }, (err) => {
-            setTimeout(() => {
-                WindowControl.hideLoading();
-            }, 1000)
-            $.fn.notifyB({description: err.data.errors}, 'failure');
-        }
-    )
+    WFRTControl.callWFSubmitForm(frm);
 }
 
 function employeeTemplate(state) {

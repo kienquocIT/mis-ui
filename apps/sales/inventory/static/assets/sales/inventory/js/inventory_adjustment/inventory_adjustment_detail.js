@@ -5,7 +5,6 @@ $(document).ready(function () {
     $('#frm_inventory_adjustment_detail').submit(function (event) {
         event.preventDefault();
         let combinesData = new InventoryAdjustmentHandle().combinesDataUpdate($(this));
-        console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

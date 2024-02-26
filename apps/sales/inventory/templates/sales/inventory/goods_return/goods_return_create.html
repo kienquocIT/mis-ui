@@ -22,7 +22,8 @@
             data-url-delivery-products="{% url 'DeliveryProductsForGoodsReturnAPI' '0' %}"
     >
     </script>
-    <script id="script-trans">
+    <script id="script-trans"
+            data-trans-has-returned="{% trans 'Returned' %}">
     </script>
     <form id="frm_goods_return_create" data-url="{% url 'GoodsReturnListAPI' %}" data-method="POST" data-url-redirect="{% url "GoodsReturnList" %}">
         {% csrf_token %}
@@ -53,29 +54,17 @@
                     </div>
                 </div>
             </div>
-            <div class="offcanvas offcanvas-end w-90 mt-9" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
-                <div class="offcanvas-header px-5 pt-5">
-                    <h5 id="offcanvasRightLabel">
-                        {% trans 'Goods return create' %}&nbsp;
-                        <i class="fas fa-angle-right"></i>&nbsp;
-                        <span class="badge badge-primary">
-                            <span>
-                                <span class="icon"><span class="feather-icon"><i data-feather="package"></i></span></span>
-                                {% trans 'Select delivery' %}
-                            </span>
-                        </span>
-                    </h5>
-                </div>
-                <div class="offcanvas-body px-5">
+            <div class="offcanvas offcanvas-end w-95 mt-9" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
+                <div class="offcanvas-body py-5 pr-5 px-5">
                     <div class="row">
                         <div class="col-7 border rounded-3 px-2 py-2">
-                            <div class="table-responsive" style="max-height: 200px;">
-                                <label>1. {% trans 'Select 1 delivery' %}</label>
+                            <div class="table-responsive">
+                                <label>1. {% trans 'Select delivery' %}</label>
                                 <table class="table w-100 nowrap" id="table-select-delivery">
                                     <thead class="bg-primary-light-5">
                                     <tr>
                                         <td class="w-5"></td>
-                                        <td class="w-50">{% trans 'Delivery code' %}</td>
+                                        <td class="w-50">{% trans 'Delivery' %}</td>
                                         <td class="w-35">{% trans 'Date' %}</td>
                                         <td class="w-10 text-center">{% trans 'Select' %}</td>
                                     </tr>
@@ -83,16 +72,16 @@
                                 </table>
                             </div>
                             <div class="table-responsive mt-5" style="max-height: 400px;">
-                                <label>2. {% trans 'Select 1 product' %}</label>
+                                <label>2. {% trans 'Select product' %}</label>
                                 <table class="table w-100 nowrap" id="table-product-detail">
                                     <thead class="bg-secondary-light-5">
                                     <tr>
                                         <td class="w-5"></td>
                                         <td class="w-30">{% trans 'Product' %}</td>
-                                        <td class="w-10">{% trans 'UOM' %}</td>
-                                        <td class="w-25" style="min-width: 100px">{% trans 'Total order' %} / {% trans 'Delivered' %}</td>
+                                        <td class="w-10">{% trans 'UoM' %}</td>
+                                        <td class="w-25" style="min-width: 100px">{% trans 'Total' %} - {% trans 'Delivered' %} - {% trans 'Returned' %}</td>
                                         <td class="w-10" style="min-width: 100px">{% trans 'Return' %}</td>
-                                        <td class="w-10" style="min-width: 100px">{% trans 'Re-delivery' %}</td>
+                                        <td class="w-10" style="min-width: 100px">{% trans 'Redelivery' %}</td>
                                         <td class="w-10 text-center">{% trans 'Select' %}</td>
                                     </tr>
                                     </thead>
@@ -109,7 +98,7 @@
                                         <td class="w-30">{% trans 'LOT number' %}</td>
                                         <td class="w-15">{% trans 'Quantity' %}</td>
                                         <td class="w-25">{% trans 'Return' %}</td>
-                                        <td class="w-25">{% trans 'Re-delivery' %}</td>
+                                        <td class="w-25">{% trans 'Redelivery' %}</td>
                                     </tr>
                                     </thead>
                                 </table>
@@ -123,7 +112,7 @@
                                         <td class="w-35">{% trans 'Vendor serial No.' %}</td>
                                         <td class="w-25">{% trans 'Serial No.' %}</td>
                                         <td class="w-15">{% trans 'Return' %}</td>
-                                        <td class="w-20">{% trans 'Re-delivery' %}</td>
+                                        <td class="w-20">{% trans 'Redelivery' %}</td>
                                     </tr>
                                     </thead>
                                 </table>
@@ -179,7 +168,7 @@
                                     <th style="min-width: 180px">{% trans 'Lot No.' %}</th>
                                     <th style="min-width: 280px">{% trans 'Vendor serial (Serial)' %}</th>
                                     <th style="min-width: 100px">{% trans 'Return' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Re-delivery' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Redelivery' %}</th>
 {#                                    <th class="required" style="min-width: 180px">{% trans 'Cost' %}</th>#}
 {#                                    <th class="required" style="min-width: 180px">{% trans 'Subtotal price' %}</th>#}
                                 </tr>
@@ -195,7 +184,7 @@
                                         <span class="icon">
                                             <span class="feather-icon"><i class="far fa-edit"></i></span>
                                         </span>
-                                        <span>{% trans 'Edit' %} {% trans 'items' %}</span>
+                                        <span>{% trans 'Edit' %}</span>
                                     </span>
                                 </button>
                             </div>

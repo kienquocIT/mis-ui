@@ -1639,7 +1639,7 @@ function sortStage(list_stage) {
 }
 
 $('#estimated-gross-profit-percent').on('change', function () {
-    let value = parseFloat($('#input-product-total').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
+    let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
     $('#estimated-gross-profit-value').attr('value', value)
     $.fn.initMaskMoney2()
 })

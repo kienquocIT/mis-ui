@@ -3664,7 +3664,7 @@ class QuotationDataTableHandle {
                             self.dataTableShipping(passList);
                         } else {
                             self.dataTableShipping(passList);
-                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'failure');
+                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
                         }
                     }
                 }

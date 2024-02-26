@@ -3491,7 +3491,7 @@ msgstr "SL lấy trước đó"
 
 #
 msgid "Remain"
-msgstr "Chưa giao"
+msgstr "Còn lại"
 
 #
 msgid "Product in Warehouse out of stock"

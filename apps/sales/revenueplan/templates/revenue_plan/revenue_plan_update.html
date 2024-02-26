@@ -60,6 +60,7 @@
             data-trans-revenue="{% trans 'Revenue' %}"
             data-trans-net-profit="{% trans 'Net income' %}"
             data-trans-gross-profit="{% trans 'Gross profit' %}"
+            data-url-group-detail="{% url 'GroupDetailAPI' '0' %}"
     ></script>
 
     <form id="form-detail-revenue-plan"
@@ -128,6 +129,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row mt-5" id="notify-change-group" hidden>
+            <div class="col-12">
+                <button type="button" class="btn btn-gradient-danger" id="btn_update_group">
+                    {% trans "had been changed. Update here!" %}
+                </button>
+                <span hidden class="spinner-border spinner-border-sm" id="loading-update-group" role="status"></span>
             </div>
         </div>
         <div class="row mt-5 main">

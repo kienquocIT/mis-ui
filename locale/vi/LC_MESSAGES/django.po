@@ -6263,7 +6263,7 @@ msgstr "Người bán hàng"
 
 #
 msgid "Period"
-msgstr "Kì"
+msgstr "Kỳ kế toán"
 
 #
 msgid "Target item"
@@ -6275,11 +6275,11 @@ msgstr "Hằng quý"
 
 #
 msgid "Period target equals total of sub period targets"
-msgstr "Mục tiêu cả kì bằng tổng mục tiêu các kì con của nó"
+msgstr "Mục tiêu cả kỳ bằng tổng mục tiêu các kỳ con của nó"
 
 #
 msgid "Periods"
-msgstr "Kì"
+msgstr "Kỳ kế toán"
 
 #
 msgid "Fiscal year"
@@ -6291,11 +6291,11 @@ msgstr "Tháng bắt đầu"
 
 #
 msgid "Update period"
-msgstr "Cập nhập kì"
+msgstr "Cập nhập kỳ kế toán"
 
 #
 msgid "New period"
-msgstr "Thêm kì mới"
+msgstr "Thêm kỳ kế toán mới"
 
 #
 msgid "Select role(s) that has permission to create revenue plans"
@@ -6586,7 +6586,7 @@ msgid "Inventory reports"
 msgstr "Báo cáo tồn kho"
 
 #
-msgid "Items detail report"
+msgid "Items Detail Report"
 msgstr "Báo cáo chi tiết mặt hàng"
 
 #

@@ -800,25 +800,13 @@ $(document).on("change", '.return-lot-input', function () {
         let remain_val = parseFloat($(this).closest('tr').find('.data-remain-span').text())
         if (return_val > remain_val) {
             $.fn.notifyB({description: `Return amount must <= remain amount (${return_val} > ${remain_val})`}, 'failure')
-            $(this).val(0)
+            return_val = 0
+            $(this).val(return_val)
         }
         else {
             $(this).val(return_val)
             $(this).closest('tr').find('.redelivery-lot-input').val(0)
-            let redelivery_val = parseFloat($(this).closest('tr').find('.redelivery-lot-input').val())
-            tableDetailProductEle.find('.selected-product').each(function () {
-                if ($(this).prop('checked')) {
-                    $(this).closest('tr').find('.return-number-input').val(return_val)
-                    $(this).closest('tr').find('.re-delivery-number-input').val(redelivery_val)
-                }
-            })
         }
-    }
-})
-
-$(document).on("change", '.redelivery-lot-input', function () {
-    if (!$(this).val()) {$(this).val(0)}
-    if (parseFloat($(this).val()) <= parseFloat($(this).closest('tr').find('.return-lot-input').val())) {
         let sum_return = 0
         let sum_re_delivery = 0
         $('.return-lot-input').each(function () {
@@ -838,9 +826,38 @@ $(document).on("change", '.redelivery-lot-input', function () {
             }
         })
     }
-    else {
-        $.fn.notifyB({description: "Redelivery number must be smaller than Return number or equal"}, 'warning')
+})
+
+$(document).on("change", '.redelivery-lot-input', function () {
+    if ($(this).val() === '') {
         $(this).val(0)
+    }
+    else {
+        let redelivery_val = parseFloat($(this).val())
+        let return_val = parseFloat($(this).closest('tr').find('.return-lot-input').val())
+        if (redelivery_val > return_val) {
+            $.fn.notifyB({description: `Redelivery amount must <= return number (${redelivery_val} > ${return_val})`}, 'failure')
+            redelivery_val = 0
+            $(this).val(return_val)
+        }
+        let sum_return = 0
+        let sum_re_delivery = 0
+        $('.return-lot-input').each(function () {
+            if ($(this).val()) {
+                sum_return += parseFloat($(this).val())
+            }
+        })
+        $('.redelivery-lot-input').each(function () {
+            if ($(this).val()) {
+                sum_re_delivery += parseFloat($(this).val())
+            }
+        })
+        tableDetailProductEle.find('.selected-product').each(function () {
+            if ($(this).prop('checked')) {
+                $(this).closest('tr').find('.return-number-input').val(sum_return)
+                $(this).closest('tr').find('.re-delivery-number-input').val(sum_re_delivery)
+            }
+        })
     }
 })
 

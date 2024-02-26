@@ -6,6 +6,18 @@ from apps.shared import mask_view, TypeCheck, ServerAPI, ApiURL
 from apps.shared.apis import RespData
 
 
+class ApplicationPropertyForPrintListAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.APPLICATION_PROPERTY_PRINT_LIST, user=request.user).get(
+            data={
+                'ordering': 'title',
+                'application__in': request.query_params.get('application__in', ''),
+            }
+        )
+        return resp.auto_return(key_success='application_property_list')
+
+
 class PrintTemplateApplicationListAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):

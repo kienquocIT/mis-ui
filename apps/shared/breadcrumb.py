@@ -324,7 +324,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_CREATE_PAGE = BreadcrumbChildren(_('Goods return create'), 'GoodsReturnCreate')
     GOODS_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
-    
+
+    PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -832,3 +834,9 @@ class BreadcrumbView:
     GOODS_RETURN_CREATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RETURN_DETAIL_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
+    PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
+    PRINTER_CONFIG_CREATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_CREATE]
+    PRINTER_CONFIG_DETAIL_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    PRINTER_CONFIG_UPDATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_UPDATE]

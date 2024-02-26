@@ -85,17 +85,30 @@ class ArgumentDecorator:
         return data
 
     @staticmethod
-    def parse_spaces(space_code: str) -> (list, list):
+    def parse_spaces(space_code: str, user) -> (list, list):
         """default parse space list"""
-        return SpaceGroup.get_space_all(), SpaceItem.get_space_detail(space_code), SpaceItem.get_menus_of_space(
-            space_code
-        )
+
+        def get_is_admin_company():
+            if (
+                    user and hasattr(user, 'employee_current_data')
+                    and user.employee_current_data and isinstance(user.employee_current_data, dict)
+                    and 'is_admin_company' in user.employee_current_data
+                    and type(user.employee_current_data['is_admin_company']) == bool
+            ):
+                return user.employee_current_data['is_admin_company']
+            return False
+
+        return [
+            SpaceGroup.get_space_all(is_hide_core=get_is_admin_company() is not True),
+            SpaceItem.get_space_detail(space_code),
+            SpaceItem.get_menus_of_space(space_code),
+        ]
 
     @classmethod
     def parse_base(cls, user) -> dict:
         """parse base link"""
         if isinstance(user, get_user_model()):
-            space_list, space_current_detail, space_menus = cls.parse_spaces(user.ui_space_selected)
+            space_list, space_current_detail, space_menus = cls.parse_spaces(user.ui_space_selected, user)
             return {
                 'id': str(user.id),
                 'user_id': str(user.user_id),

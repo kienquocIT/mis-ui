@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Print Template' %} &#8901; {% trans 'Update' %}{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm-detail-print-template">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            id="frm-detail-print-template"
+            data-url="{% url 'PrintTemplateDetailAPI' pk=pk %}"
+            data-method="PUT"
+    >
+        <div class="row mb-3">
+            <div class="col-12">
+                <label class="form-label" for="inp-application">
+                    {% trans 'Application' %}
+                </label>
+                <select
+                        id="inp-application"
+                        class="select2 form-select"
+                        data-url="{% url 'TenantApplicationListAPI' %}"
+                        data-method="GET"
+                        data-keyResp="tenant_application_list"
+                        disabled
+                ></select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <label class="form-label required" for="inp-title">
+                    {% trans 'Title' %}
+                </label>
+                <input
+                        id="inp-title"
+                        type="text"
+                        name="title"
+                        class="form-control"
+                        required
+                >
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <label class="form-label" for="inp-remarks">
+                    {% trans 'Description' %}
+                </label>
+                <textarea
+                        id="inp-remarks"
+                        type="text"
+                        name="remarks"
+                        class="form-control"
+                ></textarea>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="inp-is-using" name="is_using">
+                    <label class="form-check-label" for="inp-is-using">{% trans 'Using' %}</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 mb-2">
+                <label
+                        class="form-label required" for="inp-contents"
+                >
+                    {% trans 'Contents' %}
+                </label>
+                <button
+                        type="button" class="btn btn-sm btn-outline-secondary" id="btn-instruction-editor"
+                >
+                    {% trans 'Help' %} <i class="ml-1 fa-solid fa-circle-info"></i>
+                </button>
+                <button id="idx-btn-print" class="btn btn-sm btn-gradient-primary btn-square ml-1" type="button">
+                    {% trans 'Print Preview' %} <i class="ml-1 fa-solid fa-print"></i>
+                </button>
+            </div>
+            <div class="col-12 mb-2" style="display: none;" id="idx-instruction-editor">
+                <div class="w-100" style="border-left: 3px solid #f1f1f1; border-radius: 5px;padding: 1rem;">
+                    <b>1. {% trans 'Dynamic Data' %}</b>
+                    <p class="ml-3">
+                        {% trans 'Type ‘#’ and your search data to open a dynamic data field selection menu. The Dynamic Data feature will be searchable by the names or codes of the data fields.' %}
+                    </p>
+                    <b>2. {% trans 'Toolbar' %}</b>
+                    <div class="row ml-3">
+                        {% include 'f_extends/printer/extends/instruction_toolbar.html' %}
+                    </div>
+{#                    <b>2. {% trans 'Mentions' %}</b>#}
+{#                    <p class="ml-3">#}
+{#                        {% trans 'Type ‘@‘ and your search data to open a list of people you want to mention. The Mention feature will search for people by their last name, first name or email address.' %}#}
+{#                    </p>#}
+                </div>
+            </div>
+            <div class="col-12">
+                <textarea
+                        id="inp-contents"
+                        data-css-url-render="{% static 'comment/css/style.css' %}"
+                        data-mentions="{% url 'ApplicationPropertyForPrintListAPI' %}"
+                        name="contents"
+                        class="form-control"
+                        required
+                ></textarea>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function (){
+            $('#btn-instruction-editor').on('click', function (){
+                $('#idx-instruction-editor').fadeToggle('fast');
+            })
+
+            let frm = $('#frm-detail-print-template');
+            if (frm.attr('data-url')){
+                $.fn.callAjax2({
+                    url: frm.attr('data-url'),
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('template_detail')){
+                            let detail = data.template_detail;
+                            // application
+                            $('#inp-application').initSelect2({
+                                data: [{
+                                    ...detail.application,
+                                    selected: true,
+                                }]
+                            })
+                            // Title
+                            $('#inp-title').val(detail.title || '');
+                            // Remarks
+                            $('#inp-remarks').val(detail.remarks || '');
+                            // Using
+                            $('#inp-is-using').prop('checked', detail?.['is_using'] === true);
+                            // content
+                            let txtArea = $('#inp-contents');
+                            PrintTinymceControl.init_tinymce_editable(txtArea, detail?.['application']?.['id'], {
+                                height: 682,
+                                readonly: 0,
+                                templateUrl: "{% url 'PrintApplicationTemplateSample' app_id='__app_id__' %}",
+                            }, detail.contents);
+                            // Print
+                            $('#idx-btn-print').on('click', function (){
+                                txtArea.tinymce().execCommand('mcePrint');
+                            })
+                        }
+                    },
+                    (errs) => $.fn.switcherResp(errs),
+                );
+
+                new SetupFormSubmit(frm).validate({
+                    submitHandler: function (form, event){
+                        let frmSetup = new SetupFormSubmit(frm);
+                        let bodyData = frmSetup.dataForm;
+                        bodyData['is_using'] = $(form).find('input[name="is_using"]').prop('checked');
+                        $.fn.callAjax2({
+                            url: frmSetup.dataUrl,
+                            method: frmSetup.dataMethod,
+                            data: bodyData,
+                        }).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data){
+                                    $.fn.notifyB({
+                                        'description': $.fn.transEle.attr('data-success'),
+                                    }, 'success');
+                                    setTimeout(
+                                        () => {
+                                            window.location.reload();
+                                        },
+                                        1000
+                                    )
+                                }
+                            },
+                            (errs) => $.fn.switcherResp(errs),
+                        )
+                    }
+                })
+            }
+        })
+    </script>
+{% endblock %}

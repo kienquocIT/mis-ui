@@ -45,6 +45,8 @@ $(function () {
                     // delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');
                     else $('#btnDeliverySaleOrder').addClass('hidden');
+
+                    new PrintTinymceControl().render('b9650500-aba7-44e3-b6e0-2542622702a3', data, false);
                 }
             }
         )

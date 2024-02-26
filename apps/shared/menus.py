@@ -183,6 +183,10 @@ class MenusCoreConfigurations:
             ),
         ]
     )
+    PRINTER_CONFIG = MenuCommon(
+        name='Print Template', code='menu_print_template', view_name='PrintTemplatesListView',
+        icon='<i class="fa-solid fa-print"></i>'
+    )
 
 
 class MenusCRM:
@@ -662,6 +666,7 @@ class SpaceItem:
             menus=[
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
+                MenusCoreConfigurations.PRINTER_CONFIG,
             ],
         )
     }
@@ -698,11 +703,11 @@ class SpaceGroup:
     )
 
     @classmethod
-    def get_space_all(cls):
-        return [
-            cls.SPACE.data,
-            cls.CORE_SETTINGS.data,
-        ]
+    def get_space_all(cls, is_hide_core: bool = True):
+        result = [cls.SPACE.data]
+        if is_hide_core is False:
+            result.append(cls.CORE_SETTINGS.data)
+        return result
 
 
 # 1. GET space group all

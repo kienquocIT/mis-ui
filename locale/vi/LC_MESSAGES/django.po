@@ -2154,11 +2154,6 @@ msgid "Beneficiary"
 msgstr "Người thụ hưởng"
 
 #
-msgid "Print"
-msgstr "In"
-
-
-#
 msgid "Remain Total"
 msgstr "Tổng còn lại"
 
@@ -4858,6 +4853,162 @@ msgid "Preview full"
 msgstr "Xem bản đầy đủ"
 
 #
+msgid "Help"
+msgstr "Trợ giúp"
+
+#
+msgid "Print"
+msgstr "In"
+
+#
+msgid "Print List"
+msgstr "Danh sách mẫu in"
+
+#
+msgid "Dynamic Data"
+msgstr "Dữ liệu động"
+
+#
+msgid "Type ‘#’ and your search data to open a dynamic data field selection menu. The Dynamic Data feature will be searchable by the names or codes of the data fields."
+msgstr "Nhập '#' và dữ liệu tìm kiếm của bạn để mở menu chọn trường dữ liệu động. Tính năng Dữ liệu động sẽ có thể tìm kiếm được theo tên hoặc mã của các trường dữ liệu."
+
+#
+msgid "Mentions"
+msgstr "Đề cập"
+
+#
+msgid "Type ‘@‘ and your search data to open a list of people you want to mention. The Mention feature will search for people by their last name, first name or email address."
+msgstr "Nhập '@' và dữ liệu tìm kiếm của bạn để mở danh sách những người bạn muốn đề cập. Tính năng Đề cập sẽ tìm kiếm mọi người theo họ, tên hoặc địa chỉ email của họ."
+
+#
+msgid "Print Template is unavailable"
+msgstr "Mẫu in không có sẵn"
+
+#
+msgid "Toolbar"
+msgstr "Thanh công cụ"
+
+#
+msgid "Bold"
+msgstr "In đậm"
+
+#
+msgid "Italic"
+msgstr "In nghiên"
+
+#
+msgid "Underline"
+msgstr "Gạch chân"
+
+#
+msgid "Strikethrough"
+msgstr "Gạch ngang"
+
+#
+msgid "Font family"
+msgstr "Phông chữ"
+
+#
+msgid "Font size"
+msgstr "Cỡ chữ"
+
+#
+msgid "Font style"
+msgstr "Kiểu chữ"
+
+#
+msgid "Align Left"
+msgstr "Căn trái"
+
+#
+msgid "Align Center"
+msgstr "Căn giữa"
+
+#
+msgid "Align Right"
+msgstr "Căn phải"
+
+#
+msgid "Justify"
+msgstr "Căn đều"
+
+#
+msgid "Decrease Indent"
+msgstr "Giảm thụt lề"
+
+#
+msgid "Increase Indent"
+msgstr "Thụt lề"
+
+#
+msgid "Numbered list"
+msgstr "Danh sách đánh số"
+
+#
+msgid "Bullet list"
+msgstr "Danh sách"
+
+#
+msgid "Table"
+msgstr "Bảng"
+
+#
+msgid "Two Columns"
+msgstr "Hai cột"
+
+#
+msgid "Three Columns"
+msgstr "Ba cột"
+
+#
+msgid "Text color"
+msgstr "Màu chữ"
+
+#
+msgid "Clear formatting"
+msgstr "Xoá định dạng"
+
+#
+msgid "Line Horizontal"
+msgstr "Đường ngang"
+
+#
+msgid "Page Break"
+msgstr "Ngắt trang"
+
+#
+msgid "Special Characters"
+msgstr "Ký tự đặc biệt"
+
+#
+msgid "Emoji"
+msgstr "Biểu tượng cảm xúc"
+
+#
+msgid "Image"
+msgstr "Ảnh"
+
+#
+msgid "Media"
+msgstr "Video"
+
+#
+msgid "Link"
+msgstr "Liên kết"
+
+#
+msgid "Left to right"
+msgstr "Trái sang phải"
+
+#
+msgid "Right to left"
+msgstr "Phải sang trái"
+
+#
+msgid "Visual Blocks"
+msgstr "Hiển thị khối"
+
+#
 msgid "Print Preview"
 msgstr "Xem trước bản in"
 
@@ -4868,6 +5019,18 @@ msgstr "Trang __page__/__total_page__"
 #
 msgid "Displaying the PDF will take time depending on the size of the print template and the number of images to be printed."
 msgstr "Việc hiển thị tệp PDF sẽ mất thời gian tùy thuộc vào kích thước của mẫu in và số lượng hình ảnh cần in."
+
+#
+msgid "Please wait for the images to finish loading before proceeding with the print operation."
+msgstr "Vui lòng đợi hình ảnh tải xong trước khi tiếp tục thao tác in."
+
+#
+msgid "Print Template"
+msgstr "Mẫu in ấn"
+
+#
+msgid "Contents"
+msgstr "Nội dung"
 
 #
 msgid "Download"

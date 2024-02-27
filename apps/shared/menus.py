@@ -101,7 +101,8 @@ class MenusCompanySystem:
 
 class MenusCoreConfigurations:
     MASTER_DATA_CONFIG = MenuCommon(
-        name='Master data config', code='menu_masterdata', view_name='#', icon='<i class="bi bi-mastodon"></i>',
+        name='Master data config', code='menu_masterdata', view_name='#',
+        icon='<i class="fas fa-crown"></i>',
         child=[
             MenuCommon(
                 name='Contact', code='id_menu_master_data_contact', view_name='ContactMasterDataList',
@@ -126,9 +127,13 @@ class MenusCoreConfigurations:
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
-        name='Transition Data Config', code='menu_transition_data_config', view_name='#',
-        icon='<i class="fas fa-file-invoice-dollar"></i>',
+        name='Transition data config', code='menu_transition_data_config', view_name='#',
+        icon='<i class="fas fa-exchange-alt"></i>',
         child=[
+            MenuCommon(
+                name='Balance initialization', code='menu_balance_init', view_name='BalanceInitList',
+                icon='<i class="fas fa-balance-scale"></i>',
+            ),
             MenuCommon(
                 name='Delivery', code='menu_delivery_config', view_name='DeliveryConfigDetail',
                 icon='<i class="fas fa-truck"></i>',

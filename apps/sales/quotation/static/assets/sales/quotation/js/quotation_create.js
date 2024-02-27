@@ -41,6 +41,7 @@ $(function () {
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
+        let tablePS = $('#datable-quotation-payment-stage');
         // promotion
         let tablePromotion = $('#datable-quotation-create-promotion');
         // shipping
@@ -105,10 +106,7 @@ $(function () {
         });
 
         QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
-            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                $('#datable-quotation-payment-stage').DataTable().clear().draw();
-                QuotationLoadDataHandle.loadDataTablePaymentStage();
-            }
+            QuotationLoadDataHandle.loadChangePaymentTerm();
         });
 
 // Action on click dropdown contact
@@ -203,8 +201,8 @@ $(function () {
             deletePromotionRows(tableProduct, false, true);
             // Re Calculate all data of rows & total
             QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
-            // update table payment stage
-            QuotationLoadDataHandle.loadDataTablePaymentStage();
+            // change value before tax table payment
+            QuotationLoadDataHandle.loadChangePSValueBTAll();
         });
 
 // If change product uom then clear table COST
@@ -387,10 +385,6 @@ $(function () {
             $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
-// SHIPPING-BILLING
-        $('#datable-quotation-payment-stage').on('change', '.table-row-date', function () {
-            QuotationLoadDataHandle.loadDueDatePaymentStage(this);
-        });
 // Action on click choose shipping
         modalShipping.on('click', '.choose-shipping', function () {
             // Enable other buttons
@@ -772,6 +766,58 @@ $(function () {
             $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
+// PAYMENT STAGE
+        $('#btn-add-payment-stage').on('click', function () {
+            QuotationLoadDataHandle.loadAddPaymentStage();
+        });
+
+        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-due-date', function () {
+            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                if ($(this).hasClass('table-row-date')) {
+                    let row = this.closest('tr');
+                    let isCheck = true;
+                    let eleDueDate = row.querySelector('.table-row-due-date');
+                    let eleTerm = row.querySelector('.table-row-term');
+                    if (eleDueDate && eleTerm) {
+                        if ($(this).val() && $(eleDueDate).val() && !$(eleTerm).val()) {
+                            isCheck = validateStartEndDate($(this).val(), $(eleDueDate).val());
+                        }
+                    }
+                    if (isCheck === true) {
+                        QuotationLoadDataHandle.loadChangePSDate(this);
+                    } else {
+                        $(this).val(null);
+                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                        return false;
+                    }
+                }
+                if ($(this).hasClass('table-row-term')) {
+                    QuotationLoadDataHandle.loadChangePSTerm(this);
+                }
+                if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
+                    validateNumber(this);
+                }
+                if ($(this).hasClass('table-row-due-date')) {
+                    let row = this.closest('tr');
+                    let eleDate = row.querySelector('.table-row-date');
+                    let eleTerm = row.querySelector('.table-row-term');
+                    if (eleDate && eleTerm) {
+                        if ($(this).val() && $(eleDate).val() && !$(eleTerm).val()) {
+                            let isCheck = validateStartEndDate($(eleDate).val(), $(this).val());
+                            if (isCheck === false) {
+                                $(this).val(null);
+                                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        tablePS.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), tablePS);
+        });
 
 
 
@@ -839,6 +885,7 @@ $(function () {
                 'contact',
                 'employee_inherit_id',
                 'payment_term',
+                'payment_term_data',
                 // total amount of products
                 'total_product_pretax_amount',
                 'total_product_discount_rate',
@@ -876,6 +923,7 @@ $(function () {
                     'contact',
                     'employee_inherit_id',
                     'payment_term',
+                    'payment_term_data',
                     'quotation',
                     // total amount of products
                     'total_product_pretax_amount',
@@ -930,7 +978,6 @@ $(function () {
                 }
             }
             WFRTControl.callWFSubmitForm(_form);
-
 
 
             // WindowControl.showLoading();

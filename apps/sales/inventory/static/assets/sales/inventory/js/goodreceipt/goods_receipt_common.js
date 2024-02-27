@@ -1255,7 +1255,7 @@ class GRDataTableHandle {
                     targets: 6,
                     render: (data, type, row) => {
                         if (row?.['product']?.['product_choice'].includes(1) || row?.['purchase_request_products_data'].length > 0) { // If PO Product have inventory choice or PO have PR
-                            return `<span class="table-row-import">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
+                            return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
                         } else { // If PO Product doesn't have inventory choice and PO doesn't have PR
                             return `<div class="row">
                                         <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">

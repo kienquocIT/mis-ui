@@ -2,13 +2,19 @@
 function renderTemplateResult(state) {
     if (!state.id) return state.text
     return $(
-        `<p class="d-flex justify-content-normal sl_temp_cont">`
-        + `<b>${state?.data?.leave_type?.code}</b>`
-        + `<span class="one-row-txt" title="${state?.data?.leave_type?.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.leave_type?.title}&nbsp;${
-            state?.data?.leave_type?.code === 'ANPY' ? `(${state?.data?.["open_year"]})` : ''}</span>`
-        + `<span class="text-blue">${state?.data?.check_balance ? `(${state?.data.available})` : ''}</span></p>`
+        `<p class="d-flex justify-content-normal sl_temp_cont"><b>${state?.data?.code}</b>`
+        + `<span class="one-row-txt" title="${state?.data?.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.title}</span></p>`
     )
 }
+
+function renderTemplateWarehouse(state) {
+    if (!state.id) return state.text
+    return $(
+        `<p class="d-flex justify-content-normal sl_temp_cont"><b>${state?.data?.code}</b>`
+        + `<span class="one-row-txt" title="${state?.data?.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.title}</span></p>`
+    )
+}
+
 class DeliveryTableHandle {
     static initBtnAdd(){
         let $table = $('#products_detail_tbl')
@@ -48,16 +54,16 @@ class DeliveryTableHandle {
                         data: 'product',
                         width: '35%',
                         render: (row, type, data, meta) => {
-                            const $elmTrans = $.fn.transEle;
+                            const $elmTrans = $.fn.transEle, $localTrans = $('#trans-factory');
                             let isFormat = [
                                 {name: $elmTrans.attr('data-title'), value: 'title'},
                                 {name: $elmTrans.attr('data-code'), value: 'code'},
-                                {name: 'UoM', value: 'uom_data.title'},
-                                {name: 'Available', value: 'available'}
+                                {name: $localTrans.attr('data-uom'), value: 'uom_data.title'},
+                                {name: $localTrans.attr('data-avail'), value: 'available'}
                             ]
                             const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'),
                                 isFormat)
-                            return `<div class="input-group">
+                            return `<div class="input-group title_prod">
                                         <div class="dropdown pointer mr-2">
                                             <i class="fas fa-info-circle text-blue info-btn"></i>
                                             <div class="dropdown-menu w-210p">${dataCont}</div>
@@ -126,21 +132,30 @@ class DeliveryTableHandle {
                     }
                 ],
                 rowCallback: (row, data, index) => {
-                    //delete row
+                    // delete row
                     $('.btn-remove-row', row).off().on('click', () => {
                         $table.DataTable().row(row).remove().draw(false)
                     })
 
                     // init warehouse selected
-                    // 'templateResult': renderTemplateResult,
-                    $('[name*="warehouse_"]', row).attr('data-url', $('#url-factory').attr('data-warehouse-url'))
-                        .attr('data-keyResp', "warehouse_products_list")
-                        .attr('data-keyText', "warehouse.code")
-                        .attr('data-keyId', "warehouse.id")
-                        .initSelect2({"dropdownAutoWidth": true,})
+                    const warehouseLst = JSON.parse($('#warehouse_lst').text())
+                    $('[name*="warehouse_"]', row).attr('data-keyText', "title")
+                        .attr('data-keyId', "id")
+                        .initSelect2({
+                            "data": warehouseLst,
+                            "dropdownAutoWidth": true,
+                            "templateResult": renderTemplateWarehouse,
+                        })
                         .on('select2:select', function (e) {
                             data.warehouse = e.params.data.data.warehouse.id
+                            const prodAvail = data.product_available[data.warehouse]
+                            $('.title_prod .dropdown-menu .mb-1:nth-child(5) p', row).text(prodAvail)
                         })
+                    if ($('[name*="warehouse_"]', row).hasClass("select2-hidden-accessible")) {
+                        // Select2 has been initialized
+                        const prodAvail = data.product_available[warehouseLst[0]?.id]
+                        $('.title_prod .dropdown-menu .mb-1:nth-child(5) p', row).text(prodAvail)
+                    }
 
                     // handle done input
                     $('[name*="done_"]', row).on('change', function(){
@@ -285,7 +300,8 @@ function submitHandleFunc() {
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-done')}, 'failure');
             return false
         }
-        if (item.done > item.product_available){
+        const prodAvail = item.product_available[item['warehouse']]
+        if (item.done > prodAvail){
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-low_stock')}, 'failure');
             return false
         }
@@ -304,17 +320,18 @@ $(document).ready(function(){
 
     // run dropdown provide request
     let $ProvideElm = $('#selectProvide')
-    $ProvideElm.initSelect2()
     $ProvideElm.on('select2:select', function(e){
         let isValue = e.params.data.data
-        if (isValue.hasOwnProperty('employee_inherit'))
-            $('#inputEmployeeInheritor').val(isValue.employee_inherit?.full_name).attr('value',
-                isValue.employee_inherit?.id)
-        $('#add_new_line').removeClass('disabled')
+        if (isValue){
+            if (isValue.hasOwnProperty('employee_inherit'))
+                $('#inputEmployeeInheritor').val(isValue.employee_inherit?.full_name).attr('value',
+                    isValue.employee_inherit?.id)
+            $('#add_new_line').removeClass('disabled')
 
-        // call detail provide when select provide request
-        $('#products_detail_tbl').DataTable().clear().draw()
-        ModalProvideProdList.getData(isValue.id)
+            // call detail provide when select provide request
+            $('#products_detail_tbl').DataTable().clear().draw()
+            ModalProvideProdList.getData(isValue.id)
+        }
     });
 
     // run date create

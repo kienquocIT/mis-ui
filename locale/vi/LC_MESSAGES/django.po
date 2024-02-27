@@ -1716,7 +1716,7 @@ msgstr "Loại thuế"
 
 #
 msgid "Selling rate"
-msgstr "Tỉ lệ bán hàng"
+msgstr "Tỉ giá"
 
 #
 msgid "Category"
@@ -3523,7 +3523,7 @@ msgstr "SL lấy trước đó"
 
 #
 msgid "Remain"
-msgstr "Chưa giao"
+msgstr "Còn lại"
 
 #
 msgid "Product in Warehouse out of stock"
@@ -4531,12 +4531,12 @@ msgid "Select items from purchase request"
 msgstr "Chọn sản phẩm từ yêu cầu mua hàng"
 
 #
-msgid "Quantity order must be less than quantity remain"
-msgstr "Số lượng đặt mua phải nhỏ hơn số lượng chưa mua"
+msgid "Exceeded quantity requested"
+msgstr "Vượt quá số lượng yêu cầu"
 
 #
-msgid "Quantity order actually must be greater than or equal quantity order on request"
-msgstr "Số lượng đặt mua thực tế phải lớn hơn hoặc bằng số lượng yêu cầu"
+msgid "Must not less than quantity ordered"
+msgstr "Không được ít hơn số lượng đặt hàng"
 
 #
 msgid "Remain (PO)"
@@ -6796,3 +6796,23 @@ msgstr "Báo cáo tồn kho"
 #
 msgid "Items Detail Report"
 msgstr "Báo cáo chi tiết mặt hàng"
+
+#
+msgid "Add group"
+msgstr "Thêm nhóm"
+
+#
+msgid "Select purchase quotation"
+msgstr "Chọn báo giá mua hàng"
+
+#
+msgid "Required"
+msgstr "Yêu cầu"
+
+#
+msgid "Master data config"
+msgstr "Cấu hình Master data"
+
+#
+msgid "Transition data config"
+msgstr "Cấu hình dữ liệu giao dịch"

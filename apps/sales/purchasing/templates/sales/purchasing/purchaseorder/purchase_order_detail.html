@@ -80,6 +80,21 @@
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
+                                <label class="form-label" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-purchase-order-supplier"
+                                        data-url="{% url "AccountForSaleListAPI" %}"
+                                        data-method="GET"
+                                        data-link-detail="{% url "AccountDetail" 1 %}"
+                                        name="supplier"
+                                        data-keyResp="account_sale_list"
+                                        disabled
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
                                 <label class="form-label">{% trans 'Purchase Request' %}</label>
                                 <div class="input-group input-group-wth-btn">
                                     <div class="input-affix-wrapper">
@@ -99,23 +114,23 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
+                                <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
                                 <select
                                         class="form-select"
-                                        id="box-purchase-order-supplier"
-                                        data-url="{% url "AccountForSaleListAPI" %}"
+                                        id="box-purchase-order-contact"
+                                        data-url="{% url "ContactListAPI" %}"
                                         data-method="GET"
-                                        data-link-detail="{% url "AccountDetail" 1 %}"
-                                        name="supplier"
-                                        data-keyResp="account_sale_list"
+                                        data-link-detail="{% url 'ContactDetail' 1 %}"
+                                        name="contact"
+                                        data-keyResp="contact_list"
                                         disabled
                                 ></select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Purchase quotation' %}</label>
@@ -135,21 +150,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-purchase-order-contact"
-                                        data-url="{% url "ContactListAPI" %}"
-                                        data-method="GET"
-                                        data-link-detail="{% url 'ContactDetail' 1 %}"
-                                        name="contact"
-                                        data-keyResp="contact_list"
-                                        disabled
-                                ></select>
                             </div>
                         </div>
                     </div>
@@ -330,11 +330,12 @@
                                 <thead>
                                 <tr>
                                     <th class="w-25">{% trans 'Description' %}</th>
-                                    <th class="w-15">{% trans 'Payment ratio' %}</th>
+                                    <th class="w-10">% {% trans 'Payment' %}</th>
                                     <th class="w-20">{% trans 'Value before tax' %}</th>
                                     <th class="w-10">{% trans 'Tax' %}</th>
                                     <th class="w-15">{% trans 'Value after tax' %}</th>
                                     <th class="w-15">{% trans 'Due date' %}</th>
+                                    <th class="w-5"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -343,20 +344,8 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab_attachment">
-                        <div class="form-group">
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <button
-                                            type="button"
-                                            class="form-control btn btn-info btn-file-upload text-white"
-                                            data-f-input-name="attachments"
-                                            data-f-input-required="false"
-                                            data-f-input-disabled="false"
-                                            data-f-name-ele-id="#fileNameTestDisplay"
-                                    >{% trans 'Click here to upload image' %}</button>
-                                    <p id="fileNameTestDisplay"></p>
-                                </div>
-                            </div>
+                        <div class="w-100" id="attachment">
+                            {% include 'extends/files/all.html' %}
                         </div>
                     </div>
                 </div>
@@ -369,8 +358,8 @@
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
             data-product-not-in="{% trans 'Product is not in' %}"
-            data-validate-order-request="{% trans 'Quantity order must be less than quantity remain' %}"
-            data-validate-order-actual="{% trans 'Quantity order actually must be greater than or equal quantity order on request' %}"
+            data-validate-order-request="{% trans 'Exceeded quantity requested' %}"
+            data-validate-order-actual="{% trans 'Must not less than quantity ordered' %}"
             data-valid="{% trans "Valid" %}"
         >
         <input
@@ -533,12 +522,12 @@
                             >
                                 <thead>
                                 <tr>
-                                    <th class="w-5">#</th>
                                     <th class="w-5"></th>
-                                    <th>{% trans 'Purchase quotation' %}</th>
-                                    <th>{% trans 'Title' %}</th>
-                                    <th>{% trans 'Supplier' %}</th>
-                                    <th>{% trans 'PQ request' %}</th>
+                                    <th class="w-5"></th>
+                                    <th class="w-20">{% trans 'Purchase quotation' %}</th>
+                                    <th class="w-20">{% trans 'Title' %}</th>
+                                    <th class="w-30">{% trans 'Supplier' %}</th>
+                                    <th class="w-20">{% trans 'PQ request' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>

@@ -43,6 +43,12 @@ $(function () {
 
 
 // EVENTS
+        // Action on change title
+        $('#purchase-order-title').on('change', function () {
+            // check enable btn PR, PQ
+            POValidateHandle.validateEnablePRPQ();
+        });
+
         // Action on change dropdown supplier
         POLoadDataHandle.supplierSelectEle.on('change', function () {
             if ($(this).val()) {
@@ -53,11 +59,12 @@ $(function () {
                     document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
                     POLoadDataHandle.loadDataProductAll();
                 }
+                // check enable btn PR, PQ
+                POValidateHandle.validateEnablePRPQ();
             } else { // No Value => load again dropdowns
                 POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadBoxContact();
             }
-            // POLoadDataHandle.loadMoreInformation($(this));
         });
 
         // Purchase request modal
@@ -204,6 +211,11 @@ $(function () {
             }
         });
 
+        tablePurchaseOrderProductAdd.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), tablePurchaseOrderProductAdd);
+            POCalculateHandle.calculateTotal(tablePurchaseOrderProductAdd[0]);
+        });
+
         // Action on change data on row of tablePurchaseOrderProductRequest
         tablePurchaseOrderProductRequest.on('change', '.table-row-uom-order-actual, .table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
@@ -236,6 +248,10 @@ $(function () {
 
         tablePaymentStage.on('change', '.table-row-value-before-tax, .table-row-tax', function () {
            POCalculateHandle.calculateValueAfterTax(this.closest('tr'));
+        });
+
+        tablePaymentStage.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), tablePaymentStage);
         });
 
         // COMMON
@@ -274,6 +290,7 @@ $(function () {
                 'purchase_order_payment_stage',
                 // system
                 'system_status',
+                'attachment',
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {

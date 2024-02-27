@@ -38,13 +38,15 @@ $(document).ready(function(){
                         data: 'product',
                         width: '35%',
                         render: (row, type, data, meta) => {
-                            const $elmTrans = $.fn.transEle;
+                            const $elmTrans = $.fn.transEle, $localTrans = $('#trans-factory');
                             let isFormat = [
                                 {name: $elmTrans.attr('data-title'), value: 'title'},
                                 {name: $elmTrans.attr('data-code'), value: 'code'},
-                                {name: 'UoM', value: 'uom_data.title'},
-                                {name: 'Available', value: 'available'}
+                                {name: $localTrans.attr('data-uom'), value: 'uom.title'},
+                                {name: $localTrans.attr('data-avail'), value: 'available'}
                             ]
+                            let prodAvail = data.product_available
+                            row.available = prodAvail
                             const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'),
                                 isFormat)
                             return `<div class="input-group">

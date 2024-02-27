@@ -1679,7 +1679,7 @@ msgstr "Loại thuế"
 
 #
 msgid "Selling rate"
-msgstr "Tỉ lệ bán hàng"
+msgstr "Tỉ giá"
 
 #
 msgid "Category"
@@ -6588,3 +6588,15 @@ msgstr "Báo cáo tồn kho"
 #
 msgid "Items Detail Report"
 msgstr "Báo cáo chi tiết mặt hàng"
+
+#
+msgid "Required"
+msgstr "Yêu cầu"
+
+#
+msgid "Master data config"
+msgstr "Cấu hình Master data"
+
+#
+msgid "Transition data config"
+msgstr "Cấu hình dữ liệu giao dịch"

@@ -249,6 +249,7 @@ msgstr "Lấy OTP"
 msgid "Resend OTP"
 msgstr "Gửi lại OTP"
 
+
 #
 msgid "Verify"
 msgstr "Xác minh"
@@ -6808,10 +6809,6 @@ msgstr "Chọn báo giá mua hàng"
 #
 msgid "Required"
 msgstr "Yêu cầu"
-
-#
-msgid "Master data config"
-msgstr "Cấu hình Master data"
 
 #
 msgid "Transition data config"

@@ -76,6 +76,7 @@ INSTALLED_APPS = \
         'apps.core.programme',
         'apps.core.comment',
         'apps.core.printer',
+        'apps.core.mailer',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',

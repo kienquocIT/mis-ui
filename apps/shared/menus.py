@@ -183,9 +183,19 @@ class MenusCoreConfigurations:
             ),
         ]
     )
-    PRINTER_CONFIG = MenuCommon(
-        name='Print Template', code='menu_print_template', view_name='PrintTemplatesListView',
-        icon='<i class="fa-solid fa-print"></i>'
+    TEMPLATES_DATA_CONFIG = MenuCommon(
+        name='Templates', code='menu_templates', view_name='#',
+        icon='<i class="fa-solid fa-swatchbook"></i>',
+        child=[
+            MenuCommon(
+                name='Print Template', code='menu_print_template', view_name='PrintTemplatesListView',
+                icon='<i class="fa-solid fa-print"></i>'
+            ),
+            MenuCommon(
+                name='Mail Template', code='menu_mail_template', view_name='MailTemplatesListView',
+                icon='<i class="fa-regular fa-envelope"></i>'
+            ),
+        ]
     )
 
 
@@ -666,7 +676,7 @@ class SpaceItem:
             menus=[
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
-                MenusCoreConfigurations.PRINTER_CONFIG,
+                MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
             ],
         )
     }

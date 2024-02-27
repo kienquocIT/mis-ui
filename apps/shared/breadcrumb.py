@@ -326,6 +326,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
+    MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
 
 
 class BreadcrumbView:
@@ -840,3 +841,6 @@ class BreadcrumbView:
     PRINTER_CONFIG_CREATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_CREATE]
     PRINTER_CONFIG_DETAIL_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_DETAIL]
     PRINTER_CONFIG_UPDATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    MAILER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.MAILER_CONFIG_LIST_PAGE]
+    MAILER_CONFIG_LIST_PAGE = MAILER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]

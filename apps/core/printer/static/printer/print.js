@@ -396,6 +396,11 @@ class PrintTinymceControl {
                                 content_style: `
                                     body { font-family: Arial, Helvetica, "Times New Roman", Times, serif, sans-serif; font-size: 11px; }
                                     table tr { vertical-align: top; }
+                                    @media print {
+                                        .mce-visual-caret {
+                                            display: none;
+                                        }
+                                    }
                                 `,
                                 mentions: {
                                     queryBy: 'code',
@@ -413,7 +418,6 @@ class PrintTinymceControl {
                                                         'ordering': 'title',
                                                         // 'application': application_id,
                                                         'application__in': `${application_id},ba2ef9f1-63f4-4cfb-ae2f-9dee6a56da68`,
-                                                        'is_print': true,
                                                     },
                                                     (query ? {'search': query} : {})
                                                 )
@@ -453,7 +457,10 @@ class PrintTinymceControl {
                                     },
                                     renderDropdown: function() {
                                         return '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>';
-                                    }
+                                    },
+                                    matcher: function (item) {
+                                        return item;
+                                    },
                                 },
                                 setup: function(editor) {
                                     tinymceEditor = editor;
@@ -482,6 +489,20 @@ class PrintTinymceControl {
                                 default_link_target: '_blank',
                                 link_assume_external_targets: true,
                                 link_default_protocol: 'https',
+                                init_instance_callback: function (editor) {
+                                    let bookmark;
+                                    editor.on('BeforeExecCommand', function (e) {
+                                        if (e.command === 'mcePrint') {
+                                            bookmark = editor.selection.getBookmark();
+                                            editor.selection.setCursorLocation(editor.dom.select('div')[0]);
+                                        }
+                                    });
+                                    editor.on('ExecCommand', function (e) {
+                                        if (e.command === 'mcePrint') {
+                                            editor.selection.moveToBookmark(bookmark);
+                                        }
+                                    });
+                                },
                             },
                             opts
                         )
@@ -540,10 +561,10 @@ class PrintTinymceControl {
 
     on_events() {
         let clsThis = this;
-        this.modal$.find('button[data-action="save-print"]').on('click', function (){
-            clsThis.textarea$.tinymce().focus(true);  // skip focus before call print | keep focus style don't include
-            clsThis.textarea$.tinymce().execCommand('mcePrint');
-        })
+        // this.modal$.find('button[data-action="save-print"]').on('click', function (){
+        //     // clsThis.textarea$.tinymce().focus(true);  // skip focus before call print | keep focus style don't include
+        //     clsThis.textarea$.tinymce().execCommand('mcePrint');
+        // });
     }
 
     call_template_using(application_id){

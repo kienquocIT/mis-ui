@@ -73,6 +73,19 @@ msgstr "Số điện thoại liên lạc"
 msgid "User Name"
 msgstr "Tên Đăng Nhập"
 
+#
+msgid "User name"
+msgstr "Tên đăng nhập"
+
+#
+msgid "password"
+msgstr "Mật khẩu"
+
+#
+msgid "Sign Up"
+msgstr "Đăng ký"
+
+
 #: .\apps\core\account\templates\core\account\user_create.html:115
 msgid "Username to login "
 msgstr "Tên tài khoản để đăng nhập"
@@ -206,7 +219,7 @@ msgstr "Hiển thị/ẩn trình chỉnh sửa"
 
 #
 msgid "Sign in to your account"
-msgstr "Đăng nhập vào tài khoản của bạn"
+msgstr "Đăng nhập tài khoản của bạn"
 
 #: .\apps\core\auths\templates\auths\login.html:71
 msgid "Choose..."
@@ -223,6 +236,30 @@ msgstr "Ghi nhớ đăng nhập"
 #: .\apps\core\auths\templates\auths\login.html:135
 msgid "Login"
 msgstr "Đăng Nhập"
+
+#
+msgid "login"
+msgstr "Đăng nhập"
+
+#
+msgid "Get OTP"
+msgstr "Lấy OTP"
+
+#
+msgid "Resend OTP"
+msgstr "Gửi lại OTP"
+
+#
+msgid "Verify"
+msgstr "Xác minh"
+
+#
+msgid "Strength of password"
+msgstr "Độ mạnh của mật khẩu"
+
+#
+msgid "Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols."
+msgstr "Sử dụng mật khẩu mạnh có ít nhất 6 ký tự, bao gồm kết hợp chữ thường, chữ hoa, số và ký hiệu."
 
 #: .\apps\core\auths\templates\auths\login.html:139
 msgid "Creat new account to MIS"
@@ -5023,6 +5060,14 @@ msgstr "Việc hiển thị tệp PDF sẽ mất thời gian tùy thuộc vào k
 #
 msgid "Please wait for the images to finish loading before proceeding with the print operation."
 msgstr "Vui lòng đợi hình ảnh tải xong trước khi tiếp tục thao tác in."
+
+#
+msgid "Templates"
+msgstr "Văn bản mẫu"
+
+#
+msgid "Mail Template"
+msgstr "Mẫu thư điện tử"
 
 #
 msgid "Print Template"

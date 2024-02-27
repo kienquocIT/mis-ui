@@ -6372,7 +6372,6 @@ var DataTableAction = {
         // if (format) keyArg = JSON.parse(format.replace(/'/g, '"'));
         if (format) keyArg = format;
 
-
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {
             let isValue = data[key.value] ? data[key.value] : '--'
@@ -6382,6 +6381,7 @@ var DataTableAction = {
                 if (temp) isValue = temp
                 else isValue = '--'
             }
+            if ($.type(isValue) === "object") isValue = '--'
             htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${isValue}</p></div>`;
         }
         if (link) {

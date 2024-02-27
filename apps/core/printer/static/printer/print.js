@@ -500,6 +500,7 @@ class PrintTinymceControl {
 
         let config = $.extend(
             {
+                branding: false,
                 selector: '#' + idx,
                 readonly : 0,
                 menubar: false,

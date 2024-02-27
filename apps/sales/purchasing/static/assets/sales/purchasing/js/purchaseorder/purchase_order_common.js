@@ -334,44 +334,51 @@ class POLoadDataHandle {
             }
         }
         let frm = new SetupFormSubmit(tablePurchaseQuotation);
+        let dataFilter = {};
+        // by Supplier
+        if (POLoadDataHandle.supplierSelectEle.val()) {
+            dataFilter = {'supplier_mapped_id': POLoadDataHandle.supplierSelectEle.val()}
+        }
+        // by PR
         let purchase_requests_data = POLoadDataHandle.PRDataEle;
         if (purchase_requests_data.val()) {
             let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
-            if (JSON.parse(purchase_requests_data.val()).length > 0) {
-                $.fn.callAjax2({
-                        'url': frm.dataUrl,
-                        'method': frm.dataMethod,
-                        'data': {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')},
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('purchase_quotation_list') && Array.isArray(data.purchase_quotation_list)) {
-                                if (Object.keys(checked_data).length !== 0) {
-                                    for (let PQ of data.purchase_quotation_list) {
-                                        if (checked_data.hasOwnProperty(PQ.id)) {
-                                            PQ['is_checked'] = true;
-                                            PQ['is_use'] = checked_data[PQ.id]?.['is_use'];
-                                        }
+            dataFilter = {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')}
+        }
+        if (Object.keys(dataFilter).length > 0) {
+            $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': dataFilter,
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('purchase_quotation_list') && Array.isArray(data.purchase_quotation_list)) {
+                            if (Object.keys(checked_data).length !== 0) {
+                                for (let PQ of data.purchase_quotation_list) {
+                                    if (checked_data.hasOwnProperty(PQ.id)) {
+                                        PQ['is_checked'] = true;
+                                        PQ['is_use'] = checked_data[PQ.id]?.['is_use'];
                                     }
                                 }
-                                tablePurchaseQuotation.DataTable().clear().draw();
-                                tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
-                                if (is_remove === true) {
-                                    POLoadDataHandle.loadDataShowPurchaseQuotation();
-                                    POLoadDataHandle.loadPriceListByPurchaseQuotation();
-                                }
+                            }
+                            tablePurchaseQuotation.DataTable().clear().draw();
+                            tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
+                            if (is_remove === true) {
+                                POLoadDataHandle.loadDataShowPurchaseQuotation();
+                                POLoadDataHandle.loadPriceListByPurchaseQuotation();
                             }
                         }
                     }
-                )
-            } else {
-                tablePurchaseQuotation.DataTable().clear().draw();
-                POLoadDataHandle.loadDataShowPurchaseQuotation();
-                POLoadDataHandle.loadPriceListByPurchaseQuotation();
-            }
+                }
+            )
+        } else {
+            tablePurchaseQuotation.DataTable().clear().draw();
+            POLoadDataHandle.loadDataShowPurchaseQuotation();
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         }
         return true;
     };

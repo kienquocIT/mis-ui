@@ -26,7 +26,8 @@
 
 {% block pageContent %}
     <form class="container-fluid mt-4" id="asset_provide_form" method="post" data-method="PUT" autocomplete="off"
-          data-url-redirect="{% url 'AssetToolsProvideRequestList' %}" data-url="{% url 'AssetToolsProvideRequestEditAPI' data.pk%}">
+          data-url-redirect="{% url 'AssetToolsProvideRequestList' %}"
+          data-url="{% url 'AssetToolsProvideRequestEditAPI' data.pk%}">
         {% csrf_token %}
         <input type="hidden" name="employee_inherit_id">
         <div class="row">

@@ -22,7 +22,7 @@
 {% block pageContent %}
     <div class="container-fluid">
         <div class="row">
-            <ul class="nav nav-light nav-tabs nav-line">
+            <ul class="nav nav-light nav-tabs nav-line asset-list-tabs">
                 <li class="nav-item">
                     <a href="#employee_list" class="nav-link active" data-bs-toggle="tab">
                         <span class="nav-link-text">{% trans 'List by User' %}</span>
@@ -30,7 +30,7 @@
                 </li>
                 {% if data.is_view %}
                 <li class="nav-item">
-                    <a href="#list_by_product" class="nav-link" data-bs-toggle="tab">
+                    <a href="#list_by_product" class="nav-link prod-list" data-bs-toggle="tab">
                         <span class="nav-link-text">
                             {% trans 'List by Asset/Tools' %}
                         </span>
@@ -73,6 +73,7 @@
                             <th>{% trans 'Name' %}</th>
                             <th>{% trans 'Code' %}</th>
                             <th>{% trans 'UoM' %}</th>
+                            <th>{% trans 'Warehouse' %}</th>
                             <th>{% trans 'Total' %}</th>
                             <th>{% trans 'Using Total' %}</th>
                             <th>{% trans 'Available' %}</th>
@@ -91,6 +92,7 @@
            data-employee-list="{% url 'EmployeeListAPI' %}"
            data-asset-list="{% url 'AssetToolsListAPI' %}"
            data-product-asset-list="{% url 'ProductWarehouseAssetList' %}"
+           data-asset-return-list="{% url 'AssetToolsReturnListAPI' %}"
     >
     <input type="text" id="trans-factory" aria-label="trans-factory"
     >

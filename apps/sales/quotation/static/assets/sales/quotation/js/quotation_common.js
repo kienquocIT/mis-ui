@@ -3868,6 +3868,7 @@ class QuotationCalculateCaseHandle {
 
     static updateTotal(table, is_product, is_cost, is_expense) {
         let form = document.getElementById('frm_quotation_create');
+        let tableProduct = document.getElementById('datable-quotation-create-product');
         let pretaxAmount = 0;
         let discountAmount = 0;
         let taxAmount = 0;
@@ -3966,10 +3967,11 @@ class QuotationCalculateCaseHandle {
             }
             let discount_on_total = 0;
             let discountTotalRate = '0';
-            if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll')) {
-                if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot')) {
-                    if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount')) {
-                        discountTotalRate = document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount').value;
+            if (tableProduct.closest('.dataTables_scroll')) {
+                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+                if (tableProductFt) {
+                    if (tableProductFt.querySelector('.quotation-create-product-discount')) {
+                        discountTotalRate = tableProductFt.querySelector('.quotation-create-product-discount').value;
                     }
                 }
             }
@@ -4028,6 +4030,7 @@ class QuotationCalculateCaseHandle {
 
     static calculate(row) {
         let form = document.getElementById('frm_quotation_create');
+        let tableProduct = document.getElementById('datable-quotation-create-product');
         let price = 0;
         let quantity = 0;
         let elePrice = row.querySelector('.table-row-price');
@@ -4069,10 +4072,11 @@ class QuotationCalculateCaseHandle {
             }
             let discount_on_total = 0;
             let discountTotalRate = '0';
-            if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll')) {
-                if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot')) {
-                    if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount')) {
-                        discountTotalRate = document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount').value;
+            if (tableProduct.closest('.dataTables_scroll')) {
+                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+                if (tableProductFt) {
+                    if (tableProductFt.querySelector('.quotation-create-product-discount')) {
+                        discountTotalRate = tableProductFt.querySelector('.quotation-create-product-discount').value;
                     }
                 }
             }

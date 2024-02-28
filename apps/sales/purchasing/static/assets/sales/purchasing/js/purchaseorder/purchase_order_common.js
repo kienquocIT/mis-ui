@@ -462,8 +462,6 @@ class POLoadDataHandle {
             elePurchaseQuotation.append(eleAppend);
         } else {
             elePurchaseQuotation.empty();
-            POLoadDataHandle.supplierSelectEle.empty();
-            POLoadDataHandle.contactSelectEle.empty();
         }
         POLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
         if (checked_id) {
@@ -474,9 +472,6 @@ class POLoadDataHandle {
                     }
                 }
             }
-        } else {
-            POLoadDataHandle.supplierSelectEle.empty();
-            POLoadDataHandle.contactSelectEle.empty();
         }
         return true;
     };

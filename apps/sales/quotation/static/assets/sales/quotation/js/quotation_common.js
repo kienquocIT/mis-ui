@@ -877,9 +877,9 @@ class QuotationLoadDataHandle {
         let discountRateCopy = document.getElementById('quotation-copy-discount-on-total');
         let finalRevenueBeforeTax = null;
         if (is_product === true) {
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            if (tableProduct.closest('.dataTables_scroll')) {
-                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                 pretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
                 tax = tableProductFt.querySelector('.quotation-create-product-taxes');
                 total = tableProductFt.querySelector('.quotation-create-product-total');
@@ -900,9 +900,9 @@ class QuotationLoadDataHandle {
             taxRaw = tableCost.querySelector('.quotation-create-cost-taxes-raw');
             totalRaw = tableCost.querySelector('.quotation-create-cost-total-raw');
         } else if (is_expense === true) {
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
-            if (tableExpense.closest('.dataTables_scroll')) {
-                let tableExpenseFt = tableExpense.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
+            if (tableExpenseWrapper) {
+                let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
                 pretax = tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount');
                 tax = tableExpenseFt.querySelector('.quotation-create-expense-taxes');
                 total = tableExpenseFt.querySelector('.quotation-create-expense-total');
@@ -3868,7 +3868,7 @@ class QuotationCalculateCaseHandle {
 
     static updateTotal(table, is_product, is_cost, is_expense) {
         let form = document.getElementById('frm_quotation_create');
-        let tableProduct = document.getElementById('datable-quotation-create-product');
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let pretaxAmount = 0;
         let discountAmount = 0;
         let taxAmount = 0;
@@ -3967,8 +3967,8 @@ class QuotationCalculateCaseHandle {
             }
             let discount_on_total = 0;
             let discountTotalRate = '0';
-            if (tableProduct.closest('.dataTables_scroll')) {
-                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                 if (tableProductFt) {
                     if (tableProductFt.querySelector('.quotation-create-product-discount')) {
                         discountTotalRate = tableProductFt.querySelector('.quotation-create-product-discount').value;
@@ -4030,7 +4030,7 @@ class QuotationCalculateCaseHandle {
 
     static calculate(row) {
         let form = document.getElementById('frm_quotation_create');
-        let tableProduct = document.getElementById('datable-quotation-create-product');
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let price = 0;
         let quantity = 0;
         let elePrice = row.querySelector('.table-row-price');
@@ -4072,8 +4072,8 @@ class QuotationCalculateCaseHandle {
             }
             let discount_on_total = 0;
             let discountTotalRate = '0';
-            if (tableProduct.closest('.dataTables_scroll')) {
-                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                 if (tableProductFt) {
                     if (tableProductFt.querySelector('.quotation-create-product-discount')) {
                         discountTotalRate = tableProductFt.querySelector('.quotation-create-product-discount').value;

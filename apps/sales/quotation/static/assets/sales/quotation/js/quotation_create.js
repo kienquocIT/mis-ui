@@ -240,18 +240,32 @@ $(function () {
         });
 
 // Action on change discount rate on Total of product
-        $('#quotation-create-product-discount').on('change', function () {
+        $('input[type=text].quotation-create-product-discount').on('change', function () {
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // Calculate with discount on Total
-            for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
-                let row = tableProduct[0].tBodies[0].rows[i];
+            tableProduct.DataTable().rows().every(function () {
+                let row = this.node();
                 QuotationCalculateCaseHandle.calculate(row);
-            }
+            });
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
         });
+
+
+        // $('#quotation-create-product-discount').on('change', function () {
+        //     // Delete all promotion rows
+        //     deletePromotionRows(tableProduct, true, false);
+        //     // Delete all shipping rows
+        //     deletePromotionRows(tableProduct, false, true);
+        //     // Calculate with discount on Total
+        //     for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
+        //         let row = tableProduct[0].tBodies[0].rows[i];
+        //         QuotationCalculateCaseHandle.calculate(row);
+        //     }
+        //     QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
+        // });
 
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {

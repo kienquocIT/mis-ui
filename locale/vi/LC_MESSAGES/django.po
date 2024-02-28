@@ -5134,7 +5134,7 @@ msgstr "Nhân bản"
 
 #
 msgid "Final acceptance"
-msgstr "Nghiệm thu"
+msgstr "Quyết toán"
 
 #
 msgid "Group level"

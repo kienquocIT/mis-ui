@@ -198,7 +198,7 @@ $.fn.extend({
                 case 400:
                     let mess = resp.data;
                     if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
-                    if (isNotify === true) UtilControl.notifyErrors(mess);
+                    if (isNotify === true || typeof isNotify === 'object') UtilControl.notifyErrors(mess, typeof isNotify === 'object' ? isNotify : {});
                     return {};
                 case 401:
                     WindowControl.showUnauthenticated(swalOpts,true);

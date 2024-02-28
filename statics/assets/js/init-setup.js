@@ -87,11 +87,13 @@ class SetupFormSubmit {
                         this.defaultShowErrors();
                     },
                     errorPlacement: function (error, element) {
-                        element.closest('.form-group').append(error);
                         // error.insertAfter(element);
-                        error.css({
-                            'color': "red",
-                        })
+                        error.css({'color': "red"})
+
+                        //
+                        let parentEle = element.parent();
+                        let insertAfterEle = parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper') ? parentEle : element;
+                        error.insertAfter(insertAfterEle);
                     },
                     submitHandler: function (form, event) {
                         event.preventDefault();
@@ -2751,16 +2753,33 @@ class UtilControl {
         return data;
     }
 
-    static notifyErrors(errs) {
+    static notifyErrors(errs, opts={}) {
+        let confirmOpts = $.extend(
+            {
+                'keyNotMatch': '',
+                'replaceKey': {},
+                'isShowKey': true,
+            },
+            opts
+        )
+
+        function resolveDataNotify(key, data){
+            if (confirmOpts.isShowKey === true){
+                if (confirmOpts.replaceKey){
+                    if (confirmOpts.replaceKey.hasOwnProperty(key)) return {'title': confirmOpts.replaceKey[key], 'description': data}
+                    if (typeof confirmOpts.keyNotMatch === "string") return {'title': confirmOpts.keyNotMatch, 'description': data}
+                }
+                return {'title': key, 'description': data}
+            }
+            return {'description': data}
+        }
+
+
         if (errs) {
             if (typeof errs === 'object') {
                 let errors_converted = UtilControl.cleanDataNotify(errs);
                 Object.keys(errors_converted).map((key) => {
-                    let notify_data = {
-                        'title': key,
-                        'description': errors_converted[key]
-                    };
-                    jQuery.fn.notifyB(notify_data, 'failure');
+                    jQuery.fn.notifyB(resolveDataNotify(key, errors_converted[key]), 'failure');
                 });
             } else if (typeof errs === 'string') {
                 jQuery.fn.notifyB({

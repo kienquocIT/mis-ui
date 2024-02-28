@@ -231,3 +231,21 @@ class ForgotPasswordView(APIView):
         return render(
             request, 'auths/forgot_passwd.html', {}
         )
+
+
+class ChangePasswordView(View):
+    @mask_view(
+        auth_require=True,
+        template='auths/change_passwd.html',
+        breadcrumb='USER_CHANGE_PASSWORD',
+    )
+    def get(self, request, *args, **kwargs):
+        ctx = {}
+        return ctx, status.HTTP_200_OK
+
+
+class ChangePasswordAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_CHANGE_PASSWORD).put(data=request.data)
+        return resp.auto_return()

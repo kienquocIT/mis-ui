@@ -5,7 +5,7 @@ from apps.core.auths.views import (
     AuthLogin, AuthLogout, TenantLoginChoice,
     SwitchCompanyCurrentView, SpaceChangeView,
     MyLanguageAPI,
-    AuthLoginSelectTenant, ForgotPasswordView,
+    AuthLoginSelectTenant, ForgotPasswordView, ChangePasswordView, ChangePasswordAPI,
 )
 
 urlpatterns = [
@@ -18,4 +18,6 @@ urlpatterns = [
     path('tenants', TenantLoginChoice.as_view(), name='TenantLoginChoice'),
     path('switch-company', SwitchCompanyCurrentView.as_view(), name='SwitchCompanyCurrentView'),
     path('change-space', SpaceChangeView.as_view(), name='SpaceChangeView'),
+    path('change-password', ChangePasswordView.as_view(), name='ChangePasswordView'),
+    path('change-password/api', ChangePasswordAPI.as_view(), name='ChangePasswordAPI'),
 ]

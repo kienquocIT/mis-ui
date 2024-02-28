@@ -155,6 +155,10 @@ msgid "Change password of"
 msgstr "Đặt lại mật khẩu của"
 
 #
+msgid "Current password"
+msgstr "Mật khẩu hiện tại"
+
+#
 msgid "New password"
 msgstr "Mật khẩu mới"
 
@@ -2471,6 +2475,10 @@ msgstr "Chi tiết người dùng"
 #
 msgid "Edit user"
 msgstr "Chỉnh sửa người dùng"
+
+#
+msgid "Change password"
+msgstr "Thay đổi mật khẩu"
 
 #
 msgid "Company Overview"

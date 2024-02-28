@@ -487,14 +487,11 @@
                     <div class="modal-body">
                         <div class="row mb-2"><h6>{% trans 'Select purchase quotation' %}</h6></div>
                         <div class="row">
-                            <label for="filterByPurchaseRequest" class="col-sm-3 col-form-label">{% trans 'Filter by PQ Request' %}</label>
-                            <div class="col-sm-6">
-                                <select class="form-select w-60 select-filter" id="filterByPurchaseRequest">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="box-purchase-order-pqr" class="form-label">{% trans 'Filter by PQ Request' %}</label>
+                                    <select class="form-select" id="box-purchase-order-pqr"></select>
+                                </div>
                             </div>
                         </div>
                         <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-450p position-relative overflow-y-scroll expense-option-list" id="sroll-datable-purchase-quotation">

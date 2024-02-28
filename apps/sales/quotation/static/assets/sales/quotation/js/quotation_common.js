@@ -25,7 +25,6 @@ class QuotationLoadDataHandle {
                         'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
                         'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
                         'data': {'list_from_app': list_from_app},
-                        // 'isDropdown': true,
                     }
                 ).then(
                     (resp) => {

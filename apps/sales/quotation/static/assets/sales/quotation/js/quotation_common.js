@@ -136,7 +136,6 @@ class QuotationLoadDataHandle {
                 });
             }
         }
-        // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
         if (form.attr('data-method').toLowerCase() !== 'get') {
             if (!dataCustomer?.['is_copy']) {
                 QuotationLoadDataHandle.loadDataProductAll();
@@ -3966,7 +3965,14 @@ class QuotationCalculateCaseHandle {
                 }
             }
             let discount_on_total = 0;
-            let discountTotalRate = document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount').value;
+            let discountTotalRate = '0';
+            if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll')) {
+                if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot')) {
+                    if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount')) {
+                        discountTotalRate = document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount').value;
+                    }
+                }
+            }
             if (form.classList.contains('sale-order')) {
                 discountTotalRate = $('#quotation-copy-discount-on-total').val();
             }
@@ -4062,7 +4068,14 @@ class QuotationCalculateCaseHandle {
                 discount = 0
             }
             let discount_on_total = 0;
-            let discountTotalRate = document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount').value;
+            let discountTotalRate = '0';
+            if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll')) {
+                if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot')) {
+                    if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount')) {
+                        discountTotalRate = document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount').value;
+                    }
+                }
+            }
             if (form.classList.contains('sale-order')) {
                 discountTotalRate = $('#quotation-copy-discount-on-total').val();
             }

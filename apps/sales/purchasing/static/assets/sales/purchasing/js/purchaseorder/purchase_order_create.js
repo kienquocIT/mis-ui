@@ -17,9 +17,10 @@ $(function () {
         let tablePaymentStage = $('#datable-po-payment-stage');
 
         // Load init
-        if (formSubmit.attr('data-method') === 'POST') {
+        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
             POLoadDataHandle.loadBoxSupplier();
             POLoadDataHandle.loadBoxContact();
+            POLoadDataHandle.loadInitProduct();
             PODataTableHandle.dataTablePurchaseRequest();
             PODataTableHandle.dataTablePurchaseRequestProduct();
             PODataTableHandle.dataTablePurchaseRequestProductMerge();
@@ -27,6 +28,12 @@ $(function () {
             PODataTableHandle.dataTablePurchaseOrderProductAdd();
             PODataTableHandle.dataTablePurchaseOrderProductRequest();
             PODataTableHandle.dataTablePaymentStage();
+        }
+        if (formSubmit.attr('data-method').toLowerCase() === 'get') {
+            POLoadDataHandle.loadInitProduct();
+        }
+        if (formSubmit.attr('data-method').toLowerCase() === 'put') {
+            POLoadDataHandle.loadInitProduct();
         }
 
         // run datetimepicker

@@ -36,10 +36,45 @@ class POLoadDataHandle {
         });
     };
 
+    static loadInitProduct() {
+        let finalData = [];
+        let ele = PODataTableHandle.productInitEle;
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                        for (let product of data.product_sale_list) {
+                            if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
+                                if (product['product_choice'].includes(2)) {
+                                    finalData.push(product);
+                                }
+                            }
+                        }
+                        ele.val(JSON.stringify(finalData));
+                    }
+                }
+            }
+        )
+    };
+
     static loadBoxProduct(ele, dataProduct = {}) {
+        let dataDD = []
+        if (PODataTableHandle.productInitEle.val()) {
+            dataDD = JSON.parse(PODataTableHandle.productInitEle.val());
+        }
+        if (Object.keys(dataProduct).length > 0) {
+            dataDD = dataProduct
+        }
         ele.initSelect2({
-            data: dataProduct,
-            disabled: !(ele.attr('data-url')),
+            data: dataDD,
         });
     };
 
@@ -343,7 +378,11 @@ class POLoadDataHandle {
         let purchase_requests_data = POLoadDataHandle.PRDataEle;
         if (purchase_requests_data.val()) {
             let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
-            dataFilter = {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')}
+            if (Array.isArray(purchase_requests_data_parse)) {
+                if (purchase_requests_data_parse.length > 0) {
+                    dataFilter = {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')};
+                }
+            }
         }
         if (Object.keys(dataFilter).length > 0) {
             $.fn.callAjax2({
@@ -423,8 +462,6 @@ class POLoadDataHandle {
             elePurchaseQuotation.append(eleAppend);
         } else {
             elePurchaseQuotation.empty();
-            POLoadDataHandle.supplierSelectEle.empty();
-            POLoadDataHandle.contactSelectEle.empty();
         }
         POLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
         if (checked_id) {
@@ -435,9 +472,6 @@ class POLoadDataHandle {
                     }
                 }
             }
-        } else {
-            POLoadDataHandle.supplierSelectEle.empty();
-            POLoadDataHandle.contactSelectEle.empty();
         }
         return true;
     };
@@ -536,6 +570,7 @@ class POLoadDataHandle {
         tablePurchaseOrderProductRequest.DataTable().clear().draw();
         let newRow = tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
         POLoadDataHandle.loadDataRow(newRow, 'datable-purchase-order-product-add');
+        $(newRow.querySelector('.table-row-item')).val('').trigger('change');
         return true;
     };
 
@@ -555,7 +590,8 @@ class POLoadDataHandle {
         let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
         if (dataRowRaw) {
             let dataRow = JSON.parse(dataRowRaw);
-            POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
+            POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')));
+            $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
             POLoadDataHandle.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_actual'], dataRow?.['uom_order_actual']?.['uom_group']?.['id']);
             POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
         }
@@ -825,12 +861,13 @@ class POLoadDataHandle {
             }
         }
         $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
+        POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
+        POLoadDataHandle.loadBoxContact(data?.['contact']);
+
         POLoadDataHandle.loadDataShowPRPQ(data);
         PODataTableHandle.dataTablePurchaseRequest();
         POLoadDataHandle.loadModalPurchaseRequestProductTable(false, data);
         POLoadDataHandle.loadModalPurchaseQuotation(false, data);
-        POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
-        POLoadDataHandle.loadBoxContact(data?.['contact']);
         POLoadDataHandle.loadTablesDetailPage(data);
         POLoadDataHandle.loadTotals(data);
     };
@@ -1616,15 +1653,7 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: () => {
-                            return `<select
-                                        class="form-select table-row-item"
-                                        data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
-                                        data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
-                                        data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
-                                        data-keyResp="product_sale_list"
-                                        required
-                                    >
-                                    </select>`;
+                            return `<select class="form-select table-row-item"></select>`;
                     },
                 },
                 {

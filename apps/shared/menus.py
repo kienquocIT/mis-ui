@@ -101,7 +101,8 @@ class MenusCompanySystem:
 
 class MenusCoreConfigurations:
     MASTER_DATA_CONFIG = MenuCommon(
-        name='Master data config', code='menu_masterdata', view_name='#', icon='<i class="bi bi-mastodon"></i>',
+        name='Master data config', code='menu_masterdata', view_name='#',
+        icon='<i class="fas fa-crown"></i>',
         child=[
             MenuCommon(
                 name='Contact', code='id_menu_master_data_contact', view_name='ContactMasterDataList',
@@ -126,9 +127,13 @@ class MenusCoreConfigurations:
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
-        name='Transition Data Config', code='menu_transition_data_config', view_name='#',
-        icon='<i class="fas fa-file-invoice-dollar"></i>',
+        name='Transition data config', code='menu_transition_data_config', view_name='#',
+        icon='<i class="fas fa-exchange-alt"></i>',
         child=[
+            MenuCommon(
+                name='Balance initialization', code='menu_balance_init', view_name='BalanceInitList',
+                icon='<i class="fas fa-balance-scale"></i>',
+            ),
             MenuCommon(
                 name='Delivery', code='menu_delivery_config', view_name='DeliveryConfigDetail',
                 icon='<i class="fas fa-truck"></i>',
@@ -183,9 +188,19 @@ class MenusCoreConfigurations:
             ),
         ]
     )
-    PRINTER_CONFIG = MenuCommon(
-        name='Print Template', code='menu_print_template', view_name='PrintTemplatesListView',
-        icon='<i class="fa-solid fa-print"></i>'
+    TEMPLATES_DATA_CONFIG = MenuCommon(
+        name='Templates', code='menu_templates', view_name='#',
+        icon='<i class="fa-solid fa-swatchbook"></i>',
+        child=[
+            MenuCommon(
+                name='Print Template', code='menu_print_template', view_name='PrintTemplatesListView',
+                icon='<i class="fa-solid fa-print"></i>'
+            ),
+            MenuCommon(
+                name='Mail Template', code='menu_mail_template', view_name='MailTemplatesListView',
+                icon='<i class="fa-regular fa-envelope"></i>'
+            ),
+        ]
     )
 
 
@@ -666,7 +681,7 @@ class SpaceItem:
             menus=[
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
-                MenusCoreConfigurations.PRINTER_CONFIG,
+                MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
             ],
         )
     }

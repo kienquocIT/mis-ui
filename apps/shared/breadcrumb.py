@@ -306,6 +306,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
 
+    BALANCE_INIT_PAGE = BreadcrumbChildren(_('Balance initialization'), 'BalanceInitList')
+
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 
     REVENUE_PLAN_LIST_PAGE = BreadcrumbChildren(_('Revenue plan list'), 'RevenuePlanList')
@@ -326,6 +328,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
+    MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
 
 
 class BreadcrumbView:
@@ -806,6 +809,8 @@ class BreadcrumbView:
 
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
 
+    BALANCE_INIT_PAGE = [BreadcrumbItem.BALANCE_INIT_PAGE]
+
     REVENUE_PLAN_CONFIG_PAGE = [BreadcrumbItem.REVENUE_PLAN_CONFIG_PAGE]
 
     REVENUE_PLAN_LIST_PAGE = [BreadcrumbItem.REVENUE_PLAN_LIST_PAGE]
@@ -840,3 +845,6 @@ class BreadcrumbView:
     PRINTER_CONFIG_CREATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_CREATE]
     PRINTER_CONFIG_DETAIL_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_DETAIL]
     PRINTER_CONFIG_UPDATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    MAILER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.MAILER_CONFIG_LIST_PAGE]
+    MAILER_CONFIG_LIST_PAGE = MAILER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]

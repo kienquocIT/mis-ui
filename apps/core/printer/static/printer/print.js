@@ -396,6 +396,11 @@ class PrintTinymceControl {
                                 content_style: `
                                     body { font-family: Arial, Helvetica, "Times New Roman", Times, serif, sans-serif; font-size: 11px; }
                                     table tr { vertical-align: top; }
+                                    @media print {
+                                        .mce-visual-caret {
+                                            display: none;
+                                        }
+                                    }
                                 `,
                                 mentions: {
                                     queryBy: 'code',
@@ -413,7 +418,6 @@ class PrintTinymceControl {
                                                         'ordering': 'title',
                                                         // 'application': application_id,
                                                         'application__in': `${application_id},ba2ef9f1-63f4-4cfb-ae2f-9dee6a56da68`,
-                                                        'is_print': true,
                                                     },
                                                     (query ? {'search': query} : {})
                                                 )
@@ -436,31 +440,37 @@ class PrintTinymceControl {
                                         }
                                     },
                                     insert: function (item) {
+                                        // zero with space: \u200B&nbsp; or \u200B
                                         return `<span
                                             id="idx-${$x.fn.randomStr(16)}" 
                                             class="params-data" 
                                             data-code="${item.code}" 
                                             style="padding: 3px;background-color: #f1f1f1;"
-                                        >#${item.title}</span>\u200B&nbsp;`
+                                        >#${item.title}</span>\u200B`;
                                     },
                                     render: function(item) {
                                         return `
                                             <li style="cursor: pointer;" class="d-flex align-items-center">
                                                 ${item.code.indexOf('___') !== -1 ? '<i class="fa-solid fa-table-list fa-2xs mr-1"></i>' : '<i class="fa-solid fa-paragraph fa-2xs mr-1"></i>'}
-                                                ${item.title} <small>${ item.remark ? '- ' + item.remark : ''}</small>
+                                                ${item.title} 
+                                                <small style="margin-left: 5px;">${ item.remark ? ' - ' + item.remark : ''}</small>
                                             </li>
                                         `
                                     },
                                     renderDropdown: function() {
                                         return '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>';
-                                    }
+                                    },
+                                    matcher: function (item) {
+                                        return item;
+                                    },
                                 },
                                 setup: function(editor) {
                                     tinymceEditor = editor;
                                     editor.on('keydown', function(e) {
                                         if (e.key === 'Backspace' || e.key === 'Delete') {
                                             let node = editor.selection.getNode();
-                                            if (node.getAttribute("data-mention") === "true") {
+
+                                            if (node.classList.contains('params-data') && node.getAttribute('data-code')){
                                                 e.preventDefault();
                                                 node.remove();
                                                 if (editor.getContent() === '') editor.setContent('<p>&nbsp;</p>');
@@ -482,6 +492,20 @@ class PrintTinymceControl {
                                 default_link_target: '_blank',
                                 link_assume_external_targets: true,
                                 link_default_protocol: 'https',
+                                init_instance_callback: function (editor) {
+                                    let bookmark;
+                                    editor.on('BeforeExecCommand', function (e) {
+                                        if (e.command === 'mcePrint') {
+                                            bookmark = editor.selection.getBookmark();
+                                            editor.selection.setCursorLocation(editor.dom.select('div')[0]);
+                                        }
+                                    });
+                                    editor.on('ExecCommand', function (e) {
+                                        if (e.command === 'mcePrint') {
+                                            editor.selection.moveToBookmark(bookmark);
+                                        }
+                                    });
+                                },
                             },
                             opts
                         )
@@ -540,10 +564,10 @@ class PrintTinymceControl {
 
     on_events() {
         let clsThis = this;
-        this.modal$.find('button[data-action="save-print"]').on('click', function (){
-            clsThis.textarea$.tinymce().focus(true);  // skip focus before call print | keep focus style don't include
-            clsThis.textarea$.tinymce().execCommand('mcePrint');
-        })
+        // this.modal$.find('button[data-action="save-print"]').on('click', function (){
+        //     // clsThis.textarea$.tinymce().focus(true);  // skip focus before call print | keep focus style don't include
+        //     clsThis.textarea$.tinymce().execCommand('mcePrint');
+        // });
     }
 
     call_template_using(application_id){
@@ -597,6 +621,7 @@ class PrintTinymceControl {
     }
 
     render(application_id, data, is_open=false){
+        // console.log('data:', data);
         if (application_id && data){
             let clsThis = this;
             if (typeof tinymce === 'object' && this.modal$.length > 0 && this.textarea$.length > 0){

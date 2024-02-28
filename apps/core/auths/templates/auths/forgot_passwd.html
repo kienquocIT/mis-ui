@@ -1,0 +1,407 @@
+{% load static compress i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans 'Login' %} &#8901; Minh Tâm Solution</title>
+    <meta name="description" content="Minh Tam Solution"/>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}">
+    <link rel="icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"
+            rel="stylesheet"
+    >
+    {% compress css %}
+        <!-- CSS -->
+        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'login/auth.css' %}" rel="stylesheet" type="text/css">
+        <style>
+            html, body {
+                font-family: "Josefin Sans", sans-serif;
+                font-optical-sizing: auto;
+                font-style: normal;
+            }
+
+            select option:checked {
+                background-color: #e5fdff !important;
+                color: #37ceda !important;
+            }
+        </style>
+    {% endcompress %}
+</head>
+<body>
+<!-- Wrapper -->
+<div class="hk-wrapper hk-pg-auth bg-light position-relative" data-footer="simple">
+    <!-- Main Content -->
+    <div class="hk-pg-wrapper pt-0 pb-xl-0 pb-5 position-relative">
+        <canvas id="canvas" class="position-absolute" style="width: 100%;height:100%;"></canvas>
+        <div class="hk-pg-body pt-0 pb-xl-0">
+            <!-- Container -->
+            <div class="container-xxl">
+                <!-- Row -->
+                <div class="row mx-auto" style="max-width: 450px;">
+                    <div class="col-12 position-relative ">
+                        <div class="auth-content mt-8">
+                            <div class="card card-lg card-border box-vertical-blur">
+                                <div class="card-body">
+                                    <div class="w-100 mb-3" id="username-call-get">
+                                        <div class="form-group">
+                                            <label for="inp-username" class="form-label">
+                                                {% trans 'username' %}
+                                            </label>
+                                            <div class="input-group mb-3">
+                                                <input
+                                                        type="text" name="username" id="inp-username"
+                                                        class="form-control" placeholder=""
+                                                        tabindex="1"
+                                                >
+                                                <button
+                                                        class="btn btn-primary" type="button" id="btnGetOtp"
+                                                        tabindex="2"
+                                                >
+                                                    {% trans 'Get OTP' %}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-100 mb-3" id="validated-person" style="display: none;">
+                                        <div class="w-100 mb-3">
+                                            <div class="avatar">
+                                                <img src="{% static 'assets/images/systems/person-avt.png' %}" alt="user" class="avatar-img">
+                                            </div>
+                                            <span>Nguyễn Văn A</span>
+                                        </div>
+                                        <div class="separator-full"></div>
+                                    </div>
+                                    <div class="w-100 mb-3" id="validate-otp" style="display: none;">
+                                        <div class="w-100 d-flex justify-content-between align-items-centerr">
+                                            <p class="flex-item" data-txt="{% trans 'Time remaining %s' %}" data-counter="89">Time remaining 01:29</p>
+                                            <button class="flex-item btn btn-xs btn-primary" tabindex="3" style="text-transform: unset;">{% trans 'Resend OTP' %}</button>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inp-otp" class="form-label"></label>
+                                            <div class="input-group mb-3">
+                                                <input
+                                                        type="text" name="otp" id="inp-otp"
+                                                        class="form-control" placeholder="otp"
+                                                        tabindex="4"
+                                                >
+                                                <button
+                                                        class="btn btn-success" type="button" id="btnVerifyOtp"
+                                                        tabindex="5"
+                                                >
+                                                    {% trans 'Verify' %}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-100 mb-3" id="enter-new-password-submit" style="display: none;">
+                                        <div class="form-group mb-3">
+                                            <label
+                                                    for="inp-new-password" class="form-label"
+                                            >{% trans 'New password' %}</label>
+                                            <div class="input-group mb-3">
+                                                <input
+                                                        type="password" name="new-password"
+                                                        id="inp-new-password" class="form-control"
+                                                        placeholder="●●●●●●●●" tabindex="6"
+                                                >
+                                                <button
+                                                        class="btn btn-secondary w-100p"
+                                                        type="button" id="btn-show-hide-passwd" tabindex="7"
+                                                >
+                                                    <span>{% trans 'Show' %}</span>
+                                                    <span class="d-none">{% trans 'Hide' %}</span>
+                                                </button>
+                                            </div>
+                                            <small class="form-text text-muted">
+                                                {% trans 'Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols.' %}
+                                            </small>
+                                        </div>
+                                        <div class="w-100">
+                                            <small>{% trans 'Strength of password' %}</small>
+                                            <div class="progress progress-bar-rounded mb-5">
+                                                <div
+                                                        class="progress-bar bg-light w-0" role="progressbar"
+                                                        aria-valuenow="25" aria-valuemin="0"
+                                                        aria-valuemax="100" id="strengthPasswordProgress"
+                                                ></div>
+                                            </div>
+                                        </div>
+                                        <button
+                                                class="w-100 btn btn-success" tabindex="8" id="btnSubmitNewPassword" disabled
+                                        >{% trans 'Update' %}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Row -->
+            </div>
+            <!-- /Container -->
+        </div>
+        <!-- /Page Body -->
+
+        <!-- Page Footer -->
+        <div class="hk-footer border-0 copyrightbox">
+            <footer class="container-xxl footer">
+                <div class="row">
+                    <div class="col-xl-8 text-center">
+                        <p class="footer-text pb-0 copyrighttext">
+                            <span class="copy-text">BFlow © 2023 All rights reserved.</span>
+                        </p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- / Page Footer -->
+
+    </div>
+    <!-- /Main Content -->
+    <div class="hidden">
+        <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
+        <span
+                id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"
+                data-captcha-require="{% trans 'Please solve the captcha.' %}"
+        ></span>
+    </div>
+</div>
+<!-- /Wrapper -->
+
+<script type="text/javascript">
+    let ggCaptChaEnabled = "{{ captcha_enabled }}";
+    var onloadCallback = function () {
+        if (ggCaptChaEnabled === 'True') {
+            grecaptcha.render('recapcha', {
+                'sitekey': '{{ secret_key_gg }}'
+            });
+        }
+    };
+</script>
+<script
+        src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer
+>
+</script>
+
+{% compress js %}
+    <!-- jQuery -->
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- FeatherIcons JS -->
+    <script src="{% static 'assets/js/feather.min.js' %}"></script>
+
+    <!-- Fancy Dropdown JS -->
+    <script src="{% static 'assets/js/dropdown-bootstrap-extended.js' %}"></script>
+
+    <!-- Simplebar JS -->
+    <script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+
+    <!-- Notify Popup -->
+    <script src="{% static 'assets/js/notify.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
+
+    <!-- Init JS -->
+    <script src="{% static 'assets/js/init.js' %}"></script>
+    <script src="{% static 'login/backdrop-animated.js' %}"></script>
+    <script>
+        function setStrengthOfPassword(percent) {
+            percent = 5 * Math.round(percent / 5);
+
+            let clsBg = 'light';
+            if (percent <= 30) clsBg = 'danger';
+            if (30 < percent && percent <= 75) clsBg = 'warning';
+            if (percent > 75) clsBg = 'success';
+
+            $('#strengthPasswordProgress')
+                .alterClass('w-*').addClass('w-' + percent)
+                .alterClass('bg-*').addClass('bg-' + clsBg);
+            $('#btnSubmitNewPassword').prop('disabled', percent <= 45);
+        }
+
+        function checkStrengthOfPassword(passwdStr) {
+            let point = 0;
+            const hasLength = passwdStr.length > 6;
+            if (hasLength) {
+                point += 30;
+                const hasNumber = /\d/.test(passwdStr);
+                if (hasNumber) point += 15;
+
+                const hasLowercase = /[a-z]/.test(passwdStr);
+                if (hasLowercase) point += 15;
+
+                const hasUppercase = /[A-Z]/.test(passwdStr);
+                if (hasUppercase) point += 15;
+
+                const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(passwdStr);
+                if (hasSpecialChar) point += 25;
+
+                setStrengthOfPassword(point);
+            } else setStrengthOfPassword(passwdStr.length * 5);
+        }
+
+        $(document).ready(function (){
+            $('#inp-new-password').on('input', function () {
+                checkStrengthOfPassword($(this).val());
+            });
+
+            $('#btn-show-hide-passwd').on('click', function () {
+                $(this).children().toggleClass('d-none');
+                let inpEle = $(this).siblings('input');
+                if (inpEle.attr('type') === 'password') inpEle.attr('type', 'text');
+                else inpEle.attr('type', 'password');
+            });
+
+            let groupCallGet = $('#username-call-get');
+            let groupValidPerson = $('#validated-person');
+            let groupValidOtp = $('#validate-otp');
+            let groupNewPasswd = $('#enter-new-password-submit');
+
+
+            $('#btnGetOtp').on('click', function (){
+                groupCallGet.fadeOut('fast', function (){
+                    groupValidPerson.fadeIn('fast');
+                    groupValidOtp.fadeIn('fast');
+                });
+            });
+
+            $('#btnVerifyOtp').on('click', function (){
+                groupValidOtp.fadeOut('fast', function (){
+                    groupNewPasswd.fadeIn('fast');
+                });
+            })
+        })
+
+        $.fn.extend({
+            alterClass: function (removals, additions) {
+                // https://stackoverflow.com/a/8680251/13048590
+                // https://gist.github.com/peteboere/1517285
+                let self = this;
+                if (removals.indexOf('*') === -1) {
+                    // Use native jQuery methods if there is no wildcard matching
+                    self.removeClass(removals);
+                    return !additions ? self : self.addClass(additions);
+                }
+                let patt = new RegExp('\\s' + removals.replace(/\*/g, '[A-Za-z0-9-_]+').split(' ').join('\\s|\\s') + '\\s', 'g');
+                self.each(function (i, it) {
+                    let cn = ' ' + it.className + ' ';
+                    while (patt.test(cn)) {
+                        cn = cn.replace(patt, ' ');
+                    }
+                    it.className = $.trim(cn);
+                });
+
+                return !additions ? self : self.addClass(additions);
+            },
+            redirectUrlLogin: function (redirectPath, timeout = 0, params = '') {
+                setTimeout(() => {
+                    if (params && (params !== '' && params !== undefined)) {
+                        window.location.href = redirectPath + '?' + params;
+                    } else {
+                        window.location.href = redirectPath;
+                    }
+                }, timeout);
+            },
+            notifyBLogin: function (option, typeAlert = null) {
+                setTimeout(function () {
+                    $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
+                }, 100);
+                let msg = "";
+                if (option.title) {
+                    msg += option.title;
+                }
+                if (option.description) {
+                    let des_tmp = '';
+                    if (typeof option.description === 'string') {
+                        des_tmp = option.description;
+                    } else if (Array.isArray(option.description)) {
+                        des_tmp = option.description.join(", ");
+                    } else if (typeof option.description === 'object') {
+                        let des_tmp_arr = [];
+                        for (const [_key, value] of Object.entries(option.description)) {
+                            des_tmp_arr.push(value);
+                        }
+                        des_tmp = des_tmp_arr.join(", ");
+                    } else {
+                        des_tmp = option.description.toString();
+                    }
+                    if (msg) {
+                        msg += ": " + des_tmp;
+                    } else {
+                        msg = des_tmp;
+                    }
+                }
+                let alert_config = {
+                    animate: {
+                        enter: 'animated bounceInDown',
+                        exit: 'animated bounceOutUp'
+                    },
+                    type: "dismissible alert-primary",
+                    z_index: 2147483647, /* Maximum index */
+                }
+                switch (typeAlert) {
+                    case 'success':
+                        alert_config['type'] = "dismissible alert-success";
+                        break
+                    case 'failure':
+                        alert_config['type'] = "dismissible alert-danger";
+                        break
+                    case 'warning':
+                        alert_config['type'] = "dismissible alert-warning";
+                        break
+                    case 'info':
+                        alert_config['type'] = "dismissible alert-info";
+                        break
+                }
+                $.notify(msg, alert_config);
+            },
+            serializerObjectLogin: function (formSelected) {
+                return formSelected.serializeArray().reduce((o, kv) => ({
+                    ...o,
+                    [kv.name]: kv.value
+                }), {});
+            },
+            callAjaxLogin: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
+                return new Promise(function (resolve, reject) {
+                    // Setup then Call Ajax
+                    let ctx = {
+                        url: url,
+                        type: method,
+                        dataType: 'json',
+                        contentType: content_type,
+                        data: content_type === "application/json" ? JSON.stringify(data) : data,
+                        headers: {
+                            "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers
+                        },
+                        success: function (rest, textStatus, jqXHR) {
+                            resolve(rest);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            reject(jqXHR.responseJSON);
+                        },
+                    };
+                    if (method.toLowerCase() === 'get') ctx.data = data
+                    $.ajax(ctx);
+                });
+            },
+
+        })
+    </script>
+{% endcompress %}
+</body>
+</html>

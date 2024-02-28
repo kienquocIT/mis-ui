@@ -13,4 +13,5 @@ urlpatterns = [
     path('calendar/', include('apps.core.programme.urls')),
     path('comment/', include('apps.core.comment.urls')),
     path('printer/', include('apps.core.printer.urls')),
+    path('mailer/', include('apps.core.mailer.urls')),
 ]

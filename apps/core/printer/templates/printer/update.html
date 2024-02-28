@@ -80,16 +80,14 @@
                 >
                     {% trans 'Help' %} <i class="ml-1 fa-solid fa-circle-info"></i>
                 </button>
-                <button id="idx-btn-print" class="btn btn-sm btn-gradient-primary btn-square ml-1" type="button">
-                    {% trans 'Print Preview' %} <i class="ml-1 fa-solid fa-print"></i>
-                </button>
+{#                <button id="idx-btn-print" class="btn btn-sm btn-gradient-primary btn-square ml-1" type="button">#}
+{#                    {% trans 'Print Preview' %} <i class="ml-1 fa-solid fa-print"></i>#}
+{#                </button>#}
             </div>
             <div class="col-12 mb-2" style="display: none;" id="idx-instruction-editor">
                 <div class="w-100" style="border-left: 3px solid #f1f1f1; border-radius: 5px;padding: 1rem;">
                     <b>1. {% trans 'Dynamic Data' %}</b>
-                    <p class="ml-3">
-                        {% trans 'Type ‘#’ and your search data to open a dynamic data field selection menu. The Dynamic Data feature will be searchable by the names or codes of the data fields.' %}
-                    </p>
+                        {% include 'printer/extends/dynamic_data.html' %}
                     <b>2. {% trans 'Toolbar' %}</b>
                     <div class="row ml-3">
                         {% include 'printer/extends/instruction_toolbar.html' %}

@@ -3869,6 +3869,7 @@ class QuotationCalculateCaseHandle {
     static updateTotal(table, is_product, is_cost, is_expense) {
         let form = document.getElementById('frm_quotation_create');
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
         let pretaxAmount = 0;
         let discountAmount = 0;
         let taxAmount = 0;
@@ -3883,9 +3884,8 @@ class QuotationCalculateCaseHandle {
         let eleDiscountRateTotal = null;
         let finalRevenueBeforeTax = null;
         if (is_product === true) {
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            if (tableProduct.closest('.dataTables_scroll')) {
-                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                 elePretaxAmount = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
                 eleTaxes = tableProductFt.querySelector('.quotation-create-product-taxes');
                 eleTotal = tableProductFt.querySelector('.quotation-create-product-total');
@@ -3906,9 +3906,8 @@ class QuotationCalculateCaseHandle {
             eleTaxesRaw = tableCost.querySelector('.quotation-create-cost-taxes-raw');
             eleTotalRaw = tableCost.querySelector('.quotation-create-cost-total-raw');
         } else if (is_expense === true) {
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
-            if (tableExpense.closest('.dataTables_scroll')) {
-                let tableExpenseFt = tableExpense.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            if (tableExpenseWrapper) {
+                let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
                 elePretaxAmount = tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount');
                 eleTaxes = tableExpenseFt.querySelector('.quotation-create-expense-taxes');
                 eleTotal = tableExpenseFt.querySelector('.quotation-create-expense-total');

@@ -181,28 +181,30 @@ $(function () {
 
 // ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total
         tableProduct.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
-            let row = $(this)[0].closest('tr');
-            if ($(this).hasClass('table-row-item')) {
-                QuotationLoadDataHandle.loadDataProductSelect($(this));
+            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                let row = $(this)[0].closest('tr');
+                if ($(this).hasClass('table-row-item')) {
+                    QuotationLoadDataHandle.loadDataProductSelect($(this));
+                }
+                // validate number
+                if ($(this).hasClass('table-row-quantity') && $(this).hasClass('validated-number')) {
+                    validateNumber(this);
+                }
+                // Clear table COST if item or quantity change
+                if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
+                    // load again table cost
+                    QuotationLoadDataHandle.loadDataTableCost();
+                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                }
+                // Delete all promotion rows
+                deletePromotionRows(tableProduct, true, false);
+                // Delete all shipping rows
+                deletePromotionRows(tableProduct, false, true);
+                // Re Calculate all data of rows & total
+                QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
+                // change value before tax table payment
+                QuotationLoadDataHandle.loadChangePSValueBTAll();
             }
-            // validate number
-            if ($(this).hasClass('table-row-quantity') && $(this).hasClass('validated-number')) {
-                validateNumber(this);
-            }
-            // Clear table COST if item or quantity change
-            if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
-                // load again table cost
-                QuotationLoadDataHandle.loadDataTableCost();
-                QuotationLoadDataHandle.loadSetWFRuntimeZone();
-            }
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // Re Calculate all data of rows & total
-            QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
-            // change value before tax table payment
-            QuotationLoadDataHandle.loadChangePSValueBTAll();
         });
 
 // If change product uom then clear table COST

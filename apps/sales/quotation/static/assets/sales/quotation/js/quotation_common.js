@@ -1064,6 +1064,7 @@ class QuotationLoadDataHandle {
         let $table = $('#datable-quotation-create-product');
         let tableData = [];
         let dataDetail = {};
+        let dataPriceJSON = {};
         if ($form.attr('data-method').toLowerCase() === 'get') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
@@ -1179,6 +1180,12 @@ class QuotationLoadDataHandle {
                         rowData['group_order'] = parseInt(dataGroupRaw);
                     }
                     tableData.push(rowData);
+                    // setup price
+                    if (rowData?.['order'] && rowData?.['product_unit_price']) {
+                        if (!dataPriceJSON.hasOwnProperty(rowData?.['order'])) {
+                            dataPriceJSON[rowData?.['order']] = rowData?.['product_unit_price'];
+                        }
+                    }
                 } else if (elePromotion) { // PROMOTION
                     let check_none_blank_list = ['', "", null, "undefined"];
                     rowData['is_group'] = false;
@@ -1317,6 +1324,10 @@ class QuotationLoadDataHandle {
         $table.DataTable().rows.add(tableData).draw();
         // load dropdowns
         QuotationLoadDataHandle.loadDropDowns($table);
+        // load price
+        if ($form.attr('data-method').toLowerCase() !== 'get') {
+            QuotationLoadDataHandle.loadReInitPrice(dataPriceJSON);
+        }
         // load product group
         $table.DataTable().rows().every(function () {
             let row = this.node();
@@ -1481,6 +1492,20 @@ class QuotationLoadDataHandle {
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
     };
+
+    static loadReInitPrice(data) {
+        let $table = $('#datable-quotation-create-product');
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleOrder = row.querySelector('.table-row-order');
+            let elePrice = row.querySelector('.table-row-price');
+            if (eleOrder && elePrice) {
+                let order = parseInt(eleOrder.innerHTML);
+                $(elePrice).attr('value', String(data[order])).trigger('change');
+                $.fn.initMaskMoney2();
+            }
+        });
+    }
 
     static loadDataTablePaymentStage() {
         let $table = $('#datable-quotation-payment-stage');

@@ -21,6 +21,7 @@
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'login/auth.css' %}" rel="stylesheet" type="text/css">
         <style>
             html, body {
                 font-family: "Josefin Sans", sans-serif;
@@ -32,34 +33,22 @@
                 background-color: #e5fdff !important;
                 color: #37ceda !important;
             }
-
-            @media (max-width: 767px) {
-              .hidden-xs {
-                display: none;
-              }
-            }
-
-            #canvas{
-		background-color: #2c343f;
-		width: 100%;
-		height: 100%;
-}
         </style>
     {% endcompress %}
 </head>
 <body>
 <!-- Wrapper -->
 <div class="hk-wrapper hk-pg-auth bg-light position-relative" data-footer="simple">
-    <canvas id="canvas" class="position-absolute" style="width: 100%;height:100%;"></canvas>
     <!-- Main Content -->
     <div class="hk-pg-wrapper pt-0 pb-xl-0 pb-5">
+        <canvas id="canvas" class="position-absolute" style="width: 100%;height:100%;"></canvas>
         <div class="hk-pg-body pt-0 pb-xl-0">
             <!-- Container -->
             <div class="container-xxl">
                 <!-- Row -->
-                <div class="row">
-                    <div class="col-sm-10 position-relative mx-auto">
-                        <div class="auth-content py-8">
+                <div class="row mx-auto" style="max-width: 450px;">
+                    <div class="col-12 position-relative ">
+                        <div class="auth-content mt-8">
                             <form
                                     class="w-100"
                                     id="form-login"
@@ -67,83 +56,79 @@
                                     autocomplete="off"
                                     data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
                             >
-                                <div class="row">
-                                    <div class="col-lg-5 col-md-7 col-sm-10 mx-auto p-3">
-                                        <div class="card card-lg card-border" style="background-color: rgb(255, 255, 255, 0.8)">
-                                            <div class="card-body">
-                                                <div class="text-center mb-7 overflow-hidden">
-                                                    <a class="navbar-brand me-0" href="https://www.bflow.vn">
-                                                        <img
-                                                                class="brand-img d-inline-block"
-                                                                src="{% static 'assets/images/bflow/logo_180x180.png' %}"
-                                                                alt="brand"
-                                                                style="width: 100%; object-fit: cover;"
-                                                        >
-                                                    </a>
-                                                </div>
-                                                <div class="w-100 mb-4">
-                                                    <h4 class="text-center">{% trans 'login' %}</h4>
-                                                </div>
-                                                <div class="row gx-3">
-                                                    <div class="form-group d-none">
-                                                        <div class="form-label-group">
-                                                            <label>Tenant</label>
-                                                        </div>
-                                                        <select
-                                                                class="form-select" id="tenant-select" required
-                                                                data-url="{% url 'TenantLoginChoice' %}"
-                                                                data-method="GET"
-                                                                name="tenant_code"
-                                                        >
-                                                            <option disabled value="">
-                                                                {% trans 'Choose...' %}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i class="fa fa-user"></i></span>
-                                                            <label for="inp-username"></label>
-                                                            <input type="text" class="form-control" name="username" id="inp-username" placeholder="{% trans 'User name' %}" tabindex="1">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group position-relative">
-                                                            <span class="input-group-text">
-                                                                <i class="fa fa-lock"></i>
-                                                            </span>
-                                                            <span class="position-absolute" style="z-index: 99999; cursor: pointer; right: 12px; top: 8px;" id="btn-show-passwd">
-                                                                <i class="fa-solid fa-eye"></i>
-                                                                <i class="fa-solid fa-eye-slash d-none"></i>
-                                                            </span>
-                                                            <label for="inp-password"></label>
-                                                            <input type="password" class="form-control" name="password" id="inp-password" placeholder="{% trans 'password' %}" tabindex="2">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-check form-check-sm mb-3">
-                                                    <input
-                                                            name="remember"
-                                                            type="checkbox" class="form-check-input" id="logged_in"
-                                                            checked tabindex="3"
-                                                    >
-                                                    <label
-                                                            class="form-check-label text-muted fs-7"
-                                                            for="logged_in"
-                                                    >{% trans 'Keep me logged in' %}</label>
-                                                </div>
-                                                <div id="recapcha" class="mt-1 mb-1"></div>
-                                                <input
-                                                        type="submit" class="btn btn-primary btn-uppercase btn-block mb-3"
-                                                        value="{% trans 'Login' %}" tabindex="4"
+                                <div class="card card-lg card-border box-vertical-blur">
+                                    <div class="card-body">
+                                        <div class="text-center mb-7 overflow-hidden">
+                                            <a class="navbar-brand me-0" href="https://www.bflow.vn">
+                                                <img
+                                                        class="brand-img d-inline-block"
+                                                        src="{% static 'assets/images/bflow/logo_180x180.png' %}"
+                                                        alt="brand"
+                                                        style="width: 100%; object-fit: cover;"
                                                 >
-                                                <div class="d-flex justify-content-between align-items-center mb-0">
-                                                    <small class="flex-item">
-                                                        <a href="https://www.bflow.vn/#trial-form">{% trans 'Sign Up' %}</a>
-                                                    </small>
-                                                    <small class="flex-item"><a href="{% url 'ForgotPasswordView' %}">{% trans 'Forgot Password ?' %}</a></small>
+                                            </a>
+                                        </div>
+                                        <div class="w-100 mb-4">
+                                            <h4 class="text-center">{% trans 'login' %}</h4>
+                                        </div>
+                                        <div class="row gx-3">
+                                            <div class="form-group d-none">
+                                                <div class="form-label-group">
+                                                    <label>Tenant</label>
+                                                </div>
+                                                <select
+                                                        class="form-select" id="tenant-select" required
+                                                        data-url="{% url 'TenantLoginChoice' %}"
+                                                        data-method="GET"
+                                                        name="tenant_code"
+                                                >
+                                                    <option disabled value="">
+                                                        {% trans 'Choose...' %}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                    <label for="inp-username"></label>
+                                                    <input type="text" class="form-control" name="username" id="inp-username" placeholder="{% trans 'User name' %}" tabindex="1">
                                                 </div>
                                             </div>
+                                            <div class="form-group">
+                                                <div class="input-group position-relative">
+                                                    <span class="input-group-text">
+                                                        <i class="fa fa-lock"></i>
+                                                    </span>
+                                                    <span class="position-absolute" style="z-index: 99999; cursor: pointer; right: 12px; top: 8px;" id="btn-show-passwd">
+                                                        <i class="fa-solid fa-eye"></i>
+                                                        <i class="fa-solid fa-eye-slash d-none"></i>
+                                                    </span>
+                                                    <label for="inp-password"></label>
+                                                    <input type="password" class="form-control" name="password" id="inp-password" placeholder="{% trans 'password' %}" tabindex="2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-check form-check-sm mb-3">
+                                            <input
+                                                    name="remember"
+                                                    type="checkbox" class="form-check-input" id="logged_in"
+                                                    checked tabindex="3"
+                                            >
+                                            <label
+                                                    class="form-check-label text-muted fs-7"
+                                                    for="logged_in"
+                                            >{% trans 'Keep me logged in' %}</label>
+                                        </div>
+                                        <div id="recapcha" class="mt-1 mb-1"></div>
+                                        <input
+                                                type="submit" class="btn btn-primary btn-uppercase btn-block mb-3"
+                                                value="{% trans 'Login' %}" tabindex="4"
+                                        >
+                                        <div class="d-flex justify-content-between align-items-center mb-0">
+                                            <small class="flex-item">
+                                                <a href="https://www.bflow.vn/#trial-form">{% trans 'Sign Up' %}</a>
+                                            </small>
+                                            <small class="flex-item"><a href="{% url 'ForgotPasswordView' %}">{% trans 'Forgot Password ?' %}</a></small>
                                         </div>
                                     </div>
                                 </div>
@@ -158,11 +143,11 @@
         <!-- /Page Body -->
 
         <!-- Page Footer -->
-        <div class="hk-footer border-0" style="background-color: rgba(0, 0, 0, 0.5)">
+        <div class="hk-footer border-0 copyrightbox">
             <footer class="container-xxl footer">
                 <div class="row">
                     <div class="col-xl-8 text-center">
-                        <p class="footer-text pb-0" style="font-size: 0.8rem;">
+                        <p class="footer-text pb-0 copyrighttext">
                             <span class="copy-text">BFlow © 2023 All rights reserved.</span>
                         </p>
                     </div>

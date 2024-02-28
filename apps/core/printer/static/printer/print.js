@@ -440,12 +440,13 @@ class PrintTinymceControl {
                                         }
                                     },
                                     insert: function (item) {
+                                        // zero with space: \u200B&nbsp; or \u200B
                                         return `<span
                                             id="idx-${$x.fn.randomStr(16)}" 
                                             class="params-data" 
                                             data-code="${item.code}" 
                                             style="padding: 3px;background-color: #f1f1f1;"
-                                        >#${item.title}</span>\u200B&nbsp;`
+                                        >#${item.title}</span>\u200B`;
                                     },
                                     render: function(item) {
                                         return `
@@ -467,7 +468,8 @@ class PrintTinymceControl {
                                     editor.on('keydown', function(e) {
                                         if (e.key === 'Backspace' || e.key === 'Delete') {
                                             let node = editor.selection.getNode();
-                                            if (node.getAttribute("data-mention") === "true") {
+
+                                            if (node.classList.contains('params-data') && node.getAttribute('data-code')){
                                                 e.preventDefault();
                                                 node.remove();
                                                 if (editor.getContent() === '') editor.setContent('<p>&nbsp;</p>');
@@ -618,6 +620,7 @@ class PrintTinymceControl {
     }
 
     render(application_id, data, is_open=false){
+        console.log('data:', data);
         if (application_id && data){
             let clsThis = this;
             if (typeof tinymce === 'object' && this.modal$.length > 0 && this.textarea$.length > 0){

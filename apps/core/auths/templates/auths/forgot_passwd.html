@@ -24,6 +24,7 @@
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'login/auth.css' %}" rel="stylesheet" type="text/css">
         <style>
             html, body {
                 font-family: "Josefin Sans", sans-serif;
@@ -35,128 +36,114 @@
                 background-color: #e5fdff !important;
                 color: #37ceda !important;
             }
-
-            #canvas {
-                background-color: #2c343f;
-                width: 100%;
-                height: 100%;
-            }
         </style>
     {% endcompress %}
 </head>
 <body>
 <!-- Wrapper -->
 <div class="hk-wrapper hk-pg-auth bg-light position-relative" data-footer="simple">
-    <canvas id="canvas" class="position-absolute" style="width: 100%;height:100%;"></canvas>
     <!-- Main Content -->
-    <div class="hk-pg-wrapper pt-0 pb-xl-0 pb-5">
+    <div class="hk-pg-wrapper pt-0 pb-xl-0 pb-5 position-relative">
+        <canvas id="canvas" class="position-absolute" style="width: 100%;height:100%;"></canvas>
         <div class="hk-pg-body pt-0 pb-xl-0">
             <!-- Container -->
             <div class="container-xxl">
                 <!-- Row -->
-                <div class="row">
-                    <div class="col-sm-10 position-relative mx-auto">
-                        <div class="auth-content py-8">
-                            <form
-                                    class="w-100"
-                                    id="form-login"
-                                    data-url="{% url 'AuthLogin' %}" data-url-redirect="" data-method="POST"
-                                    autocomplete="off"
-                                    data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
-                            >
-                                <div class="row">
-                                    <div class="col-lg-5 col-md-7 col-sm-10 mx-auto p-3">
-                                        <div class="card card-lg card-border"  style="background-color: rgb(255, 255, 255, 0.8)">
-                                            <div class="card-body">
-                                                <div class="w-100 mb-3">
-                                                    <div class="form-group">
-                                                        <label
-                                                                for="inp-username" class="form-label"
-                                                        >{% trans 'username' %}</label>
-                                                        <div class="input-group mb-3">
-                                                            <input
-                                                                    type="text" name="username" id="inp-username"
-                                                                    class="form-control" placeholder="huynv"
-                                                                    tabindex="1"
-                                                            >
-                                                            <button
-                                                                    class="btn btn-outline-primary" type="button"
-                                                                    tabindex="2"
-                                                            >
-                                                                {% trans 'Get OTP' %}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <button class="btn btn-primary" tabindex="3" style="text-transform: unset;">{% trans 'Resend OTP' %}</button>
-                                                </div>
-                                                <div class="separator-full"></div>
-                                                <div class="w-100 mb-3">
-
-                                                </div>
-                                                <div class="separator-full"></div>
-                                                <div class="w-100 mb-3">
-                                                    <div class="form-group">
-                                                        <label
-                                                                for="inp-otp" class="form-label"
-                                                        >{% trans 'OTP' %}</label>
-                                                        <div class="input-group mb-3">
-                                                            <input
-                                                                    type="text" name="otp" id="inp-otp"
-                                                                    class="form-control" placeholder="999999"
-                                                                    tabindex="4"
-                                                            >
-                                                            <button
-                                                                    class="btn btn-outline-success" type="button"
-                                                                    tabindex="5"
-                                                            >
-                                                                {% trans 'Verify' %}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="separator-full"></div>
-                                                <div class="w-100 mb-3">
-                                                    <div class="form-group mb-3">
-                                                        <label
-                                                                for="inp-new-password" class="form-label"
-                                                        >{% trans 'New password' %}</label>
-                                                        <div class="input-group mb-3">
-                                                            <input
-                                                                    type="password" name="new-password"
-                                                                    id="inp-new-password" class="form-control"
-                                                                    placeholder="●●●●●●●●" tabindex="6"
-                                                            >
-                                                            <button
-                                                                    class="btn btn-outline-secondary w-100p"
-                                                                    type="button" id="btn-show-hide-passwd" tabindex="7"
-                                                            >
-                                                                <span>{% trans 'Show' %}</span>
-                                                                <span class="d-none">{% trans 'Hide' %}</span>
-                                                            </button>
-                                                        </div>
-                                                        <small class="form-text text-muted">
-                                                            {% trans 'Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols.' %}
-                                                        </small>
-                                                    </div>
-                                                    <div class="w-100">
-                                                        <small>{% trans 'Strength of password' %}</small>
-                                                        <div class="progress progress-bar-rounded mb-5">
-                                                            <div
-                                                                    class="progress-bar bg-light w-0" role="progressbar"
-                                                                    aria-valuenow="25" aria-valuemin="0"
-                                                                    aria-valuemax="100" id="strengthPasswordProgress"
-                                                            ></div>
-                                                        </div>
-                                                    </div>
-                                                    <button
-                                                            class="w-100 btn btn-success" tabindex="8"
-                                                    >{% trans 'Update' %}</button>
-                                                </div>
+                <div class="row mx-auto" style="max-width: 450px;">
+                    <div class="col-12 position-relative ">
+                        <div class="auth-content mt-8">
+                            <div class="card card-lg card-border box-vertical-blur">
+                                <div class="card-body">
+                                    <div class="w-100 mb-3" id="username-call-get">
+                                        <div class="form-group">
+                                            <label for="inp-username" class="form-label">
+                                                {% trans 'username' %}
+                                            </label>
+                                            <div class="input-group mb-3">
+                                                <input
+                                                        type="text" name="username" id="inp-username"
+                                                        class="form-control" placeholder=""
+                                                        tabindex="1"
+                                                >
+                                                <button
+                                                        class="btn btn-primary" type="button" id="btnGetOtp"
+                                                        tabindex="2"
+                                                >
+                                                    {% trans 'Get OTP' %}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="w-100 mb-3" id="validated-person" style="display: none;">
+                                        <div class="w-100 mb-3">
+                                            <div class="avatar">
+                                                <img src="{% static 'assets/images/systems/person-avt.png' %}" alt="user" class="avatar-img">
+                                            </div>
+                                            <span>Nguyễn Văn A</span>
+                                        </div>
+                                        <div class="separator-full"></div>
+                                    </div>
+                                    <div class="w-100 mb-3" id="validate-otp" style="display: none;">
+                                        <div class="w-100 d-flex justify-content-between align-items-centerr">
+                                            <p class="flex-item" data-txt="{% trans 'Time remaining %s' %}" data-counter="89">Time remaining 01:29</p>
+                                            <button class="flex-item btn btn-xs btn-primary" tabindex="3" style="text-transform: unset;">{% trans 'Resend OTP' %}</button>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inp-otp" class="form-label"></label>
+                                            <div class="input-group mb-3">
+                                                <input
+                                                        type="text" name="otp" id="inp-otp"
+                                                        class="form-control" placeholder="otp"
+                                                        tabindex="4"
+                                                >
+                                                <button
+                                                        class="btn btn-success" type="button" id="btnVerifyOtp"
+                                                        tabindex="5"
+                                                >
+                                                    {% trans 'Verify' %}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-100 mb-3" id="enter-new-password-submit" style="display: none;">
+                                        <div class="form-group mb-3">
+                                            <label
+                                                    for="inp-new-password" class="form-label"
+                                            >{% trans 'New password' %}</label>
+                                            <div class="input-group mb-3">
+                                                <input
+                                                        type="password" name="new-password"
+                                                        id="inp-new-password" class="form-control"
+                                                        placeholder="●●●●●●●●" tabindex="6"
+                                                >
+                                                <button
+                                                        class="btn btn-secondary w-100p"
+                                                        type="button" id="btn-show-hide-passwd" tabindex="7"
+                                                >
+                                                    <span>{% trans 'Show' %}</span>
+                                                    <span class="d-none">{% trans 'Hide' %}</span>
+                                                </button>
+                                            </div>
+                                            <small class="form-text text-muted">
+                                                {% trans 'Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols.' %}
+                                            </small>
+                                        </div>
+                                        <div class="w-100">
+                                            <small>{% trans 'Strength of password' %}</small>
+                                            <div class="progress progress-bar-rounded mb-5">
+                                                <div
+                                                        class="progress-bar bg-light w-0" role="progressbar"
+                                                        aria-valuenow="25" aria-valuemin="0"
+                                                        aria-valuemax="100" id="strengthPasswordProgress"
+                                                ></div>
+                                            </div>
+                                        </div>
+                                        <button
+                                                class="w-100 btn btn-success" tabindex="8" id="btnSubmitNewPassword" disabled
+                                        >{% trans 'Update' %}</button>
+                                    </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -167,11 +154,11 @@
         <!-- /Page Body -->
 
         <!-- Page Footer -->
-        <div class="hk-footer border-0" style="background-color: rgba(0, 0, 0, 0.5)">
+        <div class="hk-footer border-0 copyrightbox">
             <footer class="container-xxl footer">
                 <div class="row">
                     <div class="col-xl-8 text-center">
-                        <p class="footer-text pb-0" style="font-size: 0.8rem;">
+                        <p class="footer-text pb-0 copyrighttext">
                             <span class="copy-text">BFlow © 2023 All rights reserved.</span>
                         </p>
                     </div>
@@ -182,17 +169,6 @@
 
     </div>
     <!-- /Main Content -->
-    <!-- spinner loading -->
-    <div id="loadingContainer" class="loading-container hidden">
-        <div class="my-spinner">
-            <div class="my-circle my-circle-1"></div>
-            <div class="my-circle my-circle-2"></div>
-            <div class="my-circle my-circle-3"></div>
-            <div class="my-circle my-circle-4"></div>
-            <div class="my-circle my-circle-5"></div>
-        </div>
-    </div>
-    <!-- /spinner loading -->
     <div class="hidden">
         <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
         <span
@@ -255,6 +231,7 @@
             $('#strengthPasswordProgress')
                 .alterClass('w-*').addClass('w-' + percent)
                 .alterClass('bg-*').addClass('bg-' + clsBg);
+            $('#btnSubmitNewPassword').prop('disabled', percent <= 45);
         }
 
         function checkStrengthOfPassword(passwdStr) {
@@ -289,6 +266,25 @@
                 if (inpEle.attr('type') === 'password') inpEle.attr('type', 'text');
                 else inpEle.attr('type', 'password');
             });
+
+            let groupCallGet = $('#username-call-get');
+            let groupValidPerson = $('#validated-person');
+            let groupValidOtp = $('#validate-otp');
+            let groupNewPasswd = $('#enter-new-password-submit');
+
+
+            $('#btnGetOtp').on('click', function (){
+                groupCallGet.fadeOut('fast', function (){
+                    groupValidPerson.fadeIn('fast');
+                    groupValidOtp.fadeIn('fast');
+                });
+            });
+
+            $('#btnVerifyOtp').on('click', function (){
+                groupValidOtp.fadeOut('fast', function (){
+                    groupNewPasswd.fadeIn('fast');
+                });
+            })
         })
 
         $.fn.extend({
@@ -379,17 +375,6 @@
                     ...o,
                     [kv.name]: kv.value
                 }), {});
-            },
-            showLoadingLogin: function (timeout) {
-                $('#loadingContainer').removeClass('hidden');
-                if (timeout) {
-                    setTimeout($.fn.hideLoadingLogin, (timeout > 100 ? timeout : 1000));
-                }
-            },
-            hideLoadingLogin: function () {
-                setTimeout(() => {
-                    $('#loadingContainer').addClass('hidden');
-                }, 250,)
             },
             callAjaxLogin: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
                 return new Promise(function (resolve, reject) {

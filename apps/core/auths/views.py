@@ -217,7 +217,7 @@ class MyLanguageAPI(APIView):
         return {}, status.HTTP_403_FORBIDDEN
 
 
-class ForgotPasswordView(View):
+class ForgotPasswordView(APIView):
     @mask_view(login_require=False, is_api=False)
     def get(self, request, *args, **kwargs):
         if request.user and not isinstance(request.user, AnonymousUser):

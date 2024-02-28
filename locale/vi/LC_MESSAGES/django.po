@@ -4911,6 +4911,14 @@ msgid "Type ‘#’ and your search data to open a dynamic data field selection 
 msgstr "Nhập '#' và dữ liệu tìm kiếm của bạn để mở menu chọn trường dữ liệu động. Tính năng Dữ liệu động sẽ có thể tìm kiếm được theo tên hoặc mã của các trường dữ liệu."
 
 #
+msgid "Params display multiple value, so It must be using in table."
+msgstr "Thông số hiển thị nhiều giá trị nên nó phải được sử dụng trong bảng."
+
+#
+msgid "Params display normal value."
+msgstr "Thông số hiển thị dữ liệu chuẩn."
+
+#
 msgid "Mentions"
 msgstr "Đề cập"
 

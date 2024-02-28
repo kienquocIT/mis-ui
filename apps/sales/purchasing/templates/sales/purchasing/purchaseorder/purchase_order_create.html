@@ -370,46 +370,6 @@
             </div>
         </div>
 
-        <input
-            type="hidden"
-            id="app-trans-factory"
-            data-view-detail-info="{% trans 'View detail' %}"
-            data-more-information="{% trans 'More information' %}"
-            data-product-not-in="{% trans 'Product is not in' %}"
-            data-validate-order-request="{% trans 'Exceeded quantity requested' %}"
-            data-validate-order-actual="{% trans 'Must not less than quantity ordered' %}"
-            data-valid="{% trans "Valid" %}"
-        >
-        <input
-            type="hidden"
-            id="data-init-product"
-            data-url="{% url "ProductForSaleListAPI" %}"
-            data-link-detail="{% url "ProductDetail" 1 %}"
-            data-method="GET"
-        >
-        <input
-            type="hidden"
-            id="data-init-uom"
-            data-url="{% url "UnitOfMeasureListAPI" %}"
-            data-method="GET"
-        >
-        <input
-            type="hidden"
-            id="data-init-tax"
-            data-url="{% url "TaxListAPI" %}"
-            data-method="GET"
-        >
-        <input
-            type="hidden"
-            id="data-purchase-quotation-products"
-            data-url="{% url "PurchaseQuotationProductListAPI" %}"
-            data-method="GET"
-        >
-        <input
-            type="hidden"
-            id="customer-price-list"
-        >
-
 
         <div class="modal fade mt-5" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
@@ -581,6 +541,47 @@
     </form>
 {% endblock %}
 
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-view-detail-info="{% trans 'View detail' %}"
+            data-more-information="{% trans 'More information' %}"
+            data-product-not-in="{% trans 'Product is not in' %}"
+            data-validate-order-request="{% trans 'Exceeded quantity requested' %}"
+            data-validate-order-actual="{% trans 'Must not less than quantity ordered' %}"
+            data-valid="{% trans "Valid" %}"
+        >
+        <input
+            type="text"
+            id="data-init-product"
+            data-url="{% url "ProductForSaleListAPI" %}"
+            data-link-detail="{% url "ProductDetail" 1 %}"
+            data-method="GET"
+        >
+        <input
+            type="text"
+            id="data-init-uom"
+            data-url="{% url "UnitOfMeasureListAPI" %}"
+            data-method="GET"
+        >
+        <input
+            type="text"
+            id="data-init-tax"
+            data-url="{% url "TaxListAPI" %}"
+            data-method="GET"
+        >
+        <input
+            type="text"
+            id="data-purchase-quotation-products"
+            data-url="{% url "PurchaseQuotationProductListAPI" %}"
+            data-method="GET"
+        >
+        <input
+            type="text"
+            id="customer-price-list"
+        >
+{% endblock %}
 
 {% block jsFooter %}
 

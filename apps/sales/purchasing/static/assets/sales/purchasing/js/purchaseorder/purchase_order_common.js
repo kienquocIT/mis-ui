@@ -590,7 +590,8 @@ class POLoadDataHandle {
         let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
         if (dataRowRaw) {
             let dataRow = JSON.parse(dataRowRaw);
-            POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
+            POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')));
+            $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
             POLoadDataHandle.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_actual'], dataRow?.['uom_order_actual']?.['uom_group']?.['id']);
             POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
         }

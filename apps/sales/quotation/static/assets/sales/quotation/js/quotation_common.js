@@ -2444,7 +2444,8 @@ class QuotationLoadDataHandle {
                 if (!row.querySelector('.table-row-group')) {
                     let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
                     $(row.querySelector('.table-row-item')).empty();
-                    QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
+                    QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
+                    $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
                     $(row.querySelector('.table-row-uom')).empty();
                     QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow?.['unit_of_measure']);
                     $(row.querySelector('.table-row-tax')).empty();

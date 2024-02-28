@@ -29,6 +29,9 @@ $(function () {
             PODataTableHandle.dataTablePurchaseOrderProductRequest();
             PODataTableHandle.dataTablePaymentStage();
         }
+        if (formSubmit.attr('data-method').toLowerCase() === 'get') {
+            POLoadDataHandle.loadInitProduct();
+        }
         if (formSubmit.attr('data-method').toLowerCase() === 'put') {
             POLoadDataHandle.loadInitProduct();
         }

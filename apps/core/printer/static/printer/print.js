@@ -452,7 +452,8 @@ class PrintTinymceControl {
                                         return `
                                             <li style="cursor: pointer;" class="d-flex align-items-center">
                                                 ${item.code.indexOf('___') !== -1 ? '<i class="fa-solid fa-table-list fa-2xs mr-1"></i>' : '<i class="fa-solid fa-paragraph fa-2xs mr-1"></i>'}
-                                                ${item.title} <small>${ item.remark ? '- ' + item.remark : ''}</small>
+                                                ${item.title} 
+                                                <small style="margin-left: 5px;">${ item.remark ? ' - ' + item.remark : ''}</small>
                                             </li>
                                         `
                                     },
@@ -620,7 +621,7 @@ class PrintTinymceControl {
     }
 
     render(application_id, data, is_open=false){
-        console.log('data:', data);
+        // console.log('data:', data);
         if (application_id && data){
             let clsThis = this;
             if (typeof tinymce === 'object' && this.modal$.length > 0 && this.textarea$.length > 0){

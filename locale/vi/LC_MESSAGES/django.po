@@ -73,6 +73,19 @@ msgstr "Số điện thoại liên lạc"
 msgid "User Name"
 msgstr "Tên Đăng Nhập"
 
+#
+msgid "User name"
+msgstr "Tên đăng nhập"
+
+#
+msgid "password"
+msgstr "Mật khẩu"
+
+#
+msgid "Sign Up"
+msgstr "Đăng ký"
+
+
 #: .\apps\core\account\templates\core\account\user_create.html:115
 msgid "Username to login "
 msgstr "Tên tài khoản để đăng nhập"
@@ -142,6 +155,10 @@ msgid "Change password of"
 msgstr "Đặt lại mật khẩu của"
 
 #
+msgid "Current password"
+msgstr "Mật khẩu hiện tại"
+
+#
 msgid "New password"
 msgstr "Mật khẩu mới"
 
@@ -206,7 +223,7 @@ msgstr "Hiển thị/ẩn trình chỉnh sửa"
 
 #
 msgid "Sign in to your account"
-msgstr "Đăng nhập vào tài khoản của bạn"
+msgstr "Đăng nhập tài khoản của bạn"
 
 #: .\apps\core\auths\templates\auths\login.html:71
 msgid "Choose..."
@@ -223,6 +240,31 @@ msgstr "Ghi nhớ đăng nhập"
 #: .\apps\core\auths\templates\auths\login.html:135
 msgid "Login"
 msgstr "Đăng Nhập"
+
+#
+msgid "login"
+msgstr "Đăng nhập"
+
+#
+msgid "Get OTP"
+msgstr "Lấy OTP"
+
+#
+msgid "Resend OTP"
+msgstr "Gửi lại OTP"
+
+
+#
+msgid "Verify"
+msgstr "Xác minh"
+
+#
+msgid "Strength of password"
+msgstr "Độ mạnh của mật khẩu"
+
+#
+msgid "Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols."
+msgstr "Sử dụng mật khẩu mạnh có ít nhất 6 ký tự, bao gồm kết hợp chữ thường, chữ hoa, số và ký hiệu."
 
 #: .\apps\core\auths\templates\auths\login.html:139
 msgid "Creat new account to MIS"
@@ -2154,11 +2196,6 @@ msgid "Beneficiary"
 msgstr "Người thụ hưởng"
 
 #
-msgid "Print"
-msgstr "In"
-
-
-#
 msgid "Remain Total"
 msgstr "Tổng còn lại"
 
@@ -2438,6 +2475,10 @@ msgstr "Chi tiết người dùng"
 #
 msgid "Edit user"
 msgstr "Chỉnh sửa người dùng"
+
+#
+msgid "Change password"
+msgstr "Thay đổi mật khẩu"
 
 #
 msgid "Company Overview"
@@ -3491,7 +3532,7 @@ msgstr "SL lấy trước đó"
 
 #
 msgid "Remain"
-msgstr "Chưa giao"
+msgstr "Còn lại"
 
 #
 msgid "Product in Warehouse out of stock"
@@ -4499,12 +4540,12 @@ msgid "Select items from purchase request"
 msgstr "Chọn sản phẩm từ yêu cầu mua hàng"
 
 #
-msgid "Quantity order must be less than quantity remain"
-msgstr "Số lượng đặt mua phải nhỏ hơn số lượng chưa mua"
+msgid "Exceeded quantity requested"
+msgstr "Vượt quá số lượng yêu cầu"
 
 #
-msgid "Quantity order actually must be greater than or equal quantity order on request"
-msgstr "Số lượng đặt mua thực tế phải lớn hơn hoặc bằng số lượng yêu cầu"
+msgid "Must not less than quantity ordered"
+msgstr "Không được ít hơn số lượng đặt hàng"
 
 #
 msgid "Remain (PO)"
@@ -4858,6 +4899,170 @@ msgid "Preview full"
 msgstr "Xem bản đầy đủ"
 
 #
+msgid "Help"
+msgstr "Trợ giúp"
+
+#
+msgid "Print"
+msgstr "In"
+
+#
+msgid "Print List"
+msgstr "Danh sách mẫu in"
+
+#
+msgid "Dynamic Data"
+msgstr "Dữ liệu động"
+
+#
+msgid "Type ‘#’ and your search data to open a dynamic data field selection menu. The Dynamic Data feature will be searchable by the names or codes of the data fields."
+msgstr "Nhập '#' và dữ liệu tìm kiếm của bạn để mở menu chọn trường dữ liệu động. Tính năng Dữ liệu động sẽ có thể tìm kiếm được theo tên hoặc mã của các trường dữ liệu."
+
+#
+msgid "Params display multiple value, so It must be using in table."
+msgstr "Thông số hiển thị nhiều giá trị nên nó phải được sử dụng trong bảng."
+
+#
+msgid "Params display normal value."
+msgstr "Thông số hiển thị dữ liệu chuẩn."
+
+#
+msgid "Mentions"
+msgstr "Đề cập"
+
+#
+msgid "Type ‘@‘ and your search data to open a list of people you want to mention. The Mention feature will search for people by their last name, first name or email address."
+msgstr "Nhập '@' và dữ liệu tìm kiếm của bạn để mở danh sách những người bạn muốn đề cập. Tính năng Đề cập sẽ tìm kiếm mọi người theo họ, tên hoặc địa chỉ email của họ."
+
+#
+msgid "Print Template is unavailable"
+msgstr "Mẫu in không có sẵn"
+
+#
+msgid "Toolbar"
+msgstr "Thanh công cụ"
+
+#
+msgid "Bold"
+msgstr "In đậm"
+
+#
+msgid "Italic"
+msgstr "In nghiên"
+
+#
+msgid "Underline"
+msgstr "Gạch chân"
+
+#
+msgid "Strikethrough"
+msgstr "Gạch ngang"
+
+#
+msgid "Font family"
+msgstr "Phông chữ"
+
+#
+msgid "Font size"
+msgstr "Cỡ chữ"
+
+#
+msgid "Font style"
+msgstr "Kiểu chữ"
+
+#
+msgid "Align Left"
+msgstr "Căn trái"
+
+#
+msgid "Align Center"
+msgstr "Căn giữa"
+
+#
+msgid "Align Right"
+msgstr "Căn phải"
+
+#
+msgid "Justify"
+msgstr "Căn đều"
+
+#
+msgid "Decrease Indent"
+msgstr "Giảm thụt lề"
+
+#
+msgid "Increase Indent"
+msgstr "Thụt lề"
+
+#
+msgid "Numbered list"
+msgstr "Danh sách đánh số"
+
+#
+msgid "Bullet list"
+msgstr "Danh sách"
+
+#
+msgid "Table"
+msgstr "Bảng"
+
+#
+msgid "Two Columns"
+msgstr "Hai cột"
+
+#
+msgid "Three Columns"
+msgstr "Ba cột"
+
+#
+msgid "Text color"
+msgstr "Màu chữ"
+
+#
+msgid "Clear formatting"
+msgstr "Xoá định dạng"
+
+#
+msgid "Line Horizontal"
+msgstr "Đường ngang"
+
+#
+msgid "Page Break"
+msgstr "Ngắt trang"
+
+#
+msgid "Special Characters"
+msgstr "Ký tự đặc biệt"
+
+#
+msgid "Emoji"
+msgstr "Biểu tượng cảm xúc"
+
+#
+msgid "Image"
+msgstr "Ảnh"
+
+#
+msgid "Media"
+msgstr "Video"
+
+#
+msgid "Link"
+msgstr "Liên kết"
+
+#
+msgid "Left to right"
+msgstr "Trái sang phải"
+
+#
+msgid "Right to left"
+msgstr "Phải sang trái"
+
+#
+msgid "Visual Blocks"
+msgstr "Hiển thị khối"
+
+#
 msgid "Print Preview"
 msgstr "Xem trước bản in"
 
@@ -4868,6 +5073,26 @@ msgstr "Trang __page__/__total_page__"
 #
 msgid "Displaying the PDF will take time depending on the size of the print template and the number of images to be printed."
 msgstr "Việc hiển thị tệp PDF sẽ mất thời gian tùy thuộc vào kích thước của mẫu in và số lượng hình ảnh cần in."
+
+#
+msgid "Please wait for the images to finish loading before proceeding with the print operation."
+msgstr "Vui lòng đợi hình ảnh tải xong trước khi tiếp tục thao tác in."
+
+#
+msgid "Templates"
+msgstr "Văn bản mẫu"
+
+#
+msgid "Mail Template"
+msgstr "Mẫu thư điện tử"
+
+#
+msgid "Print Template"
+msgstr "Mẫu in ấn"
+
+#
+msgid "Contents"
+msgstr "Nội dung"
 
 #
 msgid "Download"
@@ -6590,12 +6815,16 @@ msgid "Items Detail Report"
 msgstr "Báo cáo chi tiết mặt hàng"
 
 #
-msgid "Required"
-msgstr "Yêu cầu"
+msgid "Add group"
+msgstr "Thêm nhóm"
 
 #
-msgid "Master data config"
-msgstr "Cấu hình Master data"
+msgid "Select purchase quotation"
+msgstr "Chọn báo giá mua hàng"
+
+#
+msgid "Required"
+msgstr "Yêu cầu"
 
 #
 msgid "Transition data config"

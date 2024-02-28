@@ -456,54 +456,18 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="row" id="btn-lot-serial-area">
-                                        <div class="row mb-1">
-                                            <button
-                                                type="button"
-                                                class="btn btn-success btn-animated bg-green-light-5 w-40"
-                                                id="btn-manage-by-lot"
-                                                hidden
-                                            >
-                                                <span class="text-teal">
-                                                    <span>{% trans 'Manage by lot' %}</span>
-                                                </span>
-                                            </button>
-                                        </div>
-                                        <div class="row">
-                                            <button
-                                                type="button"
-                                                class="btn btn-success btn-animated bg-green-light-5 w-40"
-                                                id="btn-manage-by-serial"
-                                                hidden
-                                            >
-                                                <span class="text-teal">
-                                                    <span>{% trans 'Manage by serial' %}</span>
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-lot-serial" hidden>
-                                        <button
-                                            type="button"
-                                            class="btn btn-success bg-green-light-5 w-40"
-                                            id="btn-no-manage-by-lot-serial"
-                                            hidden
-                                        >
-                                            <span class="text-teal">
-                                                <span>{% trans 'No manage by lot/serial' %}</span>
-                                            </span>
-                                        </button>
                                         <div id="table-good-receipt-manage-lot-area" hidden>
                                             <table
                                                 id="datable-good-receipt-manage-lot"
-                                                class="table nowrap w-100"
+                                                class="table nowrap min-w-1000p w-100"
                                                 data-url=""
                                                 data-method="GET"
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th class="required w-40">{% trans 'Lot number' %}</th>
-                                                    <th class="required w-10">{% trans 'Quantity' %}</th>
+                                                    <th class="required w-35">{% trans 'Lot number' %}</th>
+                                                    <th class="required w-15">{% trans 'Quantity' %}</th>
                                                     <th class="w-10">{% trans 'UOM' %}</th>
                                                     <th class="w-20">{% trans 'Expiration date' %}</th>
                                                     <th class="w-20">{% trans 'Manufacturing date' %}</th>
@@ -594,14 +558,14 @@
                                         <div id="table-good-receipt-ia-lot-area" hidden>
                                             <table
                                                 id="datable-good-receipt-ia-lot"
-                                                class="table nowrap w-100"
+                                                class="table nowrap min-w-1000p w-100"
                                                 data-url=""
                                                 data-method="GET"
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th class="required w-40">{% trans 'Lot number' %}</th>
-                                                    <th class="required w-10">{% trans 'Quantity' %}</th>
+                                                    <th class="required w-35">{% trans 'Lot number' %}</th>
+                                                    <th class="required w-15">{% trans 'Quantity' %}</th>
                                                     <th class="w-10">{% trans 'UOM' %}</th>
                                                     <th class="w-20">{% trans 'Expiration date' %}</th>
                                                     <th class="w-20">{% trans 'Manufacturing date' %}</th>

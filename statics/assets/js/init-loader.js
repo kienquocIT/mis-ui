@@ -198,7 +198,7 @@ $.fn.extend({
                 case 400:
                     let mess = resp.data;
                     if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
-                    if (isNotify === true) UtilControl.notifyErrors(mess);
+                    if (isNotify === true || typeof isNotify === 'object') UtilControl.notifyErrors(mess, typeof isNotify === 'object' ? isNotify : {});
                     return {};
                 case 401:
                     WindowControl.showUnauthenticated(swalOpts,true);
@@ -317,6 +317,7 @@ $.fn.extend({
             if (!$.fn.isBoolean(isLoading)) isLoading = false;
             if (isLoading) $x.fn.showLoadingPage(loadingOpts);
 
+            // sweetAlertOpts: {'allowOutsideClick': true},
             let sweetAlertOpts = UtilControl.popKey(opts, 'sweetAlertOpts', {}, true);
 
             return new Promise(function (resolve, reject) {

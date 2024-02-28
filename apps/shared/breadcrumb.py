@@ -49,6 +49,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     USER_CREATE_PAGE = BreadcrumbChildren(_('User Create'), 'UserCreate')
     USER_DETAIL_PAGE = BreadcrumbChildren(_('User detail'))
     USER_EDIT_PAGE = BreadcrumbChildren(_('Edit user'))
+    USER_CHANGE_PASSWORD = BreadcrumbChildren(_('Change password'))
 
     # website
     MY_WEBSITE_LIST = BreadcrumbChildren(_('My Website'), 'MyCompanyWebsiteList')
@@ -326,7 +327,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_CREATE_PAGE = BreadcrumbChildren(_('Goods return create'), 'GoodsReturnCreate')
     GOODS_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
-    
+
+    PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
+    MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -417,6 +421,7 @@ class BreadcrumbView:
     USER_CREATE_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_CREATE_PAGE]
     USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    USER_CHANGE_PASSWORD = USER_LIST_PAGE + [BreadcrumbItem.USER_CHANGE_PASSWORD]
 
     MY_WEBSITE_LIST = [BreadcrumbItem.MY_WEBSITE_LIST]
 
@@ -836,3 +841,12 @@ class BreadcrumbView:
     GOODS_RETURN_CREATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RETURN_DETAIL_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
+    PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
+    PRINTER_CONFIG_CREATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_CREATE]
+    PRINTER_CONFIG_DETAIL_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    PRINTER_CONFIG_UPDATE_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    MAILER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.MAILER_CONFIG_LIST_PAGE]
+    MAILER_CONFIG_LIST_PAGE = MAILER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]

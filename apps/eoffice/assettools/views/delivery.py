@@ -23,7 +23,7 @@ class AssetToolsDeliveryCreate(View):
         response = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_CONFIG).get()
         resp_config = response.result if response.state else {}
         return {
-                   'product_type': resp_config['product_type']['id'],
+                   'warehouse_list': resp_config['warehouse']
                }, status.HTTP_200_OK
 
 
@@ -99,11 +99,14 @@ class AssetToolsDeliveryEdit(View):
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.ASSET_DELIVERY_DATA_MAP
+        response = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_CONFIG).get()
+        resp_config = response.result if response.state else {}
         return {
                    'input_mapping_properties': input_mapping_properties,
                    'form_id': 'asset_delivery_form',
                    'pk': pk,
                    'system_status': SYSTEM_STATUS,
+                   'warehouse_list': resp_config['warehouse']
                }, status.HTTP_200_OK
 
 

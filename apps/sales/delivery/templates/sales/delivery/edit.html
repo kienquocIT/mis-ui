@@ -76,7 +76,7 @@
                         <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
                                class="form-control date-picker" autocomplete="off" required>
                         <span class="input-suffix">
-                            <i class="fa-solid fa-calendar-days"></i>
+                            <i class="far fa-calendar"></i>
                         </span>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                         <input type="text" name="actual_delivery_date" id="inputActualDate"
                                class="form-control date-picker" autocomplete="off" required>
                         <span class="input-suffix">
-                            <i class="fa-solid fa-calendar-days"></i>
+                            <i class="far fa-calendar"></i>
                         </span>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group" id="wrap-employee_inherit" data-is_lead="{{ data.is_lead }}">
-                    <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee Inherit' %}</label>
+                    <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee inherit' %}</label>
                     <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
                             {% if not data.is_lead %}disabled{% endif %}>
                         <option value=""></option>
@@ -308,10 +308,10 @@
                             >
                                 <thead>
                                 <tr>
-                                    <th class="w-10"></th>
+                                    <th class="w-5"></th>
                                     <th class="w-20">{% trans 'Vendor serial no.' %}</th>
                                     <th class="w-20">{% trans 'Serial no.' %}</th>
-                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                    <th class="w-15">{% trans 'UOM' %}</th>
                                     <th class="w-20">{% trans 'Warranty start' %}</th>
                                     <th class="w-20">{% trans 'Warranty end' %}</th>
                                 </tr>

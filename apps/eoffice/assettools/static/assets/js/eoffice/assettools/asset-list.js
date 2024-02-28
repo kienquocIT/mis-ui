@@ -22,14 +22,14 @@ class ListByUserHandle {
                         },
                         {
                             data: 'product_data',
-                            width: '25%',
+                            width: '10%',
                             render: (row) => {
                                 return row?.code ? row.code : '--'
                             }
                         },
                         {
                             data: 'product_data',
-                            width: '20%',
+                            width: '10%',
                             render: (row) => {
                                 return row?.uom?.title ? row.uom.title : '--'
                             }
@@ -163,13 +163,22 @@ class ListByAssetHandle{
                 },
                 {
                     data: 'product',
-                    width: '20%',
+                    width: '10%',
                     render: (row) => {
                         return `${row?.code ? row.code : '--'}`
                     }
                 },
                 {
                     data: 'uom',
+                    width: '10%',
+                    render: (row) => {
+                        let txt = '--'
+                        if (row?.title) txt = row.title
+                        return `${txt}`
+                    }
+                },
+                {
+                    data: 'warehouse',
                     width: '20%',
                     render: (row) => {
                         let txt = '--'
@@ -180,6 +189,7 @@ class ListByAssetHandle{
                 {
                     data: 'stock_amount',
                     width: '10%',
+                    className: 'text-center',
                     render: (row) => {
                         return row
                     }
@@ -187,6 +197,7 @@ class ListByAssetHandle{
                 {
                     data: 'used_amount',
                     width: '10%',
+                    className: 'text-center',
                     render: (row) => {
                         return row
                     }
@@ -194,10 +205,11 @@ class ListByAssetHandle{
                 {
                     data: 'id',
                     width: '10%',
+                    className: 'text-center',
                     render: (row, type, data) => {
                         let available = 0
-                        if (data?.['stock_amount'] && data?.['used_amount'])
-                            available = data?.['stock_amount'] - data?.['used_amount']
+                        if ('stock_amount' in data && 'used_amount' in data)
+                            available = data.stock_amount - data.used_amount
                         return available
                     }
                 },
@@ -205,10 +217,18 @@ class ListByAssetHandle{
         })
     }
 }
+
 $(document).ready(function () {
     // load employee list
     ListByUserHandle.init()
 
     // load asset list by product
     ListByAssetHandle.init()
+    let has = false
+    $('.asset-list-tabs a.prod-list').on('shown.bs.tab', function (e) {
+        if (!has){
+            $('#product_list_tb').DataTable().columns.adjust()
+            has = true
+        }
+    })
 })

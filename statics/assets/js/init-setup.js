@@ -87,11 +87,13 @@ class SetupFormSubmit {
                         this.defaultShowErrors();
                     },
                     errorPlacement: function (error, element) {
-                        element.closest('.form-group').append(error);
                         // error.insertAfter(element);
-                        error.css({
-                            'color': "red",
-                        })
+                        error.css({'color': "red"})
+
+                        //
+                        let parentEle = element.parent();
+                        let insertAfterEle = parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper') ? parentEle : element;
+                        error.insertAfter(insertAfterEle);
                     },
                     submitHandler: function (form, event) {
                         event.preventDefault();
@@ -1929,7 +1931,7 @@ class WFRTControl {
                         $.fn.notifyB({description: data.message}, 'success');
                         setTimeout(() => {
                             window.location.replace(_form.dataUrlRedirect);
-                        }, 1000);
+                        }, 3000);
                     }
                 }, (err) => {
                     setTimeout(() => {
@@ -2585,12 +2587,19 @@ class UtilControl {
         }
     }
 
-    static generateRandomString(length = 32) {
+    static generateRandomString(length = 32, startFromLetter = false) {
         let result = '';
-        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let charactersLength = characters.length;
+        let characterLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        let characterNumber = '0123456789';
+        let characters = characterLetter + characterNumber;
+
+        if (startFromLetter === true) {
+            result += characterLetter.charAt(Math.floor(Math.random() * characterLetter.length));
+            length -= 1;
+        }
+
         for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
         }
         return result;
     }
@@ -2744,16 +2753,33 @@ class UtilControl {
         return data;
     }
 
-    static notifyErrors(errs) {
+    static notifyErrors(errs, opts={}) {
+        let confirmOpts = $.extend(
+            {
+                'keyNotMatch': '',
+                'replaceKey': {},
+                'isShowKey': true,
+            },
+            opts
+        )
+
+        function resolveDataNotify(key, data){
+            if (confirmOpts.isShowKey === true){
+                if (confirmOpts.replaceKey){
+                    if (confirmOpts.replaceKey.hasOwnProperty(key)) return {'title': confirmOpts.replaceKey[key], 'description': data}
+                    if (typeof confirmOpts.keyNotMatch === "string") return {'title': confirmOpts.keyNotMatch, 'description': data}
+                }
+                return {'title': key, 'description': data}
+            }
+            return {'description': data}
+        }
+
+
         if (errs) {
             if (typeof errs === 'object') {
                 let errors_converted = UtilControl.cleanDataNotify(errs);
                 Object.keys(errors_converted).map((key) => {
-                    let notify_data = {
-                        'title': key,
-                        'description': errors_converted[key]
-                    };
-                    jQuery.fn.notifyB(notify_data, 'failure');
+                    jQuery.fn.notifyB(resolveDataNotify(key, errors_converted[key]), 'failure');
                 });
             } else if (typeof errs === 'string') {
                 jQuery.fn.notifyB({
@@ -2873,6 +2899,21 @@ class UtilControl {
         return result;
     }
 
+    static flattenObjectParams(obj, parentKey = '', result = {}){
+        if (Array.isArray(obj)){
+            result[parentKey] = obj;
+        } else {
+            for (let key in obj) {
+                let newKey = parentKey ? `${parentKey}__${key}` : key;
+                if (typeof obj[key] === 'object' && obj[key] !== null) {
+                    UtilControl.flattenObjectParams(obj[key], newKey, result);
+                } else {
+                    result[newKey] = obj[key];
+                }
+            }
+        }
+        return result;
+    }
 }
 
 class DTBControl {
@@ -4212,6 +4253,13 @@ class WindowControl {
             },
         })
     }
+
+    static scrollToIdx(idxStrOr$, parentEleStrOr$='#idxPageContent .simplebar-content-wrapper'){
+        const ele$ = idxStrOr$ instanceof jQuery ? idxStrOr$ : $(idxStrOr$);
+        let parent$ = parentEleStrOr$ instanceof jQuery ? parentEleStrOr$ : $(parentEleStrOr$);
+        let offsetTop = ele$.offset().top;
+        parent$.animate({scrollTop: offsetTop > 150 ? offsetTop - 150 : offsetTop}, 200);
+    }
 }
 
 class PersonControl {
@@ -4321,6 +4369,11 @@ class DocumentControl {
     static async getCompanyCurrencyConfig() {
         let data = await DocumentControl.getCompanyConfig();
         return data['config']?.['currency_rule'];
+    }
+
+    static async getCompanyCurrencyFull(){
+        let data = await DocumentControl.getCompanyConfig();
+        return data['config'];
     }
 
     static formDetailToUpdateAction() {
@@ -4510,6 +4563,14 @@ class DocumentControl {
         let ele = $(eleCard).closest('.card');
         if (openParentClosest !== null) ele = ele.closest(openParentClosest);
         ele.removeClass('d-none');
+    }
+
+    static numberWithCommas(value) {
+        value = value.toString();
+        let pattern = /(-?\d+)(\d{3})/;
+        while (pattern.test(value))
+            value = value.replace(pattern, "$1,$2");
+        return value;
     }
 }
 
@@ -5651,10 +5712,14 @@ class CommentControl {
         let tinymceEditor = null;
 
         textarea.tinymce( {
+            branding: false,
+            readonly : 0,
             menubar: false,
             height: 120,
             plugins: 'advlist autolink lists insertdatetime hr emoticons table mention link media image preview tabfocus visualchars visualblocks wordcount',
-            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | numlist bullist table | link image media emoticons | formatting ',
+            toolbar: 'styleselect | bold italic strikethrough | forecolor backcolor | numlist bullist table | link image media emoticons | formatting',
+            pagebreak_split_block: true,
+            pagebreak_separator: '<span class="page-break-here"><!-- my page break --></span>',
             toolbar_groups: {
                 formatting : {
                     icon: 'more-drawer',
@@ -6217,6 +6282,7 @@ let $x = {
         dumpJson: UtilControl.dumpJson,
         convertToSlug: UtilControl.convertToSlug,
         flattenObject: UtilControl.flattenObject,
+        flattenObjectParams: UtilControl.flattenObjectParams,
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,
@@ -6243,7 +6309,12 @@ let $x = {
         convertDateToMoment: DateTimeControl.convertDateToMoment,
         convertDatetimeToMoment: DateTimeControl.convertDatetimeToMoment,
 
-        randomColor: Beautiful.randomColorClass
+        randomColor: Beautiful.randomColorClass,
+
+        pushHashUrl: WindowControl.pushHashUrl,
+        scrollToIdx: WindowControl.scrollToIdx,
+
+        numberWithCommas: DocumentControl.numberWithCommas,
     },
 }
 
@@ -6372,7 +6443,6 @@ var DataTableAction = {
         // if (format) keyArg = JSON.parse(format.replace(/'/g, '"'));
         if (format) keyArg = format;
 
-
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {
             let isValue = data[key.value] ? data[key.value] : '--'
@@ -6382,6 +6452,7 @@ var DataTableAction = {
                 if (temp) isValue = temp
                 else isValue = '--'
             }
+            if ($.type(isValue) === "object") isValue = '--'
             htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${isValue}</p></div>`;
         }
         if (link) {

@@ -21,14 +21,14 @@ class ModalProdByEmployeeList {
                     },
                     {
                         data: 'product',
-                        width: '55%',
+                        width: '50%',
                         render: (row, type, data, meta) => {
                             return row.title
                         }
                     },
                     {
                         data: 'quantity',
-                        width: '10%',
+                        width: '15%',
                         className: 'text-center',
                         render: (row, type, data, meta) => {
                             return row
@@ -77,7 +77,7 @@ class ModalProdByEmployeeList {
             $.fn.callAjax2({
                 'url': $('#url-factory').attr('data-provide_detail-url'),
                 'method': 'GET',
-                'data': {'employee_inherit_id': provideID, 'delivered': 0}
+                'data': {'employee_inherit_id': provideID, 'delivered__gt': 0}
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -191,7 +191,7 @@ function submitHandleFunc() {
         return false
     }
     for (let item of temp) {
-        if(!item['product_warehouse']['id'].valid_uuid4()){
+        if(!item['product_warehouse'][0]['id'].valid_uuid4()){
             $.fn.notifyB({description: $('#trans-factory').attr('data-empty-warehouse')}, 'failure');
             return false
         }
@@ -202,7 +202,7 @@ function submitHandleFunc() {
         products.push({
             'order': item.order,
             'product': item.product.id,
-            'warehouse_stored_product': item['product_warehouse']['id'],
+            'warehouse_stored_product': item['product_warehouse'][0]['id'],
             'return_number': item.return_number
         })
     }
@@ -269,6 +269,4 @@ $(document).ready(function() {
 
     // init tab asset return list
     AssetReturnProductList.init()
-
-
 });

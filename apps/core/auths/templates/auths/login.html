@@ -13,12 +13,22 @@
     <link rel="shortcut icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}">
     <link rel="icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}" type="image/x-icon">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
     {% compress css %}
         <!-- CSS -->
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'login/auth.css' %}" rel="stylesheet" type="text/css">
         <style>
+            html, body {
+                font-family: "Josefin Sans", sans-serif;
+                  font-optical-sizing: auto;
+                  font-style: normal;
+            }
+
             select option:checked {
                 background-color: #e5fdff !important;
                 color: #37ceda !important;
@@ -28,16 +38,17 @@
 </head>
 <body>
 <!-- Wrapper -->
-<div class="hk-wrapper hk-pg-auth" data-footer="simple">
+<div class="hk-wrapper hk-pg-auth bg-light position-relative" data-footer="simple">
     <!-- Main Content -->
     <div class="hk-pg-wrapper pt-0 pb-xl-0 pb-5">
+        <canvas id="canvas" class="position-absolute" style="width: 100%;height:100%;"></canvas>
         <div class="hk-pg-body pt-0 pb-xl-0">
             <!-- Container -->
             <div class="container-xxl">
                 <!-- Row -->
-                <div class="row">
-                    <div class="col-sm-10 position-relative mx-auto">
-                        <div class="auth-content py-8">
+                <div class="row mx-auto" style="max-width: 450px;">
+                    <div class="col-12 position-relative ">
+                        <div class="auth-content mt-8">
                             <form
                                     class="w-100"
                                     id="form-login"
@@ -45,103 +56,79 @@
                                     autocomplete="off"
                                     data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
                             >
-                                <div class="row">
-                                    <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
-                                        <div class="text-center mb-7">
-                                            <a class="navbar-brand me-0" href="/">
+                                <div class="card card-lg card-border box-vertical-blur">
+                                    <div class="card-body">
+                                        <div class="text-center mb-7 overflow-hidden">
+                                            <a class="navbar-brand me-0" href="https://www.bflow.vn">
                                                 <img
                                                         class="brand-img d-inline-block"
                                                         src="{% static 'assets/images/bflow/logo_180x180.png' %}"
                                                         alt="brand"
+                                                        style="width: 100%; object-fit: cover;"
                                                 >
                                             </a>
                                         </div>
-                                        <div class="card card-lg card-border">
-                                            <div class="card-body">
-                                                <h4 class="mb-4 text-center">{% trans 'Sign in to your account' %}</h4>
-                                                <div class="row gx-3">
-                                                    <div class="form-group col-lg-12 d-none">
-                                                        <div class="form-label-group">
-                                                            <label>Tenant</label>
-                                                        </div>
-                                                        <select
-                                                                class="form-select" id="tenant-select" required
-                                                                data-url="{% url 'TenantLoginChoice' %}"
-                                                                data-method="GET"
-                                                                name="tenant_code"
-                                                        >
-                                                            <option disabled value="">
-                                                                {% trans 'Choose...' %}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group col-lg-12">
-                                                        <div class="form-label-group">
-                                                            <label>{% trans 'User Name' %}</label>
-                                                        </div>
-                                                        <input
-                                                                name="username"
-                                                                class="form-control"
-                                                                placeholder="Enter username or email ID" value=""
-                                                                type="text"
-                                                                tabindex="1"
-                                                                required
-                                                        >
-                                                    </div>
-                                                    <div class="form-group col-lg-12">
-                                                        <div class="form-label-group">
-                                                            <label>{% trans 'Password' %}</label>
-                                                            <a
-                                                                    href="#"
-                                                                    class="fs-7 fw-medium"
-                                                            >{% trans 'Forgot Password ?' %}</a>
-                                                        </div>
-                                                        <div class="input-group password-check">
-																<span class="input-affix-wrapper">
-																	<input
-                                                                            name="password"
-                                                                            class="form-control"
-                                                                            placeholder="Enter your password" value=""
-                                                                            type="password"
-                                                                            tabindex="2"
-                                                                            required
-                                                                    >
-																	<a href="#" class="input-suffix text-muted">
-																		<span class="feather-icon"><i
-                                                                                class="form-icon"
-                                                                                data-feather="eye"
-                                                                        ></i></span>
-																		<span class="feather-icon d-none"><i
-                                                                                class="form-icon"
-                                                                                data-feather="eye-off"
-                                                                        ></i></span>
-																	</a>
-																</span>
-                                                        </div>
-                                                    </div>
+                                        <div class="w-100 mb-4">
+                                            <h4 class="text-center">{% trans 'login' %}</h4>
+                                        </div>
+                                        <div class="row gx-3">
+                                            <div class="form-group d-none">
+                                                <div class="form-label-group">
+                                                    <label>Tenant</label>
                                                 </div>
-                                                <div class="d-flex justify-content-center">
-                                                    <div class="form-check form-check-sm mb-3">
-                                                        <input
-                                                                name="remember"
-                                                                type="checkbox" class="form-check-input" id="logged_in"
-                                                                checked tabindex="3"
-                                                        >
-                                                        <label
-                                                                class="form-check-label text-muted fs-7"
-                                                                for="logged_in"
-                                                        >{% trans 'Keep me logged in' %}</label>
-                                                    </div>
-                                                </div>
-                                                <div id="recapcha" class="mt-1 mb-1"></div>
-                                                <input
-                                                        type="submit" class="btn btn-primary btn-uppercase btn-block"
-                                                        value="{% trans 'Login' %}" tabindex="4"
+                                                <select
+                                                        class="form-select" id="tenant-select" required
+                                                        data-url="{% url 'TenantLoginChoice' %}"
+                                                        data-method="GET"
+                                                        name="tenant_code"
                                                 >
-                                                <p class="p-xs mt-2 text-center"><a
-                                                        href="#"
-                                                ><u>{% trans 'Creat new account to MIS' %}</u></a></p>
+                                                    <option disabled value="">
+                                                        {% trans 'Choose...' %}
+                                                    </option>
+                                                </select>
                                             </div>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                    <label for="inp-username"></label>
+                                                    <input type="text" class="form-control" name="username" id="inp-username" placeholder="{% trans 'User name' %}" tabindex="1">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-group position-relative">
+                                                    <span class="input-group-text">
+                                                        <i class="fa fa-lock"></i>
+                                                    </span>
+                                                    <span class="position-absolute" style="z-index: 99999; cursor: pointer; right: 12px; top: 8px;" id="btn-show-passwd">
+                                                        <i class="fa-solid fa-eye"></i>
+                                                        <i class="fa-solid fa-eye-slash d-none"></i>
+                                                    </span>
+                                                    <label for="inp-password"></label>
+                                                    <input type="password" class="form-control" name="password" id="inp-password" placeholder="{% trans 'password' %}" tabindex="2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-check form-check-sm mb-3">
+                                            <input
+                                                    name="remember"
+                                                    type="checkbox" class="form-check-input" id="logged_in"
+                                                    checked tabindex="3"
+                                            >
+                                            <label
+                                                    class="form-check-label text-muted fs-7"
+                                                    for="logged_in"
+                                            >{% trans 'Keep me logged in' %}</label>
+                                        </div>
+                                        <div id="recapcha" class="mt-1 mb-1"></div>
+                                        <input
+                                                type="submit" class="btn btn-primary btn-uppercase btn-block mb-3"
+                                                value="{% trans 'Login' %}" tabindex="4"
+                                        >
+                                        <div class="d-flex justify-content-between align-items-center mb-0">
+                                            <small class="flex-item">
+                                                <a href="https://www.bflow.vn/#trial-form">{% trans 'Sign Up' %}</a>
+                                            </small>
+                                            <small class="flex-item"><a href="{% url 'ForgotPasswordView' %}">{% trans 'Forgot Password ?' %}</a></small>
                                         </div>
                                     </div>
                                 </div>
@@ -156,17 +143,13 @@
         <!-- /Page Body -->
 
         <!-- Page Footer -->
-        <div class="hk-footer border-0">
+        <div class="hk-footer border-0 copyrightbox">
             <footer class="container-xxl footer">
                 <div class="row">
                     <div class="col-xl-8 text-center">
-                        <p class="footer-text pb-0"><span class="copy-text">BFlow © 2023 All rights reserved.</span>
-                            <a href="#" class="" target="_blank">Privacy Policy</a><span
-                                    class="footer-link-sep"
-                            >|</span><a href="#" class="" target="_blank">T&C</a><span
-                                    class="footer-link-sep"
-                            >|</span><a href="#" class="" target="_blank">System
-                                Status</a></p>
+                        <p class="footer-text pb-0 copyrighttext">
+                            <span class="copy-text">BFlow © 2023 All rights reserved.</span>
+                        </p>
                     </div>
                 </div>
             </footer>
@@ -235,7 +218,16 @@
 
     <!-- Init JS -->
     <script src="{% static 'assets/js/init.js' %}"></script>
+    <script src="{% static 'login/backdrop-animated.js' %}"></script>
     <script>
+        $(document).ready(function (){
+            $('#btn-show-passwd').on('click', function (){
+                $(this).children().toggleClass('d-none');
+                let inpPasswd = $(this).siblings('input[name="password"]');
+                inpPasswd.attr('type') === 'password' ? inpPasswd.attr('type', 'text') : inpPasswd.attr('type', 'password');
+            })
+        })
+
         // support for Form Submit
         class SetupFormSubmitLogin {
             constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = null) {

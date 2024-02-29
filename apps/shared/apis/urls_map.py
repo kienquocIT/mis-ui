@@ -43,6 +43,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     #
     USER_CHANGE_PASSWORD = StringUrl('auth/change-password')
+    USER_FORGOT_PASSWORD = StringUrl('auth/forgot-password')
+    USER_FORGOT_PASSWORD_DETAIL = StringUrl('auth/forgot-password/{pk}')
 
     # web / page builder
     BUILDER_PAGE_LIST = StringUrl('site/config/page-list')

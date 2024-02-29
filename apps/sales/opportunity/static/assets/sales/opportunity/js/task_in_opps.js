@@ -190,9 +190,11 @@ function TaskSubmitFunc(platform, callBackFunc) {
             'done': $(this).find('input').prop('checked'),
         })
     })
-
-    if (!formData.opportunity) delete formData.opportunity
-    if ($('#selectOpportunity').val()) formData.opportunity = $('#selectOpportunity').val()
+    const oppID = $('#opportunity_id').val()
+    if (oppID){
+         formData.opportunity = oppID
+         formData.opportunity_id = oppID
+    }
 
     if ($('[name="attach"]').val()) {
         let list = []
@@ -252,6 +254,8 @@ class Task_in_opps {
         //--DROPDOWN ASSIGN TO-- assign to me btn
         const $assignBtnElm = $(`<a href="#" class="form-text text-muted link-info btn-assign">${$('#form_valid').attr('data-assign-txt')}</a>`)
         $empElm.parents('.form-group').append($assignBtnElm)
+        let getParams = JSON.parse($empElm.attr('data-params'))
+        $empElm.attr('data-params', JSON.stringify({...getParams, list_from_opp: opps_info.id}))
         $empElm.initSelect2()
         $assignBtnElm.off().on('click', function () {
             if ($(this).hasClass('disabled')) return false
@@ -260,6 +264,7 @@ class Task_in_opps {
                 'id': $assignerElm.attr('data-value-id'),
                 'selected': true
             }
+
             $empElm.attr('data-onload', JSON.stringify(infoObj))
             if ($(`option[value="${infoObj.id}"]`, $empElm).length <= 0)
                 $empElm.append(`<option value="${infoObj.id}">${infoObj.full_name}</option>`)

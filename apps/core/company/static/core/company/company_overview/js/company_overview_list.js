@@ -340,8 +340,6 @@ $(function () {
 
     $('#modalUserUpdate').submit(function (event) {
         // loading spinner is active
-        $(this).find('.group-action-footer').addClass('hidden');
-        $(this).find('.loading-spinner').removeClass('hidden');
         event.preventDefault();
 
         let frm = new SetupFormSubmit($(this));
@@ -351,11 +349,14 @@ $(function () {
         });
         let companiesNew = $('#company_list_choose').val();
         if (UtilControl.arraysEqual(companiesOld, companiesNew) === false) {
-            $.fn.callAjax(
-                frm.dataUrlDetail + $('#userPersonFullname').attr('data-id'),
-                frm.dataMethod,
-                {'companies': companiesNew},
-                $(this).find("input[name=csrfmiddlewaretoken]").first().val(),
+            $.fn.callAjax2(
+                {
+                    url: frm.dataUrlDetail + $('#userPersonFullname').attr('data-id'),
+                    method: frm.dataMethod,
+                    data: {'companies': companiesNew},
+                    isLoading: true,
+                    sweetAlertOpts: {'allowOutsideClick': true},
+                }
             ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -370,7 +371,12 @@ $(function () {
                         1000,
                     )
                 },
+                (errs) => $.fn.switcherResp(errs),
             )
+        } else {
+            $.fn.notifyB({
+                'description': $(this).attr('data-msg-no-changes'),
+            }, 'failure');
         }
     })
 

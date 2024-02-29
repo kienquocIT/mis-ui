@@ -181,28 +181,30 @@ $(function () {
 
 // ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total
         tableProduct.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
-            let row = $(this)[0].closest('tr');
-            if ($(this).hasClass('table-row-item')) {
-                QuotationLoadDataHandle.loadDataProductSelect($(this));
+            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                let row = $(this)[0].closest('tr');
+                if ($(this).hasClass('table-row-item')) {
+                    QuotationLoadDataHandle.loadDataProductSelect($(this));
+                }
+                // validate number
+                if ($(this).hasClass('table-row-quantity') && $(this).hasClass('validated-number')) {
+                    validateNumber(this);
+                }
+                // Clear table COST if item or quantity change
+                if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
+                    // load again table cost
+                    QuotationLoadDataHandle.loadDataTableCost();
+                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                }
+                // Delete all promotion rows
+                deletePromotionRows(tableProduct, true, false);
+                // Delete all shipping rows
+                deletePromotionRows(tableProduct, false, true);
+                // Re Calculate all data of rows & total
+                QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
+                // change value before tax table payment
+                QuotationLoadDataHandle.loadChangePSValueBTAll();
             }
-            // validate number
-            if ($(this).hasClass('table-row-quantity') && $(this).hasClass('validated-number')) {
-                validateNumber(this);
-            }
-            // Clear table COST if item or quantity change
-            if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
-                // load again table cost
-                QuotationLoadDataHandle.loadDataTableCost();
-                QuotationLoadDataHandle.loadSetWFRuntimeZone();
-            }
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // Re Calculate all data of rows & total
-            QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
-            // change value before tax table payment
-            QuotationLoadDataHandle.loadChangePSValueBTAll();
         });
 
 // If change product uom then clear table COST
@@ -240,18 +242,32 @@ $(function () {
         });
 
 // Action on change discount rate on Total of product
-        $('#quotation-create-product-discount').on('change', function () {
+        $('input[type=text].quotation-create-product-discount').on('change', function () {
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // Calculate with discount on Total
-            for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
-                let row = tableProduct[0].tBodies[0].rows[i];
+            tableProduct.DataTable().rows().every(function () {
+                let row = this.node();
                 QuotationCalculateCaseHandle.calculate(row);
-            }
+            });
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
         });
+
+
+        // $('#quotation-create-product-discount').on('change', function () {
+        //     // Delete all promotion rows
+        //     deletePromotionRows(tableProduct, true, false);
+        //     // Delete all shipping rows
+        //     deletePromotionRows(tableProduct, false, true);
+        //     // Calculate with discount on Total
+        //     for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
+        //         let row = tableProduct[0].tBodies[0].rows[i];
+        //         QuotationCalculateCaseHandle.calculate(row);
+        //     }
+        //     QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
+        // });
 
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
@@ -376,8 +392,10 @@ $(function () {
 
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
-            let row = $(this)[0].closest('tr');
-            QuotationCalculateCaseHandle.commonCalculate(tableCost, row, false, true, false);
+            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                let row = $(this)[0].closest('tr');
+                QuotationCalculateCaseHandle.commonCalculate(tableCost, row, false, true, false);
+            }
         });
 
 // Action on click button collapse

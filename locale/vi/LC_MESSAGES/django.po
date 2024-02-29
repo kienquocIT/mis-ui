@@ -151,6 +151,22 @@ msgid "Actions"
 msgstr "Thao tác"
 
 #
+msgid "No changes"
+msgstr "Không có thay đổi"
+
+#
+msgid "Time remaining __data__s"
+msgstr "Thời gian còn lại __data__ giây"
+
+#
+msgid "Enter One-time password - OTP"
+msgstr "Nhập mã dùng một lần - OTP"
+
+#
+msgid "Reissued Password"
+msgstr "Mật khẩu được cấp lại"
+
+#
 msgid "Change password of"
 msgstr "Đặt lại mật khẩu của"
 
@@ -2359,6 +2375,13 @@ msgstr "Nhập"
 msgid "Copy"
 msgstr "Sao chép"
 
+#
+msgid "Copied"
+msgstr "Đã sao chép"
+
+#
+msgid "Go to change password page"
+msgstr "Chuyển hướng đến trang thay đổi mật khẩu"
 
 #
 msgid "Add Expense"
@@ -3827,12 +3850,12 @@ msgid "Do you wish to continue?"
 msgstr "Bạn có muốn tiếp tục?"
 
 #
-msgid "Quotation indicator value"
-msgstr "Giá trị chỉ tiêu báo giá"
+msgid "Quotation value"
+msgstr "Giá trị báo giá"
 
 #
-msgid "Sale order indicator value"
-msgstr "Giá trị chỉ tiêu đơn hàng"
+msgid "Sale order value"
+msgstr "Giá trị đơn hàng"
 
 #
 msgid "Difference value"
@@ -5196,7 +5219,7 @@ msgstr "Nhân bản"
 
 #
 msgid "Final acceptance"
-msgstr "Nghiệm thu"
+msgstr "Quyết toán"
 
 #
 msgid "Group level"

@@ -61,12 +61,11 @@ class ProductsTable {
                         data: 'uom',
                         width: '10%',
                         render: (row, type, data, meta) => {
-                            let dataLoad = []
                             if (!row && data?.['uom_data']) row = data['uom_data']
-                            if (row && Object.keys(row).length > 0) dataLoad.push({...row, selected: true})
                             let html = $(`<select>`).addClass('form-select row_uom-item')
-                                .attr('name', `uom_${meta.row}`).attr('data-zone', 'products')
-                            if (row && Object.keys(row).length > 0) html.attr('data-onload', JSON.stringify(dataLoad))
+                                .attr('name', `uom_${meta.row}`)
+                            if (row && Object.keys(row).length > 0)
+                                html.append(`<option value="${row.id}" selected>${row.title}</option>`)
                             return html.prop('outerHTML')
                         }
                     },

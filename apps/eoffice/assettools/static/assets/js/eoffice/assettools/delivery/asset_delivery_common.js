@@ -139,6 +139,7 @@ class DeliveryTableHandle {
 
                     // init warehouse selected
                     const warehouseLst = JSON.parse($('#warehouse_lst').text())
+                    data.warehouse = warehouseLst[0].id
                     $('[name*="warehouse_"]', row).attr('data-keyText', "title")
                         .attr('data-keyId', "id")
                         .initSelect2({
@@ -281,7 +282,6 @@ class ModalProvideProdList {
 }
 
 function submitHandleFunc() {
-    WindowControl.showLoading();
     let $FormElm = $('#asset_delivery_form')
     let $EmpElm = $('#inputEmployeeInheritor')
     const frm = new SetupFormSubmit($FormElm);
@@ -301,6 +301,10 @@ function submitHandleFunc() {
             return false
         }
         const prodAvail = item.product_available[item['warehouse']]
+        if (!prodAvail){
+            $.fn.notifyB({description: $('#trans-factory').attr('data-out_of_stock')}, 'failure');
+            return false
+        }
         if (item.done > prodAvail){
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-low_stock')}, 'failure');
             return false

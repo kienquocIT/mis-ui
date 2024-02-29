@@ -1,3 +1,4 @@
+const WH_LIST = $('#warehouse_list').text() ? JSON.parse($('#warehouse_list').text()) : []
 const saleOrderEle = $('#sale-order')
 const customerEle = $('#customer')
 const dateEle = $('#date')
@@ -11,7 +12,77 @@ const scriptTransEle = $('#script-trans')
 const tableProductSN = $('#table-product-sn')
 const tableProductLOT = $('#table-product-lot')
 const btnAddRowLineDetail = $('#btn-add-row-line-detail')
+const modal_select_return_warehouse = $('#modal-select-return-warehouse')
 let DELIVERY_PRODUCT_NOW = null
+
+$('#modal-OK-btn').on('click', function(event) {
+    modal_select_return_warehouse.modal('hide')
+    let data_line_detail_table = []
+    tableDetailProductEle.find('tbody tr').each(function () {
+        let delivery_id = null
+        let delivery_code = null
+        $('.selected-delivery').each(function () {
+            if ($(this).prop('checked')) {
+                delivery_id = $(this).closest('tr').find('.delivery-code-span').attr('data-id')
+                delivery_code = $(this).closest('tr').find('.delivery-code-span').text()
+            }
+        })
+        let this_selected = $(this).find('.selected-product')
+        if (this_selected.prop('checked')) {
+            data_line_detail_table.push({
+                'type': 0,
+                'delivery_id': delivery_id,
+                'delivery_code': delivery_code,
+                'lot_number': '',
+                'lot_quantity': '',
+                'lot_id': '',
+                'vendor_serial_number': '',
+                'serial_number': '',
+                'serial_id': '',
+                'product_id': this_selected.attr('data-product-id'),
+                'product_title': this_selected.attr('data-product-title'),
+                'product_code': this_selected.attr('data-product-code'),
+                'uom_id': this_selected.attr('data-uom-id'),
+                'uom_title': this_selected.attr('data-uom-title'),
+                'product_unit_price': this_selected.attr('data-unit-price'),
+                'is_return': this_selected.closest('tr').find('.return-number-input').val(),
+                'is_redelivery': this_selected.closest('tr').find('.re-delivery-number-input').val()
+            })
+        }
+    })
+
+    dataLineDetailTableScript.text(JSON.stringify(data_line_detail_table))
+    let processed_data = {}
+    for (const item of data_line_detail_table) {
+        if (processed_data[item.product_id] === undefined) {
+            processed_data[item.product_id] = {
+                'type': 0,
+                'delivery_id': item.delivery_id,
+                'delivery_code': item.delivery_code,
+                'product_id': item.product_id,
+                'product_code': item.product_code,
+                'product_title': item.product_title,
+                'uom_id': item.uom_id,
+                'uom_title': item.uom_title,
+                'lot_number': item.lot_number,
+                'vendor_serial_number_with_serial_number': '',
+                'is_return': parseFloat(item.is_return),
+                'is_redelivery': parseFloat(item.is_redelivery),
+                'product_unit_price': parseFloat(item.product_unit_price),
+            }
+        }
+    }
+    let processed_data_list = Object.values(processed_data)
+    loadTableLineDetail(processed_data_list, [4, 5])
+    selectDeliveryOffcanvasEle.offcanvas('hide')
+
+    $('.wh-seletion').each(function () {
+        if ($(this).attr('data-is-selected') === 'true') {
+            lineDetailTable.attr('data-selected-wh', $(this).attr('data-wh-id'))
+            $('#return-wh-title').val(`${$(this).attr('data-wh-title')} (${$(this).attr('data-wh-code')})`).attr("data-wh-id", $(this).attr('data-wh-id'))
+        }
+    })
+})
 
 function LoadDate() {
     dateEle.daterangepicker({
@@ -113,70 +184,25 @@ $(document).on("change", '.selected-product', function () {
 })
 
 $('#add-product-btn').on('click', function () {
-    let data_type = '0'
+    let data_type = ''
     tableDetailProductEle.find('.selected-product').each(function () {
         if ($(this).prop('checked')) {
             data_type = $(this).attr('data-type')
         }
     })
     if (data_type === '0') {
-        let data_line_detail_table = []
-        tableDetailProductEle.find('tbody tr').each(function () {
-            let delivery_id = null
-            let delivery_code = null
-            $('.selected-delivery').each(function () {
-                if ($(this).prop('checked')) {
-                    delivery_id = $(this).closest('tr').find('.delivery-code-span').attr('data-id')
-                    delivery_code = $(this).closest('tr').find('.delivery-code-span').text()
-                }
-            })
-            let this_selected = $(this).find('.selected-product')
-            if (this_selected.prop('checked')) {
-                data_line_detail_table.push({
-                    'type': 0,
-                    'delivery_id': delivery_id,
-                    'delivery_code': delivery_code,
-                    'lot_number': '',
-                    'lot_quantity': '',
-                    'lot_id': '',
-                    'vendor_serial_number': '',
-                    'serial_number': '',
-                    'serial_id': '',
-                    'product_id': this_selected.attr('data-product-id'),
-                    'product_title': this_selected.attr('data-product-title'),
-                    'product_code': this_selected.attr('data-product-code'),
-                    'uom_id': this_selected.attr('data-uom-id'),
-                    'uom_title': this_selected.attr('data-uom-title'),
-                    'product_unit_price': this_selected.attr('data-unit-price'),
-                    'is_return': this_selected.closest('tr').find('.return-number-input').val(),
-                    'is_redelivery': this_selected.closest('tr').find('.re-delivery-number-input').val()
-                })
-            }
-        })
-
-        dataLineDetailTableScript.text(JSON.stringify(data_line_detail_table))
-        let processed_data = {}
-        for (const item of data_line_detail_table) {
-            if (processed_data[item.product_id] === undefined) {
-                processed_data[item.product_id] = {
-                    'type': 0,
-                    'delivery_id': item.delivery_id,
-                    'delivery_code': item.delivery_code,
-                    'product_id': item.product_id,
-                    'product_code': item.product_code,
-                    'product_title': item.product_title,
-                    'uom_id': item.uom_id,
-                    'uom_title': item.uom_title,
-                    'lot_number': item.lot_number,
-                    'vendor_serial_number_with_serial_number': '',
-                    'is_return': parseFloat(item.is_return),
-                    'is_redelivery': parseFloat(item.is_redelivery),
-                    'product_unit_price': parseFloat(item.product_unit_price),
-                }
-            }
+        $('#select-wh-return-div').html('')
+        for (const item of WH_LIST) {
+            $('#select-wh-return-div').append(`
+                <div class="col-4">
+                    <div style="width: 100%; height: 100%;" class="px-3 py-3 bg-gray-light-4 border rounded-5 wh-seletion" data-is-selected="false" data-wh-id="${item?.['id']}" data-wh-code="${item?.['code']}" data-wh-title="${item?.['title']}">
+                        <span class="badge badge-soft-primary mb-1">${item?.['code']}</span><br>
+                        <span class="text-secondary"><b>${item?.['title']}</b></span>
+                    </div>
+                </div>
+            `)
         }
-        let processed_data_list = Object.values(processed_data)
-        loadTableLineDetail(processed_data_list, [4, 5])
+        modal_select_return_warehouse.modal('show')
     }
     else if (data_type === '1') {
         let data_line_detail_table = []
@@ -243,6 +269,7 @@ $('#add-product-btn').on('click', function () {
         }
         let processed_data_list = Object.values(processed_data)
         loadTableLineDetail(processed_data_list, [5])
+        selectDeliveryOffcanvasEle.offcanvas('hide')
     }
     else if (data_type === '2') {
         let data_line_detail_table = []
@@ -309,11 +336,14 @@ $('#add-product-btn').on('click', function () {
         }
         let processed_data_list = Object.values(processed_data)
         loadTableLineDetail(processed_data_list, [4, 6])
+        selectDeliveryOffcanvasEle.offcanvas('hide')
+    }
+    else {
+        $.fn.notifyB({description: 'Please select product which you want to return'}, 'warning')
     }
 })
 
 function loadTableLineDetail(data_source=[], targets_hidden_cols=[]) {
-    selectDeliveryOffcanvasEle.offcanvas('hide')
     lineDetailTable.DataTable().clear().destroy()
     lineDetailTable.DataTableDefault({
         dom: "",
@@ -488,6 +518,7 @@ function SelectDeliveryOnChange(delivery_selected_id) {
 }
 
 function loadTableSelectDetailProduct(datasource=[]) {
+    console.log(datasource)
     tableDetailProductEle.DataTable().clear().destroy()
     tableDetailProductEle.DataTableDefault({
         dom: "",
@@ -530,7 +561,6 @@ function loadTableSelectDetailProduct(datasource=[]) {
                             return item?.['product']?.['id'] === row?.['product_data']?.['id']
                         })
                     }
-                    console.log(product_row)
                     if (product_row[0]?.['serial_id'] !== undefined) {
                         let returned_number_sn = product_row.filter(function (item) {
                             return item?.['is_returned'] === true
@@ -746,6 +776,15 @@ function loadTableSelectProductLOT(datasource=[]) {
         ],
     });
 }
+
+$(document).on("click", '.wh-seletion', function () {
+    $('.wh-seletion').each(function () {
+        $(this).attr('class', 'px-3 py-3 border rounded wh-seletion')
+        $(this).attr('data-is-selected', 'false')
+    })
+    $(this).attr('class', 'px-3 py-3 border rounded-5 wh-seletion border-3 border-primary')
+    $(this).attr('data-is-selected', 'true')
+})
 
 $(document).on("change", '.return-check', function () {
     if ($(this).prop('checked')) {
@@ -1208,6 +1247,7 @@ class GoodsReturnHandle {
         frm.dataForm['delivery'] = data_item[0]?.['delivery_id']
         frm.dataForm['product'] = data_item[0]?.['product_id']
         frm.dataForm['uom'] = data_item[0]?.['uom_id']
+        frm.dataForm['return_to_warehouse'] = $('#return-wh-title').attr('data-wh-id')
 
         let product_detail_list = []
         if (data_item[0]?.['type'] === 0) {
@@ -1290,6 +1330,8 @@ function LoadDetailGoodsReturn(option) {
                 $('#customer').val(data?.['sale_order']?.['customer_name'])
                 $('#date').val(data?.['date_created'].split(' ')[0])
                 $('#note').val(data?.['note'])
+
+                $('#return-wh-title').val(`${data?.['return_to_warehouse']?.['title']} (${data?.['return_to_warehouse']?.['code']})`).attr("data-wh-id", data?.['return_to_warehouse']?.['id'])
 
                 if (data?.['data_detail'][0]?.['type'] === 1) {
                     loadTableDetailPageLOT([data])

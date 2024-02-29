@@ -186,7 +186,11 @@ $(document).ready(function () {
                                             )
                                             for (const activity of stock_activity?.['data_stock_activity']) {
                                                 if (activity?.['stock_type'] === 1) {
-                                                    let stock_type_label = `<span class="text-primary">Goods receipt</span>`
+                                                    let text_color = 'primary'
+                                                    if (activity?.['trans_title'] === 'Goods return') {
+                                                        text_color = 'blue'
+                                                    }
+                                                    let stock_type_label = `<span class="text-${text_color}">${activity?.['trans_title']}</span>`
                                                     items_detail_report_table_Ele.find('tbody').append(
                                                         `<tr>
                                                             <td></td>
@@ -197,10 +201,10 @@ $(document).ready(function () {
                                                             <td hidden></td>
                                                             <td hidden></td>
                                                             <td>${stock_type_label}</td>
-                                                            <td><span class="badge badge-soft-primary w-100">${activity?.['trans_code']}</span></td>
-                                                            <td class="text-center"><span class="text-primary">${activity?.['quantity']}</span></td>
-                                                            <td><span class="text-primary mask-money" data-init-money="${activity?.['cost']}"></span></td>
-                                                            <td><span class="text-primary mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                            <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                            <td class="text-center"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                            <td><span class="text-${text_color} mask-money" data-init-money="${activity?.['cost']}"></span></td>
+                                                            <td><span class="text-${text_color} mask-money" data-init-money="${activity?.['value']}"></span></td>
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
@@ -210,7 +214,7 @@ $(document).ready(function () {
                                                         </tr>`
                                                     )
                                                 } else {
-                                                    let stock_type_label = `<span class="text-danger">Delivery</span>`
+                                                    let stock_type_label = `<span class="text-danger">${activity?.['trans_title']}</span>`
                                                     items_detail_report_table_Ele.find('tbody').append(
                                                         `<tr>
                                                             <td></td>
@@ -265,7 +269,11 @@ $(document).ready(function () {
                                         )
                                         for (const activity of stock_activity?.['data_stock_activity']) {
                                             if (activity?.['stock_type'] === 1) {
-                                                let stock_type_label = `<span class="text-primary">Goods receipt</span>`
+                                                let text_color = 'primary'
+                                                if (activity?.['trans_title'] === 'Goods return') {
+                                                    text_color = 'blue'
+                                                }
+                                                let stock_type_label = `<span class="text-${text_color}">${activity?.['trans_title']}</span>`
                                                 items_detail_report_table_Ele.find('tbody').append(
                                                     `<tr>
                                                         <td></td>
@@ -276,10 +284,10 @@ $(document).ready(function () {
                                                         <td hidden></td>
                                                         <td hidden></td>
                                                         <td>${stock_type_label}</td>
-                                                        <td><span class="badge badge-soft-primary w-100">${activity?.['trans_code']}</span></td>
-                                                        <td class="text-center"><span class="text-primary">${activity?.['quantity']}</span></td>
-                                                        <td><span class="text-primary mask-money" data-init-money="${activity?.['cost']}"></span></td>
-                                                        <td><span class="text-primary mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                        <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                        <td class="text-center"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                        <td><span class="text-${text_color} mask-money" data-init-money="${activity?.['cost']}"></span></td>
+                                                        <td><span class="text-${text_color} mask-money" data-init-money="${activity?.['value']}"></span></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
@@ -289,7 +297,7 @@ $(document).ready(function () {
                                                     </tr>`
                                                 )
                                             } else {
-                                                let stock_type_label = `<span class="text-danger">Delivery</span>`
+                                                let stock_type_label = `<span class="text-danger">${activity?.['trans_title']}</span>`
                                                 items_detail_report_table_Ele.find('tbody').append(
                                                     `<tr>
                                                         <td></td>

@@ -392,8 +392,10 @@ $(function () {
 
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
-            let row = $(this)[0].closest('tr');
-            QuotationCalculateCaseHandle.commonCalculate(tableCost, row, false, true, false);
+            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                let row = $(this)[0].closest('tr');
+                QuotationCalculateCaseHandle.commonCalculate(tableCost, row, false, true, false);
+            }
         });
 
 // Action on click button collapse

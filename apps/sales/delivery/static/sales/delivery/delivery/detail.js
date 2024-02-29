@@ -52,7 +52,6 @@ $(async function () {
                 _this.setWarehouseList = temp
                 // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
                 // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
-                let delivery = prod_data?.delivery_data;
                 let newData = []
                 for (let [idx, item] of isData.entries()) {
                     item.picked = 0

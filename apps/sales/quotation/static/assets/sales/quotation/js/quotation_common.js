@@ -1009,7 +1009,7 @@ class QuotationLoadDataHandle {
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
+                                                            <div class="d-flex mb-1">
                                                                 <span class="mr-2">${data.price_list[i].title}</span>
                                                                 <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
                                                                 <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
@@ -1017,7 +1017,7 @@ class QuotationLoadDataHandle {
                                                         </a>`);
                                 } else {
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
+                                                            <div class="d-flex mb-1">
                                                                 <span class="mr-2">${data.price_list[i].title}</span>
                                                                 <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
                                                                 <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
@@ -1028,7 +1028,7 @@ class QuotationLoadDataHandle {
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="d-flex">
+                                                    <div class="d-flex mb-1">
                                                         <span class="mr-2">${data.price_list[i].title}</span>
                                                         <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
                                                         <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
@@ -1498,14 +1498,22 @@ class QuotationLoadDataHandle {
         $table.DataTable().rows().every(function () {
             let row = this.node();
             let eleOrder = row.querySelector('.table-row-order');
-            let elePrice = row.querySelector('.table-row-price');
-            if (eleOrder && elePrice) {
+            if (eleOrder) {
                 let order = parseInt(eleOrder.innerHTML);
-                $(elePrice).attr('value', String(data[order])).trigger('change');
-                $.fn.initMaskMoney2();
+                let value = data[order];
+                for (let elePriceOption of row.querySelectorAll('.table-row-price-option')) {
+                    let valueOptionStr = elePriceOption.getAttribute('data-value');
+                    if (valueOptionStr) {
+                        let valueOption = parseFloat(valueOptionStr);
+                        if (valueOption === value) {
+                            elePriceOption.click();
+                            break;
+                        }
+                    }
+                }
             }
         });
-    }
+    };
 
     static loadDataTablePaymentStage() {
         let $table = $('#datable-quotation-payment-stage');
@@ -2158,6 +2166,16 @@ class QuotationLoadDataHandle {
                     // active event on click <a>
                     eleRedirect.click();
                 }
+            }
+        }
+    };
+
+    static loadCssToDTScrollBody() {
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        if (tableProductWrapper) {
+            let tableProductBd = tableProductWrapper.querySelector('.dataTables_scrollBody');
+            if (tableProductBd) {
+                tableProductBd.style.height = '200px';
             }
         }
     };
@@ -2975,6 +2993,10 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to dataTables_scrollBody
+                QuotationLoadDataHandle.loadCssToDTScrollBody();
+            },
         });
     };
 

@@ -359,7 +359,10 @@ $(function () {
                 })
 
                 if (!formData.opportunity) delete formData.opportunity
-                if ($oppElm.val()) formData.opportunity = $oppElm.val()
+                if ($oppElm.val()){
+                    formData.opportunity = $oppElm.val()
+                    formData.opportunity_id = $oppElm.val()
+                }
 
                 const $attElm = $('[name="attach"]').val()
                 if ($attElm) formData.attach = [...$attElm]

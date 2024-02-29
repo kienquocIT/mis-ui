@@ -52,14 +52,13 @@ $(async function () {
                 _this.setWarehouseList = temp
                 // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
                 // nếu có tạo thêm key là picked. mục đích show lên popup mục get cho user thấy.
-                let delivery = prod_data?.delivery_data;
                 let newData = []
                 for (let [idx, item] of isData.entries()) {
                     item.picked = 0
                     if (!config.is_picking && !config.is_partial_ship) { // TH: none_picking_one_delivery
                         // config 1, 2
-                        if (delivery.length > 0) {
-                            for (const val of delivery) {
+                        if (prod_data?.['delivery_data'].length > 0) {
+                            for (const val of prod_data?.['delivery_data']) {
                                 if (val?.['warehouse'] === item?.['warehouse']?.['id']
                                     && val?.['uom'] === prod_data?.['uom_data']?.['id']
                                 ) {
@@ -90,8 +89,8 @@ $(async function () {
                         if (prod_data?.['uom_data']) {
                             item['uom_so'] = prod_data?.['uom_data'];
                         }
-                        if (delivery) {
-                            for (let val of delivery) {
+                        if (prod_data?.['delivery_data']) {
+                            for (let val of prod_data?.['delivery_data']) {
                                 if (val?.['warehouse'] === item?.['warehouse']?.['id']
                                     && val?.['uom'] === prod_data?.['uom_data']?.['id']
                                 ) { // Check if warehouse of product warehouse in list warehouse have picked
@@ -109,7 +108,7 @@ $(async function () {
                             }
                         }
                     }
-                    else if ((config.is_picking && !config.is_partial_ship) && delivery) { // TH: has_picking_one_delivery
+                    else if ((config.is_picking && !config.is_partial_ship) && prod_data?.['delivery_data']) { // TH: has_picking_one_delivery
                         // config 3
                         item['stock_amount'] = item?.['picked_ready'];
                         if (prod_data?.['picked_quantity']) {
@@ -118,7 +117,7 @@ $(async function () {
                         if (prod_data?.['uom_data']) {
                             item['uom_so'] = prod_data?.['uom_data'];
                         }
-                        for (let val of delivery) {
+                        for (let val of prod_data?.['delivery_data']) {
                             if (val?.['warehouse'] === item?.['warehouse']?.['id']
                                 && val?.['uom'] === prod_data?.['uom_data']?.['id']
                             ) { // Check if warehouse of product warehouse in list warehouse have picked
@@ -139,12 +138,12 @@ $(async function () {
                             }
                         }
                     }
-                    else if ((config.is_picking && config.is_partial_ship) && delivery) { // TH: has_picking_many_delivery
+                    else if ((config.is_picking && config.is_partial_ship) && prod_data?.['delivery_data']) { // TH: has_picking_many_delivery
                         // config 4
                         // nếu ready quantity > 0 => có hàng để giao
                         // lấy delivery
                         if (prod_data?.['ready_quantity'] > 0) {
-                            for (let val of delivery) {
+                            for (let val of prod_data?.['delivery_data']) {
                                 if (val?.['warehouse'] === item?.['warehouse']?.['id']
                                     && val?.['uom'] === prod_data?.['uom_data']?.['id']
                                 ) { // Check if warehouse of product warehouse in list warehouse have picked
@@ -164,9 +163,6 @@ $(async function () {
                                     }
                                 } else {
                                     item['stock_amount'] = item?.['picked_ready'];
-                                    if (prod_data?.['picked_quantity']) {
-                                        item['picked'] = prod_data?.['picked_quantity'];
-                                    }
                                     if (prod_data?.['uom_data']) {
                                         item['uom_so'] = prod_data?.['uom_data'];
                                     }

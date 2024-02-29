@@ -155,6 +155,18 @@ msgid "No changes"
 msgstr "Không có thay đổi"
 
 #
+msgid "Time remaining __data__s"
+msgstr "Thời gian còn lại __data__ giây"
+
+#
+msgid "Enter One-time password - OTP"
+msgstr "Nhập mã dùng một lần - OTP"
+
+#
+msgid "Reissued Password"
+msgstr "Mật khẩu được cấp lại"
+
+#
 msgid "Change password of"
 msgstr "Đặt lại mật khẩu của"
 
@@ -2363,6 +2375,13 @@ msgstr "Nhập"
 msgid "Copy"
 msgstr "Sao chép"
 
+#
+msgid "Copied"
+msgstr "Đã sao chép"
+
+#
+msgid "Go to change password page"
+msgstr "Chuyển hướng đến trang thay đổi mật khẩu"
 
 #
 msgid "Add Expense"

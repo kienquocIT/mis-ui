@@ -233,7 +233,12 @@ class ForgotPasswordView(APIView):
     @mask_view(login_require=False, is_api=True)
     def post(self, request, *args, **kwargs):
         # get OTP first
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD).post(data=request.data)
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD,
+            cus_headers={
+                'Accept-Language': request.headers.get('Accept-Language', settings.LANGUAGE_CODE)
+            }
+        ).post(data=request.data)
         return resp.auto_return()
 
 
@@ -242,7 +247,9 @@ class ForgotPasswordDetailAPI(APIView):
     def get(self, request, *args, pk, **kwargs):
         # refresh push OTP
         if pk and TypeCheck.check_uuid(pk):
-            resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD).get()
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD_DETAIL.fill_key(pk=pk)
+            ).get()
             return resp.auto_return(key_success='forgot_password_data')
         return OutLayoutRender(request=request).render_404()
 
@@ -250,7 +257,9 @@ class ForgotPasswordDetailAPI(APIView):
     def put(self, request, *args, pk, **kwargs):
         # enter OTP
         if pk and TypeCheck.check_uuid(pk):
-            resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD).put(data=request.data)
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD_DETAIL.fill_key(pk=pk)
+            ).put(data=request.data)
             return resp.auto_return()
         return OutLayoutRender(request=request).render_404()
 

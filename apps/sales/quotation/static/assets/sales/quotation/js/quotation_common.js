@@ -2170,6 +2170,16 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadCssToDTScrollBody() {
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        if (tableProductWrapper) {
+            let tableProductBd = tableProductWrapper.querySelector('.dataTables_scrollBody');
+            if (tableProductBd) {
+                tableProductBd.style.height = '200px';
+            }
+        }
+    };
+
     // Load detail
     static loadDetailQuotation(data, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
@@ -2983,6 +2993,10 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to dataTables_scrollBody
+                QuotationLoadDataHandle.loadCssToDTScrollBody();
+            },
         });
     };
 

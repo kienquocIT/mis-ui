@@ -877,9 +877,9 @@ class QuotationLoadDataHandle {
         let discountRateCopy = document.getElementById('quotation-copy-discount-on-total');
         let finalRevenueBeforeTax = null;
         if (is_product === true) {
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            if (tableProduct.closest('.dataTables_scroll')) {
-                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                 pretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
                 tax = tableProductFt.querySelector('.quotation-create-product-taxes');
                 total = tableProductFt.querySelector('.quotation-create-product-total');
@@ -900,9 +900,9 @@ class QuotationLoadDataHandle {
             taxRaw = tableCost.querySelector('.quotation-create-cost-taxes-raw');
             totalRaw = tableCost.querySelector('.quotation-create-cost-total-raw');
         } else if (is_expense === true) {
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
-            if (tableExpense.closest('.dataTables_scroll')) {
-                let tableExpenseFt = tableExpense.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
+            if (tableExpenseWrapper) {
+                let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
                 pretax = tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount');
                 tax = tableExpenseFt.querySelector('.quotation-create-expense-taxes');
                 total = tableExpenseFt.querySelector('.quotation-create-expense-total');
@@ -1009,7 +1009,7 @@ class QuotationLoadDataHandle {
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
+                                                            <div class="d-flex mb-1">
                                                                 <span class="mr-2">${data.price_list[i].title}</span>
                                                                 <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
                                                                 <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
@@ -1017,7 +1017,7 @@ class QuotationLoadDataHandle {
                                                         </a>`);
                                 } else {
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
+                                                            <div class="d-flex mb-1">
                                                                 <span class="mr-2">${data.price_list[i].title}</span>
                                                                 <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
                                                                 <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
@@ -1028,7 +1028,7 @@ class QuotationLoadDataHandle {
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="d-flex">
+                                                    <div class="d-flex mb-1">
                                                         <span class="mr-2">${data.price_list[i].title}</span>
                                                         <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
                                                         <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
@@ -1064,6 +1064,7 @@ class QuotationLoadDataHandle {
         let $table = $('#datable-quotation-create-product');
         let tableData = [];
         let dataDetail = {};
+        let dataPriceJSON = {};
         if ($form.attr('data-method').toLowerCase() === 'get') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
@@ -1179,6 +1180,12 @@ class QuotationLoadDataHandle {
                         rowData['group_order'] = parseInt(dataGroupRaw);
                     }
                     tableData.push(rowData);
+                    // setup price
+                    if (rowData?.['order'] && rowData?.['product_unit_price']) {
+                        if (!dataPriceJSON.hasOwnProperty(rowData?.['order'])) {
+                            dataPriceJSON[rowData?.['order']] = rowData?.['product_unit_price'];
+                        }
+                    }
                 } else if (elePromotion) { // PROMOTION
                     let check_none_blank_list = ['', "", null, "undefined"];
                     rowData['is_group'] = false;
@@ -1317,6 +1324,10 @@ class QuotationLoadDataHandle {
         $table.DataTable().rows.add(tableData).draw();
         // load dropdowns
         QuotationLoadDataHandle.loadDropDowns($table);
+        // load price
+        if ($form.attr('data-method').toLowerCase() !== 'get') {
+            QuotationLoadDataHandle.loadReInitPrice(dataPriceJSON);
+        }
         // load product group
         $table.DataTable().rows().every(function () {
             let row = this.node();
@@ -1480,6 +1491,28 @@ class QuotationLoadDataHandle {
         $.fn.initMaskMoney2();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
+    };
+
+    static loadReInitPrice(data) {
+        let $table = $('#datable-quotation-create-product');
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleOrder = row.querySelector('.table-row-order');
+            if (eleOrder) {
+                let order = parseInt(eleOrder.innerHTML);
+                let value = data[order];
+                for (let elePriceOption of row.querySelectorAll('.table-row-price-option')) {
+                    let valueOptionStr = elePriceOption.getAttribute('data-value');
+                    if (valueOptionStr) {
+                        let valueOption = parseFloat(valueOptionStr);
+                        if (valueOption === value) {
+                            elePriceOption.click();
+                            break;
+                        }
+                    }
+                }
+            }
+        });
     };
 
     static loadDataTablePaymentStage() {
@@ -1919,6 +1952,7 @@ class QuotationLoadDataHandle {
                 let row = this.node();
                 if (row.querySelector('.table-row-term')) {
                     row.querySelector('.table-row-term').removeAttribute('disabled');
+                    $(row.querySelector('.table-row-term')).empty();
                     $(row.querySelector('.table-row-term')).initSelect2({data: term, 'allowClear': true});
                     $(row.querySelector('.table-row-term')).val('').trigger('change');
                 }
@@ -2133,6 +2167,16 @@ class QuotationLoadDataHandle {
                     // active event on click <a>
                     eleRedirect.click();
                 }
+            }
+        }
+    };
+
+    static loadCssToDTScrollBody() {
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        if (tableProductWrapper) {
+            let tableProductBd = tableProductWrapper.querySelector('.dataTables_scrollBody');
+            if (tableProductBd) {
+                tableProductBd.style.minHeight = '200px';
             }
         }
     };
@@ -2950,6 +2994,10 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to dataTables_scrollBody
+                QuotationLoadDataHandle.loadCssToDTScrollBody();
+            },
         });
     };
 
@@ -3868,6 +3916,8 @@ class QuotationCalculateCaseHandle {
 
     static updateTotal(table, is_product, is_cost, is_expense) {
         let form = document.getElementById('frm_quotation_create');
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
         let pretaxAmount = 0;
         let discountAmount = 0;
         let taxAmount = 0;
@@ -3882,9 +3932,8 @@ class QuotationCalculateCaseHandle {
         let eleDiscountRateTotal = null;
         let finalRevenueBeforeTax = null;
         if (is_product === true) {
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            if (tableProduct.closest('.dataTables_scroll')) {
-                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                 elePretaxAmount = tableProductFt.querySelector('.quotation-create-product-pretax-amount');
                 eleTaxes = tableProductFt.querySelector('.quotation-create-product-taxes');
                 eleTotal = tableProductFt.querySelector('.quotation-create-product-total');
@@ -3905,9 +3954,8 @@ class QuotationCalculateCaseHandle {
             eleTaxesRaw = tableCost.querySelector('.quotation-create-cost-taxes-raw');
             eleTotalRaw = tableCost.querySelector('.quotation-create-cost-total-raw');
         } else if (is_expense === true) {
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
-            if (tableExpense.closest('.dataTables_scroll')) {
-                let tableExpenseFt = tableExpense.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            if (tableExpenseWrapper) {
+                let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
                 elePretaxAmount = tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount');
                 eleTaxes = tableExpenseFt.querySelector('.quotation-create-expense-taxes');
                 eleTotal = tableExpenseFt.querySelector('.quotation-create-expense-total');
@@ -3966,10 +4014,11 @@ class QuotationCalculateCaseHandle {
             }
             let discount_on_total = 0;
             let discountTotalRate = '0';
-            if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll')) {
-                if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot')) {
-                    if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount')) {
-                        discountTotalRate = document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount').value;
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                if (tableProductFt) {
+                    if (tableProductFt.querySelector('.quotation-create-product-discount')) {
+                        discountTotalRate = tableProductFt.querySelector('.quotation-create-product-discount').value;
                     }
                 }
             }
@@ -4028,6 +4077,7 @@ class QuotationCalculateCaseHandle {
 
     static calculate(row) {
         let form = document.getElementById('frm_quotation_create');
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let price = 0;
         let quantity = 0;
         let elePrice = row.querySelector('.table-row-price');
@@ -4069,10 +4119,11 @@ class QuotationCalculateCaseHandle {
             }
             let discount_on_total = 0;
             let discountTotalRate = '0';
-            if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll')) {
-                if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot')) {
-                    if (document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount')) {
-                        discountTotalRate = document.getElementById('datable-quotation-create-product').closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot').querySelector('.quotation-create-product-discount').value;
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                if (tableProductFt) {
+                    if (tableProductFt.querySelector('.quotation-create-product-discount')) {
+                        discountTotalRate = tableProductFt.querySelector('.quotation-create-product-discount').value;
                     }
                 }
             }

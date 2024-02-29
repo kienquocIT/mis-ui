@@ -3831,12 +3831,12 @@ msgid "Do you wish to continue?"
 msgstr "Bạn có muốn tiếp tục?"
 
 #
-msgid "Quotation indicator value"
-msgstr "Giá trị chỉ tiêu báo giá"
+msgid "Quotation value"
+msgstr "Giá trị báo giá"
 
 #
-msgid "Sale order indicator value"
-msgstr "Giá trị chỉ tiêu đơn hàng"
+msgid "Sale order value"
+msgstr "Giá trị đơn hàng"
 
 #
 msgid "Difference value"
@@ -5200,7 +5200,7 @@ msgstr "Nhân bản"
 
 #
 msgid "Final acceptance"
-msgstr "Nghiệm thu"
+msgstr "Quyết toán"
 
 #
 msgid "Group level"

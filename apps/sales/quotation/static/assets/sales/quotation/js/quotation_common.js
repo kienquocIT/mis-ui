@@ -1952,6 +1952,7 @@ class QuotationLoadDataHandle {
                 let row = this.node();
                 if (row.querySelector('.table-row-term')) {
                     row.querySelector('.table-row-term').removeAttribute('disabled');
+                    $(row.querySelector('.table-row-term')).empty();
                     $(row.querySelector('.table-row-term')).initSelect2({data: term, 'allowClear': true});
                     $(row.querySelector('.table-row-term')).val('').trigger('change');
                 }

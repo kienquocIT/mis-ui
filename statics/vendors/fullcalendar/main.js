@@ -12458,7 +12458,8 @@ var FullCalendar = (function (exports) {
             for (var _a = 0, rects_2 = rects; _a < rects_2.length; _a++) {
                 var rect = rects_2[_a];
                 var seg = segs[rect.index];
-                var isAbsolute = rect.span.end - rect.span.start > 1; // multi-column?
+                // var isAbsolute = rect.span.end - rect.span.start > 1; // multi-column?
+                var isAbsolute = rect.span.end - rect.span.start >= 1; // Quannm sửa chỗ này để edit lại hiển thị
                 var isFirstCol = rect.span.start === col;
                 currentMarginTop += rect.levelCoord - currentHeight; // amount of space since bottom of previous seg
                 currentHeight = rect.levelCoord + rect.thickness; // height will now be bottom of current seg

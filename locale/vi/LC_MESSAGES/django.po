@@ -151,6 +151,10 @@ msgid "Actions"
 msgstr "Thao tác"
 
 #
+msgid "No changes"
+msgstr "Không có thay đổi"
+
+#
 msgid "Change password of"
 msgstr "Đặt lại mật khẩu của"
 

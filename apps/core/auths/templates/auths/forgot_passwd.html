@@ -44,17 +44,21 @@
 <div class="hk-wrapper hk-pg-auth bg-light position-relative" data-footer="simple">
     <!-- Main Content -->
     <div class="hk-pg-wrapper pt-0 pb-xl-0 pb-5 position-relative">
-        <canvas id="canvas" class="position-absolute" style="width: 100%;height:100%;"></canvas>
+        <canvas id="canvas" class="position-absolute" style="top: 0; left: 0; width: 100%;height:100%;"></canvas>
         <div class="hk-pg-body pt-0 pb-xl-0">
             <!-- Container -->
             <div class="container-xxl">
                 <!-- Row -->
                 <div class="row mx-auto" style="max-width: 450px;">
                     <div class="col-12 position-relative ">
-                        <div class="auth-content mt-8">
-                            <div class="card card-lg card-border box-vertical-blur">
-                                <div class="card-body">
-                                    <div class="w-100 mb-3" id="username-call-get">
+                        <div class="card card-lg card-border box-vertical-blur">
+                            <div class="card-body">
+                                <div class="w-100 mb-3" id="username-call-get">
+                                    <form data-url="./" data-method="POST" id="frmGetOTP">
+                                        <div class="d-none">
+                                            <label for="inp-tenant-code"></label>
+                                            <input type="text" name="tenant_code" id="inp-tenant-code" required>
+                                        </div>
                                         <div class="form-group">
                                             <label for="inp-username" class="form-label">
                                                 {% trans 'username' %}
@@ -63,37 +67,47 @@
                                                 <input
                                                         type="text" name="username" id="inp-username"
                                                         class="form-control" placeholder=""
-                                                        tabindex="1"
+                                                        tabindex="1" required
                                                 >
                                                 <button
-                                                        class="btn btn-primary" type="button" id="btnGetOtp"
+                                                        class="btn btn-primary"
+                                                        type="submit" form="frmGetOTP"
+                                                        id="btnGetOtp"
                                                         tabindex="2"
                                                 >
                                                     {% trans 'Get OTP' %}
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="w-100 mb-3" id="validated-person" style="display: none;">
-                                        <div class="w-100 mb-3">
-                                            <div class="avatar">
-                                                <img
-                                                        src="{% static 'assets/images/systems/person-avt.png' %}"
-                                                        alt="user" class="avatar-img"
-                                                >
-                                            </div>
-                                            <span>Nguyễn Văn A</span>
+                                    </form>
+                                </div>
+                                <div class="w-100 mb-3" id="validated-person" style="display: none;">
+                                    <div class="w-100 mb-3">
+                                        <div class="avatar avatar-rounded">
+                                            <img
+                                                    src="{% static 'assets/images/systems/person-avt.png' %}"
+                                                    alt="user" class="avatar-img"
+                                                    id="img-avatar-person"
+                                            >
                                         </div>
-                                        <div class="separator-full"></div>
+                                        <span id="full-name-person">...</span>
                                     </div>
-                                    <div class="w-100 mb-3" id="validate-otp" style="display: none;">
-                                        <div class="w-100 d-flex justify-content-between align-items-centerr">
+                                    <div class="separator-full"></div>
+                                </div>
+                                <div class="w-100 mb-3" id="validate-otp" style="display: none;">
+                                    <form data-url="{% url 'ForgotPasswordDetailAPI' pk='__pk__' %}" data-method="PUT" id="frmSubmitOTPValidate">
+                                        <div class="d-none">
+                                            <label for="inp-idx-validate"></label>
+                                            <input type="text" name="id" id="inp-idx-validate" required />
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between align-items-center">
                                             <p
                                                     class="flex-item" data-txt="{% trans 'Time remaining %s' %}"
                                                     data-counter="89"
                                             >Time remaining 01:29</p>
                                             <button
                                                     class="flex-item btn btn-xs btn-primary" tabindex="3"
+                                                    type="button"
                                                     style="text-transform: unset;"
                                             >{% trans 'Resend OTP' %}</button>
                                         </div>
@@ -103,56 +117,58 @@
                                                 <input
                                                         type="text" name="otp" id="inp-otp"
                                                         class="form-control" placeholder="otp"
-                                                        tabindex="4"
+                                                        tabindex="4" required
                                                 >
                                                 <button
-                                                        class="btn btn-success" type="button" id="btnVerifyOtp"
+                                                        class="btn btn-success"
+                                                        type="submit" form="frmSubmitOTPValidate"
+                                                        id="btnVerifyOtp"
                                                         tabindex="5"
                                                 >
                                                     {% trans 'Verify' %}
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="w-100 mb-3" id="enter-new-password-submit" style="display: none;">
-                                        <div class="form-group mb-3">
-                                            <label
-                                                    for="inp-new-password" class="form-label"
-                                            >{% trans 'New password' %}</label>
-                                            <div class="input-group mb-3">
-                                                <input
-                                                        type="password" name="new-password"
-                                                        id="inp-new-password" class="form-control"
-                                                        placeholder="●●●●●●●●" tabindex="6"
-                                                >
-                                                <button
-                                                        class="btn btn-secondary w-100p"
-                                                        type="button" id="btn-show-hide-passwd" tabindex="7"
-                                                >
-                                                    <span>{% trans 'Show' %}</span>
-                                                    <span class="d-none">{% trans 'Hide' %}</span>
-                                                </button>
-                                            </div>
-                                            <small class="form-text text-muted">
-                                                {% trans 'Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols.' %}
-                                                <i>-_@#!%^&*+=";:</i>
-                                            </small>
+                                    </form>
+                                </div>
+                                <div class="w-100 mb-3" id="enter-new-password-submit" style="display: none;">
+                                    <div class="form-group mb-3">
+                                        <label
+                                                for="inp-new-password" class="form-label"
+                                        >{% trans 'New password' %}</label>
+                                        <div class="input-group mb-3">
+                                            <input
+                                                    type="password" name="new-password"
+                                                    id="inp-new-password" class="form-control"
+                                                    placeholder="●●●●●●●●" tabindex="6"
+                                            >
+                                            <button
+                                                    class="btn btn-secondary w-100p"
+                                                    type="button" id="btn-show-hide-passwd" tabindex="7"
+                                            >
+                                                <span>{% trans 'Show' %}</span>
+                                                <span class="d-none">{% trans 'Hide' %}</span>
+                                            </button>
                                         </div>
-                                        <div class="w-100">
-                                            <small>{% trans 'Strength of password' %}</small>
-                                            <div class="progress progress-bar-rounded mb-5">
-                                                <div
-                                                        class="progress-bar bg-light w-0" role="progressbar"
-                                                        aria-valuenow="25" aria-valuemin="0"
-                                                        aria-valuemax="100" id="strengthPasswordProgress"
-                                                ></div>
-                                            </div>
-                                        </div>
-                                        <button
-                                                class="w-100 btn btn-success" tabindex="8" id="btnSubmitNewPassword"
-                                                disabled
-                                        >{% trans 'Update' %}</button>
+                                        <small class="form-text text-muted">
+                                            {% trans 'Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols.' %}
+                                            <i>-_@#!%^&*+=";:</i>
+                                        </small>
                                     </div>
+                                    <div class="w-100">
+                                        <small>{% trans 'Strength of password' %}</small>
+                                        <div class="progress progress-bar-rounded mb-5">
+                                            <div
+                                                    class="progress-bar bg-light w-0" role="progressbar"
+                                                    aria-valuenow="25" aria-valuemin="0"
+                                                    aria-valuemax="100" id="strengthPasswordProgress"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    <button
+                                            class="w-100 btn btn-success" tabindex="8" id="btnSubmitNewPassword"
+                                            disabled
+                                    >{% trans 'Update' %}</button>
                                 </div>
                             </div>
                         </div>
@@ -267,36 +283,116 @@
         }
 
         $(document).ready(function () {
-            $('#inp-new-password').on('input', function (e) {
-                e.target.value = $.fn.removeAccentAndDiacritics(e.target.value);
-                checkStrengthOfPassword($(this).val());
-            });
+            function centerBox(){
+                let boxHeight = $('.hk-pg-body').height();
+                $(':root').css('--box-height', `(50vh + ${boxHeight/2}px)`);
+            }
+            centerBox();
 
-            $('#btn-show-hide-passwd').on('click', function () {
-                $(this).children().toggleClass('d-none');
-                let inpEle = $(this).siblings('input');
-                if (inpEle.attr('type') === 'password') inpEle.attr('type', 'text');
-                else inpEle.attr('type', 'password');
-            });
+            let mainDomain = "{{ ui_domain }}";
+            let hostData = window.location.hostname;
+            let notFoundUrl = "{% url 'OutLayoutNotFoundView' %}";
 
-            let groupCallGet = $('#username-call-get');
-            let groupValidPerson = $('#validated-person');
-            let groupValidOtp = $('#validate-otp');
-            let groupNewPasswd = $('#enter-new-password-submit');
+            if (hostData.endsWith(mainDomain) && hostData.indexOf(mainDomain) !== -1){
+                let validateFormOtps = {
+                    focusInvalid: true,
+                    validClass: "is-valid",
+                    errorClass: "is-invalid",
+                    errorElement: "small",
+                    showErrors: function (errorMap, errorList) {
+                        this.defaultShowErrors();
+                    },
+                    errorPlacement: function (error, element) {
+                    },
+                    onsubmit: true,
+                }
+                let groupCallGet = $('#username-call-get');
+                let groupValidPerson = $('#validated-person');
+                let groupValidOtp = $('#validate-otp');
+                let groupNewPasswd = $('#enter-new-password-submit');
 
+                $('#inp-tenant-code').val(hostData.replaceAll('.' + mainDomain, ''));
 
-            $('#btnGetOtp').on('click', function () {
-                groupCallGet.fadeOut('fast', function () {
-                    groupValidPerson.fadeIn('fast');
-                    groupValidOtp.fadeIn('fast');
+                $('#frmGetOTP').validate({
+                    ...validateFormOtps,
+                    submitHandler: function (form, event){
+                        event.preventDefault();
+                        $.fn.callAjax(
+                            $(form).attr('data-url'),
+                            $(form).attr('data-method'),
+                            {
+                                'tenant_code': $(form).find('input[name=tenant_code]').val(),
+                                'username': $(form).find('input[name=username]').val(),
+                            },
+                        ).then(
+                            resp => {
+                                let data = resp?.['data'] || null;
+                                if (data){
+                                    console.log('data:', data);
+                                    $('#inp-idx-validate').val(data.id || '');
+
+                                    let user_data = data?.['user_data'] || null;
+                                    if (user_data){
+                                        $('#img-avatar-person').attr('src', user_data.avatar);
+                                        $('#full-name-person').text(user_data.full_name);
+                                    }
+                                    groupCallGet.fadeOut('fast', function () {
+                                       groupValidPerson.fadeIn('fast', function () {centerBox();});
+                                       groupValidOtp.fadeIn('fast', function (){centerBox();});
+                                    });
+                                }
+                            },
+                            errs => {
+                                console.log('errs:', errs);
+                            },
+                        )
+                    },
                 });
-            });
 
-            $('#btnVerifyOtp').on('click', function () {
-                groupValidOtp.fadeOut('fast', function () {
-                    groupNewPasswd.fadeIn('fast');
+                $('#frmSubmitOTPValidate').validate({
+                    ...validateFormOtps,
+                    submitHandler: function (form, event){
+                        event.preventDefault();
+                        $.fn.callAjax(
+                            $(form).attr('data-url'),
+                            $(form).attr('data-method'),
+                            {
+                                'id': $(form).find('input[name=id]').val(),
+                                'otp': $(form).find('input[name=otp]').val(),
+                            },
+                        ).then(
+                            resp => {
+                                let data = resp?.['data'] || null;
+                                if (data){
+                                    console.log('data:', data);
+                                    groupValidOtp.fadeOut('fast', function () {
+                                        groupNewPasswd.fadeIn('fast', function (){
+                                            centerBox();
+                                        });
+                                    });
+                                }
+                            },
+                            errs => {
+                                console.log('errs:', errs);
+                            },
+                        )
+                    },
+                })
+
+                $('#inp-new-password').on('input', function (e) {
+                    e.target.value = $.fn.removeAccentAndDiacritics(e.target.value);
+                    checkStrengthOfPassword($(this).val());
                 });
-            })
+
+                $('#btn-show-hide-passwd').on('click', function () {
+                    $(this).children().toggleClass('d-none');
+                    let inpEle = $(this).siblings('input');
+                    if (inpEle.attr('type') === 'password') inpEle.attr('type', 'text');
+                    else inpEle.attr('type', 'password');
+                });
+            } else {
+                window.location.href = notFoundUrl;
+            }
         })
 
         $.fn.extend({
@@ -755,7 +851,7 @@
                     [kv.name]: kv.value
                 }), {});
             },
-            callAjaxLogin: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
+            callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
                 return new Promise(function (resolve, reject) {
                     // Setup then Call Ajax
                     let ctx = {

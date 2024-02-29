@@ -18,3 +18,11 @@
 .copyrightbox {
     background-color: rgba(0, 0, 0, 0.2) !important;
 }
+
+:root {
+    --box-height: 80vh;
+}
+
+.hk-pg-wrapper {
+    padding-top: calc(100vh - var(--box-height)) !important;
+}

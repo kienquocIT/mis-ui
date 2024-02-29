@@ -6,6 +6,14 @@ class programmeHandle {
     static UpData = {};
     static DateListCallable = []
 
+    static checkMargin(data){
+        let totalClass = ''
+        if (data.d_from !== data.d_to)
+            if (!data.time_from) totalClass += 'half_left '
+            if (data.time_to) totalClass += 'half_right '
+        return totalClass
+    }
+
     static renderUpEvt() {
         $(document).on('Upcoming-Event:Trigger', function () {
             let data = programmeHandle.UpData
@@ -82,7 +90,8 @@ class programmeHandle {
                 tempHTML.find('.chip-text').text(item.fullname)
                 afterPrepare.member += tempHTML.prop('outerHTML')
             }
-        } else { // this case leave
+        }
+        else { // this case leave
             afterPrepare.date = String.format("{0} - {1}",
                 moment(data.date_from, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY'),
                 moment(data.date_to, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY')
@@ -119,10 +128,21 @@ class programmeHandle {
                             end: moment(item.meeting_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD ') + item.meeting_to_time,
                             source: item
                         }
+
+                        let isClass = programmeHandle.checkMargin({
+                            d_from: item.meeting_date,
+                            d_to: item.meeting_date,
+                            time_from: true,
+                            time_to: true
+                        })
+                        if (isClass) temp.className = isClass
+
                         if (moment(temp.start).isAfter(moment(nextDay?.start))) nextDay = temp
                         let milis = moment(temp.end).diff(moment(temp.start))
                         if (moment.duration(milis).asHours() >= 8) temp.allDay = true
                         if (dataReceived.indexOf(item.id) === -1){
+                            let isHasID = calendar.getEvents().filter((objValue) => objValue.extendedProps.source.id === item.id)
+                            if (!isHasID.length) calendar.addEvent(temp)
                             calendar.addEvent(temp)
                             dataReceived.push(item.id)
                         }
@@ -151,16 +171,26 @@ class programmeHandle {
                             backgroundColor: '#da82f8',
                             borderColor: '#da82f8',
                             title: item.title,
-                            start: item.date_f,
-                            end: moment(item.date_t).add(1, 'days').format('YYYY-MM-DD'),
+                            start: moment(item.date_f).format('YYYY-MM-DD'),
+                            end: moment(item.date_t).format('YYYY-MM-DD'),
                             allDay: true,
                             source: item
                         }
+                        let isClass = programmeHandle.checkMargin({
+                            d_from: item.date_f,
+                            d_to: item.date_t,
+                            time_from: !item.date_f.split(' ')[1].includes('12:00:00'),
+                            time_to: item.date_f.split(' ')[1].includes('12:00:00')
+                        })
+                        if (item.date_f !== item.date_t) isClass += 'hasDiff'
+                        if (isClass) temp.className = isClass
+
                         if (moment(temp.start).isAfter(moment(nextDay?.start))) nextDay = temp
                         let milis = moment(temp.end).diff(moment(temp.start))
                         if (moment.duration(milis).asHours() >= 8) temp.allDay = true
                         if (dataReceived.indexOf(item.id) === -1){
-                            calendar.addEvent(temp)
+                            let isHasID = calendar.getEvents().filter((objValue) => objValue.extendedProps.source.id === item.id)
+                            if (!isHasID.length) calendar.addEvent(temp)
                             dataReceived.push(item.id)
                         }
                     }
@@ -185,24 +215,32 @@ class programmeHandle {
                     for (let item of data) {
                         item.calendar_type = 3
                         let endD = item.date_to
-                        if (!item.morning_shift_t) endD = moment(endD).add(1, 'days').format('YYYY-MM-DD')
                         let temp = {
                             title: item.title,
                             start: item.date_from,
-                            end: endD,
-                            allDay: item.morning_shift_f && !item.morning_shift_t,
-                            source: item
+                            end: item.date_to,
+                            allDay: item.date_from !== item.date_to,
+                            source: item,
                         }
+                        let isClass = programmeHandle.checkMargin({
+                            d_from: item.date_from,
+                            d_to: item.date_to,
+                            time_from: item.morning_shift_f,
+                            time_to: item.morning_shift_t
+                        })
+                        if (item.date_from !== endD) isClass += 'hasDiff'
+                        if (isClass) temp.className = isClass
                         if (!nextDay?.start && moment(temp.start).isAfter(moment())) nextDay = temp
                         else if (moment(temp.start).isAfter(moment(nextDay.start))) nextDay = temp
-                        calendar.addEvent(temp)
+                        let isHasID = calendar.getEvents().filter((objValue) => objValue.extendedProps.source.id === item.id)
+                        if (!isHasID.length) calendar.addEvent(temp)
                     }
                     if (!programmeHandle.UpData?.[3] && Object.keys(nextDay).length > 0)
                         programmeHandle.UpData[3] = nextDay
                     calendar.render()
                     $('.tit-upcoming-evt').trigger('Upcoming-Event:Trigger')
                 },
-                (errs) => {console.log('calendar-list_123 ', errs)
+                (errs) => {console.log('callLeave_ ', errs)
                 }
             )
     }
@@ -212,7 +250,9 @@ class programmeHandle {
         programmeHandle.callMeeting(calendar)
         programmeHandle.renderUpEvt()
 
-        function loopCallAPI(_ValMonth, _listGroup, _listEmp){
+        function loopCallAPI(_ValMonth){
+            let _listGroup = $('#filter_group_id').val(),
+                _listEmp = $('#filter_employee_id').val();
             for (let cate of $('.categories-wrap input:checked')){
                 let _thisVal = cate.value
                 let params = {}
@@ -261,58 +301,26 @@ class programmeHandle {
         // click next btn
         $(document).on("click", ".calendarapp-wrap .fc-next-button", function () {
             // check opt filter, check display date current
-            let crtDate = new Date(), monthNext = moment(calendar.view.currentStart).format('YYYY-MM-DD'),
-                DStart = moment(calendar.view.currentStart), DEnd = moment(calendar.view.currentEnd),
-                calType = calendar.view.type;
+            let DStart = moment(calendar.view.currentStart);
 
-            // chọn tháng tiếp theo nếu list và week view sang tháng mới.
-            if ($.inArray(calType, ['timeGridWeek', 'listWeek']) > -1) {
-                if (DEnd.year() > DStart.year()) monthNext = DEnd.format('YYYY-MM-DD');
-                else if (DEnd.month() > DStart.month()) monthNext = DEnd.format('YYYY-MM-DD');
-            }
-
-            // logic: nếu tháng hiện tại trùng với tháng next (currentStart) thì ko call API,
-            if (crtDate.getMonth() === moment(monthNext).month()) return true
-            if ($.inArray(calType, ['timeGridWeek', 'listWeek']) > -1) {
-                let temp = moment(monthNext).month() + '-' + moment(monthNext).year()
-                if ($.inArray(temp, programmeHandle.DateListCallable) > -1) return true
-                else programmeHandle.DateListCallable.push( temp )
-            }
-
-            let listGroup = $('#filter_group_id').val(),
-            listEmp = $('#filter_employee_id').val();
-
-            // loop in app has checked
-            loopCallAPI(monthNext, listGroup, listEmp)
+            // logic: nếu tháng next có trong danh sách thì ko call API,
+            if (window.DateListCallable.includes(DStart.format('YYYY-MM'))) return true
+            else window.DateListCallable.push( DStart.format('YYYY-MM') )
+            // call API for next month
+            loopCallAPI(DStart.format('YYYY-MM-DD'))
 
         })
 
         // click prev btn
         $(document).on("click", ".calendarapp-wrap .fc-prev-button", function () {
             // check opt filter, check display date current
-            let crtDate = new Date(), monthPrev = moment(calendar.view.currentStart).format('YYYY-MM-DD'),
-                DStart = moment(calendar.view.currentStart), DEnd = moment(calendar.view.currentEnd),
-                calType = calendar.view.type;
-
-            // chọn tháng tiếp theo nếu list và week view sang tháng mới.
-            if ($.inArray(calType, ['timeGridWeek', 'listWeek']) > -1) {
-                if (DEnd.year() > DStart.year()) monthPrev = DStart.format('YYYY-MM-DD');
-                else if (DEnd.month() > DStart.month()) monthPrev = DStart.format('YYYY-MM-DD');
-            }
+            let DStart = moment(calendar.view.currentStart);
 
             // logic: nếu tháng hiện tại trùng với tháng next (currentStart) thì ko call API
-            if (crtDate.getMonth() === moment(monthPrev).month()) return true
-            if ($.inArray(calType, ['timeGridWeek', 'listWeek']) > -1) {
-                let temp = moment(monthPrev).month() + '-' + moment(monthPrev).year()
-                if ($.inArray(temp, programmeHandle.DateListCallable) > -1) return true
-                else programmeHandle.DateListCallable.push( temp )
-            }
-
-            let listGroup = $('#filter_group_id').val(),
-                listEmp = $('#filter_employee_id').val();
-
+            if (window.DateListCallable.includes(DStart.format('YYYY-MM'))) return true
+            else window.DateListCallable.push(DStart.format('YYYY-MM'))
             // loop in app has checked
-            loopCallAPI(monthPrev, listGroup, listEmp)
+            loopCallAPI(DStart.format('YYYY-MM-DD'))
         });
 
 
@@ -378,12 +386,31 @@ $(document).ready(function () {
         themeSystem: 'bootstrap5',
         dayMaxEventRows: 5,
         eventContent: function (arg) {
-            if (arg.event.extendedProps.toHtml) {
-                return {html: arg.event.title}
-            }
+            if (arg.event.extendedProps.toHtml) return {html: arg.event.title}
         },
         eventClick: function (info) {
             window.targetEvent = info.event;
+        },
+        eventDidMount: (info)=> {
+            if (info.event.classNames.includes('half_left') && info.el.classList.contains('fc-daygrid-event') &&
+            info.el.classList.contains('fc-daygrid-block-event') && info.el.classList.contains('fc-event-start')){
+              const isParents = $(info.el).parents('.fc-daygrid-day-events').outerWidth();
+              if (isParents)
+                  info.el.style.marginLeft = `${isParents/2}px`
+            }
+            if (info.event.classNames.includes('half_right') && info.el.classList.contains('fc-daygrid-event') &&
+            info.el.classList.contains('fc-daygrid-block-event') && info.el.classList.contains('fc-event-end')){
+                const isParents = $(info.el).parents('.fc-daygrid-day-events').outerWidth();
+                if (isParents) info.el.style.marginRight = `${isParents/2}px`
+            }
+            if (info.event.classNames.includes('hasDiff') && info.el.classList.contains('fc-daygrid-event') &&
+            info.el.classList.contains('fc-daygrid-block-event') && info.el.classList.contains('fc-event-end')){
+                const isParents = $(info.el).parents('.fc-daygrid-day-events'),
+                    isParentsWidth = isParents.outerWidth(),
+                    isParent = $(info.el).parents('.fc-daygrid-event-harness');
+                let crtStyle = Number(isParent.attr('style').split('right: ')[1].replace('px;', '').replace('-',''))
+                if (isParent.hasClass('fc-daygrid-event-harness-abs')) isParent.css({right: `-${crtStyle + isParentsWidth}px`})
+            }
         },
         eventTimeFormat: {
             hour: '2-digit',
@@ -392,6 +419,10 @@ $(document).ready(function () {
         },
     });
     programmeHandle.init(calendar);
+    // tạo DateListCallable tháng hiện tại
+    const newDate = moment().format('YYYY-MM')
+    window.DateListCallable = []
+    window.DateListCallable.push(newDate)
 
     // click show/hide content của filter
     $('.wrap-btn').on('click', function () {

@@ -407,6 +407,10 @@ msgid "Precision"
 msgstr "Độ chính xác"
 
 #
+msgid "Is default"
+msgstr "Là mặc định"
+
+#
 msgid "Linked with employee"
 msgstr "Đã liên kết với nhân viên"
 

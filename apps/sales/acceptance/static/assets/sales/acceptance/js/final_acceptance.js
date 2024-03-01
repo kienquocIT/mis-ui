@@ -474,10 +474,14 @@ $(function () {
             return true;
         }
 
-        function loadOpp(dataOpp = {}) {
+        function loadOpp() {
             boxOpp.empty();
+            let dataParams = {};
+            if (boxEmployee.val()) {
+                dataParams['employee_inherit'] = boxEmployee.val();
+            }
             boxOpp.initSelect2({
-                data: dataOpp,
+                'dataParams': dataParams,
                 'allowClear': true,
             });
         }
@@ -508,6 +512,12 @@ $(function () {
         }
         loadSO();
 
+        function loadDataByEmployee() {
+            loadSO();
+            loadOpp();
+            return true;
+        }
+
         function loadDataByOpp() {
             if (boxOpp.val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(boxOpp, boxOpp.val());
@@ -529,6 +539,7 @@ $(function () {
                 boxEmployee[0].removeAttribute('readonly');
                 boxSO[0].removeAttribute('readonly');
             }
+            return true;
         }
 
         function loadDataBySO() {
@@ -552,6 +563,7 @@ $(function () {
                 boxEmployee[0].removeAttribute('readonly');
                 boxOpp[0].removeAttribute('readonly');
             }
+            return true;
         }
 
         // run datetimepicker
@@ -570,12 +582,12 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Events
-        boxOpp.on('change', function () {
-            loadDataByOpp();
+        boxEmployee.on('change', function () {
+            loadDataByEmployee();
         });
 
-        boxEmployee.on('change', function () {
-            loadSO();
+        boxOpp.on('change', function () {
+            loadDataByOpp();
         });
 
         boxSO.on('change', function () {

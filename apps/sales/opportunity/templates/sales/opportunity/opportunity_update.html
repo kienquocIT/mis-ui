@@ -82,7 +82,7 @@
 
     <div class="page-content">
         <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
-              data-url-redirect="{% url 'OpportunityDetail' '0' %}">
+              data-url-redirect="{% url 'OpportunityUpdate' '0' %}">
             {% csrf_token %}
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-12 mb-3 text-center">

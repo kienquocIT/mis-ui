@@ -443,3 +443,10 @@
     flex-direction: row;
     font-weight: 600;
 }
+.icon-scaret .icon-collapse{
+    transition: all .15s ease-in;
+}
+.icon-scaret:hover .icon-collapse{
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}

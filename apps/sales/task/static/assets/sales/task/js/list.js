@@ -103,8 +103,11 @@ $(function () {
     jQuery.fn.scroll_to_today = function () {
         $('#scroll_now').click()
     }
-    function onClickParent(){
-        console.log('toogle click parent _n')
+    function onClickParent(e, ID){
+        // todo here click show hide task con
+        // lấy ID get trong GanttViewTask.bk_taskList add attribute is_visible: true
+        // tạo action reload gantt và trigger click gantt
+        console.log('toogle click parent_n')
     }
 
     class initCommon {
@@ -1116,12 +1119,7 @@ $(function () {
         static renderGantt(){
             const $transElm = $('#trans-factory')
             let columns_gantt = [
-                {
-                    value: 'title',
-                    label: $transElm.attr('data-name'),
-                    show: true,
-                    width: '300'
-                },
+                {value: 'title', label: $transElm.attr('data-name'), show: true,width: '300'},
                 {value: 'priority', label: $transElm.attr('data-priority'), show: true, width: '100'},
                 {value: 'employee_created', label: $transElm.attr('data-assigner'), show: false},
                 {value: 'employee_inherit', label: $transElm.attr('data-assignee'), show: false},
@@ -1140,7 +1138,7 @@ $(function () {
                 // onItemClick: (data) => {
                 // },
                 onClickParent,
-                // onRowClick: (id) => renderDetailPage(id),
+                onRowClick: (id) => renderDetailPage(id),
                 // onRender: function () {
             //         if (window.console && typeof console.log === "function") {
             //             console.log("chart rendered");

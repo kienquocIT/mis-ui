@@ -342,16 +342,14 @@
                                         span.css("padding-left", "80px")
                                         row.removeClass('name').addClass('desc')
                                     }
-                                    span.click(function () {
-                                        settings.onClickParent()
+                                    span.click(function (e) {
+                                        settings.onClickParent(e, dataId)
                                     })
                                     if (entry.show_expand && entry.name && x.value === 'title'){
-                                        // todo here dang lam toi day
                                         span.addClass('has_child')
                                             .append(`<span class="icon-scaret text-blue"><i class="icon-collapse ` +
                                                 `fas fa-caret-${entry.is_expand ? 'down': 'right'}"></i></span>`)
                                     }
-
                                     if (x.value === 'title')
                                         span.append(entry.name ? entry.name : entry.desc)
                                     else {
@@ -374,7 +372,6 @@
                 // return ganttLeftPanel.append(entries.join(""));
                 ganttLeftPanel.append(divScroll);
                 ganttLeftPanel.css('width', withLeftPanel)
-
                 return ganttLeftPanel;
             },
 

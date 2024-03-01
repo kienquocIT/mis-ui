@@ -136,6 +136,33 @@ class ReportInventoryDetailListAPI(APIView):
         return resp.auto_return(key_success='report_inventory_detail_list')
 
 
+# REPORT INVENTORY DETAIL
+class ReportInventoryList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/inventory_report/inventory_report.html',
+        menu_active='menu_inventory_report',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ReportInventoryListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_DETAIL_LIST).get(data)
+        return resp.auto_return(key_success='report_inventory_list')
+
+
 # REPORT PIPELINE
 class ReportPipelineList(View):
     permission_classes = [IsAuthenticated]

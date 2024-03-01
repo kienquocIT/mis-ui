@@ -179,9 +179,9 @@ $(document).ready(function () {
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
-                                                    <td class="text-center"><span class="text-secondary">${stock_activity?.['opening_balance_quantity']}</span></td>
-                                                    <td><span class="text-secondary mask-money" data-init-money="${stock_activity?.['opening_balance_cost']}"></span></td>
-                                                    <td><span class="text-secondary mask-money" data-init-money="${stock_activity?.['opening_balance_value']}"></span></td>
+                                                    <td class="text-center"><span class="text-secondary">${stock_activity?.['ending_balance_quantity']}</span></td>
+                                                    <td><span class="text-secondary mask-money" data-init-money="${stock_activity?.['ending_balance_cost']}"></span></td>
+                                                    <td><span class="text-secondary mask-money" data-init-money="${stock_activity?.['ending_balance_value']}"></span></td>
                                                 </tr>`
                                             )
                                             for (const activity of stock_activity?.['data_stock_activity']) {

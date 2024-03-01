@@ -98,13 +98,15 @@ $(function () {
                         width: '6.66%',
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let isChange = ``;
+                            if (![2, 3].includes(row?.['system_status'])) {
+                                isChange = `<a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a><div class="dropdown-divider"></div>`;
+                            }
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a>
-                                        <div class="dropdown-divider" hidden></div>
-                                        <a class="dropdown-item" href="#" hidden>${transEle.attr('data-cancel')}</a>
+                                        ${isChange}
                                     </div>
                                 </div>`;
                         },

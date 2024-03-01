@@ -24,7 +24,7 @@ class DeliveryTableHandle {
             for (let item of prodSlt){
                 dataList.push({
                     product: item['product'],
-                    warehouse: '',
+                    warehouse: item['product_warehouse'],
                     product_available: item.product_available,
                     order: item?.['order'],
                     request_number: item.quantity,
@@ -90,17 +90,12 @@ class DeliveryTableHandle {
                         data: 'warehouse',
                         width: '20%',
                         render: (row, type, data, meta) => {
-                            let dataLoad = []
-                            if (!row && data?.['warehouse_data']) row = data['warehouse_data']
-                            if (row && Object.keys(row).length > 0) dataLoad.push({...row, selected: true})
-                            let params = {
-                                product_id: data.product.id
-                            }
                             let html = $(`<select>`).addClass('form-select row_warehouse')
-                                .attr('name', `warehouse_${meta.row}`).attr('data-zone', 'products').attr(
-                                    'data-params', JSON.stringify(params)
-                                )
-                            if (row && Object.keys(row).length > 0) html.attr('data-onload', JSON.stringify(dataLoad))
+                                .attr('name', `warehouse_${meta.row}`)
+                                .attr('data-zone', 'products')
+                                .attr('data-keyText', "title")
+                                .attr('data-keyId', "id")
+                            if (row?.['selected']) html.attr('data-onload', JSON.stringify(row))
                             return html.prop('outerHTML')
                         }
                     },
@@ -139,24 +134,27 @@ class DeliveryTableHandle {
 
                     // init warehouse selected
                     const warehouseLst = JSON.parse($('#warehouse_lst').text())
-                    $('[name*="warehouse_"]', row).attr('data-keyText', "title")
-                        .attr('data-keyId', "id")
+                    if (!data.warehouse) data.warehouse = warehouseLst[0].id
+                    $('[name*="warehouse_"]', row)
                         .initSelect2({
                             "data": warehouseLst,
                             "dropdownAutoWidth": true,
                             "templateResult": renderTemplateWarehouse,
                         })
                         .on('select2:select', function (e) {
-                            data.warehouse = e.params.data.data.warehouse.id
-                            const prodAvail = data.product_available[data.warehouse]
+                            data.warehouse = e.params.data.data.id
+                            const prodAvail = data.product_available[data.warehouse] ?
+                                data.product_available[data.warehouse] : '--'
                             $('.title_prod .dropdown-menu .mb-1:nth-child(5) p', row).text(prodAvail)
                         })
-                    if ($('[name*="warehouse_"]', row).hasClass("select2-hidden-accessible")) {
-                        // Select2 has been initialized
-                        const prodAvail = data.product_available[warehouseLst[0]?.id]
-                        $('.title_prod .dropdown-menu .mb-1:nth-child(5) p', row).text(prodAvail)
+                    let prodAvail = data.product_available[warehouseLst[0].id]
+                    if (data?.warehouse.hasOwnProperty('selected')){
+                        prodAvail = data.product_available[data?.warehouse.id]
+                        $('[name*="warehouse_"]', row).val(data?.warehouse.id).trigger('change')
                     }
-
+                    else $('[name*="warehouse_"]', row).val(warehouseLst[0].id).trigger('change')
+                    if ($('[name*="warehouse_"]', row).hasClass("select2-hidden-accessible"))
+                        $('.title_prod .dropdown-menu .mb-1:nth-child(5) p', row).text(prodAvail)
                     // handle done input
                     $('[name*="done_"]', row).on('change', function(){
                         let isErr = false, isVal = parseInt(this.value)
@@ -270,7 +268,7 @@ class ModalProvideProdList {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && data.hasOwnProperty('asset_provide_product_list'))
-                        ModalProvideProdList.init(data.asset_provide_product_list)
+                        ModalProvideProdList.init(data['asset_provide_product_list'])
                 },
                 (err) =>{
                     console.log('error load resource', err)
@@ -281,7 +279,6 @@ class ModalProvideProdList {
 }
 
 function submitHandleFunc() {
-    WindowControl.showLoading();
     let $FormElm = $('#asset_delivery_form')
     let $EmpElm = $('#inputEmployeeInheritor')
     const frm = new SetupFormSubmit($FormElm);
@@ -301,6 +298,10 @@ function submitHandleFunc() {
             return false
         }
         const prodAvail = item.product_available[item['warehouse']]
+        if (!prodAvail){
+            $.fn.notifyB({description: $('#trans-factory').attr('data-out_of_stock')}, 'failure');
+            return false
+        }
         if (item.done > prodAvail){
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-low_stock')}, 'failure');
             return false

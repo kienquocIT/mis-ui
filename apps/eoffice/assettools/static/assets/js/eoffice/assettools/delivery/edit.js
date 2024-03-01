@@ -32,7 +32,7 @@ $(document).ready(function(){
                 FileUtils.init($(`[name="attachments"]`).siblings('button'), fileDetail);
             }
 
-            DeliveryTableHandle.init(data.products)
+            DeliveryTableHandle.init({...data.products, selected: true})
             if (data.system_status >= 2) $('#idxRealAction').remove()
 
             // load attachments

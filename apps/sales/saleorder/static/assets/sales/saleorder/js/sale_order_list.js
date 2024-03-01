@@ -26,7 +26,7 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {

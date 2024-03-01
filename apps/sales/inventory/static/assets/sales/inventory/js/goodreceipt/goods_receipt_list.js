@@ -26,7 +26,7 @@ $(function () {
                         targets: 0,
                         render: (data, type, row) => {
                             let link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {

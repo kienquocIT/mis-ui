@@ -553,12 +553,15 @@
                         },
                         (errs) => {
                             $.fn.switcherResp(errs, {
-                                'keyNotMatch': '',
-                                'replaceKey': {
-                                    'current_password': $('input[name="current_password"]').closest('.form-group').find('.form-label').text().trim(),
-                                    'new_password': $('input[name="new_password"]').closest('.form-group').find('.form-label').text().trim(),
-                                    'new_password_again': $('input[name="new_password_again"]').closest('.form-group').find('.form-label').text().trim(),
-                                }
+                                'isNotify': true,
+                                'notifyOpts': {
+                                    'keyNotMatch': '',
+                                    'replaceKey': {
+                                        'current_password': $('input[name="current_password"]').closest('.form-group').find('.form-label').text().trim(),
+                                        'new_password': $('input[name="new_password"]').closest('.form-group').find('.form-label').text().trim(),
+                                        'new_password_again': $('input[name="new_password_again"]').closest('.form-group').find('.form-label').text().trim(),
+                                    }
+                                },
                             })
                         },
                     )

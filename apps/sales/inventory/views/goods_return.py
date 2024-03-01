@@ -50,7 +50,10 @@ class GoodsReturnCreate(View):
         breadcrumb='GOODS_RETURN_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST).get()
+        return {
+            'data': {'warehouse_list': resp1.result},
+        }, status.HTTP_200_OK
 
 
 class GoodsReturnDetail(View):

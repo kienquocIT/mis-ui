@@ -17,6 +17,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.warehouse_list | json_script:"warehouse_list" }}
     <script id="script-url"
             data-url-delivery="{% url 'DeliveryListForGoodsReturnAPI' %}"
             data-url-delivery-products="{% url 'DeliveryProductsForGoodsReturnAPI' '0' %}"
@@ -44,9 +45,19 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-group">
-                        <label for="date" class="form-label required">{% trans 'Date' %}</label>
-                        <input type="text" class="form-control" id="date" readonly>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="date" class="form-label required">{% trans 'Date' %}</label>
+                                <input type="text" class="form-control" id="date" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="return-wh-title" class="form-label required">{% trans 'Return to' %}</label>
+                                <input data-wh-id="" type="text" class="form-control" id="return-wh-title" readonly>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="note" class="form-label">{% trans 'Note' %}</label>
@@ -157,8 +168,10 @@
                             <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
                                 <script id="data-line-detail-table"></script>
                                 <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                                   data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
-                                   data-url-tax-list="{% url 'TaxListAPI' %}">
+                                       data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                                       data-url-tax-list="{% url 'TaxListAPI' %}"
+                                       data-selected-wh=""
+                                >
                                 <thead>
                                 <tr>
                                     <th class="text-center" style="min-width: 30px"></th>
@@ -198,6 +211,22 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-select-return-warehouse" tabindex="-1" role="dialog" aria-labelledby="modal-select-return-warehouse" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Select return warehouse' %}</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" id="select-wh-return-div"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="modal-OK-btn">{% trans 'OK' %}</button>
                     </div>
                 </div>
             </div>

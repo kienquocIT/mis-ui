@@ -218,7 +218,6 @@ class MyLanguageAPI(APIView):
 
 
 class ForgotPasswordView(APIView):
-    @mask_view(login_require=False, is_api=False)
     def get(self, request, *args, **kwargs):
         if request.user and not isinstance(request.user, AnonymousUser):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
@@ -228,9 +227,41 @@ class ForgotPasswordView(APIView):
         request.user = AnonymousUser
         if check_home_domain(request) is True:
             return OutLayoutRender(request=request).render_404()
-        return render(
-            request, 'auths/forgot_passwd.html', {}
-        )
+        ctx = {'ui_domain': settings.UI_DOMAIN, 'captcha_enabled': False}
+        return render(request, 'auths/forgot_passwd.html', ctx)
+
+    @mask_view(login_require=False, is_api=True)
+    def post(self, request, *args, **kwargs):
+        # get OTP first
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD,
+            cus_headers={
+                'Accept-Language': request.headers.get('Accept-Language', settings.LANGUAGE_CODE)
+            }
+        ).post(data=request.data)
+        return resp.auto_return()
+
+
+class ForgotPasswordDetailAPI(APIView):
+    @mask_view(login_require=False, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        # refresh push OTP
+        if pk and TypeCheck.check_uuid(pk):
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD_DETAIL.fill_key(pk=pk)
+            ).get()
+            return resp.auto_return(key_success='forgot_password_data')
+        return OutLayoutRender(request=request).render_404()
+
+    @mask_view(login_require=False, is_api=True)
+    def put(self, request, *args, pk, **kwargs):
+        # enter OTP
+        if pk and TypeCheck.check_uuid(pk):
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD_DETAIL.fill_key(pk=pk)
+            ).put(data=request.data)
+            return resp.auto_return()
+        return OutLayoutRender(request=request).render_404()
 
 
 class ChangePasswordView(View):

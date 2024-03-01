@@ -575,6 +575,7 @@ class PrintTinymceControl {
         return $.fn.callAjax2({
             url: url,
             sweetAlertOpts: {'allowOutsideClick': true},
+            onlyErrorCallback: true,
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -584,9 +585,12 @@ class PrintTinymceControl {
                 return {}
             },
             (errs) => {
-                $.fn.notifyB({
-                    'description': $.fn.transEle.attr('data-msg-print-not-have-template'),
-                }, 'failure')
+                $.fn.switcherResp(errs, {
+                    'isNotify': true,
+                    'swalOpts': {
+                        title: $.fn.transEle.attr('data-msg-print-not-have-template'),
+                    },
+                });
             },
         )
     }

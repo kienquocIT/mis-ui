@@ -43,6 +43,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     #
     USER_CHANGE_PASSWORD = StringUrl('auth/change-password')
+    USER_FORGOT_PASSWORD = StringUrl('auth/forgot-password')
+    USER_FORGOT_PASSWORD_DETAIL = StringUrl('auth/forgot-password/{pk}')
 
     # web / page builder
     BUILDER_PAGE_LIST = StringUrl('site/config/page-list')
@@ -472,6 +474,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_PIPELINE_LIST = StringUrl('report/pipeline/list')
     REPORT_CASHFLOW_LIST = StringUrl('report/cashflow/list')
     REPORT_INVENTORY_DETAIL_LIST = StringUrl('report/inventory-detail/list')
+    BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')

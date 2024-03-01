@@ -44,17 +44,21 @@
 <div class="hk-wrapper hk-pg-auth bg-light position-relative" data-footer="simple">
     <!-- Main Content -->
     <div class="hk-pg-wrapper pt-0 pb-xl-0 pb-5 position-relative">
-        <canvas id="canvas" class="position-absolute" style="width: 100%;height:100%;"></canvas>
+        <canvas id="canvas" class="position-absolute" style="top: 0; left: 0; width: 100%;height:100%;"></canvas>
         <div class="hk-pg-body pt-0 pb-xl-0">
             <!-- Container -->
             <div class="container-xxl">
                 <!-- Row -->
                 <div class="row mx-auto" style="max-width: 450px;">
                     <div class="col-12 position-relative ">
-                        <div class="auth-content mt-8">
-                            <div class="card card-lg card-border box-vertical-blur">
-                                <div class="card-body">
-                                    <div class="w-100 mb-3" id="username-call-get">
+                        <div class="card card-lg card-border box-vertical-blur">
+                            <div class="card-body">
+                                <div class="w-100 mb-3" id="username-call-get">
+                                    <form data-url="" data-method="POST" id="frmGetOTP">
+                                        <div class="d-none">
+                                            <label for="inp-tenant-code"></label>
+                                            <input type="text" name="tenant_code" id="inp-tenant-code" required>
+                                        </div>
                                         <div class="form-group">
                                             <label for="inp-username" class="form-label">
                                                 {% trans 'username' %}
@@ -63,96 +67,96 @@
                                                 <input
                                                         type="text" name="username" id="inp-username"
                                                         class="form-control" placeholder=""
-                                                        tabindex="1"
+                                                        required
                                                 >
                                                 <button
-                                                        class="btn btn-primary" type="button" id="btnGetOtp"
-                                                        tabindex="2"
+                                                        class="btn btn-primary"
+                                                        type="submit" form="frmGetOTP"
+                                                        id="btnGetOtp"
                                                 >
                                                     {% trans 'Get OTP' %}
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="w-100 mb-3" id="validated-person" style="display: none;">
-                                        <div class="w-100 mb-3">
-                                            <div class="avatar">
-                                                <img
-                                                        src="{% static 'assets/images/systems/person-avt.png' %}"
-                                                        alt="user" class="avatar-img"
-                                                >
-                                            </div>
-                                            <span>Nguyễn Văn A</span>
+                                    </form>
+                                </div>
+                                <div class="w-100 mb-3" id="validated-person" style="display: none;">
+                                    <div class="w-100 mb-3">
+                                        <div class="avatar avatar-rounded">
+                                            <img
+                                                    src="{% static 'assets/images/systems/person-avt.png' %}"
+                                                    alt="user" class="avatar-img"
+                                                    id="img-avatar-person"
+                                            >
                                         </div>
-                                        <div class="separator-full"></div>
+                                        <span id="full-name-person">...</span>
                                     </div>
-                                    <div class="w-100 mb-3" id="validate-otp" style="display: none;">
-                                        <div class="w-100 d-flex justify-content-between align-items-centerr">
-                                            <p
-                                                    class="flex-item" data-txt="{% trans 'Time remaining %s' %}"
-                                                    data-counter="89"
-                                            >Time remaining 01:29</p>
+                                    <div class="separator-full"></div>
+                                </div>
+                                <div class="w-100 mb-3" id="validate-otp" style="display: none;">
+                                    <div class="w-100 mb-3" id="push-notify-data"></div>
+                                    <form
+                                            data-url="{% url 'ForgotPasswordDetailAPI' pk='__pk__' %}" data-method="PUT"
+                                            id="frmSubmitOTPValidate"
+                                    >
+                                        <div class="d-none">
+                                            <label for="inp-idx-validate"></label>
+                                            <input type="text" name="id" id="inp-idx-validate" required/>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between align-items-center">
                                             <button
-                                                    class="flex-item btn btn-xs btn-primary" tabindex="3"
+                                                    class="flex-item btn btn-xs btn-primary"
+                                                    id="btnResendOTP"
+                                                    type="button"
                                                     style="text-transform: unset;"
+                                                    disabled
                                             >{% trans 'Resend OTP' %}</button>
+                                            <p
+                                                    id="show-time-remaining"
+                                                    class="flex-item" data-txt="{% trans 'Time remaining __data__s' %}"
+                                                    data-counter=""
+                                            ></p>
                                         </div>
                                         <div class="form-group">
                                             <label for="inp-otp" class="form-label"></label>
                                             <div class="input-group mb-3">
                                                 <input
                                                         type="text" name="otp" id="inp-otp"
-                                                        class="form-control" placeholder="otp"
-                                                        tabindex="4"
+                                                        class="form-control" placeholder="{% trans 'Enter One-time password - OTP' %}"
+                                                        required
                                                 >
                                                 <button
-                                                        class="btn btn-success" type="button" id="btnVerifyOtp"
-                                                        tabindex="5"
+                                                        class="btn btn-success"
+                                                        type="submit" form="frmSubmitOTPValidate"
+                                                        id="btnVerifyOtp"
                                                 >
                                                     {% trans 'Verify' %}
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="w-100 mb-3" id="enter-new-password-submit" style="display: none;">
-                                        <div class="form-group mb-3">
-                                            <label
-                                                    for="inp-new-password" class="form-label"
-                                            >{% trans 'New password' %}</label>
-                                            <div class="input-group mb-3">
-                                                <input
-                                                        type="password" name="new-password"
-                                                        id="inp-new-password" class="form-control"
-                                                        placeholder="●●●●●●●●" tabindex="6"
-                                                >
-                                                <button
-                                                        class="btn btn-secondary w-100p"
-                                                        type="button" id="btn-show-hide-passwd" tabindex="7"
-                                                >
-                                                    <span>{% trans 'Show' %}</span>
-                                                    <span class="d-none">{% trans 'Hide' %}</span>
-                                                </button>
-                                            </div>
-                                            <small class="form-text text-muted">
-                                                {% trans 'Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols.' %}
-                                                <i>-_@#!%^&*+=";:</i>
-                                            </small>
+                                    </form>
+                                </div>
+                                <div class="w-100 mb-3" id="show-new-password" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="inp-gen-pass" class="form-label">{% trans 'Reissued Password' %}</label>
+                                        <div class="input-group mb-3">
+                                            <input
+                                                    type="text" id="inp-gen-pass"
+                                                    class="form-control"
+                                                    readonly
+                                            >
+                                            <button
+                                                    class="btn btn-success"
+                                                    type="button"
+                                                    id="btnCopyPass"
+                                            >
+                                                <span id="msg-copy">{% trans 'Copy' %}</span>
+                                                <span id="msg-copied" style="display: none;">{% trans 'Copied' %}</span>
+                                            </button>
                                         </div>
-                                        <div class="w-100">
-                                            <small>{% trans 'Strength of password' %}</small>
-                                            <div class="progress progress-bar-rounded mb-5">
-                                                <div
-                                                        class="progress-bar bg-light w-0" role="progressbar"
-                                                        aria-valuenow="25" aria-valuemin="0"
-                                                        aria-valuemax="100" id="strengthPasswordProgress"
-                                                ></div>
-                                            </div>
-                                        </div>
-                                        <button
-                                                class="w-100 btn btn-success" tabindex="8" id="btnSubmitNewPassword"
-                                                disabled
-                                        >{% trans 'Update' %}</button>
                                     </div>
+                                    <i class="fa-regular fa-hand-point-right" style="margin-right: 0.5rem;"></i>
+                                    <a href="{% url 'ChangePasswordView' %}">{% trans 'Go to change password page' %}</a>
                                 </div>
                             </div>
                         </div>
@@ -231,76 +235,247 @@
     <script src="{% static 'assets/js/init.js' %}"></script>
     <script src="{% static 'login/backdrop-animated.js' %}"></script>
     <script>
-        function setStrengthOfPassword(percent) {
-            percent = 5 * Math.round(percent / 5);
+        function listenImageLoad(imgEle = null, opts = {}) {
+            function resolve_title_tooltip(_ele) {
+                let parentTxt = '';
+                if ($(_ele).parent().attr('data-toggle') === 'tooltip' || $(_ele).parent().attr('data-bs-toggle') === 'tooltip') {
+                    parentTxt = $(_ele).parent().attr('title');
+                }
+                return `${parentTxt ? parentTxt + "." : ""} ""`
+            }
 
-            let clsBg = 'light';
-            if (percent <= 30) clsBg = 'danger';
-            if (30 < percent && percent <= 75) clsBg = 'warning';
-            if (percent > 75) clsBg = 'success';
+            let imgReplace = opts?.['imgReplace'] || "{% static 'assets/images/systems/person-avt.png' %}";
+            (
+                imgEle ? imgEle : $('img')
+            ).each(function () {
+                if ($(this)[0].complete === true && $(this)[0].naturalWidth === 0 && $(this)[0].naturalHeight === 0) {
+                    $(this).attr('data-old-src', $(this).attr('src'));
+                    $(this).attr('src', imgReplace);
+                    $(this).attr('data-toggle', 'tooltip');
+                    $(this).attr('title', resolve_title_tooltip($(this)));
+                    $(this).tooltip();
+                }
 
-            $('#strengthPasswordProgress')
-                .alterClass('w-*').addClass('w-' + percent)
-                .alterClass('bg-*').addClass('bg-' + clsBg);
-            $('#btnSubmitNewPassword').prop('disabled', percent <= 45);
+                $(this).on('error', function () {
+                    debugger
+                    $(this).attr('data-old-src', $(this).attr('src'));
+                    $(this).attr('data-toggle', 'tooltip');
+                    $(this).attr('title', resolve_title_tooltip($(this)));
+                    $(this).attr('src', imgReplace);
+                });
+            })
+        }
+        listenImageLoad();
+
+        function showErrors(errs){
+            let errors = errs?.['data']?.['errors'] || null;
+                if (errors && typeof errors === 'object'){
+                    Object.keys(errors).map(
+                        (key) => {
+                            $.fn.notifyB({
+                                'description': errors[key],
+                            }, 'failure');
+                        }
+                    )
+                }
         }
 
-        function checkStrengthOfPassword(passwdStr) {
-            let point = 0;
-            if (!passwdStr) return setStrengthOfPassword(0);
-            if (!passwdStr.length > 6) return setStrengthOfPassword(passwdStr.length * 5);
+        function activeRemaining(){
+            let ele = $('#show-time-remaining');
+            let count = 120;
+            let txtSample = ele.attr('data-txt');
 
-            point += 30;
-            const hasNumber = /\d/.test(passwdStr);
-            if (hasNumber) point += 15;
+            ele.text(txtSample.replaceAll('__data__', count));
+            ele.attr('data-counter', count);
+            count--;
 
-            const hasLowercase = /[a-z]/.test(passwdStr);
-            if (hasLowercase) point += 15;
-
-            const hasUppercase = /[A-Z]/.test(passwdStr);
-            if (hasUppercase) point += 15;
-
-            const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(passwdStr);
-            if (hasSpecialChar) point += 25;
-
-            return setStrengthOfPassword(point);
+            let intervalCountdown = setInterval(
+                () => {
+                    ele.text(txtSample.replaceAll('__data__', count));
+                    ele.attr('data-counter', count);
+                    if (count <= 0){
+                        clearInterval(intervalCountdown);
+                        $('#btnResendOTP').prop('disabled', false);
+                        ele.text('');
+                    }
+                    count--;
+                },
+                1000
+            )
         }
 
         $(document).ready(function () {
-            $('#inp-new-password').on('input', function (e) {
-                e.target.value = $.fn.removeAccentAndDiacritics(e.target.value);
-                checkStrengthOfPassword($(this).val());
-            });
+            $('#inp-username').focus();
 
-            $('#btn-show-hide-passwd').on('click', function () {
-                $(this).children().toggleClass('d-none');
-                let inpEle = $(this).siblings('input');
-                if (inpEle.attr('type') === 'password') inpEle.attr('type', 'text');
-                else inpEle.attr('type', 'password');
-            });
+            function centerBox() {
+                let boxHeight = $('.hk-pg-body').height();
+                $(':root').css('--box-height', `(50vh + ${boxHeight / 2}px + 20px)`);
+            }
+            centerBox();
 
-            let groupCallGet = $('#username-call-get');
-            let groupValidPerson = $('#validated-person');
-            let groupValidOtp = $('#validate-otp');
-            let groupNewPasswd = $('#enter-new-password-submit');
+            let mainDomain = "{{ ui_domain }}";
+            let hostData = window.location.hostname;
+            let notFoundUrl = "{% url 'OutLayoutNotFoundView' %}";
 
+            if (hostData.endsWith(mainDomain) && hostData.indexOf(mainDomain) !== -1) {
+                let validateFormOpts = {
+                    focusInvalid: true,
+                    validClass: "is-valid",
+                    errorClass: "is-invalid",
+                    errorElement: "small",
+                    showErrors: function (errorMap, errorList) {
+                        this.defaultShowErrors();
+                    },
+                    errorPlacement: function (error, element) {
+                    },
+                    onsubmit: true,
+                }
+                let groupCallGet = $('#username-call-get');
+                let groupValidPerson = $('#validated-person');
+                let groupValidOtp = $('#validate-otp');
+                let groupNewPasswd = $('#show-new-password');
 
-            $('#btnGetOtp').on('click', function () {
-                groupCallGet.fadeOut('fast', function () {
-                    groupValidPerson.fadeIn('fast');
-                    groupValidOtp.fadeIn('fast');
+                $('#inp-tenant-code').val(hostData.replaceAll('.' + mainDomain, ''));
+
+                let frmOTPValidate = $('#frmSubmitOTPValidate');
+                let inputReissuedPassword = $('#inp-gen-pass');
+
+                $('#frmGetOTP').validate({
+                    ...validateFormOpts,
+                    submitHandler: function (form, event) {
+                        event.preventDefault();
+                        $.fn.callAjax(
+                            $(form).attr('data-url'),
+                            $(form).attr('data-method'),
+                            {
+                                'tenant_code': $(form).find('input[name=tenant_code]').val(),
+                                'username': $(form).find('input[name=username]').val(),
+                            },
+                        ).then(
+                            resp => {
+                                let data = resp?.['data'] || null;
+                                if (data) {
+                                    frmOTPValidate.attr(
+                                        'data-url',
+                                        frmOTPValidate.attr('data-url').replaceAll('__pk__', data.id)
+                                    )
+
+                                    let user_data = data?.['user_data'] || null;
+                                    if (user_data) {
+                                        if (user_data.avatar) $('#img-avatar-person').attr('src', user_data.avatar);
+                                        $('#full-name-person').text(user_data.full_name);
+                                        groupCallGet.fadeOut('fast', function () {
+                                            groupValidPerson.fadeIn('fast', function () {
+                                                centerBox();
+                                            });
+                                            groupValidOtp.fadeIn('fast', function () {
+                                                centerBox();
+                                                $('#inp-otp').focus();
+                                                activeRemaining();
+                                            });
+                                        });
+                                    }
+                                    let notifyData = data?.['push_notify_data'] || null;
+                                    if (notifyData && typeof notifyData === 'object'){
+                                        if (notifyData.hasOwnProperty('name_service') && notifyData.hasOwnProperty('destination')){
+                                            $('#push-notify-data').text(
+                                                `${notifyData.name_service || ''} : ${notifyData.destination || ''}`
+                                            )
+                                        }
+                                    }
+                                }
+                            },
+                            errs => {
+                                showErrors(errs);
+                            },
+                        )
+                    },
                 });
-            });
 
-            $('#btnVerifyOtp').on('click', function () {
-                groupValidOtp.fadeOut('fast', function () {
-                    groupNewPasswd.fadeIn('fast');
+                $('#btnResendOTP').on('click', function (){
+                    let clsThis = this;
+                    if ($('#show-time-remaining').attr('data-counter') === '0'){
+                        $.fn.callAjax(
+                            frmOTPValidate.attr('data-url'),
+                            'GET',
+                        ).then(
+                            resp => {
+                                if (resp?.['status'] === 200){
+                                    activeRemaining();
+                                    $(clsThis).prop('disabled', true);
+                                }
+                            },
+                            errs => showErrors(errs),
+                        )
+                    }
                 });
-            })
+
+                frmOTPValidate.validate({
+                    ...validateFormOpts,
+                    submitHandler: function (form, event) {
+                        event.preventDefault();
+                        $.fn.callAjax(
+                            $(form).attr('data-url'),
+                            $(form).attr('data-method'),
+                            {
+                                'otp': $(form).find('input[name=otp]').val(),
+                            },
+                        ).then(
+                            resp => {
+                                let data = resp?.['data'] || null;
+                                if (data) {
+                                    $('#inp-gen-pass').val(data?.['new_password'] || '')
+                                    groupValidOtp.fadeOut('fast', function () {
+                                        groupNewPasswd.fadeIn('fast', function () {
+                                            centerBox();
+                                        });
+                                    });
+                                }
+                            },
+                            errs => {
+                                showErrors(errs);
+                            },
+                        )
+                    },
+                })
+
+                $('#btnCopyPass').on('click', function () {
+                    let clsThis = this;
+                    let timeOutAnimation = null;
+                    function showCopied(){
+                        if (timeOutAnimation) clearTimeout(timeOutAnimation);
+                        $(clsThis).prop('disabled', true);
+                        $(clsThis).find('#msg-copy').fadeOut('fast', function (){
+                            $(clsThis).find('#msg-copied').fadeIn('fast');
+                            timeOutAnimation = setTimeout(
+                                () => {
+                                    resetCopy();
+                                },
+                                1000
+                            )
+                        })
+                    }
+
+                    function resetCopy(){
+                        if (timeOutAnimation) clearTimeout(timeOutAnimation);
+                        $(clsThis).prop('disabled', false);
+                        $(clsThis).find('#msg-copied').fadeOut('fast', function (){
+                            $(clsThis).find('#msg-copy').fadeIn('fast');
+                        })
+                    }
+
+                    navigator.clipboard.writeText(inputReissuedPassword.val()).then(
+                        showCopied,
+                        resetCopy,
+                    );
+                })
+            } else {
+                window.location.href = notFoundUrl;
+            }
         })
 
         $.fn.extend({
-            removeAccentAndDiacritics: function (strData, removeSpecialCharacters=true) {
+            removeAccentAndDiacritics: function (strData, removeSpecialCharacters = true) {
                 // https://stackoverflow.com/a/18391901/13048590
                 let defaultDiacriticsRemovalMap = [
                     {
@@ -696,7 +871,7 @@
                     }
                 }, timeout);
             },
-            notifyBLogin: function (option, typeAlert = null) {
+            notifyB: function (option, typeAlert = null) {
                 setTimeout(function () {
                     $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
                 }, 100);
@@ -755,7 +930,7 @@
                     [kv.name]: kv.value
                 }), {});
             },
-            callAjaxLogin: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
+            callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
                 return new Promise(function (resolve, reject) {
                     // Setup then Call Ajax
                     let ctx = {

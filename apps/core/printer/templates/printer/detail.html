@@ -65,8 +65,14 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="form-check form-switch">
-                    <input type="checkbox" class="form-check-input" id="inp-is-using" disabled>
-                    <label class="form-check-label" for="inp-is-using">{% trans 'Using' %}</label>
+                    <input type="checkbox" class="form-check-input" id="inp-is-default" disabled>
+                    <label class="form-check-label" for="inp-is-default">{% trans 'Is default' %}</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="inp-is-active" disabled>
+                    <label class="form-check-label" for="inp-is-active">{% trans 'Using' %}</label>
                 </div>
             </div>
         </div>
@@ -118,8 +124,10 @@
                             $('#inp-title').val(detail.title || '');
                             // Remarks
                             $('#inp-remarks').val(detail.remarks || '');
-                            // Using
-                            $('#inp-is-using').prop('checked', detail?.['is_using'] === true);
+                            // Using | Default
+                            $('#inp-is-active').prop('checked', detail?.['is_active'] === true);
+                            // Active
+                            $('#inp-is-default').prop('checked', detail?.['is_default'] === true);
                             // content
                             let txtArea = $('#inp-contents');
                             PrintTinymceControl.init_tinymce_editable(txtArea, 'b9650500-aba7-44e3-b6e0-2542622702a3', {

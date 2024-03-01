@@ -63,8 +63,14 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="form-check form-switch">
-                    <input type="checkbox" class="form-check-input" id="inp-is-using" name="is_using">
-                    <label class="form-check-label" for="inp-is-using">{% trans 'Using' %}</label>
+                    <input type="checkbox" class="form-check-input" id="inp-is-default" name="is_default">
+                    <label class="form-check-label" for="inp-is-default">{% trans 'Is default' %}</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="inp-is-active" name="is_active">
+                    <label class="form-check-label" for="inp-is-active">{% trans 'Using' %}</label>
                 </div>
             </div>
         </div>
@@ -141,8 +147,10 @@
                             $('#inp-title').val(detail.title || '');
                             // Remarks
                             $('#inp-remarks').val(detail.remarks || '');
-                            // Using
-                            $('#inp-is-using').prop('checked', detail?.['is_using'] === true);
+                            // Default
+                            $('#inp-is-default').prop('checked', detail?.['is_default'] === true);
+                            // Active
+                            $('#inp-is-active').prop('checked', detail?.['is_active'] === true);
                             // content
                             let txtArea = $('#inp-contents');
                             PrintTinymceControl.init_tinymce_editable(txtArea, detail?.['application']?.['id'], {
@@ -163,7 +171,8 @@
                     submitHandler: function (form, event){
                         let frmSetup = new SetupFormSubmit(frm);
                         let bodyData = frmSetup.dataForm;
-                        bodyData['is_using'] = $(form).find('input[name="is_using"]').prop('checked');
+                        bodyData['is_default'] = $(form).find('input[name="is_default"]').prop('checked');
+                        bodyData['is_active'] = $(form).find('input[name="is_active"]').prop('checked');
                         $.fn.callAjax2({
                             url: frmSetup.dataUrl,
                             method: frmSetup.dataMethod,

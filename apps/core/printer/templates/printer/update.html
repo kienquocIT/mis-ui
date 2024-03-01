@@ -147,10 +147,18 @@
                             $('#inp-title').val(detail.title || '');
                             // Remarks
                             $('#inp-remarks').val(detail.remarks || '');
-                            // Default
-                            $('#inp-is-default').prop('checked', detail?.['is_default'] === true);
+
+                            //
+                            let activeEle = $('#inp-is-active');
+                            let defaultEle = $('#inp-is-default');
                             // Active
-                            $('#inp-is-active').prop('checked', detail?.['is_active'] === true);
+                            activeEle.prop('checked', detail?.['is_active'] === true).on('change', function (){
+                                if ($(this).prop('checked') === false) defaultEle.prop('checked', false);
+                            });
+                            // Default
+                            defaultEle.prop('checked', detail?.['is_default'] === true).on('change', function (){
+                                if ($(this).prop('checked') === true) activeEle.prop('checked', true);
+                            });
                             // content
                             let txtArea = $('#inp-contents');
                             PrintTinymceControl.init_tinymce_editable(txtArea, detail?.['application']?.['id'], {

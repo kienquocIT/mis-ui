@@ -142,7 +142,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRINT_TEMPLATES_APPS_LIST = StringUrl('printer/apps')
     PRINT_TEMPLATES_LIST = StringUrl('printer/list')
     PRINT_TEMPLATES_DETAIL = StringUrl('printer/detail/{pk}')
-    PRINT_TEMPLATES_USING = StringUrl('printer/using/{application_id}')
+    PRINT_TEMPLATES_USING = StringUrl('printer/using/default/{application_id}')
+    PRINT_TEMPLATES_USING_DETAIL = StringUrl('printer/using/detail/{pk}')
 
     # base
     PLAN_LIST = StringUrl('base/plans')

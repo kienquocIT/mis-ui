@@ -4,7 +4,7 @@ from apps.core.printer.views import (
     PrintTemplatesListAPI, PrintTemplatesListView, PrintTemplateUsingDetail,
     PrintTemplateCreateView, PrintTemplateCreateAPI, PrintTemplateDetailView, PrintTemplateDetailAPI,
     PrintTemplateUpdateView, PrintTemplateApplicationListAPI, PrintApplicationTemplateSample,
-    ApplicationPropertyForPrintListAPI,
+    ApplicationPropertyForPrintListAPI, PrintTemplateDetailUsingAPI,
 )
 
 urlpatterns = [
@@ -19,5 +19,6 @@ urlpatterns = [
     path('detail/<str:pk>/api', PrintTemplateDetailAPI.as_view(), name='PrintTemplateDetailAPI'),
     path('update/<str:pk>', PrintTemplateUpdateView.as_view(), name='PrintTemplateUpdateView'),
 
-    path('using/<str:application_id>', PrintTemplateUsingDetail.as_view(), name='PrintTemplateUsingDetail'),
+    path('using/default/<str:application_id>', PrintTemplateUsingDetail.as_view(), name='PrintTemplateUsingDetail'),
+    path('using/detail/<str:pk>', PrintTemplateDetailUsingAPI.as_view(), name='PrintTemplateDetailUsingAPI'),
 ]

@@ -188,7 +188,7 @@ $.fn.extend({
             // config
             'isNotify': true,
             'notifyOpts': {},
-            'swalOpts': {},
+            'swalOpts': {},  // 'allowOutsideClick': true,
 
             // callback status
             '200': (respData, configData) => respData.data,

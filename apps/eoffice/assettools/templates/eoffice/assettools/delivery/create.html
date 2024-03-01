@@ -136,7 +136,9 @@
     data-uom="{% trans 'UoM' %}"
     data-empty-warehouse="{% trans 'Warehouse is required' %}"
     data-err-done="{% trans 'Done number is not valid value' %}"
-    data-err-low_stock="{% trans 'Done number is greater than available number' %}">
+    data-err-low_stock="{% trans 'Done number is greater than available number' %}"
+    data-out_of_stock="{% trans 'Out of stock' %}"
+    >
     {{ data.warehouse_list|json_script:'warehouse_lst' }}
 {% endblock %}
 {% block jsFooter %}

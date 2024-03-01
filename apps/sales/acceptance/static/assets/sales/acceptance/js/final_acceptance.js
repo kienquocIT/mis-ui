@@ -474,10 +474,14 @@ $(function () {
             return true;
         }
 
-        function loadOpp(dataOpp = {}) {
+        function loadOpp() {
             boxOpp.empty();
+            let dataParams = {};
+            if (boxEmployee.val()) {
+                dataParams['employee_inherit'] = boxEmployee.val();
+            }
             boxOpp.initSelect2({
-                data: dataOpp,
+                'dataParams': dataParams,
                 'allowClear': true,
             });
         }
@@ -508,6 +512,60 @@ $(function () {
         }
         loadSO();
 
+        function loadDataByEmployee() {
+            loadSO();
+            loadOpp();
+            return true;
+        }
+
+        function loadDataByOpp() {
+            if (boxOpp.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxOpp, boxOpp.val());
+                if (dataSelected) {
+                    boxEmployee.empty();
+                    boxEmployee.initSelect2({
+                        data: dataSelected?.['sale_person'],
+                        'allowClear': true,
+                    });
+                    boxEmployee[0].setAttribute('readonly', 'true');
+                    boxSO.empty();
+                    boxSO.initSelect2({
+                        data: dataSelected?.['sale_order'],
+                        'allowClear': true,
+                    });
+                    boxSO[0].setAttribute('readonly', 'true');
+                }
+            } else {
+                boxEmployee[0].removeAttribute('readonly');
+                boxSO[0].removeAttribute('readonly');
+            }
+            return true;
+        }
+
+        function loadDataBySO() {
+            if (boxSO.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxSO, boxSO.val());
+                if (dataSelected) {
+                    boxEmployee.empty();
+                    boxEmployee.initSelect2({
+                        data: dataSelected?.['sale_person'],
+                        'allowClear': true,
+                    });
+                    boxEmployee[0].setAttribute('readonly', 'true');
+                    boxOpp.empty();
+                    boxOpp.initSelect2({
+                        data: dataSelected?.['opportunity'],
+                        'allowClear': true,
+                    });
+                    boxOpp[0].setAttribute('readonly', 'true');
+                }
+            } else {
+                boxEmployee[0].removeAttribute('readonly');
+                boxOpp[0].removeAttribute('readonly');
+            }
+            return true;
+        }
+
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
             minYear: 1901,
@@ -524,22 +582,16 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Events
-        boxOpp.on('change', function () {
-            loadSO();
+        boxEmployee.on('change', function () {
+            loadDataByEmployee();
         });
 
-        boxEmployee.on('change', function () {
-            loadSO();
+        boxOpp.on('change', function () {
+            loadDataByOpp();
         });
 
         boxSO.on('change', function () {
-            if (boxSO.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(boxSO, boxSO.val());
-                if (dataSelected) {
-                    loadOpp(dataSelected?.['opportunity']);
-                    loadEmployee(dataSelected?.['sale_person']);
-                }
-            }
+            loadDataBySO();
         });
 
         btnRefresh.on('click', function () {

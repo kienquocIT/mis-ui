@@ -58,6 +58,13 @@ class QuotationLoadDataHandle {
         if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(QuotationLoadDataHandle.opportunitySelectEle).val());
             if (dataSelected) {
+                // load sale person
+                QuotationLoadDataHandle.salePersonSelectEle.empty();
+                QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
+                    data: dataSelected?.['sale_person'],
+                    'allowClear': true,
+                });
+                QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
                 let dataCustomer = dataSelected?.['customer'];
                 // load Shipping & Billing by Customer
                 QuotationLoadDataHandle.loadShippingBillingCustomer();
@@ -73,6 +80,7 @@ class QuotationLoadDataHandle {
                 }
             }
         } else {
+            QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
             document.getElementById('customer-price-list').value = "";
         }
         // Delete all promotion rows

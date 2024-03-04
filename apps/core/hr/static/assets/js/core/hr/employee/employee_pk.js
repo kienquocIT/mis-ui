@@ -101,8 +101,8 @@ class EmployeeLoadPage {
     static combinesForm(frmIdx, hasPermit = true) {
         let frm = new SetupFormSubmit($(frmIdx));
         // if (hasPermit === true) frm.dataForm['permission_by_configured'] = new HandlePermissions().combinesData()['data'];
-        frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
-        frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
+        // frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
+        // frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
         // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
         frm.dataForm['date_joined'] = $x.fn.convertEleDatetime($('#employee-date-joined'), {'defaultIsEmpty': null});
         frm.dataForm['dob'] = $x.fn.convertEleDate($('#employee-dob'), {'defaultIsEmpty': null});

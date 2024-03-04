@@ -15,7 +15,8 @@ $(function () {
             EmployeeLoadPage.loadDob(employeeData.dob);
             EmployeeLoadPage.loadDateJoined(employeeData.date_joined, false);
 
-            EmployeeLoadPage.isAdminEle.prop('checked', employeeData.is_admin_company ? employeeData.is_admin_company : false);
+            EmployeeLoadPage.isActive.prop('checked', employeeData?.is_active || false);
+            EmployeeLoadPage.isAdminEle.prop('checked', employeeData?.['is_admin_company'] || false);
 
             let avatarEle = $('#employee-avatar-img-input');
             if (employeeData.avatar_img) {
@@ -79,7 +80,7 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({'title': 'INFO', 'description': $.fn.transEle.attr('data-success')}, 'success');
+                        $.fn.notifyB({'title': `${$.fn.gettext('Employee Information')}`, 'description': $.fn.transEle.attr('data-success')}, 'success');
 
                         if (avatarFiles){
                             let eleInputAvatar = $('#employee-avatar-img-input');
@@ -99,7 +100,7 @@ $(function () {
                                 (resp) => {
                                     let data = $.fn.switcherResp(resp);
                                     if (data){
-                                        $.fn.notifyB({'title': 'Avatar', 'description': $.fn.transEle.attr('data-success')}, 'success');
+                                        $.fn.notifyB({'title': `${$.fn.gettext('Avatar')}`, 'description': $.fn.transEle.attr('data-success')}, 'success');
                                         setTimeout(() => window.location.reload(), 1000)
                                     }
                                 },

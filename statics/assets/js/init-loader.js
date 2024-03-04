@@ -512,6 +512,9 @@ $.fn.extend({
     changePropertiesElementIsZone: function (opts) {
         WFRTControl.changePropertiesElementIsZone($(this), opts);
     },
+    gettext: function (txt){
+        return gettext(txt);
+    },
 });
 
 $(document).ready(function () {

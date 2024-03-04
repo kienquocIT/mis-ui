@@ -194,6 +194,7 @@ class EmployeeUpdate(View):
         template='core/hr/employee/employee_update.html',
         breadcrumb='EMPLOYEE_UPDATE_PAGE',
         menu_active='menu_employee_list',
+        jsi18n='hr',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {'data': {'doc_id': pk}}

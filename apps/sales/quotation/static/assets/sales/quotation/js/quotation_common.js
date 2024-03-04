@@ -1828,6 +1828,16 @@ class QuotationLoadDataHandle {
                     let dataDateType = JSON.parse($('#payment_date_type').text());
                     for (let termData of term) {
                         termData['title'] = dataDateType[termData?.['after']][1];
+                        let isNum = parseFloat(termData?.['value']);
+                        if (!isNum) {  // balance
+                            let balanceValue = 0;
+                            for (let termDataCheck of term) {
+                                if (parseFloat(termDataCheck?.['value'])) {
+                                    balanceValue += parseFloat(termDataCheck?.['value']);
+                                }
+                            }
+                            termData['value'] = String(balanceValue);
+                        }
                     }
                 }
             }
@@ -1881,11 +1891,11 @@ class QuotationLoadDataHandle {
                 }
                 eleValueBT.setAttribute('disabled', 'true');
                 let valueSO = 0;
-                let tableProduct = document.getElementById('datable-quotation-create-product');
-                if (tableProduct.closest('.dataTables_scroll')) {
-                    let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
-                    if (tableProductFt.querySelector('.quotation-create-product-total-raw')) {
-                        valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
+                let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+                if (tableProductWrapper) {
+                    let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                    if (tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw')) {
+                        valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
                         if (dataSelected?.['value']) {
                             let value = (parseFloat(dataSelected?.['value']) * valueSO) / 100;
                             $(eleValueBT).attr('value', String(value));

@@ -1703,6 +1703,7 @@ $(function () {
         function loadBoxYear() {
             if (eleFiscalYear.val()) {
                 let data = [];
+                let currentYear = new Date().getFullYear();
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
                     for (let fiscalYear of dataFiscalYear) {
@@ -1717,6 +1718,7 @@ $(function () {
                         data: data,
                         'allowClear': true,
                     });
+                    boxYear.val(currentYear).trigger('change');
                 }
             }
         }

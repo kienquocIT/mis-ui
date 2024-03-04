@@ -402,6 +402,13 @@
 </div>
 <!-- /Wrapper -->
 
+{% block jsCatalog %}
+    {% if jsi18n %}
+        <script src="{% url 'javascript-catalog' packages=jsi18n %}"></script>
+    {% else %}
+        <script src="{% url 'javascript-catalog' packages='null' %}"></script>
+    {% endif %}
+{% endblock %}
 
 {% compress js %}
     <!-- jQuery -->

@@ -14,6 +14,7 @@ $(document).ready(function () {
                     $('#inp-full_name').val(data.user.full_name);
                     $('#inp-email').val(userData.email);
                     $('#inp-username').val(userData.username);
+                    $('#inp-is-admin-tenant').prop('checked', userData?.['is_admin_tenant'] || false);
 
                     let dtb = $('#datable_company_list');
                     dtb.DataTableDefault({

@@ -22,7 +22,7 @@ $(document).ready(function () {
                 }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('update')}, 'success')
+                        $.fn.notifyB({description: $.fn.transEle.attr('data-success')}, 'success')
                         setTimeout(location.reload.bind(location), 1000);
                     }
                 }, (errs) => {

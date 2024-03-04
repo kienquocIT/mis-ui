@@ -201,6 +201,7 @@ def mask_view(**parent_kwargs):
             is_api = parent_kwargs.get('is_api', False)
             template_path = parent_kwargs.get('template', None)
             breadcrumb_name = parent_kwargs.get('breadcrumb', None)
+            jsi18n = parent_kwargs.get('jsi18n', None)
             cls_check = ArgumentDecorator(
                 login_require=login_require,
                 auth_require=auth_require,
@@ -318,6 +319,7 @@ def mask_view(**parent_kwargs):
                                 return HttpResponse(status=500)
                             case _:
                                 ctx['pk'] = pk
+                                ctx['jsi18n'] = jsi18n
                                 ctx['is_ga_enabled'] = settings.GA_COLLECTION_ENABLED
                                 ctx['ga_config'] = {
                                     'script': settings.GA_SCRIPT, 'code': settings.GA_CODE

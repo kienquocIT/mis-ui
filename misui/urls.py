@@ -3,11 +3,10 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.i18n import JavaScriptCatalog
-from django.views.generic.base import RedirectView
-from django.conf.urls.i18n import i18n_patterns
 from apps.shared import BreadcrumbView
 from misui import media_proxy
+
+from .jsi18n import JavaScriptCatalogCustomize
 
 urlpatterns = \
     [
@@ -19,13 +18,10 @@ urlpatterns = \
         path('', include('apps.eoffice.urls')),
         path('site/', include('apps.web_builder.urls.viewer')),
         path('site-config/', include('apps.web_builder.urls.config')),
+        path("jsi18n/<str:packages>", JavaScriptCatalogCustomize.as_view(), name="javascript-catalog"),
     ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-urlpatterns += i18n_patterns(
-    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-)
 
 if not settings.USE_S3:
     urlpatterns += [
@@ -35,7 +31,6 @@ if not settings.USE_S3:
             name='Media-Proxy'
         )
     ]
-
 
 # check breadcrumb view exist and reverse successful.
 BreadcrumbView.check_view_name()

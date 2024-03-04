@@ -8,10 +8,25 @@ class SetupFormSubmit {
     }
 
     static serializerObject(formSelected) {
-        return formSelected.find(':not([dont_serialize]):not([name^="DataTables_"])').serializeArray().reduce((o, kv) => ({
-            ...o,
-            [kv.name]: kv.value
-        }), {});
+        const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
+        let baseData = formSelected.find(queryExclude).serializeArray().reduce(function (obj, item){
+            if (item.name in obj) {
+                obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
+                obj[item.name].push(item.value);
+            } else {
+                let $input = formSelected.find('[name="' + item.name + '"]');
+                obj[item.name] = $input.is(':checkbox') ? $input.prop('checked') : item.value;
+            }
+            return obj;
+        }, {});
+        // special case 'input[type=checkbox]' has false not include when form serializer!
+        // (because HTML exclude input empty)
+        formSelected.find('input[type=checkbox]' + queryExclude).each(function (){
+            if (!(this.name in baseData)) {
+                baseData[this.name] = $(this).prop('checked');
+            }
+        })
+        return baseData;
     }
 
     static groupDataFromPrefix(data, prefix) {

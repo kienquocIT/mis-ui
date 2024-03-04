@@ -4678,10 +4678,6 @@ msgid "Allow the action to access data in both the general space and another spa
 msgstr "Cho phép hành động truy cập dữ liệu ở cả không gian chung và không gian khác."
 
 #
-msgid "This employee is not currently associated with the user."
-msgstr "Nhân viên này hiện không được liên kết với người dùng."
-
-#
 msgid "Yes, update it!"
 msgstr "Đồng ý, cập nhật nó!"
 
@@ -6856,3 +6852,7 @@ msgstr "Yêu cầu"
 #
 msgid "Transition data config"
 msgstr "Cấu hình dữ liệu giao dịch"
+
+#
+msgid "Invalid due date"
+msgstr "Ngày đến hạn không hợp lệ"

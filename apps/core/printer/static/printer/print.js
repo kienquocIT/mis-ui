@@ -309,7 +309,6 @@ function TemplateDOM(node, data, configData) {
                 for (let codeKey in dataList){
                     nodeTrNew.querySelectorAll(`#${codeKey}`).forEach(
                         nodeMatch => {
-                            if (codeKey === 'idx-koyaCV0MplKSSC2Y') console.log('nodeMatch:', codeKey, nodeMatch, dataList[codeKey]);
                             nodeMatch.removeAttribute('style');
                             nodeMatch.innerText = dataList[codeKey].length >= i ? dataList[codeKey][i] : '_';
                         }
@@ -332,8 +331,13 @@ function TemplateDOM(node, data, configData) {
 class PrintTinymceControl {
     constructor(opts={}) {
         this.modal$ = opts?.modal$ ? opts.modal$ : $('#printModal');
-        this.textarea$ = opts?.textarea$ ? opts.textarea$ : this.modal$.find('textarea');
-        this.doc = null;
+        this.textarea$ = opts?.textarea$ ? opts.textarea$ : this.modal$.find('textarea.printer-display-page');
+        this.templateList$ = opts?.templateList$ ? opts.templateList$ : this.modal$.find('select.printer-template-list');
+
+        // fill value into render()
+        this.data = null;
+        this.application_id = null;
+        this.editor = null;
     }
 
     static init_tinymce_editable(textarea$, application_id, opts={}, content=''){
@@ -516,6 +520,9 @@ class PrintTinymceControl {
     }
 
     init_tinymce(content, tinymce_opts={}){
+        let clsThis = this;
+        if (clsThis.editor) clsThis.editor.remove();
+
         let idx = this.textarea$.attr('id');
         if (!idx) {
             idx = $x.fn.randomStr(32, true);
@@ -536,6 +543,7 @@ class PrintTinymceControl {
                     table tr { vertical-align: top; }
                 `,
                 setup: function(editor) {
+                    clsThis.editor = editor;
                     editor.on('init', function (){
                         // https://www.tiny.cloud/blog/tinymce-and-modal-windows/
                         // Include the following JavaScript into your tiny.init script to prevent the Bootstrap dialog from blocking focus:
@@ -562,84 +570,170 @@ class PrintTinymceControl {
         tinymce.init(config);
     }
 
-    on_events() {
+    on_template_change(){
         let clsThis = this;
-        // this.modal$.find('button[data-action="save-print"]').on('click', function (){
-        //     // clsThis.textarea$.tinymce().focus(true);  // skip focus before call print | keep focus style don't include
-        //     clsThis.textarea$.tinymce().execCommand('mcePrint');
-        // });
+        this.templateList$.on('change', function (){
+            clsThis.call_template_detail($(this).val()).then(
+                function (result){
+                    if (result) clsThis.render_template_detail(result);
+                }
+            );
+        })
     }
 
-    call_template_using(application_id){
-        let url = '/printer/using/' + application_id; // 'b9650500-aba7-44e3-b6e0-2542622702a3';
+    call_template_detail(template_id){
+        let url = '/printer/using/detail/' + template_id;
         return $.fn.callAjax2({
             url: url,
+            method: 'GET',
             sweetAlertOpts: {'allowOutsideClick': true},
             onlyErrorCallback: true,
+            isLoading: true,
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data && typeof data === 'object' && data.hasOwnProperty('template_detail')){
                     return data['template_detail'];
                 }
-                return {}
+                return {};
             },
             (errs) => {
                 $.fn.switcherResp(errs, {
                     'isNotify': true,
                     'swalOpts': {
+                        'allowOutsideClick': true,
                         title: $.fn.transEle.attr('data-msg-print-not-have-template'),
                     },
                 });
+                return null;
+            }
+        )
+    }
+
+    call_template_using(){
+        let url = '/printer/using/default/' + this.application_id; // 'b9650500-aba7-44e3-b6e0-2542622702a3';
+        return $.fn.callAjax2({
+            url: url,
+            method: 'GET',
+            sweetAlertOpts: {'allowOutsideClick': true},
+            onlyErrorCallback: true,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('template_detail')){
+                    let defaultTemplate = data.template_detail?.['default'] || null;
+                    let defaultIdx = defaultTemplate ? defaultTemplate?.id : null;
+
+                    let templateList = data.template_detail?.['template_list'] || null;
+                    if (templateList && Array.isArray(templateList)){
+                        if (!defaultIdx) this.templateList$.append(`<option value=""></option>`)
+                        this.templateList$.initSelect2({
+                            data: templateList.map(
+                                (item) => {
+                                    let hasDefault = item?.id && defaultIdx ? item.id === defaultIdx : false;
+                                    item.hasDefault = hasDefault;
+                                    item.selected = hasDefault
+                                    return item;
+                                }
+                            ),
+                            templateResult: function(state) {
+                                function getRemarks(){
+                                    let remarks = state?.data?.remarks || null;
+                                    if (remarks) return remarks.length > 100 ? remarks.slice(0, 100) + '...' : remarks;
+                                    return '';
+                                }
+
+                                function getStyleIsDefault(){
+                                    let hasDefault = state?.data?.hasDefault || null;
+                                    if (hasDefault === true) return 'font-weight: bold;';
+                                    return '';
+                                }
+
+                                return $(`<p style="${getStyleIsDefault()}">${state.text}</p> <small>${getRemarks()}</small>`);
+                            },
+                        });
+                        this.on_template_change();
+                    }
+                    if (templateList || defaultTemplate){
+                        return [true, defaultTemplate ? defaultTemplate : {}];
+                    }
+                    return [false, {}]
+                }
+                return [false, {}]
+            },
+            (errs) => {
+                $.fn.switcherResp(errs, {
+                    'isNotify': true,
+                    'swalOpts': {
+                        'allowOutsideClick': true,
+                        title: $.fn.transEle.attr('data-msg-print-not-have-template'),
+                    },
+                });
+                return [false, {}];
             },
         )
     }
 
-    fill_data(application_id, data){
-        return this.call_template_using(application_id).then(
-            function (result){
-                return DocumentControl.getCompanyCurrencyFull().then(
-                    (configData) => {
-                        if (result && typeof result === 'object' && result.hasOwnProperty('contents')){
-                            let contents = result['contents'];
-                            let parser = new DOMParser();
-                            let doc = parser.parseFromString(contents, 'text/html');
-                            let idxLooped = [];
-                            doc.querySelectorAll(`span.params-data[data-code]`).forEach(node => {
-                                let idxNode = node.getAttribute('id');
-                                if (idxLooped.indexOf(idxNode) === -1){
-                                    idxLooped.push(idxNode);
-                                    let idRendered = TemplateDOM(node, data, configData);
-                                    idxLooped = idxLooped.concat(idRendered);
-                                }
-                            })
-                            return doc.documentElement.outerHTML;
-                        } else {
-                            PrintTinymceControl.close_modal();
-                            return null;
+    fill_data(result){
+        let data = this.data;
+        return DocumentControl.getCompanyCurrencyFull().then(
+            (configData) => {
+                if (result && typeof result === 'object' && result.hasOwnProperty('contents')){
+                    let contents = result['contents'];
+                    let parser = new DOMParser();
+                    let doc = parser.parseFromString(contents, 'text/html');
+                    let idxLooped = [];
+                    doc.querySelectorAll(`span.params-data[data-code]`).forEach(node => {
+                        let idxNode = node.getAttribute('id');
+                        if (idxLooped.indexOf(idxNode) === -1){
+                            idxLooped.push(idxNode);
+                            let idRendered = TemplateDOM(node, data, configData);
+                            idxLooped = idxLooped.concat(idRendered);
                         }
-                    }
-                )
+                    })
+                    return doc.documentElement.outerHTML;
+                } else {
+                    // PrintTinymceControl.close_modal();
+                    return null;
+                }
+            }
+        )
+    }
+
+    render_template_detail(template_detail){
+        let clsThis = this;
+        clsThis.textarea$.val('');
+        clsThis.fill_data(template_detail).then(
+            (template) => {
+                if (template) {
+                    clsThis.textarea$.fadeIn('fast');
+                    clsThis.init_tinymce(template);
+                }
             }
         )
     }
 
     render(application_id, data, is_open=false){
-        // console.log('data:', data);
+        // fill data store
+        this.data = data;
+        this.application_id = application_id;
+
         if (application_id && data){
             let clsThis = this;
             if (typeof tinymce === 'object' && this.modal$.length > 0 && this.textarea$.length > 0){
-                clsThis.textarea$.val('');
                 clsThis.modal$.on('shown.bs.modal', function () {
-                    clsThis.modal$.attr('data-loaded', true);
-                    clsThis.fill_data(application_id, data).then(
-                        (template) => {
-                            if (template) {
-                                clsThis.init_tinymce(template);
-                                clsThis.on_events();
+                    if (clsThis.modal$.attr('data-loaded') !== 'true'){
+                        clsThis.modal$.attr('data-loaded', 'true');
+                        clsThis.textarea$.val('');
+                        clsThis.call_template_using(application_id).then(
+                            function (result){
+                                if (result && Array.isArray(result) && result.length === 2){
+                                    if (result[0] === true) clsThis.render_template_detail(result[1]);
+                                    else PrintTinymceControl.close_modal();
+                                }
                             }
-                        }
-                    );
+                        )
+                    }
                 });
                 is_open === true ? clsThis.modal$.modal('show') : null;
             }

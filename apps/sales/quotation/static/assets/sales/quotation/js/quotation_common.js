@@ -1836,7 +1836,7 @@ class QuotationLoadDataHandle {
                                     balanceValue += parseFloat(termDataCheck?.['value']);
                                 }
                             }
-                            termData['value'] = String(balanceValue);
+                            termData['value'] = String(100 - balanceValue);
                         }
                     }
                 }
@@ -1963,6 +1963,16 @@ class QuotationLoadDataHandle {
                     let dataDateType = JSON.parse($('#payment_date_type').text());
                     for (let termData of term) {
                         termData['title'] = dataDateType[termData?.['after']][1];
+                        let isNum = parseFloat(termData?.['value']);
+                        if (!isNum) {  // balance
+                            let balanceValue = 0;
+                            for (let termDataCheck of term) {
+                                if (parseFloat(termDataCheck?.['value'])) {
+                                    balanceValue += parseFloat(termDataCheck?.['value']);
+                                }
+                            }
+                            termData['value'] = String(100 - balanceValue);
+                        }
                     }
                 }
             }

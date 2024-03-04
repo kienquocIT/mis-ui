@@ -86,6 +86,24 @@ $(document).ready(function () {
         })
     }
 
+    function Check_in_period(dateApproved, period_selected_Setting) {
+        const month = dateApproved.getMonth() + 1
+        const year = dateApproved.getFullYear()
+        const space_month = period_selected_Setting?.['space_month']
+        const fiscal_year = period_selected_Setting?.['fiscal_year']
+        let list_month_period = []
+        for (let i = 0; i < 12; i++) {
+            let period_month = i + space_month + 1
+            let period_year = fiscal_year
+            if (period_month > 12) {
+                period_month = period_month - 12
+                period_year = fiscal_year + 1
+            }
+            list_month_period.push(period_month.toString() + period_year.toString())
+        }
+        return list_month_period.includes(month.toString() + year.toString());
+    }
+
     // Revenue chart
 
     const revenueGroupEle = $('#revenue-group')
@@ -128,16 +146,21 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
             const year = dateApproved.getFullYear()
-            if (year === fiscal_year_Setting) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
+                if (month === 2) {
+                    console.log(item, month)
+                }
+
                 if (!group_filter) {
-                    revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                    revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                        revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                     }
                 }
             }
         }
+        console.log(revenue_chart_data)
 
         let revenue_expected_data = []
         if (group_filter) {
@@ -163,7 +186,7 @@ $(document).ready(function () {
             {name: "Reality", data: revenue_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+            for (let i = new Date().getMonth(); i < 12; i++) {
                 revenue_chart_data[i] = null;
             }
             series_data = [
@@ -262,12 +285,12 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
             const year = dateApproved.getFullYear();
-            if (year === fiscal_year_Setting) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                    revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                        revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                     }
                 }
             }
@@ -313,7 +336,7 @@ $(document).ready(function () {
             {name: "Reality", data: revenue_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+            for (let i = new Date().getMonth(); i < 12; i++) {
                 revenue_chart_data[i] = null;
             }
             series_data = [
@@ -602,12 +625,12 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
             const year = dateApproved.getFullYear()
-            if (year === fiscal_year_Setting) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                    profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                        profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                     }
                 }
             }
@@ -637,7 +660,7 @@ $(document).ready(function () {
             {name: "Reality", data: profit_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+            for (let i = new Date().getMonth(); i < 12; i++) {
                 profit_chart_data[i] = null;
             }
             series_data = [
@@ -739,12 +762,12 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
             const year = dateApproved.getFullYear();
-            if (year === fiscal_year_Setting) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                    profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                        profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                     }
                 }
             }
@@ -789,7 +812,7 @@ $(document).ready(function () {
             {name: "Reality", data: profit_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+            for (let i = new Date().getMonth(); i < 12; i++) {
                 profit_chart_data[i] = null;
             }
             series_data = [

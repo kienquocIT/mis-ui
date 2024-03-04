@@ -302,44 +302,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-8">
-                    <div class="col-12 col-md-5 col-lg-5">
-                        <div>
-                            <span class="mb-3 badge-status">
-                                <span class="badge badge-danger badge-indicator"></span>
-                                <span class="badge-label text-secondary">{% trans 'Product warehouse overview' %}</span>
-                            </span>
-                        </div>
-                        <table id="datatable-warehouse-overview" class="table nowrap w-100">
-                            <thead>
-                            <th>{% trans "Stock" %}</th>
-                            <th>{% trans "Wait for delivery" %}</th>
-                            <th>{% trans "Wait for receipt" %}</th>
-                            <th>{% trans "Available" %}</th>
-                            </thead>
-                            <tfoot>
-                            </tfoot>
-                        </table>
-                    </div>
-                    <div class="col-12 col-md-1 col-lg-1"></div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div>
-                            <span class="mb-3 badge-status">
-                                <span class="badge badge-danger badge-indicator"></span>
-                                <span class="badge-label text-secondary">{% trans 'Product warehouse detail' %}</span>
-                            </span>
-                        </div>
-                        <table id="datatable-warehouse-list" class="table nowrap w-100"
-                               data-url="{% url "WareHouseListAPI" %}"
-                               data-method="GET">
-                            <thead>
-                            <th>{% trans "Warehouse Code" %}</th>
-                            <th>{% trans "Warehouse Name" %}</th>
-                            <th>{% trans "Stock" %}</th>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
             </div>
             <div class="tab-pane fade" id="tab_purchase">
                 <div class="row">

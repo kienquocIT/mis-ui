@@ -225,6 +225,20 @@ class QuotationLoadDataHandle {
 
     static loadDataBySalePerson() {
         if (!QuotationLoadDataHandle.opportunitySelectEle.val()) {
+            // load opp
+            if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
+                QuotationLoadDataHandle.opportunitySelectEle.empty();
+                QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+                    'dataParams': {'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val()},
+                    'allowClear': true,
+                });
+            } else {
+                QuotationLoadDataHandle.opportunitySelectEle.empty();
+                QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+                    'allowClear': true,
+                });
+            }
+            // load customer, contact, payment
             QuotationLoadDataHandle.loadBoxQuotationCustomer();
             QuotationLoadDataHandle.loadBoxQuotationContact();
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();

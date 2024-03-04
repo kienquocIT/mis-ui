@@ -103,12 +103,6 @@ $(function () {
     jQuery.fn.scroll_to_today = function () {
         $('#scroll_now').click()
     }
-    function onClickParent(e, ID){
-        // todo here click show hide task con
-        // lấy ID get trong GanttViewTask.bk_taskList add attribute is_visible: true
-        // tạo action reload gantt và trigger click gantt
-        console.log('toogle click parent_n')
-    }
 
     class initCommon {
         static initTableLogWork(dataList) {
@@ -1116,6 +1110,19 @@ $(function () {
             }
             GanttViewTask.taskList = reNewList
         }
+
+        static loadTaskInfo(data){
+            console.log('data detail', data)
+        }
+
+        static onClickParent(e, ID) {
+            // todo here click show hide task con
+            // lấy ID get trong GanttViewTask.bk_taskList add attribute is_visible: true
+            // tạo action reload gantt và trigger click gantt
+            let obj_tasklist = GanttViewTask.bk_taskList
+            console.log('toogle click parent_n', obj_tasklist[ID], ID)
+        }
+
         static renderGantt(){
             const $transElm = $('#trans-factory')
             let columns_gantt = [
@@ -1137,15 +1144,11 @@ $(function () {
                 // resizeable: true,
                 // onItemClick: (data) => {
                 // },
-                onClickParent,
-                onRowClick: (id) => renderDetailPage(id),
-                // onRender: function () {
-            //         if (window.console && typeof console.log === "function") {
-            //             console.log("chart rendered");
-            //         }
-            //    },
+                onClickParent: GanttViewTask.onClickParent,
+                loadTaskInfo: GanttViewTask.loadTaskInfo,
                 // resizeStartDate,
                 // resizeEndDate
+                isShowSetting: true
             });
         }
 

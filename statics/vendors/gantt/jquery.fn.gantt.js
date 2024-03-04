@@ -244,16 +244,58 @@
                 core.waitToggle(element, function () { core.render(element); });
             },
 
+            //hide and show columns
+            render_filter_columns: function (element) {
+                let row = $('<div class="col-xs-12 filter_bar"></div>')
+                let dropdown = $('<div class="dropdown filter_column"><button class="btn btn-outline-primary"><span><span class="icon"><i class="fa-solid fa-filter"></i></span></span></button></div>')
+                let ul = $('<ul class="dropdown-menu"></ul>')
+                settings.columns.forEach(x => {
+                    let li = $('<li class="dropdown-item-marker" role="menuitem"></li>')
+                    let label = $('<label></label>')
+                    let input = $(`<input class="checkbox_column" type="checkbox" data-field="${x.value}" value="${x.value}" ${x.show ? 'checked="checked"' : ''}>`)
+                    input.click(function () {
+                        let column = $(this).attr('value')
+                        settings.columns.forEach(item => {
+                            if (item.value == column) item.show = $(this).is(":checked")
+                        })
+                        $('.leftPanel').replaceWith(core.leftPanel(element))
+                    })
+                    label.append(input)
+                    label.append(`<span style="padding-left: 5px">${x.label}</span>`)
+                    li.append(label)
+                    ul.append(li)
+                })
+                dropdown.append(ul)
+
+                let button_reload = $('<button type="button" style="display: none" id="gantt_reload"></button>')
+                button_reload.on("click", function (event) {
+                    let data = $(this).data('data');
+                    settings.source = data ? data.source : settings.source
+                    settings.itemsPerPage = settings.source.length
+                    element.data = data ? data.source : settings.source
+                    if (data.count) {
+                        settings.pageNum = 1
+                        let count = data ? data.count : 0
+                        let pageSize = data ? data.page_size : 1
+                        settings.pageCount = count % pageSize == 0 ? parseInt(count / pageSize) : (count - count % pageSize) / pageSize + 1
+                    }
+                    core.init(element)
+
+                });
+                row.append(button_reload).append(dropdown)
+                return dropdown
+            },
+
             // **Render the grid**
             render: function (element) {
                 var content = $('<div class="fn-content"/>');
                 var $leftPanel = core.leftPanel(element);
-                content.append($leftPanel);
+                var $filterPanel = core.render_filter_columns(element);
                 var $rightPanel = core.rightPanel(element, $leftPanel);
                 var pLeft, hPos;
 
-                content.append($rightPanel);
-                content.append(core.navigation(element));
+                if (settings.isShowSetting) content.append($filterPanel)
+                content.append($leftPanel).append($rightPanel).append(core.navigation(element));
 
                 var $dataPanel = $rightPanel.find(".dataPanel");
 
@@ -343,10 +385,12 @@
                                         row.removeClass('name').addClass('desc')
                                     }
                                     span.click(function (e) {
-                                        settings.onClickParent(e, dataId)
+                                        if (e.target.classList.contains('icon-collapse'))
+                                        settings.onClickParent(e, entry.values[0].dataObj.id)
+                                        else settings.loadTaskInfo(entry.values[0].dataObj)
                                     })
                                     if (entry.show_expand && entry.name && x.value === 'title'){
-                                        span.addClass('has_child')
+                                        span.addClass(`has_child ${entry.is_expand ? 'is_expanded' : 'is_expand'}`)
                                             .append(`<span class="icon-scaret text-blue"><i class="icon-collapse ` +
                                                 `fas fa-caret-${entry.is_expand ? 'down': 'right'}"></i></span>`)
                                     }

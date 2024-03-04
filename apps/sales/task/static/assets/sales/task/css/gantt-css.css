@@ -90,6 +90,11 @@
 .fn-gantt .leftPanel .name .fn-label:nth-child(1){
     padding-left: 10px;
 }
+.fn-gantt .leftPanel .name .fn-label:hover,
+.fn-gantt .leftPanel .desc .fn-label:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
 .icon-scaret{
     cursor: pointer;
     margin-right:10px;
@@ -444,9 +449,14 @@
     font-weight: 600;
 }
 .icon-scaret .icon-collapse{
-    transition: all .15s ease-in;
+    transition: all .10s ease-in;
+    --webkit--transition: all .10s ease-in;
 }
-.icon-scaret:hover .icon-collapse{
+.is_expanded .icon-scaret:hover .icon-collapse{
+    transform: rotate(-90deg);
+    --webkit--transform: rotate(-90deg);
+}
+.is_expand .icon-scaret:hover .icon-collapse{
     transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
+    --webkit--transform: rotate(90deg);
 }

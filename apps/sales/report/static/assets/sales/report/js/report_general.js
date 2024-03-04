@@ -4,7 +4,7 @@ $(function () {
         let boxGroup = $('#box-report-general-group');
         let boxEmployee = $('#box-report-general-employee');
         let boxYear = $('#box-report-general-year');
-        let boxMonth = $('#box-report-general-month');
+        let boxDetail = $('#box-report-general-detail');
         let eleFiscalYear = $('#data-fiscal-year');
         let btnView = $('#btn-view');
         let $table = $('#table_report_general_list');
@@ -18,10 +18,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 10,
-                columns: [  // 100,200,200,300,150,100,125,125,225,225,225,125,100,125,125 (2500p)
+                columns: [  // 250,250,300,250,250,100,250,250,100 (2000p)
                     {
                         targets: 0,
-                        width: '4%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
@@ -32,35 +32,35 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '8%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary  badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '8%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '12%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '6%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '4%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if ([0, 1, 2].includes(row?.['group_by'])) {
                                 return `<p></p>`;
@@ -71,7 +71,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '5%',
+                        width: '12.5',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['open_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['open_date'] ? row?.['opportunity']?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -82,7 +82,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '5%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['close_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['close_date'] ? row?.['opportunity']?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -93,51 +93,9 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '9%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
-                        }
-                    },
-                    {
-                        targets: 9,
-                        width: '9%',
-                        render: (data, type, row) => {
-                            return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span>`;
-                        }
-                    },
-                    {
-                        targets: 10,
-                        width: '9%',
-                        render: (data, type, row) => {
-                            return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
-                        }
-                    },
-                    {
-                        targets: 11,
-                        width: '5%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
-                        }
-                    },
-                    {
-                        targets: 12,
-                        width: '4%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
-                        }
-                    },
-                    {
-                        targets: 13,
-                        width: '5%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
-                        }
-                    },
-                    {
-                        targets: 14,
-                        width: '5%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
                         }
                     },
                 ],
@@ -439,7 +397,6 @@ $(function () {
 
         function parseMonthJSON() {
             let result = [];
-            let resultReverse = [];
             let dataMonths = getAllMonthsFiscalYear();
             for (let monthYear of dataMonths) {
                 const [year, month] = monthYear.split('-').map(Number);
@@ -448,8 +405,7 @@ $(function () {
                     month,
                 });
             }
-            resultReverse = result.reverse();
-            return resultReverse;
+            return result;
         }
 
         function getMonthRange(month, year) {
@@ -570,19 +526,32 @@ $(function () {
             }
         }
 
-        function loadBoxMonth() {
+        function loadBoxDetail() {
             let data = [];
-            let dataMonths = parseMonthJSON();
-            for (let monthYear of dataMonths) {
-                data.push({
-                    'id': monthYear?.['month'],
-                    'title': dataMonth[monthYear?.['month'] - 1][1],
-                    'month': monthYear?.['month'],
-                    'year': monthYear?.['year']
-                })
+            if (boxYear.val()) {
+                // quarters
+                for (let quarter of dataQuarter) {
+                    data.push({'id': quarter[0], 'title': quarter[1], 'year': boxYear.val()})
+                }
+                // months
+                let dataMonths = parseMonthJSON();
+                for (let monthYear of dataMonths) {
+                    data.push({
+                        'id': monthYear?.['month'],
+                        'title': dataMonth[monthYear?.['month'] - 1][1],
+                        'month': monthYear?.['month'],
+                        'year': monthYear?.['year'],
+                    })
+                }
             }
-            boxMonth.empty();
-            boxMonth.initSelect2({
+            data.push({
+                'id': '',
+                'title': 'Select...',
+                'month': 0,
+                'year': 0,
+            })
+            boxDetail.empty();
+            boxDetail.initSelect2({
                 data: data,
                 'allowClear': true,
                 templateResult: function (state) {
@@ -622,13 +591,8 @@ $(function () {
             $table.DataTable().clear().draw();
         });
 
-        $('input[type=radio].check-period').on('click', function () {
-            for (let ele of this.closest('.area-period-all').querySelectorAll('.area-period-element')) {
-                ele.setAttribute('disabled', 'true');
-            }
-            for (let ele of this.closest('.area-period').querySelectorAll('.area-period-element')) {
-                ele.removeAttribute('disabled');
-            }
+        boxYear.on('change', function () {
+            loadBoxDetail();
         });
 
         btnView.on('click', function () {
@@ -648,10 +612,10 @@ $(function () {
                 }
             }
             if (eleCheck.classList.contains('check-month')) {  // month
-                if (boxMonth.val()) {
-                    let dataMonth = SelectDDControl.get_data_from_idx(boxMonth, boxMonth.val());
+                if (boxDetail.val()) {
+                    let dataMonth = SelectDDControl.get_data_from_idx(boxDetail, boxDetail.val());
                     if (dataMonth) {
-                        let {startDate, endDate} = getMonthRange(parseInt(boxMonth.val()), parseInt(dataMonth?.['year']));
+                        let {startDate, endDate} = getMonthRange(parseInt(boxDetail.val()), parseInt(dataMonth?.['year']));
                         dataParams['opportunity__close_date__gte'] = startDate;
                         dataParams['opportunity__close_date__lte'] = endDate;
                     }

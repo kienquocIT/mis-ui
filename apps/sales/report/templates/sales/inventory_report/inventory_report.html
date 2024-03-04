@@ -72,7 +72,7 @@
                         <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
                         <span class="input-affix-wrapper">
                             <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                            <input type="number" id="period-day-from" class="form-control">
+                            <input type="number" id="period-day-from" class="form-control" readonly>
                         </span>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                         <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
                         <span class="input-affix-wrapper">
                             <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                            <input type="number" id="period-day-to" class="form-control">
+                            <input type="number" id="period-day-to" class="form-control" readonly>
                         </span>
                     </div>
                 </div>
@@ -93,45 +93,42 @@
     </div>
     <div class="row mt-5">
         <div class="col-12">
-            <table class="table nowrap w-100">
+            <table class="table nowrap w-100" id="table-inventory-report">
                 <thead>
                     <tr>
-                        <th>{% trans 'Code' %}</th>
-                        <th>{% trans 'Name' %}</th>
-                        <th>{% trans 'UoM' %}</th>
-                        <th class="text-center" colspan="2">{% trans 'Opening' %}</th>
-                        <th class="text-center" colspan="2">{% trans 'Input' %}</th>
-                        <th class="text-center" colspan="2">{% trans 'Output' %}</th>
-                        <th class="text-center" colspan="2">{% trans 'Ending' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Code' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Name' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'UoM' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'Opening' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'Input' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'Output' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'Ending' %}</th>
                     </tr>
                     <tr>
-                        <th rowspan="2"></th>
-                        <th rowspan="2"></th>
-                        <th rowspan="2"></th>
-                        <th class="text-center">{% trans 'Quantity' %}</th>
-                        <th class="text-center">{% trans 'Value' %}</th>
-                        <th class="text-center">{% trans 'Quantity' %}</th>
-                        <th class="text-center">{% trans 'Value' %}</th>
-                        <th class="text-center">{% trans 'Quantity' %}</th>
-                        <th class="text-center">{% trans 'Value' %}</th>
-                        <th class="text-center">{% trans 'Quantity' %}</th>
-                        <th class="text-center">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
                 <tfoot>
                     <tr class="bg-secondary-light-5">
-                        <th>{% trans 'Total' %}</th>
-                        <th></th>
-                        <th></th>
-                        <th class="text-center">xxx</th>
-                        <th class="text-center">xxx</th>
-                        <th class="text-center">xxx</th>
-                        <th class="text-center">xxx</th>
-                        <th class="text-center">xxx</th>
-                        <th class="text-center">xxx</th>
-                        <th class="text-center">xxx</th>
-                        <th class="text-center">xxx</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Total' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3"></th>
+                        <th class="border-1" rowspan="2" colspan="3"></th>
+                        <th class="border-1">xxx</th>
+                        <th class="border-1">xxx</th>
+                        <th class="border-1">xxx</th>
+                        <th class="border-1">xxx</th>
+                        <th class="border-1">xxx</th>
+                        <th class="border-1">xxx</th>
+                        <th class="border-1">xxx</th>
+                        <th class="border-1">xxx</th>
                     </tr>
                 </tfoot>
             </table>

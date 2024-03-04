@@ -120,6 +120,11 @@ class ReportInventoryDetailList(View):
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
+        if len(resp1.result) > 0:
+            return {
+                'data': {'current_period': resp1.result[0]},
+            }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
@@ -136,7 +141,7 @@ class ReportInventoryDetailListAPI(APIView):
         return resp.auto_return(key_success='report_inventory_detail_list')
 
 
-# REPORT INVENTORY DETAIL
+# REPORT INVENTORY
 class ReportInventoryList(View):
     permission_classes = [IsAuthenticated]
 
@@ -147,6 +152,11 @@ class ReportInventoryList(View):
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
+        if len(resp1.result) > 0:
+            return {
+                'data': {'current_period': resp1.result[0]},
+            }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 

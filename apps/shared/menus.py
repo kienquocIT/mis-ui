@@ -537,12 +537,12 @@ class MenusReport:
     INVENTORY_REPORT = MenuCommon(
         name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-stream"></i>',
         child=[
-            # MenuCommon(
-            #     name='Inventory Report',
-            #     code='menu_inventory_report',
-            #     view_name='ReportInventoryList',
-            #     icon='<i class="fas fa-cubes"></i>',
-            # ),
+            MenuCommon(
+                name='Inventory Report',
+                code='menu_inventory_report',
+                view_name='ReportInventoryList',
+                icon='<i class="fas fa-cubes"></i>',
+            ),
             MenuCommon(
                 name='Items Detail Report',
                 code='menu_items_detail_report',

@@ -1,11 +1,18 @@
 $(document).ready(function () {
-    let items_select_Ele = $('#items_select')
-    let warehouses_select_Ele = $('#warehouses_select')
-    let items_detail_report_table_Ele = $('#items_detail_report_table')
+    const items_select_Ele = $('#items_select')
+    const warehouses_select_Ele = $('#warehouses_select')
+    const items_detail_report_table_Ele = $('#items_detail_report_table')
     const periodEle = $('#period-select')
     const periodMonthEle = $('#period-month')
     const trans_script = $('#trans-script')
     const url_script = $('#url-script')
+    const current_period_Ele = $('#current_period')
+    let current_period = {}
+    if (current_period_Ele.text() !== '') {
+        current_period = JSON.parse(current_period_Ele.text())
+        getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
+        periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+    }
 
     function getMonthOrder(space_month, fiscal_year) {
         periodMonthEle.html(``)
@@ -60,7 +67,7 @@ $(document).ready(function () {
             }
         })
     }
-    LoadPeriod()
+    LoadPeriod(current_period)
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({

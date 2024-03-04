@@ -212,9 +212,9 @@ $(document).ready(function () {
                                                             <td class="text-center"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
                                                             <td><span class="text-${text_color} mask-money" data-init-money="${activity?.['cost']}"></span></td>
                                                             <td><span class="text-${text_color} mask-money" data-init-money="${activity?.['value']}"></span></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
+                                                            <td class="text-center"><i class="bi bi-dash"></i></td>
+                                                            <td><i class="bi bi-dash"></i></td>
+                                                            <td><i class="bi bi-dash"></i></td>
                                                             <td class="text-center"><span class="text-secondary">${activity?.['current_quantity']}</span></td>
                                                             <td><span class="text-secondary mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
                                                             <td><span class="text-secondary mask-money" data-init-money="${activity?.['current_value']}"></span></td>
@@ -233,9 +233,9 @@ $(document).ready(function () {
                                                             <td hidden></td>
                                                             <td>${stock_type_label}</td>
                                                             <td><span class="badge badge-soft-danger w-100">${activity?.['trans_code']}</span></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
+                                                            <td class="text-center"><i class="bi bi-dash"></i></td>
+                                                            <td><i class="bi bi-dash"></i></td>
+                                                            <td><i class="bi bi-dash"></i></td>
                                                             <td class="text-center"><span class="text-danger">${activity?.['quantity']}</span></td>
                                                             <td><span class="text-danger mask-money" data-init-money="${activity?.['cost']}"></span></td>
                                                             <td><span class="text-danger mask-money" data-init-money="${activity?.['value']}"></span></td>
@@ -295,9 +295,9 @@ $(document).ready(function () {
                                                         <td class="text-center"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
                                                         <td><span class="text-${text_color} mask-money" data-init-money="${activity?.['cost']}"></span></td>
                                                         <td><span class="text-${text_color} mask-money" data-init-money="${activity?.['value']}"></span></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
+                                                        <td class="text-center"><i class="bi bi-dash"></i></td>
+                                                        <td><i class="bi bi-dash"></i></td>
+                                                        <td><i class="bi bi-dash"></i></td>
                                                         <td class="text-center"><span class="text-secondary">${activity?.['current_quantity']}</span></td>
                                                         <td><span class="text-secondary mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
                                                         <td><span class="text-secondary mask-money" data-init-money="${activity?.['current_value']}"></span></td>
@@ -316,9 +316,9 @@ $(document).ready(function () {
                                                         <td hidden></td>
                                                         <td>${stock_type_label}</td>
                                                         <td><span class="badge badge-soft-danger w-100">${activity?.['trans_code']}</span></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
+                                                        <td class="text-center"><i class="bi bi-dash"></i></td>
+                                                        <td><i class="bi bi-dash"></i></td>
+                                                        <td><i class="bi bi-dash"></i></td>
                                                         <td class="text-center"><span class="text-danger">${activity?.['quantity']}</span></td>
                                                         <td><span class="text-danger mask-money" data-init-money="${activity?.['cost']}"></span></td>
                                                         <td><span class="text-danger mask-money" data-init-money="${activity?.['value']}"></span></td>

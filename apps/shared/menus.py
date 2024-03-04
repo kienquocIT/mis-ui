@@ -515,6 +515,12 @@ class MenusReport:
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
             MenuCommon(
+                name='General revenue report',
+                code='menu_report_general_list',
+                view_name='ReportGeneralList',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
+            ),
+            MenuCommon(
                 name='Product report',
                 code='menu_report_product_list',
                 view_name='ReportProductList',
@@ -530,7 +536,7 @@ class MenusReport:
                 name='Cashflow report',
                 code='menu_report_cashflow_list',
                 view_name='ReportCashflowList',
-                icon='<i class="fas fa-comment-dollar"></i>',
+                icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
         ],
     )

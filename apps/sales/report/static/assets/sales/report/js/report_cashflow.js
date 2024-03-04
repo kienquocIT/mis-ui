@@ -1671,6 +1671,7 @@ $(function () {
             return date >= startDate && date <= endDate;
         }
 
+        // LOAD BOXS DROPDOWN
         function loadBoxEmployee() {
             boxEmployee.empty();
             let dataParams = {};

@@ -20,20 +20,20 @@
         <div class="row">
             <div class="col-6 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label">{% trans "First Name" %}</label>
+                    <label class="form-label" for="inp-first_name">{% trans "First Name" %}</label>
                     <input class="form-control" type="text"
                            id="inp-first_name" name="first_name" required>
                 </div>
             </div>
             <div class="col-6 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label">{% trans "Last Name" %}</label>
+                    <label class="form-label" for="inp-last_name">{% trans "Last Name" %}</label>
                     <input class="form-control" type="text" id="inp-last_name" name="last_name" required>
                 </div>
             </div>
             <div class="col-6 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label">{% trans "Full Name" %}</label>
+                    <label class="form-label" for="inp-full_name">{% trans "Full Name" %}</label>
                     <input class="form-control-plaintext" type="text"
                            id="inp-full_name" readonly>
                 </div>
@@ -42,13 +42,13 @@
         <div class="row">
             <div class="col-6 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label">{% trans "Email" %}</label>
+                    <label class="form-label" for="inp-email">{% trans "Email" %}</label>
                     <input class="form-control" type="text" id="inp-email" name="email">
                 </div>
             </div>
             <div class="col-6 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label">{% trans "Company" %}</label>
+                    <label class="form-label" for="select-box-company">{% trans "Company" %}</label>
                     <select
                             class="form-select"
                             id="select-box-company"
@@ -61,8 +61,14 @@
             </div>
             <div class="col-6 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label">{% trans "Phone" %}</label>
+                    <label class="form-label" for="inp-phone">{% trans "Phone" %}</label>
                     <input class="form-control" type="text" id="inp-phone" name="phone">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input type="checkbox" name="is_admin_tenant" class="form-check-input" id="inp-is-admin-tenant">
+                    <label class="form-check-label" for="inp-is-admin-tenant">{% trans 'Is admin tenant' %}</label>
                 </div>
             </div>
         </div>

@@ -6852,3 +6852,7 @@ msgstr "Yêu cầu"
 #
 msgid "Transition data config"
 msgstr "Cấu hình dữ liệu giao dịch"
+
+#
+msgid "Invalid due date"
+msgstr "Ngày đến hạn không hợp lệ"

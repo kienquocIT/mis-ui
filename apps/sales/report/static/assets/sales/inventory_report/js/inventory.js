@@ -1,5 +1,7 @@
 $(document).ready(function () {
     const current_period_Ele = $('#current_period')
+    const items_select_Ele = $('#items_select')
+    const warehouses_select_Ele = $('#warehouses_select')
     const periodEle = $('#period-select')
     const periodMonthEle = $('#period-month')
     const trans_script = $('#trans-script')
@@ -58,7 +60,6 @@ $(document).ready(function () {
             'year': 0,
         })
         periodMonthEle.empty();
-        console.log(data)
         periodMonthEle.initSelect2({
             data: data,
             allowClear: true,
@@ -87,4 +88,84 @@ $(document).ready(function () {
         })
     }
     LoadPeriod(current_period)
+
+    function LoadItemsSelectBox(ele, data) {
+        ele.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: ele.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp];
+            },
+            data: (data ? data : null),
+            keyResp: 'product_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    LoadItemsSelectBox(items_select_Ele)
+
+    function LoadWarehouseSelectBox(ele, data) {
+        ele.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: ele.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp];
+            },
+            data: (data ? data : null),
+            keyResp: 'warehouse_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+
+        })
+    }
+    LoadWarehouseSelectBox(warehouses_select_Ele)
+
+    $('#btn-view').on('click', function () {
+        if (periodMonthEle.val()) {
+            if (items_select_Ele.val().length > 0) {
+                let item_list_id = items_select_Ele.val()
+                if (item_list_id) {
+                    let dataParam = {}
+                    dataParam['sub_period_order'] = parseInt(periodMonthEle.val())
+                    dataParam['period_mapped'] = periodEle.val()
+                    let inventory_detail_list_ajax = $.fn.callAjax2({
+                        url: url_script.attr('data-url-inventory-list'),
+                        data: dataParam,
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_list')) {
+                                return data?.['report_inventory_list'];
+                            }
+                            return {};
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+
+                    Promise.all([inventory_detail_list_ajax]).then(
+                        (results) => {
+                            console.log(results[0])
+                        })
+                } else {
+                    $.fn.notifyB({"description": 'No item to view.', "timeout": 3500}, 'warning')
+                }
+            }
+            else {
+                $.fn.notifyB({"description": 'No item selected.', "timeout": 3500}, 'warning')
+            }
+        }
+        else {
+            $.fn.notifyB({"description": 'No sub period selected.', "timeout": 3500}, 'warning')
+        }
+    })
 })

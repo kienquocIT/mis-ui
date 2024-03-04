@@ -116,14 +116,13 @@ $(document).ready(function () {
                     dataParam['sub_period_order'] = parseInt(periodMonthEle.val())
                     dataParam['period_mapped'] = periodEle.val()
                     let inventory_detail_list_ajax = $.fn.callAjax2({
-                        url: url_script.attr('data-url-inventory-list'),
+                        url: url_script.attr('data-url-inventory-detail-list'),
                         data: dataParam,
                         method: 'GET'
                     }).then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_detail_list')) {
-                                console.log(data?.['report_inventory_detail_list'])
                                 return data?.['report_inventory_detail_list'];
                             }
                             return {};

@@ -33,7 +33,7 @@
     <div class="row">
         <div class="col-12 col-lg-3 col-md-3">
             <div class="form-group">
-                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                <label class="form-label required" for="items_select">{% trans 'Product' %}</label>
                 <select class="form-select select2 select-multiple" id="items_select" multiple
                         data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
             </div>

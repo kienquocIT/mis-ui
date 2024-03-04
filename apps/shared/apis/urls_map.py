@@ -476,6 +476,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_CASHFLOW_LIST = StringUrl('report/cashflow/list')
     REPORT_INVENTORY_DETAIL_LIST = StringUrl('report/inventory-detail/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
+    REPORT_INVENTORY_LIST = StringUrl('report/inventory/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')

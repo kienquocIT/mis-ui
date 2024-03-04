@@ -169,7 +169,7 @@ class ReportInventoryListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_DETAIL_LIST).get(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_LIST).get(data)
         return resp.auto_return(key_success='report_inventory_list')
 
 

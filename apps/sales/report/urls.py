@@ -4,7 +4,8 @@ from apps.sales.report.views import (
     ReportRevenueList, ReportRevenueListAPI, ReportProductList, ReportProductListAPI,
     ReportCustomerList, ReportCustomerListAPI,
     ReportInventoryDetailList, ReportPipelineList, ReportPipelineListAPI,
-    ReportCashflowList, ReportCashflowListAPI, ReportInventoryDetailListAPI, ReportInventoryList, ReportInventoryListAPI
+    ReportCashflowList, ReportCashflowListAPI, ReportInventoryDetailListAPI,
+    ReportInventoryList, ReportInventoryListAPI
 )
 
 urlpatterns = [

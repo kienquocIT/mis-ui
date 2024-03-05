@@ -369,11 +369,10 @@ $(function () {
 
         function getAllMonthsFiscalYear() {
             let months = [];
-            if (eleFiscalYear.val()) {
+            if (eleFiscalYear.val() && boxYear.val()) {
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
-                    let currentDate = new Date();
-                    let currentYear = currentDate.getFullYear();
+                    let currentYear = parseInt(boxYear.val());
                     for (let fiscal of dataFiscalYear) {
                         let startDateFY = new Date(fiscal?.['start_date']);
                         let dateObject = new Date(startDateFY);
@@ -493,51 +492,20 @@ $(function () {
             }
         }
 
-        function loadBoxQuarter() {
-            if (eleFiscalYear.val()) {
-                let data = [];
-                let dataReverse = [];
-                let dataFiscalYear = JSON.parse(eleFiscalYear.val());
-                if (dataFiscalYear.length > 0) {
-                    let currentDate = new Date();
-                    let currentYear = currentDate.getFullYear();
-                    for (let fiscal of dataFiscalYear) {
-                        let startDateFY = fiscal?.['start_date'];
-                        let dateObject = new Date(startDateFY);
-                        let year = dateObject.getFullYear();
-                        if (year === currentYear) {
-                            for (let quarter of dataQuarter) {
-                                data.push({'id': quarter[0], 'title': quarter[1], 'year': year})
-                            }
-                            dataReverse = data.reverse();
-                            boxQuarter.empty();
-                            boxQuarter.initSelect2({
-                                data: dataReverse,
-                                'allowClear': true,
-                                templateResult: function (state) {
-                                    let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                                    return $(`<span>${state.text} ${groupHTML}</span>`);
-                                },
-                            });
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
         function loadBoxDetail() {
             let data = [];
             if (boxYear.val()) {
+                // period
+                data.push({'id': 'p-' + String(1), 'title': eleTrans.attr('data-period'), 'year': boxYear.val()})
                 // quarters
                 for (let quarter of dataQuarter) {
-                    data.push({'id': quarter[0], 'title': quarter[1], 'year': boxYear.val()})
+                    data.push({'id': 'q-' + String(quarter[0]), 'title': quarter[1], 'year': boxYear.val()})
                 }
                 // months
                 let dataMonths = parseMonthJSON();
                 for (let monthYear of dataMonths) {
                     data.push({
-                        'id': monthYear?.['month'],
+                        'id': 'm-' + String(monthYear?.['month']),
                         'title': dataMonth[monthYear?.['month'] - 1][1],
                         'month': monthYear?.['month'],
                         'year': monthYear?.['year'],

@@ -95,18 +95,18 @@ class POLoadDataHandle {
                     description.innerHTML = data?.['description'];
                 }
                 // load UOM
-                if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
-                    POLoadDataHandle.loadBoxUOM($(uom), data.unit_of_measure, data.uom_group.id);
+                if (uom && Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
+                    POLoadDataHandle.loadBoxUOM($(uom), data?.['unit_of_measure'], data?.['uom_group']?.['id']);
                 } else {
                     POLoadDataHandle.loadBoxUOM($(uom));
                 }
                 // load PRICE
-                if (price && priceList) {
-                    POLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
-                }
+                // if (price && priceList) {
+                //     POLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
+                // }
                 // load TAX
                 if (tax && data.tax) {
-                    POLoadDataHandle.loadBoxTax($(tax), data.tax);
+                    POLoadDataHandle.loadBoxTax($(tax), data?.['tax']);
                 } else {
                     POLoadDataHandle.loadBoxTax($(tax));
                 }
@@ -1565,7 +1565,7 @@ class PODataTableHandle {
                     targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row.product_quantity_order_actual}" required>
+                                    <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row?.['product_quantity_order_actual']}" required>
                                 </div>`;
                     }
                 },
@@ -1647,7 +1647,7 @@ class PODataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row.order}</span>`
+                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row?.['order']}</span>`
                     }
                 },
                 {
@@ -1683,7 +1683,7 @@ class PODataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row.product_quantity_order_actual}" required>
+                                    <input type="text" class="form-control table-row-quantity-order-actual valid-number" value="${row?.['product_quantity_order_actual']}" required>
                                 </div>`;
                     }
                 },
@@ -1697,7 +1697,7 @@ class PODataTableHandle {
                                             <input 
                                                 type="text" 
                                                 class="form-control mask-money table-row-price" 
-                                                value="${row.product_unit_price}"
+                                                value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
                                             >
                                             <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></span>
@@ -1724,14 +1724,14 @@ class PODataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     data-return-type="number"
                                     hidden
                                 >
                                 <input
                                     type="text"
                                     class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     hidden
                                 >
                             </div>`;
@@ -2091,10 +2091,9 @@ class POSubmitHandle {
         if (table.querySelector('.dataTables_empty')) {
             return []
         }
-        let tableBody = table.tBodies[0];
-        for (let i = 0; i < tableBody.rows.length; i++) {
+        $(table).DataTable().rows().every(function () {
             let rowData = {};
-            let row = tableBody.rows[i];
+            let row = this.node();
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) { // PRODUCT
                 let dataInfo = {}
@@ -2126,38 +2125,46 @@ class POSubmitHandle {
                 if ($(eleTax).val()) {
                     let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                     if (dataInfo) {
-                        rowData['tax'] = dataInfo.id;
-                        rowData['product_tax_title'] = dataInfo.title;
-                        rowData['product_tax_value'] = dataInfo.rate;
+                        rowData['tax'] = dataInfo?.['id'];
+                        rowData['product_tax_title'] = dataInfo?.['title'];
+                        rowData['product_tax_value'] = dataInfo?.['rate'];
                     } else {
                         rowData['product_tax_value'] = 0;
                     }
                 }
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
                 if (eleTaxAmount) {
-                    rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                    if (eleTaxAmount.value) {
+                       rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                    }
                 }
                 let eleQuantityRequest = row.querySelector('.table-row-quantity-order-request');
                 if (eleQuantityRequest) {
-                    rowData['product_quantity_order_request'] = parseFloat(eleQuantityRequest.innerHTML);
+                    if (eleQuantityRequest.innerHTML) {
+                        rowData['product_quantity_order_request'] = parseFloat(eleQuantityRequest.innerHTML);
+                    }
                 }
                 let eleQuantityOrder = row.querySelector('.table-row-quantity-order-actual');
                 if (eleQuantityOrder) {
-                    rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
+                    if (eleQuantityOrder.value) {
+                        rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
+                    }
                 }
                 let stock = row.querySelector('.table-row-stock');
                 if (stock) {
-                    rowData['stock'] = parseFloat(stock.innerHTML);
+                    if (stock.innerHTML) {
+                        rowData['stock'] = parseFloat(stock.innerHTML);
+                    }
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    if ($(elePrice).valCurrency() > 0) {
-                        rowData['product_unit_price'] = $(elePrice).valCurrency();
-                    }
+                    rowData['product_unit_price'] = $(elePrice).valCurrency();
                 }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                 if (eleSubtotal) {
-                    rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                    if (eleSubtotal.value) {
+                        rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                    }
                 }
                 if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
                     rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
@@ -2180,7 +2187,7 @@ class POSubmitHandle {
                 }
             }
             result.push(rowData);
-        }
+        });
         return result
     };
 

@@ -616,6 +616,10 @@ $(function () {
             });
         }
 
+        $('#btn-collapse').click(function () {
+            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
+
         // load init
         function initData() {
             boxGroup.initSelect2({'allowClear': true,});

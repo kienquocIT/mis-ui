@@ -136,18 +136,19 @@ class programmeHandle {
                             time_to: true
                         })
                         if (isClass) temp.className = isClass
-
+                        // ước tính thời gian hơn 8h sẽ là all day
                         if (moment(temp.start).isAfter(moment(nextDay?.start))) nextDay = temp
                         let milis = moment(temp.end).diff(moment(temp.start))
                         if (moment.duration(milis).asHours() >= 8) temp.allDay = true
-                        if (dataReceived.indexOf(item.id) === -1){
+                        // kiểm tra item trong dataReceived có bị trùng ko nếu ko thì add vào event của calendar
+                        if (!dataReceived.includes(item.id)){
                             let isHasID = calendar.getEvents().filter((objValue) => objValue.extendedProps.source.id === item.id)
                             if (!isHasID.length) calendar.addEvent(temp)
-                            calendar.addEvent(temp)
                             dataReceived.push(item.id)
                         }
                     }
-                    if (!programmeHandle.UpData?.[1] && Object.keys(nextDay).length > 0) programmeHandle.UpData[1] = nextDay
+                    if (!programmeHandle.UpData?.[1] && Object.keys(nextDay).length > 0)
+                        programmeHandle.UpData[1] = nextDay
                     calendar.render()
                     $('.tit-upcoming-evt').trigger('Upcoming-Event:Trigger')
                 },
@@ -182,7 +183,7 @@ class programmeHandle {
                             time_from: !item.date_f.split(' ')[1].includes('12:00:00'),
                             time_to: item.date_f.split(' ')[1].includes('12:00:00')
                         })
-                        if (item.date_f !== item.date_t) isClass += 'hasDiff'
+                        if (temp.start !== temp.end) isClass += 'hasDiff'
                         if (isClass) temp.className = isClass
 
                         if (moment(temp.start).isAfter(moment(nextDay?.start))) nextDay = temp

@@ -1090,7 +1090,7 @@ $(function () {
             }
 
             let reNewList = []
-            // loop trong danh sách dictionary và duyệt lại thành danh sách task con sau task cha
+            // loop trong danh sách dictionary và duyệt lại thành danh sách array task con sau task cha
             for (let key in bk_list){
                 const item = bk_list[key]
                 item.show_expand = false
@@ -1112,15 +1112,62 @@ $(function () {
         }
 
         static loadTaskInfo(data){
-            console.log('data detail', data)
+            const $form = $('#formOpportunityTask'), $oppElm = $('#opportunity_id');
+            console.log('show detail', data)
+            $('#inputTextTitle', $form).val(data.title)
+            $('#inputTextCode', $form).val(data.code)
+            listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
+            const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
+            $formElm.append(taskIDElm).addClass('task_edit')
+            $('#inputTextStartDate', $form).val(
+                moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+            )
+            $('#inputTextEndDate', $form).val(
+                moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+            )
+            $('#inputTextEstimate', $form).val(data.estimate)
+
+            $('#selectPriority', $form).val(data.priority).trigger('change')
+
+            $('#inputAssigner', $form).val(data.full_name)
+                .attr('data-value-id', data.employee_created.id)
+                .attr('value', data.employee_created.id)
+            if (data?.['opportunity']){
+                listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity'])
+            }
+            listViewTask.selfInitSelect2($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
+            window.formLabel.renderLabel(data.label)
+            window.editor.setData(data.remark)
+            window.checklist.setDataList = data.checklist
+            window.checklist.render()
+
+            if (data.attach) {
+                const fileDetail = data.attach[0]?.['files']
+                FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+            }
+            initCommon.initTableLogWork(data?.['task_log_work'])
+            initCommon.renderSubtask(data.id, )
         }
 
         static onClickParent(e, ID) {
-            // todo here click show hide task con
-            // lấy ID get trong GanttViewTask.bk_taskList add attribute is_visible: true
-            // tạo action reload gantt và trigger click gantt
-            let obj_tasklist = GanttViewTask.bk_taskList
-            console.log('toogle click parent_n', obj_tasklist[ID], ID)
+            let bk_list = GanttViewTask.bk_taskList
+            let obj_parent = bk_list[ID]
+            let child_list = obj_parent.parent_n
+            if (child_list)
+                for (let child of child_list){
+                    child.is_visible = !obj_parent.is_expand // ẩn task con theo
+                }
+            obj_parent.is_expand = !obj_parent.is_expand
+            let reNewList = []
+            for (let key in bk_list) {
+                const item = bk_list[key]
+                reNewList.push(item)
+                if ('parent_n' in item && Object.keys(item['parent_n']).length)
+                    for (let child of item['parent_n']) {
+                        reNewList.push(child)
+                    }
+            }
+            $('#gantt_reload').data('data', reNewList).trigger('click')
         }
 
         static renderGantt(){
@@ -1153,10 +1200,8 @@ $(function () {
         }
 
         static initGantt() {
-            if (!$('.gantt').length) {
+            if (!$('.gantt').length)
                 $('.gantt_table').append('<div class="gantt"></div>')
-                // GanttViewTask.renderGantt()
-            }
             $('.tab-gantt[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                 $('#btn_today').click($.fn.scroll_to_today)
             });

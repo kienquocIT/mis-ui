@@ -270,9 +270,9 @@
                 let button_reload = $('<button type="button" style="display: none" id="gantt_reload"></button>')
                 button_reload.on("click", function (event) {
                     let data = $(this).data('data');
-                    settings.source = data ? data.source : settings.source
+                    settings.source = data ? data : settings.source
                     settings.itemsPerPage = settings.source.length
-                    element.data = data ? data.source : settings.source
+                    element.data = data ? data : settings.source
                     if (data.count) {
                         settings.pageNum = 1
                         let count = data ? data.count : 0
@@ -283,7 +283,7 @@
 
                 });
                 row.append(button_reload).append(dropdown)
-                return dropdown
+                return row
             },
 
             // **Render the grid**
@@ -381,7 +381,7 @@
                                     // depend content row
                                     let span = $(`<span class="fn-label" style="width:${x.width}px"></span>`);
                                     if (entry.desc && x.value === 'title') {
-                                        span.css("padding-left", "80px")
+                                        span.css("padding-left", "65px")
                                         row.removeClass('name').addClass('desc')
                                     }
                                     span.click(function (e) {

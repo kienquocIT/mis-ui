@@ -1113,7 +1113,6 @@ $(function () {
 
         static loadTaskInfo(data){
             const $form = $('#formOpportunityTask'), $oppElm = $('#opportunity_id');
-            console.log('show detail', data)
             $('#inputTextTitle', $form).val(data.title)
             $('#inputTextCode', $form).val(data.code)
             listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
@@ -1136,17 +1135,19 @@ $(function () {
                 listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity'])
             }
             listViewTask.selfInitSelect2($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
-            window.formLabel.renderLabel(data.label)
-            window.editor.setData(data.remark)
-            window.checklist.setDataList = data.checklist
-            window.checklist.render()
+            if (data.label) window.formLabel.renderLabel(data.label)
+            if (data.remark) window.editor.setData(data.remark)
+            if (data.checklist){
+                window.checklist.setDataList = data.checklist
+                window.checklist.render()
+            }
 
             if (data.attach) {
                 const fileDetail = data.attach[0]?.['files']
                 FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
             }
             initCommon.initTableLogWork(data?.['task_log_work'])
-            initCommon.renderSubtask(data.id, )
+            initCommon.renderSubtask(data.id, GanttViewTask.taskList)
         }
 
         static onClickParent(e, ID) {

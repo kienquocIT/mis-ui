@@ -4,6 +4,8 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+    </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
@@ -41,7 +43,7 @@
         </div>
         <div class="col-12 col-lg-3 col-md-3">
             <div class="form-group">
-                <label class="form-label required" for="items_select">{% trans 'Product' %}</label>
+                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
                 <select class="form-select select2 select-multiple" id="items_select" multiple
                         data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
             </div>
@@ -92,45 +94,30 @@
         </div>
     </div>
     <div class="row mt-5">
-        <div class="col-12">
+        <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
             <table class="table nowrap w-100" id="table-inventory-report">
                 <thead>
-                    <tr>
+                    <tr class="bg-secondary-light-5">
                         <th class="border-1" rowspan="2" colspan="3">{% trans 'Code' %}</th>
                         <th class="border-1" rowspan="2" colspan="3">{% trans 'Name' %}</th>
                         <th class="border-1" rowspan="2" colspan="3">{% trans 'UoM' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'Opening' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'Input' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'Output' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'Ending' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
                     </tr>
-                    <tr>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
+                    <tr class="bg-secondary-light-5">
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="opening-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="opening-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="in-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="in-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="out-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="out-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="ending-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="end-total-value" class="mask-money" data-init-money="0"></span>)</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
-                <tfoot>
-                    <tr class="bg-secondary-light-5">
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Total' %}</th>
-                        <th class="border-1" rowspan="2" colspan="3"></th>
-                        <th class="border-1" rowspan="2" colspan="3"></th>
-                        <th class="border-1">xxx</th>
-                        <th class="border-1">xxx</th>
-                        <th class="border-1">xxx</th>
-                        <th class="border-1">xxx</th>
-                        <th class="border-1">xxx</th>
-                        <th class="border-1">xxx</th>
-                        <th class="border-1">xxx</th>
-                        <th class="border-1">xxx</th>
-                    </tr>
-                </tfoot>
             </table>
         </div>
     </div>

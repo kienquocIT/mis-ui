@@ -2384,6 +2384,10 @@ msgid "Copied"
 msgstr "Đã sao chép"
 
 #
+msgid "Copy not support"
+msgstr "Sao chép không hỗ trợ"
+
+#
 msgid "Go to change password page"
 msgstr "Chuyển hướng đến trang thay đổi mật khẩu"
 

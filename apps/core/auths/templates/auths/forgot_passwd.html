@@ -151,6 +151,7 @@
                                                     id="btnCopyPass"
                                             >
                                                 <span id="msg-copy">{% trans 'Copy' %}</span>
+                                                <span id="msg-copy-not-support" style="display: none;">{% trans 'Copy not support' %}</span>
                                                 <span id="msg-copied" style="display: none;">{% trans 'Copied' %}</span>
                                             </button>
                                         </div>
@@ -335,6 +336,9 @@
                 let groupValidOtp = $('#validate-otp');
                 let groupNewPasswd = $('#show-new-password');
 
+                let btnCopy = $('#btnCopyPass');
+                let btnCopyNotSupport = $('#msg-copy-not-support');
+
                 $('#inp-tenant-code').val(hostData.replaceAll('.' + mainDomain, ''));
 
                 let frmOTPValidate = $('#frmSubmitOTPValidate');
@@ -424,7 +428,11 @@
                             resp => {
                                 let data = resp?.['data'] || null;
                                 if (data) {
-                                    $('#inp-gen-pass').val(data?.['new_password'] || '')
+                                    $('#inp-gen-pass').val(data?.['new_password'] || '');
+
+                                    if (!navigator.clipboard){
+                                        btnCopyNotSupport.parent('button').remove();
+                                    }
                                     groupValidOtp.fadeOut('fast', function () {
                                         groupNewPasswd.fadeIn('fast', function () {
                                             centerBox();
@@ -439,7 +447,7 @@
                     },
                 })
 
-                $('#btnCopyPass').on('click', function () {
+                btnCopy.on('click', function () {
                     let clsThis = this;
                     let timeOutAnimation = null;
                     function showCopied(){
@@ -464,10 +472,12 @@
                         })
                     }
 
-                    navigator.clipboard.writeText(inputReissuedPassword.val()).then(
-                        showCopied,
-                        resetCopy,
-                    );
+                    if (navigator.clipboard){
+                        navigator.clipboard.writeText(inputReissuedPassword.val()).then(
+                            showCopied,
+                            resetCopy,
+                        );
+                    }
                 })
             } else {
                 window.location.href = notFoundUrl;

@@ -200,6 +200,10 @@ class MenusCoreConfigurations:
                 name='Mail Template', code='menu_mail_template', view_name='MailTemplatesListView',
                 icon='<i class="fa-regular fa-envelope"></i>'
             ),
+            MenuCommon(
+                name='Import Data', code='menu_import_data', view_name='FImportListView',
+                icon='<i class="fa-solid fa-file-import"></i>'
+            ),
         ]
     )
 

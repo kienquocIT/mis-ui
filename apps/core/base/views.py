@@ -24,7 +24,8 @@ class TenantApplicationListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, url=ApiURL.TENANT_APPLICATION_LIST, user=request.user).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, url=ApiURL.TENANT_APPLICATION_LIST, user=request.user).get(data=data)
         return resp.auto_return(key_success='tenant_application_list')
 
 

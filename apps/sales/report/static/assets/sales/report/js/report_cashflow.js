@@ -1483,6 +1483,9 @@ $(function () {
                             eleFiscalYear.val(JSON.stringify(data.periods_list));
                             loadBoxYear();
                             loadBoxMonth();
+                            let currentYear = new Date().getFullYear();
+                            boxYear.val(currentYear).trigger('change');
+                            btnView.click();
                         }
                     }
                 }
@@ -1703,7 +1706,6 @@ $(function () {
         function loadBoxYear() {
             if (eleFiscalYear.val()) {
                 let data = [];
-                let currentYear = new Date().getFullYear();
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
                     for (let fiscalYear of dataFiscalYear) {
@@ -1718,7 +1720,6 @@ $(function () {
                         data: data,
                         'allowClear': true,
                     });
-                    boxYear.val(currentYear).trigger('change');
                 }
             }
         }
@@ -1752,10 +1753,15 @@ $(function () {
         }
 
         // load init
-        boxGroup.initSelect2({'allowClear': true,});
-        loadBoxEmployee();
-        loadBoxSO();
-        storeDataFiscalYear();
+        function initData() {
+            boxGroup.initSelect2({'allowClear': true,});
+            loadBoxEmployee();
+            loadBoxSO();
+            storeDataFiscalYear();
+        }
+
+        initData();
+
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({

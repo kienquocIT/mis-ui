@@ -361,6 +361,9 @@ $(function () {
                         if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
                             eleFiscalYear.val(JSON.stringify(data.periods_list));
                             loadBoxYear();
+                            let currentYear = new Date().getFullYear();
+                            boxYear.val(currentYear).trigger('change');
+                            boxDetail.val('p-1').trigger('change');
                         }
                     }
                 }
@@ -472,7 +475,6 @@ $(function () {
         function loadBoxYear() {
             if (eleFiscalYear.val()) {
                 let data = [];
-                let currentYear = new Date().getFullYear();
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
                     for (let fiscalYear of dataFiscalYear) {
@@ -487,7 +489,6 @@ $(function () {
                         data: data,
                         'allowClear': true,
                     });
-                    boxYear.val(currentYear).trigger('change');
                 }
             }
         }
@@ -530,9 +531,14 @@ $(function () {
         }
 
         // load init
-        boxGroup.initSelect2({'allowClear': true,});
-        loadBoxEmployee();
-        storeDataFiscalYear();
+        function initData() {
+            boxGroup.initSelect2({'allowClear': true,});
+            loadBoxEmployee();
+            storeDataFiscalYear();
+        }
+
+        initData();
+
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({

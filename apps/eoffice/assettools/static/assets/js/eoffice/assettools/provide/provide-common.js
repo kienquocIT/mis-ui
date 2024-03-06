@@ -61,12 +61,11 @@ class ProductsTable {
                         data: 'uom',
                         width: '10%',
                         render: (row, type, data, meta) => {
-                            let dataLoad = []
                             if (!row && data?.['uom_data']) row = data['uom_data']
-                            if (row && Object.keys(row).length > 0) dataLoad.push({...row, selected: true})
                             let html = $(`<select>`).addClass('form-select row_uom-item')
-                                .attr('name', `uom_${meta.row}`).attr('data-zone', 'products')
-                            if (row && Object.keys(row).length > 0) html.attr('data-onload', JSON.stringify(dataLoad))
+                                .attr('name', `uom_${meta.row}`)
+                            if (row && Object.keys(row).length > 0)
+                                html.append(`<option value="${row.id}" selected>${row.title}</option>`)
                             return html.prop('outerHTML')
                         }
                     },
@@ -136,16 +135,6 @@ class ProductsTable {
                             data.uom = product?.['inventory_uom']?.id
                         })
 
-                    // load uom
-                    // $('[name*="uom_"]', row).attr('data-url', $urlElm.attr('data-uom-url'))
-                    //     .attr('data-keyResp', "unit_of_measure")
-                    //     .attr('data-keyText', "title")
-                    //     .attr('data-keyId', "id")
-                    //     .initSelect2()
-                    //     .on('select2:select', function (e) {
-                    //         data.uom = e.params.data.data.id
-                    //     })
-
                     // load quantity
                     $('[name*="quantity_"]', row).on('change', function () {
                         let temp = this.value.replace('-', '').replace(/^0+|[a-z]/g, '')
@@ -157,7 +146,7 @@ class ProductsTable {
                     // load price
                     $.fn.initMaskMoney2($('[name*="price_"]', row), 'input')
                     $('[name*="price_"]', row).on('change', function () {
-                        data.price = $(this).valCurrency()
+                        data.price = !isNaN($(this).valCurrency()) ? parseInt($(this).valCurrency()) : 0
                         ProductsTable.calcSubtotal(data, index)
                     })
 

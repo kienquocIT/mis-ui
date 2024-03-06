@@ -12,4 +12,7 @@ urlpatterns = [
     path('sale-process/', include('apps.core.process.urls')),
     path('calendar/', include('apps.core.programme.urls')),
     path('comment/', include('apps.core.comment.urls')),
+    path('printer/', include('apps.core.printer.urls')),
+    path('mailer/', include('apps.core.mailer.urls')),
+    path('import/', include('apps.core.fimport.urls')),
 ]

@@ -96,10 +96,6 @@ $(function () {
             );
     }
 
-    jQuery.fn.reinit_gantt = function (source, rest) {
-        $('#gantt_reload').data('data', {source, ...rest}).trigger('click')
-    }
-
     jQuery.fn.scroll_to_today = function () {
         $('#scroll_now').click()
     }
@@ -165,20 +161,16 @@ $(function () {
             })
         }
 
-        static renderSubtask(taskID, dataList) {
+        static renderSubtask(taskID, dataList, dataSub) {
             const $wrap = $('.wrap-subtask')
-            let taskList = dataList
-            let subTaskList = []
+            let subTaskList = dataSub
             const _this = this
-
             $wrap.html('')
-            for (let [key, item] of taskList.entries()) {
-                if (item.parent_n?.id === taskID) subTaskList.push(item)
-            }
             if (subTaskList.length) {
                 for (let [key, item] of subTaskList.entries()) {
                     const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
-                                    <p>${item.title}</p>
+                                    <p class="sub-tit" title="${item.title}">${item.title}</p>
+                                    <p class="sub-employee" title="${item.employee_inherit}"><span class="chip chip-primary chip-pill"><span class="chip-text">${item.employee_inherit}</span></span></p>
                                     <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover">
                                         <span><i class="fa-regular fa-trash-can fa-sm"></i></span>
                                     </button>
@@ -194,17 +186,23 @@ $(function () {
                                 template.remove()
                                 $(`[data-task-id="${subTaskID}"]`).parents('.tasklist-card').remove()
                                 // get current task list and remove
-                                let isIdx
-                                for (let [key, item] of taskList.entries()) {
-                                    if (item.id === subTaskID) {
+                                let isIdx, parentIdx
+                                for (let [key, value] of dataList.entries()) {
+                                    if (value.id === taskID) parentIdx = key
+                                    if (value.id === subTaskID) {
                                         isIdx = key
                                         break
                                     }
                                 }
-                                taskList.splice(isIdx, 1)
-                                // kanbanHandle.setTaskList = taskList
+                                dataList.splice(isIdx, 1)
+                                if (parentIdx){
+                                    dataList[parentIdx]['child_task_count'] -= 1
+                                    if (dataList[parentIdx]['child_task_count'] < 0)
+                                        dataList[parentIdx]['child_task_count'] = 0
+                                }
                                 // reload count sub task in screen
-                                _this.reloadCountParent(taskList)
+                                $(`[data-task-id="${taskID}"]`).parents('.tasklist-card').find('.sub_task_count').text(
+                                    dataList[parentIdx]['child_task_count'])
                                 // count number task in task status
                                 countSTT()
                             }
@@ -277,7 +275,6 @@ $(function () {
                 if (item?.parent_n?.id)
                     countTemp[item.parent_n.id] = (countTemp[item.parent_n.id] || 0) + 1;
                 else countTemp[item.id] = 0
-
             }
             for (let key in countTemp) {
                 $(`[data-task-id="${key}"]`).parents('.tasklist-card').find('.sub_task_count').text(countTemp[key])
@@ -352,6 +349,9 @@ $(function () {
                             resetFormTask()
                             if (!$('#drawer_task_create').hasClass('open'))
                                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                            const titCreate = $('.title-create'), titEdit = $('.title-detail');
+                            titCreate.off().addClass("hidden")
+                            titEdit.off().removeClass("hidden")
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                             $formElm.append(taskIDElm);
 
@@ -384,16 +384,22 @@ $(function () {
                                 .attr(
                                     'data-value-id', data.employee_created.id
                                 )
+                            if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
+                                $oppElm.attr('disabled', true).attr('data-onload',
+                                    JSON.stringify({...data['opportunity'], selected: true})
+                                )
+                                let isCheck = $(`option[value="${data['opportunity'].id}"]`, $oppElm)
+                                if (isCheck.length <= 0)
+                                    $oppElm.append(`<option value="${data['opportunity'].id}" selected>${
+                                        data['opportunity'].code}</option>`
+                                    )
+                                else $oppElm.val(data['opportunity']["id"]).trigger("change")
+
+                            }
                             if (data.employee_inherit) {
                                 data.employee_inherit.selected = true
                                 $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
-                                    .attr('data-onload', JSON.stringify(data.employee_inherit))
-                            }
-                            if (data['opportunity_data'] && Object.keys(data["opportunity_data"]).length > 0) {
-                                data['opportunity_data'] = {...data['opportunity_data'], selected: true}
-                                $oppElm.attr('disabled', true).attr('data-onload', JSON.stringify(data['opportunity_data']))
-                                if ($(`option[value="${data['opportunity_data'].id}"]`, $oppElm).length <= 0)
-                                    $oppElm.append(`<option value="${data['opportunity_data'].id}">${data['opportunity_data'].code}</option>`)
+                                    .attr('data-onload', JSON.stringify(data.employee_inherit)).trigger("change")
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
@@ -401,8 +407,8 @@ $(function () {
                             $formElm.addClass('task_edit')
                             if (Object.keys(data.parent_n).length <= 0) $('.create-subtask').removeClass('hidden')
                             else $('.create-subtask').addClass('hidden')
-                            if (data?.['task_log_work'].length) initCommon.initTableLogWork(data?.['task_log_work'])
-                            initCommon.renderSubtask(data.id, _this.getTaskList)
+                            initCommon.initTableLogWork(data?.['task_log_work'])
+                            initCommon.renderSubtask(data.id, _this.getTaskList, data['sub_task_list'])
 
                             if (data.attach) {
                                 const fileDetail = data.attach[0]?.['files']
@@ -472,12 +478,12 @@ $(function () {
                 childHTML.find('.card-priority').html(priorityHTML)
                 let date = moment(newData.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
                 childHTML.find('.task-deadline').text(date)
-                const assign_to = newData.employee_inherit
+                const assign_to = newData.employee_inherit || newData.assign_to
                 if (Object.keys(assign_to).length > 0) {
                     if (assign_to?.['avatar']) childHTML.find('img').attr('src', assign_to?.['avatar'])
                     else {
                         let avClass = 'avatar-xs avatar-' + $x.fn.randomColor()
-                        const nameHTML = $x.fn.renderAvatar(assign_to, avClass)
+                        const nameHTML = $x.fn.renderAvatar(assign_to, avClass,"","full_name")
                         childHTML.find('.avatar').replaceWith(nameHTML)
                     }
                 } else childHTML.find('.avatar').addClass('visible-hidden')
@@ -500,8 +506,11 @@ $(function () {
                     })
                 }
 
-                if (newData.parent_n && Object.keys(newData?.parent_n).length)
-                    childHTML.find('.task-discuss').remove()
+                // if (newData.parent_n && Object.keys(newData?.parent_n).length)
+                //     childHTML.find('.task-discuss').remove()
+                if (newData?.['child_task_count'] > 0)
+                    childHTML.find('.sub_task_count').text(newData['child_task_count'])
+                else childHTML.find('.task-discuss').remove()
 
                 if (isReturn) return childHTML
                 else {
@@ -565,12 +574,6 @@ $(function () {
             })
             // run tooltip cho avatar
             $('[data-bs-toggle="tooltip"]').tooltip({placement: 'right'});
-
-            // show các task nào có sub
-            for (let item in count_parent) {
-                $(`[data-task-id="${item}"]`).closest('.tasklist-card').find('.sub_task_count').text(
-                    count_parent[item])
-            }
         }
 
         // re-render new data for old task
@@ -637,6 +640,8 @@ $(function () {
                     }
                 if (taskID) {
                     resetFormTask()
+                    $('.title-create').removeClass("hidden")
+                    $('.title-detail').addClass("hidden")
                     $('.btn-assign').removeClass('disabled')
                     // after reset
                     $formElm.append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
@@ -676,6 +681,10 @@ $(function () {
             this.getAndRenderTask(data);
             this.createSubTask();
             countSTT()
+            const $this = this
+            $('[href="#tab_kanban"]').on('show.bs.tab', function(){
+                $this.getAndRenderTask($this.getTaskList)
+            })
         }
     }
 
@@ -774,6 +783,10 @@ $(function () {
             this.setTaskList = data
             listViewTask.initTaskConfig(cls)
             listViewTask.renderTable(cls)
+
+            $('[href="#tab_list"]').on('show.bs.tab', function(){
+                listViewTask.renderTable(cls)
+            })
         }
 
         static initTaskConfig(cls) {
@@ -812,12 +825,11 @@ $(function () {
 
                         $('#selectPriority', $form).val(data.priority).trigger('change')
 
-                        $('#inputAssigner', $form).val(
-                            data.employee_created.last_name + '. ' + data.employee_created.first_name)
+                        $('#inputAssigner', $form).val(data.employee_created.full_name)
                             .attr('data-value-id', data.employee_created.id)
                             .attr('value', data.employee_created.id)
-                        if (data?.['opportunity_data']?.id)
-                            listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity_data'],)
+                        if (data?.['opportunity']?.id)
+                            listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity'],)
                         listViewTask.selfInitSelect2($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
                         window.formLabel.renderLabel(data.label)
                         window.editor.setData(data.remark)

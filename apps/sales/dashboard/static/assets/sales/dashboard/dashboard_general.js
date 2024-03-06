@@ -2,10 +2,30 @@ $(document).ready(function () {
     $('#modal-dashboard-setting .modal-dialog').draggable({
         "handle": ".modal-header"
     });
+    const GRID_HEIGHT = 230
+    const FULL_HEIGHT = 410
+    let HEIGHT = GRID_HEIGHT
 
-    function padZero(number) {
-        return number < 10 ? '0' + number : number.toString();
-    }
+    $('.view-radio').on('change', function () {
+        if ($('#grid-view').prop('checked')) {
+            HEIGHT = GRID_HEIGHT
+            $('.px-7').each(function () {
+                $(this).attr('class', 'px-7 mt-3 col-12 col-md-6 col-lg-6')
+            })
+        }
+        else {
+            HEIGHT = FULL_HEIGHT
+            $('.px-7').each(function () {
+                $(this).attr('class', 'px-7 mt-3 col-12 col-md-12 col-lg-12')
+            })
+        }
+        UpdateOptionRevenueChart()
+        UpdateOptionProfitChart()
+        UpdateOptionTopSellersChart()
+        UpdateOptionTopCustomersChart()
+        UpdateOptionTopCategoriesChart()
+        UpdateOptionTopProductsChart()
+    })
 
     const scriptUrlEle = $('#script-url')
     const trans_script = $('#trans-url')
@@ -66,6 +86,24 @@ $(document).ready(function () {
         })
     }
 
+    function Check_in_period(dateApproved, period_selected_Setting) {
+        const month = dateApproved.getMonth() + 1
+        const year = dateApproved.getFullYear()
+        const space_month = period_selected_Setting?.['space_month']
+        const fiscal_year = period_selected_Setting?.['fiscal_year']
+        let list_month_period = []
+        for (let i = 0; i < 12; i++) {
+            let period_month = i + space_month + 1
+            let period_year = fiscal_year
+            if (period_month > 12) {
+                period_month = period_month - 12
+                period_year = fiscal_year + 1
+            }
+            list_month_period.push(period_month.toString() + period_year.toString())
+        }
+        return list_month_period.includes(month.toString() + year.toString());
+    }
+
     // Revenue chart
 
     const revenueGroupEle = $('#revenue-group')
@@ -108,16 +146,21 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
             const year = dateApproved.getFullYear()
-            if (year === fiscal_year_Setting) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
+                if (month === 2) {
+                    console.log(item, month)
+                }
+
                 if (!group_filter) {
-                    revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                    revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                        revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                     }
                 }
             }
         }
+        console.log(revenue_chart_data)
 
         let revenue_expected_data = []
         if (group_filter) {
@@ -143,7 +186,7 @@ $(document).ready(function () {
             {name: "Reality", data: revenue_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+            for (let i = new Date().getMonth(); i < 12; i++) {
                 revenue_chart_data[i] = null;
             }
             series_data = [
@@ -155,7 +198,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                height: 230,
+                height: HEIGHT,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -242,12 +285,12 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
             const year = dateApproved.getFullYear();
-            if (year === fiscal_year_Setting) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                    revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        revenue_chart_data[month] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                        revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                     }
                 }
             }
@@ -293,7 +336,7 @@ $(document).ready(function () {
             {name: "Reality", data: revenue_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+            for (let i = new Date().getMonth(); i < 12; i++) {
                 revenue_chart_data[i] = null;
             }
             series_data = [
@@ -305,7 +348,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                height: 230,
+                height: HEIGHT,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -582,12 +625,12 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
             const year = dateApproved.getFullYear()
-            if (year === fiscal_year_Setting) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                    profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                        profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                     }
                 }
             }
@@ -617,7 +660,7 @@ $(document).ready(function () {
             {name: "Reality", data: profit_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+            for (let i = new Date().getMonth(); i < 12; i++) {
                 profit_chart_data[i] = null;
             }
             series_data = [
@@ -629,7 +672,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                height: 230,
+                height: HEIGHT,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -719,12 +762,12 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
             const year = dateApproved.getFullYear();
-            if (year === fiscal_year_Setting) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                    profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        profit_chart_data[month] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                        profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                     }
                 }
             }
@@ -769,7 +812,7 @@ $(document).ready(function () {
             {name: "Reality", data: profit_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1; i < 12; i++) {
+            for (let i = new Date().getMonth(); i < 12; i++) {
                 profit_chart_data[i] = null;
             }
             series_data = [
@@ -781,7 +824,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                height: 230,
+                height: HEIGHT,
                 type: 'line',
                 dropShadow: {
                     enabled: true,
@@ -917,10 +960,11 @@ $(document).ready(function () {
         Promise.all([company_revenue_plan_list_ajax]).then(
             (results) => {
                 profit_expected_data_DF = results[0]?.['company_month_profit_target'];
-                if (!(results[0]?.['profit_target_type'] * netIncomeEle.prop('checked'))) {
+                profit_expected_data_detail_DF = results[0]?.['company_month_target_detail'];
+                let same = results[0]?.['profit_target_type'] + (netIncomeEle.prop('checked') ? 1 : 0)
+                if (same === 1) {
                     profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 }
-                profit_expected_data_detail_DF = results[0]?.['company_month_target_detail'];
                 let group = profitGroupEle.val()
                 let group_title = SelectDDControl.get_data_from_idx(profitGroupEle, profitGroupEle.val())['title']
                 if (!group_title) {
@@ -1136,7 +1180,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 230
+                height: HEIGHT
             },
             colors: ['#147945'],
             plotOptions: {
@@ -1409,7 +1453,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 230
+                height: HEIGHT
             },
             colors: ['#c07725'],
             plotOptions: {
@@ -1681,7 +1725,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 230
+                height: HEIGHT
             },
             colors: ['#fd8b9f'],
             plotOptions: {
@@ -1959,7 +2003,7 @@ $(document).ready(function () {
             }],
             chart: {
                 type: 'bar',
-                height: 230
+                height: HEIGHT
             },
             colors: ['#28abbe'],
             plotOptions: {

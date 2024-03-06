@@ -95,3 +95,6 @@ text-transform: uppercase;
 .btn-primary:focus{
     color:#000!important;
 }
+.fc-daygrid-event.fc-daygrid-block-event.fc-event-start.half_left .fc-event-time{
+    min-width: 60px;
+}

@@ -9,6 +9,7 @@ from apps.masterdata.saledata.views.accounts import (
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail,
     AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI
 )
+from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
     ExpenseDetailAPI, ExpenseForSaleListAPI, ExpenseUpdate
@@ -285,5 +286,16 @@ urlpatterns += [
     path(
         'revenue-plan-config/api', RevenuePlanConfigListAPI.as_view(),
         name='RevenuePlanConfigListAPI'
+    ),
+]
+
+urlpatterns += [
+    path(
+        'balance_init', BalanceInitList.as_view(),
+        name='BalanceInitList'
+    ),
+    path(
+        'balance_init/api', BalanceInitListAPI.as_view(),
+        name='BalanceInitListAPI'
     ),
 ]

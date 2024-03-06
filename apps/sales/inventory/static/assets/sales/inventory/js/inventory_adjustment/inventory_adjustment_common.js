@@ -369,7 +369,6 @@ function LoadDetailIA(option) {
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
-                console.log(data)
                 titleInput.val(data.title);
                 dateInput.val(data.date_created.split(' ')[0]);
                 LoadStatus();

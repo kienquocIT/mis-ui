@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Inventory report' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+    </style>
+{% endblock %}
+{% block pageAction %}{% endblock %}
+{% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
+
+    <script id="trans-script"
+            data-trans-m1th="{% trans 'January' %}"
+            data-trans-m2th="{% trans 'February' %}"
+            data-trans-m3th="{% trans 'March' %}"
+            data-trans-m4th="{% trans 'April' %}"
+            data-trans-m5th="{% trans 'May' %}"
+            data-trans-m6th="{% trans 'June' %}"
+            data-trans-m7th="{% trans 'July' %}"
+            data-trans-m8th="{% trans 'August' %}"
+            data-trans-m9th="{% trans 'September' %}"
+            data-trans-m10th="{% trans 'October' %}"
+            data-trans-m11th="{% trans 'November' %}"
+            data-trans-m12th="{% trans 'December' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-net-profit="{% trans 'Net income' %}"
+            data-trans-gross-profit="{% trans 'Gross profit' %}"
+    ></script>
+
+    <script id="url-script"
+            data-url-inventory-list="{% url 'ReportInventoryListAPI' %}"
+    ></script>
+
+    <div class="row">
+        <div class="col-12 col-lg-2 col-md-2">
+            <div class="form-group">
+                <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                        data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3 col-md-3">
+            <div class="form-group">
+                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                <select class="form-select select2 select-multiple" id="items_select" multiple
+                        data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3 col-md-3">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
+                        <select class="form-select select2" id="period-select"
+                                data-url="{% url 'PeriodsConfigListAPI' %}"
+                                data-method="GET"
+                        ></select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
+                        <select id="period-month" class="form-select"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-2 col-md-2">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                            <input type="number" id="period-day-from" class="form-control" readonly>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                            <input type="number" id="period-day-to" class="form-control" readonly>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-2 col-md-2">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="show-detail-cb">
+                <label class="form-check-label" for="show-detail-cb">{% trans 'Show detail' %}</label>
+            </div>
+            <button type="button" class="btn btn-gradient-primary mt-2" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+            <table class="table nowrap w-100" id="table-inventory-report">
+                <thead>
+                    <tr class="bg-secondary-light-5">
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Code' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Name' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'UoM' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
+                    </tr>
+                    <tr class="bg-secondary-light-5">
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="opening-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="opening-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="in-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="in-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="out-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="out-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="ending-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="end-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table hidden class="table nowrap w-100" id="table-inventory-report-detail">
+                <thead>
+                    <tr class="bg-secondary-light-5">
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Code' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Name' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'UoM' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Date' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'LOT' %}</th>
+                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Expired date' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
+                        <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
+                    </tr>
+                    <tr class="bg-secondary-light-5">
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="opening-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="opening-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="in-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="in-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="out-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="out-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="ending-total-quantity">0</span>)</th>
+                        <th class="border-1">{% trans 'Value' %}<br>(<span id="end-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/inventory_report/js/inventory.js' %}"></script>
+{% endblock %}

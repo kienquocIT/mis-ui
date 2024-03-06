@@ -59,6 +59,10 @@
             data-trans-m10th="{% trans 'October' %}"
             data-trans-m11th="{% trans 'November' %}"
             data-trans-m12th="{% trans 'December' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-net-profit="{% trans 'Net income' %}"
+            data-trans-gross-profit="{% trans 'Gross profit' %}"
+            data-url-group-detail="{% url 'GroupDetailAPI' '0' %}"
     ></script>
 
     <form id="form-detail-revenue-plan"
@@ -69,7 +73,14 @@
           data-url-detail-api="{% url 'RevenuePlanDetailAPI' '0' %}"
           data-url="{% url "RevenuePlanListAPI" %}">
         {% csrf_token %}
-        <div class="row">
+        <div class="row" id="notify">
+            <div class="col-12">
+                <div class="alert alert-warning" role="alert">
+                    {% trans 'You have not configured any role for Revenue plan. Go to Settings > Revenue plan config (admin)' %}
+                </div>
+            </div>
+        </div>
+        <div class="row main">
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="form-group">
                     <label for="revenue-plan-name" class="form-label required">{% trans 'Name' %}</label>
@@ -86,7 +97,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row main">
             <div class="col-12">
                 <div class="row">
                     <div class="col-12 col-md-2 col-lg-2">
@@ -122,7 +133,14 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-5">
+        <div class="row mt-5" id="notify-change-group" hidden>
+            <div class="col-12">
+                <button disabled type="button" class="btn btn-gradient-danger" id="btn_update_group">
+                    {% trans "had been changed. Update here!" %}
+                </button>
+            </div>
+        </div>
+        <div class="row mt-5 main">
             <div class="modal fade" id="add-group-plan-modal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -152,7 +170,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-5 mb-10">
+        <div class="row mt-5 mb-10 main">
             <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
                 <table class="table nowrap w-100 fixed_header" id="revenue-plan-table"
                        data-group-url="{% url 'GroupDetailAPI' '0' %}"

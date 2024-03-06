@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ExtendsConfig(AppConfig):
+class FimportConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.core.extends'
+    name = 'apps.core.fimport'

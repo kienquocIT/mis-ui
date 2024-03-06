@@ -2,7 +2,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% include 'extends/systems/meta_header.html' %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}{{ base.tenant_current_data.code|upper }}{% endblock %}
+        &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}
+    </title>
+    <meta name="description" content="Management Information System"/>
+
+    {% if base.company_current_data.logo %}
+        <link rel="shortcut icon" href="{{ base.company_current_data.logo }}">
+        <link rel="icon" href="{{ base.company_current_data.logo }}" type="image/x-icon">
+    {% else %}
+        <link rel="shortcut icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}">
+        <link rel="icon" href="{% static 'assets/images/bflow/icon/icon_36x36.png' %}" type="image/x-icon">
+    {% endif %}
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -119,9 +134,12 @@
                 bottom: 75px;
                 right: 40px;
                 display: none;
-                background-color: #0dcaf0;
-                color: #ffffff;
+                background-color: #298dff;
                 z-index: 9999999;
+                border-radius: 5px;
+            }
+            .scrollToTop:hover {
+                background-color: #165598;
             }
         </style>
 
@@ -155,7 +173,21 @@
 <body>
 
 <!-- Bubble -->
-<button id="bubble-scrollToTop" class="scrollToTop btn btn-light rounded px-2 py-1"><i class="fa-solid fa-arrows-up-to-line"></i></button>
+<button
+        id="bubble-scrollToTop"
+        class="scrollToTop btn btn-md btn-icon btn-rounded"
+        data-bs-toggle="tooltip"
+        title="{% trans 'Back to top' %}"
+>
+    <span class="icon">
+        <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g>
+                <path d="M4 2C3.44772 2 3 2.44772 3 3C3 3.55228 3.44772 4 4 4H20C20.5523 4 21 3.55228 21 3C21 2.44772 20.5523 2 20 2H4Z" fill="#ffffff"/>
+                <path d="M6.29289 13.7071C6.68342 14.0976 7.31658 14.0976 7.70711 13.7071L11 10.4142L11 21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21L13 10.4142L16.2929 13.7071C16.6834 14.0976 17.3166 14.0976 17.7071 13.7071C18.0976 13.3166 18.0976 12.6834 17.7071 12.2929L12.7071 7.29289C12.3166 6.90237 11.6834 6.90237 11.2929 7.29289L6.29289 12.2929C5.90237 12.6834 5.90237 13.3166 6.29289 13.7071Z" fill="#ffffff"/>
+            </g>
+        </svg>
+    </span>
+</button>
 <!-- // Bubble -->
 
 <!-- Wrapper -->
@@ -370,6 +402,13 @@
 </div>
 <!-- /Wrapper -->
 
+{% block jsCatalog %}
+    {% if jsi18n %}
+        <script src="{% url 'javascript-catalog' packages=jsi18n %}"></script>
+    {% else %}
+        <script src="{% url 'javascript-catalog' packages='null' %}"></script>
+    {% endif %}
+{% endblock %}
 
 {% compress js %}
     <!-- jQuery -->
@@ -435,6 +474,7 @@
         const globeMediaDomain = "{{ base.domain_cloud }}";
         const globePrefixAvatar = "{{ base.avatar_prefix }}";
         const globeIsDebug = "{{ is_debug }}";
+        const staticStart = "{% static '' %}";
 
         // url
         const globeUrlCompanyConfig = "{% url 'CompanyConfigDetailAPI' %}";
@@ -504,7 +544,6 @@
     <script src="{% static 'assets/js/init-setup.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
     <script src="{% static 'assets/js/plugins/card-tools.js' %}"></script>
-{#    <script src="{% static 'vendors/dm-uploader/dist/js/jquery.dm-uploader.min.js' %}"></script>#}
     <script src="{% static 'vendors/dm-uploader/src/js/jquery.dm-uploader.js' %}"></script>
 
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>

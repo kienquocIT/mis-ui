@@ -41,6 +41,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
     LANGUAGE_CHANGE = 'auth/language'
 
+    #
+    USER_CHANGE_PASSWORD = StringUrl('auth/change-password')
+    USER_FORGOT_PASSWORD = StringUrl('auth/forgot-password')
+    USER_FORGOT_PASSWORD_DETAIL = StringUrl('auth/forgot-password/{pk}')
+
     # web / page builder
     BUILDER_PAGE_LIST = StringUrl('site/config/page-list')
     BUILDER_PAGE_DETAIL = StringUrl('site/config/page/{pk}')
@@ -133,11 +138,19 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     COMMENT_REPLIES_LIST = StringUrl('comment/reply/{pk}/list')
     COMMENT_ROOM_REPLIES_LIST = StringUrl('comment/room/{pk}/list')
 
+    # print templates
+    PRINT_TEMPLATES_APPS_LIST = StringUrl('printer/apps')
+    PRINT_TEMPLATES_LIST = StringUrl('printer/list')
+    PRINT_TEMPLATES_DETAIL = StringUrl('printer/detail/{pk}')
+    PRINT_TEMPLATES_USING = StringUrl('printer/using/default/{application_id}')
+    PRINT_TEMPLATES_USING_DETAIL = StringUrl('printer/using/detail/{pk}')
+
     # base
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
     APPLICATION_DETAIL = StringUrl('base/application/{pk}')
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
+    APPLICATION_PROPERTY_PRINT_LIST = StringUrl('base/tenant-applications-property/print')
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
     APPLICATION_PERMISSION = StringUrl('base/permissions')
     INDICATOR_PARAM = StringUrl('base/indicator-params')
@@ -461,6 +474,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')
     REPORT_PIPELINE_LIST = StringUrl('report/pipeline/list')
     REPORT_CASHFLOW_LIST = StringUrl('report/cashflow/list')
+    REPORT_INVENTORY_DETAIL_LIST = StringUrl('report/inventory-detail/list')
+    BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
+    REPORT_INVENTORY_LIST = StringUrl('report/inventory/list')
+    REPORT_GENERAL_LIST = StringUrl('report/general/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')

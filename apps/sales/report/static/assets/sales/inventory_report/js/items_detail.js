@@ -1,171 +1,73 @@
 $(document).ready(function () {
-    let items_select_Ele = $('#items_select')
-    let warehouses_select_Ele = $('#warehouses_select')
-    let items_detail_report_table_Ele = $('#items_detail_report_table')
-    let date_picker_Ele = $('input[type=text].date-picker')
+    const items_select_Ele = $('#items_select')
+    const warehouses_select_Ele = $('#warehouses_select')
+    const items_detail_report_table_Ele = $('#items_detail_report_table')
+    const periodEle = $('#period-select')
+    const periodMonthEle = $('#period-month')
+    const trans_script = $('#trans-script')
+    const url_script = $('#url-script')
+    const current_period_Ele = $('#current_period')
+    let current_period = {}
+    if (current_period_Ele.text() !== '') {
+        current_period = JSON.parse(current_period_Ele.text())
+        getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
+        periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+    }
 
-    date_picker_Ele.daterangepicker({
-        minYear: 1901,
-        timePicker: true,
-        showDropdowns: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        }
-    });
-    
-    function CombineDataItems(data_source, selected_id_list) {
+    function getMonthOrder(space_month, fiscal_year) {
+        periodMonthEle.html(``)
         let data = []
-        for (let idx = 0; idx < selected_id_list.length; idx++){
+        for (let i = 0; i < 12; i++) {
+            let year_temp = fiscal_year
+            let trans_order = i + 1 + space_month
+            if (trans_order > 12) {
+                trans_order -= 12
+                year_temp += 1
+            }
+            periodMonthEle.append(`<option value="${i+1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
+
             data.push({
-                'items_id': data_source[selected_id_list[idx]]?.['id'],
-                'items_code': data_source[selected_id_list[idx]]?.['code'],
-                'items_title': data_source[selected_id_list[idx]]?.['title'],
-                'description': data_source[selected_id_list[idx]]?.['description'],
-                'valuation_method': 'Weight average',
-                'warehouses': '',
-                'system_date': '',
-                'posting_date': '',
-                'document_date': '',
-                'trans_description': '',
-                'trans_code': '',
-                'stock_in_quantity': '',
-                'cost_in': '',
-                'in_value': '',
-                'stock_out_quantity': '',
-                'cost_out': '',
-                'out_value': '',
-                'cumulative_quantity': '',
-                'cumulative_value': ''
+                'id': i+1,
+                'title': trans_script.attr(`data-trans-m${trans_order}th`),
+                'month': i+1,
+                'year': year_temp
             })
         }
-        return data;
+        data.push({
+            'id': '',
+            'title': 'Select...',
+            'month': 0,
+            'year': 0,
+        })
+        periodMonthEle.empty();
+        periodMonthEle.initSelect2({
+            data: data,
+            allowClear: true,
+            templateResult: function (state) {
+                let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
+                return $(`<span>${state.text} ${groupHTML}</span>`);
+            },
+        });
     }
 
-    function InitialDB(ele, data=[]) {
-        ele.closest('.row').prop('hidden', data.length === 0)
-        ele.DataTable().clear().destroy()
-        ele.DataTableDefault({
-            scrollX: true,
-            data: data ? data : [],
-            columns: [
-                {
-                    target: 0,
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },
-                {
-                    target: 1,
-                    render: (data, type, row) => {
-                        return `<span data-id="${row.items_id}" class="badge badge-soft-secondary">${row.items_code}</span>`;
-                    }
-                },
-                {
-                    target: 2,
-                    render: (data, type, row) => {
-                        return `<div><span class="badge-label text-primary">${row.items_title}</span></div>`;
-                    }
-                },
-                {
-                    target: 3,
-                    render: (data, type, row) => {
-                        return `<span class="text-muted">${row.description}</span>`;
-                    }
-                },
-                {
-                    target: 4,
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-primary">${row.valuation_method}</span>`;
-                    }
-                },
-                {
-                    target: 5,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 6,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 7,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 8,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 9,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 10,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 11,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 12,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 13,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 14,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 15,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 16,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 17,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                },
-                {
-                    target: 18,
-                    render: (data, type, row) => {
-                        return `-`;
-                    }
-                }
-            ],
+    function LoadPeriod(data) {
+        periodEle.initSelect2({
+            ajax: {
+                url: periodEle.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'periods_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            let selected_option = SelectDDControl.get_data_from_idx(periodEle, periodEle.val())
+            if (selected_option) {
+                getMonthOrder(selected_option['space_month'], selected_option?.['fiscal_year'])
+            }
         })
     }
-    InitialDB(items_detail_report_table_Ele)
+    LoadPeriod(current_period)
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
@@ -206,13 +108,241 @@ $(document).ready(function () {
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
     $('#btn-view').on('click', function () {
-        let item_list_text = $(`#${items_select_Ele.attr('data-idx-data-loaded')}`).text();
-        if (item_list_text) {
-            let item_list = JSON.parse(item_list_text ? item_list_text : [])
-            InitialDB(items_detail_report_table_Ele, CombineDataItems(item_list, items_select_Ele.val()))
+        if (periodMonthEle.val()) {
+            WindowControl.showLoading();
+            let dataParam = {}
+            dataParam['sub_period_order'] = parseInt(periodMonthEle.val())
+            dataParam['period_mapped'] = periodEle.val()
+            dataParam['product_id_list'] = items_select_Ele.val().join(',')
+            let inventory_detail_list_ajax = $.fn.callAjax2({
+                url: url_script.attr('data-url-inventory-detail-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_detail_list')) {
+                        return data?.['report_inventory_detail_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([inventory_detail_list_ajax]).then(
+                (results) => {
+                    items_detail_report_table_Ele.find('tbody').html('')
+                    for (const item of results[0]) {
+                        let cumulative_quantity = 0
+                        let cumulative_value = 0
+                        items_detail_report_table_Ele.find('tbody').append(
+                            `<tr class="bg-secondary-light-5">
+                                <td class="border-1"><span class="text-secondary">${item?.['product']?.['code']}</span></td>
+                                <td class="border-1">
+                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="${item?.['product']?.['description']}" class="text-secondary">${item?.['product']?.['title']}</span>
+                                </td>
+                                <td class="border-1"><span class="text-secondary">Weighted average</span></td>
+                                <td class="border-1"></td>
+                                <td hidden></td>
+                                <td hidden></td>
+                                <td class="border-1"></td>
+                                <td class="border-1"></td>
+                                <td class="border-1"></td>
+                                <td class="border-1"></td>
+                                <td class="border-1"></td>
+                                <td class="border-1"></td>
+                                <td class="border-1"></td>
+                                <td class="border-1"></td>
+                                <td class="border-1"></td>
+                                <td><span class="text-secondary ${item?.['product']?.['id']}-cumulative-quantity">0</span></td>
+                                <td class="border-1"><span class="text-secondary mask-money ${item?.['product']?.['id']}-cumulative-cost" data-init-money="0"></span></td>
+                                <td class="border-1"><span class="text-secondary mask-money ${item?.['product']?.['id']}-cumulative-value" data-init-money="0"></span></td>
+                            </tr>`
+                        )
+                        for (const stock_activity of item?.['stock_activities']) {
+                            if (warehouses_select_Ele.val().length > 0) {
+                                if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {
+                                    let stock_type_label = `<span class="text-secondary">Opening balance</span>`
+                                    cumulative_quantity += stock_activity?.['ending_balance_quantity']
+                                    cumulative_value += stock_activity?.['ending_balance_value']
+                                    items_detail_report_table_Ele.find('tbody').append(
+                                        `<tr>
+                                            <td class="border-1"></td>
+                                            <td class="border-1"></td>
+                                            <td class="border-1"></td>
+                                            <td class="border-1"><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
+                                            <td class="border-1"></td>
+                                            <td hidden></td>
+                                            <td hidden></td>
+                                            <td class="border-1">${stock_type_label}</td>
+                                            <td class="border-1"></td>
+                                            <td class="border-1"></td>
+                                            <td class="border-1"></td>
+                                            <td class="border-1"></td>
+                                            <td class="border-1"></td>
+                                            <td class="border-1"></td>
+                                            <td class="border-1"></td>
+                                            <td><span>${stock_activity?.['opening_balance_quantity']}</span></td>
+                                            <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_cost']}"></span></td>
+                                            <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_value']}"></span></td>
+                                        </tr>`
+                                    )
+                                    for (const activity of stock_activity?.['data_stock_activity']) {
+                                        if (activity?.['stock_type'] === 1) {
+                                            let text_color = 'primary'
+                                            if (activity?.['trans_title'] === 'Goods return') {
+                                                text_color = 'blue'
+                                            }
+                                            let stock_type_label = `<span class="text-${text_color}">${activity?.['trans_title']}</span>`
+                                            items_detail_report_table_Ele.find('tbody').append(
+                                                `<tr>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD HH:mm")}</span></td>
+                                                    <td hidden></td>
+                                                    <td hidden></td>
+                                                    <td class="border-1">${stock_type_label}</td>
+                                                    <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                    <td class="bg-${text_color}-light-5"><span>${activity?.['quantity']}</span></td>
+                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
+                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                    <td></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td><span">${activity?.['current_quantity']}</span></td>
+                                                    <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
+                                                    <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
+                                                </tr>`
+                                            )
+                                        } else {
+                                            let stock_type_label = `<span class="text-danger">${activity?.['trans_title']}</span>`
+                                            items_detail_report_table_Ele.find('tbody').append(
+                                                `<tr>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD HH:mm")}</span></td>
+                                                    <td hidden></td>
+                                                    <td hidden></td>
+                                                    <td class="border-1">${stock_type_label}</td>
+                                                    <td class="border-1"><span class="badge badge-soft-danger w-100">${activity?.['trans_code']}</span></td>
+                                                    <td></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="bg-danger-light-5"><span>${activity?.['quantity']}</span></td>
+                                                    <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
+                                                    <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                    <td><span>${activity?.['current_quantity']}</span></td>
+                                                    <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
+                                                    <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
+                                                </tr>`
+                                            )
+                                        }
+                                    }
+                                }
+                            } else {
+                                let stock_type_label = `<span class="text-secondary">Opening balance</span>`
+                                cumulative_quantity += stock_activity?.['ending_balance_quantity']
+                                cumulative_value += stock_activity?.['ending_balance_value']
+                                items_detail_report_table_Ele.find('tbody').append(
+                                    `<tr>
+                                        <td class="border-1"></td>
+                                        <td class="border-1"></td>
+                                        <td class="border-1"></td>
+                                        <td class="border-1"><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
+                                        <td class="border-1"></td>
+                                        <td hidden></td>
+                                        <td hidden></td>
+                                        <td class="border-1">${stock_type_label}</td>
+                                        <td class="border-1"></td>
+                                        <td class="border-1"></td>
+                                        <td class="border-1"></td>
+                                        <td class="border-1"></td>
+                                        <td class="border-1"></td>
+                                        <td class="border-1"></td>
+                                        <td class="border-1"></td>
+                                        <td><span>${stock_activity?.['opening_balance_quantity']}</span></td>
+                                        <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_cost']}"></span></td>
+                                        <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_value']}"></span></td>
+                                    </tr>`
+                                )
+                                for (const activity of stock_activity?.['data_stock_activity']) {
+                                    if (activity?.['stock_type'] === 1) {
+                                        let text_color = 'primary'
+                                        if (activity?.['trans_title'] === 'Goods return') {
+                                            text_color = 'blue'
+                                        }
+                                        let stock_type_label = `<span class="text-${text_color}">${activity?.['trans_title']}</span>`
+                                        items_detail_report_table_Ele.find('tbody').append(
+                                            `<tr>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD HH:mm")}</span></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td class="border-1">${stock_type_label}</td>
+                                                <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                <td class="bg-${text_color}-light-5"><span>${activity?.['quantity']}</span></td>
+                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
+                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                <td></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td><span>${activity?.['current_quantity']}</span></td>
+                                                <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
+                                                <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
+                                            </tr>`
+                                        )
+                                    } else {
+                                        let stock_type_label = `<span class="text-danger">${activity?.['trans_title']}</span>`
+                                        items_detail_report_table_Ele.find('tbody').append(
+                                            `<tr>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD HH:mm")}</span></td>
+                                                <td hidden></td>
+                                                <td hidden></td>
+                                                <td class="border-1">${stock_type_label}</td>
+                                                <td class="border-1"><span class="badge badge-soft-danger w-100">${activity?.['trans_code']}</span></td>
+                                                <td></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="bg-danger-light-5"><span>${activity?.['quantity']}</span></td>
+                                                <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
+                                                <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                <td><span>${activity?.['current_quantity']}</span></td>
+                                                <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
+                                                <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
+                                            </tr>`
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        $(`.${item?.['product']?.['id']}-cumulative-quantity`).text(cumulative_quantity)
+                        $(`.${item?.['product']?.['id']}-cumulative-value`).attr('data-init-money', cumulative_value)
+                        $(`.${item?.['product']?.['id']}-cumulative-cost`).attr('data-init-money', cumulative_value / cumulative_quantity)
+                    }
+                    $.fn.initMaskMoney2()
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        500
+                    )
+                })
         }
         else {
-            $.fn.notifyB({"description": 'No item to view.', "timeout": 3500}, 'warning')
+            $.fn.notifyB({"description": 'No sub period selected.', "timeout": 3500}, 'warning')
         }
     })
 })

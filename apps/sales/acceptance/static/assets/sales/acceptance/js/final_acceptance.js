@@ -18,10 +18,10 @@ $(function () {
                 paging: false,
                 autoWidth: true,
                 scrollX: true,
-                columns: [  // 200,150,200,200,200,200,100,250 (1500p)
+                columns: [  // 250,200,250,300,300,300,100,300 (2000p)
                     {
                         targets: 0,
-                        width: '13.33%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_indicator'] === true) {
@@ -53,7 +53,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '13.33%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             if (row?.['is_sale_order'] === true) {
                                 return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
@@ -69,7 +69,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '13.33%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
                                 return `<b><span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span></b>`;
@@ -80,7 +80,7 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '13.33%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) { // INDICATOR ROWS
                                 if (row?.['indicator']?.['acceptance_affect_by'] === 2) { // Plan value
@@ -121,7 +121,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '13.33%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
                                 return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
@@ -132,7 +132,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '6.66%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
                                 return `<p class="table-row-rate-value" data-value="${row?.['rate_value']}">${row?.['rate_value']} %</p>`;
@@ -143,7 +143,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '16.66%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<input class="form-control" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
                         }
@@ -474,10 +474,14 @@ $(function () {
             return true;
         }
 
-        function loadOpp(dataOpp = {}) {
+        function loadOpp() {
             boxOpp.empty();
+            let dataParams = {};
+            if (boxEmployee.val()) {
+                dataParams['employee_inherit'] = boxEmployee.val();
+            }
             boxOpp.initSelect2({
-                data: dataOpp,
+                'dataParams': dataParams,
                 'allowClear': true,
             });
         }
@@ -508,6 +512,60 @@ $(function () {
         }
         loadSO();
 
+        function loadDataByEmployee() {
+            loadSO();
+            loadOpp();
+            return true;
+        }
+
+        function loadDataByOpp() {
+            if (boxOpp.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxOpp, boxOpp.val());
+                if (dataSelected) {
+                    boxEmployee.empty();
+                    boxEmployee.initSelect2({
+                        data: dataSelected?.['sale_person'],
+                        'allowClear': true,
+                    });
+                    boxEmployee[0].setAttribute('readonly', 'true');
+                    boxSO.empty();
+                    boxSO.initSelect2({
+                        data: dataSelected?.['sale_order'],
+                        'allowClear': true,
+                    });
+                    boxSO[0].setAttribute('readonly', 'true');
+                }
+            } else {
+                boxEmployee[0].removeAttribute('readonly');
+                boxSO[0].removeAttribute('readonly');
+            }
+            return true;
+        }
+
+        function loadDataBySO() {
+            if (boxSO.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxSO, boxSO.val());
+                if (dataSelected) {
+                    boxEmployee.empty();
+                    boxEmployee.initSelect2({
+                        data: dataSelected?.['sale_person'],
+                        'allowClear': true,
+                    });
+                    boxEmployee[0].setAttribute('readonly', 'true');
+                    boxOpp.empty();
+                    boxOpp.initSelect2({
+                        data: dataSelected?.['opportunity'],
+                        'allowClear': true,
+                    });
+                    boxOpp[0].setAttribute('readonly', 'true');
+                }
+            } else {
+                boxEmployee[0].removeAttribute('readonly');
+                boxOpp[0].removeAttribute('readonly');
+            }
+            return true;
+        }
+
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
             minYear: 1901,
@@ -524,22 +582,16 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Events
-        boxOpp.on('change', function () {
-            loadSO();
+        boxEmployee.on('change', function () {
+            loadDataByEmployee();
         });
 
-        boxEmployee.on('change', function () {
-            loadSO();
+        boxOpp.on('change', function () {
+            loadDataByOpp();
         });
 
         boxSO.on('change', function () {
-            if (boxSO.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(boxSO, boxSO.val());
-                if (dataSelected) {
-                    loadOpp(dataSelected?.['opportunity']);
-                    loadEmployee(dataSelected?.['sale_person']);
-                }
-            }
+            loadDataBySO();
         });
 
         btnRefresh.on('click', function () {

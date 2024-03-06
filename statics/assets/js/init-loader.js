@@ -7,6 +7,22 @@ $.fn.extend({
     isDebug: function () {
         return $.fn.parseBoolean(globeIsDebug, false)
     },
+    getClass: function (regex){
+        let clsThis = this;
+        const regexObj = new RegExp(regex);
+        let matches = [];
+        clsThis.each(function (index, item) {
+            item.className.split(" ").map(
+                (item) => {
+                    let state = regexObj.exec(item);
+                    if (Array.isArray(state) && state.length > 0){
+                        matches.push(item);
+                    }
+                }
+            )
+        });
+        return matches;
+    },
     alterClass: function (removals, additions) {
         // https://stackoverflow.com/a/8680251/13048590
         // https://gist.github.com/peteboere/1517285
@@ -183,37 +199,77 @@ $.fn.extend({
             });
         }
     },
-    switcherResp: function (resp, isNotify = true, swalOpts={}) {
+    switcherResp: function (resp, opts={}) {
+        opts = {
+            // config
+            'isNotify': true,
+            'notifyOpts': {},
+            'swalOpts': {},  // 'allowOutsideClick': true,
+
+            // callback status
+            '200': (respData, configData) => respData.data,
+            '201': (respData, configData) => respData.data,
+            '204': (respData, configData) => {
+                if (configData.isNotify === true){
+                    $.fn.notifyB({'description': $.fn.transEle.attr('data-success')}, 'success');
+                }
+                return {'status': 204}
+            },
+            '400': (respData, configData) => {
+                let mess = respData.data;
+                if (respData.data.hasOwnProperty('errors')) {
+                    mess = respData.data.errors;
+                }
+                if (configData.isNotify === true){
+                    UtilControl.notifyErrors(mess, configData.notifyOpts);
+                }
+                return {};
+            },
+            '401': (respData, configData) => {
+                WindowControl.showUnauthenticated(configData.swalOpts,true);
+                return {};
+            },
+            '403': (respData, configData) => {
+                WindowControl.showForbidden(configData.swalOpts);
+                return {};
+            },
+            '404': (respData, configData) => {
+                WindowControl.showNotFound(configData.swalOpts);
+                return {};
+            },
+            '500': (respData, configData) => {
+                WindowControl.showSVErrors(configData.swalOpts);
+                return {};
+            },
+            'default': (respData, configData) => {
+                return {};
+            },
+
+            ...opts,
+        }
+
         if (typeof resp === 'object') {
             let status = 500;
             if (resp.hasOwnProperty('status')) status = resp.status;
             switch (status) {
                 case 200:
-                    return resp.data
+                    return opts['200'](resp, opts);
                 case 201:
-                    return resp.data
+                    return opts['201'](resp, opts);
                 case 204:
-                    if (isNotify === true) $.fn.notifyB({'description': $.fn.transEle.attr('data-success'),}, 'success');
-                    return {'status': status}
+                    return opts['204'](resp, opts);
                 case 400:
-                    let mess = resp.data;
-                    if (resp.data.hasOwnProperty('errors')) mess = resp.data.errors;
-                    if (isNotify === true) UtilControl.notifyErrors(mess);
-                    return {};
+                    return opts['400'](resp, opts);
                 case 401:
-                    WindowControl.showUnauthenticated(swalOpts,true);
-                    return {};
+                    return opts['401'](resp, opts);
                 case 403:
-                    WindowControl.showForbidden(swalOpts);
-                    return {};
+                    return opts['403'](resp, opts);
                 case 404:
-                    WindowControl.showNotFound(swalOpts);
-                    return {};
+                    return opts['404'](resp, opts);
                 case 500:
-                    WindowControl.showSVErrors(swalOpts);
-                    return {};
+                    return opts['500'](resp, opts);
                 default:
-                    return {};
+                    return opts['default'](resp, opts);
             }
         }
     },
@@ -265,7 +321,9 @@ $.fn.extend({
                         "DTISDD": isDropdown ? 'true' : '', ...headers
                     },
                     success: function (rest, textStatus, jqXHR) {
-                        let data = $.fn.switcherResp(rest, isNotify);
+                        let data = $.fn.switcherResp(rest, {
+                            'isNotify': isNotify,
+                        });
                         if (data) {
                             if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
                                 let btnSubmit = $('#idxSaveInZoneWFThenNext');
@@ -294,7 +352,9 @@ $.fn.extend({
                     error: function (jqXHR, textStatus, errorThrown) {
                         let resp_data = jqXHR.responseJSON;
                         if (resp_data && typeof resp_data === 'object') {
-                            $.fn.switcherResp(resp_data, isNotify);
+                            $.fn.switcherResp(resp_data, {
+                                'isNotify': isNotify,
+                            });
                             reject(resp_data);
                         } else if (jqXHR.status === 204) reject({'status': 204});
                     },
@@ -311,13 +371,18 @@ $.fn.extend({
             let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
             let isNotify = UtilControl.popKey(opts, 'isNotify', false, true);
             if (!$.fn.isBoolean(isNotify)) isNotify = false;
+            let notifyOpts = UtilControl.popKey(opts, 'notifyOpts', {}, true);
 
             let isLoading = UtilControl.popKey(opts, 'isLoading', false, true);
             let loadingOpts = UtilControl.popKey(opts, 'loadingOpts', {}, true);
             if (!$.fn.isBoolean(isLoading)) isLoading = false;
             if (isLoading) $x.fn.showLoadingPage(loadingOpts);
 
+            // sweetAlertOpts: {'allowOutsideClick': true},
             let sweetAlertOpts = UtilControl.popKey(opts, 'sweetAlertOpts', {}, true);
+
+            //
+            let callbackStatus = UtilControl.popKey(opts, 'callbackStatus', {}, true);
 
             return new Promise(function (resolve, reject) {
                 // Setup then Call Ajax
@@ -355,7 +420,12 @@ $.fn.extend({
                             if (isLoading) $x.fn.hideLoadingPage();
                             if (successCallback) successCallback(rest, textStatus, jqXHR);
                             if (onlySuccessCallback === false) {
-                                let data = $.fn.switcherResp(rest, isNotify, sweetAlertOpts);
+                                let data = $.fn.switcherResp(rest, {
+                                    'isNotify': isNotify,
+                                    'notifyOpts': notifyOpts,
+                                    'swalOpts': sweetAlertOpts,
+                                    ...callbackStatus,
+                                });
                                 if (data) {
                                     // if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
                                     //     let btnSubmit = $('#idxSaveInZoneWFThenNext');
@@ -385,7 +455,12 @@ $.fn.extend({
                             if (onlyErrorCallback === false) {
                                 let resp_data = jqXHR.responseJSON;
                                 if (resp_data && typeof resp_data === 'object') {
-                                    $.fn.switcherResp(resp_data, isNotify, sweetAlertOpts);
+                                    $.fn.switcherResp(resp_data, {
+                                        'isNotify': isNotify,
+                                        'notifyOpts': notifyOpts,
+                                        'swalOpts': sweetAlertOpts,
+                                        ...callbackStatus,
+                                    });
                                     reject(resp_data);
                                 } else if (jqXHR.status === 204) reject({'status': 204});
                             }
@@ -452,6 +527,9 @@ $.fn.extend({
     },
     changePropertiesElementIsZone: function (opts) {
         WFRTControl.changePropertiesElementIsZone($(this), opts);
+    },
+    gettext: function (txt){
+        return gettext(txt);
     },
 });
 

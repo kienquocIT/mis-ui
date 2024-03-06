@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Print Template' %} &#8901; {% trans 'Create' %}{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm-new-print-template">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            id="frm-new-print-template"
+            data-url="{% url 'PrintTemplateCreateAPI' %}"
+            data-method="POST"
+            data-url-redirect="{% url 'PrintTemplatesListView' %}"
+    >
+        <div class="row mb-3">
+            <div class="col-12">
+                <label class="form-label required" for="inp-application">
+                    {% trans 'Application' %}
+                </label>
+                <select
+                        id="inp-application"
+                        name="application"
+                        class="select2 form-select"
+                        data-url="{% url 'TenantApplicationListAPI' %}?allow_print=true"
+                        data-method="GET"
+                        data-keyResp="tenant_application_list"
+                        required
+                ></select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <label class="form-label required" for="inp-title">
+                    {% trans 'Title' %}
+                </label>
+                <input
+                        id="inp-title"
+                        type="text"
+                        name="title"
+                        class="form-control" required
+                >
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <label class="form-label" for="inp-remarks">
+                    {% trans 'Description' %}
+                </label>
+                <textarea
+                        id="inp-remarks"
+                        type="text"
+                        name="remarks"
+                        class="form-control"
+                ></textarea>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 mb-2">
+                <label
+                        class="form-label required" for="inp-contents"
+                >
+                    {% trans 'Contents' %}
+                </label>
+                <button
+                        type="button" class="btn btn-sm btn-outline-secondary" id="btn-instruction-editor"
+                >
+                    {% trans 'Help' %} <i class="ml-1 fa-solid fa-circle-info"></i>
+                </button>
+{#                <button id="idx-btn-print" class="btn btn-sm btn-gradient-primary btn-square ml-1" type="button" disabled>#}
+{#                    {% trans 'Print Preview' %} <i class="ml-1 fa-solid fa-print"></i>#}
+{#                </button>#}
+            </div>
+            <div class="col-12 mb-2" style="display: none;" id="idx-instruction-editor">
+                <div class="w-100" style="border-left: 3px solid #f1f1f1; border-radius: 5px;padding: 1rem;">
+                    <b>1. {% trans 'Dynamic Data' %}</b>
+                        {% include 'printer/extends/dynamic_data.html' %}
+                    <b>2. {% trans 'Toolbar' %}</b>
+                    <div class="row ml-3">
+                        {% include 'printer/extends/instruction_toolbar.html' %}
+                    </div>
+{#                    <b>2. {% trans 'Mentions' %}</b>#}
+{#                    <p class="ml-3">#}
+{#                        {% trans 'Type ‘@‘ and your search data to open a list of people you want to mention. The Mention feature will search for people by their last name, first name or email address.' %}#}
+{#                    </p>#}
+                </div>
+            </div>
+            <div class="col-12">
+                <textarea
+                        id="inp-contents"
+                        data-css-url-render="{% static 'comment/css/style.css' %}"
+                        data-mentions="{% url 'ApplicationPropertyForPrintListAPI' %}"
+                        name="contents" required
+                        class="form-control"
+                        disabled
+                ></textarea>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function (){
+            $('#btn-instruction-editor').on('click', function (){
+                $('#idx-instruction-editor').fadeToggle('fast');
+            })
+
+            let txtArea = $('#inp-contents');
+            let btnPrint = $('#idx-btn-print');
+
+            $('#inp-application').on('change', function (){
+                txtArea.prop('disabled', false);
+                btnPrint.prop('disabled', false);
+                if (txtArea.tinymce()) txtArea.tinymce().destroy();
+                PrintTinymceControl.init_tinymce_editable(txtArea, $(this).val(), {
+                    height: 420,
+                    readonly: 0,
+                    templateUrl: "{% url 'PrintApplicationTemplateSample' app_id='__app_id__' %}",
+                });
+            })
+
+
+            let frm = $('#frm-new-print-template');
+            new SetupFormSubmit(frm).validate({
+                submitHandler: function (form, event){
+                    let frmSetup = new SetupFormSubmit(frm);
+                    $.fn.callAjax2({
+                        url: frmSetup.dataUrl,
+                        method: frmSetup.dataMethod,
+                        data: frmSetup.dataForm
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data){
+                                $.fn.notifyB({
+                                    'description': $.fn.transEle.attr('data-success'),
+                                }, 'success');
+                                setTimeout(
+                                    () => {
+                                        window.location.href = frm.attr('data-url-redirect');
+                                    },
+                                    1000
+                                )
+                            }
+                        },
+                        (errs) => console.log(errs),
+                    )
+                },
+            })
+
+            // Print
+            btnPrint.on('click', function (){
+                txtArea.tinymce().execCommand('mcePrint');
+            })
+        })
+    </script>
+{% endblock %}

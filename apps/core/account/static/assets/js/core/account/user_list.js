@@ -16,12 +16,14 @@ $(function () {
                 return [];
             },
         },
+        autoWidth: false,
         columns: [
             {
-                'render': () => {
-                    return ''
-                }
-            }, {
+                width: '10%',
+                'render': () => '',
+            },
+            {
+                width: '30%',
                 'data': 'full_name',
                 'render': (data, type, row) => {
                     if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof data === 'string') {
@@ -41,12 +43,29 @@ $(function () {
                     }
                     return '';
                 }
-            }, {
+            },
+            {
+                width: '20%',
                 'data': 'username',
                 render: (data, type, row) => {
                     return `<span class="badge badge-soft-primary">${data}</span>`;
                 }
-            }, {
+            },
+            {
+                width: '20%',
+                'data': 'is_admin_tenant',
+                render: (data) => {
+                    let idx = $x.fn.randomStr(32);
+                    return `
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" id="${idx}" ${data === true ? 'checked' : ''} disabled>
+                            <label class="form-check-label" for="${idx}"></label>
+                        </div>
+                    `;
+                },
+            },
+            {
+                width: '20%',
                 'className': 'action-center',
                 'render': (data, type, row) => {
                     let btn1 = `<button class="btn btn-icon btn-rounded bg-dark-hover btn-modal-change-passwd" data-bs-toggle="modal" data-bs-target="#modalChangePassword"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Change password" ><i class="fas fa-key"></i></span></button>`;

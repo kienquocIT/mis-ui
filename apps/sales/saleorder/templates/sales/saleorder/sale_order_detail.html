@@ -182,11 +182,6 @@
                                         <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item tab-logistic">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
-                                        <span class="nav-link-text">{% trans 'Logistics' %}</span>
-                                    </a>
-                                </li>
                                 <li class="nav-item tab-cost">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
                                         <span class="nav-link-text">{% trans 'Cost' %}</span>
@@ -197,6 +192,16 @@
                                         <span class="nav-link-text">{% trans 'Expense' %}</span>
                                     </a>
                                 </li>
+                                <li class="nav-item tab-payment">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">
+                                        <span class="nav-link-text">{% trans 'Payment' %}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item tab-logistic">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
+                                        <span class="nav-link-text">{% trans 'Logistics' %}</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -205,11 +210,11 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-1500p w-100 mb-5"
+                                            class="table nowrap min-w-2000p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr>
-                                            <th>#</th>
+                                            <th></th>
                                             <th>{% trans 'Product' %}</th>
                                             <th>{% trans 'Description' %}</th>
                                             <th>{% trans 'UoM' %}</th>
@@ -228,10 +233,10 @@
                                             <th colspan="5"></th>
                                             <th colspan="5">
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
                                                     </div>
-                                                    <div class="col-3"></div>
+                                                    <div class="col-2"></div>
                                                     <div class="col-4">
                                                         <span class="mask-money font-3 quotation-create-product-pretax-amount" data-init-money="0" data-zone="sale_order_products_data"></span>
                                                         <input type="text" class="form-control quotation-create-product-pretax-amount-raw" value="0" hidden>
@@ -239,10 +244,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Discount' %}:</p>
                                                     </div>
-                                                    <div class="col-3">
+                                                    <div class="col-2">
                                                         <div class="input-group">
                                                             <span class="input-affix-wrapper">
                                                                 <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="sale_order_products_data_readonly" disabled>
@@ -256,10 +261,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
                                                     </div>
-                                                    <div class="col-3"></div>
+                                                    <div class="col-2"></div>
                                                     <div class="col-4">
                                                         <span class="mask-money font-3 quotation-create-product-taxes" data-init-money="0" data-zone="sale_order_products_data"></span>
                                                         <input type="text" class="form-control quotation-create-product-taxes-raw" value="0" hidden>
@@ -267,10 +272,10 @@
                                                 </div>
                                                 <hr class="bg-teal">
                                                 <div class="row">
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
                                                     </div>
-                                                    <div class="col-3"></div>
+                                                    <div class="col-2"></div>
                                                     <div class="col-4">
                                                         <span class="mask-money font-3 quotation-create-product-total" data-init-money="0" data-zone="sale_order_products_data"></span>
                                                         <input type="text" class="form-control quotation-create-product-total-raw" value="0" hidden>
@@ -282,7 +287,130 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_logistic">
+                            <div class="tab-pane fade" id="tab_cost">
+                                <div class="row">
+                                    <table
+                                            id="datable-quotation-create-cost"
+                                            class="table nowrap w-100 mb-5"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th class="w-5"></th>
+                                            <th class="w-20">{% trans 'Product' %}</th>
+                                            <th class="w-10">{% trans 'UoM' %}</th>
+                                            <th class="w-15">{% trans 'Quantity' %}</th>
+                                            <th class="w-25">{% trans 'Cost Price' %}</th>
+                                            <th class="w-5">{% trans 'Tax' %}</th>
+                                            <th class="w-15">{% trans 'Subtotal Price' %}</th>
+                                            <th class="w-5"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th colspan="4"></th>
+                                            <th colspan="4">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                    <div class="col-5">
+                                                        <span class="mask-money font-3 quotation-create-cost-pretax-amount" data-init-money="0" data-zone="sale_order_costs_data"></span>
+                                                        <input type="text" class="form-control quotation-create-cost-pretax-amount-raw" value="0" hidden>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                    <div class="col-5">
+                                                        <span class="mask-money font-3 quotation-create-cost-taxes" data-init-money="0" data-zone="sale_order_costs_data"></span>
+                                                        <input type="text" class="form-control quotation-create-cost-taxes-raw" value="0" hidden>
+                                                    </div>
+                                                </div>
+                                                <hr class="bg-teal">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                    <div class="col-5">
+                                                        <span class="mask-money font-3 quotation-create-cost-total" data-init-money="0" data-zone="sale_order_costs_data"></span>
+                                                        <input type="text" class="form-control quotation-create-cost-total-raw" value="0" hidden>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_expense">
+                                <div class="row">
+                                    <table
+                                            id="datable-quotation-create-expense"
+                                            class="table nowrap min-w-1500p w-100 mb-5"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>{% trans 'Expense name' %}</th>
+                                            <th>{% trans 'Expense items' %}</th>
+                                            <th>{% trans 'UoM' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Expense Price' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Subtotal Price' %}</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th colspan="5"></th>
+                                            <th colspan="4">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                    <div class="col-5">
+                                                        <span class="mask-money font-3 quotation-create-expense-pretax-amount" data-init-money="0" data-zone="sale_order_expenses_data"></span>
+                                                        <input type="text" class="form-control quotation-create-expense-pretax-amount-raw" value="0" hidden>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                    <div class="col-5">
+                                                        <span class="mask-money font-3 quotation-create-expense-taxes" data-init-money="0" data-zone="sale_order_expenses_data"></span>
+                                                        <input type="text" class="form-control quotation-create-expense-taxes-raw" value="0" hidden>
+                                                    </div>
+                                                </div>
+                                                <hr class="bg-teal">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
+                                                    </div>
+                                                    <div class="col-1"></div>
+                                                    <div class="col-5">
+                                                        <span class="mask-money font-3 quotation-create-expense-total" data-init-money="0" data-zone="sale_order_expenses_data"></span>
+                                                        <input type="text" class="form-control quotation-create-expense-total-raw" value="0" hidden>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab_payment">
                                 <div class="row">
                                     <table
                                             id="datable-quotation-payment-stage"
@@ -290,21 +418,22 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-10">{% trans 'Stage' %}</th>
                                             <th class="w-20">{% trans 'Description' %}</th>
                                             <th class="w-15">{% trans 'Date' %}</th>
                                             <th class="w-15">{% trans 'Payment term date type' %}</th>
                                             <th class="w-10">% {% trans 'Payment' %}</th>
                                             <th class="w-15">{% trans 'Value before tax' %}</th>
-                                            <th class="w-10">{% trans 'Due date' %}</th>
-                                            <th class="w-5">{% trans 'AR invoice' %}</th>
+                                            <th class="w-15">{% trans 'Due date' %}</th>
+                                            <th class="w-5">{% trans '(AR)invoice' %}</th>
+                                            <th class="w-5"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         </tbody>
                                     </table>
                                 </div>
-                                <br>
+                            </div>
+                            <div class="tab-pane fade" id="tab_logistic">
                                 <div class="row logistics-body">
                                     <div class="form-group">
                                         <label class="form-label">{% trans 'Shipping Address' %}
@@ -378,129 +507,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_cost">
-                                <div class="row">
-                                    <table
-                                            id="datable-quotation-create-cost"
-                                            class="table nowrap w-100 mb-5"
-                                    >
-                                        <thead>
-                                        <tr>
-                                            <th class="w-5">#</th>
-                                            <th class="w-10">{% trans 'Product' %}</th>
-                                            <th class="w-10">{% trans 'UoM' %}</th>
-                                            <th class="w-15">{% trans 'Quantity' %}</th>
-                                            <th class="w-25">{% trans 'Cost Price' %}</th>
-                                            <th class="w-5">{% trans 'Tax' %}</th>
-                                            <th class="w-25">{% trans 'Subtotal Price' %}</th>
-                                            <th class="w-5"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                        <tfoot>
-                                        <tr>
-                                            <th colspan="4"></th>
-                                            <th colspan="4">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
-                                                    </div>
-                                                    <div class="col-1"></div>
-                                                    <div class="col-5">
-                                                        <span class="mask-money font-3 quotation-create-cost-pretax-amount" data-init-money="0" data-zone="sale_order_costs_data"></span>
-                                                        <input type="text" class="form-control quotation-create-cost-pretax-amount-raw" value="0" hidden>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
-                                                    </div>
-                                                    <div class="col-1"></div>
-                                                    <div class="col-5">
-                                                        <span class="mask-money font-3 quotation-create-cost-taxes" data-init-money="0" data-zone="sale_order_costs_data"></span>
-                                                        <input type="text" class="form-control quotation-create-cost-taxes-raw" value="0" hidden>
-                                                    </div>
-                                                </div>
-                                                <hr class="bg-teal">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
-                                                    </div>
-                                                    <div class="col-1"></div>
-                                                    <div class="col-5">
-                                                        <span class="mask-money font-3 quotation-create-cost-total" data-init-money="0" data-zone="sale_order_costs_data"></span>
-                                                        <input type="text" class="form-control quotation-create-cost-total-raw" value="0" hidden>
-                                                    </div>
-                                                </div>
-                                            </th>
-                                        </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="tab_expense">
-                                <div class="row">
-                                    <table
-                                            id="datable-quotation-create-expense"
-                                            class="table nowrap min-w-1500p w-100 mb-5"
-                                    >
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>{% trans 'Expense name' %}</th>
-                                            <th>{% trans 'Expense items' %}</th>
-                                            <th>{% trans 'UoM' %}</th>
-                                            <th>{% trans 'Quantity' %}</th>
-                                            <th>{% trans 'Expense Price' %}</th>
-                                            <th>{% trans 'Tax' %}</th>
-                                            <th>{% trans 'Subtotal Price' %}</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                        <tfoot>
-                                        <tr>
-                                            <th colspan="5"></th>
-                                            <th colspan="4">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</p>
-                                                    </div>
-                                                    <div class="col-1"></div>
-                                                    <div class="col-5">
-                                                        <span class="mask-money font-3 quotation-create-expense-pretax-amount" data-init-money="0" data-zone="sale_order_expenses_data"></span>
-                                                        <input type="text" class="form-control quotation-create-expense-pretax-amount-raw" value="0" hidden>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</p>
-                                                    </div>
-                                                    <div class="col-1"></div>
-                                                    <div class="col-5">
-                                                        <span class="mask-money font-3 quotation-create-expense-taxes" data-init-money="0" data-zone="sale_order_expenses_data"></span>
-                                                        <input type="text" class="form-control quotation-create-expense-taxes-raw" value="0" hidden>
-                                                    </div>
-                                                </div>
-                                                <hr class="bg-teal">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <p class="mb-3" style="text-align: right">{% trans 'Total' %}:</p>
-                                                    </div>
-                                                    <div class="col-1"></div>
-                                                    <div class="col-5">
-                                                        <span class="mask-money font-3 quotation-create-expense-total" data-init-money="0" data-zone="sale_order_expenses_data"></span>
-                                                        <input type="text" class="form-control quotation-create-expense-total-raw" value="0" hidden>
-                                                    </div>
-                                                </div>
-                                            </th>
-                                        </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -527,10 +533,10 @@
                     >
                         <thead>
                         <tr>
-                            <th class="w-10">#</th>
-                            <th class="w-30">{% trans 'Indicator name' %}</th>
-                            <th class="w-15">{% trans 'Quotation indicator value' %}</th>
-                            <th class="w-15">{% trans 'Sale order indicator value' %}</th>
+                            <th class="w-5"></th>
+                            <th class="w-25">{% trans 'Indicator name' %}</th>
+                            <th class="w-20">{% trans 'Quotation value' %}</th>
+                            <th class="w-20">{% trans 'Sale order value' %}</th>
                             <th class="w-15">{% trans 'Difference value' %}</th>
                             <th class="w-15">{% trans 'Indicator rate' %}</th>
                         </tr>
@@ -680,6 +686,8 @@
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>
+
+    <script src="{% static 'printer/print.js' %}"></script>
 
     <script>
         $(document).ready(function () {

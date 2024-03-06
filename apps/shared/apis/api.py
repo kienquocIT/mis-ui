@@ -629,9 +629,15 @@ class ServerAPI:
             'content-type': 'application/json',
             ...
         """
+
+        def get_language_client():
+            if self.request and self.request.headers:
+                return self.request.headers.get('Accept-Language', settings.LANGUAGE_CODE)
+            return 'vi'
+
         data = {
             'content-type': 'application/json',
-            'Accept-Language': 'vi',
+            'Accept-Language': get_language_client(),
             **self.setup_header_dropdown,
         }
         if self.user and getattr(self.user, 'access_token', None):

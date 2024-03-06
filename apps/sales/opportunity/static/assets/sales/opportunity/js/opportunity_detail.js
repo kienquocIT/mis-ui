@@ -77,8 +77,6 @@ $(document).ready(function () {
             }
             let paramString = {}
 
-            console.log(opportunity_detail_data)
-
             $('#estimated-gross-profit-percent').val(opportunity_detail_data?.['estimated_gross_profit_percent'])
             $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
 
@@ -1230,100 +1228,97 @@ $(document).ready(function () {
 
             // TIMELINE
 
-            function tabSubtask(taskID) {
-                if (!taskID) return false
+            function tabSubtask(subTaskList) {
+                if (!subTaskList) return false
                 const $wrap = $('.wrap-subtask')
-                const url = $('#url-factory').attr('data-task_list')
-                $.fn.callAjax(url, 'GET', {parent_n: taskID})
-                    .then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            for (let [key, item] of data.task_list.entries()) {
-                                const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
-                                    <p>${item.title}</p>
+                for (let [key, item] of subTaskList.entries()) {
+                    const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
+                                    <p class="sub-tit" title="${item.title}">${item.title}</p>
+                                    <p class="sub-employee" title="${item.employee_inherit}"><span class="chip chip-primary chip-pill"><span class="chip-text">${item.employee_inherit}</span></span></p>
                                     <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover" disabled>
                                         <span><i class="fa-regular fa-trash-can fa-sm"></i></span>
                                     </button>
                                  </div>`);
-                                $wrap.append(template);
-                            }
-                        }
-                    })
+                    $wrap.append(template);
+                }
             }
 
             function tabLogWork(dataList) {
                 let $table = $('#table_log-work')
-                if ($table.hasClass('datatable')) $table.DataTable().clear().draw();
-                $table.DataTable({
-                    searching: false,
-                    ordering: false,
-                    paginate: false,
-                    info: false,
-                    data: dataList,
-                    columns: [
-                        {
-                            data: 'employee_created',
-                            targets: 0,
-                            width: "35%",
-                            render: (data, type, row) => {
-                                let avatar = ''
-                                const full_name = data.last_name + ' ' + data.first_name
-                                if (data?.avatar)
-                                    avatar = `<img src="${data.avatar}" alt="user" class="avatar-img">`
-                                else avatar = $.fn.shortName(full_name, '', 5)
-                                const randomResource = randomColor[Math.floor(Math.random() * randomColor.length)];
-                                return `<div class="avatar avatar-rounded avatar-xs avatar-${randomResource}">
-                                        <span class="initial-wrap">${avatar}</span>
-                                    </div>
-                                    <span class="ml-2">${full_name}</span>`;
-                            }
-                        },
-                        {
-                            data: 'start_date',
-                            targets: 1,
-                            width: "35%",
-                            render: (data, type, row) => {
-                                let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
-                                if (data !== row.end_date) {
-                                    date += ' ~ '
-                                    date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                if ($table.hasClass('datatable'))
+                    $table.DataTable().clear().rows.add(dataList).draw();
+                else
+                    $table.DataTable({
+                        searching: false,
+                        ordering: false,
+                        paginate: false,
+                        info: false,
+                        data: dataList,
+                        columns: [
+                            {
+                                data: 'employee_created',
+                                targets: 0,
+                                width: "35%",
+                                render: (data, type, row) => {
+                                    let avatar = ''
+                                    let avClass = 'avatar-rounded avatar-xs avatar-' + $x.fn.randomColor()
+                                    avatar = $x.fn.renderAvatar(data, avClass)
+                                    return avatar;
                                 }
-                                return date;
+                            },
+                            {
+                                data: 'start_date',
+                                targets: 1,
+                                width: "35%",
+                                render: (data, type, row) => {
+                                    let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                                    if (data !== row.end_date) {
+                                        date += ' ~ '
+                                        date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                                    }
+                                    return date;
+                                }
+                            },
+                            {
+                                data: 'time_spent',
+                                targets: 2,
+                                width: "20%",
+                                render: (data, type, row) => {
+                                    return data;
+                                }
+                            },
+                            {
+                                data: 'id',
+                                targets: 3,
+                                width: "10%",
+                                render: (data, type, row) => {
+                                    return ''
+                                }
                             }
-                        },
-                        {
-                            data: 'time_spent',
-                            targets: 2,
-                            width: "20%",
-                            render: (data, type, row) => {
-                                return data;
-                            }
-                        },
-                        {
-                            data: 'id',
-                            targets: 3,
-                            width: "10%",
-                            render: (data, type, row) => {
-                                return ''
-                            }
-                        }
-                    ]
-                })
+                        ]
+                    })
             }
 
             function displayTaskView(url) {
                 if (url)
-                    $.fn.callAjax(url, 'GET')
+                    $.fn.callAjax2({
+                        url: url,
+                        method: 'GET'
+                    })
                         .then((resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
-                                // enable side panel
-                                if (!$('#drawer_task_create').hasClass('open')) {
-                                    $($('.current-create-task span')[0]).trigger('click')
-                                }
+                                // enable side panel\
+                                if (!$('#drawer_task_create').hasClass('open'))
+                                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                                resetFormTask()
+                                $('.title-create').addClass('hidden')
+                                $('.title-detail').removeClass('hidden')
                                 $('#inputTextTitle').val(data.title)
                                 $('#inputTextCode').val(data.code)
-                                $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status))
+                                $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status)).append(
+                                    `<option value="${data.task_status.id}" selected>${data.task_status.title}</option>`
+                                ).trigger('change')
                                 $('#inputTextStartDate').val(
                                     moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                                 )
@@ -1331,26 +1326,24 @@ $(document).ready(function () {
                                     moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                                 )
                                 $('#inputTextEstimate').val(data.estimate)
-                                if (data?.opportunity_data && Object.keys(data.opportunity_data).length)
-                                    $('#selectOpportunity').attr('data-onload', JSON.stringify({
-                                        "id": data.opportunity_data.id,
-                                        "title": data.opportunity_data.code
-                                    }))
                                 $('#selectPriority').val(data.priority).trigger('change')
-                                window.formLabel.renderLabel(data.label)
-                                $('#inputLabel').attr('value', JSON.stringify(data.label))
-                                $('#inputAssigner').val(data.employee_created.last_name + '. ' + data.employee_created.first_name)
+                                // render label
+                                let htmlElm = $('.label-mark')
+                                htmlElm.html('')
+                                for (let item of data.label)
+                                    htmlElm.append($(`<span class="item-tag"><span>${item}</span></span>`))
+                                $('#inputAssigner').val(data.employee_created.full_name)
                                     .attr('value', data.employee_created.id)
-                                if (data.assign_to.length)
-                                    $('#selectAssignTo').attr('data-onload', JSON.stringify(data.assign_to))
+                                if (data?.employee_inherit.hasOwnProperty("id"))
+                                    $('#employee_inherit_id').attr('data-onload', JSON.stringify(data.employee_inherit))
+                                        .append(`<option value="${data.employee_inherit.id}" selected>${
+                                            data.employee_inherit.full_name}</option>`).trigger("change")
                                 window.editor.setData(data.remark)
                                 window.checklist.setDataList = data.checklist
                                 window.checklist.render()
-                                initSelectBox($('#selectOpportunity, #selectAssignTo, #selectStatus'))
                                 $('.create-subtask, .create-checklist').addClass('hidden')
-                                if (data.task_log_work.length) tabLogWork(data.task_log_work)
-                                tabSubtask(data.id)
-
+                                if (data?.['task_log_work'].length) tabLogWork(data['task_log_work'])
+                                if (data?.['sub_task_list']) tabSubtask(data['sub_task_list'])
                                 if (data.attach) {
                                     const fileDetail = data.attach[0]?.['files']
                                     FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
@@ -1399,7 +1392,6 @@ $(document).ready(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('activity_logs_list')) {
-                                console.log(resp.data['activity_logs_list'])
                                 return resp.data['activity_logs_list'] ? resp.data['activity_logs_list'] : []
                             }
                             throw Error('Call data raise errors.')
@@ -1458,7 +1450,7 @@ $(document).ready(function () {
                                 }
                                 if (row?.['log_type'] === 1) {
                                     title = row?.['task']?.['subject'];
-                                    return `<a><p>${title}</p></a>`;
+                                    return `<a href="#" class="show-task-detail" data-task-id="${row?.['task']['id']}"><p>${title}</p></a>`;
                                 } else if (row?.['log_type'] === 2) {
                                     title = row?.['call_log']?.['subject'];
                                     return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-call-log" class="detail-call-log-button text-primary" data-id="${row?.['call_log']['id']}"><p>${title}</p></a>`;
@@ -1486,6 +1478,12 @@ $(document).ready(function () {
                             }
                         }
                     ],
+                    rowCallback: (row, data, index) => {
+                        $('.show-task-detail', row).on('click', function(){
+                            const taskObj = data?.["task"]
+                            displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
+                        })
+                    }
                 });
             }
 

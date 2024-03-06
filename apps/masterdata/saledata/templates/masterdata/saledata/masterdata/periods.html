@@ -51,7 +51,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'New periods' %}</h5>
+                    <h5 class="modal-title">{% trans 'New period' %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -89,11 +89,23 @@
                                     <input type="number" class="form-control" id="periods-fiscal-month-start" placeholder="01">
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-12 col-lg-12 col-md-12">
                                 <div class="form-group">
                                     <label for="periods-start-date" class="required form-label">{% trans 'Start date' %}</label>
                                     <input type="text" class="form-control" id="periods-start-date" readonly>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-12 col-md-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" id="software_using_time_check" type="checkbox">
+                                    <label class="form-check-label" for="software_using_time_check">{% trans 'Set time of starting using software in this period.' %}</label>
+                                </div>
+                                <select class="form-select" id="software_using_time_select" disabled></select>
+                                <span class="text-muted">{% trans 'Required' %} {% trans 'Fiscal year' %} & {% trans 'Start month' %}</span>
                             </div>
                         </div>
                     </form>
@@ -110,7 +122,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Update periods' %}</h5>
+                    <h5 class="modal-title">{% trans 'Update period' %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -148,11 +160,23 @@
                                     <input type="number" class="form-control" id="periods-fiscal-month-start-update" placeholder="01" readonly>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-12 col-lg-12 col-md-12">
                                 <div class="form-group">
                                     <label for="periods-start-date-update" class="required form-label">{% trans 'Start date' %}</label>
                                     <input type="text" class="form-control" id="periods-start-date-update" readonly>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-12 col-md-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" id="software_using_time_check_update" type="checkbox">
+                                    <label class="form-check-label" for="software_using_time_check_update">{% trans 'Set time of starting using software in this period.' %}</label>
+                                </div>
+                                <select class="form-select" id="software_using_time_select_update" disabled></select>
+                                <span class="text-muted">{% trans 'Required' %} {% trans 'Fiscal year' %} & {% trans 'Start month' %}</span>
                             </div>
                         </div>
                     </form>

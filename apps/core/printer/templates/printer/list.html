@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Print Template' %}{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'PrintTemplateCreateView' %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block cssHeader %}
+    <style>
+        button.btn-app-print-template .fa-angles-up:not(.d-none) + div.group-app-print-template {
+            display: block;
+        }
+
+        .btn-app-print-template .fa-angles-left:not(.d-none) + div.group-app-print-template {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block pageContent %}
+    {% for app_data in data.templates_apps_list %}
+        <div class="row">
+            <button
+                    id="{{ forloop.counter }}-{{ app_data.title|slugify }}"
+                    class="btn btn-square btn-gradient-info w-100 mb-3 btn-app-print-template"
+                    type="button"
+            >
+                {{ app_data.title }}
+                <i class="btn-collapse-group-print fa-solid fa-angles-left ml-1"></i>
+                <i class="btn-collapse-group-print fa-solid fa-angles-up ml-1 d-none"></i>
+            </button>
+            <div class="mb-3 group-app-print-template" style="display: none;" data-loaded="false">
+                <table
+                        class="table w-100 no-wrap table-template-print"
+                        data-url="{% url 'PrintTemplatesListAPI' %}?application_id={{ app_data.id }}"
+                        data-method="GET"
+                        data-url-detail="{% url 'PrintTemplateDetailView' pk='__pk__' %}"
+                        data-url-update="{% url 'PrintTemplateUpdateView' pk='__pk__' %}"
+                        data-url-delete="{% url 'PrintTemplateDetailAPI' pk='__pk__' %}"
+                >
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Title' %}</th>
+                        <th>{% trans 'Remarks' %}</th>
+                        <th>{% trans 'Is default' %}</th>
+                        <th>{% trans 'Using' %}</th>
+                        <th>{% trans 'Action' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        $(document).ready(function () {
+            function loadTableTemplate(tblEle) {
+                let frm = new SetupFormSubmit(tblEle);
+                tblEle.DataTableDefault({
+                    isLoading: true,
+                    sweetAlertOpts: {'allowOutsideClick': true},
+                    ajax: {
+                        url: frm.dataUrl,
+                        method: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('templates_list')) {
+                                return resp.data['templates_list'] ? resp.data['templates_list'] : [];
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
+                    rowIdx: true,
+                    autoWidth: false,
+                    callbackGetLinkBlank: function (rowData) {
+                        return rowData.id ? tblEle.attr('data-url-detail').replace('__pk__', rowData.id) : null;
+                    },
+                    columns: [
+                        {
+                            width: '10%',
+                            render: () => '',
+                        },
+                        {
+                            width: '25%',
+                            data: 'title',
+                            render: (data, type, row) => {
+                                return `<a href="${tblEle.attr('data-url-detail').replace('__pk__', row.id)}">${data}</a>`;
+                            }
+                        },
+                        {
+                            width: "25%",
+                            data: 'remarks',
+                            className: 'wrap-text',
+                            render: (data) => {
+                                const lengthCut = 100;
+                                if (data.length > lengthCut) return `
+                                    <span class="txt-minimal">${data.slice(0, lengthCut)}...</span>
+                                    <span class="txt-more" style="display: none;">${data}</span>
+                                    <button class="btn btn-xs btn-show-more">${$.fn.transEle.attr('data-msg-show-more')}</button>
+                                    <button class="btn btn-xs btn-show-less d-none">${$.fn.transEle.attr('data-msg-show-less')}</button>
+                                `;
+                                else return data;
+                            }
+                        },
+                        {
+                            width: '15%',
+                            data: 'is_default',
+                            render: (data, type, row) => {
+                                return `
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" disabled ${data === true ? 'checked' : ''}>
+                                    </div>
+                                `
+                            }
+                        },
+                        {
+                            width: '15%',
+                            data: 'is_active',
+                            render: (data, type, row) => {
+                                return `
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" disabled ${data === true ? 'checked' : ''}>
+                                    </div>
+                                `
+                            }
+                        },
+                        {
+                            width: "10%",
+                            'className': 'action-center',
+                            'render': (data, type, row, meta) => {
+                                let btnEdit = `
+                                    <a
+                                        class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="" data-bs-original-title="Edit"
+                                        href="${tblEle.attr('data-url-update').replaceAll('__pk__', row.id)}"
+                                    >
+                                        <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span>
+                                    </a>
+                                `;
+                                let btnDelete = `
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title=""
+                                        data-bs-original-title="Delete" href="#"
+                                        data-url="${tblEle.attr('data-url-delete').replaceAll('__pk__', row.id)}}"
+                                        data-method="DELETE"
+                                        data-url-redirect="${window.location.href}"
+                                    >
+                                        <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
+                                    </button>
+                                `;
+                                return btnEdit + btnDelete;
+                            }
+                        },
+                    ],
+                    rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
+                        if ($(row).find('.txt-minimal').length > 0){
+                            let btnMore = $(row).find('button.btn-show-more');
+                            let btnLess = $(row).find('button.btn-show-less');
+                            let txtMore = $(row).find('.txt-more');
+                            let txtMinimal = $(row).find('.txt-minimal');
+                            btnMore.off('click').on('click', function (){
+                                txtMinimal.fadeOut('fast');
+                                txtMore.fadeIn('fast');
+                                btnLess.removeClass('d-none');
+                                btnMore.addClass('d-none');
+                            });
+                            btnLess.off('click').on('click', function (){
+                                txtMore.fadeOut('fast');
+                                txtMinimal.fadeIn('fast');
+                                btnLess.addClass('d-none');
+                                btnMore.removeClass('d-none');
+                            })
+                        }
+
+                        $(row).find('button.del-button').off('click').on('click', function () {
+                            Swal.fire({
+                                title: $.fn.transEle.attr('data-sure-delete'),
+                                icon: 'question',
+                                html: `<p>${data.title}</p>`,
+                                confirmButtonText: $.fn.transEle.attr('data-msg-yes-delete-it'),
+                                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                                showCancelButton: true,
+                            }).then(
+                                (results) => {
+                                    if (results.isConfirmed) {
+                                        $.fn.callAjax2({
+                                            url: tblEle.attr('data-url-delete').replaceAll('__pk__', data.id),
+                                            method: 'DELETE'
+                                        }).then(
+                                            (resp) => {
+                                                let data = $.fn.switcherResp(resp);
+                                                if (data){
+                                                    $.fn.notifyB({
+                                                        'description': $.fn.transEle.attr('data-success')
+                                                    }, 'success');
+                                                    setTimeout(
+                                                        () => tblEle.DataTable().row($(row)).remove().draw(),
+                                                        200
+                                                    )
+                                                }
+                                            },
+                                            errs => $.fn.switcherResp(errs),
+                                        )
+                                    }
+                                }
+                            )
+                        })
+                    },
+                })
+            }
+
+            $('.btn-app-print-template').on('click', function () {
+                let idx = $(this).attr('id');
+                $x.fn.pushHashUrl(idx);
+
+                let groupEle = $(this).siblings('.group-app-print-template');
+                let tableEle = $(groupEle).find('table.table-template-print');
+
+                if (groupEle.length > 0 && tableEle.length > 0){
+                    // load table data
+                    if (groupEle.attr('data-loaded') !== "true") {
+                        groupEle.attr('data-loaded', "true");
+                        loadTableTemplate($(tableEle));
+                    }
+
+                    // show/hide group with rule arrow
+                    let arrowLeftEle = $(this).find('.btn-collapse-group-print.fa-angles-left');
+                    if (arrowLeftEle.hasClass('d-none')) $(this).siblings('.group-app-print-template').fadeOut('fast');
+                    let arrowUpEle = $(this).find('.btn-collapse-group-print.fa-angles-up');
+                    if (arrowUpEle.hasClass('d-none')) $(this).siblings('.group-app-print-template').fadeIn('fast', function (){
+                        $x.fn.scrollToIdx('#' + idx)
+                    });
+
+                    // toggle show/hide after handle group
+                    $(this).find('.btn-collapse-group-print').toggleClass('d-none');
+                }
+            });
+
+            setTimeout(
+                () => {
+                    $('.btn-app-print-template:first').trigger('click');
+                },
+                100
+            )
+        })
+    </script>
+{% endblock %}

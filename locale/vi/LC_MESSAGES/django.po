@@ -73,6 +73,19 @@ msgstr "Số điện thoại liên lạc"
 msgid "User Name"
 msgstr "Tên Đăng Nhập"
 
+#
+msgid "User name"
+msgstr "Tên đăng nhập"
+
+#
+msgid "password"
+msgstr "Mật khẩu"
+
+#
+msgid "Sign Up"
+msgstr "Đăng ký"
+
+
 #: .\apps\core\account\templates\core\account\user_create.html:115
 msgid "Username to login "
 msgstr "Tên tài khoản để đăng nhập"
@@ -138,8 +151,28 @@ msgid "Actions"
 msgstr "Thao tác"
 
 #
+msgid "No changes"
+msgstr "Không có thay đổi"
+
+#
+msgid "Time remaining __data__s"
+msgstr "Thời gian còn lại __data__ giây"
+
+#
+msgid "Enter One-time password - OTP"
+msgstr "Nhập mã dùng một lần - OTP"
+
+#
+msgid "Reissued Password"
+msgstr "Mật khẩu được cấp lại"
+
+#
 msgid "Change password of"
 msgstr "Đặt lại mật khẩu của"
+
+#
+msgid "Current password"
+msgstr "Mật khẩu hiện tại"
 
 #
 msgid "New password"
@@ -206,7 +239,7 @@ msgstr "Hiển thị/ẩn trình chỉnh sửa"
 
 #
 msgid "Sign in to your account"
-msgstr "Đăng nhập vào tài khoản của bạn"
+msgstr "Đăng nhập tài khoản của bạn"
 
 #: .\apps\core\auths\templates\auths\login.html:71
 msgid "Choose..."
@@ -223,6 +256,31 @@ msgstr "Ghi nhớ đăng nhập"
 #: .\apps\core\auths\templates\auths\login.html:135
 msgid "Login"
 msgstr "Đăng Nhập"
+
+#
+msgid "login"
+msgstr "Đăng nhập"
+
+#
+msgid "Get OTP"
+msgstr "Lấy OTP"
+
+#
+msgid "Resend OTP"
+msgstr "Gửi lại OTP"
+
+
+#
+msgid "Verify"
+msgstr "Xác minh"
+
+#
+msgid "Strength of password"
+msgstr "Độ mạnh của mật khẩu"
+
+#
+msgid "Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols."
+msgstr "Sử dụng mật khẩu mạnh có ít nhất 6 ký tự, bao gồm kết hợp chữ thường, chữ hoa, số và ký hiệu."
 
 #: .\apps\core\auths\templates\auths\login.html:139
 msgid "Creat new account to MIS"
@@ -347,6 +405,10 @@ msgstr "Phần số thập phân"
 #: .\apps\core\company\templates\core\company\company_list.html:283
 msgid "Precision"
 msgstr "Độ chính xác"
+
+#
+msgid "Is default"
+msgstr "Là mặc định"
 
 #
 msgid "Linked with employee"
@@ -1577,10 +1639,6 @@ msgid "Copy From PO"
 msgstr "Sao chép từ đơn mua hàng"
 
 #
-msgid "Posting date"
-msgstr "Ngày hạch toán"
-
-#
 msgid "Line Detail"
 msgstr "Chi tiết"
 
@@ -1683,7 +1741,7 @@ msgstr "Loại thuế"
 
 #
 msgid "Selling rate"
-msgstr "Tỉ lệ bán hàng"
+msgstr "Tỉ giá"
 
 #
 msgid "Category"
@@ -2158,11 +2216,6 @@ msgid "Beneficiary"
 msgstr "Người thụ hưởng"
 
 #
-msgid "Print"
-msgstr "In"
-
-
-#
 msgid "Remain Total"
 msgstr "Tổng còn lại"
 
@@ -2326,6 +2379,17 @@ msgstr "Nhập"
 msgid "Copy"
 msgstr "Sao chép"
 
+#
+msgid "Copied"
+msgstr "Đã sao chép"
+
+#
+msgid "Copy not support"
+msgstr "Sao chép không hỗ trợ"
+
+#
+msgid "Go to change password page"
+msgstr "Chuyển hướng đến trang thay đổi mật khẩu"
 
 #
 msgid "Add Expense"
@@ -2442,6 +2506,10 @@ msgstr "Chi tiết người dùng"
 #
 msgid "Edit user"
 msgstr "Chỉnh sửa người dùng"
+
+#
+msgid "Change password"
+msgstr "Thay đổi mật khẩu"
 
 #
 msgid "Company Overview"
@@ -3107,7 +3175,7 @@ msgstr "Có thể giao hàng từng phần"
 
 #
 msgid "General"
-msgstr "Chung"
+msgstr "Tổng quan"
 
 #
 msgid "Transition Data Config"
@@ -3419,7 +3487,7 @@ msgstr "Ghi chú"
 
 #
 msgid "Total order"
-msgstr "Tổng số lượng"
+msgstr "Tổng số"
 
 #
 msgid "Get Product"
@@ -3495,7 +3563,7 @@ msgstr "SL lấy trước đó"
 
 #
 msgid "Remain"
-msgstr "Chưa giao"
+msgstr "Còn lại"
 
 #
 msgid "Product in Warehouse out of stock"
@@ -3790,12 +3858,12 @@ msgid "Do you wish to continue?"
 msgstr "Bạn có muốn tiếp tục?"
 
 #
-msgid "Quotation indicator value"
-msgstr "Giá trị chỉ tiêu báo giá"
+msgid "Quotation value"
+msgstr "Giá trị báo giá"
 
 #
-msgid "Sale order indicator value"
-msgstr "Giá trị chỉ tiêu đơn hàng"
+msgid "Sale order value"
+msgstr "Giá trị đơn hàng"
 
 #
 msgid "Difference value"
@@ -4503,12 +4571,12 @@ msgid "Select items from purchase request"
 msgstr "Chọn sản phẩm từ yêu cầu mua hàng"
 
 #
-msgid "Quantity order must be less than quantity remain"
-msgstr "Số lượng đặt mua phải nhỏ hơn số lượng chưa mua"
+msgid "Exceeded quantity requested"
+msgstr "Vượt quá số lượng yêu cầu"
 
 #
-msgid "Quantity order actually must be greater than or equal quantity order on request"
-msgstr "Số lượng đặt mua thực tế phải lớn hơn hoặc bằng số lượng yêu cầu"
+msgid "Must not less than quantity ordered"
+msgstr "Không được ít hơn số lượng đặt hàng"
 
 #
 msgid "Remain (PO)"
@@ -4612,10 +4680,6 @@ msgstr "Phạm vi được phép sẽ không bao gồm người được đặt 
 #
 msgid "Allow the action to access data in both the general space and another space."
 msgstr "Cho phép hành động truy cập dữ liệu ở cả không gian chung và không gian khác."
-
-#
-msgid "This employee is not currently associated with the user."
-msgstr "Nhân viên này hiện không được liên kết với người dùng."
 
 #
 msgid "Yes, update it!"
@@ -4862,6 +4926,170 @@ msgid "Preview full"
 msgstr "Xem bản đầy đủ"
 
 #
+msgid "Help"
+msgstr "Trợ giúp"
+
+#
+msgid "Print"
+msgstr "In"
+
+#
+msgid "Print List"
+msgstr "Danh sách mẫu in"
+
+#
+msgid "Dynamic Data"
+msgstr "Dữ liệu động"
+
+#
+msgid "Type ‘#’ and your search data to open a dynamic data field selection menu. The Dynamic Data feature will be searchable by the names or codes of the data fields."
+msgstr "Nhập '#' và dữ liệu tìm kiếm của bạn để mở menu chọn trường dữ liệu động. Tính năng Dữ liệu động sẽ có thể tìm kiếm được theo tên hoặc mã của các trường dữ liệu."
+
+#
+msgid "Params display multiple value, so It must be using in table."
+msgstr "Thông số hiển thị nhiều giá trị nên nó phải được sử dụng trong bảng."
+
+#
+msgid "Params display normal value."
+msgstr "Thông số hiển thị dữ liệu chuẩn."
+
+#
+msgid "Mentions"
+msgstr "Đề cập"
+
+#
+msgid "Type ‘@‘ and your search data to open a list of people you want to mention. The Mention feature will search for people by their last name, first name or email address."
+msgstr "Nhập '@' và dữ liệu tìm kiếm của bạn để mở danh sách những người bạn muốn đề cập. Tính năng Đề cập sẽ tìm kiếm mọi người theo họ, tên hoặc địa chỉ email của họ."
+
+#
+msgid "Print Template is unavailable"
+msgstr "Mẫu in không có sẵn"
+
+#
+msgid "Toolbar"
+msgstr "Thanh công cụ"
+
+#
+msgid "Bold"
+msgstr "In đậm"
+
+#
+msgid "Italic"
+msgstr "In nghiên"
+
+#
+msgid "Underline"
+msgstr "Gạch chân"
+
+#
+msgid "Strikethrough"
+msgstr "Gạch ngang"
+
+#
+msgid "Font family"
+msgstr "Phông chữ"
+
+#
+msgid "Font size"
+msgstr "Cỡ chữ"
+
+#
+msgid "Font style"
+msgstr "Kiểu chữ"
+
+#
+msgid "Align Left"
+msgstr "Căn trái"
+
+#
+msgid "Align Center"
+msgstr "Căn giữa"
+
+#
+msgid "Align Right"
+msgstr "Căn phải"
+
+#
+msgid "Justify"
+msgstr "Căn đều"
+
+#
+msgid "Decrease Indent"
+msgstr "Giảm thụt lề"
+
+#
+msgid "Increase Indent"
+msgstr "Thụt lề"
+
+#
+msgid "Numbered list"
+msgstr "Danh sách đánh số"
+
+#
+msgid "Bullet list"
+msgstr "Danh sách"
+
+#
+msgid "Table"
+msgstr "Bảng"
+
+#
+msgid "Two Columns"
+msgstr "Hai cột"
+
+#
+msgid "Three Columns"
+msgstr "Ba cột"
+
+#
+msgid "Text color"
+msgstr "Màu chữ"
+
+#
+msgid "Clear formatting"
+msgstr "Xoá định dạng"
+
+#
+msgid "Line Horizontal"
+msgstr "Đường ngang"
+
+#
+msgid "Page Break"
+msgstr "Ngắt trang"
+
+#
+msgid "Special Characters"
+msgstr "Ký tự đặc biệt"
+
+#
+msgid "Emoji"
+msgstr "Biểu tượng cảm xúc"
+
+#
+msgid "Image"
+msgstr "Ảnh"
+
+#
+msgid "Media"
+msgstr "Video"
+
+#
+msgid "Link"
+msgstr "Liên kết"
+
+#
+msgid "Left to right"
+msgstr "Trái sang phải"
+
+#
+msgid "Right to left"
+msgstr "Phải sang trái"
+
+#
+msgid "Visual Blocks"
+msgstr "Hiển thị khối"
+
+#
 msgid "Print Preview"
 msgstr "Xem trước bản in"
 
@@ -4872,6 +5100,26 @@ msgstr "Trang __page__/__total_page__"
 #
 msgid "Displaying the PDF will take time depending on the size of the print template and the number of images to be printed."
 msgstr "Việc hiển thị tệp PDF sẽ mất thời gian tùy thuộc vào kích thước của mẫu in và số lượng hình ảnh cần in."
+
+#
+msgid "Please wait for the images to finish loading before proceeding with the print operation."
+msgstr "Vui lòng đợi hình ảnh tải xong trước khi tiếp tục thao tác in."
+
+#
+msgid "Templates"
+msgstr "Văn bản mẫu"
+
+#
+msgid "Mail Template"
+msgstr "Mẫu thư điện tử"
+
+#
+msgid "Print Template"
+msgstr "Mẫu in ấn"
+
+#
+msgid "Contents"
+msgstr "Nội dung"
 
 #
 msgid "Download"
@@ -4975,7 +5223,7 @@ msgstr "Nhân bản"
 
 #
 msgid "Final acceptance"
-msgstr "Nghiệm thu"
+msgstr "Quyết toán"
 
 #
 msgid "Group level"
@@ -5429,7 +5677,7 @@ msgstr "Kiểm kê định kỳ"
 
 #
 msgid "Default inventory value method"
-msgstr "Phương pháp tính giá tồn mặc định"
+msgstr "Phương pháp tính giá cost hàng tồn kho mặc định"
 
 #
 msgid "FIFO"
@@ -5684,7 +5932,7 @@ msgstr "Đã giao một phần"
 
 #
 msgid "Delivered"
-msgstr "Đã giao hàng"
+msgstr "Đã giao"
 
 #
 msgid "Partially received"
@@ -6099,7 +6347,7 @@ msgstr "Danh sách phiếu bàn giao"
 
 #
 msgid "Total day off is 0 please verify again"
-msgstr "Tồng ngày nghỉ là 0, vui lòng kiểm tra lại"
+msgstr "Tổng ngày nghỉ là 0, vui lòng kiểm tra lại"
 
 #
 msgid "Date To need large then Date From"
@@ -6164,10 +6412,6 @@ msgstr "Giá trị trước thuế"
 #
 msgid "Due date"
 msgstr "Ngày đến hạn"
-
-#
-msgid "AR invoice"
-msgstr "Hóa đơn AR"
 
 #
 msgid "Value after tax"
@@ -6240,3 +6484,379 @@ msgstr "Số thu hồi đang trống"
 #
 msgid "Return No. is greater than Using No."
 msgstr "Số thu hồi lớn hơn số đang sử dụng"
+
+#
+msgid "Total pipeline"
+msgstr "Tổng pipeline"
+
+#
+msgid "Dashboard setting"
+msgstr "Tuỳ chỉnh Dashboard"
+
+#
+msgid "Money display"
+msgstr "Hiển thị tiền theo:"
+
+#
+msgid "Money round"
+msgstr "Làm tròn tiền:"
+
+#
+msgid "Forecast"
+msgstr "Dự tính"
+
+#
+msgid "Customer activities"
+msgstr "Hoạt động khách hàng"
+
+#
+msgid "Sale person"
+msgstr "Người bán hàng"
+
+#
+msgid "Period"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Target item"
+msgstr "Mục tiêu"
+
+#
+msgid "Quarterly"
+msgstr "Hằng quý"
+
+#
+msgid "Period target equals total of sub period targets"
+msgstr "Mục tiêu cả kỳ bằng tổng mục tiêu các kỳ con của nó"
+
+#
+msgid "Periods"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Fiscal year"
+msgstr "Năm tài chính"
+
+#
+msgid "Start month"
+msgstr "Tháng bắt đầu"
+
+#
+msgid "Update period"
+msgstr "Cập nhập kỳ kế toán"
+
+#
+msgid "New period"
+msgstr "Thêm kỳ kế toán mới"
+
+#
+msgid "Select role(s) that has permission to create revenue plans"
+msgstr "Chọn (những) vai trò được tạo kế hoạch doanh thu"
+
+#
+msgid "You have not configured any role for Revenue plan. Go to Settings > Revenue plan config (admin)"
+msgstr "Bạn chưa có cấu hình (những) vai trò nào được tạo Kế hoạch doanh thu. Đi đến Settings > Cấu hình Kế hoạch doanh thu (cho admin)."
+
+#
+msgid "Revenue plan config"
+msgstr "Cấu hình Kế hoạch doanh thu"
+
+#
+msgid "Revenue plan"
+msgstr "Kế hoạch doanh thu"
+
+#
+msgid "Add group plan"
+msgstr "Thêm phòng ban cần giao chỉ tiêu"
+
+#
+msgid "Select group"
+msgstr "Chọn phòng ban"
+
+#
+msgid "Invoice number"
+msgstr "Số hoá đơn"
+
+#
+msgid "Tax value"
+msgstr "Thuế"
+
+#
+msgid "Tax number"
+msgstr "Mã số thuế"
+
+#
+msgid "Click the button to select"
+msgstr "Nhấn vào nút để lựa chọn"
+
+#
+msgid "Supplier code"
+msgstr "Mã nhà cung cấp"
+
+#
+msgid "for revenue chart & profit chart"
+msgstr "Cho Biểu đồ Doanh thu & Biểu đồ Lợi nhuận"
+
+#
+msgid "Grid"
+msgstr "Lưới"
+
+#
+msgid "View mode"
+msgstr "Chế độ xem"
+
+#
+msgid "Opening"
+msgstr "Đang mở"
+
+#
+msgid "Closed"
+msgstr "Đã đóng"
+
+#
+msgid "Online app meeting"
+msgstr "Ứng dụng họp trực tuyến"
+
+#
+msgid "Meeting content"
+msgstr "Nội dung cuộc họp"
+
+#
+msgid "Internal participants"
+msgstr "Người tham dự nội bộ"
+
+#
+msgid "External participants"
+msgstr "Người tham dự bên ngoài"
+
+#
+msgid "Start time"
+msgstr "Thời gian bắt đầu"
+
+#
+msgid "Duration"
+msgstr "Thời lượng"
+
+#
+msgid "hour(s)"
+msgstr "giờ"
+
+#
+msgid "min(s)"
+msgstr "phút"
+
+#
+msgid "Online meeting changes will be updated after saving this page"
+msgstr "Cuộc họp trực tuyến sẽ được thay đổi sau khi Lưu trang này"
+
+#
+msgid "Online meeting will be created after saving this page"
+msgstr "Cuộc họp trực tuyến sẽ được tạo sau khi Lưu trang này"
+
+#
+msgid "Online meeting"
+msgstr "Cuộc họp trực tuyến"
+
+#
+msgid "Offline meeting"
+msgstr "Cuộc họp trực tiếp"
+
+#
+msgid "Date occur"
+msgstr "Ngày diễn ra"
+
+#
+msgid "Meeting with customer ..."
+msgstr "Cuộc họp với khách hàng ..."
+
+#
+msgid "Meeting type"
+msgstr "Loại cuộc họp"
+
+#
+msgid "Create meeting schedule"
+msgstr "Tạo cuộc họp mới"
+
+#
+msgid "Select app"
+msgstr "Chọn ứng dụng"
+
+#
+msgid "Topic"
+msgstr "Chủ đề"
+
+#
+msgid "Time zone"
+msgstr "Múi giờ"
+
+#
+msgid "Recurring meeting"
+msgstr "Lặp lại cuộc họp"
+
+#
+msgid "Attendees"
+msgstr "Người tham dự"
+
+#
+msgid "Recurrence"
+msgstr "Lặp lại"
+
+#
+msgid "Repeat every"
+msgstr "Lặp lại mỗi"
+
+#
+msgid "day(s)"
+msgstr "ngày"
+
+#
+msgid "week(s)"
+msgstr "tuần"
+
+#
+msgid "month(s)"
+msgstr "tháng"
+
+#
+msgid "of the month"
+msgstr "của tháng"
+
+#
+msgid "First"
+msgstr "Đầu tiên"
+
+#
+msgid "Second"
+msgstr "Thứ hai"
+
+#
+msgid "Third"
+msgstr "Thứ ba"
+
+#
+msgid "Fourth"
+msgstr "Thứ tư"
+
+#
+msgid "Last"
+msgstr "Cuối cùng"
+
+#
+msgid "By"
+msgstr "Trước"
+
+#
+msgid "occurrences"
+msgstr "lần lặp"
+
+#
+msgid "Enable continuous meeting chat"
+msgstr "Cho phép tiếp tục cuộc hội thoại trong cộc họp"
+
+#
+msgid "Added attendees will have access to the Meeting Group Chat before and after the meeting"
+msgstr "Người tham dự được thêm vào sẽ có quyền truy cập vào Group Chat cuộc họp trước và sau khi cuộc họp dễn ra"
+
+#
+msgid "Security"
+msgstr "Bảo mật"
+
+#
+msgid "Only users who have the invite link OR passcode can join the meeting"
+msgstr "Chỉ những người có liên kết HOẶC passcode mới có thể tham dự cuộc họp"
+
+#
+msgid "Waiting room"
+msgstr "Phòng chờ"
+
+#
+msgid "Only users admitted by the host can join the meeting"
+msgstr "Chỉ những người dùng được người chủ trì cuộc họp chấp nhận mới có thể tham gia cuộc họp"
+
+#
+msgid "Save meeting config"
+msgstr "Lưu cấu hình cuộc họp"
+
+#
+msgid "Occurs on"
+msgstr "Lặp lại vào"
+
+#
+msgid "Select internal participants"
+msgstr "Chọn người tham dự nội bộ"
+
+#
+msgid "Select external participants"
+msgstr "Chọn người tham dự bên ngoài"
+
+#
+msgid "Copy invitation"
+msgstr "Sao chép lời mời"
+
+#
+msgid "Edit meeting"
+msgstr "Chỉnh sửa cuộc họp"
+
+#
+msgid "Delete meeting"
+msgstr "Huỷ bỏ cuộc họp"
+
+#
+msgid "Occurred"
+msgstr "Đã diễn ra"
+
+#
+msgid "Upcoming"
+msgstr "Sắp tới"
+
+#
+msgid "Redelivery"
+msgstr "Giao lại"
+
+#
+msgid "Select delivery"
+msgstr "Chọn phiếu giao hàng"
+
+#
+msgid "Select product"
+msgstr "Chọn sản phẩm"
+
+#
+msgid "Select serial No."
+msgstr "Chọn số serial"
+
+#
+msgid "Select LOT No."
+msgstr "Chọn số lô"
+
+#
+msgid "has returned"
+msgstr "Đã trả lại"
+
+#
+msgid "Inventory reports"
+msgstr "Báo cáo tồn kho"
+
+#
+msgid "Items Detail Report"
+msgstr "Báo cáo chi tiết mặt hàng"
+
+#
+msgid "Add group"
+msgstr "Thêm nhóm"
+
+#
+msgid "Select purchase quotation"
+msgstr "Chọn báo giá mua hàng"
+
+#
+msgid "Required"
+msgstr "Yêu cầu"
+
+#
+msgid "Transition data config"
+msgstr "Cấu hình dữ liệu giao dịch"
+
+#
+msgid "Invalid due date"
+msgstr "Ngày đến hạn không hợp lệ"

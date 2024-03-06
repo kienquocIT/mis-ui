@@ -72,6 +72,25 @@
                         </div>
                         <div class="col-12">
                             <div class="form-group">
+                                <label class="form-check-label">{% trans 'View mode' %}</label>
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <div class="form-check form-check-sm">
+                                            <input checked type="radio" id="grid-view" name="view-mode" class="form-check-input view-radio">
+                                            <label class="form-check-label" for="grid-view"><i class="bi bi-grid"></i>&nbsp;{% trans 'Grid' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-check form-check-sm">
+                                            <input type="radio" id="list-view" name="view-mode" class="form-check-input view-radio">
+                                            <label class="form-check-label" for="list-view"><i class="bi bi-list-stars"></i>&nbsp;{% trans 'List' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
                                 <label class="form-check-label">{% trans 'Period' %} ({% trans 'for revenue chart & profit chart' %})</label>
                                 <select class="form-select select2" id="period-filter"
                                         data-url="{% url 'PeriodsConfigListAPI' %}"
@@ -88,7 +107,7 @@
         </div>
     </div>
     <div class="row mb-6">
-        <div class="px-7 col-12 col-md-6 col-lg-6">
+        <div class="px-7 mt-3 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-purple"><i class="fas fa-chart-line"></i>&nbsp;{% trans 'Revenue' %}</span></label>
@@ -121,30 +140,30 @@
                 </div>
             </div>
         </div>
-        <div class="px-7 col-12 col-md-6 col-lg-6">
+        <div class="px-7 mt-3 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                        <label class="form-label"><span class="badge badge-pink"><i class="fas fa-chart-line"></i>&nbsp;{% trans 'Profit' %}</span></label>
-                        <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="{% trans 'Reload profit data' %}"
-                                id="reload-profit-data-btn"
-                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
-                        >
-                            <span class="icon"><i class="fas fa-sync"></i></span>
-                        </button>
+                        <div class="col-12 col-md-12 col-lg-6">
+                            <label class="form-label"><span class="badge badge-pink"><i class="fas fa-chart-line"></i>&nbsp;{% trans 'Profit' %}</span></label>
+                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    title="{% trans 'Reload profit data' %}"
+                                    id="reload-profit-data-btn"
+                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                            >
+                                <span class="icon"><i class="fas fa-sync"></i></span>
+                            </button>
                         </div>
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-6 col-md-6 col-lg-3">
                             <div class="form-check">
                                 <input class="form-check-input" name='profit-type' id="gross-profit" type="radio" checked>
-                                <label class="form-check-label" for="gross-profit">{% trans 'Gross profit' %}</label>
+                                <label class="form-check-label small" for="gross-profit">{% trans 'Gross profit' %}</label>
                             </div>
                         </div>
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-6 col-md-6 col-lg-3">
                             <div class="form-check">
                                 <input class="form-check-input" name='profit-type' id="net-income" type="radio">
-                                <label class="form-check-label" for="net-income">{% trans 'Net income' %}</label>
+                                <label class="form-check-label small" for="net-income">{% trans 'Net income' %}</label>
                             </div>
                         </div>
                     </div>
@@ -172,7 +191,7 @@
         </div>
     </div>
     <div class="row mb-6">
-        <div class="px-7 col-12 col-md-6 col-lg-6">
+        <div class="px-7 mt-3 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-green"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Top sellers' %}</span></label>
@@ -184,7 +203,7 @@
                         <span class="icon"><i class="fas fa-sync"></i></span>
                     </button>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-6">
                             <select class="form-select select2" id="top-sellers-time">
                                 <option value="0" selected>{% trans 'This month' %}</option>
                                 <option value="1">{% trans 'This quarter' %}</option>
@@ -192,23 +211,23 @@
                                 <option value="3">{% trans 'Optional' %}</option>
                             </select>
                         </div>
-                        <div class="col-3">
+                        <div class="col-6">
                             <div class="input-group">
                                 <span class="input-group-text">Top</span>
                                 <input class="form-control" type="number" id="top-sellers-number" min="1" max="20" value="5">
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-6 mt-1">
                             <select hidden disabled id="top-sellers-time-filter-select" class="form-select timechart-sellers">
                                 <option value="0" selected>{% trans "Whole year" %}</option>
                                 <option value="1">{% trans "Month" %}</option>
                                 <option value="2">{% trans "Quarter" %}</option>
                             </select>
                         </div>
-                        <div class="col-2" hidden>
+                        <div class="col-3 mt-1" hidden>
                             <input type="number" disabled id="top-sellers-time-filter-mm-qq" class="form-control timechart-sellers">
                         </div>
-                        <div class="col-2">
+                        <div class="col-3 mt-1">
                             <input hidden type="number" disabled id="top-sellers-time-filter-year" class="form-control timechart-sellers">
                         </div>
                     </div>
@@ -220,7 +239,7 @@
                 </div>
             </div>
         </div>
-        <div class="px-7 col-12 col-md-6 col-lg-6">
+        <div class="px-7 mt-3 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-orange"><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Top customers' %}</span></label>
@@ -232,7 +251,7 @@
                         <span class="icon"><i class="fas fa-sync"></i></span>
                     </button>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-6">
                             <select class="form-select select2" id="top-customers-time">
                                 <option value="0" selected>{% trans 'This month' %}</option>
                                 <option value="1">{% trans 'This quarter' %}</option>
@@ -240,23 +259,23 @@
                                 <option value="3">{% trans 'Optional' %}</option>
                             </select>
                         </div>
-                        <div class="col-3">
+                        <div class="col-6">
                             <div class="input-group">
                                 <span class="input-group-text">Top</span>
                                 <input class="form-control" type="number" id="top-customers-number" min="1" max="20" value="5">
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-6 mt-1">
                             <select hidden disabled id="top-customers-time-filter-select" class="form-select timechart-customers">
                                 <option value="0" selected>{% trans "Whole year" %}</option>
                                 <option value="1">{% trans "Month" %}</option>
                                 <option value="2">{% trans "Quarter" %}</option>
                             </select>
                         </div>
-                        <div class="col-2" hidden>
+                        <div class="col-3 mt-1" hidden>
                             <input type="number" disabled id="top-customers-time-filter-mm-qq" class="form-control timechart-customers">
                         </div>
-                        <div class="col-2">
+                        <div class="col-3 mt-1">
                             <input hidden type="number" disabled id="top-customers-time-filter-year" class="form-control timechart-customers">
                         </div>
                     </div>
@@ -270,7 +289,7 @@
         </div>
     </div>
     <div class="row mb-6">
-        <div class="px-7 col-12 col-md-6 col-lg-6">
+        <div class="px-7 mt-3 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-red"><i class="bi bi-bar-chart-line-fill"></i>&nbsp;{% trans 'Top categories' %}</span></label>
@@ -282,7 +301,7 @@
                         <span class="icon"><i class="fas fa-sync"></i></span>
                     </button>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-6">
                             <select class="form-select select2" id="top-categories-time">
                                 <option value="0" selected>{% trans 'This month' %}</option>
                                 <option value="1">{% trans 'This quarter' %}</option>
@@ -290,23 +309,23 @@
                                 <option value="3">{% trans 'Optional' %}</option>
                             </select>
                         </div>
-                        <div class="col-3">
+                        <div class="col-6">
                             <div class="input-group">
                                 <span class="input-group-text">Top</span>
                                 <input class="form-control" type="number" id="top-categories-number" min="1" max="20" value="5">
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-6 mt-1">
                             <select hidden disabled id="top-categories-time-filter-select" class="form-select timechart-categories">
                                 <option value="0" selected>{% trans "Whole year" %}</option>
                                 <option value="1">{% trans "Month" %}</option>
                                 <option value="2">{% trans "Quarter" %}</option>
                             </select>
                         </div>
-                        <div class="col-2" hidden>
+                        <div class="col-3 mt-1" hidden>
                             <input type="number" disabled id="top-categories-time-filter-mm-qq" class="form-control timechart-categories">
                         </div>
-                        <div class="col-2">
+                        <div class="col-3 mt-1">
                             <input hidden type="number" disabled id="top-categories-time-filter-year" class="form-control timechart-categories">
                         </div>
                     </div>
@@ -318,7 +337,7 @@
                 </div>
             </div>
         </div>
-        <div class="px-7 col-12 col-md-6 col-lg-6">
+        <div class="px-7 mt-3 col-12 col-md-6 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <label class="form-label"><span class="badge badge-primary"><i class="bi bi-bar-chart-line-fill"></i>&nbsp;{% trans 'Top products' %}</span></label>
@@ -330,7 +349,7 @@
                         <span class="icon"><i class="fas fa-sync"></i></span>
                     </button>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-6">
                             <select class="form-select select2" id="top-products-time">
                                 <option value="0" selected>{% trans 'This month' %}</option>
                                 <option value="1">{% trans 'This quarter' %}</option>
@@ -338,23 +357,23 @@
                                 <option value="3">{% trans 'Optional' %}</option>
                             </select>
                         </div>
-                        <div class="col-3">
+                        <div class="col-6">
                             <div class="input-group">
                                 <span class="input-group-text">Top</span>
                                 <input class="form-control" type="number" id="top-products-number" min="1" max="20" value="5">
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-6 mt-1">
                             <select hidden disabled id="top-products-time-filter-select" class="form-select timechart-products">
                                 <option value="0" selected>{% trans "Whole year" %}</option>
                                 <option value="1">{% trans "Month" %}</option>
                                 <option value="2">{% trans "Quarter" %}</option>
                             </select>
                         </div>
-                        <div class="col-2" hidden>
+                        <div class="col-3 mt-1" hidden>
                             <input type="number" disabled id="top-products-time-filter-mm-qq" class="form-control timechart-products">
                         </div>
-                        <div class="col-2">
+                        <div class="col-3 mt-1">
                             <input hidden type="number" disabled id="top-products-time-filter-year" class="form-control timechart-products">
                         </div>
                     </div>

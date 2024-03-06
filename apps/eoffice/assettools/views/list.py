@@ -29,10 +29,15 @@ class AssetToolsList(View):
 
 
 class AssetToolsListAPI(APIView):
+    @classmethod
+    def user_asset_tools_handle(cls, result):
+        after = list(filter(lambda x: x['done'] > 0, result))
+        return {'asset_tools_list': after}
+
     @mask_view(
         login_require=True,
         is_api=True
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_LIST).get(request.query_params.dict())
-        return resp.auto_return(key_success='asset_tools_list')
+        return resp.auto_return(callback_success=self.user_asset_tools_handle)

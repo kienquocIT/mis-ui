@@ -101,7 +101,8 @@ class MenusCompanySystem:
 
 class MenusCoreConfigurations:
     MASTER_DATA_CONFIG = MenuCommon(
-        name='Master data config', code='menu_masterdata', view_name='#', icon='<i class="bi bi-mastodon"></i>',
+        name='Master data config', code='menu_masterdata', view_name='#',
+        icon='<i class="fas fa-crown"></i>',
         child=[
             MenuCommon(
                 name='Contact', code='id_menu_master_data_contact', view_name='ContactMasterDataList',
@@ -126,9 +127,13 @@ class MenusCoreConfigurations:
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
-        name='Transition Data Config', code='menu_transition_data_config', view_name='#',
-        icon='<i class="fas fa-file-invoice-dollar"></i>',
+        name='Transition data config', code='menu_transition_data_config', view_name='#',
+        icon='<i class="fas fa-exchange-alt"></i>',
         child=[
+            MenuCommon(
+                name='Balance initialization', code='menu_balance_init', view_name='BalanceInitList',
+                icon='<i class="fas fa-balance-scale"></i>',
+            ),
             MenuCommon(
                 name='Delivery', code='menu_delivery_config', view_name='DeliveryConfigDetail',
                 icon='<i class="fas fa-truck"></i>',
@@ -180,6 +185,24 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Revenue plan config', code='id_menu_master_data_revenue_plan_config', view_name='RevenuePlanConfigList',
                 icon='<i class="fas fa-hand-holding-usd"></i>',
+            ),
+        ]
+    )
+    TEMPLATES_DATA_CONFIG = MenuCommon(
+        name='Templates', code='menu_templates', view_name='#',
+        icon='<i class="fa-solid fa-swatchbook"></i>',
+        child=[
+            MenuCommon(
+                name='Print Template', code='menu_print_template', view_name='PrintTemplatesListView',
+                icon='<i class="fa-solid fa-print"></i>'
+            ),
+            MenuCommon(
+                name='Mail Template', code='menu_mail_template', view_name='MailTemplatesListView',
+                icon='<i class="fa-regular fa-envelope"></i>'
+            ),
+            MenuCommon(
+                name='Import Data', code='menu_import_data', view_name='FImportListView',
+                icon='<i class="fa-solid fa-file-import"></i>'
             ),
         ]
     )
@@ -458,6 +481,24 @@ class MenuEOffice:
     )
 
 
+class MenuDMS:
+    WORK_SPACE = MenuCommon(
+        name='Work space', code='menu_DMS_work_space', view_name='', icon='<i class="fas fa-vector-square"></i>',
+        child=[
+            MenuCommon(
+                name='File',
+                code='menu_report_pipeline_list',
+                view_name='ReportPipelineList',
+                icon='<i class="far fa-file"></i>',
+            )
+        ],
+    )
+    MY_SPACE = MenuCommon(
+        name='My space', code='menu_DMS_my_space', view_name='', icon='<i class="fas fa-user-astronaut"></i>',
+        child=[],
+    )
+
+
 class MenusReport:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
@@ -478,6 +519,12 @@ class MenusReport:
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
             MenuCommon(
+                name='General revenue report',
+                code='menu_report_general_list',
+                view_name='ReportGeneralList',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
+            ),
+            MenuCommon(
                 name='Product report',
                 code='menu_report_product_list',
                 view_name='ReportProductList',
@@ -493,18 +540,24 @@ class MenusReport:
                 name='Cashflow report',
                 code='menu_report_cashflow_list',
                 view_name='ReportCashflowList',
-                icon='<i class="fas fa-comment-dollar"></i>',
+                icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
         ],
     )
     INVENTORY_REPORT = MenuCommon(
-        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-chart-bar"></i>',
+        name='Inventory reports', code='menu_inventory_reports', view_name='', icon='<i class="fas fa-stream"></i>',
         child=[
             MenuCommon(
-                name='Items detail report',
+                name='Inventory Report',
+                code='menu_inventory_report',
+                view_name='ReportInventoryList',
+                icon='<i class="fas fa-cubes"></i>',
+            ),
+            MenuCommon(
+                name='Items Detail Report',
                 code='menu_items_detail_report',
-                view_name='ItemsDetailReportList',
-                icon='<i class="far fa-file"></i>',
+                view_name='ReportInventoryDetailList',
+                icon='<i class="fas fa-cube"></i>',
             ),
         ],
     )
@@ -604,6 +657,15 @@ class SpaceItem:
                 MenuEOffice.MEETING,
             ],
         ),
+        'dms': SpaceCommon(
+            'DMS',
+            'dms',
+            icon='<i class="far fa-folder-open"></i>',
+            menus=[
+                MenuDMS.WORK_SPACE,
+                MenuDMS.MY_SPACE,
+            ],
+        ),
         'report': SpaceCommon(
             'Report',
             'report',
@@ -635,6 +697,7 @@ class SpaceItem:
             menus=[
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
+                MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
             ],
         )
     }
@@ -659,6 +722,7 @@ class SpaceGroup:
             SpaceItem.mapping['purchase'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['e-office'],
+            SpaceItem.mapping['dms'],
             SpaceItem.mapping['report'],
         ]
     )
@@ -670,11 +734,11 @@ class SpaceGroup:
     )
 
     @classmethod
-    def get_space_all(cls):
-        return [
-            cls.SPACE.data,
-            cls.CORE_SETTINGS.data,
-        ]
+    def get_space_all(cls, is_hide_core: bool = True):
+        result = [cls.SPACE.data]
+        if is_hide_core is False:
+            result.append(cls.CORE_SETTINGS.data)
+        return result
 
 
 # 1. GET space group all

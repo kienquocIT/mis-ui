@@ -476,9 +476,16 @@ function loadWareHouseListDetail(product_warehouse_detail) {
             },
             {
                 data: '',
-                className: 'wrap-text text-center w-15',
+                className: 'wrap-text text-center w-25',
                 render: (data, type, row) => {
                     return `<span>${row?.['stock_amount']}</span>`;
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text text-center w-35',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="${row?.['cost']}"></span>`;
                 }
             },
         ],

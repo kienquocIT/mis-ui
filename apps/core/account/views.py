@@ -48,7 +48,8 @@ class UserEdit(View):
     @mask_view(
         auth_require=True,
         template='core/account/user_edit.html',
-        breadcrumb='USER_EDIT_PAGE'
+        breadcrumb='USER_EDIT_PAGE',
+        jsi18n='account',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

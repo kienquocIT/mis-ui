@@ -377,6 +377,7 @@ $(async function () {
                             pickupInit.pickedQuantityUtil(value, index);
                             $(this).removeClass('is-invalid cl-red')
                         } else {
+                            this.value = 0;
                             $.fn.notifyB(
                                 {description: $('#trans-factory').attr('data-outstock')},
                                 'failure'

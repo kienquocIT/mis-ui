@@ -127,38 +127,14 @@ $(function () {
             let totalValue = 0;
             let totalForecastValue = 0;
             let totalGrossProfit = 0;
-            let totalWinRate = 0;
             let totalCall = 0;
             let totalEmail = 0;
             let totalMeeting = 0;
             let totalDocument = 0;
             for (let data of dataList) {
-                if (data?.['opportunity']?.['value']) {
-                    totalValue += data?.['opportunity']?.['value'];
-                }
-                if (data?.['opportunity']?.['forecast_value']) {
-                    totalForecastValue += data?.['opportunity']?.['forecast_value'];
-                }
-                if (data?.['opportunity']?.['gross_profit']) {
-                    totalGrossProfit += data?.['opportunity']?.['gross_profit'];
-                }
-                if (data?.['opportunity']?.['win_rate']) {
-                    totalWinRate += data?.['opportunity']?.['win_rate'];
-                }
-                if (data?.['opportunity']?.['call']) {
-                    totalCall += data?.['opportunity']?.['call'];
-                }
-                if (data?.['opportunity']?.['email']) {
-                    totalEmail += data?.['opportunity']?.['email'];
-                }
-                if (data?.['opportunity']?.['meeting']) {
-                    totalMeeting += data?.['opportunity']?.['meeting'];
-                }
-                if (data?.['opportunity']?.['document']) {
-                    totalDocument += data?.['opportunity']?.['document'];
-                }
+                totalValue += data?.['revenue'];
                 // group setup
-                if (data?.['group']?.['id']) {
+                if (data?.['group_inherit']?.['id']) {
                     // data group
                     if (!dataGroup.hasOwnProperty(data?.['group']?.['id'])) {
                         dataGroup[data?.['group']?.['id']] = data?.['group'];

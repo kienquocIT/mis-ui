@@ -250,5 +250,5 @@ class ReportGeneralListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_PIPELINE_LIST).get(data)
-        return resp.auto_return(key_success='report_pipeline_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_GENERAL_LIST).get(data)
+        return resp.auto_return(key_success='report_general_list')

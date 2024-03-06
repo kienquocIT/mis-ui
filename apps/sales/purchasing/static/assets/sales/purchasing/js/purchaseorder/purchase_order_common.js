@@ -718,6 +718,17 @@ class POLoadDataHandle {
     static loadCheckProductsByCheckedQuotation(ele) {
         let tablePRProduct = $('#datable-purchase-request-product');
         let checked_id = ele.getAttribute('data-id');
+        // reset status
+        for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked, .table-row-checkbox.disabled-by-pq')) {
+            let row = eleChecked.closest('tr');
+            eleChecked.classList.remove('disabled-by-pq');
+            eleChecked.removeAttribute('disabled');
+            row.querySelector('.table-row-quantity-order').removeAttribute('disabled');
+            $(row).css('background-color', '');
+            row.removeAttribute('data-bs-toggle');
+            row.removeAttribute('data-bs-placement');
+            row.removeAttribute('title');
+        }
         if (ele.checked === true) {
             let eleDataPQProducts = $('#data-purchase-quotation-products');
             if (eleDataPQProducts.val()) {
@@ -726,6 +737,7 @@ class POLoadDataHandle {
                 for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
                     let row = eleChecked.closest('tr');
                     let productID = row.querySelector('.table-row-item').id;
+                    // update status
                     if (!dataPQMapProducts.includes(productID)) {
                         eleChecked.classList.add('disabled-by-pq');
                         eleChecked.setAttribute('disabled', 'true');
@@ -737,20 +749,8 @@ class POLoadDataHandle {
                     }
                 }
             }
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
-        } else {
-            for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked, .table-row-checkbox.disabled-by-pq')) {
-                let row = eleChecked.closest('tr');
-                eleChecked.classList.remove('disabled-by-pq');
-                eleChecked.removeAttribute('disabled');
-                row.querySelector('.table-row-quantity-order').removeAttribute('disabled');
-                $(row).css('background-color', '');
-                row.removeAttribute('data-bs-toggle');
-                row.removeAttribute('data-bs-placement');
-                row.removeAttribute('title');
-            }
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         }
+        POLoadDataHandle.loadPriceListByPurchaseQuotation();
         POLoadDataHandle.loadTableProductByPurchaseRequest();
     };
 

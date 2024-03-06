@@ -1111,43 +1111,53 @@ $(function () {
             GanttViewTask.taskList = reNewList
         }
 
-        static loadTaskInfo(data){
+        static loadTaskInfo(dataID){
             const $form = $('#formOpportunityTask'), $oppElm = $('#opportunity_id');
-            $('#inputTextTitle', $form).val(data.title)
-            $('#inputTextCode', $form).val(data.code)
-            listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
-            const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
-            $formElm.append(taskIDElm).addClass('task_edit')
-            $('#inputTextStartDate', $form).val(
-                moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-            )
-            $('#inputTextEndDate', $form).val(
-                moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-            )
-            $('#inputTextEstimate', $form).val(data.estimate)
+            if (!$('.hk-wrapper').hasClass('open'))
+                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+            $.fn.callAjax2({
+                url: $('#url-factory').attr('data-task-detail').format_url_with_uuid(dataID),
+                method: "get"
+            })
+                .then((resp) => {
+                    let data = resp.result
+                    $('.title-create').removeClass("hidden")
+                    $('.title-detail').addClass("hidden")
+                    $('#inputTextTitle', $form).val(data.title)
+                    $('#inputTextCode', $form).val(data.code)
+                    listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
+                    $form.find('input[name="id"]').remove()
+                    const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
+                    $formElm.append(taskIDElm).addClass('task_edit')
+                    $('#inputTextStartDate', $form).val(
+                        moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                    )
+                    $('#inputTextEndDate', $form).val(
+                        moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                    )
+                    $('#inputTextEstimate', $form).val(data.estimate)
 
-            $('#selectPriority', $form).val(data.priority).trigger('change')
+                    $('#selectPriority', $form).val(data.priority).trigger('change')
+                    $('#inputAssigner', $form).val(data.full_name)
+                        .attr('data-value-id', data.employee_created.id)
+                        .attr('value', data.employee_created.id)
+                    if (data?.['opportunity'])
+                        listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity'])
+                    listViewTask.selfInitSelect2($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
+                    if (data.label) window.formLabel.renderLabel(data.label)
+                    if (data.remark) window.editor.setData(data.remark)
+                    if (data.checklist){
+                        window.checklist.setDataList = data.checklist
+                        window.checklist.render()
+                    }
 
-            $('#inputAssigner', $form).val(data.full_name)
-                .attr('data-value-id', data.employee_created.id)
-                .attr('value', data.employee_created.id)
-            if (data?.['opportunity']){
-                listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity'])
-            }
-            listViewTask.selfInitSelect2($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
-            if (data.label) window.formLabel.renderLabel(data.label)
-            if (data.remark) window.editor.setData(data.remark)
-            if (data.checklist){
-                window.checklist.setDataList = data.checklist
-                window.checklist.render()
-            }
-
-            if (data.attach) {
-                const fileDetail = data.attach[0]?.['files']
-                FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
-            }
-            initCommon.initTableLogWork(data?.['task_log_work'])
-            initCommon.renderSubtask(data.id, GanttViewTask.taskList)
+                    if (data.attach) {
+                        const fileDetail = data.attach[0]?.['files']
+                        FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                    }
+                    initCommon.initTableLogWork(data?.['task_log_work'])
+                    initCommon.renderSubtask(data.id, GanttViewTask.taskList)
+                });
         }
 
         static onClickParent(e, ID) {
@@ -1203,8 +1213,8 @@ $(function () {
         static initGantt() {
             if (!$('.gantt').length)
                 $('.gantt_table').append('<div class="gantt"></div>')
-            $('.tab-gantt[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-                $('#btn_today').click($.fn.scroll_to_today)
+            $('.tab-gantt[data-bs-toggle="tab"]').on('show.bs.tab', function (e) {
+                $('#gantt_reload').data('data', GanttViewTask.taskList).trigger('click')
             });
         }
     }

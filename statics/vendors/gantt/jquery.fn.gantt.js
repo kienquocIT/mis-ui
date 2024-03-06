@@ -386,8 +386,8 @@
                                     }
                                     span.click(function (e) {
                                         if (e.target.classList.contains('icon-collapse'))
-                                        settings.onClickParent(e, entry.values[0].dataObj.id)
-                                        else settings.loadTaskInfo(entry.values[0].dataObj)
+                                            settings.onClickParent(e, entry.values[0].dataObj.id)
+                                        else settings.loadTaskInfo(entry.values[0].dataObj.id)
                                     })
                                     if (entry.show_expand && entry.name && x.value === 'title'){
                                         span.addClass(`has_child ${entry.is_expand ? 'is_expanded' : 'is_expand'}`)

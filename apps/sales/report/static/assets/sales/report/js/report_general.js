@@ -83,7 +83,7 @@ $(function () {
                         targets: 8,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<p>${parseFloat(row?.['gross_profit_ratio'])}</p>`;
+                            return `<p>${parseFloat(row?.['gross_profit_ratio'])} %</p>`;
                         }
                     },
                 ],
@@ -204,8 +204,8 @@ $(function () {
                             let revenuePlan = 0;
                             let profitPlan = 0;
                             if (detail.includes('p')) {  // period
-                                revenuePlan = dataEmployeePlan?.[year]?.['revenue_year'];
-                                profitPlan = dataEmployeePlan?.[year]?.['profit_year'];
+                                revenuePlan = dataEmployeePlan?.[employeeKey]?.[year]?.['revenue_year'];
+                                profitPlan = dataEmployeePlan?.[employeeKey]?.[year]?.['profit_year'];
                             }
                             if (detail.includes('q')) {  // quarter
 
@@ -218,10 +218,10 @@ $(function () {
                             resultEmployee['revenue_ratio'] = 0;
                             resultEmployee['gross_profit_ratio'] = 0;
                             if (resultEmployee?.['revenue_plan'] !== 0) {
-                                resultEmployee['revenue_ratio'] = resultEmployee['revenue'] / resultEmployee['revenue_plan'] * 100;
+                                resultEmployee['revenue_ratio'] = (resultEmployee['revenue'] / resultEmployee['revenue_plan'] * 100).toFixed(1);
                             }
                             if (resultEmployee?.['gross_profit_plan'] !== 0) {
-                                resultEmployee['gross_profit_ratio'] = resultEmployee['gross_profit'] / resultEmployee['gross_profit_plan'] * 100;
+                                resultEmployee['gross_profit_ratio'] = (resultEmployee['gross_profit'] / resultEmployee['gross_profit_plan'] * 100).toFixed(1);
                             }
                             result.push(resultEmployee);
                         }

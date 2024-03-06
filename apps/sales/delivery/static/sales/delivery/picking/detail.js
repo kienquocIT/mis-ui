@@ -77,6 +77,26 @@ class pickupUtil {
                     currentList[idx]['picked_quantity'] = 0
                 // update cell của table mà ko cần draw lại toàn bộ table
                 $table.DataTable().cell(idx, 6).data(currentList[idx]['picked_quantity']).draw(true)
+                // check if not enough stock then update picked_quantity = 0
+                let rowElement = $table.DataTable().row(idx).nodes();
+                if (rowElement) {
+                    let elePick = rowElement[0].querySelector('.table-row-quantity-pick');
+                    let elePWStock = rowElement[0].querySelector('.product-warehouse-stock');
+                    if (elePick && elePWStock) {
+                        if (elePWStock.innerHTML) {
+                            if (parseFloat(elePWStock.innerHTML) < currentList[idx]['picked_quantity']) {
+                                elePick.value = 0;
+                                currentList[idx]['picked_quantity'] = 0;
+                                $.fn.notifyB(
+                                    {description: $('#trans-factory').attr('data-outstock')},
+                                    'failure'
+                                );
+                                $(elePick).addClass('is-invalid cl-red')
+                            }
+                        }
+                    }
+                }
+
             }
             _this.setProdList = currentList
         })
@@ -260,7 +280,7 @@ $(async function () {
                     for (let productWH of data?.['warehouse_products_list']) {
                         htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${productWH?.['warehouse']?.['title']}</p></div>`;
                         htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
-                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${productWH?.['stock_amount']}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-stock')}</h6><p class="product-warehouse-stock">${productWH?.['stock_amount']}</p></div>` +
                             `<div><h6>${$elmTrans.attr('data-store')}</h6>${productWH?.['stock_amount'] - productWH?.['picked_ready']}</div>` +
                             `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${productWH?.['picked_ready']}</div>` +
                             `</div>`;
@@ -278,7 +298,7 @@ $(async function () {
                 } else {
                     htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${warehouseTitle}</p></div>`;
                         htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
-                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${0}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-stock')}</h6><p class="product-warehouse-stock">${0}</p></div>` +
                             `<div><h6>${$elmTrans.attr('data-store')}</h6>${0}</div>` +
                             `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${0}</div>` +
                             `</div>`;
@@ -353,7 +373,7 @@ $(async function () {
                         if (data.picked_quantity === data.remaining_quantity) isDisabled = 'disabled'
                         return `<div class="row">
                                     <div class="col-xs-12 col-sm-6">
-                                        <input class="form-control" type="number" id="prod_row-${meta.row}" 
+                                        <input class="form-control table-row-quantity-pick" type="number" id="prod_row-${meta.row}" 
                                         value="${data.picked_quantity}" ${isDisabled}/>
                                     </div>
                                 </div>`;

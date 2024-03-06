@@ -1,16 +1,13 @@
 $(function () {
     $(document).ready(function () {
 
-        let boxGroup = $('#box-report-pipeline-group');
-        let boxEmployee = $('#box-report-pipeline-employee');
-        let boxQuarter = $('#box-report-pipeline-quarter');
-        let boxMonth = $('#box-report-pipeline-month');
-        let boxFrom = $('#report-pipeline-date-from');
-        let boxTo = $('#report-pipeline-date-to');
-        let eleAreaPeriodAll = $('#area-period-all');
+        let boxGroup = $('#box-report-general-group');
+        let boxEmployee = $('#box-report-general-employee');
+        let boxYear = $('#box-report-general-year');
+        let boxDetail = $('#box-report-general-detail');
         let eleFiscalYear = $('#data-fiscal-year');
         let btnView = $('#btn-view');
-        let $table = $('#table_report_pipeline_list');
+        let $table = $('#table_report_general_list');
         let dataQuarter = JSON.parse($('#filter_quarter').text());
         let dataMonth = JSON.parse($('#filter_month').text());
         let eleTrans = $('#app-trans-factory');
@@ -21,10 +18,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 10,
-                columns: [  // 100,200,200,300,150,100,125,125,225,225,225,125,100,125,125 (2500p)
+                columns: [  // 250,250,300,250,250,100,250,250,100 (2000p)
                     {
                         targets: 0,
-                        width: '4%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
@@ -35,35 +32,35 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '8%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary  badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '8%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '12%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '6%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '4%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if ([0, 1, 2].includes(row?.['group_by'])) {
                                 return `<p></p>`;
@@ -74,7 +71,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '5%',
+                        width: '12.5',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['open_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['open_date'] ? row?.['opportunity']?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -85,7 +82,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '5%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['close_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['close_date'] ? row?.['opportunity']?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -96,51 +93,9 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '9%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
-                        }
-                    },
-                    {
-                        targets: 9,
-                        width: '9%',
-                        render: (data, type, row) => {
-                            return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span>`;
-                        }
-                    },
-                    {
-                        targets: 10,
-                        width: '9%',
-                        render: (data, type, row) => {
-                            return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
-                        }
-                    },
-                    {
-                        targets: 11,
-                        width: '5%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
-                        }
-                    },
-                    {
-                        targets: 12,
-                        width: '4%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
-                        }
-                    },
-                    {
-                        targets: 13,
-                        width: '5%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
-                        }
-                    },
-                    {
-                        targets: 14,
-                        width: '5%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
                         }
                     },
                 ],
@@ -172,38 +127,14 @@ $(function () {
             let totalValue = 0;
             let totalForecastValue = 0;
             let totalGrossProfit = 0;
-            let totalWinRate = 0;
             let totalCall = 0;
             let totalEmail = 0;
             let totalMeeting = 0;
             let totalDocument = 0;
             for (let data of dataList) {
-                if (data?.['opportunity']?.['value']) {
-                    totalValue += data?.['opportunity']?.['value'];
-                }
-                if (data?.['opportunity']?.['forecast_value']) {
-                    totalForecastValue += data?.['opportunity']?.['forecast_value'];
-                }
-                if (data?.['opportunity']?.['gross_profit']) {
-                    totalGrossProfit += data?.['opportunity']?.['gross_profit'];
-                }
-                if (data?.['opportunity']?.['win_rate']) {
-                    totalWinRate += data?.['opportunity']?.['win_rate'];
-                }
-                if (data?.['opportunity']?.['call']) {
-                    totalCall += data?.['opportunity']?.['call'];
-                }
-                if (data?.['opportunity']?.['email']) {
-                    totalEmail += data?.['opportunity']?.['email'];
-                }
-                if (data?.['opportunity']?.['meeting']) {
-                    totalMeeting += data?.['opportunity']?.['meeting'];
-                }
-                if (data?.['opportunity']?.['document']) {
-                    totalDocument += data?.['opportunity']?.['document'];
-                }
+                totalValue += data?.['revenue'];
                 // group setup
-                if (data?.['group']?.['id']) {
+                if (data?.['group_inherit']?.['id']) {
                     // data group
                     if (!dataGroup.hasOwnProperty(data?.['group']?.['id'])) {
                         dataGroup[data?.['group']?.['id']] = data?.['group'];
@@ -405,44 +336,22 @@ $(function () {
                     if (data) {
                         if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
                             eleFiscalYear.val(JSON.stringify(data.periods_list));
-                            loadBoxQuarter();
-                            loadBoxMonth();
-                            let currentDate = new Date();
-                            let currentMonth = currentDate.getMonth() + 1;
-                            boxMonth.val(currentMonth).trigger('change');
-                            btnView.click();
+                            loadBoxYear();
+                            let currentYear = new Date().getFullYear();
+                            boxYear.val(currentYear).trigger('change');
+                            boxDetail.val('p-1').trigger('change');
                         }
                     }
                 }
             )
         }
 
-        function getFiscalYearEndDate() {
-            let endDateFY = '';
-            if (eleFiscalYear.val()) {
-                let dataFiscalYear = JSON.parse(eleFiscalYear.val());
-                if (dataFiscalYear.length > 0) {
-                    let startDateFY = new Date(dataFiscalYear[0]?.['start_date']);
-                    endDateFY = new Date(startDateFY);
-                    // Add 12 months to the start date
-                    endDateFY.setMonth(startDateFY.getMonth() + 12);
-                    // Subtract 1 day to get the last day of the fiscal year
-                    endDateFY.setDate(endDateFY.getDate() - 1);
-                    // Format the end date as 'YYYY-MM-DD'
-                    endDateFY = endDateFY.toISOString().slice(0, 10);
-                    return endDateFY;
-                }
-            }
-            return endDateFY;
-        }
-
         function getAllMonthsFiscalYear() {
             let months = [];
-            if (eleFiscalYear.val()) {
+            if (eleFiscalYear.val() && boxYear.val()) {
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
-                    let currentDate = new Date();
-                    let currentYear = currentDate.getFullYear();
+                    let currentYear = parseInt(boxYear.val());
                     for (let fiscal of dataFiscalYear) {
                         let startDateFY = new Date(fiscal?.['start_date']);
                         let dateObject = new Date(startDateFY);
@@ -466,7 +375,6 @@ $(function () {
 
         function parseMonthJSON() {
             let result = [];
-            let resultReverse = [];
             let dataMonths = getAllMonthsFiscalYear();
             for (let monthYear of dataMonths) {
                 const [year, month] = monthYear.split('-').map(Number);
@@ -475,8 +383,7 @@ $(function () {
                     month,
                 });
             }
-            resultReverse = result.reverse();
-            return resultReverse;
+            return result;
         }
 
         function getMonthRange(month, year) {
@@ -528,27 +435,7 @@ $(function () {
             return {startDate: '', endDate: ''};
         }
 
-        function getDateFrom() {
-            let formattedStartDate = boxFrom.val();
-            formattedStartDate = convertDateFormat(formattedStartDate);
-            return formattedStartDate;
-        }
-
-        function getDateTo() {
-            let formattedEndDate = boxTo.val();
-            formattedEndDate = convertDateFormat(formattedEndDate);
-            return formattedEndDate;
-        }
-
-        function convertDateFormat(inputDate) {
-            // Split the input date string into day, month, and year
-            let parts = inputDate.split('/');
-            // Create a new Date object using the parts (month is 0-based, so subtract 1)
-            let dateObject = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T00:00:00Z`);
-            // Format the date to 'YYYY-MM-DD HH:mm:ss'
-            return dateObject.toISOString().slice(0, 19).replace('T', ' ');
-        }
-
+        // LOAD BOXS DROPDOWN
         function loadBoxEmployee() {
             boxEmployee.empty();
             let dataParams = {};
@@ -561,52 +448,55 @@ $(function () {
             });
         }
 
-        function loadBoxQuarter() {
+        function loadBoxYear() {
             if (eleFiscalYear.val()) {
                 let data = [];
-                let dataReverse = [];
                 let dataFiscalYear = JSON.parse(eleFiscalYear.val());
                 if (dataFiscalYear.length > 0) {
-                    let currentDate = new Date();
-                    let currentYear = currentDate.getFullYear();
-                    for (let fiscal of dataFiscalYear) {
-                        let startDateFY = fiscal?.['start_date'];
-                        let dateObject = new Date(startDateFY);
-                        let year = dateObject.getFullYear();
-                        if (year === currentYear) {
-                            for (let quarter of dataQuarter) {
-                                data.push({'id': quarter[0], 'title': quarter[1], 'year': year})
-                            }
-                            dataReverse = data.reverse();
-                            boxQuarter.empty();
-                            boxQuarter.initSelect2({
-                                data: dataReverse,
-                                'allowClear': true,
-                                templateResult: function (state) {
-                                    let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                                    return $(`<span>${state.text} ${groupHTML}</span>`);
-                                },
-                            });
-                            break;
-                        }
+                    for (let fiscalYear of dataFiscalYear) {
+                        data.push({
+                            'id': String(fiscalYear?.['fiscal_year']),
+                            'title': String(fiscalYear?.['fiscal_year']),
+                            'start_date': String(fiscalYear?.['start_date']),
+                        })
                     }
+                    boxYear.empty();
+                    boxYear.initSelect2({
+                        data: data,
+                        'allowClear': true,
+                    });
                 }
             }
         }
 
-        function loadBoxMonth() {
+        function loadBoxDetail() {
             let data = [];
-            let dataMonths = parseMonthJSON();
-            for (let monthYear of dataMonths) {
-                data.push({
-                    'id': monthYear?.['month'],
-                    'title': dataMonth[monthYear?.['month'] - 1][1],
-                    'month': monthYear?.['month'],
-                    'year': monthYear?.['year']
-                })
+            if (boxYear.val()) {
+                // period
+                data.push({'id': 'p-' + String(1), 'title': eleTrans.attr('data-period'), 'year': boxYear.val()})
+                // quarters
+                for (let quarter of dataQuarter) {
+                    data.push({'id': 'q-' + String(quarter[0]), 'title': quarter[1], 'year': boxYear.val()})
+                }
+                // months
+                let dataMonths = parseMonthJSON();
+                for (let monthYear of dataMonths) {
+                    data.push({
+                        'id': 'm-' + String(monthYear?.['month']),
+                        'title': dataMonth[monthYear?.['month'] - 1][1],
+                        'month': monthYear?.['month'],
+                        'year': monthYear?.['year'],
+                    })
+                }
             }
-            boxMonth.empty();
-            boxMonth.initSelect2({
+            data.push({
+                'id': '',
+                'title': 'Select...',
+                'month': 0,
+                'year': 0,
+            })
+            boxDetail.empty();
+            boxDetail.initSelect2({
                 data: data,
                 'allowClear': true,
                 templateResult: function (state) {
@@ -616,10 +506,6 @@ $(function () {
             });
         }
 
-        $('#btn-collapse').click(function () {
-            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
-        });
-
         // load init
         function initData() {
             boxGroup.initSelect2({'allowClear': true,});
@@ -628,6 +514,7 @@ $(function () {
         }
 
         initData();
+
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -654,13 +541,8 @@ $(function () {
             $table.DataTable().clear().draw();
         });
 
-        $('input[type=radio].check-period').on('click', function () {
-            for (let ele of this.closest('.area-period-all').querySelectorAll('.area-period-element')) {
-                ele.setAttribute('disabled', 'true');
-            }
-            for (let ele of this.closest('.area-period').querySelectorAll('.area-period-element')) {
-                ele.removeAttribute('disabled');
-            }
+        boxYear.on('change', function () {
+            loadBoxDetail();
         });
 
         btnView.on('click', function () {
@@ -680,10 +562,10 @@ $(function () {
                 }
             }
             if (eleCheck.classList.contains('check-month')) {  // month
-                if (boxMonth.val()) {
-                    let dataMonth = SelectDDControl.get_data_from_idx(boxMonth, boxMonth.val());
+                if (boxDetail.val()) {
+                    let dataMonth = SelectDDControl.get_data_from_idx(boxDetail, boxDetail.val());
                     if (dataMonth) {
-                        let {startDate, endDate} = getMonthRange(parseInt(boxMonth.val()), parseInt(dataMonth?.['year']));
+                        let {startDate, endDate} = getMonthRange(parseInt(boxDetail.val()), parseInt(dataMonth?.['year']));
                         dataParams['opportunity__close_date__gte'] = startDate;
                         dataParams['opportunity__close_date__lte'] = endDate;
                     }

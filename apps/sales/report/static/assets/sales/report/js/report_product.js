@@ -148,10 +148,19 @@ $(function () {
             });
         }
 
-        boxGroup.initSelect2({'allowClear': true,});
-        boxProduct.initSelect2({'allowClear': true,});
-        boxCategory.initSelect2({'allowClear': true,});
-        loadBoxEmployee();
+        $('#btn-collapse').click(function () {
+            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
+
+        // load init
+        function initData() {
+            boxGroup.initSelect2({'allowClear': true,});
+            boxProduct.initSelect2({'allowClear': true,});
+            boxCategory.initSelect2({'allowClear': true,});
+            loadBoxEmployee();
+        }
+
+        initData();
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({

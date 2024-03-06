@@ -296,6 +296,9 @@ $(function () {
                 $(this).closest('.ntt-drawer').toggleClass('open');
                 $('.hk-wrapper').toggleClass('open');
             }
+            const titCreate = $('.title-create'), titEdit = $('.title-detail');
+            if (titCreate.hasClass('hidden')) titCreate.removeClass("hidden")
+            if (!titEdit.hasClass('hidden')) titEdit.addClass("hidden")
             resetFormTask()
         });
     });

@@ -126,3 +126,13 @@
 .dropdown-menu-end{
     min-width: auto;
 }
+.subtask_item .sub-tit{
+    width: 40%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.subtask_item .sub-employee{
+    width: 40%;
+    text-align: right;
+}

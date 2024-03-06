@@ -44,7 +44,7 @@ class PrintApplicationTemplateSample(APIView):
 
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, app_id, **kwargs):
-        base_url = 'assets/htm/printer/'
+        base_url = 'printer/template/'
         result = []
         if app_id == 'b9650500-aba7-44e3-b6e0-2542622702a3':  # Quotation
             base_url += 'quotation/'

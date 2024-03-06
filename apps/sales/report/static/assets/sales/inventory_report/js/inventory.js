@@ -310,14 +310,14 @@ $(document).ready(function () {
                                     out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
                                     ending_sum_value += warehouse_activities?.['ending_balance_value']
                                 }
-                                $('#opening-total-quantity').text(opening_sum_quantity)
-                                $('#opening-total-value').attr('data-init-money', opening_sum_value)
-                                $('#in-total-quantity').text(in_sum_quantity)
-                                $('#in-total-value').attr('data-init-money', in_sum_value)
-                                $('#out-total-quantity').text(out_sum_quantity)
-                                $('#out-total-value').attr('data-init-money', out_sum_value)
-                                $('#ending-total-quantity').text(ending_sum_quantity)
-                                $('#ending-total-value').attr('data-init-money', table_inventory_report)
+                                $('#table-inventory-report-detail #opening-total-quantity').text(opening_sum_quantity)
+                                $('#table-inventory-report-detail #opening-total-value').attr('data-init-money', opening_sum_value)
+                                $('#table-inventory-report-detail #in-total-quantity').text(in_sum_quantity)
+                                $('#table-inventory-report-detail #in-total-value').attr('data-init-money', in_sum_value)
+                                $('#table-inventory-report-detail #out-total-quantity').text(out_sum_quantity)
+                                $('#table-inventory-report-detail #out-total-value').attr('data-init-money', out_sum_value)
+                                $('#table-inventory-report-detail #ending-total-quantity').text(ending_sum_quantity)
+                                $('#table-inventory-report-detail #ending-total-value').attr('data-init-money', table_inventory_report)
                             } else {
                                 if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
                                     if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
@@ -378,14 +378,14 @@ $(document).ready(function () {
                                         out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
                                         ending_sum_value += warehouse_activities?.['ending_balance_value']
                                     }
-                                    $('#opening-total-quantity').text(opening_sum_quantity)
-                                    $('#opening-total-value').attr('data-init-money', opening_sum_value)
-                                    $('#in-total-quantity').text(in_sum_quantity)
-                                    $('#in-total-value').attr('data-init-money', in_sum_value)
-                                    $('#out-total-quantity').text(out_sum_quantity)
-                                    $('#out-total-value').attr('data-init-money', out_sum_value)
-                                    $('#ending-total-quantity').text(ending_sum_quantity)
-                                    $('#ending-total-value').attr('data-init-money', table_inventory_report)
+                                    $('#table-inventory-report-detail #opening-total-quantity').text(opening_sum_quantity)
+                                    $('#table-inventory-report-detail #opening-total-value').attr('data-init-money', opening_sum_value)
+                                    $('#table-inventory-report-detail #in-total-quantity').text(in_sum_quantity)
+                                    $('#table-inventory-report-detail #in-total-value').attr('data-init-money', in_sum_value)
+                                    $('#table-inventory-report-detail #out-total-quantity').text(out_sum_quantity)
+                                    $('#table-inventory-report-detail #out-total-value').attr('data-init-money', out_sum_value)
+                                    $('#table-inventory-report-detail #ending-total-quantity').text(ending_sum_quantity)
+                                    $('#table-inventory-report-detail #ending-total-value').attr('data-init-money', table_inventory_report)
                                 }
                             }
                         }
@@ -500,14 +500,14 @@ $(document).ready(function () {
                                     out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
                                     ending_sum_value += warehouse_activities?.['ending_balance_value']
                                 }
-                                $('#opening-total-quantity').text(opening_sum_quantity)
-                                $('#opening-total-value').attr('data-init-money', opening_sum_value)
-                                $('#in-total-quantity').text(in_sum_quantity)
-                                $('#in-total-value').attr('data-init-money', in_sum_value)
-                                $('#out-total-quantity').text(out_sum_quantity)
-                                $('#out-total-value').attr('data-init-money', out_sum_value)
-                                $('#ending-total-quantity').text(ending_sum_quantity)
-                                $('#ending-total-value').attr('data-init-money', table_inventory_report)
+                                $('#table-inventory-report #opening-total-quantity').text(opening_sum_quantity)
+                                $('#table-inventory-report #opening-total-value').attr('data-init-money', opening_sum_value)
+                                $('#table-inventory-report #in-total-quantity').text(in_sum_quantity)
+                                $('#table-inventory-report #in-total-value').attr('data-init-money', in_sum_value)
+                                $('#table-inventory-report #out-total-quantity').text(out_sum_quantity)
+                                $('#table-inventory-report #out-total-value').attr('data-init-money', out_sum_value)
+                                $('#table-inventory-report #ending-total-quantity').text(ending_sum_quantity)
+                                $('#table-inventory-report #ending-total-value').attr('data-init-money', table_inventory_report)
                             } else {
                                 if (warehouses_select_Ele.val().includes(warehouse_activities?.['warehouse']?.['id'])) {
                                     if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
@@ -568,14 +568,14 @@ $(document).ready(function () {
                                         out_sum_value += warehouse_activities?.['stock_activities']?.['sum_out_value']
                                         ending_sum_value += warehouse_activities?.['ending_balance_value']
                                     }
-                                    $('#opening-total-quantity').text(opening_sum_quantity)
-                                    $('#opening-total-value').attr('data-init-money', opening_sum_value)
-                                    $('#in-total-quantity').text(in_sum_quantity)
-                                    $('#in-total-value').attr('data-init-money', in_sum_value)
-                                    $('#out-total-quantity').text(out_sum_quantity)
-                                    $('#out-total-value').attr('data-init-money', out_sum_value)
-                                    $('#ending-total-quantity').text(ending_sum_quantity)
-                                    $('#ending-total-value').attr('data-init-money', table_inventory_report)
+                                    $('#table-inventory-report #opening-total-quantity').text(opening_sum_quantity)
+                                    $('#table-inventory-report #opening-total-value').attr('data-init-money', opening_sum_value)
+                                    $('#table-inventory-report #in-total-quantity').text(in_sum_quantity)
+                                    $('#table-inventory-report #in-total-value').attr('data-init-money', in_sum_value)
+                                    $('#table-inventory-report #out-total-quantity').text(out_sum_quantity)
+                                    $('#table-inventory-report #out-total-value').attr('data-init-money', out_sum_value)
+                                    $('#table-inventory-report #ending-total-quantity').text(ending_sum_quantity)
+                                    $('#table-inventory-report #ending-total-value').attr('data-init-money', table_inventory_report)
                                 }
                             }
                         }

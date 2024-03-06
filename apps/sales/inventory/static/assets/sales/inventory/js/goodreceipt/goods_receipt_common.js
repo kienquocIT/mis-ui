@@ -1091,10 +1091,18 @@ class GRLoadDataHandle {
         $('#good-receipt-title').val(data?.['title']);
         $('#good-receipt-note').val(data?.['remarks']);
         if (formSubmit.attr('data-method') === 'GET') {
-            $('#good-receipt-date-received').val(moment(data?.['date_received']).format('MM/DD/YYYY'));
+            if (data?.['date_received']) {
+                $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY'));
+            } else {
+                $('#good-receipt-date-received').val('');
+            }
         }
         if (formSubmit.attr('data-method') === 'PUT') {
-            $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY hh:mm A'));
+            if (data?.['date_received']) {
+                $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY hh:mm A'));
+            } else {
+                $('#good-receipt-date-received').val('');
+            }
         }
         if ([2, 3].includes(data?.['system_status'])) {
             let $btn = $('#btn-enable-edit');

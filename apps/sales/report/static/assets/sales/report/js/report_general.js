@@ -96,110 +96,150 @@ $(function () {
         loadDbl();
 
         function setupDataLoadTable(dataList) {
-            let result = [];
-            let dataGroup = {};
-            let dataGroupTotal = {};
-            let dataEmployee = {};
-            let dataEmployeeTotal = {};
-            // total
-            let totalRevenue = 0;
-            let totalProfit = 0;
-            for (let data of dataList) {
-                totalRevenue += data?.['revenue'];
-                totalProfit += data?.['gross_profit'];
-                // group setup
-                if (data?.['group_inherit']?.['id']) {
-                    // data group
-                    if (!dataGroup.hasOwnProperty(data?.['group_inherit']?.['id'])) {
-                        dataGroup[data?.['group_inherit']?.['id']] = data?.['group_inherit'];
+            let year = boxYear.val();
+            let detail = boxDetail.val();
+            if (year && detail) {
+                let result = [];
+                let dataGroup = {};
+                let dataGroupTotal = {};
+                let dataEmployee = {};
+                let dataEmployeeTotal = {};
+                let dataEmployeePlan = {}
+                // total
+                let totalRevenue = 0;
+                let totalProfit = 0;
+                for (let data of dataList) {
+                    totalRevenue += data?.['revenue'];
+                    totalProfit += data?.['gross_profit'];
+                    // group setup
+                    if (data?.['group_inherit']?.['id']) {
+                        // data group
+                        if (!dataGroup.hasOwnProperty(data?.['group_inherit']?.['id'])) {
+                            dataGroup[data?.['group_inherit']?.['id']] = data?.['group_inherit'];
+                        }
+                        // data group total
+                        if (!dataGroupTotal.hasOwnProperty(data?.['group_inherit']?.['id'])) {
+                            dataGroupTotal[data?.['group_inherit']?.['id']] = {
+                                'revenue': 0, 'revenue_plan': 0, 'revenue_ratio': 0,
+                                'gross_profit': 0, 'gross_profit_plan': 0, 'gross_profit_ratio': 0,
+                            }
+                            if (data?.['revenue']) {
+                                dataGroupTotal[data?.['group_inherit']?.['id']]['revenue'] = data?.['revenue'];
+                            }
+                            if (data?.['gross_profit']) {
+                                dataGroupTotal[data?.['group_inherit']?.['id']]['gross_profit'] = data?.['gross_profit'];
+                            }
+                        } else {
+                            if (data?.['revenue']) {
+                                dataGroupTotal[data?.['group_inherit']?.['id']]['revenue'] += data?.['revenue'];
+                            }
+                            if (data?.['gross_profit']) {
+                                dataGroupTotal[data?.['group_inherit']?.['id']]['gross_profit'] += data?.['gross_profit'];
+                            }
+                        }
                     }
-                    // data group total
-                    if (!dataGroupTotal.hasOwnProperty(data?.['group_inherit']?.['id'])) {
-                        dataGroupTotal[data?.['group_inherit']?.['id']] = {
-                            'revenue': 0, 'revenue_plan': 0, 'revenue_ratio': 0,
-                            'gross_profit': 0, 'gross_profit_plan': 0, 'gross_profit_ratio': 0,
+                    // employee setup
+                    if (data?.['employee_inherit']?.['id']) {
+                        // data employee
+                        if (!dataEmployee.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                            dataEmployee[data?.['employee_inherit']?.['id']] = data?.['employee_inherit'];
                         }
-                        if (data?.['revenue']) {
-                            dataGroupTotal[data?.['group_inherit']?.['id']]['revenue'] = data?.['revenue'];
+                        // data employee total
+                        if (!dataEmployeeTotal.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']] = {
+                                'revenue': 0, 'revenue_plan': 0, 'revenue_ratio': 0,
+                                'gross_profit': 0, 'gross_profit_plan': 0, 'gross_profit_ratio': 0,
+                            }
+                            if (data?.['revenue']) {
+                                dataEmployeeTotal[data?.['employee_inherit']?.['id']]['revenue'] = data?.['revenue'];
+                            }
+                            if (data?.['gross_profit']) {
+                                dataEmployeeTotal[data?.['employee_inherit']?.['id']]['gross_profit'] = data?.['gross_profit'];
+                            }
+                        } else {
+                            if (data?.['revenue']) {
+                                dataEmployeeTotal[data?.['employee_inherit']?.['id']]['revenue'] += data?.['revenue'];
+                            }
+                            if (data?.['gross_profit']) {
+                                dataEmployeeTotal[data?.['employee_inherit']?.['id']]['gross_profit'] += data?.['gross_profit'];
+                            }
                         }
-                    } else {
-                        if (data?.['revenue']) {
-                            dataGroupTotal[data?.['group_inherit']?.['id']]['value'] += data?.['revenue'];
+                        // data employee plan
+                        if (!dataEmployeePlan.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
+                            dataEmployeePlan[data?.['employee_inherit']?.['id']] = data?.['plan'];
+                        }
+                    }
+                }
+                let dataTotal = {
+                    'group': {'title': eleTrans.attr('data-total')},
+                    'revenue': totalRevenue,
+                    'revenue_plan': 0,
+                    'revenue_ratio': 0,
+                    'gross_profit': totalProfit,
+                    'gross_profit_plan': 0,
+                    'gross_profit_ratio': 0,
+                    'group_by': 0,
+                    'type_group_by': 0,  // total
+                }
+                result.push(dataTotal);  // push data total
+                for (let groupKey in dataGroup) {  // push data group
+                    result.push({
+                        'group': dataGroup[groupKey],
+                        'revenue': dataGroupTotal?.[groupKey]?.['revenue'],
+                        'revenue_plan': dataGroupTotal?.[groupKey]?.['revenue_plan'],
+                        'revenue_ratio': dataGroupTotal?.[groupKey]?.['revenue_ratio'],
+                        'gross_profit': dataGroupTotal?.[groupKey]?.['gross_profit'],
+                        'gross_profit_plan': dataGroupTotal?.[groupKey]?.['gross_profit_plan'],
+                        'gross_profit_ratio': dataGroupTotal?.[groupKey]?.['gross_profit_ratio'],
+                        'group_by': 1,
+                    });
+                    for (let employeeKey in dataEmployee) {  // push data employee
+                        if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
+                            let resultEmployee = {
+                                'employee_inherit': dataEmployee[employeeKey],
+                                'revenue': dataEmployeeTotal?.[employeeKey]?.['revenue'],
+                                'gross_profit': dataEmployeeTotal?.[employeeKey]?.['gross_profit'],
+                                'group_by': 2
+                            }
+                            let revenuePlan = 0;
+                            let profitPlan = 0;
+                            if (detail.includes('p')) {  // period
+                                revenuePlan = dataEmployeePlan?.[year]?.['revenue_year'];
+                                profitPlan = dataEmployeePlan?.[year]?.['profit_year'];
+                            }
+                            if (detail.includes('q')) {  // quarter
+
+                            }
+                            if (detail.includes('m')) {  // month
+
+                            }
+                            resultEmployee['revenue_plan'] = revenuePlan;
+                            resultEmployee['gross_profit_plan'] = profitPlan;
+                            resultEmployee['revenue_ratio'] = 0;
+                            resultEmployee['gross_profit_ratio'] = 0;
+                            if (resultEmployee?.['revenue_plan'] !== 0) {
+                                resultEmployee['revenue_ratio'] = resultEmployee['revenue'] / resultEmployee['revenue_plan'] * 100;
+                            }
+                            if (resultEmployee?.['gross_profit_plan'] !== 0) {
+                                resultEmployee['gross_profit_ratio'] = resultEmployee['gross_profit'] / resultEmployee['gross_profit_plan'] * 100;
+                            }
+                            result.push(resultEmployee);
                         }
                     }
                 }
-                // employee setup
-                if (data?.['employee_inherit']?.['id']) {
-                    // data employee
-                    if (!dataEmployee.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                        dataEmployee[data?.['employee_inherit']?.['id']] = data?.['employee_inherit'];
-                    }
-                    // data employee total
-                    if (!dataEmployeeTotal.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                        dataEmployeeTotal[data?.['employee_inherit']?.['id']] = {
-                            'revenue': 0, 'revenue_plan': 0, 'revenue_ratio': 0,
-                            'gross_profit': 0, 'gross_profit_plan': 0, 'gross_profit_ratio': 0,
-                        }
-                        if (data?.['revenue']) {
-                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['revenue'] = data?.['revenue'];
-                        }
-                    } else {
-                        if (data?.['revenue']) {
-                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['revenue'] += data?.['revenue'];
-                        }
-                    }
+                $table.DataTable().clear().draw();
+                $table.DataTable().rows.add(result).draw();
+                // custom total row
+                if ($table.DataTable().data().count() !== 0) {
+                    let firstRow = $table.DataTable().row(0).node();
+                    $(firstRow).css({
+                        'background-color': '#ebf5f5',
+                        'color': '#007D88',
+                        'font-weight': 'bold'
+                    });
                 }
+                $.fn.initMaskMoney2();
             }
-            let dataTotal = {
-                'group': {'title': eleTrans.attr('data-total')},
-                'revenue': totalRevenue,
-                'revenue_plan': 0,
-                'revenue_ratio': 0,
-                'gross_profit': totalProfit,
-                'gross_profit_plan': 0,
-                'gross_profit_ratio': 0,
-                'group_by': 0,
-                'type_group_by': 0,  // total
-            }
-            result.push(dataTotal);  // push data total
-            for (let groupKey in dataGroup) {  // push data group
-                result.push({
-                    'group': dataGroup[groupKey],
-                    'revenue': dataGroupTotal?.[groupKey]?.['revenue'],
-                    'revenue_plan': dataGroupTotal?.[groupKey]?.['revenue_plan'],
-                    'revenue_ratio': dataGroupTotal?.[groupKey]?.['revenue_ratio'],
-                    'gross_profit': dataGroupTotal?.[groupKey]?.['gross_profit'],
-                    'gross_profit_plan': dataGroupTotal?.[groupKey]?.['gross_profit_plan'],
-                    'gross_profit_ratio': dataGroupTotal?.[groupKey]?.['gross_profit_ratio'],
-                    'group_by': 1,
-                });
-                for (let employeeKey in dataEmployee) {  // push data employee
-                    if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
-                        result.push({
-                            'employee_inherit': dataEmployee[employeeKey],
-                            'revenue': dataEmployeeTotal?.[employeeKey]?.['revenue'],
-                            'revenue_plan': dataEmployeeTotal?.[employeeKey]?.['revenue_plan'],
-                            'revenue_ratio': dataEmployeeTotal?.[employeeKey]?.['revenue_ratio'],
-                            'gross_profit': dataEmployeeTotal?.[employeeKey]?.['gross_profit'],
-                            'gross_profit_plan': dataEmployeeTotal?.[employeeKey]?.['gross_profit_plan'],
-                            'gross_profit_ratio': dataEmployeeTotal?.[employeeKey]?.['gross_profit_ratio'],
-                            'group_by': 2
-                        });
-                    }
-                }
-            }
-            $table.DataTable().clear().draw();
-            $table.DataTable().rows.add(result).draw();
-            // custom total row
-            if ($table.DataTable().data().count() !== 0) {
-                let firstRow = $table.DataTable().row(0).node();
-                $(firstRow).css({
-                    'background-color': '#ebf5f5',
-                    'color': '#007D88',
-                    'font-weight': 'bold'
-                });
-            }
-            $.fn.initMaskMoney2();
         }
 
         function storeDataFiscalYear() {
@@ -340,7 +380,6 @@ $(function () {
                     boxYear.empty();
                     boxYear.initSelect2({
                         data: data,
-                        'allowClear': true,
                     });
                 }
             }
@@ -375,7 +414,6 @@ $(function () {
             boxDetail.empty();
             boxDetail.initSelect2({
                 data: data,
-                'allowClear': true,
                 templateResult: function (state) {
                     let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
                     return $(`<span>${state.text} ${groupHTML}</span>`);

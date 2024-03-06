@@ -10,6 +10,7 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
     <script id="script-url"
             data-url-pipeline-list="{% url 'ReportPipelineListAPI' %}"
     ></script>

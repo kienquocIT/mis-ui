@@ -3,6 +3,31 @@ $(document).ready(function () {
         "handle": ".modal-header"
     });
 
+    const current_period_Ele = $('#current_period')
+    let current_period = {}
+    if (current_period_Ele.text() !== '') {
+        current_period = JSON.parse(current_period_Ele.text())
+    }
+
+    function Check_in_period(dateApproved) {
+        dateApproved = new Date(dateApproved)
+        const month = dateApproved.getMonth() + 1
+        const year = dateApproved.getFullYear()
+        const space_month = current_period?.['space_month']
+        const fiscal_year = current_period?.['fiscal_year']
+        let list_month_period = []
+        for (let i = 0; i < 12; i++) {
+            let period_month = i + space_month + 1
+            let period_year = fiscal_year
+            if (period_month > 12) {
+                period_month = period_month - 12
+                period_year = fiscal_year + 1
+            }
+            list_month_period.push(period_month.toString() + period_year.toString())
+        }
+        return list_month_period.includes(month.toString() + year.toString());
+    }
+
     let scriptUrlEle = $('#script-url')
     const moneyRadioEle = $('.money-radio')
     const billionCheckboxEle = $('#billion-checkbox')
@@ -114,6 +139,7 @@ $(document).ready(function () {
                 item.opp_stage_winrate !== 0
                 && item.opp_stage_winrate !== 100
                 && item.employee_group_id === group_filter
+                // && Check_in_period(item.opp_open_date)
                 && new Date(item.opp_open_date).getFullYear() === parseInt(totalPipelineYearFilterEle.val())
             ) {
                 if (!data_stage_value_dict[oppStageId]) {

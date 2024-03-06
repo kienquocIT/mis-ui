@@ -62,13 +62,13 @@ $(function () {
                 let dataSelected = SelectDDControl.get_data_from_idx(POLoadDataHandle.supplierSelectEle, $(this).val());
                 if (dataSelected) {
                     POLoadDataHandle.contactSelectEle.empty();
-                    POLoadDataHandle.loadBoxContact(dataSelected.owner, dataSelected.id);
+                    POLoadDataHandle.loadBoxContact(dataSelected?.['owner'], dataSelected?.['id']);
                     document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
                     POLoadDataHandle.loadDataProductAll();
                 }
                 // check enable btn PR, PQ
                 POValidateHandle.validateEnablePRPQ();
-            } else { // No Value => load again dropdowns
+            } else { // No Value => load again contact
                 POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadBoxContact();
             }

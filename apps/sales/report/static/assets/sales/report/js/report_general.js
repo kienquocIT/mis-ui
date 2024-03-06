@@ -41,61 +41,49 @@ $(function () {
                         targets: 2,
                         width: '15%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</p>`;
+                            return `<p>${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
                         width: '12.5%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
+                            return `<span class="mask-money table-row-revenue-plan" data-init-money="${parseFloat(row?.['revenue_plan'])}"></span>`;
                         }
                     },
                     {
                         targets: 4,
                         width: '12.5%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
+                            return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 5,
                         width: '5%',
                         render: (data, type, row) => {
-                            if ([0, 1, 2].includes(row?.['group_by'])) {
-                                return `<p></p>`;
-                            } else {
-                                return `<p>${row?.['opportunity']?.['win_rate'] ? row?.['opportunity']?.['win_rate'] : '0'} %</p>`;
-                            }
+                            return `<p>${parseFloat(row?.['revenue_ratio'])}</p>`;
                         }
                     },
                     {
                         targets: 6,
                         width: '12.5',
                         render: (data, type, row) => {
-                            if (row?.['opportunity']?.['open_date']) {
-                                return `<p>${moment(row?.['opportunity']?.['open_date'] ? row?.['opportunity']?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
-                            } else {
-                                return `<p></p>`;
-                            }
+                            return `<span class="mask-money table-row-profit-plan" data-init-money="${parseFloat(row?.['gross_profit_plan'])}"></span>`;
                         }
                     },
                     {
                         targets: 7,
                         width: '12.5%',
                         render: (data, type, row) => {
-                            if (row?.['opportunity']?.['close_date']) {
-                                return `<p>${moment(row?.['opportunity']?.['close_date'] ? row?.['opportunity']?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
-                            } else {
-                                return `<p></p>`;
-                            }
+                            return `<span class="mask-money table-row-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 8,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
+                            return `<p>${parseFloat(row?.['gross_profit_ratio'])}</p>`;
                         }
                     },
                 ],
@@ -111,86 +99,33 @@ $(function () {
             let result = [];
             let dataGroup = {};
             let dataGroupTotal = {};
-            let dataGroupWinRate = {};
-            let dataGroupCall = {};
-            let dataGroupEmail = {};
-            let dataGroupMeeting = {};
-            let dataGroupDocument = {};
             let dataEmployee = {};
             let dataEmployeeTotal = {};
-            let dataEmployeeWinRate = {};
-            let dataEmployeeCall = {};
-            let dataEmployeeEmail = {};
-            let dataEmployeeMeeting = {};
-            let dataEmployeeDocument = {};
             // total
-            let totalValue = 0;
-            let totalForecastValue = 0;
-            let totalGrossProfit = 0;
-            let totalCall = 0;
-            let totalEmail = 0;
-            let totalMeeting = 0;
-            let totalDocument = 0;
+            let totalRevenue = 0;
+            let totalProfit = 0;
             for (let data of dataList) {
-                totalValue += data?.['revenue'];
+                totalRevenue += data?.['revenue'];
+                totalProfit += data?.['gross_profit'];
                 // group setup
                 if (data?.['group_inherit']?.['id']) {
                     // data group
-                    if (!dataGroup.hasOwnProperty(data?.['group']?.['id'])) {
-                        dataGroup[data?.['group']?.['id']] = data?.['group'];
+                    if (!dataGroup.hasOwnProperty(data?.['group_inherit']?.['id'])) {
+                        dataGroup[data?.['group_inherit']?.['id']] = data?.['group_inherit'];
                     }
                     // data group total
-                    if (!dataGroupTotal.hasOwnProperty(data?.['group']?.['id'])) {
-                        dataGroupTotal[data?.['group']?.['id']] = {'value': 0, 'forecast_value': 0, 'gross_profit': 0}
-                        if (data?.['opportunity']?.['value']) {
-                            dataGroupTotal[data?.['group']?.['id']]['value'] = data?.['opportunity']?.['value'];
+                    if (!dataGroupTotal.hasOwnProperty(data?.['group_inherit']?.['id'])) {
+                        dataGroupTotal[data?.['group_inherit']?.['id']] = {
+                            'revenue': 0, 'revenue_plan': 0, 'revenue_ratio': 0,
+                            'gross_profit': 0, 'gross_profit_plan': 0, 'gross_profit_ratio': 0,
                         }
-                        if (data?.['opportunity']?.['forecast_value']) {
-                            dataGroupTotal[data?.['group']?.['id']]['forecast_value'] = data?.['opportunity']?.['forecast_value'];
-                        }
-                        if (data?.['opportunity']?.['gross_profit']) {
-                            dataGroupTotal[data?.['group']?.['id']]['gross_profit'] = data?.['opportunity']?.['gross_profit'];
+                        if (data?.['revenue']) {
+                            dataGroupTotal[data?.['group_inherit']?.['id']]['revenue'] = data?.['revenue'];
                         }
                     } else {
-                        if (data?.['opportunity']?.['value']) {
-                            dataGroupTotal[data?.['group']?.['id']]['value'] += data?.['opportunity']?.['value'];
+                        if (data?.['revenue']) {
+                            dataGroupTotal[data?.['group_inherit']?.['id']]['value'] += data?.['revenue'];
                         }
-                        if (data?.['opportunity']?.['forecast_value']) {
-                            dataGroupTotal[data?.['group']?.['id']]['forecast_value'] += data?.['opportunity']?.['forecast_value'];
-                        }
-                        if (data?.['opportunity']?.['gross_profit']) {
-                            dataGroupTotal[data?.['group']?.['id']]['gross_profit'] += data?.['opportunity']?.['gross_profit'];
-                        }
-                    }
-                    // data group win rate
-                    if (!dataGroupWinRate.hasOwnProperty(data?.['group']?.['id'])) {
-                        dataGroupWinRate[data?.['group']?.['id']] = data?.['opportunity']?.['win_rate'];
-                    } else {
-                        dataGroupWinRate[data?.['group']?.['id']] += data?.['opportunity']?.['win_rate'];
-                    }
-                    // data group call
-                    if (!dataGroupCall.hasOwnProperty(data?.['group']?.['id'])) {
-                        dataGroupCall[data?.['group']?.['id']] = data?.['opportunity']?.['call'];
-                    } else {
-                        dataGroupCall[data?.['group']?.['id']] += data?.['opportunity']?.['call'];
-                    }
-                    // data group email
-                    if (!dataGroupEmail.hasOwnProperty(data?.['group']?.['id'])) {
-                        dataGroupEmail[data?.['group']?.['id']] = data?.['opportunity']?.['email'];
-                    } else {
-                        dataGroupEmail[data?.['group']?.['id']] += data?.['opportunity']?.['email'];
-                    }
-                    // data group meeting
-                    if (!dataGroupMeeting.hasOwnProperty(data?.['group']?.['id'])) {
-                        dataGroupMeeting[data?.['group']?.['id']] = data?.['opportunity']?.['meeting'];
-                    } else {
-                        dataGroupMeeting[data?.['group']?.['id']] += data?.['opportunity']?.['meeting'];
-                    }
-                    // data group document
-                    if (!dataGroupDocument.hasOwnProperty(data?.['group']?.['id'])) {
-                        dataGroupDocument[data?.['group']?.['id']] = data?.['opportunity']?.['document'];
-                    } else {
-                        dataGroupDocument[data?.['group']?.['id']] += data?.['opportunity']?.['document'];
                     }
                 }
                 // employee setup
@@ -201,70 +136,28 @@ $(function () {
                     }
                     // data employee total
                     if (!dataEmployeeTotal.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                        dataEmployeeTotal[data?.['employee_inherit']?.['id']] = {'value': 0, 'forecast_value': 0, 'gross_profit': 0}
-                        if (data?.['opportunity']?.['value']) {
-                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['value'] = data?.['opportunity']?.['value'];
+                        dataEmployeeTotal[data?.['employee_inherit']?.['id']] = {
+                            'revenue': 0, 'revenue_plan': 0, 'revenue_ratio': 0,
+                            'gross_profit': 0, 'gross_profit_plan': 0, 'gross_profit_ratio': 0,
                         }
-                        if (data?.['opportunity']?.['forecast_value']) {
-                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['forecast_value'] = data?.['opportunity']?.['forecast_value'];
-                        }
-                        if (data?.['opportunity']?.['gross_profit']) {
-                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['gross_profit'] = data?.['opportunity']?.['gross_profit'];
+                        if (data?.['revenue']) {
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['revenue'] = data?.['revenue'];
                         }
                     } else {
-                        if (data?.['opportunity']?.['value']) {
-                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['value'] += data?.['opportunity']?.['value'];
+                        if (data?.['revenue']) {
+                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['revenue'] += data?.['revenue'];
                         }
-                        if (data?.['opportunity']?.['forecast_value']) {
-                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['forecast_value'] += data?.['opportunity']?.['forecast_value'];
-                        }
-                        if (data?.['opportunity']?.['gross_profit']) {
-                            dataEmployeeTotal[data?.['employee_inherit']?.['id']]['gross_profit'] += data?.['opportunity']?.['gross_profit'];
-                        }
-                    }
-                    // data employee win rate
-                    if (!dataEmployeeWinRate.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                        dataEmployeeWinRate[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['win_rate'];
-                    } else {
-                        dataEmployeeWinRate[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['win_rate'];
-                    }
-                    // data employee call
-                    if (!dataEmployeeCall.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                        dataEmployeeCall[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['call'];
-                    } else {
-                        dataEmployeeCall[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['call'];
-                    }
-                    // data employee email
-                    if (!dataEmployeeEmail.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                        dataEmployeeEmail[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['email'];
-                    } else {
-                        dataEmployeeEmail[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['email'];
-                    }
-                    // data employee meeting
-                    if (!dataEmployeeMeeting.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                        dataEmployeeMeeting[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['meeting'];
-                    } else {
-                        dataEmployeeMeeting[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['meeting'];
-                    }
-                    // data employee document
-                    if (!dataEmployeeDocument.hasOwnProperty(data?.['employee_inherit']?.['id'])) {
-                        dataEmployeeDocument[data?.['employee_inherit']?.['id']] = data?.['opportunity']?.['document'];
-                    } else {
-                        dataEmployeeDocument[data?.['employee_inherit']?.['id']] += data?.['opportunity']?.['document'];
                     }
                 }
             }
             let dataTotal = {
-                'opportunity': {
-                    'value': totalValue,
-                    'forecast_value': totalForecastValue,
-                    'gross_profit': totalGrossProfit,
-                    'call': totalCall,
-                    'email': totalEmail,
-                    'meeting': totalMeeting,
-                    'document': totalDocument,
-                },
                 'group': {'title': eleTrans.attr('data-total')},
+                'revenue': totalRevenue,
+                'revenue_plan': 0,
+                'revenue_ratio': 0,
+                'gross_profit': totalProfit,
+                'gross_profit_plan': 0,
+                'gross_profit_ratio': 0,
                 'group_by': 0,
                 'type_group_by': 0,  // total
             }
@@ -272,41 +165,26 @@ $(function () {
             for (let groupKey in dataGroup) {  // push data group
                 result.push({
                     'group': dataGroup[groupKey],
-                    'opportunity': {
-                        'value': dataGroupTotal?.[groupKey]?.['value'],
-                        'forecast_value': dataGroupTotal?.[groupKey]?.['forecast_value'],
-                        'gross_profit': dataGroupTotal?.[groupKey]?.['gross_profit'],
-                        // 'win_rate': dataGroupWinRate?.[groupKey],
-                        'call': dataGroupCall?.[groupKey],
-                        'email': dataGroupEmail?.[groupKey],
-                        'meeting': dataGroupMeeting?.[groupKey],
-                        'document': dataGroupDocument?.[groupKey],
-                    },
+                    'revenue': dataGroupTotal?.[groupKey]?.['revenue'],
+                    'revenue_plan': dataGroupTotal?.[groupKey]?.['revenue_plan'],
+                    'revenue_ratio': dataGroupTotal?.[groupKey]?.['revenue_ratio'],
+                    'gross_profit': dataGroupTotal?.[groupKey]?.['gross_profit'],
+                    'gross_profit_plan': dataGroupTotal?.[groupKey]?.['gross_profit_plan'],
+                    'gross_profit_ratio': dataGroupTotal?.[groupKey]?.['gross_profit_ratio'],
                     'group_by': 1,
                 });
                 for (let employeeKey in dataEmployee) {  // push data employee
                     if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
                         result.push({
                             'employee_inherit': dataEmployee[employeeKey],
-                            'opportunity': {
-                                'value': dataEmployeeTotal?.[employeeKey]?.['value'],
-                                'forecast_value': dataEmployeeTotal?.[employeeKey]?.['forecast_value'],
-                                'gross_profit': dataEmployeeTotal?.[employeeKey]?.['gross_profit'],
-                                // 'win_rate': dataEmployeeWinRate?.[employeeKey],
-                                'call': dataEmployeeCall?.[employeeKey],
-                                'email': dataEmployeeEmail?.[employeeKey],
-                                'meeting': dataEmployeeMeeting?.[employeeKey],
-                                'document': dataEmployeeDocument?.[employeeKey],
-                            },
+                            'revenue': dataEmployeeTotal?.[employeeKey]?.['revenue'],
+                            'revenue_plan': dataEmployeeTotal?.[employeeKey]?.['revenue_plan'],
+                            'revenue_ratio': dataEmployeeTotal?.[employeeKey]?.['revenue_ratio'],
+                            'gross_profit': dataEmployeeTotal?.[employeeKey]?.['gross_profit'],
+                            'gross_profit_plan': dataEmployeeTotal?.[employeeKey]?.['gross_profit_plan'],
+                            'gross_profit_ratio': dataEmployeeTotal?.[employeeKey]?.['gross_profit_ratio'],
                             'group_by': 2
                         });
-                        for (let data of dataList) {  // push data opp
-                            if (data?.['employee_inherit']?.['id'] === employeeKey) {
-                                data['group'] = {};
-                                data['employee_inherit'] = {};
-                                result.push(data);
-                            }
-                        }
                     }
                 }
             }
@@ -321,7 +199,6 @@ $(function () {
                     'font-weight': 'bold'
                 });
             }
-
             $.fn.initMaskMoney2();
         }
 
@@ -553,34 +430,14 @@ $(function () {
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
-            let eleCheck = eleAreaPeriodAll[0].querySelector('.check-period:checked');
-            if (eleCheck.classList.contains('check-quarter')) {  // quarter
-                if (boxQuarter.val()) {
-                    let {startDate, endDate} = getQuarterRange(parseInt(boxQuarter.val()));
-                    dataParams['opportunity__close_date__gte'] = startDate;
-                    dataParams['opportunity__close_date__lte'] = endDate;
-                }
-            }
-            if (eleCheck.classList.contains('check-month')) {  // month
-                if (boxDetail.val()) {
-                    let dataMonth = SelectDDControl.get_data_from_idx(boxDetail, boxDetail.val());
-                    if (dataMonth) {
-                        let {startDate, endDate} = getMonthRange(parseInt(boxDetail.val()), parseInt(dataMonth?.['year']));
-                        dataParams['opportunity__close_date__gte'] = startDate;
-                        dataParams['opportunity__close_date__lte'] = endDate;
-                    }
-                }
-            }
-            if (eleCheck.classList.contains('check-custom')) {  // custom
-                if (boxFrom.val()) {
-                    let startDate = getDateFrom();
-                    dataParams['opportunity__close_date__gte'] = startDate;
-                }
-                if (boxTo.val()) {
-                    let endDate = getDateTo();
-                    dataParams['opportunity__close_date__lte'] = endDate;
-                }
-            }
+            // if (boxDetail.val()) {
+            //     let dataMonth = SelectDDControl.get_data_from_idx(boxDetail, boxDetail.val());
+            //     if (dataMonth) {
+            //         let {startDate, endDate} = getMonthRange(parseInt(boxDetail.val()), parseInt(dataMonth?.['year']));
+            //         dataParams['opportunity__close_date__gte'] = startDate;
+            //         dataParams['opportunity__close_date__lte'] = endDate;
+            //     }
+            // }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
@@ -591,8 +448,8 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('report_pipeline_list') && Array.isArray(data.report_pipeline_list)) {
-                            setupDataLoadTable(data.report_pipeline_list);
+                        if (data.hasOwnProperty('report_general_list') && Array.isArray(data.report_general_list)) {
+                            setupDataLoadTable(data.report_general_list);
                         }
                     }
                 }

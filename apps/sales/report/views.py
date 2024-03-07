@@ -225,3 +225,30 @@ class ReportCashflowListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.REPORT_CASHFLOW_LIST).get(data)
         return resp.auto_return(key_success='report_cashflow_list')
+
+
+# REPORT GENERAL
+class ReportGeneralList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/report/report_general.html',
+        menu_active='menu_report_general_list',
+        breadcrumb='REPORT_GENERAL_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        return {'filter_quarter': FILTER_QUARTER, 'filter_month': FILTER_MONTH}, status.HTTP_200_OK
+
+
+class ReportGeneralListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_GENERAL_LIST).get(data)
+        return resp.auto_return(key_success='report_general_list')

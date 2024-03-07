@@ -18,6 +18,18 @@ Với:
 - Đường dẫn đến bản dịch: locale/vi/LC_MESSAGES/
 - Tệp chứa bản dịch: *.po (django.po hoặc djangojs.po)
 
+```shell
+# Tạo file dịch cho app tên "x" nằm tại đường dẫn "apps/x" 
+# (giống thuộc tính name trong file apps.py của app):
+
+$ python manage.py make_jsi18n apps.x
+# Hoặc
+$ python manage.py make_jsi18n apps.x --file_name=djangojs.po
+
+# apps.x : đường dẫn đến ứng dụng
+# --file_name là tên file muốn tạo, mặc định là djangojs
+```
+
 > Sau khi thêm bản dịch, muốn áp dụng bản dịch (compile po -> mo) sử dụng command: 
 > $ python manage.py compilemessages
 

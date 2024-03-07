@@ -23,7 +23,6 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\\n"
 
 #
-
 '''
 
 
@@ -32,9 +31,13 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('app_path', type=str, help='Đường dẫn đến ứng dụng')
+        parser.add_argument('--file_name', dest='file_name', type=str, default='djangojs.po')
 
     def handle(self, *args, **kwargs):
         app_label = kwargs['app_path']
+        file_name = kwargs['file_name']
+        self.stdout.write(self.style.SUCCESS(f'Processing: {app_label} → {file_name}'))
+
         app_path = app_label.replace('.', '/')
 
         if app_label not in settings.INSTALLED_APPS:

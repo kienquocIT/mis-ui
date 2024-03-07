@@ -7,6 +7,22 @@ $.fn.extend({
     isDebug: function () {
         return $.fn.parseBoolean(globeIsDebug, false)
     },
+    getClass: function (regex){
+        let clsThis = this;
+        const regexObj = new RegExp(regex);
+        let matches = [];
+        clsThis.each(function (index, item) {
+            item.className.split(" ").map(
+                (item) => {
+                    let state = regexObj.exec(item);
+                    if (Array.isArray(state) && state.length > 0){
+                        matches.push(item);
+                    }
+                }
+            )
+        });
+        return matches;
+    },
     alterClass: function (removals, additions) {
         // https://stackoverflow.com/a/8680251/13048590
         // https://gist.github.com/peteboere/1517285

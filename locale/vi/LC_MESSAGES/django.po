@@ -2384,6 +2384,10 @@ msgid "Copied"
 msgstr "Đã sao chép"
 
 #
+msgid "Copy not support"
+msgstr "Sao chép không hỗ trợ"
+
+#
 msgid "Go to change password page"
 msgstr "Chuyển hướng đến trang thay đổi mật khẩu"
 
@@ -6259,7 +6263,7 @@ msgstr "Cả năm"
 
 #
 msgid "Opp code"
-msgstr "Mã chkd"
+msgstr "Mã CHKD"
 
 #
 msgid "Win"
@@ -6267,7 +6271,7 @@ msgstr "Thắng"
 
 #
 msgid "Opp value"
-msgstr "Giá trị chkd"
+msgstr "Giá trị CHKD"
 
 #
 msgid "Forecast value"
@@ -6860,3 +6864,15 @@ msgstr "Ngày đến hạn không hợp lệ"
 #
 msgid "Some Opening balance values can be wrong because last sub period have not been closed."
 msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ kế toán tháng trước đó chưa được đóng."
+
+#
+msgid "Employee code"
+msgstr "Mã nhân viên"
+
+#
+msgid "Gross profit plan"
+msgstr "Kế hoạch lợi nhuận gộp"
+
+#
+msgid "General revenue report"
+msgstr "Báo cáo doanh thu chung"

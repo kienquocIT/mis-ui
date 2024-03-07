@@ -5323,9 +5323,14 @@ class FileControl {
 
 class CommentControl {
     constructor(ele$, opts={}) {
-        let {owner_id, btn_goto_enabled} = {owner_id: $x.fn.getEmployeeCurrentID(), btn_goto_enabled: true, ...opts}
+        let {owner_id, btn_goto_enabled, swalOpts} = {
+            owner_id: $x.fn.getEmployeeCurrentID(), btn_goto_enabled: true,
+            swalOpts: {'allowOutsideClick': true},
+            ...opts
+        }
         this.owner_id = owner_id;
         this.btn_goto_enabled = btn_goto_enabled;
+        this.swalOpts = swalOpts;
 
         this.ele$ = ele$;
         this.ele_list$ = ele$.find('.comment-list');
@@ -5812,7 +5817,10 @@ class CommentControl {
                 },
                 renderDropdown: function() {
                     return '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>';
-                }
+                },
+                matcher: function (item) {
+                    return item;
+                },
             },
             setup: function(editor) {
                 tinymceEditor = editor;
@@ -5909,6 +5917,7 @@ class CommentControl {
                     url: url,
                     method: method,
                     data: data,
+                    sweetAlertOpts: clsThis.swalOpts,
                 }).then(
                     resp => {
                         let data = $.fn.switcherResp(resp);

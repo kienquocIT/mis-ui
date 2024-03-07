@@ -6868,3 +6868,7 @@ msgstr "Mã nhân viên"
 #
 msgid "Gross profit plan"
 msgstr "Kế hoạch lợi nhuận gộp"
+
+#
+msgid "General revenue report"
+msgstr "Báo cáo doanh thu chung"

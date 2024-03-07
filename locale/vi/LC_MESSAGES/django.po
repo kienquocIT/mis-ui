@@ -6860,3 +6860,11 @@ msgstr "Cấu hình dữ liệu giao dịch"
 #
 msgid "Invalid due date"
 msgstr "Ngày đến hạn không hợp lệ"
+
+#
+msgid "Employee code"
+msgstr "Mã nhân viên"
+
+#
+msgid "Gross profit plan"
+msgstr "Kế hoạch lợi nhuận gộp"

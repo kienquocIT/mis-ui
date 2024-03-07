@@ -6856,3 +6856,7 @@ msgstr "Cấu hình dữ liệu giao dịch"
 #
 msgid "Invalid due date"
 msgstr "Ngày đến hạn không hợp lệ"
+
+#
+msgid "Some Opening balance values can be wrong because last sub period have not been closed."
+msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ kế toán tháng trước đó chưa được đóng."

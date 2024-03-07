@@ -4,6 +4,11 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        tr:hover {
+            background-color: #fffaeb;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
@@ -29,6 +34,14 @@
     <script id="url-script"
             data-url-inventory-detail-list="{% url 'ReportInventoryDetailListAPI' %}"
     ></script>
+
+    <div class="row" id="notify-div" hidden>
+        <div class="col-12">
+            <div class="alert bg-warning-light-3" role="alert">
+                {% trans 'Some Opening balance values can be wrong because last sub period have not been closed.' %}
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-12 col-lg-3 col-md-3">

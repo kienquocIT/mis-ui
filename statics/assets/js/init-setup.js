@@ -85,42 +85,48 @@ class SetupFormSubmit {
         return null;
     }
 
+    static call_validate(ele$, configs){
+        let validator = $(ele$).validate({
+            focusInvalid: true,
+            validClass: "is-valid",
+            errorClass: "is-invalid",
+            errorElement: "small",
+            showErrors: function (errorMap, errorList) {
+                this.defaultShowErrors();
+            },
+            errorPlacement: function (error, element) {
+                // error.insertAfter(element);
+                error.css({'color': "red"})
+
+                //
+                let parentEle = element.parent();
+                let insertAfterEle = parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper') ? parentEle : element;
+                error.insertAfter(insertAfterEle);
+            },
+            onsubmit: false,
+            ...configs
+        });
+        $.validator.unpretentious(ele$);
+        return validator;
+    }
+
     validate(opts) {
         if (this.formSelected) {
             let submitHandler = opts?.['submitHandler'];
-            if (opts.hasOwnProperty('submitHandler')) {
-                delete opts['submitHandler'];
-            }
+            if (opts.hasOwnProperty('submitHandler')) delete opts['submitHandler'];
 
-            this.formSelected.each(function () {
-                $(this).validate({
-                    focusInvalid: true,
-                    validClass: "is-valid",
-                    errorClass: "is-invalid",
-                    errorElement: "small",
-                    showErrors: function (errorMap, errorList) {
-                        this.defaultShowErrors();
-                    },
-                    errorPlacement: function (error, element) {
-                        // error.insertAfter(element);
-                        error.css({'color': "red"})
-
-                        //
-                        let parentEle = element.parent();
-                        let insertAfterEle = parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper') ? parentEle : element;
-                        error.insertAfter(insertAfterEle);
-                    },
+            return SetupFormSubmit.call_validate(
+                $(this.formSelected),
+                {
                     submitHandler: function (form, event) {
                         event.preventDefault();
                         submitHandler ? submitHandler($(form), event) : form.submit();
                     },
                     onsubmit: true, // !!submitHandler,
                     ...opts,
-                })
-            })
-        } else {
-            throw Error('Form element must be required!');
-        }
+                }
+            )
+        } else throw Error('Form element must be required!');
     }
 
     static validate(frmEle, opts) {
@@ -3542,7 +3548,7 @@ class DTBControl {
 
         // style 1
         let styleDom = opts?.['styleDom'] || 'full';
-        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt';
+        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'>B<'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt';
         if (styleDom === 'small') {
             domDTL += `<'row tbl-footer-toolbar' <'cus-page-info'<'col-12 d-flex justify-content-center py-1'l><'col-12  d-flex justify-content-center py-1'i><'col-12  d-flex justify-content-center py-1'p>>>`;
         } else if (styleDom === 'hide-foot') {
@@ -3565,7 +3571,15 @@ class DTBControl {
             visiblePagination: stateDefaultPageControl,   // "p"
             visibleOrder: stateDefaultPageControl,   // "r"
             visibleRowQuantity: stateDefaultPageControl,   // "s"
+            visibleButton: false, // button
         }
+        // show or hide button
+        if (opts.hasOwnProperty('visibleButton')){
+            if ($.fn.isBoolean(opts['visibleButton'])) utilsDom.visibleButton = opts['visibleButton'];
+            delete opts['visibleButton']
+        }
+        if (utilsDom.visibleButton === false) domDTL = domDTL.replace('>B<', '><');
+
         // show or hide search field
         if (opts.hasOwnProperty('visiblePaging')) {
             if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
@@ -3848,7 +3862,12 @@ class DTBControl {
         let drawCallback01 = this.opts?.['drawCallback'] || function (settings) {
         };
         let drawCallBackDefault = function (settings) {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
+            // $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
+            $('.dataTables_paginate > .pagination').addClass('dtb-pagination-custom')
+            $('.dataTables_info').addClass('dtb-info-custom');
+            $('.dataTables_length label').addClass('dtb-length-custom');
+            $('.dataTables_length select').addClass('dtb-length-list-custom');
+
             feather.replace();
             // reload all currency
             if (clsThis.reloadCurrency === true) $.fn.initMaskMoney2();

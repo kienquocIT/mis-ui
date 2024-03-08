@@ -28,3 +28,7 @@ msgstr "Hiển thị dữ liệu cần nhập"
 #
 msgid "Click here to download template file"
 msgstr "Nhấn vào đây để tải xuống tệp mẫu"
+
+#
+msgid "Load File Data"
+msgstr "Tải dữ liệu tập tin"

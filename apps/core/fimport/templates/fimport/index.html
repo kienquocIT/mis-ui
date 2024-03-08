@@ -21,6 +21,11 @@
                 padding-left: 1rem;
             }
         }
+
+        .my-custom-align {
+          vertical-align: top!important;
+          text-align: left;
+        }
     </style>
 {% endblock %}
 
@@ -47,14 +52,15 @@
             </div>
             <div class="w-100 mb-5">
                 <div class="form-group">
-                    <label for="formFile" class="form-label required">{% trans 'Choose the Excel file to import data' %}</label>
+                    <label
+                            for="formFile" class="form-label required"
+                    >{% trans 'Choose the Excel file to import data' %}</label>
                     <input class="form-control" type="file" id="formFile" disabled required>
                     <small class="text-muted form-text" id="file-remarks"></small>
                 </div>
             </div>
             <div class="w-100 mb-3">
-                <button class="btn btn-outline-primary w-100 mb-1" disabled>{% trans 'Verify' %}</button>
-                <button class="btn btn-soft-primary w-100 mb-1" disabled>{% trans 'Save' %}</button>
+                <button class="btn btn-primary w-100 mb-1" disabled id="btnLoadFileData">{% trans 'Load File Data' %}</button>
             </div>
         </div>
         <div class="col-lg-9 col-md-8 col-xs-12" id="idx-box-data">
@@ -74,208 +80,319 @@
 
 {% block jsHeaderUnCompress %}
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
+    <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.1/b-3.0.0/b-html5-3.0.0/datatables.min.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.1/b-3.0.0/b-html5-3.0.0/datatables.min.js"></script>
+
+    <script src="{% static 'assets/js/additional-methods.min.js' %}"></script>
 {% endblock %}
 
 {% block jsFooter %}
     <script>
         $(document).ready(function () {
-            let boxData$ = $('#idx-box-data');
-            let boxControl$ = $("#idx-box-control");
-            let linkTemplateList$ = $('#idx-link-template');
-            let inpFile$ = $('#formFile');
-            let inpApp$ = $('#inp-application');
+            class RenderData {
+                constructor(props) {
+                    this.templateConfig = {
+                        columns: [],
+                        ...props?.['templateConfig'] || {}
+                    };
+                    this.tbl$ = props?.['table'] || $('#tbl-display-data');
+                    if (!$(this.tbl$).attr('id')) this.tbl$.attr('id', $x.fn.randomStr(32));
 
-            let templateData = JSON.parse($('#idx-template-link').text());
-            let templateSelectedData = {};
+                    this.headData = [];
+                    this.bodyData = [];
+                }
 
-            function renderData(data) {
-                let columnsConfig = templateSelectedData?.['columns'] || [];
-                if (!(data && Array.isArray(data) && data.length > 1)) return false;
+                generate_head() {
+                    let columnsConfig = this.templateConfig.columns || [];
+                    if (!columnsConfig) return false;
 
-                const tbl$ = $('#tbl-display-data');
-
-                if ($.fn.DataTable.isDataTable('#tbl-display-data')) tbl$.DataTable().destroy();
-
-                let headData = data[0];
-
-                let bodyDatas = data.slice(1);
-
-                function parseToDataAndColumns() {
-                    let columns = headData.map(
-                        (item, idx) => {
-                            return {
-                                data: idx,
-                                render: (data, type, row) => {
-                                    return data;
-                                }
+                    //
+                    let row$ = $(`<div class="row"></div>`);
+                    columnsConfig.map(
+                        (item) => {
+                            let col$ = $(`<div class="col">${item.name}</div>`);
+                            let colConfig = item?.['col_attrs'] || null;
+                            if (colConfig) {
+                                Object.keys(colConfig).map(
+                                    (key) => {
+                                        col$.attr(key, colConfig[key]);
+                                    }
+                                )
                             }
+                            col$.append(`<i class="fa-solid fa-circle-info ml-1" data-bs-toggle="tooltip" title="${item.type} - ${item.remarks}"></i>`);
+                            row$.append(col$);
                         }
                     )
-                    columns.push({
-                        width: '10%',
-                        render: (data, type, row) => {
-                            return `
-                                <span class="badge badge-soft-primary"><i class="fa-solid fa-check"></i></span>
-                                <span class="badge badge-soft-danger"><i class="fa-solid fa-xmark"></i></span>
-                            `;
-                        }
-                    })
-                    let data = bodyDatas.map(
-                        (item, index) => {
-                            let tmp = {};
-                            for (let i = 0; i < item.length; i++) {
-                                tmp[i] = item[i];
-                            }
-                            tmp['idx'] = index + 1;
-                            return tmp;
-                        }
-                    )
+                    // setup thead
+                    let thead$ = $(`<thead>
+                        <tr>
+                            <th>${row$.prop('outerHTML')}</th>
+                            <th><p><i class="fa-solid fa-tractor"></i></p><small></small></th>
+                        </tr>
+                    </thread>`);
+                    // add thead to table
+                    this.tbl$.append(thead$);
+                }
 
-                    return {
-                        data: data,
-                        columns: columns,
+                get_columns() {
+                    let columnsConfig = this.templateConfig.columns || [];
+
+                    function generate_col(config){
+                        let colAttrs = config?.['col_attrs'] || {'class': 'col'};
+                        let col$ = $(`<div></div>`);
+                        Object.keys(colAttrs).map(
+                            (key) => {
+                                col$.attr(key, colAttrs[key]);
+                            }
+                        )
+                        return col$;
                     }
-                }
 
-                function destroyOld() {
-                    tbl$.empty();
-                }
+                    function generate_form_group(data, config){
+                        let stateInp = !!(config?.['input_attrs'] || null);
+                        let inpAttrs = {
+                            'args': stateInp ? [] : ['disabled', 'readonly'],
+                            'kwargs': {
+                                class: 'form-control-plaintext',
+                            },
+                            ...config?.['input_attrs'] || {}
+                        };
+                        let inp$ = $(`<input class="form-control" value="${data}" />`);
+                        inpAttrs.args.map(
+                            (attData) => inp$.prop(attData, true)
+                        )
+                        Object.keys(inpAttrs.kwargs).map(
+                            (key) => {
+                                inp$.attr(key, inpAttrs.kwargs[key]);
+                            }
+                        )
+                        let group$ = $(`<div class="form-group"></div>`);
+                        group$.append(inp$);
+                        return group$;
+                    }
 
-                function renderTHead() {
-                    let thead$ = $(`<thead></thread>`);
-                    let tr$ = $(`<tr></tr>`);
-                    headData.map(
-                        (item, idx) => {
-                            if (Array.isArray(columnsConfig) && columnsConfig.length > 0 && idx < columnsConfig.length){
-                                tr$.append(`
-                                    <th>
-                                        <p>${item}</p>
-                                        <small>${columnsConfig[idx].remarks}</small>
-                                    </th>
-                                `);
-                            } else tr$.append(`<th><p>${item}</p><small></small></th>`);
+                    return [
+                        {
+                            render: (data, type, row) => {
+                                let cell$ = $(`<div class="row"></div>`);
+                                columnsConfig.map(
+                                    (config, index) => {
+                                        let col$ = generate_col(config);
+                                        let group$ = generate_form_group(row[index], config);
+
+                                        col$.append(group$);
+                                        cell$.append(col$);
+                                    }
+                                )
+                                return `<form data-url="#" data-method="POST" id="${$x.fn.randomStr(32)}">${cell$.prop('outerHTML')}</form>`;
+                            }
+                        },
+                        {
+                            width: '10%',
+                            className: 'my-custom-align',
+                            render: (data, type, row) => {
+                                // <span class="badge badge-soft-primary"><i class="fa-solid fa-check"></i></span>
+                                // <span class="badge badge-soft-danger"><i class="fa-solid fa-xmark"></i></span>
+                                return `<button class="btn btn-xs btn-primary btnSubmit" type="button"><i class="fa-regular fa-floppy-disk"></i></button>`;
+                            }
                         }
-                    )
-                    tr$.append(`<th><p><i class="fa-solid fa-tractor"></i></p><small></small></th>`);
-                    thead$.append(tr$);
-                    tbl$.append(thead$);
+                    ]
                 }
 
-                function renderTBody() {
-                    let tbody$ = $(`<tbody></tbody>`);
-                    tbl$.append(tbody$);
+                render_data(data){
+                    // not process when data type is not correct
+                    if (!(data && Array.isArray(data) && data.length > 1)) return false;
 
-                    tbl$.DataTable({
-                        searching: false,
-                        sorting: false,
-                        ordering: false,
+                    this.headData = data[0];
+                    this.bodyDatas = data.slice(1);
+
+                    this.tbl$.DataTable().clear().rows.add(this.bodyDatas).draw();
+                }
+
+                render_frame() {
+                    let clsThis = this;
+
+                    // destroy datatable if exist
+                    if ($.fn.DataTable.isDataTable('#' + this.tbl$.attr('id'))) this.tbl$.DataTable().destroy();
+
+                    this.tbl$.empty();
+
+                    this.generate_head();
+
+                    this.tbl$.DataTableDefault({
+                        searching: true,
                         autoWidth: false,
-                        ...parseToDataAndColumns(),
-                        initComplete: function (){
+                        columns: this.get_columns(),
+                        data: [],
+                        initComplete: function () {
                             $x.fn.hideLoadingPage();
                         },
+                        rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
+                            $(row).attr('data-url', '#');
+                            $(row).attr('data-method', "POST");
+                            let frm$ = $(row).find('form');
+                            new SetupFormSubmit(frm$).validate({
+                                rules: clsThis.templateConfig?.['validate'] || {},
+                                submitHandler: function (form, event) {
+                                    console.log('submit: ', form);
+                                }
+                            });
+                            $.validator.unpretentious(frm$);
+
+                            $(row).find('button').on('click', function () {
+                                frm$.trigger('submit');
+                            });
+
+                            setTimeout(() => frm$.valid(), 100);
+
+                            $(row).find('input:not(:disabled):not(:read-only):not(.form-control-plaintext)').on(
+                                'input', () => frm$.valid()
+                            )
+                        },
                     })
                 }
-
-                destroyOld();
-                renderTHead();
-                renderTBody();
             }
 
-            function readerBufferFile(f){
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                let data = new Uint8Array(e.target.result);
-                let workbook = XLSX.read(data, {type: 'array'});
+            class ImportController {
+                constructor(opts = {}) {
+                    this.opts = opts;
+                    this.boxData$ = $('#idx-box-data');
+                    this.boxControl$ = $("#idx-box-control");
+                    this.linkTemplateList$ = $('#idx-link-template');
+                    this.inpFile$ = $('#formFile');
+                    this.inpApp$ = $('#inp-application');
 
-                // Get first worksheet
-                let worksheetName = workbook.SheetNames[0];
-                let worksheet = workbook.Sheets[worksheetName];
-
-                // Convert to JSON
-                jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-                renderData(jsonData);
-            };
-            reader.readAsArrayBuffer(f);
-        }
-
-            inpApp$.initSelect2().on('change', function (){
-                let idx = $(this).val();
-                templateSelectedData = templateData[idx];
-                if (templateSelectedData && templateSelectedData?.['template_link']){
-                    linkTemplateList$.attr('href', linkTemplateList$.attr('data-static-url') + templateSelectedData['template_link']).show();
-                } else {
-                    linkTemplateList$.attr('href', '#').hide();
+                    this.templateData = JSON.parse($('#idx-template-link').text());
+                    this.templateSelectedData = {};
+                    this.previousState = '1';  // 0: hide, 1: show
                 }
-                inpFile$.prop('disabled', false);
-            });
-            inpFile$.on('change', function (event) {
-                $x.fn.showLoadingPage();
 
-                let files = event.target.files;
-                let f = files[0];
-                let sizeToMB = f.size / (1024 * 1024);
+                readerBufferFile(f) {
+                    let clsThis = this;
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        let data = new Uint8Array(e.target.result);
+                        let workbook = XLSX.read(data, {type: 'array'});
 
-                if (sizeToMB > 10){
-                    $.fn.notifyB({
-                        'description': $.fn.gettext('File size must be less than or equal to __size__').replaceAll('__size__', '5MB')
-                    }, 'failure');
-                    this.value = "";
-                    $x.fn.hideLoadingPage();
-                    return;
+                        // Get first worksheet
+                        let worksheetName = workbook.SheetNames[0];
+                        let worksheet = workbook.Sheets[worksheetName];
+
+                        // Convert to JSON
+                        let jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+
+                        $x.fn.hideLoadingPage();
+                        $('#btnLoadFileData').prop('disabled', false).on('click', function (){
+                            clsThis.clsRenderData.render_data(jsonData)
+                        })
+                    };
+                    reader.readAsArrayBuffer(f);
                 }
-                $('#file-remarks').text(`Size: ${sizeToMB.toFixed(2)}MB`);
 
-                setTimeout(() => readerBufferFile(f), 100);
-            });
+                on_events() {
+                    let clsThis = this;
+                    this.clsRenderData = null;
 
-            let previousState = '1';  // 0: hide, 1: show
-            $('#btn-collapse').on('click', function () {
-                let i$ = $(this).find('i');
-                if (i$.length > 0) {
-                    let currentRotate = i$.attr('data-rotate');
+                    this.inpApp$.initSelect2().on('change', function () {
+                        let idx = $(this).val();
+                        clsThis.templateSelectedData = clsThis.templateData[idx];
+                        if (clsThis.templateSelectedData && clsThis.templateSelectedData?.['template_link']) {
+                            clsThis.linkTemplateList$.attr('href', clsThis.linkTemplateList$.attr('data-static-url') + clsThis.templateSelectedData['template_link']).show();
+                            clsThis.inpFile$.prop('disabled', false);
 
-                    i$.css('transition-duration', '0.5s');
-                    i$.css('transition-property', 'transform');
+                            //
+                            clsThis.clsRenderData = new RenderData({
+                                'templateConfig': clsThis.templateSelectedData,
+                            });
+                            clsThis.clsRenderData.render_frame();
+                        } else {
+                            clsThis.linkTemplateList$.attr('href', '#').hide();
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('The feature is not support import file data')
+                            }, 'failure');
+                        }
+                    });
 
-                    boxControl$.animate(
-                        {
-                            width: "toggle",
-                            opacity: "toggle"
-                        },
-                        {
-                            'duration': 400,
-                            'start': function (){
-                                boxControl$.children().fadeOut('fast');
-                                if (!boxData$.attr('data-old-class')) boxData$.attr('data-old-class', boxData$.getClass('^col-*').join(" "));
-                                if (!boxControl$.attr('data-old-class')) boxControl$.attr('data-old-class', boxControl$.getClass('^col-*').join(" "));
+                    this.inpFile$.on('change', function (event) {
+                        $x.fn.showLoadingPage();
 
-                                // show
-                                if (previousState === '0') boxData$.alterClass('col-*').addClass(boxData$.attr('data-old-class'));
-                            },
-                            'done': function () {
-                                boxControl$.children().fadeIn('fast');
-                                if (!boxData$.attr('data-old-class')) boxData$.attr('data-old-class', boxData$.getClass('^col-*').join(" "));
-                                if (!boxControl$.attr('data-old-class')) boxControl$.attr('data-old-class', boxControl$.getClass('^col-*').join(" "));
+                        let files = event.target.files;
+                        let f = files[0];
+                        let sizeToMB = f.size / (1024 * 1024);
 
-                                // hide
-                                if (previousState === '1') boxData$.alterClass('col-*').addClass('col-12');
+                        if (sizeToMB > 10) {
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('File size must be less than or equal to __size__').replaceAll('__size__', '5MB')
+                            }, 'failure');
+                            this.value = "";
+                            $x.fn.hideLoadingPage();
+                            return;
+                        }
+                        $('#file-remarks').text(`Size: ${sizeToMB.toFixed(2)}MB`);
 
-                                if (previousState === '0') previousState = '1';
-                                else previousState = '0';
+                        setTimeout(() => {
+                            clsThis.readerBufferFile(f);
+                        }, 100);
+                    });
+
+                    $('#btn-collapse').on('click', function () {
+                        let i$ = $(this).find('i');
+                        if (i$.length > 0) {
+                            let currentRotate = i$.attr('data-rotate');
+
+                            i$.css('transition-duration', '0.5s');
+                            i$.css('transition-property', 'transform');
+
+                            clsThis.boxControl$.animate(
+                                {
+                                    width: "toggle",
+                                    opacity: "toggle"
+                                },
+                                {
+                                    'duration': 400,
+                                    'start': function () {
+                                        clsThis.boxControl$.children().fadeOut('fast');
+                                        if (!clsThis.boxData$.attr('data-old-class')) clsThis.boxData$.attr('data-old-class', clsThis.boxData$.getClass('^col-*').join(" "));
+                                        if (!clsThis.boxControl$.attr('data-old-class')) clsThis.boxControl$.attr('data-old-class', clsThis.boxControl$.getClass('^col-*').join(" "));
+
+                                        // show
+                                        if (clsThis.previousState === '0') clsThis.boxData$.alterClass('col-*').addClass(clsThis.boxData$.attr('data-old-class'));
+                                    },
+                                    'done': function () {
+                                        clsThis.boxControl$.children().fadeIn('fast');
+                                        if (!clsThis.boxData$.attr('data-old-class')) clsThis.boxData$.attr('data-old-class', clsThis.boxData$.getClass('^col-*').join(" "));
+                                        if (!clsThis.boxControl$.attr('data-old-class')) clsThis.boxControl$.attr('data-old-class', clsThis.boxControl$.getClass('^col-*').join(" "));
+
+                                        // hide
+                                        if (clsThis.previousState === '1') clsThis.boxData$.alterClass('col-*').addClass('col-12');
+
+                                        if (clsThis.previousState === '0') clsThis.previousState = '1';
+                                        else clsThis.previousState = '0';
+                                    }
+                                }
+                            )
+
+                            if (currentRotate) {
+                                i$.removeAttr('data-rotate');
+                                i$.css({'transform': 'unset'});
+                            } else {
+                                i$.attr('data-rotate', '1');
+                                i$.css({'transform': 'rotate(' + 180 + 'deg)'});
                             }
                         }
-                    )
-
-                    if (currentRotate) {
-                        i$.removeAttr('data-rotate');
-                        i$.css({'transform': 'unset'});
-                    } else {
-                        i$.attr('data-rotate', '1');
-                        i$.css({'transform': 'rotate(' + 180 + 'deg)'});
-                    }
+                    });
                 }
-            })
+
+                init() {
+                    this.on_events();
+                }
+            }
+
+            new ImportController().init();
         })
     </script>
 {% endblock %}

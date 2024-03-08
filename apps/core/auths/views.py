@@ -4,6 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import logout
+from django.views import View
 
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -14,6 +15,14 @@ from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, ServerMsg, TypeCh
 from apps.core.account.models import User
 
 from .forms import AuthLoginForm
+from ...shared.decorators import OutLayoutRender
+
+
+def check_home_domain(request):
+    meta_hosts = request.META['HTTP_HOST']
+    if meta_hosts and f'{settings.UI_DOMAIN_SUB_HOME}.{settings.UI_DOMAIN}' in meta_hosts:
+        return True
+    return False
 
 
 class AuthOAuth2Login(APIView):
@@ -98,12 +107,6 @@ class AuthLoginSelectTenant(APIView):
 class AuthLogin(APIView):
     permission_classes = [AllowAny]
 
-    def check_home_domain(self):
-        meta_hosts = self.request.META['HTTP_HOST']
-        if meta_hosts and f'{settings.UI_DOMAIN_SUB_HOME}.{settings.UI_DOMAIN}' in meta_hosts:
-            return True
-        return False
-
     def get(self, request):
         if request.user and not isinstance(request.user, AnonymousUser):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
@@ -111,7 +114,7 @@ class AuthLogin(APIView):
                 return redirect(request.query_params.get('next', reverse('HomeView')))
         request.session.flush()
         request.user = AnonymousUser
-        if self.check_home_domain() is True:
+        if check_home_domain(request) is True:
             return redirect(reverse('AuthLoginSelectTenant'))
         return render(
             request, 'auths/login.html', {
@@ -212,3 +215,68 @@ class MyLanguageAPI(APIView):
                 return {}, status.HTTP_200_OK
             return {'language': 'Language not support!'}, status.HTTP_400_BAD_REQUEST
         return {}, status.HTTP_403_FORBIDDEN
+
+
+class ForgotPasswordView(APIView):
+    def get(self, request, *args, **kwargs):
+        if request.user and not isinstance(request.user, AnonymousUser):
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
+            if resp.state is True:
+                return redirect(request.query_params.get('next', reverse('HomeView')))
+        request.session.flush()
+        request.user = AnonymousUser
+        if check_home_domain(request) is True:
+            return OutLayoutRender(request=request).render_404()
+        ctx = {'ui_domain': settings.UI_DOMAIN, 'captcha_enabled': False}
+        return render(request, 'auths/forgot_passwd.html', ctx)
+
+    @mask_view(login_require=False, is_api=True)
+    def post(self, request, *args, **kwargs):
+        # get OTP first
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD,
+            cus_headers={
+                'Accept-Language': request.headers.get('Accept-Language', settings.LANGUAGE_CODE)
+            }
+        ).post(data=request.data)
+        return resp.auto_return()
+
+
+class ForgotPasswordDetailAPI(APIView):
+    @mask_view(login_require=False, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        # refresh push OTP
+        if pk and TypeCheck.check_uuid(pk):
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD_DETAIL.fill_key(pk=pk)
+            ).get()
+            return resp.auto_return(key_success='forgot_password_data')
+        return OutLayoutRender(request=request).render_404()
+
+    @mask_view(login_require=False, is_api=True)
+    def put(self, request, *args, pk, **kwargs):
+        # enter OTP
+        if pk and TypeCheck.check_uuid(pk):
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.USER_FORGOT_PASSWORD_DETAIL.fill_key(pk=pk)
+            ).put(data=request.data)
+            return resp.auto_return()
+        return OutLayoutRender(request=request).render_404()
+
+
+class ChangePasswordView(View):
+    @mask_view(
+        auth_require=True,
+        template='auths/change_passwd.html',
+        breadcrumb='USER_CHANGE_PASSWORD',
+    )
+    def get(self, request, *args, **kwargs):
+        ctx = {}
+        return ctx, status.HTTP_200_OK
+
+
+class ChangePasswordAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_CHANGE_PASSWORD).put(data=request.data)
+        return resp.auto_return()

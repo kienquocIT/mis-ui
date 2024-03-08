@@ -73,6 +73,19 @@ msgstr "Số điện thoại liên lạc"
 msgid "User Name"
 msgstr "Tên Đăng Nhập"
 
+#
+msgid "User name"
+msgstr "Tên đăng nhập"
+
+#
+msgid "password"
+msgstr "Mật khẩu"
+
+#
+msgid "Sign Up"
+msgstr "Đăng ký"
+
+
 #: .\apps\core\account\templates\core\account\user_create.html:115
 msgid "Username to login "
 msgstr "Tên tài khoản để đăng nhập"
@@ -138,8 +151,28 @@ msgid "Actions"
 msgstr "Thao tác"
 
 #
+msgid "No changes"
+msgstr "Không có thay đổi"
+
+#
+msgid "Time remaining __data__s"
+msgstr "Thời gian còn lại __data__ giây"
+
+#
+msgid "Enter One-time password - OTP"
+msgstr "Nhập mã dùng một lần - OTP"
+
+#
+msgid "Reissued Password"
+msgstr "Mật khẩu được cấp lại"
+
+#
 msgid "Change password of"
 msgstr "Đặt lại mật khẩu của"
+
+#
+msgid "Current password"
+msgstr "Mật khẩu hiện tại"
 
 #
 msgid "New password"
@@ -206,7 +239,7 @@ msgstr "Hiển thị/ẩn trình chỉnh sửa"
 
 #
 msgid "Sign in to your account"
-msgstr "Đăng nhập vào tài khoản của bạn"
+msgstr "Đăng nhập tài khoản của bạn"
 
 #: .\apps\core\auths\templates\auths\login.html:71
 msgid "Choose..."
@@ -223,6 +256,31 @@ msgstr "Ghi nhớ đăng nhập"
 #: .\apps\core\auths\templates\auths\login.html:135
 msgid "Login"
 msgstr "Đăng Nhập"
+
+#
+msgid "login"
+msgstr "Đăng nhập"
+
+#
+msgid "Get OTP"
+msgstr "Lấy OTP"
+
+#
+msgid "Resend OTP"
+msgstr "Gửi lại OTP"
+
+
+#
+msgid "Verify"
+msgstr "Xác minh"
+
+#
+msgid "Strength of password"
+msgstr "Độ mạnh của mật khẩu"
+
+#
+msgid "Use a strong password with at least 6 characters, including a mix of lowercase, uppercase, numbers, and symbols."
+msgstr "Sử dụng mật khẩu mạnh có ít nhất 6 ký tự, bao gồm kết hợp chữ thường, chữ hoa, số và ký hiệu."
 
 #: .\apps\core\auths\templates\auths\login.html:139
 msgid "Creat new account to MIS"
@@ -347,6 +405,10 @@ msgstr "Phần số thập phân"
 #: .\apps\core\company\templates\core\company\company_list.html:283
 msgid "Precision"
 msgstr "Độ chính xác"
+
+#
+msgid "Is default"
+msgstr "Là mặc định"
 
 #
 msgid "Linked with employee"
@@ -1679,7 +1741,7 @@ msgstr "Loại thuế"
 
 #
 msgid "Selling rate"
-msgstr "Tỉ lệ bán hàng"
+msgstr "Tỉ giá"
 
 #
 msgid "Category"
@@ -2317,6 +2379,17 @@ msgstr "Nhập"
 msgid "Copy"
 msgstr "Sao chép"
 
+#
+msgid "Copied"
+msgstr "Đã sao chép"
+
+#
+msgid "Copy not support"
+msgstr "Sao chép không hỗ trợ"
+
+#
+msgid "Go to change password page"
+msgstr "Chuyển hướng đến trang thay đổi mật khẩu"
 
 #
 msgid "Add Expense"
@@ -2433,6 +2506,10 @@ msgstr "Chi tiết người dùng"
 #
 msgid "Edit user"
 msgstr "Chỉnh sửa người dùng"
+
+#
+msgid "Change password"
+msgstr "Thay đổi mật khẩu"
 
 #
 msgid "Company Overview"
@@ -3486,7 +3563,7 @@ msgstr "SL lấy trước đó"
 
 #
 msgid "Remain"
-msgstr "Chưa giao"
+msgstr "Còn lại"
 
 #
 msgid "Product in Warehouse out of stock"
@@ -3781,12 +3858,12 @@ msgid "Do you wish to continue?"
 msgstr "Bạn có muốn tiếp tục?"
 
 #
-msgid "Quotation indicator value"
-msgstr "Giá trị chỉ tiêu báo giá"
+msgid "Quotation value"
+msgstr "Giá trị báo giá"
 
 #
-msgid "Sale order indicator value"
-msgstr "Giá trị chỉ tiêu đơn hàng"
+msgid "Sale order value"
+msgstr "Giá trị đơn hàng"
 
 #
 msgid "Difference value"
@@ -4494,12 +4571,12 @@ msgid "Select items from purchase request"
 msgstr "Chọn sản phẩm từ yêu cầu mua hàng"
 
 #
-msgid "Quantity order must be less than quantity remain"
-msgstr "Số lượng đặt mua phải nhỏ hơn số lượng chưa mua"
+msgid "Exceeded quantity requested"
+msgstr "Vượt quá số lượng yêu cầu"
 
 #
-msgid "Quantity order actually must be greater than or equal quantity order on request"
-msgstr "Số lượng đặt mua thực tế phải lớn hơn hoặc bằng số lượng yêu cầu"
+msgid "Must not less than quantity ordered"
+msgstr "Không được ít hơn số lượng đặt hàng"
 
 #
 msgid "Remain (PO)"
@@ -4603,10 +4680,6 @@ msgstr "Phạm vi được phép sẽ không bao gồm người được đặt 
 #
 msgid "Allow the action to access data in both the general space and another space."
 msgstr "Cho phép hành động truy cập dữ liệu ở cả không gian chung và không gian khác."
-
-#
-msgid "This employee is not currently associated with the user."
-msgstr "Nhân viên này hiện không được liên kết với người dùng."
 
 #
 msgid "Yes, update it!"
@@ -4873,6 +4946,14 @@ msgid "Type ‘#’ and your search data to open a dynamic data field selection 
 msgstr "Nhập '#' và dữ liệu tìm kiếm của bạn để mở menu chọn trường dữ liệu động. Tính năng Dữ liệu động sẽ có thể tìm kiếm được theo tên hoặc mã của các trường dữ liệu."
 
 #
+msgid "Params display multiple value, so It must be using in table."
+msgstr "Thông số hiển thị nhiều giá trị nên nó phải được sử dụng trong bảng."
+
+#
+msgid "Params display normal value."
+msgstr "Thông số hiển thị dữ liệu chuẩn."
+
+#
 msgid "Mentions"
 msgstr "Đề cập"
 
@@ -5025,6 +5106,14 @@ msgid "Please wait for the images to finish loading before proceeding with the p
 msgstr "Vui lòng đợi hình ảnh tải xong trước khi tiếp tục thao tác in."
 
 #
+msgid "Templates"
+msgstr "Văn bản mẫu"
+
+#
+msgid "Mail Template"
+msgstr "Mẫu thư điện tử"
+
+#
 msgid "Print Template"
 msgstr "Mẫu in ấn"
 
@@ -5134,7 +5223,7 @@ msgstr "Nhân bản"
 
 #
 msgid "Final acceptance"
-msgstr "Nghiệm thu"
+msgstr "Quyết toán"
 
 #
 msgid "Group level"
@@ -6174,7 +6263,7 @@ msgstr "Cả năm"
 
 #
 msgid "Opp code"
-msgstr "Mã chkd"
+msgstr "Mã CHKD"
 
 #
 msgid "Win"
@@ -6182,7 +6271,7 @@ msgstr "Thắng"
 
 #
 msgid "Opp value"
-msgstr "Giá trị chkd"
+msgstr "Giá trị CHKD"
 
 #
 msgid "Forecast value"
@@ -6751,3 +6840,39 @@ msgstr "Báo cáo tồn kho"
 #
 msgid "Items Detail Report"
 msgstr "Báo cáo chi tiết mặt hàng"
+
+#
+msgid "Add group"
+msgstr "Thêm nhóm"
+
+#
+msgid "Select purchase quotation"
+msgstr "Chọn báo giá mua hàng"
+
+#
+msgid "Required"
+msgstr "Yêu cầu"
+
+#
+msgid "Transition data config"
+msgstr "Cấu hình dữ liệu giao dịch"
+
+#
+msgid "Invalid due date"
+msgstr "Ngày đến hạn không hợp lệ"
+
+#
+msgid "Employee code"
+msgstr "Mã nhân viên"
+
+#
+msgid "Gross profit plan"
+msgstr "Kế hoạch lợi nhuận gộp"
+
+#
+msgid "General revenue report"
+msgstr "Báo cáo doanh thu chung"
+
+#
+msgid "Some Opening balance values can be wrong because last sub period have not been closed."
+msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ kế toán tháng trước đó chưa được đóng."

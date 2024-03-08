@@ -1,4 +1,5 @@
 from django.views import View
+from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.views import APIView
 
@@ -43,12 +44,13 @@ class PrintApplicationTemplateSample(APIView):
 
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, app_id, **kwargs):
-        base_url = 'assets/htm/printer/'
+        base_url = 'printer/template/'
         result = []
         if app_id == 'b9650500-aba7-44e3-b6e0-2542622702a3':  # Quotation
             base_url += 'quotation/'
             result = [
-                self.parse_template_detail('Quotation 1', base_url + 'quotation_1.html'),
+                self.parse_template_detail(f"{_('Quotation')} 1", base_url + 'quotation_1.html'),
+                self.parse_template_detail(f"{_('Quotation')} 2", base_url + 'quotation_2.html'),
             ]
         return RespData.resp_200(data={'templates': result})
 
@@ -116,6 +118,18 @@ class PrintTemplateUsingDetail(APIView):
             template_detail = ServerAPI(
                 request=request, user=request.user,
                 url=ApiURL.PRINT_TEMPLATES_USING.fill_key(application_id=application_id)
+            ).get()
+            return template_detail.auto_return(key_success='template_detail')
+        return RespData.resp_404()
+
+
+class PrintTemplateDetailUsingAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            template_detail = ServerAPI(
+                request=request, user=request.user,
+                url=ApiURL.PRINT_TEMPLATES_USING_DETAIL.fill_key(pk=pk)
             ).get()
             return template_detail.auto_return(key_success='template_detail')
         return RespData.resp_404()

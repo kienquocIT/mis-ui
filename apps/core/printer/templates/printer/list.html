@@ -52,6 +52,7 @@
                         <th>#</th>
                         <th>{% trans 'Title' %}</th>
                         <th>{% trans 'Remarks' %}</th>
+                        <th>{% trans 'Is default' %}</th>
                         <th>{% trans 'Using' %}</th>
                         <th>{% trans 'Action' %}</th>
                     </tr>
@@ -93,14 +94,14 @@
                             render: () => '',
                         },
                         {
-                            width: '30%',
+                            width: '25%',
                             data: 'title',
                             render: (data, type, row) => {
                                 return `<a href="${tblEle.attr('data-url-detail').replace('__pk__', row.id)}">${data}</a>`;
                             }
                         },
                         {
-                            width: "30%",
+                            width: "25%",
                             data: 'remarks',
                             className: 'wrap-text',
                             render: (data) => {
@@ -115,8 +116,19 @@
                             }
                         },
                         {
-                            width: '20%',
-                            data: 'is_using',
+                            width: '15%',
+                            data: 'is_default',
+                            render: (data, type, row) => {
+                                return `
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" disabled ${data === true ? 'checked' : ''}>
+                                    </div>
+                                `
+                            }
+                        },
+                        {
+                            width: '15%',
+                            data: 'is_active',
                             render: (data, type, row) => {
                                 return `
                                     <div class="form-check form-switch">

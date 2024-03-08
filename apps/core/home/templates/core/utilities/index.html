@@ -389,12 +389,12 @@
             }
             let eleCopied = $(`<span class="msgCopied text-muted">Copied!</span>`);
             eleCopied.insertAfter($(this));
-            setTimeout(
-                () => {
-                    eleCopied.remove();
-                },
-                5000
-            )
+            {#setTimeout(#}
+            {#    () => {#}
+            {#        eleCopied.remove();#}
+            {#    },#}
+            {#    5000#}
+            {#)#}
         });
 
         let minimalUUIDInput = $('#inputConvertMinimalUUID');

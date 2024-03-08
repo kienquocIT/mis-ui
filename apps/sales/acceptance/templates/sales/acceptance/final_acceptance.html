@@ -27,8 +27,35 @@
     >
     {% csrf_token %}
         <div class="row">
-            {% trans 'Select Sale Person' as inherit_title %}
-            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+{#            {% trans 'Select Sale Person' as inherit_title %}#}
+{#            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}#}
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="employee_inherit_id">{% trans 'Employee inherit' %}</label>
+                    <select
+                            class="form-select"
+                            id="employee_inherit_id"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-method="GET"
+                            name="employee_inherit_id"
+                            data-keyResp="employee_list"
+                            data-keyText="full_name"
+                    ></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="opportunity_id">{% trans 'Opportunity' %}</label>
+                    <select
+                            class="form-select"
+                            id="opportunity_id"
+                            data-url="{% url 'OpportunityListAPI' %}"
+                            data-method="GET"
+                            name="opportunity_id"
+                            data-keyResp="opportunity_list"
+                    ></select>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-12 col-md-6 col-lg-6">
@@ -44,7 +71,7 @@
                     ></select>
                 </div>
             </div>
-            <div class="col-12 col-md-3 col-lg-3">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="final-acceptance-date-save">{% trans 'Date' %}</label>
                     <div class="input-affix-wrapper">
@@ -56,8 +83,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="d-flex mt-5">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="d-flex mt-5 justify-content-end">
                     <button
                             type="button"
                             class="btn btn-outline-primary"
@@ -72,7 +99,7 @@
         <div class="row">
             <table
                     id="table_final_acceptance_list"
-                    class="table nowrap min-w-1500p w-100 mb-5"
+                    class="table nowrap min-w-2000p w-100 mb-5"
                     data-url="{% url 'FinalAcceptanceListAPI' %}"
                     data-method="get"
             >
@@ -84,7 +111,7 @@
                     <th>{% trans 'Planed value' %}</th>
                     <th>{% trans 'Actual value' %}</th>
                     <th>{% trans 'Different value' %}</th>
-                    <th>{% trans '%' %}</th>
+                    <th>{% trans 'Rate' %} %</th>
                     <th>{% trans 'Note' %}</th>
                 </tr>
                 </thead>

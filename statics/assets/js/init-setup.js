@@ -8,10 +8,25 @@ class SetupFormSubmit {
     }
 
     static serializerObject(formSelected) {
-        return formSelected.find(':not([dont_serialize]):not([name^="DataTables_"])').serializeArray().reduce((o, kv) => ({
-            ...o,
-            [kv.name]: kv.value
-        }), {});
+        const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
+        let baseData = formSelected.find(queryExclude).serializeArray().reduce(function (obj, item){
+            if (item.name in obj) {
+                obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
+                obj[item.name].push(item.value);
+            } else {
+                let $input = formSelected.find('[name="' + item.name + '"]');
+                obj[item.name] = $input.is(':checkbox') ? $input.prop('checked') : item.value;
+            }
+            return obj;
+        }, {});
+        // special case 'input[type=checkbox]' has false not include when form serializer!
+        // (because HTML exclude input empty)
+        formSelected.find('input[type=checkbox]' + queryExclude).each(function (){
+            if (!(this.name in baseData)) {
+                baseData[this.name] = $(this).prop('checked');
+            }
+        })
+        return baseData;
     }
 
     static groupDataFromPrefix(data, prefix) {
@@ -70,40 +85,48 @@ class SetupFormSubmit {
         return null;
     }
 
+    static call_validate(ele$, configs){
+        let validator = $(ele$).validate({
+            focusInvalid: true,
+            validClass: "is-valid",
+            errorClass: "is-invalid",
+            errorElement: "small",
+            showErrors: function (errorMap, errorList) {
+                this.defaultShowErrors();
+            },
+            errorPlacement: function (error, element) {
+                // error.insertAfter(element);
+                error.css({'color': "red"})
+
+                //
+                let parentEle = element.parent();
+                let insertAfterEle = parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper') ? parentEle : element;
+                error.insertAfter(insertAfterEle);
+            },
+            onsubmit: false,
+            ...configs
+        });
+        $.validator.unpretentious(ele$);
+        return validator;
+    }
+
     validate(opts) {
         if (this.formSelected) {
             let submitHandler = opts?.['submitHandler'];
-            if (opts.hasOwnProperty('submitHandler')) {
-                delete opts['submitHandler'];
-            }
+            if (opts.hasOwnProperty('submitHandler')) delete opts['submitHandler'];
 
-            this.formSelected.each(function () {
-                $(this).validate({
-                    focusInvalid: true,
-                    validClass: "is-valid",
-                    errorClass: "is-invalid",
-                    errorElement: "small",
-                    showErrors: function (errorMap, errorList) {
-                        this.defaultShowErrors();
-                    },
-                    errorPlacement: function (error, element) {
-                        element.closest('.form-group').append(error);
-                        // error.insertAfter(element);
-                        error.css({
-                            'color': "red",
-                        })
-                    },
+            return SetupFormSubmit.call_validate(
+                $(this.formSelected),
+                {
                     submitHandler: function (form, event) {
                         event.preventDefault();
                         submitHandler ? submitHandler($(form), event) : form.submit();
                     },
                     onsubmit: true, // !!submitHandler,
                     ...opts,
-                })
-            })
-        } else {
-            throw Error('Form element must be required!');
-        }
+                }
+            )
+        } else throw Error('Form element must be required!');
     }
 
     static validate(frmEle, opts) {
@@ -1929,7 +1952,7 @@ class WFRTControl {
                         $.fn.notifyB({description: data.message}, 'success');
                         setTimeout(() => {
                             window.location.replace(_form.dataUrlRedirect);
-                        }, 1000);
+                        }, 3000);
                     }
                 }, (err) => {
                     setTimeout(() => {
@@ -2751,16 +2774,33 @@ class UtilControl {
         return data;
     }
 
-    static notifyErrors(errs) {
+    static notifyErrors(errs, opts={}) {
+        let confirmOpts = $.extend(
+            {
+                'keyNotMatch': '',
+                'replaceKey': {},
+                'isShowKey': true,
+            },
+            opts
+        )
+
+        function resolveDataNotify(key, data){
+            if (confirmOpts.isShowKey === true){
+                if (confirmOpts.replaceKey){
+                    if (confirmOpts.replaceKey.hasOwnProperty(key)) return {'title': confirmOpts.replaceKey[key], 'description': data}
+                    if (typeof confirmOpts.keyNotMatch === "string") return {'title': confirmOpts.keyNotMatch, 'description': data}
+                }
+                return {'title': key, 'description': data}
+            }
+            return {'description': data}
+        }
+
+
         if (errs) {
             if (typeof errs === 'object') {
                 let errors_converted = UtilControl.cleanDataNotify(errs);
                 Object.keys(errors_converted).map((key) => {
-                    let notify_data = {
-                        'title': key,
-                        'description': errors_converted[key]
-                    };
-                    jQuery.fn.notifyB(notify_data, 'failure');
+                    jQuery.fn.notifyB(resolveDataNotify(key, errors_converted[key]), 'failure');
                 });
             } else if (typeof errs === 'string') {
                 jQuery.fn.notifyB({
@@ -3508,7 +3548,7 @@ class DTBControl {
 
         // style 1
         let styleDom = opts?.['styleDom'] || 'full';
-        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt';
+        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'>B<'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt';
         if (styleDom === 'small') {
             domDTL += `<'row tbl-footer-toolbar' <'cus-page-info'<'col-12 d-flex justify-content-center py-1'l><'col-12  d-flex justify-content-center py-1'i><'col-12  d-flex justify-content-center py-1'p>>>`;
         } else if (styleDom === 'hide-foot') {
@@ -3531,7 +3571,15 @@ class DTBControl {
             visiblePagination: stateDefaultPageControl,   // "p"
             visibleOrder: stateDefaultPageControl,   // "r"
             visibleRowQuantity: stateDefaultPageControl,   // "s"
+            visibleButton: false, // button
         }
+        // show or hide button
+        if (opts.hasOwnProperty('visibleButton')){
+            if ($.fn.isBoolean(opts['visibleButton'])) utilsDom.visibleButton = opts['visibleButton'];
+            delete opts['visibleButton']
+        }
+        if (utilsDom.visibleButton === false) domDTL = domDTL.replace('>B<', '><');
+
         // show or hide search field
         if (opts.hasOwnProperty('visiblePaging')) {
             if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
@@ -3814,7 +3862,12 @@ class DTBControl {
         let drawCallback01 = this.opts?.['drawCallback'] || function (settings) {
         };
         let drawCallBackDefault = function (settings) {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
+            // $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
+            $('.dataTables_paginate > .pagination').addClass('dtb-pagination-custom')
+            $('.dataTables_info').addClass('dtb-info-custom');
+            $('.dataTables_length label').addClass('dtb-length-custom');
+            $('.dataTables_length select').addClass('dtb-length-list-custom');
+
             feather.replace();
             // reload all currency
             if (clsThis.reloadCurrency === true) $.fn.initMaskMoney2();
@@ -5289,9 +5342,14 @@ class FileControl {
 
 class CommentControl {
     constructor(ele$, opts={}) {
-        let {owner_id, btn_goto_enabled} = {owner_id: $x.fn.getEmployeeCurrentID(), btn_goto_enabled: true, ...opts}
+        let {owner_id, btn_goto_enabled, swalOpts} = {
+            owner_id: $x.fn.getEmployeeCurrentID(), btn_goto_enabled: true,
+            swalOpts: {'allowOutsideClick': true},
+            ...opts
+        }
         this.owner_id = owner_id;
         this.btn_goto_enabled = btn_goto_enabled;
+        this.swalOpts = swalOpts;
 
         this.ele$ = ele$;
         this.ele_list$ = ele$.find('.comment-list');
@@ -5778,7 +5836,10 @@ class CommentControl {
                 },
                 renderDropdown: function() {
                     return '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>';
-                }
+                },
+                matcher: function (item) {
+                    return item;
+                },
             },
             setup: function(editor) {
                 tinymceEditor = editor;
@@ -5875,6 +5936,7 @@ class CommentControl {
                     url: url,
                     method: method,
                     data: data,
+                    sweetAlertOpts: clsThis.swalOpts,
                 }).then(
                     resp => {
                         let data = $.fn.switcherResp(resp);
@@ -6424,7 +6486,6 @@ var DataTableAction = {
         // if (format) keyArg = JSON.parse(format.replace(/'/g, '"'));
         if (format) keyArg = format;
 
-
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
         for (let key of keyArg) {
             let isValue = data[key.value] ? data[key.value] : '--'
@@ -6434,6 +6495,7 @@ var DataTableAction = {
                 if (temp) isValue = temp
                 else isValue = '--'
             }
+            if ($.type(isValue) === "object") isValue = '--'
             htmlContent += `<div class="mb-1"><h6><i>${key.name}</i></h6><p>${isValue}</p></div>`;
         }
         if (link) {

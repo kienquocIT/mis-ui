@@ -1,8 +1,7 @@
-{% load i18n %}
+{% load i18n string_utils %}
 <div
         class="modal fade mt-10" id="printModal" tabindex="-1" role="dialog"
         aria-labelledby="printModalTitle" aria-hidden="true"
-        data-msg-page-of-total="{% trans 'Page __page__/__total_page__' %}"
 >
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -13,14 +12,21 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>
-                    <small class="text-warning">{% trans 'Displaying the PDF will take time depending on the size of the print template and the number of images to be printed.' %}</small>
-                </p>
-                <p>
-                    <small class="text-warning">{% trans 'Please wait for the images to finish loading before proceeding with the print operation.' %}</small>
-                </p>
-                <iframe style="width: 100%;" class="d-none"></iframe>
-                <textarea></textarea>
+                <div class="w-100 mb-3">
+                    <small class="font-weight-bold">{% trans 'Displaying the PDF will take time depending on the size of the print template and the number of images to be printed.' %}</small>
+                    <br>
+                    <small class="font-weight-bold">{% trans 'Please wait for the images to finish loading before proceeding with the print operation.' %}</small>
+                </div>
+                <div class="w-100 mb-2">
+                    {% random_str as idx_label_fn %}
+                    <label for="{{ idx_label_fn }}">{% trans 'Print Template' %}</label>
+                    <select id="{{ idx_label_fn }}" class="printer-template-list"></select>
+                </div>
+                <div class="w-100 mb-5">
+                    {% random_str as idx_fn %}
+                    <label for="{{ idx_fn }}" class="d-none"></label>
+                    <textarea style="display: none;" id="{{ idx_fn }}" class="printer-display-page"></textarea>
+                </div>
             </div>
         </div>
     </div>

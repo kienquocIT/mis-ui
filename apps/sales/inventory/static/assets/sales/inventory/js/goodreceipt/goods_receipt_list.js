@@ -26,7 +26,7 @@ $(function () {
                         targets: 0,
                         render: (data, type, row) => {
                             let link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
@@ -45,7 +45,7 @@ $(function () {
                                 "badge badge-soft-info",
                             ]
                             let typeTxt = JSON.parse($('#gr_type').text())
-                            return `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span></div>`;
                         }
                     },
                     {
@@ -58,9 +58,9 @@ $(function () {
                             ]
                             let ele = `<span></span>`;
                             if (row?.['goods_receipt_type'] === 0) {
-                                ele = `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span>`;
+                                ele = `<div class="row"><span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span></div>`;
                             } else if (row?.['goods_receipt_type'] === 1) {
-                                ele = `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span>`;
+                                ele = `<div class="row"><span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span></div>`;
                             }
                             return ele;
                         }
@@ -68,8 +68,10 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            let date_created = moment(row?.['date_created']).format('YYYY-MM-DD');
-                            return `<p>${date_created}</p>`
+                            if (row?.['date_received']) {
+                                return `<p>${moment(row?.['date_received']).format('DD/MM/YYYY')}</p>`;
+                            }
+                            return `<p></p>`;
                         }
                     },
                     {
@@ -83,20 +85,22 @@ $(function () {
                                 "soft-success",
                                 "soft-danger",
                             ]
-                            return `<span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
                         }
                     },
                     {
                         targets: 6,
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            const link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let isChange = ``;
+                            if (![2, 3].includes(row?.['system_status'])) {
+                                isChange = `<a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a><div class="dropdown-divider"></div>`;
+                            }
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a>
-                                        <div class="dropdown-divider" hidden></div>
-                                        <a class="dropdown-item" href="#" hidden>${transEle.attr('data-cancel')}</a>
+                                        ${isChange}
                                     </div>
                                 </div>`;
                         },

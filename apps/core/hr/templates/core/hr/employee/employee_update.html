@@ -41,7 +41,6 @@
             data-url-redirect="{% url 'EmployeeList' %}"
             novalidate
             data-doc-id="{{ data.data.doc_id }}"
-            data-msg-user-no-value="{% trans 'This employee is not currently associated with the user.' %}"
     >
         {% csrf_token %}
         <div

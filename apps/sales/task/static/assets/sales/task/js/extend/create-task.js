@@ -296,6 +296,9 @@ $(function () {
                 $(this).closest('.ntt-drawer').toggleClass('open');
                 $('.hk-wrapper').toggleClass('open');
             }
+            const titCreate = $('.title-create'), titEdit = $('.title-detail');
+            if (titCreate.hasClass('hidden')) titCreate.removeClass("hidden")
+            if (!titEdit.hasClass('hidden')) titEdit.addClass("hidden")
             resetFormTask()
         });
     });
@@ -359,7 +362,10 @@ $(function () {
                 })
 
                 if (!formData.opportunity) delete formData.opportunity
-                if ($oppElm.val()) formData.opportunity = $oppElm.val()
+                if ($oppElm.val()){
+                    formData.opportunity = $oppElm.val()
+                    formData.opportunity_id = $oppElm.val()
+                }
 
                 const $attElm = $('[name="attach"]').val()
                 if ($attElm) formData.attach = [...$attElm]

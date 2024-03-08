@@ -12,59 +12,6 @@ class POLoadDataHandle {
     static finalRevenueBeforeTaxRequest = document.getElementById('purchase-order-request-final-revenue-before-tax');
     static transEle = $('#app-trans-factory');
 
-    static loadMoreInformation(ele, is_span = false) {
-        let optionSelected;
-        if (is_span === false) {
-            optionSelected = ele;
-        } else {
-            optionSelected = ele[0]
-        }
-        let eleInfo = ele[0].closest('.more-information-group').querySelector('.more-information');
-        let dropdownContent = ele[0].closest('.more-information-group').querySelector('.dropdown-menu');
-        dropdownContent.innerHTML = ``;
-        eleInfo.setAttribute('disabled', true);
-        let link = "";
-        if (optionSelected) {
-            let data = {};
-            if (is_span === false) {
-                data = SelectDDControl.get_data_from_idx(ele, ele.val());
-            } else {
-                let eleData = optionSelected.querySelector('.data-info');
-                if (eleData) {
-                    data = JSON.parse(eleData.value)
-                }
-            }
-            if (Object.keys(data).length !== 0) {
-                // remove attr disabled
-                if (eleInfo) {
-                    eleInfo.removeAttribute('disabled');
-                }
-                // end
-                let info = ``;
-                info += `<h6 class="dropdown-header header-wth-bg">${POLoadDataHandle.transEle.attr('data-more-information')}</h6>`;
-                for (let key in data) {
-                    if (['id', 'title', 'name', 'fullname', 'full_name', 'code'].includes(key)) {
-                        if (key === 'id') {
-                            let linkDetail = ele.data('link-detail');
-                            if (linkDetail) {
-                                link = linkDetail.format_url_with_uuid(data[key]);
-                            }
-                        } else {
-                            info += `<div class="row mb-1"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
-                        }
-                    }
-                }
-                info += `<div class="dropdown-divider"></div>
-                    <div class="row float-right">
-                        <a href="${link}" target="_blank" class="link-primary underline_hover">
-                            <span><span>${POLoadDataHandle.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
-                        </a>
-                    </div>`;
-                dropdownContent.innerHTML = info;
-            }
-        }
-    };
-
     static loadBoxSupplier(dataCustomer = {}) {
         let ele = POLoadDataHandle.supplierSelectEle;
         ele.initSelect2({
@@ -75,7 +22,6 @@ class POLoadDataHandle {
                 return item?.['name'] || '';
             },
         });
-        // POLoadDataHandle.loadMoreInformation(ele);
     };
 
     static loadBoxContact(dataContact = {}, supplierID = null) {
@@ -88,13 +34,47 @@ class POLoadDataHandle {
                 return item?.['fullname'] || '';
             },
         });
-        // POLoadDataHandle.loadMoreInformation(ele);
+    };
+
+    static loadInitProduct() {
+        let finalData = [];
+        let ele = PODataTableHandle.productInitEle;
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                        for (let product of data.product_sale_list) {
+                            if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
+                                if (product['product_choice'].includes(2)) {
+                                    finalData.push(product);
+                                }
+                            }
+                        }
+                        ele.val(JSON.stringify(finalData));
+                    }
+                }
+            }
+        )
     };
 
     static loadBoxProduct(ele, dataProduct = {}) {
+        let dataDD = []
+        if (PODataTableHandle.productInitEle.val()) {
+            dataDD = JSON.parse(PODataTableHandle.productInitEle.val());
+        }
+        if (Object.keys(dataProduct).length > 0) {
+            dataDD = dataProduct
+        }
         ele.initSelect2({
-            data: dataProduct,
-            disabled: !(ele.attr('data-url')),
+            data: dataDD,
         });
     };
 
@@ -115,23 +95,21 @@ class POLoadDataHandle {
                     description.innerHTML = data?.['description'];
                 }
                 // load UOM
-                if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
-                    POLoadDataHandle.loadBoxUOM($(uom), data.unit_of_measure, data.uom_group.id);
+                if (uom && Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
+                    POLoadDataHandle.loadBoxUOM($(uom), data?.['unit_of_measure'], data?.['uom_group']?.['id']);
                 } else {
                     POLoadDataHandle.loadBoxUOM($(uom));
                 }
                 // load PRICE
-                if (price && priceList) {
-                    POLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
-                }
+                // if (price && priceList) {
+                //     POLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
+                // }
                 // load TAX
                 if (tax && data.tax) {
-                    POLoadDataHandle.loadBoxTax($(tax), data.tax);
+                    POLoadDataHandle.loadBoxTax($(tax), data?.['tax']);
                 } else {
                     POLoadDataHandle.loadBoxTax($(tax));
                 }
-                // load modal more information
-                // POLoadDataHandle.loadMoreInformation(ele);
             }
             $.fn.initMaskMoney2();
         }
@@ -391,44 +369,55 @@ class POLoadDataHandle {
             }
         }
         let frm = new SetupFormSubmit(tablePurchaseQuotation);
+        let dataFilter = {};
+        // by Supplier
+        if (POLoadDataHandle.supplierSelectEle.val()) {
+            dataFilter = {'supplier_mapped_id': POLoadDataHandle.supplierSelectEle.val()}
+        }
+        // by PR
         let purchase_requests_data = POLoadDataHandle.PRDataEle;
         if (purchase_requests_data.val()) {
             let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
-            if (JSON.parse(purchase_requests_data.val()).length > 0) {
-                $.fn.callAjax2({
-                        'url': frm.dataUrl,
-                        'method': frm.dataMethod,
-                        'data': {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')},
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('purchase_quotation_list') && Array.isArray(data.purchase_quotation_list)) {
-                                if (Object.keys(checked_data).length !== 0) {
-                                    for (let PQ of data.purchase_quotation_list) {
-                                        if (checked_data.hasOwnProperty(PQ.id)) {
-                                            PQ['is_checked'] = true;
-                                            PQ['is_use'] = checked_data[PQ.id]?.['is_use'];
-                                        }
+            if (Array.isArray(purchase_requests_data_parse)) {
+                if (purchase_requests_data_parse.length > 0) {
+                    dataFilter = {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')};
+                }
+            }
+        }
+        if (Object.keys(dataFilter).length > 0) {
+            $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': dataFilter,
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('purchase_quotation_list') && Array.isArray(data.purchase_quotation_list)) {
+                            if (Object.keys(checked_data).length !== 0) {
+                                for (let PQ of data.purchase_quotation_list) {
+                                    if (checked_data.hasOwnProperty(PQ.id)) {
+                                        PQ['is_checked'] = true;
+                                        PQ['is_use'] = checked_data[PQ.id]?.['is_use'];
                                     }
                                 }
-                                tablePurchaseQuotation.DataTable().clear().draw();
-                                tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
-                                if (is_remove === true) {
-                                    POLoadDataHandle.loadDataShowPurchaseQuotation();
-                                    POLoadDataHandle.loadPriceListByPurchaseQuotation();
-                                }
+                            }
+                            tablePurchaseQuotation.DataTable().clear().draw();
+                            tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
+                            if (is_remove === true) {
+                                POLoadDataHandle.loadDataShowPurchaseQuotation();
+                                POLoadDataHandle.loadPriceListByPurchaseQuotation();
                             }
                         }
                     }
-                )
-            } else {
-                tablePurchaseQuotation.DataTable().clear().draw();
-                POLoadDataHandle.loadDataShowPurchaseQuotation();
-                POLoadDataHandle.loadPriceListByPurchaseQuotation();
-            }
+                }
+            )
+        } else {
+            tablePurchaseQuotation.DataTable().clear().draw();
+            POLoadDataHandle.loadDataShowPurchaseQuotation();
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         }
         return true;
     };
@@ -473,8 +462,6 @@ class POLoadDataHandle {
             elePurchaseQuotation.append(eleAppend);
         } else {
             elePurchaseQuotation.empty();
-            POLoadDataHandle.supplierSelectEle.empty();
-            POLoadDataHandle.contactSelectEle.empty();
         }
         POLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
         if (checked_id) {
@@ -485,9 +472,6 @@ class POLoadDataHandle {
                     }
                 }
             }
-        } else {
-            POLoadDataHandle.supplierSelectEle.empty();
-            POLoadDataHandle.contactSelectEle.empty();
         }
         return true;
     };
@@ -586,6 +570,7 @@ class POLoadDataHandle {
         tablePurchaseOrderProductRequest.DataTable().clear().draw();
         let newRow = tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
         POLoadDataHandle.loadDataRow(newRow, 'datable-purchase-order-product-add');
+        $(newRow.querySelector('.table-row-item')).val('').trigger('change');
         return true;
     };
 
@@ -605,7 +590,8 @@ class POLoadDataHandle {
         let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
         if (dataRowRaw) {
             let dataRow = JSON.parse(dataRowRaw);
-            POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
+            POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')));
+            $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
             POLoadDataHandle.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_actual'], dataRow?.['uom_order_actual']?.['uom_group']?.['id']);
             POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
         }
@@ -732,6 +718,17 @@ class POLoadDataHandle {
     static loadCheckProductsByCheckedQuotation(ele) {
         let tablePRProduct = $('#datable-purchase-request-product');
         let checked_id = ele.getAttribute('data-id');
+        // reset status
+        for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked, .table-row-checkbox.disabled-by-pq')) {
+            let row = eleChecked.closest('tr');
+            eleChecked.classList.remove('disabled-by-pq');
+            eleChecked.removeAttribute('disabled');
+            row.querySelector('.table-row-quantity-order').removeAttribute('disabled');
+            $(row).css('background-color', '');
+            row.removeAttribute('data-bs-toggle');
+            row.removeAttribute('data-bs-placement');
+            row.removeAttribute('title');
+        }
         if (ele.checked === true) {
             let eleDataPQProducts = $('#data-purchase-quotation-products');
             if (eleDataPQProducts.val()) {
@@ -740,6 +737,7 @@ class POLoadDataHandle {
                 for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
                     let row = eleChecked.closest('tr');
                     let productID = row.querySelector('.table-row-item').id;
+                    // update status
                     if (!dataPQMapProducts.includes(productID)) {
                         eleChecked.classList.add('disabled-by-pq');
                         eleChecked.setAttribute('disabled', 'true');
@@ -751,20 +749,8 @@ class POLoadDataHandle {
                     }
                 }
             }
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
-        } else {
-            for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked, .table-row-checkbox.disabled-by-pq')) {
-                let row = eleChecked.closest('tr');
-                eleChecked.classList.remove('disabled-by-pq');
-                eleChecked.removeAttribute('disabled');
-                row.querySelector('.table-row-quantity-order').removeAttribute('disabled');
-                $(row).css('background-color', '');
-                row.removeAttribute('data-bs-toggle');
-                row.removeAttribute('data-bs-placement');
-                row.removeAttribute('title');
-            }
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         }
+        POLoadDataHandle.loadPriceListByPurchaseQuotation();
         POLoadDataHandle.loadTableProductByPurchaseRequest();
     };
 
@@ -875,12 +861,13 @@ class POLoadDataHandle {
             }
         }
         $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
+        POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
+        POLoadDataHandle.loadBoxContact(data?.['contact']);
+
         POLoadDataHandle.loadDataShowPRPQ(data);
         PODataTableHandle.dataTablePurchaseRequest();
         POLoadDataHandle.loadModalPurchaseRequestProductTable(false, data);
         POLoadDataHandle.loadModalPurchaseQuotation(false, data);
-        POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
-        POLoadDataHandle.loadBoxContact(data?.['contact']);
         POLoadDataHandle.loadTablesDetailPage(data);
         POLoadDataHandle.loadTotals(data);
     };
@@ -1578,7 +1565,7 @@ class PODataTableHandle {
                     targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row.product_quantity_order_actual}" required>
+                                    <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row?.['product_quantity_order_actual']}" required>
                                 </div>`;
                     }
                 },
@@ -1660,21 +1647,13 @@ class PODataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row.order}</span>`
+                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row?.['order']}</span>`
                     }
                 },
                 {
                     targets: 1,
                     render: () => {
-                            return `<select
-                                        class="form-select table-row-item"
-                                        data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
-                                        data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
-                                        data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
-                                        data-keyResp="product_sale_list"
-                                        required
-                                    >
-                                    </select>`;
+                            return `<select class="form-select table-row-item"></select>`;
                     },
                 },
                 {
@@ -1704,7 +1683,7 @@ class PODataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row.product_quantity_order_actual}" required>
+                                    <input type="text" class="form-control table-row-quantity-order-actual valid-number" value="${row?.['product_quantity_order_actual']}" required>
                                 </div>`;
                     }
                 },
@@ -1718,7 +1697,7 @@ class PODataTableHandle {
                                             <input 
                                                 type="text" 
                                                 class="form-control mask-money table-row-price" 
-                                                value="${row.product_unit_price}"
+                                                value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
                                             >
                                             <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></span>
@@ -1745,14 +1724,14 @@ class PODataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     data-return-type="number"
                                     hidden
                                 >
                                 <input
                                     type="text"
                                     class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     hidden
                                 >
                             </div>`;
@@ -1805,7 +1784,7 @@ class PODataTableHandle {
                                         <input type="text" class="form-control table-row-ratio valid-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
                                         <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                                     </div>
-                                </div>`
+                                </div>`;
                     }
                 },
                 {
@@ -1853,9 +1832,15 @@ class PODataTableHandle {
                         }
                     }
                 },
+                {
+                    targets: 6,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                    }
+                },
             ],
         });
-    }
+    };
 
 }
 
@@ -1957,18 +1942,16 @@ class POCalculateHandle {
     };
 
     static calculateMain(table, row) {
-        let self = this;
-        self.calculateRow(row);
+        POCalculateHandle.calculateRow(row);
         // calculate total
-        self.calculateTotal(table[0]);
+        POCalculateHandle.calculateTotal(table[0]);
         return true;
     };
 
     static calculateTable(table) {
-        let self = this;
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let row = table[0].tBodies[0].rows[i];
-            self.calculateMain(table, row)
+            POCalculateHandle.calculateMain(table, row)
         }
     };
 
@@ -2054,6 +2037,23 @@ class POValidateHandle {
         return true
     };
 
+    static validateEnablePRPQ() {
+        let btnPRModal = $('#btn-purchase-request-modal');
+        let btnPQModal = $('#btn-purchase-quotation-modal');
+        if ($('#purchase-order-title').val() && POLoadDataHandle.supplierSelectEle.val() && POLoadDataHandle.contactSelectEle.val()) {
+            if (btnPRModal && btnPQModal) {
+                btnPRModal[0].removeAttribute('disabled');
+                btnPQModal[0].removeAttribute('disabled');
+            }
+        } else {
+            if (btnPRModal && btnPQModal) {
+                btnPRModal[0].setAttribute('disabled', 'true');
+                btnPQModal[0].setAttribute('disabled', 'true');
+            }
+        }
+        return true;
+    };
+
 }
 
 // Submit Form
@@ -2091,10 +2091,9 @@ class POSubmitHandle {
         if (table.querySelector('.dataTables_empty')) {
             return []
         }
-        let tableBody = table.tBodies[0];
-        for (let i = 0; i < tableBody.rows.length; i++) {
+        $(table).DataTable().rows().every(function () {
             let rowData = {};
-            let row = tableBody.rows[i];
+            let row = this.node();
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) { // PRODUCT
                 let dataInfo = {}
@@ -2126,38 +2125,46 @@ class POSubmitHandle {
                 if ($(eleTax).val()) {
                     let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                     if (dataInfo) {
-                        rowData['tax'] = dataInfo.id;
-                        rowData['product_tax_title'] = dataInfo.title;
-                        rowData['product_tax_value'] = dataInfo.rate;
+                        rowData['tax'] = dataInfo?.['id'];
+                        rowData['product_tax_title'] = dataInfo?.['title'];
+                        rowData['product_tax_value'] = dataInfo?.['rate'];
                     } else {
                         rowData['product_tax_value'] = 0;
                     }
                 }
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
                 if (eleTaxAmount) {
-                    rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                    if (eleTaxAmount.value) {
+                       rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                    }
                 }
                 let eleQuantityRequest = row.querySelector('.table-row-quantity-order-request');
                 if (eleQuantityRequest) {
-                    rowData['product_quantity_order_request'] = parseFloat(eleQuantityRequest.innerHTML);
+                    if (eleQuantityRequest.innerHTML) {
+                        rowData['product_quantity_order_request'] = parseFloat(eleQuantityRequest.innerHTML);
+                    }
                 }
                 let eleQuantityOrder = row.querySelector('.table-row-quantity-order-actual');
                 if (eleQuantityOrder) {
-                    rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
+                    if (eleQuantityOrder.value) {
+                        rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
+                    }
                 }
                 let stock = row.querySelector('.table-row-stock');
                 if (stock) {
-                    rowData['stock'] = parseFloat(stock.innerHTML);
+                    if (stock.innerHTML) {
+                        rowData['stock'] = parseFloat(stock.innerHTML);
+                    }
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    if ($(elePrice).valCurrency() > 0) {
-                        rowData['product_unit_price'] = $(elePrice).valCurrency();
-                    }
+                    rowData['product_unit_price'] = $(elePrice).valCurrency();
                 }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                 if (eleSubtotal) {
-                    rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                    if (eleSubtotal.value) {
+                        rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                    }
                 }
                 if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
                     rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
@@ -2180,7 +2187,7 @@ class POSubmitHandle {
                 }
             }
             result.push(rowData);
-        }
+        });
         return result
     };
 
@@ -2268,10 +2275,12 @@ class POSubmitHandle {
         if (_form.dataMethod === "POST") {
             _form.dataForm['system_status'] = 1;
         }
+        // attachment
+        _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm['attachment'], []);
     };
 }
 
-// COMMON FUNCTION
+// *** COMMON FUNCTIONS ***
 function clickCheckBoxAll(ele, table) {
     for (let eleCheck of table[0].querySelectorAll('.table-row-checkbox')) {
         eleCheck.checked = ele[0].checked;
@@ -2402,4 +2411,12 @@ function setupMergeProduct() {
         }
     }
     return data
+}
+
+function deleteRow(currentRow, table) {
+    // Get the index of the current row within the DataTable
+    let rowIndex = table.DataTable().row(currentRow).index();
+    let row = table.DataTable().row(rowIndex);
+    // Delete current row
+    row.remove().draw();
 }

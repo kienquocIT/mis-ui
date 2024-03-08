@@ -26,7 +26,7 @@ $(function () {
                         targets: 0,
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
@@ -49,8 +49,10 @@ $(function () {
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            let date_delivered = moment(row?.['date_delivered']).format('YYYY-MM-DD');
-                            return `<p>${date_delivered}</p>`
+                            if (row?.['delivered_date']) {
+                                return `<p>${moment(row?.['delivered_date']).format('DD/MM/YYYY')}</p>`;
+                            }
+                            return `<p></p>`;
                         }
                     },
                     {
@@ -64,7 +66,7 @@ $(function () {
                                 "soft-success",
                                 "soft-danger",
                             ]
-                            return `<span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
                         }
                     },
                     {
@@ -77,20 +79,22 @@ $(function () {
                                 "soft-info text-sky",
                                 "soft-success",
                             ]
-                            return `<span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span></div>`;
                         }
                     },
                     {
                         targets: 6,
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let isChange = ``;
+                            if (![2, 3].includes(row?.['system_status'])) {
+                                isChange = `<a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a><div class="dropdown-divider"></div>`;
+                            }
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a>
-                                        <div class="dropdown-divider" hidden></div>
-                                        <a class="dropdown-item" href="#" hidden>${transEle.attr('data-cancel')}</a>
+                                        ${isChange}
                                     </div>
                                 </div>`;
                         },

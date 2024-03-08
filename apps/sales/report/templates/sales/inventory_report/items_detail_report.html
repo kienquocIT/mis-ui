@@ -4,9 +4,15 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        tr:hover {
+            background-color: #fffaeb;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
     <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
             data-trans-m2th="{% trans 'February' %}"
@@ -26,71 +32,78 @@
     ></script>
 
     <script id="url-script"
-            data-url-inventory-list="{% url 'ReportInventoryDetailListAPI' %}"
+            data-url-inventory-detail-list="{% url 'ReportInventoryDetailListAPI' %}"
     ></script>
 
+    <div class="row" id="notify-div" hidden>
+        <div class="col-12">
+            <div class="alert bg-warning-light-3" role="alert">
+                {% trans 'Some Opening balance values can be wrong because last sub period have not been closed.' %}
+            </div>
+        </div>
+    </div>
+
     <div class="row">
-        <div class="col-12 col-lg-4 col-md-4">
+        <div class="col-12 col-lg-3 col-md-3">
             <div class="form-group">
                 <label class="form-label" for="items_select">{% trans 'Product' %}</label>
                 <select class="form-select select2 select-multiple" id="items_select" multiple
                         data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
             </div>
         </div>
-        <div class="col-12 col-lg-4 col-md-4">
+        <div class="col-12 col-lg-2 col-md-2">
             <div class="form-group">
                 <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
                 <select class="form-select select2 select-multiple" id="warehouses_select" multiple
                         data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
             </div>
         </div>
-        <div class="col-12 col-lg-4 col-md-4">
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-5">
+        <div class="col-12 col-lg-3 col-md-3">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
                         <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
                         <select class="form-select select2" id="period-select"
                                 data-url="{% url 'PeriodsConfigListAPI' %}"
                                 data-method="GET"
                         ></select>
                     </div>
-                    <div class="col-7">
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
                         <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
                         <select id="period-month" class="form-select"></select>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row mb-5">
-        <div class="col-12">
-            <button type="button" class="btn btn-gradient-primary" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
-{#            <button type="button" class="btn btn-gradient-dark" id="btn-export"><span><span>{% trans 'Export' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-file-export"></i></span></span></span></button>#}
+        <div class="col-12 col-lg-4 col-md-4">
+            <button type="button" class="btn btn-gradient-primary mt-5" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
         </div>
     </div>
-    <div class="row">
+    <div class="row mt-5">
         <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
             <table class="table nowrap w-100" id="items_detail_report_table">
                 <thead>
-                <tr>
-                    <th>{% trans 'Code' %}</th>
-                    <th>{% trans 'Name' %}</th>
-                    <th>{% trans 'Valuation method' %}</th>
-                    <th>{% trans 'Warehouse' %}</th>
-                    <th>{% trans 'System date' %}</th>
-                    <th hidden>{% trans 'Posting date' %}</th>
-                    <th hidden>{% trans 'Document date' %}</th>
-                    <th>{% trans 'Trans description' %}</th>
-                    <th>{% trans 'Trans code' %}</th>
-                    <th class="text-primary text-center">{% trans 'Stock in quantity' %}</th>
-                    <th class="text-primary">{% trans 'In cost' %}</th>
-                    <th class="text-primary">{% trans 'In value' %}</th>
-                    <th class="text-danger text-center">{% trans 'Stock out quantity' %}</th>
-                    <th class="text-danger">{% trans 'Out cost' %}</th>
-                    <th class="text-danger">{% trans 'Out value' %}</th>
-                    <th class="text-secondary text-center">{% trans 'Cumulative quantity' %}</th>
-                    <th class="text-secondary">{% trans 'Cumulative cost' %}</th>
-                    <th class="text-secondary">{% trans 'Cumulative value' %}</th>
+                <tr class="bg-secondary-light-3">
+                    <th class="border-1">{% trans 'Code' %}</th>
+                    <th class="border-1">{% trans 'Name' %}</th>
+                    <th class="border-1">{% trans 'Valuation method' %}</th>
+                    <th class="border-1">{% trans 'Warehouse' %}</th>
+                    <th class="border-1">{% trans 'System date' %}</th>
+                    <th class="border-1" hidden>{% trans 'Posting date' %}</th>
+                    <th class="border-1" hidden>{% trans 'Document date' %}</th>
+                    <th class="border-1">{% trans 'Trans description' %}</th>
+                    <th class="border-1">{% trans 'Trans code' %}</th>
+                    <th class="border-1">{% trans 'In quantity' %}</th>
+                    <th class="border-1">{% trans 'In cost' %}</th>
+                    <th class="border-1">{% trans 'In value' %}</th>
+                    <th class="border-1">{% trans 'Out quantity' %}</th>
+                    <th class="border-1">{% trans 'Out cost' %}</th>
+                    <th class="border-1">{% trans 'Out value' %}</th>
+                    <th class="border-1">{% trans 'Cumulative quantity' %}</th>
+                    <th class="border-1">{% trans 'Cumulative cost' %}</th>
+                    <th class="border-1">{% trans 'Cumulative value' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>

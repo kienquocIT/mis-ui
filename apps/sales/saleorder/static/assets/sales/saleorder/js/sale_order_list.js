@@ -26,7 +26,7 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
@@ -86,7 +86,7 @@ $(function () {
                                 "soft-success",
                                 "soft-danger",
                             ]
-                            return `<span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
                         }
                     },
                     {
@@ -100,7 +100,7 @@ $(function () {
                                 "soft-info text-sky",
                                 "soft-success",
                             ]
-                            return `<span class="badge badge-${sttData[row?.['delivery_status']]}">${sttTxt[row?.['delivery_status']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${sttData[row?.['delivery_status']]}">${sttTxt[row?.['delivery_status']][1]}</span></div>`;
                         }
                     },
                     {
@@ -108,18 +108,20 @@ $(function () {
                         width: '6.66%',
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
                             const $elmTrans = $('#trans-factory')
-                            let isDelivery = ''
-                            if (!row.delivery_call && [2, 3].includes(row?.['system_status']))
-                                isDelivery = '<div class="dropdown-divider"></div>' +
-                                    `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`
+                            let isChange = ``;
+                            let isDelivery = ``;
+                            if (![2, 3].includes(row?.['system_status'])) {
+                                isChange = `<a class="dropdown-item" href="${link}">${$elmTrans.attr('data-change')}</a><div class="dropdown-divider"></div>`;
+                            }
+                            if (!row.delivery_call && [2, 3].includes(row?.['system_status'])) {
+                                isDelivery = `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`;
+                            }
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item" href="${link}">${$elmTrans.attr('data-change')}</a>
-                                        <div class="dropdown-divider" hidden></div>
-                                        <a class="dropdown-item" href="#" hidden>${$('#base-trans-factory').attr('data-cancel')}</a>
+                                        ${isChange}
                                         ${isDelivery}
                                     </div>
                                 </div>`;

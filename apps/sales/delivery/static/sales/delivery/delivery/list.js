@@ -45,7 +45,7 @@ $(document).ready(function () {
                 data: 'estimated_delivery_date',
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(data, {
-                        'outputFormat': 'DD/MM/YYYY hh:mm A',
+                        'outputFormat': 'DD/MM/YYYY',
                     })
                 },
             },
@@ -53,7 +53,7 @@ $(document).ready(function () {
                 data: 'actual_delivery_date',
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(data, {
-                        'outputFormat': 'DD/MM/YYYY hh:mm A',
+                        'outputFormat': 'DD/MM/YYYY',
                     });
                 },
             },

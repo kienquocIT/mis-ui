@@ -28,4 +28,9 @@ class DashboardPipelineList(View):
         menu_active='id_menu_dashboard_pipeline',
     )
     def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
+        if len(resp1.result) > 0:
+            return {
+                'data': {'current_period': resp1.result[0]},
+            }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK

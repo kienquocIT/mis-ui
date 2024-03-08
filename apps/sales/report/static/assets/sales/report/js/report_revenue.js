@@ -19,14 +19,14 @@ $(function () {
                         targets: 0,
                         width: '7.5%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</p>`;
+                            return `<div class="row"><span class="badge badge-primary">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 1,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</p>`;
+                            return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {

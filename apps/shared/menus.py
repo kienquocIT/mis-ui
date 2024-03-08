@@ -516,13 +516,13 @@ class MenusReport:
                 name='Revenue report',
                 code='menu_report_revenue_list',
                 view_name='ReportRevenueList',
-                icon='<i class="fas fa-file-invoice-dollar"></i>',
+                icon='<i class="fas fa-comment-dollar"></i>',
             ),
             MenuCommon(
                 name='General revenue report',
                 code='menu_report_general_list',
                 view_name='ReportGeneralList',
-                icon='<i class="fas fa-file-invoice-dollar"></i>',
+                icon='<i class="fas fa-comments-dollar"></i>',
             ),
             MenuCommon(
                 name='Product report',

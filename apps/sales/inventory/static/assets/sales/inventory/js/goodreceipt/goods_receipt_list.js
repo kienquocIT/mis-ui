@@ -45,7 +45,7 @@ $(function () {
                                 "badge badge-soft-info",
                             ]
                             let typeTxt = JSON.parse($('#gr_type').text())
-                            return `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span></div>`;
                         }
                     },
                     {
@@ -58,9 +58,9 @@ $(function () {
                             ]
                             let ele = `<span></span>`;
                             if (row?.['goods_receipt_type'] === 0) {
-                                ele = `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span>`;
+                                ele = `<div class="row"><span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span></div>`;
                             } else if (row?.['goods_receipt_type'] === 1) {
-                                ele = `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span>`;
+                                ele = `<div class="row"><span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span></div>`;
                             }
                             return ele;
                         }
@@ -85,7 +85,7 @@ $(function () {
                                 "soft-success",
                                 "soft-danger",
                             ]
-                            return `<span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
                         }
                     },
                     {

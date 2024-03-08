@@ -29,9 +29,9 @@ $(function () {
                                 if (row?.['indicator']?.['formula_data_show']) {
                                     formula = row?.['indicator']?.['formula_data_show'].replace(/"/g, "'");
                                 }
-                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="${row?.['indicator']?.['code'] ? row?.['indicator']?.['code'] : ''}" data-row="${dataRow}" data-formula="${formula}">${row?.['indicator']?.['title'] ? row?.['indicator']?.['title'] : ''}</p>`;
+                                return `<b><p class="table-row-indicator text-primary" data-id="${row?.['id']}" data-code="${row?.['indicator']?.['code'] ? row?.['indicator']?.['code'] : ''}" data-row="${dataRow}" data-formula="${formula}">${row?.['indicator']?.['title'] ? row?.['indicator']?.['title'] : ''}</p></b>`;
                             } else {
-                                return `<p class="table-row-indicator" data-id="${row?.['id']}" data-code="" data-row="${dataRow}"></p>`;
+                                return `<b><p class="table-row-indicator text-primary" data-id="${row?.['id']}" data-code="" data-row="${dataRow}"></p></b>`;
                             }
                         }
                     },
@@ -39,32 +39,34 @@ $(function () {
                         targets: 1,
                         width: '10%',
                         render: (data, type, row) => {
+                            let code = '';
                             if (row?.['is_sale_order'] === true) {
-                                return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
-                            } else if (row?.['is_payment'] === true) {
-                                return `<p>${row?.['payment']?.['code'] ? row?.['payment']?.['code'] : ''}</p>`;
-                            } else if (row?.['is_delivery'] === true) {
-                                return `<p>${row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : ''}</p>`;
+                                code = row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : '';
                             }
-                            else {
-                                return `<p></p>`;
+                            if (row?.['is_payment'] === true) {
+                                code = row?.['payment']?.['code'] ? row?.['payment']?.['code'] : '';
                             }
+                            if (row?.['is_delivery'] === true) {
+                                code = row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : '';
+                            }
+                            return `<div class="row"><span class="badge badge-soft-primary">${code}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
                         width: '12.5%',
                         render: (data, type, row) => {
+                            let title = '';
                             if (row?.['is_sale_order'] === true) {
-                                return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
-                            } else if (row?.['is_payment'] === true) {
-                                return `<p>${row?.['payment']?.['title'] ? row?.['payment']?.['title'] : ''}</p>`;
-                            } else if (row?.['is_delivery'] === true) {
-                                return `<p>${row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : ''}</p>`;
+                                title = row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : '';
                             }
-                            else {
-                                return `<p></p>`;
+                            if (row?.['is_payment'] === true) {
+                                title = row?.['payment']?.['title'] ? row?.['payment']?.['title'] : '';
                             }
+                            if (row?.['is_delivery'] === true) {
+                                title = row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : '';
+                            }
+                            return `<p>${title}</p>`;
                         }
                     },
                     {

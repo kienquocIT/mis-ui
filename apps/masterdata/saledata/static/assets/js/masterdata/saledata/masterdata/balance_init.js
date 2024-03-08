@@ -211,7 +211,7 @@ $(document).ready(function () {
             if (flag) {
                 for (const item of list_result) {
                     dtb_balance_init_item_Ele.find('tbody').append(`
-                        <tr class="bg-primary-light-5">
+                        <tr class="bg-primary-light-5 new-row-data">
                             <td><span data-item-id="${item?.['product_data']?.['id']}" class="badge badge-secondary balance-item">${item?.['product_data']?.['code']}</span>&nbsp;<span>${item?.['product_data']?.['title']}</span></td>
                             <td><span>${item?.['uom_data']?.['title']}</span></td>
                             <td><span data-wh-id="${item?.['wh_data']?.['id']}" class="badge badge-primary balance-wh">${item?.['wh_data']?.['code']}</span>&nbsp;<span>${item?.['wh_data']?.['title']}</span></td>
@@ -240,7 +240,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($(frmEle));
 
             let balance_data = []
-            dtb_balance_init_item_Ele.find('tbody tr').each(function() {
+            dtb_balance_init_item_Ele.find('tbody .new-row-data').each(function() {
                 balance_data.push({
                     'product_id': $(this).find('.balance-item').attr('data-item-id'),
                     'warehouse_id': $(this).find('.balance-wh').attr('data-wh-id'),
@@ -250,7 +250,6 @@ $(document).ready(function () {
             })
             frm.dataForm['balance_data'] = balance_data;
 
-            console.log(frm.dataForm)
             if (for_update) {
                 let pk = $.fn.getPkDetail();
                 return {
@@ -260,7 +259,6 @@ $(document).ready(function () {
                     urlRedirect: frm.dataUrlRedirect,
                 };
             }
-            console.log(frm.dataUrl.format_url_with_uuid(period_setup_sw_start_using_time.replace(/^"(.*)"$/, '$1')))
             return {
                 url: frm.dataUrl.format_url_with_uuid(period_setup_sw_start_using_time.replace(/^"(.*)"$/, '$1')),
                 method: frm.dataMethod,

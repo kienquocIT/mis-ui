@@ -28,6 +28,6 @@ class FImportCreateView(View):
     )
     def get(self, request, *args, **kwargs):
         ctx = {
-            **COLUMNS_ACCOUNT_USER,
+            **COLUMNS_ACCOUNT_USER.data,
         }
         return ctx, status.HTTP_200_OK

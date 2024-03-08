@@ -24,3 +24,7 @@ msgstr "Kích thước tệp phải nhỏ hơn hoặc bằng __size__"
 #
 msgid "The feature is not support import file data"
 msgstr "Chức năng này không hỗ trợ nhập dữ liệu từ tập tin"
+
+#
+msgid "Successfully"
+msgstr "Thành công"

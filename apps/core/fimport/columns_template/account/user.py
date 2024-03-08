@@ -6,34 +6,26 @@ from apps.core.fimport.columns_template.tools import ResolveColumnsFImport
 
 COLUMNS_ACCOUNT_USER = ResolveColumnsFImport(
     app_id='af9c6fd3-1815-4d5a-aa24-fca9d095cb7a',
+    url_name='UserListAPI',
     template_link='fimport/template/af9c6fd3-1815-4d5a-aa24-fca9d095cb7a.xlsx',
-    validate={
-        'username': {
-            'required': True,
-            'minlength': 1,
-        },
-        'phone': {
-            # 'check_phone_vn': {'hihi': True},
-        }
-    },
+    validate={},
     columns=[
         {
             'name': 'STT',
             'type': 'number',
             'remarks': 'Order Numbering',
-            'input_attrs': None,
             'col_attrs': {
                 'class': 'col-1',
             },
         },
         {
-            'name': 'Username',
+            'name': _('User name'),
+            'input_name': 'username',
             'type': 'string',
-            'remarks': _('User name'),
+            'remarks': '',
             'input_attrs': {
                 'args': ['required'],
                 'kwargs': {
-                    'name': 'username',
                     'type': 'text',
                     'minlength': 1,
                 },
@@ -41,12 +33,12 @@ COLUMNS_ACCOUNT_USER = ResolveColumnsFImport(
         },
         {
             'name': 'Last Name',
+            'input_name': 'first_name',
             'type': 'string',
             'remarks': 'First name',
             'input_attrs': {
                 'args': ['required'],
                 'kwargs': {
-                    'name': 'first_name',
                     'type': 'text',
                     'minlength': 1,
                 }
@@ -54,40 +46,52 @@ COLUMNS_ACCOUNT_USER = ResolveColumnsFImport(
         },
         {
             'name': 'First Name',
+            'input_name': 'last_name',
             'type': 'string',
             'remarks': 'Last name',
             'input_attrs': {
                 'args': ['required'],
                 'kwargs': {
-                    'name': 'last_name',
                     'type': 'text',
                     'minlength': 1,
                 }
             },
         },
         {
+            'name': 'Password',
+            'input_name': 'password',
+            'type': 'password',
+            'remarks': 'Password',
+            'input_attrs': {
+                'args': ['required'],
+                'kwargs': {
+                    'type': 'text',
+                    'minlength': 1,
+                },
+            },
+        },
+        {
             'name': 'Email',
+            'input_name': 'email',
             'type': 'email',
             'remarks': 'E-Mail',
             'input_attrs': {
                 'kwargs': {
-                    'name': 'email',
                     'type': 'email',
                 }
             },
         },
         {
             'name': 'Phone Number',
+            'input_name': 'phone',
             'type': 'phone',
             'remarks': 'Phone number',
             'input_attrs': {
                 'kwargs': {
-                    'name': 'phone',
                     'type': 'tel',
-                    # 'pattern': "^((\+84)|0)([35789]|1[2389])([0-9]{8})$",
-                    'data-valid-check-phone-vn': True, # "^((\+84)|0)([35789]|1[2389])([0-9]{8})$",
+                    'data-valid-check-phone-vn': True,  # "^((\+84)|0)([35789]|1[2389])([0-9]{8})$",
                 }
             },
         },
     ],
-).data
+)

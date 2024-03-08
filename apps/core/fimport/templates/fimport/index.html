@@ -96,6 +96,9 @@
             class RenderData {
                 constructor(props) {
                     this.templateConfig = {
+                        url: '#',
+                        template_link: null,
+                        validate: {},
                         columns: [],
                         ...props?.['templateConfig'] || {}
                     };
@@ -104,6 +107,15 @@
 
                     this.headData = [];
                     this.bodyData = [];
+
+                    this.keyMap = {};
+                    (this.templateConfig.columns || []).map(
+                        (item) => {
+                            let input_title = item?.['name'] || null;
+                            let input_name = item?.['input_name'] || null;
+                            if (input_name && input_title) this.keyMap[input_name] = input_title;
+                        }
+                    )
                 }
 
                 generate_head() {
@@ -153,15 +165,19 @@
                     }
 
                     function generate_form_group(data, config){
-                        let stateInp = !!(config?.['input_attrs'] || null);
+                        let group$ = $(`<div class="form-group"></div>`);
+                        let inp$ = $(`<input class="form-control" value="${data ? data : ''}" />`);
+
+                        let inpName = config?.['input_name'] || null;
+                        if (inpName) inp$.attr('name', inpName);
+
                         let inpAttrs = {
-                            'args': stateInp ? [] : ['disabled', 'readonly'],
+                            'args': !!(config?.['input_attrs'] || null) ? [] : ['disabled', 'readonly'],
                             'kwargs': {
                                 class: 'form-control-plaintext',
                             },
                             ...config?.['input_attrs'] || {}
                         };
-                        let inp$ = $(`<input class="form-control" value="${data}" />`);
                         inpAttrs.args.map(
                             (attData) => inp$.prop(attData, true)
                         )
@@ -170,7 +186,7 @@
                                 inp$.attr(key, inpAttrs.kwargs[key]);
                             }
                         )
-                        let group$ = $(`<div class="form-group"></div>`);
+
                         group$.append(inp$);
                         return group$;
                     }
@@ -188,16 +204,14 @@
                                         cell$.append(col$);
                                     }
                                 )
-                                return `<form data-url="#" data-method="POST" id="${$x.fn.randomStr(32)}">${cell$.prop('outerHTML')}</form>`;
+                                return `<form data-url="${this.templateConfig.url}" data-method="POST" id="${$x.fn.randomStr(32)}">${cell$.prop('outerHTML')}</form>`;
                             }
                         },
                         {
                             width: '10%',
                             className: 'my-custom-align',
                             render: (data, type, row) => {
-                                // <span class="badge badge-soft-primary"><i class="fa-solid fa-check"></i></span>
-                                // <span class="badge badge-soft-danger"><i class="fa-solid fa-xmark"></i></span>
-                                return `<button class="btn btn-xs btn-primary btnSubmit" type="button"><i class="fa-regular fa-floppy-disk"></i></button>`;
+                                return `<button class="btn btn-xs btn-primary btnSubmit" type="button" disabled><i class="fa-regular fa-floppy-disk"></i></button>`;
                             }
                         }
                     ]
@@ -207,10 +221,18 @@
                     // not process when data type is not correct
                     if (!(data && Array.isArray(data) && data.length > 1)) return false;
 
-                    this.headData = data[0];
-                    this.bodyDatas = data.slice(1);
+                    $x.fn.showLoadingPage();
+                    setTimeout(
+                        () => {
+                            this.headData = data[0];
+                            this.bodyDatas = data.slice(1);
 
-                    this.tbl$.DataTable().clear().rows.add(this.bodyDatas).draw();
+                            this.tbl$.DataTable().clear().rows.add(this.bodyDatas).draw();
+
+                            $x.fn.hideLoadingPage();
+                        },
+                        100
+                    )
                 }
 
                 render_frame() {
@@ -235,22 +257,63 @@
                             $(row).attr('data-url', '#');
                             $(row).attr('data-method', "POST");
                             let frm$ = $(row).find('form');
-                            new SetupFormSubmit(frm$).validate({
+                            let btn$ = $(row).find('button.btnSubmit');
+
+                            btn$.on('click', function(){
+                                $(this).prop('disabled', true);
+                                frm$.trigger('submit');
+                                setTimeout(
+                                    () => $(this).prop('disabled', false),
+                                    1000
+                                )
+                            });
+
+                            function checkValid(){
+                                btn$.prop('disabled', !frm$.valid());
+                            }
+
+                            let validator = new SetupFormSubmit(frm$).validate({
                                 rules: clsThis.templateConfig?.['validate'] || {},
                                 submitHandler: function (form, event) {
-                                    console.log('submit: ', form);
+                                    let frm = new SetupFormSubmit(form);
+                                    $.fn.callAjax2({
+                                        url: frm.dataUrl,
+                                        method: frm.dataMethod,
+                                        data: frm.dataForm,
+                                    }).then(
+                                        (resp) => {
+                                            let data = $.fn.switcherResp(resp);
+                                            if (data){
+                                                $.fn.notifyB({
+                                                    'description': $.fn.gettext('Successfully'),
+                                                }, 'success');
+                                                $(row).addClass('bg-success bg-opacity-25 text-dark');
+                                            }
+                                        },
+                                        (errs) => {
+                                            $.fn.switcherResp(errs, {
+                                                'notifyOpts': { 'keyNotMatch': '', 'replaceKey': clsThis.keyMap, 'isShowKey': true},
+                                                'swalOpts': {'allowOutsideClick': true},
+                                            });
+                                            if (errs && typeof errs === 'object' && errs.hasOwnProperty('data')){
+                                                let data = errs['data'];
+                                                if (data && typeof data === 'object' && data.hasOwnProperty('errors')){
+                                                    let errors = data['errors'];
+                                                    if (errors && typeof errors === 'object'){
+                                                        validator.showErrors(errors);
+                                                    }
+                                                }
+                                            }
+                                            $(row).addClass('bg-danger bg-opacity-25 text-dark');
+                                        },
+                                    )
                                 }
                             });
-                            $.validator.unpretentious(frm$);
 
-                            $(row).find('button').on('click', function () {
-                                frm$.trigger('submit');
-                            });
-
-                            setTimeout(() => frm$.valid(), 100);
+                            setTimeout(() => checkValid(), 100);
 
                             $(row).find('input:not(:disabled):not(:read-only):not(.form-control-plaintext)').on(
-                                'input', () => frm$.valid()
+                                'input', () => checkValid()
                             )
                         },
                     })

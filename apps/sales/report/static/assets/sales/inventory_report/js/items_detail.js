@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let NOT_CLOSED_SUB_PERIOD = 0
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
     const items_detail_report_table_Ele = $('#items_detail_report_table')
@@ -108,6 +109,7 @@ $(document).ready(function () {
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
     $('#btn-view').on('click', function () {
+        NOT_CLOSED_SUB_PERIOD = 0
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
@@ -162,6 +164,9 @@ $(document).ready(function () {
                             </tr>`
                         )
                         for (const stock_activity of item?.['stock_activities']) {
+                            if (stock_activity?.['is_close'] === false) {
+                                NOT_CLOSED_SUB_PERIOD += 1
+                            }
                             if (warehouses_select_Ele.val().length > 0) {
                                 if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {
                                     let stock_type_label = `<span class="text-secondary">Opening balance</span>`
@@ -184,7 +189,7 @@ $(document).ready(function () {
                                             <td class="border-1"></td>
                                             <td class="border-1"></td>
                                             <td class="border-1"></td>
-                                            <td><span>${stock_activity?.['opening_balance_quantity']}</span></td>
+                                            <td class="border-1"><span>${stock_activity?.['opening_balance_quantity']}</span></td>
                                             <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_cost']}"></span></td>
                                             <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_value']}"></span></td>
                                         </tr>`
@@ -213,7 +218,7 @@ $(document).ready(function () {
                                                     <td></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
-                                                    <td><span">${activity?.['current_quantity']}</span></td>
+                                                    <td class="border-1"><span">${activity?.['current_quantity']}</span></td>
                                                     <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
                                                     <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                                 </tr>`
@@ -237,7 +242,7 @@ $(document).ready(function () {
                                                     <td class="bg-danger-light-5"><span>${activity?.['quantity']}</span></td>
                                                     <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
                                                     <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
-                                                    <td><span>${activity?.['current_quantity']}</span></td>
+                                                    <td class="border-1"><span>${activity?.['current_quantity']}</span></td>
                                                     <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
                                                     <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                                 </tr>`
@@ -245,7 +250,8 @@ $(document).ready(function () {
                                         }
                                     }
                                 }
-                            } else {
+                            }
+                            else {
                                 let stock_type_label = `<span class="text-secondary">Opening balance</span>`
                                 cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                 cumulative_value += stock_activity?.['ending_balance_value']
@@ -266,7 +272,7 @@ $(document).ready(function () {
                                         <td class="border-1"></td>
                                         <td class="border-1"></td>
                                         <td class="border-1"></td>
-                                        <td><span>${stock_activity?.['opening_balance_quantity']}</span></td>
+                                        <td class="border-1"><span>${stock_activity?.['opening_balance_quantity']}</span></td>
                                         <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_cost']}"></span></td>
                                         <td class="border-1"><span class="mask-money" data-init-money="${stock_activity?.['opening_balance_value']}"></span></td>
                                     </tr>`
@@ -295,7 +301,7 @@ $(document).ready(function () {
                                                 <td></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
-                                                <td><span>${activity?.['current_quantity']}</span></td>
+                                                <td class="border-1"><span>${activity?.['current_quantity']}</span></td>
                                                 <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
                                                 <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                             </tr>`
@@ -319,7 +325,7 @@ $(document).ready(function () {
                                                 <td class="bg-danger-light-5"><span>${activity?.['quantity']}</span></td>
                                                 <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
                                                 <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
-                                                <td><span>${activity?.['current_quantity']}</span></td>
+                                                <td class="border-1"><span>${activity?.['current_quantity']}</span></td>
                                                 <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
                                                 <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                             </tr>`
@@ -335,6 +341,7 @@ $(document).ready(function () {
                     $.fn.initMaskMoney2()
                     setTimeout(
                         () => {
+                            $('#notify-div').prop('hidden', NOT_CLOSED_SUB_PERIOD === 0)
                             WindowControl.hideLoading();
                         },
                         500

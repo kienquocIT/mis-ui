@@ -5,10 +5,11 @@ from apps.sales.report.views import (
     ReportCustomerList, ReportCustomerListAPI,
     ReportInventoryDetailList, ReportPipelineList, ReportPipelineListAPI,
     ReportCashflowList, ReportCashflowListAPI, ReportInventoryDetailListAPI,
-    ReportInventoryList, ReportInventoryListAPI
+    ReportInventoryList, ReportInventoryListAPI, ReportGeneralList, ReportGeneralListAPI
 )
 
 urlpatterns = [
+    # report sale
     path('revenue', ReportRevenueList.as_view(), name='ReportRevenueList'),
     path('api/revenue', ReportRevenueListAPI.as_view(), name='ReportRevenueListAPI'),
     path('product', ReportProductList.as_view(), name='ReportProductList'),
@@ -19,7 +20,10 @@ urlpatterns = [
     path('api/pipeline', ReportPipelineListAPI.as_view(), name='ReportPipelineListAPI'),
     path('cashflow', ReportCashflowList.as_view(), name='ReportCashflowList'),
     path('api/cashflow', ReportCashflowListAPI.as_view(), name='ReportCashflowListAPI'),
+    path('general', ReportGeneralList.as_view(), name='ReportGeneralList'),
+    path('api/general', ReportGeneralListAPI.as_view(), name='ReportGeneralListAPI'),
 
+    # report inventory
     path('inventory-detail', ReportInventoryDetailList.as_view(), name='ReportInventoryDetailList'),
     path('api/inventory-detail', ReportInventoryDetailListAPI.as_view(), name='ReportInventoryDetailListAPI'),
 

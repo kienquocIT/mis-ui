@@ -68,8 +68,10 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            let date_created = moment(row?.['date_created']).format('YYYY-MM-DD');
-                            return `<p>${date_created}</p>`
+                            if (row?.['date_received']) {
+                                return `<p>${moment(row?.['date_received']).format('DD/MM/YYYY')}</p>`;
+                            }
+                            return `<p></p>`;
                         }
                     },
                     {

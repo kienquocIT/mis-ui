@@ -225,6 +225,20 @@ class QuotationLoadDataHandle {
 
     static loadDataBySalePerson() {
         if (!QuotationLoadDataHandle.opportunitySelectEle.val()) {
+            // load opp
+            if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
+                QuotationLoadDataHandle.opportunitySelectEle.empty();
+                QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+                    'dataParams': {'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val()},
+                    'allowClear': true,
+                });
+            } else {
+                QuotationLoadDataHandle.opportunitySelectEle.empty();
+                QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+                    'allowClear': true,
+                });
+            }
+            // load customer, contact, payment
             QuotationLoadDataHandle.loadBoxQuotationCustomer();
             QuotationLoadDataHandle.loadBoxQuotationContact();
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
@@ -1016,30 +1030,30 @@ class QuotationLoadDataHandle {
                             if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // If Valid Price
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
-                                    $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex mb-1">
-                                                                <span class="mr-2">${data.price_list[i].title}</span>
-                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                    $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                                                            <div class="d-flex">
+                                                                <span class="mr-5">${data.price_list[i].title}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
+                                                                <small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
                                                             </div>
                                                         </a>`);
                                 } else {
-                                    $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex mb-1">
-                                                                <span class="mr-2">${data.price_list[i].title}</span>
-                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                    $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                                                            <div class="d-flex">
+                                                                <span class="mr-5">${data.price_list[i].title}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
+                                                                <small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
                                                             </div>
                                                         </a>`);
                                 }
                             }
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
-                            $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="d-flex mb-1">
-                                                        <span class="mr-2">${data.price_list[i].title}</span>
-                                                        <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                        <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                            $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
+                                                    <div class="d-flex">
+                                                        <span class="mr-5">${data.price_list[i].title}</span>
+                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
+                                                        <small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
                                                     </div>
                                                 </a>`);
                         }
@@ -2869,7 +2883,7 @@ class QuotationDataTableHandle {
                                             <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
                                         </div>
                                         </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-650p">
+                                        <div role="menu" class="dropdown-menu table-row-price-list w-500p">
                                         <a class="dropdown-item" data-value=""></a>
                                         </div>
                                     </div>

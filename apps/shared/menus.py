@@ -201,7 +201,7 @@ class MenusCoreConfigurations:
                 icon='<i class="fa-regular fa-envelope"></i>'
             ),
             MenuCommon(
-                name='Import Data', code='menu_import_data', view_name='FImportListView',
+                name='Import Data', code='menu_import_data', view_name='FImportCreateView',
                 icon='<i class="fa-solid fa-file-import"></i>'
             ),
         ]

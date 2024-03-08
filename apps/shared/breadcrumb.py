@@ -330,7 +330,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
-    IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'))
+    IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
 
 
 class BreadcrumbView:

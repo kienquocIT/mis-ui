@@ -28,3 +28,15 @@ msgstr "Chức năng này không hỗ trợ nhập dữ liệu từ tập tin"
 #
 msgid "Successfully"
 msgstr "Thành công"
+
+#
+msgid "Starting record must be equal or less than ending records"
+msgstr "Bắt đầu phải luôn phải bằng hoặc nhỏ hơn kết thúc"
+
+#
+msgid "Size"
+msgstr "Kích thước"
+
+#
+msgid "Total rows"
+msgstr "Số lượng dòng"

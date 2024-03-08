@@ -23,8 +23,8 @@
         }
 
         .my-custom-align {
-          vertical-align: top!important;
-          text-align: left;
+            vertical-align: top !important;
+            text-align: left;
         }
     </style>
 {% endblock %}
@@ -54,24 +54,53 @@
                 <div class="form-group">
                     <label
                             for="formFile" class="form-label required"
-                    >{% trans 'Choose the Excel file to import data' %}</label>
+                    >{% trans 'Choose the Excel file data' %}</label>
+                    <small class="text-muted form-text">
+                        {% blocktranslate with max_size='5' %}Maximum size: {{ max_size }} MB{% endblocktranslate %}
+                    </small>
                     <input class="form-control" type="file" id="formFile" disabled required>
                     <small class="text-muted form-text" id="file-remarks"></small>
                 </div>
             </div>
             <div class="w-100 mb-3">
-                <button class="btn btn-primary w-100 mb-1" disabled id="btnLoadFileData">{% trans 'Load File Data' %}</button>
+                <div class="row mb-2">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="inpStartRecord" class="form-label">{% trans 'Starting' %}</label>
+                            <div class="input-group">
+                                <button class="btn btn-xs btn-outline-light" id="btnSetMin">{% trans 'Min' %}</button>
+                                <input type="number" id="inpStartRecord" class="form-control" min="1" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="inpEndRecord" class="form-label">{% trans 'Ending' %}</label>
+                            <div class="input-group">
+                                <input type="number" id="inpEndRecord" class="form-control" min="1" disabled>
+                                <button class="btn btn-xs btn-outline-light" id="btnSetMax">{% trans 'Max' %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button
+                        class="btn btn-primary w-100 mb-1" disabled id="btnLoadFileData"
+                >{% trans 'Load File Data' %}</button>
             </div>
         </div>
         <div class="col-lg-9 col-md-8 col-xs-12" id="idx-box-data">
-            <button
-                    class="btn btn-xs btn-icon btn-soft-secondary mb-2"
-                    id="btn-collapse"
-            >
-                <span class="icon"><i class="fa-solid fa-angles-left"></i></span>
-            </button>
+            <div class="w-100 d-flex mb-1">
+                <button
+                        class="btn btn-xs btn-icon btn-soft-secondary"
+                        id="btn-collapse"
+                >
+                    <span class="icon"><i class="fa-solid fa-angles-left"></i></span>
+                </button>
+                <a href="#" class="ml-3" id="btnPageListLink" style="display:none;" target="_blank"><small>{% trans 'List page' %}</small></a>
+                <a href="#" class="ml-3" id="btnPageCreateLink" style="display:none;" target="_blank"><small>{% trans 'Create page' %}</small></a>
+            </div>
+
             <div class="w-100">
-                <p class="title">{% trans 'Display Import Data' %}</p>
                 <table class="table w-100 no-wrap" id="tbl-display-data"></table>
             </div>
         </div>
@@ -81,7 +110,10 @@
 {% block jsHeaderUnCompress %}
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 
-    <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.1/b-3.0.0/b-html5-3.0.0/datatables.min.css" rel="stylesheet">
+    <link
+            href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.1/b-3.0.0/b-html5-3.0.0/datatables.min.css"
+            rel="stylesheet"
+    >
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
@@ -105,7 +137,6 @@
                     this.tbl$ = props?.['table'] || $('#tbl-display-data');
                     if (!$(this.tbl$).attr('id')) this.tbl$.attr('id', $x.fn.randomStr(32));
 
-                    this.headData = [];
                     this.bodyData = [];
 
                     this.keyMap = {};
@@ -143,7 +174,7 @@
                     let thead$ = $(`<thead>
                         <tr>
                             <th>${row$.prop('outerHTML')}</th>
-                            <th><p><i class="fa-solid fa-tractor"></i></p><small></small></th>
+                            <th>#</th>
                         </tr>
                     </thread>`);
                     // add thead to table
@@ -153,7 +184,7 @@
                 get_columns() {
                     let columnsConfig = this.templateConfig.columns || [];
 
-                    function generate_col(config){
+                    function generate_col(config) {
                         let colAttrs = config?.['col_attrs'] || {'class': 'col'};
                         let col$ = $(`<div></div>`);
                         Object.keys(colAttrs).map(
@@ -164,7 +195,7 @@
                         return col$;
                     }
 
-                    function generate_form_group(data, config){
+                    function generate_form_group(data, config) {
                         let group$ = $(`<div class="form-group"></div>`);
                         let inp$ = $(`<input class="form-control" value="${data ? data : ''}" />`);
 
@@ -211,27 +242,27 @@
                             width: '10%',
                             className: 'my-custom-align',
                             render: (data, type, row) => {
-                                return `<button class="btn btn-xs btn-primary btnSubmit" type="button" disabled><i class="fa-regular fa-floppy-disk"></i></button>`;
+                                return `<button class="btn btn-soft-primary btnSubmit" type="button" disabled><i class="fa-regular fa-floppy-disk"></i></button>`;
                             }
                         }
                     ]
                 }
 
-                render_data(data){
+                render_data(data) {
                     // not process when data type is not correct
-                    if (!(data && Array.isArray(data) && data.length > 1)) return false;
+                    if (!(data && Array.isArray(data) && data.length > 0)) return false;
 
                     $x.fn.showLoadingPage();
                     setTimeout(
                         () => {
-                            this.headData = data[0];
-                            this.bodyDatas = data.slice(1);
-
+                            this.bodyDatas = data;
                             this.tbl$.DataTable().clear().rows.add(this.bodyDatas).draw();
-
-                            $x.fn.hideLoadingPage();
+                            setTimeout(
+                                () => $x.fn.hideLoadingPage(),
+                                300
+                            )
                         },
-                        100
+                        300
                     )
                 }
 
@@ -259,7 +290,7 @@
                             let frm$ = $(row).find('form');
                             let btn$ = $(row).find('button.btnSubmit');
 
-                            btn$.on('click', function(){
+                            btn$.off('click').on('click', function () {
                                 $(this).prop('disabled', true);
                                 frm$.trigger('submit');
                                 setTimeout(
@@ -268,7 +299,7 @@
                                 )
                             });
 
-                            function checkValid(){
+                            function checkValid() {
                                 btn$.prop('disabled', !frm$.valid());
                             }
 
@@ -283,7 +314,7 @@
                                     }).then(
                                         (resp) => {
                                             let data = $.fn.switcherResp(resp);
-                                            if (data){
+                                            if (data) {
                                                 $.fn.notifyB({
                                                     'description': $.fn.gettext('Successfully'),
                                                 }, 'success');
@@ -292,14 +323,18 @@
                                         },
                                         (errs) => {
                                             $.fn.switcherResp(errs, {
-                                                'notifyOpts': { 'keyNotMatch': '', 'replaceKey': clsThis.keyMap, 'isShowKey': true},
+                                                'notifyOpts': {
+                                                    'keyNotMatch': '',
+                                                    'replaceKey': clsThis.keyMap,
+                                                    'isShowKey': true
+                                                },
                                                 'swalOpts': {'allowOutsideClick': true},
                                             });
-                                            if (errs && typeof errs === 'object' && errs.hasOwnProperty('data')){
+                                            if (errs && typeof errs === 'object' && errs.hasOwnProperty('data')) {
                                                 let data = errs['data'];
-                                                if (data && typeof data === 'object' && data.hasOwnProperty('errors')){
+                                                if (data && typeof data === 'object' && data.hasOwnProperty('errors')) {
                                                     let errors = data['errors'];
-                                                    if (errors && typeof errors === 'object'){
+                                                    if (errors && typeof errors === 'object') {
                                                         validator.showErrors(errors);
                                                     }
                                                 }
@@ -312,9 +347,7 @@
 
                             setTimeout(() => checkValid(), 100);
 
-                            $(row).find('input:not(:disabled):not(:read-only):not(.form-control-plaintext)').on(
-                                'input', () => checkValid()
-                            )
+                            $(row).find('input:not(:disabled):not(:read-only):not(.form-control-plaintext)').off('input').on('input', checkValid)
                         },
                     })
                 }
@@ -328,10 +361,21 @@
                     this.linkTemplateList$ = $('#idx-link-template');
                     this.inpFile$ = $('#formFile');
                     this.inpApp$ = $('#inp-application');
+                    this.starting$ = $('#inpStartRecord');
+                    this.ending$ = $('#inpEndRecord');
+                    this.btnSetMin$ = $('#btnSetMin');
+                    this.btnSetMax$ = $('#btnSetMax');
+                    this.btnPageList$ = $('#btnPageListLink');
+                    this.btnPageCreate$ = $('#btnPageCreateLink')
 
                     this.templateData = JSON.parse($('#idx-template-link').text());
                     this.templateSelectedData = {};
                     this.previousState = '1';  // 0: hide, 1: show
+                }
+
+                update_max_start_end(data_length) {
+                    this.starting$.val(1).attr('min', 1).attr('max', data_length).prop('disabled', false);
+                    this.ending$.val(data_length).attr('min', 1).attr('max', data_length).prop('disabled', false);
                 }
 
                 readerBufferFile(f) {
@@ -348,9 +392,22 @@
                         // Convert to JSON
                         let jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
 
+                        // update remarks
+                        let sizeToMB = f.size / (1024 * 1024);
+                        $('#file-remarks').text(`${$.fn.gettext("Size")}: ${sizeToMB.toFixed(2)}MB  ●  ${$.fn.gettext("Total rows")}: ${jsonData.length - 1}`);
+
+                        // update starting and ending records
+                        clsThis.update_max_start_end(jsonData.length - 1);
+
                         $x.fn.hideLoadingPage();
-                        $('#btnLoadFileData').prop('disabled', false).on('click', function (){
-                            clsThis.clsRenderData.render_data(jsonData)
+                        $('#btnLoadFileData').prop('disabled', false).on('click', function () {
+                            let startNum = Number.parseInt(clsThis.starting$.val());
+                            let endNum = Number.parseInt(clsThis.ending$.val());
+                            if (startNum <= endNum) clsThis.clsRenderData.render_data(jsonData.slice(startNum, endNum + 1));
+                            else $.fn.notifyB({
+                                'description': $.fn.gettext('The feature is not support import file data'),
+                            })
+
                         })
                     };
                     reader.readAsArrayBuffer(f);
@@ -364,7 +421,10 @@
                         let idx = $(this).val();
                         clsThis.templateSelectedData = clsThis.templateData[idx];
                         if (clsThis.templateSelectedData && clsThis.templateSelectedData?.['template_link']) {
-                            clsThis.linkTemplateList$.attr('href', clsThis.linkTemplateList$.attr('data-static-url') + clsThis.templateSelectedData['template_link']).show();
+                            clsThis.linkTemplateList$.attr(
+                                'href',
+                                clsThis.linkTemplateList$.attr('data-static-url') + clsThis.templateSelectedData['template_link']
+                            ).show();
                             clsThis.inpFile$.prop('disabled', false);
 
                             //
@@ -372,11 +432,22 @@
                                 'templateConfig': clsThis.templateSelectedData,
                             });
                             clsThis.clsRenderData.render_frame();
+
+                            //
+                            let urlList = clsThis.templateSelectedData?.['url_list'] || null;
+                            urlList ? clsThis.btnPageList$.attr('href', urlList ).show() : clsThis.btnPageList$.attr('href', '#' ).hide();
+
+                            //
+                            let urlCreate = clsThis.templateSelectedData?.['url_create'] || null;
+                            urlCreate ? clsThis.btnPageCreate$.attr('data-href', urlCreate ).show() : clsThis.btnPageCreate$.attr('data-href', '#' ).hide();
                         } else {
                             clsThis.linkTemplateList$.attr('href', '#').hide();
                             $.fn.notifyB({
                                 'description': $.fn.gettext('The feature is not support import file data')
                             }, 'failure');
+
+                            clsThis.btnPageList$.attr('href', '#' ).hide();
+                            clsThis.btnPageCreate$.attr('data-href', '#' ).hide();
                         }
                     });
 
@@ -387,7 +458,7 @@
                         let f = files[0];
                         let sizeToMB = f.size / (1024 * 1024);
 
-                        if (sizeToMB > 10) {
+                        if (sizeToMB > 5) {
                             $.fn.notifyB({
                                 'description': $.fn.gettext('File size must be less than or equal to __size__').replaceAll('__size__', '5MB')
                             }, 'failure');
@@ -395,7 +466,6 @@
                             $x.fn.hideLoadingPage();
                             return;
                         }
-                        $('#file-remarks').text(`Size: ${sizeToMB.toFixed(2)}MB`);
 
                         setTimeout(() => {
                             clsThis.readerBufferFile(f);
@@ -448,6 +518,60 @@
                             }
                         }
                     });
+
+                    this.starting$.on('change', function () {
+                        let valueEnd = clsThis.ending$.val();
+                        let valueStart = clsThis.starting$.val();
+
+                        if (Number.parseInt(valueEnd) < Number.parseInt(valueStart)) {
+                            $.fn.notifyB({
+                                'description': $.fn.gettext("Starting record must be equal or less than ending records")
+                            }, 'failure');
+                            $(this).val(valueEnd);
+                        }
+                    })
+
+                    this.ending$.on('change', function () {
+                        let valueEnd = clsThis.ending$.val();
+                        let valueStart = clsThis.starting$.val();
+
+                        if (Number.parseInt(valueEnd) < Number.parseInt(valueStart)) {
+                            $.fn.notifyB({
+                                'description': $.fn.gettext("Starting record must be equal or less than ending records")
+                            }, 'failure');
+                            $(this).val(valueStart);
+                        }
+                    })
+
+                    this.btnSetMin$.on('click', function () {
+                        let inp$ = $(this).siblings('input');
+                        if (inp$.length > 0 && inp$.prop('disabled') === false) {
+                            let minData = inp$.attr('min');
+                            if (typeof minData === 'string') inp$.val(minData);
+                        }
+                    })
+
+                    this.btnSetMax$.on('click', function () {
+                        let inp$ = $(this).siblings('input');
+                        if (inp$.length > 0 && inp$.prop('disabled') === false) {
+                            let maxData = inp$.attr('max');
+                            if (typeof maxData === 'string') inp$.val(maxData);
+                        }
+                    })
+
+                    this.btnPageList$.on('click', function (){
+                        let dataHref = $(this).attr('data-href');
+                        if (dataHref){
+                            window.open(dataHref, '_blank');
+                        }
+                    })
+
+                    this.btnPageCreate$.on('click', function (){
+                        let dataHref = $(this).attr('data-href');
+                        if (dataHref){
+                            window.open(dataHref, '_blank');
+                        }
+                    })
                 }
 
                 init() {

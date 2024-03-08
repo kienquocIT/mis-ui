@@ -7,7 +7,9 @@ from apps.core.fimport.columns_template.tools import ResolveColumnsFImport
 COLUMNS_ACCOUNT_USER = ResolveColumnsFImport(
     app_id='af9c6fd3-1815-4d5a-aa24-fca9d095cb7a',
     url_name='UserListAPI',
-    template_link='fimport/template/af9c6fd3-1815-4d5a-aa24-fca9d095cb7a.xlsx',
+    list_name='UserList',
+    create_name='UserCreate',
+    template_link='fimport/template/import-account-user.xlsx',
     validate={},
     columns=[
         {

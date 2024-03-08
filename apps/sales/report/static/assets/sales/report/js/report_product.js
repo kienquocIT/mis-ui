@@ -19,14 +19,14 @@ $(function () {
                         targets: 0,
                         class: 'w-5',
                         render: (data, type, row) => {
-                            return `<p>${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</p>`;
+                            return `<div class="row"><span class="badge badge-primary">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 1,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            return `<p>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</p>`;
+                            return `<p class="text-primary">${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</p>`;
                         }
                     },
                     {

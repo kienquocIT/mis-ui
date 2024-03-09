@@ -66,7 +66,7 @@ $(function () {
                                 "soft-success",
                                 "soft-danger",
                             ]
-                            return `<span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span></div>`;
                         }
                     },
                     {
@@ -79,7 +79,7 @@ $(function () {
                                 "soft-info text-sky",
                                 "soft-success",
                             ]
-                            return `<span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span>`;
+                            return `<div class="row"><span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span></div>`;
                         }
                     },
                     {

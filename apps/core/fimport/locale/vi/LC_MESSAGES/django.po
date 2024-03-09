@@ -18,13 +18,37 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "Choose the Excel file to import data"
-msgstr "Chọn tệp tin Excel bạn muốn thêm dữ liệu"
-
-#
-msgid "Display Import Data"
-msgstr "Hiển thị dữ liệu cần nhập"
+msgid "Choose the Excel file data"
+msgstr "Chọn tệp tin dữ liệu Excel"
 
 #
 msgid "Click here to download template file"
 msgstr "Nhấn vào đây để tải xuống tệp mẫu"
+
+#
+msgid "Load File Data"
+msgstr "Tải dữ liệu tập tin"
+
+#
+msgid "Starting"
+msgstr "Bắt đầu từ"
+
+#
+msgid "Ending"
+msgstr "Kết thúc tại"
+
+#
+msgid "Maximum size: %(max_size)s MB"
+msgstr "Kích thước tối đa: %(max_size)s MB"
+
+#
+msgid "Maximum size: 5 MB"
+msgstr "Kích thước tối đa: 5 MB"
+
+#
+msgid "List page"
+msgstr "Trang danh sách"
+
+#
+msgid "Create page"
+msgstr "Trang tạo mới"

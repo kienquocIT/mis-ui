@@ -203,8 +203,8 @@ $.fn.extend({
         opts = {
             // config
             'isNotify': true,
-            'notifyOpts': {},
-            'swalOpts': {},  // 'allowOutsideClick': true,
+            'notifyOpts': {},  // 'notifyOpts': { 'keyNotMatch': '', 'replaceKey': {}, 'isShowKey': true}
+            'swalOpts': {},  // 'swalOpts': {'allowOutsideClick': true},
 
             // callback status
             '200': (respData, configData) => respData.data,

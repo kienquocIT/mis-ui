@@ -154,6 +154,32 @@ div.inline {
     margin-left: 5px;
 }
 
+.dtb-pagination-custom .page-link {
+    font-size: 14px;
+    border-radius: 50px!important;
+    padding: 3px;
+    margin-left: 5px!important;
+    min-height: 30px!important;
+    min-width: 30px!important;
+}
+.dtb-pagination-custom .page-link i {
+    font-size: 14px;
+}
+.dtb-pagination-custom .paginate_button.previous i {
+    margin-right: 2px!important;
+}
+.dtb-pagination-custom .paginate_button.next i {
+    margin-left: 2px!important;
+}
+.dtb-info-custom {
+    font-size: 14px;
+}
+.dtb-length-custom {
+    font-size: 14px;
+}
+.dtb-length-list-custom {
+    font-size: 14px;
+}
 /*[type="search"] {*/
 /*    outline: none;*/
 /*}*/

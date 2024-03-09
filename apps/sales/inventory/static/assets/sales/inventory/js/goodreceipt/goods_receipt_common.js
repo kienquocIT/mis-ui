@@ -843,7 +843,7 @@ class GRLoadDataHandle {
 
     static loadIAQuantityImport() {
         let valuePOQuantity = parseFloat(GRDataTableHandle.tableIAProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-quantity').innerHTML);
-        if (!GRDataTableHandle.tableIALot[0].querySelector('.dataTables_empty')) {
+        if (!GRDataTableHandle.tableIALot[0].querySelector('.dataTables_empty')) {  // lot
             let valueWHNew = 0;
             for (let eleImport of GRDataTableHandle.tableIALot[0].querySelectorAll('.table-row-import')) {
                 if (eleImport.value) {
@@ -856,13 +856,13 @@ class GRLoadDataHandle {
                 }
             }
             if (valuePOQuantity >= valueWHNew) {
-                GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valueWHNew);
+                GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
             } else {
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
                 return false
             }
         }
-        if (!GRDataTableHandle.tableIASerial[0].querySelector('.dataTables_empty')) {
+        if (!GRDataTableHandle.tableIASerial[0].querySelector('.dataTables_empty')) {  // serial
             let valueWHNew = 0;
             for (let eleSerialNumber of GRDataTableHandle.tableIASerial[0].querySelectorAll('.table-row-serial-number')) {
                 if (eleSerialNumber.value !== '') {
@@ -870,7 +870,7 @@ class GRLoadDataHandle {
                 }
             }
             if (valuePOQuantity >= valueWHNew) {
-                GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valueWHNew);
+                GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
             } else {
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
                 return false
@@ -1728,15 +1728,29 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<div class="form-check">
+                        if (row?.['product']?.['general_traceability_method'] === 0) {  // Not lot or serial
+                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                            return `<div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input table-row-checkbox" 
+                                        data-id="${row.id}"
+                                        data-row="${dataRow}"
+                                        disabled
+                                    >
+                                </div>`;
+                        } else {
+                            row['quantity_import'] = 0;
+                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                            return `<div class="form-check">
                                     <input 
                                         type="checkbox" 
                                         class="form-check-input table-row-checkbox" 
                                         data-id="${row.id}"
                                         data-row="${dataRow}"
                                     >
-                                </div>`
+                                </div>`;
+                        }
                     }
                 },
                 {
@@ -1754,7 +1768,7 @@ class GRDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
+                        return `<span class="table-row-quantity">${row?.['quantity_ia'] ? row?.['quantity_ia'] : 0}</span>`;
                     }
                 },
                 {
@@ -1766,7 +1780,15 @@ class GRDataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-import">${0}</span>`;
+                        if (row?.['product']?.['general_traceability_method'] === 0) {  // Not lot or serial
+                            return `<div class="row">
+                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
+                                </div>`;
+                        } else {
+                            return `<div class="row">
+                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" disabled>
+                                </div>`;
+                        }
                     }
                 },
             ],
@@ -2755,25 +2777,24 @@ class GRSubmitHandle {
         let result = [];
         if (GRLoadDataHandle.IASelectEle.val()) {
             let table = GRDataTableHandle.tableIAProduct;
-            if (!table[0].querySelector('.dataTables_empty')) {
-                let order = 0;
-                // Setup Merge Data by Product
-                for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-                    let row = table[0].tBodies[0].rows[i];
-                    let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
-                    if (dataRowRaw) {
-                        order++;
-                        let dataRow = JSON.parse(dataRowRaw);
-                        let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
-                        if (quantityImport >= dataRow['quantity_import']) {
-                            result.push(dataRow);
-                        } else {
-                            $.fn.notifyB({description: 'Please enter sufficient quantity'}, 'failure');
-                            return false;
-                        }
+            let order = 0;
+            // Setup Merge Data by Product
+            table.DataTable().rows().every(function () {
+                let row = this.node();
+                let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
+                if (dataRowRaw) {
+                    order++;
+                    let dataRow = JSON.parse(dataRowRaw);
+                    let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
+                    if (quantityImport >= dataRow['quantity_ia']) {
+                        dataRow['quantity_import'] = quantityImport;
+                        result.push(dataRow);
+                    } else {
+                        $.fn.notifyB({description: 'Please enter sufficient quantity'}, 'failure');
+                        return false;
                     }
                 }
-            }
+            });
         }
         return result
     };

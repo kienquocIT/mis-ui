@@ -151,6 +151,9 @@
         <script async src="{{ ga_config.script }}"></script>
     {% endif %}
     {% compress js %}
+        <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+        <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'assets/js/cdn-clone/jquery-validation/customize-add-method.js' %}"></script>
         {% if is_ga_enabled %}
             <script type="text/javascript">
                 window.dataLayer = window.dataLayer || [];
@@ -411,11 +414,6 @@
 {% endblock %}
 
 {% compress js %}
-    <!-- jQuery -->
-    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
-    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
-    <!-- // jQuery -->
-
     <!-- Bootstrap Core JS -->
     <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
     <!-- // Bootstrap Core JS -->

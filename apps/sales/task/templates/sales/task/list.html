@@ -5,6 +5,7 @@
     <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/perfect-scrollbar.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/sales/task/css/gantt-css.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/sales/task/css/task.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
@@ -100,6 +101,12 @@
                 <span class="nav-link-text">{% trans 'List' %}</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link tab-gantt" data-bs-toggle="tab" href="#tab_gantt">
+                <i class="fa-solid fa-chart-gantt"></i>
+                <span class="nav-link-text">Gantt</span>
+            </a>
+        </li>
     </ul>
     <!-- task kanban -->
     <div class="tab-content">
@@ -120,8 +127,10 @@
                 </table>
             </div>
         </div>
+        <div class="tab-pane fade" id="tab_gantt">
+            <div class="gantt_table"></div>
+        </div>
     </div>
-
     <div class="hidden">
         <div class="card-parent_template">
             <div class="card card-simple card-border tasklist">
@@ -206,19 +215,26 @@
                data-logtime="{% url 'OpportunityTaskLogTimeAPI' %}"
                data-change-stt="{% url 'OpportunityTaskStatusAPI' %}"
         />
+        <input type="text" id="trans-factory" data-name="{% trans 'Name' %}" data-assigner="{% trans 'Assigner' %}"
+        data-assignee="{% trans 'Assignee' %}" data-priority="{% trans 'Priority' %}"
+               data-st-date="{% trans 'Start date' %}" data-ed-date="{% trans 'End date' %}"
+               data-low="{% trans 'Low' %}"
+               data-med="{% trans 'Medium' %}"
+               data-hig="{% trans 'High' %}"
+        >
         {{ data.task_config|json_script:'task_config' }}
     </div>
     {% include 'sales/task/extend/task-form.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
+    <script src="{% static 'vendors/gantt/jquery.fn.gantt.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
-
     <script>
         $('#btn-open-comment-task').on('click', function (){
             let frmOppTask = $('#formOpportunityTask');

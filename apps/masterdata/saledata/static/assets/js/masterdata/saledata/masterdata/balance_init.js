@@ -36,7 +36,7 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-secondary balance-item">${row?.['product']?.['code']}</span>&nbsp;<span>${row?.['product']?.['title']}</span>`;
+                                return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-soft-secondary balance-item">${row?.['product']?.['code']}</span>&nbsp;<span>${row?.['product']?.['title']}</span>`;
                             }
                         },
                         {
@@ -46,9 +46,9 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            className: 'wrap-text',
+                            className: 'wrap-text warehouse',
                             render: (data, type, row) => {
-                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-primary balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
+                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
                             }
                         },
                         {
@@ -64,7 +64,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            className: 'wrap-text',
+                            className: 'wrap-text text-right',
                             render: (data, type, row) => {
                                 return `<a href="#" class="text-secondary"><i class="far fa-trash-alt"></i></a>`;
                             }
@@ -201,10 +201,10 @@ $(document).ready(function () {
                             <div class="row">
                                 <div class="col-1"></div>
                                 <div class="col-5">
-                                    <span class="text-muted">Vendor serial No.</span>
+                                    <span class="text-muted required">Vendor serial No.</span>
                                 </div>
                                 <div class="col-6">
-                                    <span class="text-muted">Serial No.</span>
+                                    <span class="text-muted required">Serial No.</span>
                                </div>
                            </div>
                         </td>
@@ -276,14 +276,19 @@ $(document).ready(function () {
             })
             let data_sn = []
             dtb_wh_product_Ele.find('.row-input-sn').each(function () {
-                data_sn.push({
-                    'vendor_serial_number': $(this).find('.vendor-sn-input').val(),
-                    'serial_number': $(this).find('.sn-input').val(),
-                    'expire_date': $(this).find('.expire-date-input').val(),
-                    'manufacture_date': $(this).find('.sn-manufacture-date-input').val(),
-                    'warranty_start': $(this).find('.sn-warranty-start-input').val(),
-                    'warranty_end': $(this).find('.sn-warranty-end-input').val(),
-                })
+                if ($(this).find('.vendor-sn-input').val() && $(this).find('.sn-input').val()) {
+                    data_sn.push({
+                        'vendor_serial_number': $(this).find('.vendor-sn-input').val(),
+                        'serial_number': $(this).find('.sn-input').val(),
+                        'expire_date': $(this).find('.expire-date-input').val(),
+                        'manufacture_date': $(this).find('.sn-manufacture-date-input').val(),
+                        'warranty_start': $(this).find('.sn-warranty-start-input').val(),
+                        'warranty_end': $(this).find('.sn-warranty-end-input').val(),
+                    })
+                }
+                else {
+                    flag = false
+                }
             })
             if (flag) {
                 dtb_balance_init_item_Ele.find('tbody .dataTables_empty').remove()
@@ -291,12 +296,12 @@ $(document).ready(function () {
                     dtb_balance_init_item_Ele.find('tbody').append(`
                         <tr class="bg-primary-light-5 new-row-data">
                             <script class="data-sn"></script>
-                            <td><span data-item-id="${item?.['product_data']?.['id']}" class="badge badge-secondary balance-item">${item?.['product_data']?.['code']}</span>&nbsp;<span>${item?.['product_data']?.['title']}</span></td>
+                            <td><span data-item-id="${item?.['product_data']?.['id']}" class="badge badge-soft-secondary balance-item">${item?.['product_data']?.['code']}</span>&nbsp;<span>${item?.['product_data']?.['title']}</span></td>
                             <td><span>${item?.['uom_data']?.['title']}</span></td>
-                            <td><span data-wh-id="${item?.['wh_data']?.['id']}" class="badge badge-primary balance-wh">${item?.['wh_data']?.['code']}</span>&nbsp;<span>${item?.['wh_data']?.['title']}</span></td>
+                            <td><span data-wh-id="${item?.['wh_data']?.['id']}" class="badge badge-soft-primary balance-wh">${item?.['wh_data']?.['code']}</span>&nbsp;<span>${item?.['wh_data']?.['title']}</span></td>
                             <td><span class="balance-quantity">${item?.['quantity_balance']}</span></td>
                             <td><span class="balance-value mask-money" data-init-money="${item?.['value_balance']}"></span></td>
-                            <td><a href="#" class="text-danger btn-delete-row"><i class="far fa-trash-alt"></i></a></td>
+                            <td class="text-right"><a href="#" class="text-danger btn-delete-row"><i class="far fa-trash-alt"></i></a></td>
                         </tr>
                     `)
                 }
@@ -312,7 +317,7 @@ $(document).ready(function () {
                 dtb_wh_product_Ele.find('.row-input-sn').remove()
             }
             else {
-                $.fn.notifyB({description: "Missing row(s) information"}, 'warning')
+                $.fn.notifyB({description: "Missing information"}, 'warning')
             }
         })
 

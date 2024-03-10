@@ -247,7 +247,7 @@
             //hide and show columns
             render_filter_columns: function (element) {
                 let row = $('<div class="col-xs-12 filter_bar"></div>')
-                let dropdown = $('<div class="dropdown filter_column"><button class="btn btn-outline-primary"><span><span class="icon"><i class="fa-solid fa-filter"></i></span></span></button></div>')
+                let dropdown = $('<div class="dropdown filter_column"><button class="btn btn-outline-primary dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown"><i class="fa-solid fa-filter"></i></button></div>')
                 let ul = $('<ul class="dropdown-menu"></ul>')
                 settings.columns.forEach(x => {
                     let li = $('<li class="dropdown-item-marker" role="menuitem"></li>')
@@ -259,6 +259,10 @@
                             if (item.value == column) item.show = $(this).is(":checked")
                         })
                         $('.leftPanel').replaceWith(core.leftPanel(element))
+                        const $dataPanel = $('.dataPanel'), $rightPanel = $('.rightPanel');
+                        element.scrollNavigation.panelMaxPos = ($dataPanel.width() - $rightPanel.width());
+                        element.scrollNavigation.canScroll = ($dataPanel.width() > $rightPanel.width());
+                        $dataPanel.css({ "left": element.hPosition });
                     })
                     label.append(input)
                     label.append(`<span style="padding-left: 5px">${x.label}</span>`)
@@ -282,7 +286,15 @@
                     core.init(element)
 
                 });
-                row.append(button_reload).append(dropdown)
+
+                let button_loadMore = $('<button class="btn btn-outline-primary" type="button" id="gantt_load-more_btn">' +
+                    `<i class="fa-solid fa-download"></i><span>${$.fn.gettext("Load more")}</span></button>`)
+                button_loadMore.on('click', function(e){
+                    $(this).prop('disabled', true)
+                    settings.clickLoadMore(e)
+                })
+
+                row.append(button_reload).append(dropdown).append(button_loadMore)
                 return row
             },
 
@@ -384,26 +396,35 @@
                                         span.css("padding-left", "65px")
                                         row.removeClass('name').addClass('desc')
                                     }
-                                    span.click(function (e) {
-                                        if (e.target.classList.contains('icon-collapse'))
-                                            settings.onClickParent(e, entry.values[0].dataObj.id)
-                                        else settings.loadTaskInfo(entry.values[0].dataObj.id)
-                                    })
                                     if (entry.show_expand && entry.name && x.value === 'title'){
                                         span.addClass(`has_child ${entry.is_expand ? 'is_expanded' : 'is_expand'}`)
-                                            .append(`<span class="icon-scaret text-blue"><i class="icon-collapse ` +
-                                                `fas fa-caret-${entry.is_expand ? 'down': 'right'}"></i></span>`)
+                                        const spanIcon = $(`<span class="icon-scaret text-blue"><i class="icon-collapse fas fa-caret-${entry.is_expand ? 'down': 'right'}"></i></span>`)
+                                        span.append(spanIcon)
+                                        spanIcon.on('click', () => {
+                                            settings.onClickParent(entry.values[0].dataObj.id)
+                                        });
                                     }
-                                    if (x.value === 'title')
-                                        span.append(entry.name ? entry.name : entry.desc)
+                                    if (x.value === 'title'){
+                                        const spanTit = $(`<span class="fn-label-txt">${entry.name ? entry.name : entry.desc}</span>`)
+                                        span.append(spanTit)
+                                        spanTit.on('click', ()=>{
+                                            settings.loadTaskInfo(entry.values[0].dataObj.id)
+                                        });
+                                    }
                                     else {
-                                        let value = entry.values[0].dataObj[x.value],
-                                            valType = $.type(value);
-                                        if (valType === "object") // nếu key là object
-                                            value = value?.['full_name'] ? value.full_name : value?.['title'] ? value.title : ''
-                                        if (x.value === 'priority') {
+                                        let value = entry.values[0].dataObj[x.value], valType = $.type(value);
+                                        if (valType === "object"){ // nếu key là object
+                                            let avClass = 'avatar-xxs avatar-' + $x.fn.randomColor()
+                                            const nameHTML = $x.fn.renderAvatar(value, avClass,"","full_name")
+                                            span.append(nameHTML).addClass(x.value === 'employee_created' ?
+                                                'text-right' : 'text-left')
+                                        }
+                                        else if (x.value === 'priority') {
                                             const $badge = $(`<span class="badge badge-sm badge-${priorityList[value].color}">${priorityList[value].txt}</span>`);
                                             span.append($badge).addClass('text-center')
+                                        }
+                                        else if (x.value.includes('_date') !== -1){
+                                            span.append(moment(value).format('DD/MM/YYYY')).addClass('text-center')
                                         }
                                     }
                                     row.attr('data-id', entry.values[0].dataObj.id).append(span);
@@ -1036,8 +1057,9 @@
             // **Progress Bar**
             // Return an element representing a progress of position within the entire chart
             createProgressBar: function (label, desc, classNames, dataObj) {
-                label = label || "";
-                var bar = $(`<div class="bar" data-id="${dataObj.id}"><div class="fn-label">${label}</div></div>`)
+                // label = label || "";
+                label = dataObj?.['percent_completed'] || 0
+                var bar = $(`<div class="bar" data-id="${dataObj.id}"><div class="fn-label">${label}%</div></div>`)
                         .data("dataObj", dataObj);
                 if (desc) {
                     bar
@@ -1059,6 +1081,7 @@
                 if (classNames) {
                     bar.addClass(classNames);
                 }
+                if (dataObj.customBg) bar.css('background-color', dataObj.customBg).removeClass(classNames);
                 bar.click(function (e) {
                     e.stopPropagation();
                     settings.onItemClick($(this).data("dataObj"));
@@ -1115,6 +1138,7 @@
                             var _bar;
                             var from, to, cFrom, cTo, dFrom, dTo, dl, dp;
                             var topEl, top;
+
                             switch (settings.scale) {
                             // **Hourly data**
                             case "hours":
@@ -1299,7 +1323,6 @@
                     });
                 }
             },
-
             // Change zoom level
             zoomInOut: function (element, val) {
                 core.waitToggle(element, function () {
@@ -1377,24 +1400,12 @@
 
             // Move chart via mousewheel
             wheelScroll: function (element, e) {
-                e.preventDefault(); // e is a jQuery Event
-                // attempts to normalize scroll wheel velocity
-                // var delta = ( 'detail' in e ? e.detail :
-                //               'wheelDelta' in e.originalEvent ? - 1/120 * e.originalEvent.wheelDelta :
-                //               e.originalEvent.deltaY ? e.originalEvent.deltaY / Math.abs(e.originalEvent.deltaY) :
-                //               e.originalEvent.detail );
-
-                var delta = e.detail ? e.detail * (-15) : e.originalEvent.wheelDelta / 120 * 15;
-                // simpler normalization, ignoring per-device/browser/platform acceleration & semantic variations
-                //var delta = e.detail || - (e = e.originalEvent).wheelData || e.deltaY /* || e.deltaX */ || e.detail;
-                //delta = ( delta / Math.abs(delta) ) || 0;
-
-                core.scrollPanel(element, -15 * delta);
-
+                let delta = e.detail ? e.detail * (-15) : e.originalEvent.wheelDelta / 120 * 15;
+                core.scrollPanel(element, delta);
                 clearTimeout(element.scrollNavigation.repositionDelay);
                 element.scrollNavigation.repositionDelay = setTimeout(core.repositionLabel, 50, element);
-
-                 // new code
+                if (e.preventDefault) e.preventDefault();
+                else return false;
             },
 
             // Move chart via slider control

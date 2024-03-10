@@ -81,8 +81,6 @@ $(function () {
                         const taskList = data?.['task_list']
                         kanban.init(taskList)
                         list.init(list, taskList)
-                        GanttViewTask.saveTaskList(taskList)
-                        GanttViewTask.renderGantt()
                         // Function to wait form create on submit
                         $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
                         let observer = new MutationObserver(callBackModalChange);
@@ -841,7 +839,7 @@ $(function () {
                             FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
                         }
                         initCommon.initTableLogWork(data?.['task_log_work'])
-                        initCommon.renderSubtask(data.id, cls.getTaskList)
+                        initCommon.renderSubtask(data.id, cls.getTaskList, data?.['sub_task_list'])
                     }
 
                 },
@@ -1039,88 +1037,96 @@ $(function () {
     class GanttViewTask {
         static taskList = []
         static bk_taskList = []
-        static saveTaskList(data){
-            let bk_list = GanttViewTask.bk_taskList
-            if (!data || !data.length) return false
-            // convert data thành dictionary với parent_n là danh sách task con
-            for (let item of data){
-                let from = new Date(item.start_date)
-                from.setHours(0);
-                from.setMinutes(0);
-                from.setDate(from.getDate() + 1)
-                let to = new Date(item.end_date)
-                to.setHours(0);
-                to.setMinutes(0);
-                to.setDate(to.getDate() + 1);
-                // kt có cấp cha và danh sách cấp con không rỗng
-                if ('parent_n' in item && Object.keys(item['parent_n']).length){
-                    if (item.parent_n.id in bk_list){
-                        if (!('parent_n' in bk_list[item.parent_n.id])) bk_list[item.parent_n.id]['parent_n'] = []
-                        bk_list[item.parent_n.id]['parent_n'].push({
-                            desc: item.title,
-                            values: [{
-                                label: item.title,
-                                from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
-                                to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
-                                desc: item.remark,
-                                customClass: "ganttGreen",
-                                dataObj: item
-                            }]
-                        })
-                    }
-                    else{
-                        bk_list[item.parent_n.id] = {
-                            name: item.parent_n.title,
-                            desc: '',
-                            values: []
-                        }
-                        bk_list[item.parent_n.id]['parent_n'].push({
-                            desc: item.title,
-                            values: [{
-                                from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
-                                to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
-                                desc: item.remark,
-                                customClass: "ganttGreen",
-                                dataObj: item
-                            }]
-                        })
-                    }
-                }
-                else {
-                    // ko có cấp cha
-                    bk_list[item.id] = {
-                        name: item.title,
-                        desc: item.remark,
-                        values: [{
-                            from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
-                            to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
-                            customClass: "ganttGreen",
-                            dataObj: item
-                        }]
-                    }
-                }
-            }
-
+        static convertFromDictToArray(dataList, isReturn=false){
             let reNewList = []
             // loop trong danh sách dictionary và duyệt lại thành danh sách array task con sau task cha
-            for (let key in bk_list){
-                const item = bk_list[key]
-                item.show_expand = false
+            for (let key in dataList){
+                const item = dataList[key]
+                if (!item.values?.[0]?.dataObj) continue;
+                item.show_expand = item.values?.[0].dataObj.child_task_count > 0 || false
                 reNewList.push(item)
-                if ('parent_n' in item && Object.keys(item['parent_n']).length){
+                const parent_n = item.values[0].dataObj['parent_n']
+                if (parent_n && Object.keys(parent_n).length){
                     // có task con
-                    // set is_hide = false mặc định cho task con khi click btn ẩn thì set lại thành true
-                    item.show_expand = true
-                    item.is_expand = true // mặc định show task con "true" otherwise "false" ẩn task con
-                    if (item.values[0].dataObj.code === 'T003') item.is_expand = false
-                    for (let child of item['parent_n']){
-                        child.is_visible = true
-                        if (child.values[0].dataObj.code === 'T004') child.is_visible = false // fake data để test
+                    item.is_expand = true // mặc định ẩn task con "false" otherwise "true" show task con
+                    for (let value in parent_n){
+                        let child = parent_n[value]
                         reNewList.push(child)
                     }
                 }
             }
             GanttViewTask.taskList = reNewList
+            if (isReturn) return reNewList
+        }
+
+        static saveTaskList(data = []){
+            let settingColors = JSON.parse($('#task_config').text());
+            let bk_list = GanttViewTask.bk_taskList
+            let taskClr = {}
+            for (let item of settingColors.list_status){
+                taskClr[item.id] = item.task_color
+            }
+            if (data && data.length){
+                // convert data thành dictionary với parent_n là danh sách task con
+                for (let item of data){
+                    let from = new Date(item.start_date)
+                    from.setHours(0);
+                    from.setMinutes(0);
+                    from.setDate(from.getDate() + 1)
+                    let to = new Date(item.end_date)
+                    to.setHours(0);
+                    to.setMinutes(0);
+                    to.setDate(to.getDate() + 1);
+                    // kt có cấp cha và danh sách cấp con không rỗng
+                    if ('parent_n' in item && Object.keys(item['parent_n']).length){
+                        if (item.parent_n.id in bk_list){
+                            if (!('parent_n' in bk_list[item.parent_n.id])) bk_list[item.parent_n.id]['parent_n'] = []
+                            bk_list[item.parent_n.id]['parent_n'][item.id] = {
+                                desc: item.title,
+                                values: [{
+                                    label: item.title,
+                                    from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                                    to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                                    desc: item.remark,
+                                    customClass: "ganttGreen",
+                                    dataObj: {...item, customBg: taskClr[item.task_status.id]}
+                                }]
+                            }
+                        }
+                        else{
+                            bk_list[item.parent_n.id] = {
+                                name: item.parent_n.title,
+                                desc: '',
+                                values: []
+                            }
+                            bk_list[item.parent_n.id]['parent_n'].push({
+                                desc: item.title,
+                                values: [{
+                                    from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                                    to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                                    desc: item.remark,
+                                    customClass: "ganttGreen",
+                                    dataObj: {...item, customBg: taskClr[item.task_status.id]}
+                                }]
+                            })
+                        }
+                    }
+                    else {
+                        // ko có cấp cha
+                        bk_list[item.id] = {
+                            name: item.title,
+                            desc: item.remark,
+                            values: [{
+                                from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                                to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                                customClass: "ganttGreen",
+                                dataObj: {...item, customBg: taskClr[item.task_status.id]}
+                            }]
+                        }
+                    }
+                }
+            }
+            return bk_list
         }
 
         static loadTaskInfo(dataID){
@@ -1132,9 +1138,9 @@ $(function () {
                 method: "get"
             })
                 .then((resp) => {
-                    let data = resp.result
-                    $('.title-create').removeClass("hidden")
-                    $('.title-detail').addClass("hidden")
+                    let data = resp.data
+                    $('.title-create').addClass("hidden")
+                    $('.title-detail').removeClass("hidden")
                     $('#inputTextTitle', $form).val(data.title)
                     $('#inputTextCode', $form).val(data.code)
                     listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
@@ -1150,7 +1156,7 @@ $(function () {
                     $('#inputTextEstimate', $form).val(data.estimate)
 
                     $('#selectPriority', $form).val(data.priority).trigger('change')
-                    $('#inputAssigner', $form).val(data.full_name)
+                    $('#inputAssigner', $form).val(data.employee_created.full_name)
                         .attr('data-value-id', data.employee_created.id)
                         .attr('value', data.employee_created.id)
                     if (data?.['opportunity'])
@@ -1168,29 +1174,92 @@ $(function () {
                         FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
                     }
                     initCommon.initTableLogWork(data?.['task_log_work'])
-                    initCommon.renderSubtask(data.id, GanttViewTask.taskList)
+                    initCommon.renderSubtask(data.id, GanttViewTask.taskList, data?.['sub_task_list'])
                 });
         }
 
-        static onClickParent(e, ID) {
+        static onClickParent(ID) {
             let bk_list = GanttViewTask.bk_taskList
             let obj_parent = bk_list[ID]
-            let child_list = obj_parent.parent_n
-            if (child_list)
-                for (let child of child_list){
-                    child.is_visible = !obj_parent.is_expand // ẩn task con theo
-                }
-            obj_parent.is_expand = !obj_parent.is_expand
-            let reNewList = []
-            for (let key in bk_list) {
-                const item = bk_list[key]
-                reNewList.push(item)
-                if ('parent_n' in item && Object.keys(item['parent_n']).length)
-                    for (let child of item['parent_n']) {
-                        reNewList.push(child)
-                    }
+            let settingColors = JSON.parse($('#task_config').text());
+            let taskClr = {}
+            for (let item of settingColors.list_status){
+                taskClr[item.id] = item.task_color
             }
-            $('#gantt_reload').data('data', reNewList).trigger('click')
+            // nếu task cha đang hide (expand = false)
+            if (!obj_parent.is_expand){
+                let callChill = GanttViewTask.CallData({parent_n: ID})
+                callChill.then((rep) => {
+                    let data = $.fn.switcherResp(rep);
+                    let newData = {}
+                    if (data?.['status'] === 200 && data?.['task_list'].length) {
+                        for (let item of data['task_list']){
+                            let from = new Date(item.start_date)
+                            from.setHours(0);
+                            from.setMinutes(0);
+                            from.setDate(from.getDate() + 1)
+                            let to = new Date(item.end_date)
+                            to.setHours(0);
+                            to.setMinutes(0);
+                            to.setDate(to.getDate() + 1);
+                            newData[item.id] = {
+                                is_visible: true,
+                                desc: item.title,
+                                values: [{
+                                    label: item.title,
+                                    from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                                    to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                                    desc: item.remark,
+                                    customClass: "ganttGreen",
+                                    dataObj: {...item, customBg: taskClr[item.task_status.id]}
+                                }]
+                            }
+                        }
+                        obj_parent.is_expand = true
+                        obj_parent.values[0].dataObj.parent_n = newData
+                        bk_list[ID] = obj_parent
+                        GanttViewTask.bk_taskList = bk_list
+                        const afterCvt = GanttViewTask.convertFromDictToArray(bk_list, true)
+                        $('#gantt_reload').data('data', afterCvt).trigger('click')
+                    }
+                })
+            }
+            else{ // task cha đang show (expand = true)
+                obj_parent.is_expand = false
+                obj_parent.values[0].dataObj.parent_n = {}
+                bk_list[ID] = obj_parent
+                GanttViewTask.bk_taskList = bk_list
+                const afterCvt = GanttViewTask.convertFromDictToArray(bk_list, true)
+                $('#gantt_reload').data('data', afterCvt).trigger('click')
+            }
+        }
+
+        static clickLoadMore(e){
+            let load_moreif = $('.gantt_table').data('api_info')
+            if (load_moreif.page_next > 0){
+                const params = {"parent_n__isnull": true,
+                    "page":load_moreif.page_next,
+                    "pageSize": load_moreif.page_size
+                }
+                let loadMoreData = GanttViewTask.CallData(params)
+                loadMoreData.then(
+                    (req) => {
+                        let data = $.fn.switcherResp(req);
+                        if (data?.['status'] === 200) {
+                            const temp = Object.assign({}, req.data)
+                            delete temp['task_list'];
+                            $('.gantt_table').data('api_info', temp)
+                            $(e).prop("disabled", temp.page_next > 0)
+                            const dictList = GanttViewTask.saveTaskList(data['task_list'])
+                            const arrayList = GanttViewTask.convertFromDictToArray(dictList)
+                            $('#gantt_reload').data('data', arrayList).trigger('click')
+                        }
+                    })
+            }
+        }
+        static onCallback(){
+            const callDataInfo = $('.gantt_table').data('api_info')
+            $('#gantt_load-more_btn').prop("disabled", callDataInfo.page_next === 0)
         }
 
         static renderGantt(){
@@ -1198,31 +1267,55 @@ $(function () {
             let columns_gantt = [
                 {value: 'title', label: $transElm.attr('data-name'), show: true,width: '300'},
                 {value: 'priority', label: $transElm.attr('data-priority'), show: true, width: '100'},
-                {value: 'employee_created', label: $transElm.attr('data-assigner'), show: false},
-                {value: 'employee_inherit', label: $transElm.attr('data-assignee'), show: false},
-                {value: 'start_date', label: $transElm.attr('data-st-date'), show: false},
-                {value: 'end_date', label: $transElm.attr('data-ed-date'), show: false},
+                {value: 'employee_created', label: $transElm.attr('data-assigner'), show: true,  width: '50'},
+                {value: 'employee_inherit', label: $transElm.attr('data-assignee'), show: true,  width: '50'},
+                {value: 'start_date', label: $transElm.attr('data-st-date'), show: true,  width: '150'},
+                {value: 'end_date', label: $transElm.attr('data-ed-date'), show: true,  width: '150'},
             ]
             const sourceDT = GanttViewTask.taskList
-
             $(".gantt").gantt({
                 source: sourceDT,
                 navigate: 'scroll',
                 columns: columns_gantt,
                 itemsPerPage: 100,
-                // hover: true,
+                // scale: true,
                 // resizeable: true,
-                // onItemClick: (data) => {
-                // },
                 onClickParent: GanttViewTask.onClickParent,
                 loadTaskInfo: GanttViewTask.loadTaskInfo,
+                isShowSetting: true,
+                clickLoadMore: GanttViewTask.clickLoadMore,
+                onRender: GanttViewTask.onCallback
                 // resizeStartDate,
                 // resizeEndDate
-                isShowSetting: true
+
             });
         }
 
+        static CallData(data= null){
+            let params = {"parent_n__isnull": true}
+            if (data) params = data
+            return $.fn.callAjax2({
+                    'url': $urlFact.attr('data-task-list'),
+                    'method': 'GET',
+                    'data': params
+                }
+            )
+        }
+
         static initGantt() {
+            let firstCall = GanttViewTask.CallData()
+            firstCall.then(
+                (req) => {
+                    let data = $.fn.switcherResp(req);
+                    if (data?.['status'] === 200) {
+                        let cloneData = Object.assign({}, req.data)
+                        delete cloneData['task_list'];
+                        $('.gantt_table').data('api_info', cloneData)
+                        const afterDataConvert = GanttViewTask.saveTaskList(data['task_list'])
+                        GanttViewTask.convertFromDictToArray(afterDataConvert)
+                        GanttViewTask.renderGantt()
+                    }
+            })
             if (!$('.gantt').length)
                 $('.gantt_table').append('<div class="gantt"></div>')
             $('.tab-gantt[data-bs-toggle="tab"]').on('show.bs.tab', function (e) {

@@ -12,6 +12,22 @@
     />
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        #table-add-item-wh tbody {
+            display: block;
+            height: 500px;
+            overflow: auto;
+        }
+        #table-add-item-wh thead, #table-add-item-wh tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+    </style>
+    <link
+            href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}"
+            rel="stylesheet" type="text/css"
+    />
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -51,12 +67,12 @@
                        data-url="{% url 'BalanceInitListAPI' %}"
                 >
                     <thead>
-                        <th class="w-25">{% trans 'Item name' %}</th>
-                        <th class="w-10">{% trans 'UoM' %}</th>
-                        <th class="w-25">{% trans 'Warehouse' %}</th>
-                        <th class="w-10">{% trans 'Quantity' %}</th>
-                        <th class="w-20">{% trans 'Value' %}</th>
-                        <th class="w-10">{% trans 'Action' %}</th>
+                        <th class="w-30">{% trans 'Item name' %}</th>
+                        <th class="w-15">{% trans 'UoM' %}</th>
+                        <th class="w-20">{% trans 'Warehouse' %}</th>
+                        <th class="w-15">{% trans 'Quantity' %}</th>
+                        <th class="w-15">{% trans 'Value' %}</th>
+                        <th class="w-5 text-right"></th>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -73,22 +89,11 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-12 col-md-5 col-lg-5">
-                                <div class="row">
-                                    <label for="select-wh" class="col-4 col-form-label required">{% trans 'Select warehouse' %}</label>
-                                    <div class="col-8">
-                                        <select id="select-wh" class="form-select select2" data-method="GET" data-url="{% url 'WareHouseListAPI' %}"></select>
-                                    </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="select-wh" class="form-label required">{% trans 'Select warehouse' %}</label>
+                                    <select id="select-wh" class="form-select select2" data-method="GET" data-url="{% url 'WareHouseListAPI' %}"></select>
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-7 col-lg-7 text-right">
-                                <button type="button"
-                                        id="btn-add-item"
-                                        class="btn btn-gradient-primary"
-                                >
-                                    <i class="fas fa-plus-circle"></i>
-                                    {% trans 'Add new item' %}
-                                </button>
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -98,13 +103,19 @@
                                        data-url="{% url 'ProductListAPI' %}"
                                 >
                                     <thead>
-                                        <th class="w-35">{% trans 'Product' %}</th>
+                                        <th class="w-40">{% trans 'Product' %}</th>
                                         <th class="w-10">{% trans 'UoM' %}</th>
                                         <th class="w-25">{% trans 'Quantity' %}</th>
                                         <th class="w-25">{% trans 'Value' %}</th>
-                                        <th class="w-5 text-center">{% trans 'Action' %}</th>
                                     </thead>
-                                    <tbody></tbody>
+                                    <tbody>
+                                    <tr>
+                                        <td class="w-40"><select class="form-select select2 item-obj"></select></td>
+                                        <td class="w-10"><span class="item-uom"></span></td>
+                                        <td class="w-25"><input type="number" class="form-control item-quantity"></td>
+                                        <td class="w-25"><input class="form-control item-value mask-money"></td>
+                                    </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -136,5 +147,6 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/balance_init.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
 {% endblock %}
 

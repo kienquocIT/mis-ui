@@ -4,7 +4,6 @@ $(document).ready(function () {
     const selectWH_Ele = $('#select-wh')
     const dtb_balance_init_item_Ele = $('#table-balance-item');
     const dtb_wh_product_Ele = $('#table-add-item-wh');
-    const btn_add_item_Ele = $('#btn-add-item')
     const btn_save_modal = $('#save-modal')
     const modal_add_balance = $('#modal-add-balance')
 
@@ -37,7 +36,7 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-secondary balance-item">${row?.['product']?.['code']}</span>&nbsp;<span>${row?.['product']?.['title']}</span>`;
+                                return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-soft-secondary balance-item">${row?.['product']?.['code']}</span>&nbsp;<span>${row?.['product']?.['title']}</span>`;
                             }
                         },
                         {
@@ -47,9 +46,9 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            className: 'wrap-text',
+                            className: 'wrap-text warehouse',
                             render: (data, type, row) => {
-                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-primary balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
+                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
                             }
                         },
                         {
@@ -65,7 +64,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            className: 'wrap-text',
+                            className: 'wrap-text text-right',
                             render: (data, type, row) => {
                                 return `<a href="#" class="text-secondary"><i class="far fa-trash-alt"></i></a>`;
                             }
@@ -87,13 +86,12 @@ $(document).ready(function () {
                 keyResp: 'warehouse_list',
                 keyId: 'id',
                 keyText: 'title',
-            }).on('change', function () {
             })
         }
         LoadWarehouseList()
 
         function LoadProduct(data) {
-            let ele = dtb_wh_product_Ele.find('tbody tr:last-child').find('.item-obj')
+            let ele = $('.item-obj')
             ele.initSelect2({
                 ajax: {
                     url: dtb_wh_product_Ele.attr('data-url'),
@@ -115,25 +113,14 @@ $(document).ready(function () {
                 if (ele.val()) {
                     let selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                     ele.closest('tr').find('.item-uom').text(selected?.['inventory_uom']?.['title'])
+                    loadRowSN($(this))
                 }
                 else {
                     ele.closest('tr').find('.item-uom').text('')
                 }
             })
         }
-
-        btn_add_item_Ele.on('click', function () {
-            let new_ele = `<tr>
-                    <td><select class="form-select select2 item-obj"></select></td>
-                    <td><span class="item-uom"></span></td>
-                    <td><input type="number" class="form-control item-quantity"></td>
-                    <td><input class="form-control item-value mask-money"></td>
-                    <td><a href="#" class="text-danger btn-delete-row-modal"><i class="far fa-trash-alt"></i></a></td>
-                </tr>`
-            dtb_wh_product_Ele.find('tbody').append(new_ele)
-            $.fn.initMaskMoney2()
-            LoadProduct()
-        })
+        LoadProduct()
 
         $(document).on("change", '.item-value', function () {
             let sum = 0
@@ -161,29 +148,108 @@ $(document).ready(function () {
             })
             $('#modal-total-value').attr('data-init-money', sum)
             $.fn.initMaskMoney2()
+            loadRowSN($(this))
         });
 
-        $(document).on("click", '.btn-delete-row-modal', function () {
-            $(this).closest('tr').remove()
-            let sum = 0
-            $('.item-value').each(function (index, item) {
-                sum += parseFloat($(item).attr('value'))
-            })
-            $('#modal-total-value').attr('data-init-money', sum)
-            $.fn.initMaskMoney2()
-        });
-
-        selectWH_Ele.on('change', function () {
-            dtb_wh_product_Ele.find('tbody').html(``)
-        })
+        function loadRowSN(ele_in_row) {
+            let prd_ele = ele_in_row.closest('tr').find('.item-obj')
+            let prd_quantity = parseFloat(ele_in_row.closest('tr').find('.item-quantity').val())
+            let selected = SelectDDControl.get_data_from_idx(prd_ele, prd_ele.val())
+            if (prd_quantity && prd_ele.val()) {
+                if (selected?.['general_traceability_method'] === 2) {
+                    $(`.row-input-sn`).remove()
+                    $(`.sn-input-label`).remove()
+                    let sn_input_html = ``
+                    for (let i = 0; i < prd_quantity; i++) {
+                        sn_input_html += `<tr class="row-input-sn" data-warehouse-id="${selectWH_Ele.val()}" data-product-id="${selected?.['id']}">
+                        <td class="w-40">
+                            <div class="row">
+                                <div class="col-1 mt-2"><span>${i + 1}</span></div>
+                                <div class="col-5">
+                                    <input class="form-control vendor-sn-input">
+                                </div>
+                                <div class="col-6">
+                                    <input class="form-control sn-input">
+                               </div>
+                           </div>
+                        </td>
+                        <td class="w-10"><span>${ele_in_row.closest('tr').find('.item-uom').text()}</span></td>
+                        <td class="w-25"><div class="row">
+                            <div class="col-6">
+                                <input type="text" class="form-control date-time-input expire-date-input">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control date-time-input manufacture-date-input">
+                            </div>
+                        </div></td>
+                        <td class="w-25"><div class="row">
+                            <div class="col-6">
+                                <input type="text" class="form-control date-time-input sn-warranty-start-input">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control date-time-input sn-warranty-end-input">
+                            </div>
+                        </div></td>
+                    </tr>`
+                    }
+                    ele_in_row.closest('tr').after(`
+                    <tr class="sn-input-label">
+                        <td class="text-primary" colspan="4"><b>Input serial number</b></td>
+                    </tr>
+                    <tr class="sn-input-label">
+                        <td class="w-40">
+                            <div class="row">
+                                <div class="col-1"></div>
+                                <div class="col-5">
+                                    <span class="text-muted required">Vendor serial No.</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-muted required">Serial No.</span>
+                               </div>
+                           </div>
+                        </td>
+                        <td class="w-10"></td>
+                        <td class="w-25"><div class="row">
+                            <div class="col-6">
+                                <span class="text-muted">Expire date</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted">Manufacture date</span>
+                            </div>
+                        </div></td>
+                        <td class="w-25"><div class="row">
+                            <div class="col-6">
+                                <span class="text-muted">Warranty start date</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted">Warranty end date</span>
+                            </div>
+                        </div></td>
+                    </tr>
+                    ${sn_input_html}
+                `)
+                    $('.date-time-input').daterangepicker({
+                        singleDatePicker: true,
+                        timePicker: true,
+                        showDropdowns: false,
+                        minYear: 1901,
+                        locale: {
+                            format: 'YYYY-MM-DD'
+                        },
+                        "cancelClass": "btn-secondary",
+                        maxYear: parseInt(moment().format('YYYY'), 10)
+                    }).val('')
+                }
+            }
+        }
 
         btn_save_modal.on('click', function () {
             let flag = true
             let list_result = []
             let wh = SelectDDControl.get_data_from_idx(selectWH_Ele, selectWH_Ele.val())
-            dtb_wh_product_Ele.find('tbody tr').each(function () {
+            dtb_wh_product_Ele.find('tbody tr:first-child').each(function () {
                 let item_selected = SelectDDControl.get_data_from_idx($(this).find('.item-obj'), $(this).find('.item-obj').val())
-                if ($(this).find('.item-obj').val() && $(this).find('.item-quantity').val() && $(this).find('.item-value').attr('value')) {
+                if (selectWH_Ele.val() && $(this).find('.item-obj').val() && $(this).find('.item-quantity').val() && $(this).find('.item-value').attr('value')) {
                     list_result.push({
                         'wh_data': {
                             'id': selectWH_Ele.val(),
@@ -208,27 +274,50 @@ $(document).ready(function () {
                     flag = false
                 }
             })
+            let data_sn = []
+            dtb_wh_product_Ele.find('.row-input-sn').each(function () {
+                if ($(this).find('.vendor-sn-input').val() && $(this).find('.sn-input').val()) {
+                    data_sn.push({
+                        'vendor_serial_number': $(this).find('.vendor-sn-input').val(),
+                        'serial_number': $(this).find('.sn-input').val(),
+                        'expire_date': $(this).find('.expire-date-input').val(),
+                        'manufacture_date': $(this).find('.sn-manufacture-date-input').val(),
+                        'warranty_start': $(this).find('.sn-warranty-start-input').val(),
+                        'warranty_end': $(this).find('.sn-warranty-end-input').val(),
+                    })
+                }
+                else {
+                    flag = false
+                }
+            })
             if (flag) {
+                dtb_balance_init_item_Ele.find('tbody .dataTables_empty').remove()
                 for (const item of list_result) {
                     dtb_balance_init_item_Ele.find('tbody').append(`
                         <tr class="bg-primary-light-5 new-row-data">
-                            <td><span data-item-id="${item?.['product_data']?.['id']}" class="badge badge-secondary balance-item">${item?.['product_data']?.['code']}</span>&nbsp;<span>${item?.['product_data']?.['title']}</span></td>
+                            <script class="data-sn"></script>
+                            <td><span data-item-id="${item?.['product_data']?.['id']}" class="badge badge-soft-secondary balance-item">${item?.['product_data']?.['code']}</span>&nbsp;<span>${item?.['product_data']?.['title']}</span></td>
                             <td><span>${item?.['uom_data']?.['title']}</span></td>
-                            <td><span data-wh-id="${item?.['wh_data']?.['id']}" class="badge badge-primary balance-wh">${item?.['wh_data']?.['code']}</span>&nbsp;<span>${item?.['wh_data']?.['title']}</span></td>
+                            <td><span data-wh-id="${item?.['wh_data']?.['id']}" class="badge badge-soft-primary balance-wh">${item?.['wh_data']?.['code']}</span>&nbsp;<span>${item?.['wh_data']?.['title']}</span></td>
                             <td><span class="balance-quantity">${item?.['quantity_balance']}</span></td>
                             <td><span class="balance-value mask-money" data-init-money="${item?.['value_balance']}"></span></td>
-                            <td><a href="#" class="text-danger btn-delete-row"><i class="far fa-trash-alt"></i></a></td>
+                            <td class="text-right"><a href="#" class="text-danger btn-delete-row"><i class="far fa-trash-alt"></i></a></td>
                         </tr>
                     `)
                 }
+                $('.data-sn').last().text(JSON.stringify(data_sn))
                 $('#modal-total-value').attr('data-init-money', 0)
                 $.fn.initMaskMoney2()
                 modal_add_balance.modal('hide')
-                dtb_wh_product_Ele.find('tbody').html('')
                 selectWH_Ele.empty()
+                $('.item-obj').empty()
+                $('.item-quantity').val('')
+                $('.item-value').attr('value', 0)
+                dtb_wh_product_Ele.find('.sn-input-label').remove()
+                dtb_wh_product_Ele.find('.row-input-sn').remove()
             }
             else {
-                $.fn.notifyB({description: "Missing row(s) information"}, 'warning')
+                $.fn.notifyB({description: "Missing information"}, 'warning')
             }
         })
 
@@ -246,6 +335,7 @@ $(document).ready(function () {
                     'warehouse_id': $(this).find('.balance-wh').attr('data-wh-id'),
                     'quantity': $(this).find('.balance-quantity').text(),
                     'value': $(this).find('.balance-value').attr('data-init-money'),
+                    'data_sn': $(this).find('.data-sn').text() ? JSON.parse($(this).find('.data-sn').text()) : []
                 })
             })
             frm.dataForm['balance_data'] = balance_data;

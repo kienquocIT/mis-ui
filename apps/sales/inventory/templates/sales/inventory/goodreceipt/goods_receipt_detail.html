@@ -238,7 +238,7 @@
 
                 <div class="tab-content" id="tab-content-quotation-product">
                     <div class="tab-pane fade show active" id="tab_line_detail">
-                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="row custom-line-detail position-relative overflow-y-scroll" id="custom-line-detail-1">
+                        <div class="row custom-line-detail" id="custom-line-detail-1">
                             <div class="row">
                                 <table
                                     id="datable-good-receipt-line-detail-po"
@@ -248,15 +248,15 @@
                                 >
                                     <thead>
                                     <tr>
-                                        <th class="w-5"></th>
-                                        <th class="w-20 required">{% trans 'Product' %}</th>
-                                        <th class="w-20">{% trans 'Description' %}</th>
-                                        <th class="w-5 required">{% trans 'UOM' %}</th>
-                                        <th class="w-10 required">{% trans 'Quantity' %}</th>
-                                        <th class="w-15 required">{% trans 'Unit Price' %}</th>
-                                        <th class="w-5">{% trans 'Tax' %}</th>
-                                        <th class="w-15">{% trans 'Subtotal Price' %}</th>
-                                        <th class="w-5"></th>
+                                        <th></th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th>{% trans 'Description' %}</th>
+                                        <th>{% trans 'UOM' %}</th>
+                                        <th>{% trans 'Quantity' %}</th>
+                                        <th>{% trans 'Unit Price' %}</th>
+                                        <th>{% trans 'Tax' %}</th>
+                                        <th>{% trans 'Subtotal Price' %}</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -271,9 +271,9 @@
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3" data-init-money="0" id="good-receipt-product-pretax-amount"></span>
-                                                    <input id="good-receipt-product-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
-                                                    <input type="hidden" id="good-receipt-final-revenue-before-tax">
+                                                    <span class="mask-money font-3 good-receipt-product-pretax-amount" data-init-money="0"></span>
+                                                    <input type="text" class="form-control good-receipt-product-pretax-amount-raw" value="0" hidden>
+                                                    <input type="hidden" class="good-receipt-final-revenue-before-tax">
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -282,8 +282,8 @@
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3" data-init-money="0" id="good-receipt-product-taxes"></span>
-                                                    <input id="good-receipt-product-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                    <span class="mask-money font-3 good-receipt-product-taxes" data-init-money="0"></span>
+                                                    <input type="text" class="form-control good-receipt-product-taxes-raw" value="0" hidden>
                                                 </div>
                                             </div>
                                             <hr class="bg-teal">
@@ -293,8 +293,8 @@
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3" data-init-money="0" id="good-receipt-product-total"></span>
-                                                    <input id="good-receipt-product-total-raw" type="text" class="form-control" value="0" hidden>
+                                                    <span class="mask-money font-3 good-receipt-product-total" data-init-money="0"></span>
+                                                    <input type="text" class="form-control good-receipt-product-total-raw" value="0" hidden>
                                                 </div>
                                             </div>
                                         </th>
@@ -303,7 +303,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="row custom-line-detail position-relative overflow-y-scroll" id="custom-line-detail-2" hidden>
+                        <div class="row custom-line-detail" id="custom-line-detail-2" hidden>
                             <div class="row">
                                 <table
                                     id="datable-good-receipt-line-detail-ia"
@@ -313,14 +313,14 @@
                                 >
                                     <thead>
                                     <tr>
-                                        <th class="w-5"></th>
-                                        <th class="w-20">{% trans 'Product' %}</th>
-                                        <th class="w-20">{% trans 'Description' %}</th>
-                                        <th class="w-5">{% trans 'UOM' %}</th>
-                                        <th class="w-10">{% trans 'Quantity' %}</th>
-                                        <th class="w-10">{% trans 'Warehouse' %}</th>
-                                        <th class="w-15">{% trans 'Unit Cost' %}</th>
-                                        <th class="w-15">{% trans 'Subtotal Price' %}</th>
+                                        <th></th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th>{% trans 'Description' %}</th>
+                                        <th>{% trans 'UOM' %}</th>
+                                        <th>{% trans 'Quantity' %}</th>
+                                        <th>{% trans 'Warehouse' %}</th>
+                                        <th>{% trans 'Unit Cost' %}</th>
+                                        <th>{% trans 'Subtotal Price' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>

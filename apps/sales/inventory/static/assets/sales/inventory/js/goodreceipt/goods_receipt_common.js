@@ -1026,6 +1026,8 @@ class GRLoadDataHandle {
     static loadIALineDetail() {
         let data = GRSubmitHandle.setupIADataShowLineDetail();
         GRDataTableHandle.tableLineDetailIA.DataTable().clear().draw();
+        GRDataTableHandle.tableLineDetailIA.DataTable().destroy();
+        GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
         GRDataTableHandle.tableLineDetailIA.DataTable().rows.add(data).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailIA);
     };
@@ -1554,13 +1556,17 @@ class GRDataTableHandle {
 
     static dataTableGoodReceiptLineDetailPO(data) {
         GRDataTableHandle.tableLineDetailPO.DataTableDefault({
+            styleDom: 'hide-foot',
             data: data ? data : [],
+            ordering: false,
             paging: false,
             info: false,
-            columnDefs: [],
-            columns: [
+            autoWidth: true,
+            scrollX: true,
+            columns: [  // 50,350,350,150,200,350,150,350,50 (2000p)
                 {
                     targets: 0,
+                    width: '2.5%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row.order}</span>`
@@ -1568,6 +1574,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '17.5%',
                     render: (data, type, row) => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
                             return `<select
@@ -1598,6 +1605,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '17.5%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -1606,6 +1614,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 3,
+                    width: '7.5%',
                     render: () => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
                             return `<select 
@@ -1632,6 +1641,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: '10%',
                     render: (data, type, row) => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
                             return `<input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required>`;
@@ -1643,6 +1653,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: '17.5%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropdown">
@@ -1665,6 +1676,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: '7.5%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -1692,6 +1704,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 7,
+                    width: '17.5%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -1706,6 +1719,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 8,
+                    width: '2.5%',
                     render: () => {
                         return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
@@ -1925,11 +1939,15 @@ class GRDataTableHandle {
     static dataTableGoodReceiptLineDetailIA(data) {
         GRDataTableHandle.tableLineDetailIA.DataTableDefault({
             data: data ? data : [],
+            ordering: false,
             paging: false,
             info: false,
-            columns: [
+            autoWidth: true,
+            scrollX: true,
+            columns: [  // 50,250,250,100,150,200,250,250 (1500p)
                 {
                     targets: 0,
+                    width: '2.5%',
                     render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${(meta.row + 1)}</span>`
@@ -1937,6 +1955,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '16.66%',
                     render: (data, type, row) => {
                         return `<select
                                     class="form-select table-row-item"
@@ -1953,12 +1972,14 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '16.66%',
                     render: (data, type, row) => {
                         return `<p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>`;
                     }
                 },
                 {
                     targets: 3,
+                    width: '6.66%',
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -1974,6 +1995,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" disabled>
@@ -1982,6 +2004,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: '13.33%',
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -1997,6 +2020,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: '16.66%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input 
@@ -2010,6 +2034,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 7,
+                    width: '16.66%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -2031,52 +2056,57 @@ class GRDataTableHandle {
 // Calculate
 class GRCalculateHandle {
     static calculateTotal(table) {
-        let pretaxAmount = 0;
-        let taxAmount = 0;
-        let elePretaxAmount = document.getElementById('good-receipt-product-pretax-amount');
-        let eleTaxes = document.getElementById('good-receipt-product-taxes');
-        let eleTotal = document.getElementById('good-receipt-product-total');
-        let elePretaxAmountRaw = document.getElementById('good-receipt-product-pretax-amount-raw');
-        let eleTaxesRaw = document.getElementById('good-receipt-product-taxes-raw');
-        let eleTotalRaw = document.getElementById('good-receipt-product-total-raw');
-        let finalRevenueBeforeTax = document.getElementById('good-receipt-final-revenue-before-tax');
-        if (!table.querySelector('.dataTables_empty')) {
-            if (elePretaxAmount && eleTaxes && eleTotal) {
-                let tableLen = table.tBodies[0].rows.length;
-                for (let i = 0; i < tableLen; i++) {
-                    let row = table.tBodies[0].rows[i];
-                    // calculate Pretax Amount
-                    let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
-                    if (subtotalRaw) {
-                        if (subtotalRaw.value) {
-                            pretaxAmount += parseFloat(subtotalRaw.value)
+        let tableWrapper = document.getElementById('datable-good-receipt-line-detail-po_wrapper');
+        if (tableWrapper) {
+            let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
+            let pretaxAmount = 0;
+            let taxAmount = 0;
+            let elePretaxAmount = tableFt.querySelector('.good-receipt-product-pretax-amount');
+            let eleTaxes = tableFt.querySelector('.good-receipt-product-taxes');
+            let eleTotal = tableFt.querySelector('.good-receipt-product-total');
+            let elePretaxAmountRaw = tableFt.querySelector('.good-receipt-product-pretax-amount-raw');
+            let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
+            let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
+            let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
+            if (!table.querySelector('.dataTables_empty')) {
+                if (elePretaxAmount && eleTaxes && eleTotal) {
+                    let tableLen = table.tBodies[0].rows.length;
+                    for (let i = 0; i < tableLen; i++) {
+                        let row = table.tBodies[0].rows[i];
+                        // calculate Pretax Amount
+                        let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
+                        if (subtotalRaw) {
+                            if (subtotalRaw.value) {
+                                pretaxAmount += parseFloat(subtotalRaw.value)
+                            }
+                        }
+                        // calculate Tax Amount
+                        let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
+                        if (subTaxAmountRaw) {
+                            if (subTaxAmountRaw.value) {
+                                taxAmount += parseFloat(subTaxAmountRaw.value)
+                            }
                         }
                     }
-                    // calculate Tax Amount
-                    let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
-                    if (subTaxAmountRaw) {
-                        if (subTaxAmountRaw.value) {
-                            taxAmount += parseFloat(subTaxAmountRaw.value)
-                        }
-                    }
+                    let totalFinal = (pretaxAmount + taxAmount);
+                    $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
+                    elePretaxAmountRaw.value = pretaxAmount;
+                    finalRevenueBeforeTax.value = pretaxAmount;
+                    $(eleTaxes).attr('data-init-money', String(taxAmount));
+                    eleTaxesRaw.value = taxAmount;
+                    $(eleTotal).attr('data-init-money', String(totalFinal));
+                    eleTotalRaw.value = totalFinal;
                 }
-                let totalFinal = (pretaxAmount + taxAmount);
-                $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
-                elePretaxAmountRaw.value = pretaxAmount;
-                finalRevenueBeforeTax.value = pretaxAmount;
-                $(eleTaxes).attr('data-init-money', String(taxAmount));
-                eleTaxesRaw.value = taxAmount;
-                $(eleTotal).attr('data-init-money', String(totalFinal));
-                eleTotalRaw.value = totalFinal;
+            } else {
+                $(elePretaxAmount).attr('data-init-money', String(0));
+                elePretaxAmountRaw.value = '0';
+                finalRevenueBeforeTax.value = '0';
+                $(eleTaxes).attr('data-init-money', String(0));
+                eleTaxesRaw.value = '0';
+                $(eleTotal).attr('data-init-money', String(0));
+                eleTotalRaw.value = '0';
             }
-        } else {
-            $(elePretaxAmount).attr('data-init-money', String(0));
-            elePretaxAmountRaw.value = '0';
-            finalRevenueBeforeTax.value = '0';
-            $(eleTaxes).attr('data-init-money', String(0));
-            eleTaxesRaw.value = '0';
-            $(eleTotal).attr('data-init-money', String(0));
-            eleTotalRaw.value = '0';
+            $.fn.initMaskMoney2();
         }
         $.fn.initMaskMoney2();
         return true;
@@ -2997,10 +3027,18 @@ class GRSubmitHandle {
         if (products_data_setup.length > 0) {
             _form.dataForm['goods_receipt_product'] = products_data_setup;
         }
-        _form.dataForm['total_product_pretax_amount'] = parseFloat($('#good-receipt-product-pretax-amount-raw').val());
-        _form.dataForm['total_product_tax'] = parseFloat($('#good-receipt-product-taxes-raw').val());
-        _form.dataForm['total_product'] = parseFloat($('#good-receipt-product-total-raw').val());
-        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(GRLoadDataHandle.finalRevenueBeforeTax.value);
+        let tableWrapper = document.getElementById('datable-good-receipt-line-detail-po_wrapper');
+        if (tableWrapper) {
+            let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
+            let elePretaxAmountRaw = tableFt.querySelector('.good-receipt-product-pretax-amount-raw');
+            let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
+            let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
+            let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
+            _form.dataForm['total_product_pretax_amount'] = parseFloat($(elePretaxAmountRaw).val());
+            _form.dataForm['total_product_tax'] = parseFloat($(eleTaxesRaw).val());
+            _form.dataForm['total_product'] = parseFloat($(eleTotalRaw).val());
+            _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+        }
         // system fields
         if (_form.dataMethod === "POST") {
             _form.dataForm['system_status'] = 1;

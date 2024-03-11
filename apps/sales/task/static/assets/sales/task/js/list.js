@@ -1334,7 +1334,7 @@ $(function () {
     // render task
     const kanbanTask = new kanbanHandle()
     const listTask = new listViewTask()
-    callDataTaskList(kanbanTask, listTask, {'pageSize': 10})
+    callDataTaskList(kanbanTask, listTask)
     GanttViewTask.initGantt()
     // on click save btn log work
     logworkSubmit()

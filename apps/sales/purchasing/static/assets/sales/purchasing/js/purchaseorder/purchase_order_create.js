@@ -11,7 +11,6 @@ $(function () {
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
-        // let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePaymentStage = $('#datable-po-payment-stage');
@@ -116,7 +115,14 @@ $(function () {
 
         // Purchase quotation modal
         $('#btn-purchase-quotation-modal').on('click', function () {
-            POLoadDataHandle.loadModalPurchaseQuotation();
+            let $tableProductPR = $('#datable-purchase-order-product-request');
+            let $tableProductAdd = $('#datable-purchase-order-product-add');
+            if ($tableProductPR.DataTable().rows().count() !== 0 || $tableProductAdd.DataTable().rows().count() !== 0) {
+                POLoadDataHandle.loadModalPurchaseQuotation();
+            } else {
+                $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-product-needed')}, 'failure');
+                return false;
+            }
         });
 
         // Action on click ADD PURCHASE QUOTATION

@@ -190,7 +190,7 @@
                 <div class="tab-content" id="tab-content-quotation-product">
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <div class="row">
-                            <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="position-relative overflow-y-scroll" id="table-purchase-order-product-request-area" hidden>
+                            <div id="table-purchase-order-product-request-area" hidden>
                                 <table
                                     id="datable-purchase-order-product-request"
                                     class="table nowrap min-w-2000p w-100 mb-5"
@@ -199,17 +199,17 @@
                                 >
                                     <thead>
                                     <tr>
-                                        <th class="w-5"></th>
-                                        <th class="w-5">{% trans 'Product' %}</th>
-                                        <th class="w-20">{% trans 'Description' %}</th>
-                                        <th class="w-5">UOM (PR)</th>
-                                        <th class="w-5">{% trans 'Quantity' %} (PR)</th>
-                                        <th class="w-5">{% trans 'Stock' %}</th>
-                                        <th class="w-5">UOM (PO)</th>
-                                        <th class="w-5">{% trans 'Quantity' %} (PO)</th>
-                                        <th class="w-25">{% trans 'Unit Price' %}</th>
-                                        <th class="w-5">{% trans 'Tax' %}</th>
-                                        <th class="w-15">{% trans 'Subtotal Price' %}</th>
+                                        <th></th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th>{% trans 'Description' %}</th>
+                                        <th>UOM (PR)</th>
+                                        <th>{% trans 'Quantity' %} (PR)</th>
+                                        <th>{% trans 'Stock' %}</th>
+                                        <th>UOM (PO)</th>
+                                        <th>{% trans 'Quantity' %} (PO)</th>
+                                        <th>{% trans 'Unit Price' %}</th>
+                                        <th>{% trans 'Tax' %}</th>
+                                        <th>{% trans 'Subtotal Price' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -224,9 +224,9 @@
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3" data-init-money="0" id="purchase-order-product-request-pretax-amount"></span>
-                                                    <input id="purchase-order-product-request-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
-                                                    <input type="hidden" id="purchase-order-request-final-revenue-before-tax">
+                                                    <span class="mask-money font-3 purchase-order-product-pretax-amount" data-init-money="0"></span>
+                                                    <input type="text" class="form-control purchase-order-product-pretax-amount-raw" value="0" hidden>
+                                                    <input type="hidden" class="purchase-order-final-revenue-before-tax">
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -235,8 +235,8 @@
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3" data-init-money="0" id="purchase-order-product-request-taxes"></span>
-                                                    <input id="purchase-order-product-request-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                    <span class="mask-money font-3 purchase-order-product-taxes" data-init-money="0"></span>
+                                                    <input type="text" class="form-control purchase-order-product-taxes-raw" value="0" hidden>
                                                 </div>
                                             </div>
                                             <hr class="bg-teal">
@@ -246,8 +246,8 @@
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3" data-init-money="0" id="purchase-order-product-request-total"></span>
-                                                    <input id="purchase-order-product-request-total-raw" type="text" class="form-control" value="0" hidden>
+                                                    <span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span>
+                                                    <input type="text" class="form-control purchase-order-product-total-raw" value="0" hidden>
                                                 </div>
                                             </div>
                                         </th>
@@ -256,7 +256,7 @@
                                 </table>
                             </div>
 
-                            <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="position-relative overflow-y-scroll" id="table-purchase-order-product-add-area">
+                            <div id="table-purchase-order-product-add-area">
                                 <table
                                     id="datable-purchase-order-product-add"
                                     class="table nowrap min-w-2000p w-100 mb-5"
@@ -265,15 +265,15 @@
                                 >
                                     <thead>
                                     <tr>
-                                        <th class="w-5"></th>
-                                        <th class="w-20">{% trans 'Product' %}</th>
-                                        <th class="w-20">{% trans 'Description' %}</th>
-                                        <th class="w-5">UOM</th>
-                                        <th class="w-10">{% trans 'Quantity' %}</th>
-                                        <th class="w-15">{% trans 'Unit Price' %}</th>
-                                        <th class="w-5">{% trans 'Tax' %}</th>
-                                        <th class="w-15">{% trans 'Subtotal Price' %}</th>
-                                        <th class="w-5"></th>
+                                        <th></th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th>{% trans 'Description' %}</th>
+                                        <th>UOM</th>
+                                        <th>{% trans 'Quantity' %}</th>
+                                        <th>{% trans 'Unit Price' %}</th>
+                                        <th>{% trans 'Tax' %}</th>
+                                        <th>{% trans 'Subtotal Price' %}</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -288,9 +288,9 @@
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3" data-init-money="0" id="purchase-order-product-add-pretax-amount"></span>
-                                                    <input id="purchase-order-product-add-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
-                                                    <input type="hidden" id="purchase-order-add-final-revenue-before-tax">
+                                                    <span class="mask-money font-3 purchase-order-product-pretax-amount" data-init-money="0"></span>
+                                                    <input type="text" class="form-control purchase-order-product-pretax-amount-raw" value="0" hidden>
+                                                    <input type="hidden" class="purchase-order-final-revenue-before-tax">
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -299,8 +299,8 @@
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3" data-init-money="0" id="purchase-order-product-add-taxes"></span>
-                                                    <input id="purchase-order-product-add-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                    <span class="mask-money font-3 purchase-order-product-taxes" data-init-money="0"></span>
+                                                    <input type="text" class="form-control purchase-order-product-taxes-raw" value="0" hidden>
                                                 </div>
                                             </div>
                                             <hr class="bg-teal">
@@ -310,8 +310,8 @@
                                                 </div>
                                                 <div class="col-1"></div>
                                                 <div class="col-5">
-                                                    <span class="mask-money font-3" data-init-money="0" id="purchase-order-product-add-total"></span>
-                                                    <input id="purchase-order-product-add-total-raw" type="text" class="form-control" value="0" hidden>
+                                                    <span class="mask-money font-3 purchase-order-product-total" data-init-money="0"></span>
+                                                    <input type="text" class="form-control purchase-order-product-total-raw" value="0" hidden>
                                                 </div>
                                             </div>
                                         </th>

@@ -431,7 +431,7 @@ class POLoadDataHandle {
                 eleCheckbox.checked = false;
                 POLoadDataHandle.loadUpdateDataPQ(eleCheckbox);
                 POLoadDataHandle.loadSupplierContactByCheckedQuotation(eleCheckbox);
-                POLoadDataHandle.loadCheckProductsByCheckedQuotation(eleCheckbox);
+                POLoadDataHandle.loadDataByCheckedQuotation(eleCheckbox);
             }
             for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
                 if (eleChecked.getAttribute('data-id') === removeID) {
@@ -541,15 +541,11 @@ class POLoadDataHandle {
 
     static loadPriceListByPurchaseQuotation() {
         let eleQuotationProduct = $('#data-purchase-quotation-products');
-        let $tableProductPR = $('#datable-purchase-order-product-request');
-        let $tableProductAdd = $('#datable-purchase-order-product-add');
         let PQIDList = [];
         let checked_id = null;
-        let $table = null;
+        let $table = $('#datable-purchase-order-product-add');
         if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
-            $table = $tableProductPR;
-        } else {  // PO Add products
-            $table = $tableProductAdd;
+            $table = $('#datable-purchase-order-product-request');
         }
         if (POLoadDataHandle.PQDataEle.val()) {
             for (let PQData of JSON.parse(POLoadDataHandle.PQDataEle.val())) {
@@ -663,7 +659,7 @@ class POLoadDataHandle {
         return true
     };
 
-    static loadCheckProductsByCheckedQuotation(ele) {
+    static loadDataByCheckedQuotation(ele) {
         if (POLoadDataHandle.PRDataEle.val()) {  // PO PR products
             let tablePRProduct = $('#datable-purchase-request-product');
             let checked_id = ele.getAttribute('data-id');
@@ -742,7 +738,7 @@ class POLoadDataHandle {
             let supplier = JSON.parse(ele.getAttribute('data-supplier'));
             // load supplier by Purchase Quotation
             POLoadDataHandle.loadBoxSupplier(supplier);
-            POLoadDataHandle.supplierSelectEle.change();
+            POLoadDataHandle.loadBoxContact(supplier?.['owner'], supplier?.['id']);
         }
         return true
     };

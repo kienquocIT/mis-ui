@@ -62,6 +62,28 @@ $(function () {
                 POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadBoxContact();
             }
+
+            // reset PQ
+            let $tablePQ = $('#datable-purchase-quotation');
+            $tablePQ.DataTable().clear().draw();
+            POLoadDataHandle.loadModalPurchaseQuotation();
+            let $elePQ = $('#purchase-order-purchase-quotation');
+            $elePQ.empty();
+            POLoadDataHandle.PQDataEle.val('');
+            // clear prices by PQ
+            let $table = $('#datable-purchase-order-product-add');
+            if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
+                $table = $('#datable-purchase-order-product-request');
+            }
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                let elePrice = row.querySelector('.table-row-price');
+                let elePriceList = row.querySelector('.table-row-price-list');
+                $(elePrice).attr('value', String(0));
+                $(elePriceList).empty();
+                $.fn.initMaskMoney2();
+                POCalculateHandle.calculateMain($table, row);
+            });
         });
 
         // Purchase request modal
@@ -135,7 +157,7 @@ $(function () {
         elePurchaseQuotation.on('click', '.checkbox-quotation', function () {
             POLoadDataHandle.loadUpdateDataPQ(this);
             POLoadDataHandle.loadSupplierContactByCheckedQuotation(this);
-            POLoadDataHandle.loadCheckProductsByCheckedQuotation(this);
+            POLoadDataHandle.loadDataByCheckedQuotation(this);
             if (this.checked === true) {
                 for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                     if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {

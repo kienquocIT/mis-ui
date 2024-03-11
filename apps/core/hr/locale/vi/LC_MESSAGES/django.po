@@ -36,3 +36,11 @@ msgstr "Tải cấu hình quyền"
 #
 msgid "Import data"
 msgstr "Nhập dữ liệu"
+
+#
+msgid "Get All Configured"
+msgstr "Lấy cấu hình tất cả"
+
+#
+msgid "Load All Configured"
+msgstr "Tải cấu hình tất cả"

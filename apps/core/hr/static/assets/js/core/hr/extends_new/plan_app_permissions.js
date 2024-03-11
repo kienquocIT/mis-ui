@@ -876,6 +876,114 @@ class HandlePlanAppNew {
         return [false, null]
     }
 
+    renderAppSelected(app_selected) {
+        // use for import app
+        let allAppID = [];
+        (
+            app_selected && Array.isArray(app_selected) ? app_selected : []
+        ).map(
+            (item) => {
+                let appData = item?.['application'] || [];
+                if (appData && Array.isArray(appData)) {
+                    allAppID = allAppID.concat(appData);
+                }
+            }
+        )
+        return this.renderDTBApp(
+            elePermit.tblPlanApp.DataTable().rows().data().toArray(),
+            allAppID,
+        )
+    }
+
+    renderDTBApp(allData, allAppID) {
+        if ($.fn.DataTable.isDataTable( '#' + elePermit.tblPlanApp.attr('id') )){
+            elePermit.tblPlanApp.DataTable().destroy();
+        }
+
+        return elePermit.tblPlanApp.DataTableDefault({
+            stateDefaultPageControl: false,
+            stateFullTableTools: false,
+            visiblePaging: false,
+            data: allData,
+            autoWidth: false,
+            columns: [
+                {
+                    "width": "15%",
+                    className: "wrap-text",
+                    data: 'id',
+                    render: function (data, type, row, meta) {
+                        if (data && row.hasOwnProperty('title') && row.hasOwnProperty('code')) {
+                            return `<span class="badge badge-${$x.cls.doc.classOfPlan(row.code)}" data-id="${row.id}">${row.title}</span>`;
+                        }
+                        return '';
+                    }
+                }, {
+                    "width": "85%",
+                    data: 'application',
+                    render: (data, type, row) => {
+                        if (data && Array.isArray(data)) {
+                            let detailHTML = data.sort((a, b) => {
+                                return a.title - b.title
+                            }).map((item) => {
+                                return `
+                                        <div class="col-lg-3 col-md-6 col-12">
+                                            <div class="form-check">
+                                                <input 
+                                                    type="checkbox" 
+                                                    class="form-check-input plan-app-checkbox" 
+                                                    id="app-${item.id}"
+                                                    data-id="${item.id}"
+                                                    ${allAppID.indexOf(item.id) !== -1 ? "checked" : ""}
+                                                    ${HandlePlanAppNew.editEnabled !== true ? "disabled" : ""}
+                                                >
+                                                <label 
+                                                    class="form-check-label" 
+                                                    for="app-${item.id}"
+                                                >
+                                                    ${item.title}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    `;
+                            }).join("");
+                            return `<div class="row">${detailHTML}</div>`;
+                        }
+                        return ''
+                    }
+                }, {
+                    visible: false,
+                    "width": "0%",
+                    render: (data, type, row) => {
+                        return ''
+                    }
+                },
+            ],
+            rowCallback: function (row, data) {
+                $(row).find('input.plan-app-checkbox').on('change', function () {
+                    let state = $(this).prop('checked');
+
+                    let appID = $(this).attr('data-id');
+                    if (appID && $x.fn.checkUUID4(appID)) {
+                        let rowData = $x.fn.getRowData($(this));
+                        let appData = rowData?.['application'] || [];
+
+                        for (let i = 0; i < appData.length; i++) {
+                            if (appData[i].id === appID) {
+                                if (!HandlePlanAppNew.app_by_id.hasOwnProperty(appID)) {
+                                    // add app to storage when not found!
+                                    HandlePlanAppNew.pushPlanApp(rowData['id'], appData[i], false);
+                                }
+                                HandlePlanAppNew.app_by_id[appID]['selected'] = state;
+
+                                break;
+                            }
+                        }
+                    }
+                })
+            },
+        })
+    }
+
     renderTenantApp(tenant_plan_list) {
         HandlePlanAppNew.tenant_plan_app = tenant_plan_list; // backup tenant_plan_app for showing app disabled in permit
         if (HandlePlanAppNew.hasTabPlanApp() === true) {
@@ -899,88 +1007,7 @@ class HandlePlanAppNew {
                     }
                 })
             }
-            return elePermit.tblPlanApp.DataTableDefault({
-                stateDefaultPageControl: false,
-                stateFullTableTools: false,
-                visiblePaging: false,
-                data: allData,
-                autoWidth: false,
-                columns: [
-                    {
-                        "width": "15%",
-                        className: "wrap-text",
-                        data: 'id',
-                        render: function (data, type, row, meta) {
-                            if (data && row.hasOwnProperty('title') && row.hasOwnProperty('code')) {
-                                return `<span class="badge badge-${$x.cls.doc.classOfPlan(row.code)}" data-id="${row.id}">${row.title}</span>`;
-                            }
-                            return '';
-                        }
-                    }, {
-                        "width": "85%",
-                        data: 'application',
-                        render: (data, type, row) => {
-                            if (data && Array.isArray(data)) {
-                                let detailHTML = data.sort((a, b) => {
-                                    return a.title - b.title
-                                }).map((item) => {
-                                    return `
-                                        <div class="col-lg-3 col-md-6 col-12">
-                                            <div class="form-check">
-                                                <input 
-                                                    type="checkbox" 
-                                                    class="form-check-input plan-app-checkbox" 
-                                                    id="app-${item.id}"
-                                                    data-id="${item.id}"
-                                                    ${allAppID.indexOf(item.id) !== -1 ? "checked" : ""}
-                                                    ${HandlePlanAppNew.editEnabled !== true ? "disabled" : ""}
-                                                >
-                                                <label 
-                                                    class="form-check-label" 
-                                                    for="app-${item.id}"
-                                                >
-                                                    ${item.title}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join("");
-                                return `<div class="row">${detailHTML}</div>`;
-                            }
-                            return ''
-                        }
-                    }, {
-                        visible: false,
-                        "width": "0%",
-                        render: (data, type, row) => {
-                            return ''
-                        }
-                    },
-                ],
-                rowCallback: function (row, data) {
-                    $(row).find('input.plan-app-checkbox').on('change', function () {
-                        let state = $(this).prop('checked');
-
-                        let appID = $(this).attr('data-id');
-                        if (appID && $x.fn.checkUUID4(appID)) {
-                            let rowData = $x.fn.getRowData($(this));
-                            let appData = rowData?.['application'] || [];
-
-                            for (let i = 0; i < appData.length; i++) {
-                                if (appData[i].id === appID) {
-                                    if (!HandlePlanAppNew.app_by_id.hasOwnProperty(appID)) {
-                                        // add app to storage when not found!
-                                        HandlePlanAppNew.pushPlanApp(rowData['id'], appData[i], false);
-                                    }
-                                    HandlePlanAppNew.app_by_id[appID]['selected'] = state;
-
-                                    break;
-                                }
-                            }
-                        }
-                    })
-                },
-            })
+            return this.renderDTBApp(allData, allAppID);
         }
     }
 
@@ -1034,7 +1061,7 @@ class HandlePlanAppNew {
         }
     }
 
-    renderTablePermissionSelected() {
+    renderTablePermissionSelected(clearOldData=true, permission_selected=null) {
         function initCompleteFunc() {
             if (HandlePlanAppNew.editEnabled !== true) {
                 $('#idx-new-row-add').addClass('d-none');
@@ -1049,8 +1076,8 @@ class HandlePlanAppNew {
         if (HandlePlanAppNew.hasTabPermission() === true) {
             let dtb = HandlePlanAppNew.dtb;
             if ($.fn.DataTable.isDataTable('#' + dtb.attr('id'))) {
-                dtb.DataTable().clear().draw();
-                dtb.DataTable().rows.add(HandlePlanAppNew.permission_by_configured);
+                clearOldData === true ? dtb.DataTable().clear().draw() : null;
+                dtb.DataTable().rows.add(permission_selected ? permission_selected : HandlePlanAppNew.permission_by_configured).draw();
                 initCompleteFunc();
             } else {
                 dtb.DataTableDefault({

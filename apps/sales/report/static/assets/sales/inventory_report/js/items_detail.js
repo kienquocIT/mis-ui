@@ -135,6 +135,7 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
+                    console.log(results[0])
                     items_detail_report_table_Ele.find('tbody').html('')
                     for (const item of results[0]) {
                         let cumulative_quantity = 0

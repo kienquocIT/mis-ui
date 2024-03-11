@@ -964,14 +964,12 @@ class HandlePlanAppNew {
 
                     let appID = $(this).attr('data-id');
                     if (appID && $x.fn.checkUUID4(appID)) {
-                        let rowData = $x.fn.getRowData($(this));
-                        let appData = rowData?.['application'] || [];
-
+                        let appData = data?.['application'] || [];
                         for (let i = 0; i < appData.length; i++) {
                             if (appData[i].id === appID) {
                                 if (!HandlePlanAppNew.app_by_id.hasOwnProperty(appID)) {
                                     // add app to storage when not found!
-                                    HandlePlanAppNew.pushPlanApp(rowData['id'], appData[i], false);
+                                    HandlePlanAppNew.pushPlanApp(data['id'], appData[i], false);
                                 }
                                 HandlePlanAppNew.app_by_id[appID]['selected'] = state;
 
@@ -979,7 +977,7 @@ class HandlePlanAppNew {
                             }
                         }
                     }
-                })
+                }).trigger('change');
             },
         })
     }

@@ -22,9 +22,9 @@ Với:
 # Tạo file dịch cho app tên "x" nằm tại đường dẫn "apps/x" 
 # (giống thuộc tính name trong file apps.py của app):
 
-$ python manage.py make_jsi18n apps.x
+$ python manage.py make_i18n apps.x
 # Hoặc
-$ python manage.py make_jsi18n apps.x --file_name=djangojs.po
+$ python manage.py make_i18n apps.x --file_name=djangojs.po
 
 # apps.x : đường dẫn đến ứng dụng
 # --file_name là tên file muốn tạo, mặc định là djangojs
@@ -77,7 +77,7 @@ msgstr "Tên"
 - Không nên sử dụng trên settings.BASE_DIR vì gây tốn hiệu năng tải nhưng không sử dụng đến
 
 #### Sử dụng:
-- Tạo file dịch cho app tên "x" nằm tại đường dẫn "apps/x" (giống thuộc tính name trong file apps.py của app): $ python manage.py make_jsi18n apps.x
+- Tạo file dịch cho app tên "x" nằm tại đường dẫn "apps/x" (giống thuộc tính name trong file apps.py của app): $ python manage.py make_i18n apps.x
 - Thêm bản dịch vào file dịch djangojs.po
 - Khai báo view sử dụng bản dịch trên app: Chỉ sử dụng cho view render template
   - Nếu sử dụng @mask_view thì thêm từ khoá chuyển đổi trong settings.BASE_DIR/misui/jsi18n.py/I18N_JS_MATCH_APP sau đó sử dụng từ khoá đó thêm vào mask_view của view: jsi18n='key chuyển đổi vừa thêm'

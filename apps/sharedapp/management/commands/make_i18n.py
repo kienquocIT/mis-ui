@@ -49,7 +49,7 @@ class Command(BaseCommand):
         locale_dir = os.path.join(app_path, 'locale/vi/LC_MESSAGES')
         os.makedirs(locale_dir, exist_ok=True)
 
-        file_dir = os.path.join(locale_dir, 'djangojs.po')
+        file_dir = os.path.join(locale_dir, file_name)
         if not os.path.isfile(file_dir):
             self.stdout.write(self.style.SUCCESS(f'Đang thực hiện tại file tạo file *.po: {file_dir}'))
             with open(file_dir, 'w') as f:

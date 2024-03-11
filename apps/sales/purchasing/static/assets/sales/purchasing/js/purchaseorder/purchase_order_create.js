@@ -62,23 +62,27 @@ $(function () {
                 POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadBoxContact();
             }
-
             // reset PQ
+            let $tableProductPR = $('#datable-purchase-order-product-request');
+            let $tableProductAdd = $('#datable-purchase-order-product-add');
             let $tablePQ = $('#datable-purchase-quotation');
             $tablePQ.DataTable().clear().draw();
-            POLoadDataHandle.loadModalPurchaseQuotation();
+            if ($tableProductPR.DataTable().rows().count() !== 0 || $tableProductAdd.DataTable().rows().count() !== 0) {
+                POLoadDataHandle.loadModalPurchaseQuotation();
+            }
             let $elePQ = $('#purchase-order-purchase-quotation');
             $elePQ.empty();
             POLoadDataHandle.PQDataEle.val('');
             // clear prices by PQ
-            let $table = $('#datable-purchase-order-product-add');
+            let $table = $tableProductAdd;
             if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
-                $table = $('#datable-purchase-order-product-request');
+                $table = $tableProductPR;
             }
             $table.DataTable().rows().every(function () {
                 let row = this.node();
                 let elePrice = row.querySelector('.table-row-price');
                 let elePriceList = row.querySelector('.table-row-price-list');
+                elePrice.removeAttribute('disabled');
                 $(elePrice).attr('value', String(0));
                 $(elePriceList).empty();
                 $.fn.initMaskMoney2();

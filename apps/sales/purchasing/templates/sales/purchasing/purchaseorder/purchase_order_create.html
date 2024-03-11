@@ -104,7 +104,6 @@
                                                 id="btn-purchase-request-modal"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#purchaseRequestModalCenter"
-                                                disabled
                                             ><i class="fas fa-ellipsis-h"></i></button>
                                         </div>
                                     </div>
@@ -142,7 +141,6 @@
                                                 id="btn-purchase-quotation-modal"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#purchaseQuotationModalCenter"
-                                                disabled
                                             ><i class="fas fa-ellipsis-h"></i></button>
                                         </div>
                                     </div>
@@ -548,6 +546,8 @@
         data-validate-order-request="{% trans 'Exceeded quantity requested' %}"
         data-validate-order-actual="{% trans 'Must not less than quantity ordered' %}"
         data-valid="{% trans "Valid" %}"
+        data-product-needed="{% trans "Please add product" %}"
+        data-purchase-quotation="{% trans "Purchase quotation" %}"
     >
     <input
         type="text"

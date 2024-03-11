@@ -50,12 +50,6 @@ $(function () {
 
 
 // EVENTS
-        // Action on change title
-        $('#purchase-order-title').on('change', function () {
-            // check enable btn PR, PQ
-            POValidateHandle.validateEnablePRPQ();
-        });
-
         // Action on change dropdown supplier
         POLoadDataHandle.supplierSelectEle.on('change', function () {
             if ($(this).val()) {
@@ -64,10 +58,7 @@ $(function () {
                     POLoadDataHandle.contactSelectEle.empty();
                     POLoadDataHandle.loadBoxContact(dataSelected?.['owner'], dataSelected?.['id']);
                     document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
-                    POLoadDataHandle.loadDataProductAll();
                 }
-                // check enable btn PR, PQ
-                POValidateHandle.validateEnablePRPQ();
             } else { // No Value => load again contact
                 POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadBoxContact();

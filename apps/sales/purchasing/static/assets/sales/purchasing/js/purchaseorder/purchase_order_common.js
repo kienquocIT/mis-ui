@@ -82,13 +82,12 @@ class POLoadDataHandle {
         if (ele.val()) {
             let data = SelectDDControl.get_data_from_idx(ele, ele.val());
             if (data) {
+                ele.attr('data-product-id', data?.['id']);
                 data['unit_of_measure'] = data?.['purchase_information']?.['uom'];
                 data['uom_group'] = data?.['general_information']?.['uom_group'];
                 data['tax'] = data?.['purchase_information']?.['tax'];
                 let description = ele[0].closest('tr').querySelector('.table-row-description');
                 let uom = ele[0].closest('tr').querySelector('.table-row-uom-order-actual');
-                let price = ele[0].closest('tr').querySelector('.table-row-price');
-                let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
@@ -100,12 +99,8 @@ class POLoadDataHandle {
                 } else {
                     POLoadDataHandle.loadBoxUOM($(uom));
                 }
-                // load PRICE
-                // if (price && priceList) {
-                //     POLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
-                // }
                 // load TAX
-                if (tax && data.tax) {
+                if (tax && data?.['tax']) {
                     POLoadDataHandle.loadBoxTax($(tax), data?.['tax']);
                 } else {
                     POLoadDataHandle.loadBoxTax($(tax));
@@ -113,73 +108,6 @@ class POLoadDataHandle {
             }
             $.fn.initMaskMoney2();
         }
-    };
-
-    static loadPriceProduct(eleProduct, is_change_item = false) {
-        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-        if (productData) {
-            let data = productData;
-            let price = eleProduct.closest('tr').querySelector('.table-row-price');
-            let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
-            // load PRICE
-            if (price && priceList) {
-                let account_price_id = document.getElementById('customer-price-list').value;
-                let general_price_id = null;
-                let general_price = 0;
-                let customer_price = null;
-                let transJSON = {};
-                transJSON['Valid'] = POLoadDataHandle.transEle.attr('data-valid');
-                $(priceList).empty();
-                if (Array.isArray(data.price_list) && data.price_list.length > 0) {
-                    for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
-                            if (data.price_list[i].is_default === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
-                                general_price_id = data.price_list[i].id;
-                                general_price = parseFloat(data.price_list[i].value);
-                            }
-                            if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // If Valid Price
-                                if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
-                                    customer_price = parseFloat(data.price_list[i].value);
-                                    $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
-                                                                <span class="mr-2">${data.price_list[i].title}</span>
-                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
-                                                            </div>
-                                                        </a>`);
-                                } else {
-                                    $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
-                                                                <span class="mr-2">${data.price_list[i].title}</span>
-                                                                <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                                <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
-                                                            </div>
-                                                        </a>`);
-                                }
-                            }
-                        } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
-                            general_price = parseFloat(data.price_list[i].value);
-                            $(priceList).append(`<a class="dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="d-flex">
-                                                        <span class="mr-2">${data.price_list[i].title}</span>
-                                                        <span class="badge badge-soft-success mr-2"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></span>
-                                                        <small class="valid-price mr-2"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
-                                                    </div>
-                                                </a>`);
-                        }
-                    }
-                }
-                // get Price to display
-                if (is_change_item === true) {
-                    if (customer_price) {
-                        $(price).attr('value', String(customer_price));
-                    } else {
-                        $(price).attr('value', String(general_price));
-                    }
-                }
-            }
-        }
-        $.fn.initMaskMoney2();
     };
 
     static loadBoxUOM(ele, dataUOM = {}, uom_group_id = null) {
@@ -334,14 +262,29 @@ class POLoadDataHandle {
                                 </div>`;
                 purchase_requests_data.push(prID);
             }
+            elePurchaseRequest.empty();
             if (is_checked === true) {
-                elePurchaseRequest.empty();
                 elePurchaseRequest.append(eleAppend);
-            } else {
-                elePurchaseRequest.empty();
             }
         }
-        POLoadDataHandle.PRDataEle.val(JSON.stringify(purchase_requests_data));
+        if (purchase_requests_data.length > 0) {
+            POLoadDataHandle.PRDataEle.val(JSON.stringify(purchase_requests_data));
+        } else {
+            POLoadDataHandle.PRDataEle.val('');
+        }
+        // clear supplier, contact
+        POLoadDataHandle.supplierSelectEle.empty();
+        POLoadDataHandle.loadBoxSupplier();
+        POLoadDataHandle.contactSelectEle.empty();
+        POLoadDataHandle.loadBoxContact();
+        // reset PQ
+        let $tablePQ = $('#datable-purchase-quotation');
+        $tablePQ.DataTable().clear().draw();
+        POLoadDataHandle.loadModalPurchaseQuotation();
+        let $elePQ = $('#purchase-order-purchase-quotation');
+        $elePQ.empty();
+        POLoadDataHandle.PQDataEle.val('');
+        // uncheck merge product
         let eleMergeProduct = $('#merge-same-product');
         if (eleMergeProduct[0].checked === true) {
             eleMergeProduct.click();
@@ -351,6 +294,8 @@ class POLoadDataHandle {
 
     static loadModalPurchaseQuotation(is_remove = false, dataDetail = null) {
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
+        let $tableProductPR = $('#datable-purchase-order-product-request');
+        let $tableProductAdd = $('#datable-purchase-order-product-add');
         let checked_data = {};
         if (dataDetail) {
             for (let PQ of dataDetail?.['purchase_quotations_data']) {
@@ -375,16 +320,16 @@ class POLoadDataHandle {
             dataFilter = {'supplier_mapped_id': POLoadDataHandle.supplierSelectEle.val()}
         }
         // by PR
-        let purchase_requests_data = POLoadDataHandle.PRDataEle;
-        if (purchase_requests_data.val()) {
-            let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
-            if (Array.isArray(purchase_requests_data_parse)) {
-                if (purchase_requests_data_parse.length > 0) {
-                    dataFilter = {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')};
-                }
-            }
-        }
-        if (Object.keys(dataFilter).length > 0) {
+        // let purchase_requests_data = POLoadDataHandle.PRDataEle;
+        // if (purchase_requests_data.val()) {
+        //     let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
+        //     if (Array.isArray(purchase_requests_data_parse)) {
+        //         if (purchase_requests_data_parse.length > 0) {
+        //             dataFilter = {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')};
+        //         }
+        //     }
+        // }
+        if ($tableProductPR.DataTable().rows().count() !== 0 || $tableProductAdd.DataTable().rows().count() !== 0) {
             $.fn.callAjax2({
                     'url': frm.dataUrl,
                     'method': frm.dataMethod,
@@ -415,9 +360,8 @@ class POLoadDataHandle {
                 }
             )
         } else {
-            tablePurchaseQuotation.DataTable().clear().draw();
-            POLoadDataHandle.loadDataShowPurchaseQuotation();
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
+            $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-product-needed')}, 'failure');
+            return false;
         }
         return true;
     };
@@ -509,17 +453,17 @@ class POLoadDataHandle {
     };
 
     static loadTableProductByPurchaseRequest() {
-        let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
+        let $tableProductPR = $('#datable-purchase-order-product-request');
+        let $tableProductAdd = $('#datable-purchase-order-product-add');
+        // clear dataTable
+        $tableProductPR.DataTable().clear().draw();
+        $tableProductAdd.DataTable().clear().draw();
         let data = setupMergeProduct();
         POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
+        $tableProductPR.DataTable().rows.add(data).draw();
         if (data.length > 0) {
-            tablePurchaseOrderProductRequest.DataTable().clear().draw();
-            tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
-            POLoadDataHandle.loadDataRowTable(tablePurchaseOrderProductRequest);
-        } else {
-            tablePurchaseOrderProductRequest.DataTable().clear().draw();
-            tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
+            POLoadDataHandle.loadDataRowTable($tableProductPR);
         }
         // restart totals
         let elePretaxAmount = document.getElementById('purchase-order-product-request-pretax-amount');
@@ -599,8 +543,16 @@ class POLoadDataHandle {
 
     static loadPriceListByPurchaseQuotation() {
         let eleQuotationProduct = $('#data-purchase-quotation-products');
+        let $tableProductPR = $('#datable-purchase-order-product-request');
+        let $tableProductAdd = $('#datable-purchase-order-product-add');
         let PQIDList = [];
         let checked_id = null;
+        let $table = null;
+        if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
+            $table = $tableProductPR;
+        } else {  // PO Add products
+            $table = $tableProductAdd;
+        }
         if (POLoadDataHandle.PQDataEle.val()) {
             for (let PQData of JSON.parse(POLoadDataHandle.PQDataEle.val())) {
                 PQIDList.push(PQData?.['purchase_quotation']);
@@ -646,7 +598,6 @@ class POLoadDataHandle {
                                 }
                             }
                             eleQuotationProduct.val(JSON.stringify(dataPQMapProducts));
-                            let $table = $('#datable-purchase-order-product-request');
                             $table.DataTable().rows().every(function () {
                                 let row = this.node();
                                 let eleUOM = row.querySelector('.table-row-uom-order-actual');
@@ -703,7 +654,6 @@ class POLoadDataHandle {
                 }
             )
         } else { // No PQ
-            let $table = $('#datable-purchase-order-product-request');
             $table.DataTable().rows().every(function () {
                 let row = this.node();
                 let elePrice = row.querySelector('.table-row-price');
@@ -716,42 +666,52 @@ class POLoadDataHandle {
     };
 
     static loadCheckProductsByCheckedQuotation(ele) {
-        let tablePRProduct = $('#datable-purchase-request-product');
-        let checked_id = ele.getAttribute('data-id');
-        // reset status
-        for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked, .table-row-checkbox.disabled-by-pq')) {
-            let row = eleChecked.closest('tr');
-            eleChecked.classList.remove('disabled-by-pq');
-            eleChecked.removeAttribute('disabled');
-            row.querySelector('.table-row-quantity-order').removeAttribute('disabled');
-            $(row).css('background-color', '');
-            row.removeAttribute('data-bs-toggle');
-            row.removeAttribute('data-bs-placement');
-            row.removeAttribute('title');
-        }
-        if (ele.checked === true) {
-            let eleDataPQProducts = $('#data-purchase-quotation-products');
-            if (eleDataPQProducts.val()) {
-                let dataPQMapProductsList = JSON.parse(eleDataPQProducts.val());
-                let dataPQMapProducts = dataPQMapProductsList[checked_id];
-                for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
-                    let row = eleChecked.closest('tr');
-                    let productID = row.querySelector('.table-row-item').id;
-                    // update status
-                    if (!dataPQMapProducts.includes(productID)) {
-                        eleChecked.classList.add('disabled-by-pq');
-                        eleChecked.setAttribute('disabled', 'true');
-                        row.querySelector('.table-row-quantity-order').setAttribute('disabled', 'true');
-                        $(row).css('background-color', '#f7f7f7');
-                        row.setAttribute('data-bs-toggle', 'tooltip');
-                        row.setAttribute('data-bs-placement', 'top');
-                        row.setAttribute('title', POLoadDataHandle.transEle.attr('data-product-not-in') + ' ' + ele.getAttribute('data-code'));
+        if (POLoadDataHandle.PRDataEle.val()) {  // PO PR products
+            let tablePRProduct = $('#datable-purchase-request-product');
+            let checked_id = ele.getAttribute('data-id');
+            let isProductNotIn = false;
+            // reset status
+            for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked, .table-row-checkbox.disabled-by-pq')) {
+                let row = eleChecked.closest('tr');
+                eleChecked.classList.remove('disabled-by-pq');
+                eleChecked.removeAttribute('disabled');
+                row.querySelector('.table-row-quantity-order').removeAttribute('disabled');
+                $(row).css('background-color', '');
+                row.removeAttribute('data-bs-toggle');
+                row.removeAttribute('data-bs-placement');
+                row.removeAttribute('title');
+            }
+            if (ele.checked === true) {
+                let eleDataPQProducts = $('#data-purchase-quotation-products');
+                if (eleDataPQProducts.val()) {
+                    let dataPQMapProductsList = JSON.parse(eleDataPQProducts.val());
+                    let dataPQMapProducts = dataPQMapProductsList[checked_id];
+                    for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
+                        let row = eleChecked.closest('tr');
+                        let productID = row.querySelector('.table-row-item').id;
+                        // update status
+                        if (!dataPQMapProducts.includes(productID)) {
+                            eleChecked.classList.add('disabled-by-pq');
+                            eleChecked.setAttribute('disabled', 'true');
+                            row.querySelector('.table-row-quantity-order').setAttribute('disabled', 'true');
+                            $(row).css('background-color', '#f7f7f7');
+                            row.setAttribute('data-bs-toggle', 'tooltip');
+                            row.setAttribute('data-bs-placement', 'top');
+                            row.setAttribute('title', POLoadDataHandle.transEle.attr('data-product-not-in') + ' ' + ele.getAttribute('data-code'));
+                            isProductNotIn = true;
+                        }
                     }
                 }
             }
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
+            POLoadDataHandle.loadTableProductByPurchaseRequest();
+            if (isProductNotIn === true) {
+                $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-product-not-in') + ' ' + POLoadDataHandle.transEle.attr('data-purchase-quotation')}, 'failure');
+                return false;
+            }
+        } else {  // PO Add Products
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         }
-        POLoadDataHandle.loadPriceListByPurchaseQuotation();
-        POLoadDataHandle.loadTableProductByPurchaseRequest();
     };
 
     static loadUpdateDataPQ(ele) {
@@ -1125,19 +1085,6 @@ class POLoadDataHandle {
         }
     };
 
-    static loadDataProductAll() {
-        let table = document.getElementById('datable-purchase-order-product-add');
-        for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-            let row = table.tBodies[0].rows[i];
-            let eleItem = row.querySelector('.table-row-item');
-            if (eleItem) {
-                POLoadDataHandle.loadPriceProduct(eleItem);
-                // Re Calculate all data of rows & total
-                POCalculateHandle.calculateMain($(table), row);
-            }
-        }
-    };
-
     static loadTableDropDowns() {
         let tablePaymentStage = $('#datable-po-payment-stage');
         POLoadDataHandle.loadDropDowns(tablePaymentStage);
@@ -1432,8 +1379,6 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-quotation');
         $table.DataTableDefault({
             data: data ? data : [],
-            paging: false,
-            info: false,
             columns: [
                 {
                     targets: 0,
@@ -1463,26 +1408,26 @@ class PODataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.code}</span>`
+                        return `<div class="row"><span class="badge badge-primary table-row-code">${row?.['code']}</span></div>`
                     },
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        return `<span class="table-row-title">${row?.['title']}</span>`
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        let dataSupplier = JSON.stringify(row.supplier_mapped).replace(/"/g, "&quot;");
-                        return `<span class="table-row-supplier" data-supplier="${dataSupplier}" id="${row.supplier_mapped.id}">${row.supplier_mapped.name}</span>`
+                        let dataSupplier = JSON.stringify(row?.['supplier_mapped']).replace(/"/g, "&quot;");
+                        return `<div class="row"><span class="badge badge-soft-warning table-row-supplier" data-supplier="${dataSupplier}" id="${row?.['supplier_mapped']?.['id']}">${row?.['supplier_mapped']?.['name']}</span></div>`
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-purchase-quotation-request">${row.purchase_quotation_request_mapped.code}</span>`
+                        return `<span class="table-row-purchase-quotation-request">${row?.['purchase_quotation_request_mapped']?.['code'] ? row?.['purchase_quotation_request_mapped']?.['code'] : ''}</span>`
                     }
                 },
             ],
@@ -2035,23 +1980,6 @@ class POValidateHandle {
             }
         }
         return true
-    };
-
-    static validateEnablePRPQ() {
-        let btnPRModal = $('#btn-purchase-request-modal');
-        let btnPQModal = $('#btn-purchase-quotation-modal');
-        if ($('#purchase-order-title').val() && POLoadDataHandle.supplierSelectEle.val() && POLoadDataHandle.contactSelectEle.val()) {
-            if (btnPRModal && btnPQModal) {
-                btnPRModal[0].removeAttribute('disabled');
-                btnPQModal[0].removeAttribute('disabled');
-            }
-        } else {
-            if (btnPRModal && btnPQModal) {
-                btnPRModal[0].setAttribute('disabled', 'true');
-                btnPQModal[0].setAttribute('disabled', 'true');
-            }
-        }
-        return true;
     };
 
 }

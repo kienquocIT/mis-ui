@@ -485,4 +485,6 @@
     align-items: center;
     column-gap: 10px;
 }
-.nav-slider-left .nav-link{padding: 0 6px}
+.nav-slider-left .nav-link,
+.nav-slider-right .nav-link
+{padding: 0 6px}

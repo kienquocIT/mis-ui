@@ -332,7 +332,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
     IMPORT_LIST_PAGE = BreadcrumbChildren(_('Import List'), 'FImportListView')
 
-
+    # PROJECT
+    PROJECT_LIST = BreadcrumbChildren(_('Project list'), 'ProjectList')
 class BreadcrumbView:
     """menu vertical item view"""
 

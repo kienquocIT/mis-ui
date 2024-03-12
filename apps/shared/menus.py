@@ -353,6 +353,12 @@ class MenusCRM:
         child=[
         ],
     )
+    PROJECT = MenuCommon(
+        name='Project', code='menu_project', view_name='ProjectList',
+        icon='<i class="fa-solid fa-weight-scale"></i>',
+        child=[
+        ],
+    )
 
 
 class MenusPurchase:
@@ -624,7 +630,8 @@ class SpaceItem:
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
-                MenusCRM.AR_INVOICE
+                MenusCRM.AR_INVOICE,
+                MenusCRM.PROJECT
             ],
         ),
         'purchase': SpaceCommon(

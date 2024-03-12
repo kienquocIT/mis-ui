@@ -2218,7 +2218,7 @@ class QuotationLoadDataHandle {
         if (tableProductWrapper) {
             let tableProductBd = tableProductWrapper.querySelector('.dataTables_scrollBody');
             if (tableProductBd) {
-                tableProductBd.style.minHeight = '200px';
+                tableProductBd.style.minHeight = '150px';
             }
         }
     };

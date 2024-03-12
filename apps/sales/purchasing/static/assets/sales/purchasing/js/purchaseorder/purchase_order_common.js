@@ -829,7 +829,7 @@ class POLoadDataHandle {
         if (tableAddWrapper) {
             let tableAddBd = tableAddWrapper.querySelector('.dataTables_scrollBody');
             if (tableAddBd) {
-                tableAddBd.style.minHeight = '200px';
+                tableAddBd.style.minHeight = '150px';
             }
         }
         if (tablePRWrapper) {

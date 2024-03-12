@@ -1081,6 +1081,29 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadCostProduct(eleProduct) {
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        if (productData) {
+            let data = productData;
+            let costList = eleProduct.closest('tr').querySelector('.table-row-cost-list');
+            // load PRICE
+            if (costList) {
+                $(costList).empty();
+                if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
+                    for (let costData of data?.['cost_list']) {
+                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1">
+                                                <div class="d-flex">
+                                                    <b><p class="text-primary mr-5">${costData?.['warehouse']?.['title']}</p></b>
+                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span>
+                                                </div>
+                                            </a>`);
+                    }
+                }
+            }
+        }
+        $.fn.initMaskMoney2();
+    };
+
     static loadReInitDataTableProduct() {
         let $form = $('#frm_quotation_create');
         let $table = $('#datable-quotation-create-product');
@@ -2123,6 +2146,14 @@ class QuotationLoadDataHandle {
             })
             // Re calculate
             QuotationCalculateCaseHandle.calculateAllRowsTableCost($table);
+            // load cost list
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                let eleProduct = row.querySelector('.table-row-item');
+                if (eleProduct) {
+                    QuotationLoadDataHandle.loadCostProduct(eleProduct);
+                }
+            });
         }
     };
 
@@ -3149,14 +3180,22 @@ class QuotationDataTableHandle {
                             }
                         }
                         if (itemType === 0) {  // product
-                            return `<input 
-                                        type="text" 
-                                        class="form-control mask-money table-row-price" 
-                                        data-return-type="number"
-                                        value="${row?.['product_cost_price']}"
-                                        data-zone="${dataZone}"
-                                        required
-                                    >`;
+                            return `<div class="row">
+                                        <div class="d-flex">
+                                            <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price" 
+                                            data-return-type="number"
+                                            value="${row?.['product_cost_price']}"
+                                            data-zone="${dataZone}"
+                                            required
+                                            >
+                                            <div class="dropdown">
+                                                <button type="button" aria-expanded="false" data-bs-toggle="dropdown" class="btn btn-icon btn-rounded flush-soft-hover btn-cost-list" data-zone="${dataZone}"><span class="icon"><i class="fas fa-ellipsis-h text-primary"></i></span></button>
+                                                <div role="menu" class="dropdown-menu table-row-cost-list w-500p"></div>
+                                            </div>
+                                        </div>
+                                    </div>`;
                         } else if (itemType === 1) {  // shipping
                             return `<input 
                                         type="text" 

@@ -136,3 +136,10 @@
     width: 40%;
     text-align: right;
 }
+.btn-task-bar{
+    position: fixed;
+    left: 50%;
+    top: calc(100% - 20px);
+    transform: translate(-50%, -100%);
+    --webkit--transform: translate(-50%, -100%);
+}

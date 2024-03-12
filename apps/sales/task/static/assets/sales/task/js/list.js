@@ -56,7 +56,7 @@ $(function () {
         })
     }
 
-    function callDataTaskList(kanban, list, params = {}) {
+    function callDataTaskList(kanban, list, params = {}, isReturn=false) {
         function callBackModalChange(mutations, observer) {
             // function kiểm tra nếu form create/edit đang mở thì chỉnh sửa datalist của table show/hide icon
             // testcase: click view item 1 sau đó click view item 2
@@ -72,26 +72,30 @@ $(function () {
                 $('#table_task_list').DataTable().clear().rows.add(_tableDataList).draw()
             }
         }
-
-        $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET', 'data': params})
-            .then(
-                (req) => {
-                    let data = $.fn.switcherResp(req);
-                    if (data?.['status'] === 200) {
-                        const taskList = data?.['task_list']
-                        kanban.init(taskList)
-                        list.init(list, taskList)
-                        // Function to wait form create on submit
-                        $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
-                        let observer = new MutationObserver(callBackModalChange);
-                        const DOMCheck = document.getElementById('drawer_task_create')
-                        observer.observe(DOMCheck, {attributeFilter: ['class']});
-                    }
-                },
-                (err) => {
-                    console.log('call data error, ', err)
+        let callData = $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET', 'data': params})
+        if (isReturn) return callData
+        callData.then(
+            (req) => {
+                let data = $.fn.switcherResp(req);
+                if (data?.['status'] === 200) {
+                    const taskList = data?.['task_list']
+                    kanban.init(taskList)
+                    list.init(list, taskList)
+                    // Function to wait form create on submit
+                    $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
+                    let observer = new MutationObserver(callBackModalChange);
+                    const DOMCheck = document.getElementById('drawer_task_create')
+                    observer.observe(DOMCheck, {attributeFilter: ['class']});
+                    let temp = $.extend(true, {}, data)
+                    delete temp['task_list']
+                    $('.btn-task-bar').data('task_info', temp)
+                    $('#btn_load-more').prop('disabled', temp.page_next === 0)
                 }
-            );
+            },
+            (err) => {
+                console.log('call data error, ', err)
+            }
+        );
     }
 
     jQuery.fn.scroll_to_today = function () {
@@ -543,7 +547,7 @@ $(function () {
             const taskList = data
             this.setTaskList = taskList
             let count_parent = {}
-            // loop trong ds gán cho template html gán vào object theo status ID
+            // loop trong ds, lấy data parse ra HTML và cộng vào dict theo task status tương ứng
             for (const item of taskList) {
                 if (item.parent_n && Object.keys(item.parent_n).length)
                     if (count_parent?.[item.parent_n.id]) count_parent[item.parent_n.id] += 1
@@ -1369,4 +1373,36 @@ $(function () {
     $('.leave-filter-wrap button').off().on('click', function () {
         $('.leave-filter-wrap .form-group-filter').slideToggle()
     })
+
+    // load more button
+    $('#btn_load-more').on('click', function(){
+        let load_info = $('.btn-task-bar').data('task_info')
+        let params = {
+            "page":load_info.page_next,
+            "pageSize": load_info.page_size
+        }
+        if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
+        if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
+        if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
+        let request = callDataTaskList(null, null, params, true)
+        request.then((rep)=>{
+            let data = $.fn.switcherResp(rep);
+            if (data?.['status'] === 200) {
+                let temp = $.extend(true, {}, data)
+                delete temp['task_list']
+                $('.btn-task-bar').data('task_info', temp)
+                $('#btn_load-more').prop('disabled', temp.page_next === 0)
+                let currentData = kanbanTask.getTaskList.concat(data['task_list'])
+                kanbanTask.getAndRenderTask(currentData)
+                listTask.init(listTask, currentData)
+            }
+
+        })
+    });
+    // handle show/hide btn load more when scroll down
+    let contentElm = $('#idxPageContent .simplebar-content-wrapper');
+    const loadMoreBtn = $('.btn-task-bar')
+    $(contentElm).scroll(function () {
+        $(this).scrollTop() > 100 && !$('.tab-gantt').hasClass('active') ? loadMoreBtn.fadeIn() : loadMoreBtn.fadeOut();
+    });
 }, jQuery);

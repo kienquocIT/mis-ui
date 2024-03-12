@@ -4316,9 +4316,7 @@ class PersonControl {
                             return '';
                         }
                     )
-                    if (arr.length > 2) {
-                        arr = [arr[0], arr[1]];
-                    }
+                    if (arr.length > 2) arr = [arr[0], arr[arr.length - 1]];
                     return arr.join("");
                 }
             }

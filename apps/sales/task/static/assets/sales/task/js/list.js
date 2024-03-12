@@ -1097,23 +1097,6 @@ $(function () {
                                 }]
                             }
                         }
-                        else{
-                            bk_list[item.parent_n.id] = {
-                                name: item.parent_n.title,
-                                desc: '',
-                                values: []
-                            }
-                            bk_list[item.parent_n.id]['parent_n'].push({
-                                desc: item.title,
-                                values: [{
-                                    from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
-                                    to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
-                                    desc: item.remark,
-                                    customClass: "ganttGreen",
-                                    dataObj: {...item, customBg: taskClr[item.task_status.id]}
-                                }]
-                            })
-                        }
                     }
                     else {
                         // ko có cấp cha

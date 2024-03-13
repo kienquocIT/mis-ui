@@ -2033,6 +2033,11 @@ class WFRTControl {
                         }
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                            // // active btn cancel if owner
+                            // let eleStatus = $('#systemStatus');
+                            // if (eleStatus.attr('data-status') === '3') {
+                            //     WFRTControl.setBtnCancel();
+                            // }
                         }
                         // collab out form handler
                         WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);
@@ -2458,6 +2463,20 @@ class WFRTControl {
     static setCollabOutFormData(collabOutFormData) {
         if (collabOutFormData && Array.isArray(collabOutFormData)) {
             $('html').append(`<script class="hidden" id="idxCollabOutFormData">${JSON.stringify(collabOutFormData)}</script>`);
+        }
+    }
+
+    static setBtnCancel() {
+        let eleRealAction = $('#idxRealAction');
+        if (eleRealAction) {
+            $(eleRealAction).append(`<button class="btn btn-outline-danger" id="btnAbort">
+                                        <span>
+                                            <span>${$.fn.transEle.attr('data-cancel')}</span>
+                                            <span class="icon">
+                                                <i class="fas fa-times"></i>
+                                            </span>
+                                        </span>
+                                    </button>`);
         }
     }
 
@@ -4561,12 +4580,13 @@ class DocumentControl {
                     "Finish": "badge badge-soft-success",
                     "Cancel": "badge badge-soft-danger",
                 }
+                let dataStatus = system_status;
                 if ($x.fn.checkNumber(system_status)) {
                     const key = Object.keys(status_class);
                     system_status = key[system_status]
                 }
                 $('#idx-breadcrumb-current-code').append(
-                    `<span class="${status_class[system_status]}">${system_status}</span>`
+                    `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}">${system_status}</span>`
                 ).removeClass('hidden');
             }
         }

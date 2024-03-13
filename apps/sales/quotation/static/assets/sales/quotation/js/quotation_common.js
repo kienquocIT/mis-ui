@@ -2442,6 +2442,7 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '2.5%',
                     render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
                             let target = ".group-" + String(row?.['group_order']);
                             return `<button 
@@ -2453,11 +2454,12 @@ class QuotationDataTableHandle {
                                         aria-expanded="true"
                                         aria-controls="newGroup"
                                         data-group-order="${row?.['group_order']}"
+                                        data-row="${dataRow}"
                                     >
                                         <span class="icon"><i class="fas fa-chevron-down"></i></span>
-                                    </button>`;
+                                    </button>
+                                    <span class="table-row-order ml-2" data-row="${dataRow}" hidden>${row?.['order']}</span>`;
                         }
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order ml-2" data-row="${dataRow}">${row?.['order']}</span>`;
                     }
                 },
@@ -2473,7 +2475,6 @@ class QuotationDataTableHandle {
                                         <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                     </div>`;
                         }
-
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
                         if ($form[0].classList.contains('sale-order')) {

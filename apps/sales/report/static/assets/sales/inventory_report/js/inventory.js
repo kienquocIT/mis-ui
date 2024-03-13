@@ -210,10 +210,13 @@ $(document).ready(function () {
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                         let bg_in = ''
                                         let bg_out = ''
-                                        if (activity?.['in_quantity'] && activity?.['in_value']) {
+                                        if (activity?.['trans_title'] === 'Goods receipt') {
                                             bg_in = 'bg-primary-light-5'
                                         }
-                                        if (activity?.['out_quantity'] && activity?.['out_value']) {
+                                        if (activity?.['trans_title'] === 'Goods return') {
+                                            bg_in = 'bg-blue-light-5'
+                                        }
+                                        if (activity?.['trans_title'] === 'Delivery') {
                                             bg_out = 'bg-danger-light-5'
                                         }
                                         detail_html += `
@@ -269,10 +272,13 @@ $(document).ready(function () {
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                         let bg_in = ''
                                         let bg_out = ''
-                                        if (activity?.['in_quantity'] && activity?.['in_value']) {
+                                        if (activity?.['trans_title'] === 'Goods receipt') {
                                             bg_in = 'bg-primary-light-5'
                                         }
-                                        if (activity?.['out_quantity'] && activity?.['out_value']) {
+                                        if (activity?.['trans_title'] === 'Goods return') {
+                                            bg_in = 'bg-blue-light-5'
+                                        }
+                                        if (activity?.['trans_title'] === 'Delivery') {
                                             bg_out = 'bg-danger-light-5'
                                         }
                                         detail_html += `
@@ -365,10 +371,13 @@ $(document).ready(function () {
                                         for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                             let bg_in = ''
                                             let bg_out = ''
-                                            if (activity?.['in_quantity'] && activity?.['in_value']) {
+                                            if (activity?.['trans_title'] === 'Goods receipt') {
                                                 bg_in = 'bg-primary-light-5'
                                             }
-                                            if (activity?.['out_quantity'] && activity?.['out_value']) {
+                                            if (activity?.['trans_title'] === 'Goods return') {
+                                                bg_in = 'bg-blue-light-5'
+                                            }
+                                            if (activity?.['trans_title'] === 'Delivery') {
                                                 bg_out = 'bg-danger-light-5'
                                             }
                                             detail_html += `

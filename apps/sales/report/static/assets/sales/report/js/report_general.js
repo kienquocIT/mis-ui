@@ -48,6 +48,9 @@ $(function () {
                         targets: 3,
                         width: '12.5%',
                         render: (data, type, row) => {
+                            if (row?.['type_group_by'] === 1) {  // type is group
+                                return `<b><span class="mask-money table-row-revenue-plan" data-init-money="${parseFloat(row?.['revenue_plan'])}"></span></b>`;
+                            }
                             return `<span class="mask-money table-row-revenue-plan" data-init-money="${parseFloat(row?.['revenue_plan'])}"></span>`;
                         }
                     },
@@ -55,6 +58,9 @@ $(function () {
                         targets: 4,
                         width: '12.5%',
                         render: (data, type, row) => {
+                            if (row?.['type_group_by'] === 1) {  // type is group
+                                return `<b><span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span></b>`;
+                            }
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
@@ -62,6 +68,9 @@ $(function () {
                         targets: 5,
                         width: '7.5%',
                         render: (data, type, row) => {
+                            if (row?.['type_group_by'] === 1) {  // type is group
+                                return `<b><p>${parseFloat(row?.['revenue_ratio'])} %</p></b>`;
+                            }
                             return `<p>${parseFloat(row?.['revenue_ratio'])} %</p>`;
                         }
                     },
@@ -69,6 +78,9 @@ $(function () {
                         targets: 6,
                         width: '12.5',
                         render: (data, type, row) => {
+                            if (row?.['type_group_by'] === 1) {  // type is group
+                                return `<b><span class="mask-money table-row-profit-plan" data-init-money="${parseFloat(row?.['gross_profit_plan'])}"></span></b>`;
+                            }
                             return `<span class="mask-money table-row-profit-plan" data-init-money="${parseFloat(row?.['gross_profit_plan'])}"></span>`;
                         }
                     },
@@ -76,6 +88,9 @@ $(function () {
                         targets: 7,
                         width: '12.5%',
                         render: (data, type, row) => {
+                            if (row?.['type_group_by'] === 1) {  // type is group
+                                return `<b><span class="mask-money table-row-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span></b>`;
+                            }
                             return `<span class="mask-money table-row-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
@@ -83,6 +98,9 @@ $(function () {
                         targets: 8,
                         width: '7.5%',
                         render: (data, type, row) => {
+                            if (row?.['type_group_by'] === 1) {  // type is group
+                                return `<b><p>${parseFloat(row?.['gross_profit_ratio'])} %</p></b>`;
+                            }
                             return `<p>${parseFloat(row?.['gross_profit_ratio'])} %</p>`;
                         }
                     },
@@ -220,7 +238,6 @@ $(function () {
                     'gross_profit': totalProfit,
                     'gross_profit_plan': totalProfitPlan,
                     'gross_profit_ratio': totalProfitRate,
-                    'group_by': 0,
                     'type_group_by': 0,  // total
                 }
                 result.push(dataTotal);
@@ -277,7 +294,7 @@ $(function () {
                         'gross_profit': dataGroupTotal?.[groupKey]?.['gross_profit'],
                         'gross_profit_plan': totalGrProfitPlan,
                         'gross_profit_ratio': totalGrProfitRate,
-                        'group_by': 1,
+                        'type_group_by': 1,
                     });
                     for (let employeeKey in dataEmployee) {  // push data employee
                         if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
@@ -285,7 +302,7 @@ $(function () {
                                 'employee_inherit': dataEmployee[employeeKey],
                                 'revenue': dataEmployeeTotal?.[employeeKey]?.['revenue'],
                                 'gross_profit': dataEmployeeTotal?.[employeeKey]?.['gross_profit'],
-                                'group_by': 2
+                                'type_group_by': 2
                             }
                             // setup data plan
                             let revenuePlan = 0;

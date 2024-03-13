@@ -705,7 +705,9 @@ class QuotationLoadDataHandle {
         deletePromotionRows(tableProduct, false, true);
         // ReCalculate Total
         QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
-        let order = tableProduct[0].querySelectorAll('.table-row-order').length + 1;
+        let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
+        let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
+        let order = (TotalOrder - TotalGroup) + 1;
         let dataAdd = {
             "tax": {
                 "id": "",
@@ -1036,18 +1038,18 @@ class QuotationLoadDataHandle {
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
-                                                                <span class="mr-5">${data.price_list[i].title}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
-                                                                <small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            <div class="row">
+                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
+                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
                                                             </div>
                                                         </a>`);
                                 } else {
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
-                                                                <span class="mr-5">${data.price_list[i].title}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
-                                                                <small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            <div class="row">
+                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
+                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
                                                             </div>
                                                         </a>`);
                                 }
@@ -1055,10 +1057,10 @@ class QuotationLoadDataHandle {
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="d-flex">
-                                                        <span class="mr-5">${data.price_list[i].title}</span>
-                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
-                                                        <small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                    <div class="row">
+                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
+                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                        <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
                                                     </div>
                                                 </a>`);
                         }
@@ -1092,9 +1094,9 @@ class QuotationLoadDataHandle {
                 if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
                     for (let costData of data?.['cost_list']) {
                         $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['cost'])}">
-                                                <div class="d-flex">
-                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
-                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span>
+                                                <div class="row">
+                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mr-5">${costData?.['warehouse']?.['title']}</span></div>
+                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span></div>
                                                 </div>
                                             </a>`);
                     }
@@ -2185,7 +2187,6 @@ class QuotationLoadDataHandle {
                 $(row).find('td:eq(1)').attr('colspan', 2);
             }
             if (row.querySelector('.table-row-item')) {
-                QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
                     let dataRowRaw = eleOrder.getAttribute('data-row');
@@ -2205,6 +2206,7 @@ class QuotationLoadDataHandle {
         });
 
         tableCost.DataTable().rows.add(costs_data).draw();
+
         tableExpense.DataTable().rows.add(expenses_data).draw();
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {
@@ -2291,6 +2293,13 @@ class QuotationLoadDataHandle {
                         boxRender.innerHTML = dataRow?.['product']?.['title'];
                         boxRender.setAttribute('title', dataRow?.['product']?.['title']);
                     }
+                    if (table[0].id === "datable-quotation-create-product") {
+                        QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+                    }
+                    if (table[0].id === "datable-quotation-create-cost") {
+                        QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
+                    }
+
                     $(row.querySelector('.table-row-uom')).empty();
                     QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow?.['unit_of_measure']);
                     $(row.querySelector('.table-row-tax')).empty();
@@ -2442,6 +2451,7 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '2.5%',
                     render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
                             let target = ".group-" + String(row?.['group_order']);
                             return `<button 
@@ -2453,11 +2463,12 @@ class QuotationDataTableHandle {
                                         aria-expanded="true"
                                         aria-controls="newGroup"
                                         data-group-order="${row?.['group_order']}"
+                                        data-row="${dataRow}"
                                     >
                                         <span class="icon"><i class="fas fa-chevron-down"></i></span>
-                                    </button>`;
+                                    </button>
+                                    <span class="table-row-order ml-2" data-row="${dataRow}" hidden>${row?.['order']}</span>`;
                         }
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order ml-2" data-row="${dataRow}">${row?.['order']}</span>`;
                     }
                 },
@@ -2473,7 +2484,6 @@ class QuotationDataTableHandle {
                                         <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                     </div>`;
                         }
-
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
                         if ($form[0].classList.contains('sale-order')) {
@@ -5401,9 +5411,9 @@ class QuotationSubmitHandle {
         if (quotation_products_data_setup.length > 0) {
             _form.dataForm[quotation_products_data] = quotation_products_data_setup;
             // total product
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            if (tableProduct.closest('.dataTables_scroll')) {
-                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                 _form.dataForm['total_product_pretax_amount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
                 if (!_form.dataForm['total_product_pretax_amount']) {
                     _form.dataForm['total_product_pretax_amount'] = 0;
@@ -5456,9 +5466,9 @@ class QuotationSubmitHandle {
         if (quotation_expenses_data_setup.length > 0) {
             _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup;
             // total expense
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
-            if (tableExpense.closest('.dataTables_scroll')) {
-                let tableExpenseFt = tableExpense.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
+            if (tableExpenseWrapper) {
+                let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
                 _form.dataForm['total_expense_pretax_amount'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount-raw').value);
                 if (!_form.dataForm['total_expense_pretax_amount']) {
                     _form.dataForm['total_expense_pretax_amount'] = 0;

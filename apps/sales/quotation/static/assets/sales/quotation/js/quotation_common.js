@@ -2187,7 +2187,6 @@ class QuotationLoadDataHandle {
                 $(row).find('td:eq(1)').attr('colspan', 2);
             }
             if (row.querySelector('.table-row-item')) {
-                QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
                     let dataRowRaw = eleOrder.getAttribute('data-row');
@@ -2207,12 +2206,6 @@ class QuotationLoadDataHandle {
         });
 
         tableCost.DataTable().rows.add(costs_data).draw();
-        tableCost.DataTable().rows().every(function () {
-            let row = this.node();
-            if (row.querySelector('.table-row-item')) {
-                QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
-            }
-        });
 
         tableExpense.DataTable().rows.add(expenses_data).draw();
         // payment stage (sale order)
@@ -2300,6 +2293,13 @@ class QuotationLoadDataHandle {
                         boxRender.innerHTML = dataRow?.['product']?.['title'];
                         boxRender.setAttribute('title', dataRow?.['product']?.['title']);
                     }
+                    if (table[0].id === "datable-quotation-create-product") {
+                        QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+                    }
+                    if (table[0].id === "datable-quotation-create-cost") {
+                        QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
+                    }
+
                     $(row.querySelector('.table-row-uom')).empty();
                     QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow?.['unit_of_measure']);
                     $(row.querySelector('.table-row-tax')).empty();

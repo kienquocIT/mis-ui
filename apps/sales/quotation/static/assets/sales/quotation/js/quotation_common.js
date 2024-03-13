@@ -705,7 +705,9 @@ class QuotationLoadDataHandle {
         deletePromotionRows(tableProduct, false, true);
         // ReCalculate Total
         QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
-        let order = tableProduct[0].querySelectorAll('.table-row-order').length + 1;
+        let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
+        let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
+        let order = (TotalOrder - TotalGroup) + 1;
         let dataAdd = {
             "tax": {
                 "id": "",
@@ -2205,6 +2207,13 @@ class QuotationLoadDataHandle {
         });
 
         tableCost.DataTable().rows.add(costs_data).draw();
+        tableCost.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-item')) {
+                QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
+            }
+        });
+
         tableExpense.DataTable().rows.add(expenses_data).draw();
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {
@@ -5402,9 +5411,9 @@ class QuotationSubmitHandle {
         if (quotation_products_data_setup.length > 0) {
             _form.dataForm[quotation_products_data] = quotation_products_data_setup;
             // total product
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            if (tableProduct.closest('.dataTables_scroll')) {
-                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                 _form.dataForm['total_product_pretax_amount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
                 if (!_form.dataForm['total_product_pretax_amount']) {
                     _form.dataForm['total_product_pretax_amount'] = 0;
@@ -5457,9 +5466,9 @@ class QuotationSubmitHandle {
         if (quotation_expenses_data_setup.length > 0) {
             _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup;
             // total expense
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
-            if (tableExpense.closest('.dataTables_scroll')) {
-                let tableExpenseFt = tableExpense.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
+            if (tableExpenseWrapper) {
+                let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
                 _form.dataForm['total_expense_pretax_amount'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount-raw').value);
                 if (!_form.dataForm['total_expense_pretax_amount']) {
                     _form.dataForm['total_expense_pretax_amount'] = 0;

@@ -157,7 +157,7 @@ $(document).ready(function () {
                 dataParam['period_mapped'] = periodEle.val()
                 dataParam['product_id_list'] = items_select_Ele.val().join(',')
                 let inventory_detail_list_ajax = $.fn.callAjax2({
-                    url: url_script.attr('data-url-inventory-list'),
+                    url: url_script.attr('data-url-inventory-list') + `?date_range=${$('#period-day-from').val()}-${$('#period-day-to').val()}`,
                     data: dataParam,
                     method: 'GET'
                 }).then(
@@ -532,7 +532,7 @@ $(document).ready(function () {
                 dataParam['period_mapped'] = periodEle.val()
                 dataParam['product_id_list'] = items_select_Ele.val().join(',')
                 let inventory_detail_list_ajax = $.fn.callAjax2({
-                    url: url_script.attr('data-url-inventory-list'),
+                    url: url_script.attr('data-url-inventory-list') + `?date_range=${$('#period-day-from').val()}-${$('#period-day-to').val()}`,
                     data: dataParam,
                     method: 'GET'
                 }).then(

@@ -38,7 +38,8 @@
                     <label for="inp-application" class="form-label required">{% trans 'Application' %}</label>
                     <select
                             id="inp-application" class="form-select"
-                            data-url="{% url 'TenantApplicationListAPI' %}?allow_import=true"
+                            data-url="{% url 'TenantApplicationListAPI' %}"
+                            data-params='{"allow_import":true,"pageSize":-1}'
                             data-method="GET" data-keyResp="tenant_application_list"
                             required
                     ></select>

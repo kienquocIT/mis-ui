@@ -1,4 +1,5 @@
 """system module"""
+from operator import itemgetter
 from django.urls import reverse, NoReverseMatch
 from django.utils.translation import gettext_lazy as _
 
@@ -349,6 +350,7 @@ class BreadcrumbView:
                             'title': child.title,
                         }
                     )
+        arr = sorted(arr, key=itemgetter('title'))
         return arr
 
     @staticmethod

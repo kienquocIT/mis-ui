@@ -18,6 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
+msgid "Back to top"
+msgstr "Lên đầu trang"
+
+#
 msgid "First Name"
 msgstr "Tên"
 

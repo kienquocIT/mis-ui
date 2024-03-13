@@ -3020,6 +3020,10 @@ msgid "Document Activities"
 msgstr "Lịch sử hoạt động"
 
 #
+msgid "Feature"
+msgstr "Tính năng"
+
+#
 msgid "The document approved because the feature config don't apply workflow"
 msgstr ""
 "Phiếu đã tự động chấp nhận bởi vì chức năng này không áp dụng Quy trình làm "

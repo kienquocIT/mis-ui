@@ -125,6 +125,9 @@ $(document).ready(function () {
                         $('.item-quantity').val('').prop('disabled', true)
                         loadRowLOT()
                     }
+                    else if (selected?.['general_traceability_method'] === 0) {
+                        $('.item-quantity').val('').prop('disabled', false)
+                    }
                 }
                 else {
                     ele.closest('tr').find('.item-uom').text('')
@@ -327,6 +330,7 @@ $(document).ready(function () {
                 dtb_balance_init_item_Ele.find('tbody').append(`
                     <tr class="bg-primary-light-5 new-row-data">
                         <script class="data-lot"></script>
+                        <script class="data-sn"></script>
                         <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-soft-secondary balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
                         <td><span>${result?.['uom_data']?.['title']}</span></td>
                         <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-primary balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>

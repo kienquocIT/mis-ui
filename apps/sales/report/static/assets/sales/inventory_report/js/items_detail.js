@@ -208,7 +208,7 @@ $(document).ready(function () {
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
-                                                    <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD HH:mm")}</span></td>
+                                                    <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
                                                     <td hidden></td>
                                                     <td hidden></td>
                                                     <td class="border-1">${stock_type_label}</td>
@@ -232,7 +232,7 @@ $(document).ready(function () {
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
-                                                    <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD HH:mm")}</span></td>
+                                                    <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
                                                     <td hidden></td>
                                                     <td hidden></td>
                                                     <td class="border-1">${stock_type_label}</td>
@@ -291,7 +291,7 @@ $(document).ready(function () {
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
-                                                <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD HH:mm")}</span></td>
+                                                <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
                                                 <td hidden></td>
                                                 <td hidden></td>
                                                 <td class="border-1">${stock_type_label}</td>
@@ -315,7 +315,7 @@ $(document).ready(function () {
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
-                                                <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD HH:mm")}</span></td>
+                                                <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
                                                 <td hidden></td>
                                                 <td hidden></td>
                                                 <td class="border-1">${stock_type_label}</td>

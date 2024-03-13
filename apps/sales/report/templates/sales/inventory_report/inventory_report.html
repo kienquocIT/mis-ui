@@ -8,6 +8,10 @@
         tr:hover {
             background-color: #fffaeb;
         }
+        th {
+            color: white !important;
+            font-size: medium !important;
+        }
     </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
@@ -112,51 +116,71 @@
         <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
             <table class="table nowrap w-100" id="table-inventory-report">
                 <thead>
-                    <tr class="bg-secondary-light-3">
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Code' %}</th>
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Name' %}</th>
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'UoM' %}</th>
+                    <tr style="background: #0095a4;">
+                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Code' %}</th>
+                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                        <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
                         <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
                         <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
                         <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
                         <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
                     </tr>
-                    <tr class="bg-secondary-light-3">
-                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="opening-total-quantity">0</span>)</th>
-                        <th class="border-1">{% trans 'Value' %}<br>(<span id="opening-total-value" class="mask-money" data-init-money="0"></span>)</th>
-                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="in-total-quantity">0</span>)</th>
-                        <th class="border-1">{% trans 'Value' %}<br>(<span id="in-total-value" class="mask-money" data-init-money="0"></span>)</th>
-                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="out-total-quantity">0</span>)</th>
-                        <th class="border-1">{% trans 'Value' %}<br>(<span id="out-total-value" class="mask-money" data-init-money="0"></span>)</th>
-                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="ending-total-quantity">0</span>)</th>
-                        <th class="border-1">{% trans 'Value' %}<br>(<span id="ending-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                    <tr style="background: #0095a4;">
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                    </tr>
+                    <tr style="background: #0095a4;">
+                        <th class="border-1"><span id="opening-total-quantity">0</span></th>
+                        <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
+                        <th class="border-1"><span id="in-total-quantity">0</span></th>
+                        <th class="border-1"><span id="in-total-value" class="mask-money" data-init-money="0"></span></th>
+                        <th class="border-1"><span id="out-total-quantity">0</span></th>
+                        <th class="border-1"><span id="out-total-value" class="mask-money" data-init-money="0"></span></th>
+                        <th class="border-1"><span id="ending-total-quantity">0</span></th>
+                        <th class="border-1"><span id="ending-total-value" class="mask-money" data-init-money="0"></span></th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
             <table hidden class="table nowrap w-100" id="table-inventory-report-detail">
                 <thead>
-                    <tr class="bg-secondary-light-3">
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Code' %}</th>
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Name' %}</th>
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'UoM' %}</th>
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Date' %}</th>
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'LOT' %}</th>
-                        <th class="border-1" rowspan="2" colspan="3">{% trans 'Expired date' %}</th>
+                    <tr style="background: #007D88;">
+                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Code' %}</th>
+                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                        <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
+                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Date' %}</th>
+                        <th class="border-1" rowspan="3" colspan="3">{% trans 'LOT' %}</th>
+                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Expired date' %}</th>
                         <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
                         <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
                         <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
                         <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
                     </tr>
-                    <tr class="bg-secondary-light-3">
-                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="opening-total-quantity">0</span>)</th>
-                        <th class="border-1">{% trans 'Value' %}<br>(<span id="opening-total-value" class="mask-money" data-init-money="0"></span>)</th>
-                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="in-total-quantity">0</span>)</th>
-                        <th class="border-1">{% trans 'Value' %}<br>(<span id="in-total-value" class="mask-money" data-init-money="0"></span>)</th>
-                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="out-total-quantity">0</span>)</th>
-                        <th class="border-1">{% trans 'Value' %}<br>(<span id="out-total-value" class="mask-money" data-init-money="0"></span>)</th>
-                        <th class="border-1">{% trans 'Quantity' %}<br>(<span id="ending-total-quantity">0</span>)</th>
-                        <th class="border-1">{% trans 'Value' %}<br>(<span id="ending-total-value" class="mask-money" data-init-money="0"></span>)</th>
+                    <tr style="background: #007D88;">
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                        <th class="border-1">{% trans 'Quantity' %}</th>
+                        <th class="border-1">{% trans 'Value' %}</th>
+                    </tr>
+                    <tr style="background: #007D88;">
+                        <th class="border-1"><span id="opening-total-quantity">0</span></th>
+                        <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
+                        <th class="border-1"><span id="in-total-quantity">0</span></th>
+                        <th class="border-1"><span id="in-total-value" class="mask-money" data-init-money="0"></span></th>
+                        <th class="border-1"><span id="out-total-quantity">0</span></th>
+                        <th class="border-1"><span id="out-total-value" class="mask-money" data-init-money="0"></span></th>
+                        <th class="border-1"><span id="ending-total-quantity">0</span></th>
+                        <th class="border-1"><span id="ending-total-value" class="mask-money" data-init-money="0"></span></th>
                     </tr>
                 </thead>
                 <tbody></tbody>

@@ -196,14 +196,14 @@ $(document).ready(function () {
                                             <td class="border-1" colspan="18">
                                                 <span class="badge badge-primary">${warehouse_activities?.['warehouse']?.['code']}</span> <span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td>
-                                            <td class="border-1">(<span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span>)</td>
-                                            <td class="border-1">(<span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span>)</td>
-                                            <td class="border-1 text-primary">(<span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span>)</td>
-                                            <td class="border-1 text-primary">(<span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span>)</td>
-                                            <td class="border-1 text-danger">(<span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span>)</td>
-                                            <td class="border-1 text-danger">(<span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span>)</td>
-                                            <td class="border-1">(<span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span>)</td>
-                                            <td class="border-1">(<span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span>)</td>                            
+                                            <td class="border-1"><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
+                                            <td class="border-1"><b><span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></b></td>
+                                            <td class="border-1 text-primary"><b><span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></b></td>
+                                            <td class="border-1 text-primary"><b><span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></b></td>
+                                            <td class="border-1 text-danger"><b><span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></b></td>
+                                            <td class="border-1 text-danger"><b><span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></b></td>
+                                            <td class="border-1"><b><span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></b></td>
+                                            <td class="border-1"><b><span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></b></td>                            
                                         </tr>
                                     `)
                                     let detail_html = ``
@@ -351,14 +351,14 @@ $(document).ready(function () {
                                                 <td class="border-1" colspan="18">
                                                     <span class="badge badge-primary">${warehouse_activities?.['warehouse']?.['code']}</span> <span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                                 </td>
-                                                <td class="border-1">(<span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span>)</td>
-                                                <td class="border-1">(<span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span>)</td>
-                                                <td class="border-1 text-primary">(<span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span>)</td>
-                                                <td class="border-1 text-primary">(<span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span>)</td>
-                                                <td class="border-1 text-danger">(<span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span>)</td>
-                                                <td class="border-1 text-danger">(<span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span>)</td>
-                                                <td class="border-1">(<span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span>)</td>
-                                                <td class="border-1">(<span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span>)</td>                           
+                                                <td class="border-1"><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
+                                                <td class="border-1"><b><span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></b></td>
+                                                <td class="border-1 text-primary"><b><span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></b></td>
+                                                <td class="border-1 text-primary"><b><span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></b></td>
+                                                <td class="border-1 text-danger"><b><span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></b></td>
+                                                <td class="border-1 text-danger"><b><span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></b></td>
+                                                <td class="border-1"><b><span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></b></td>
+                                                <td class="border-1"><b><span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></b></td>                           
                                             </tr>
                                         `)
                                         let detail_html = ``
@@ -562,14 +562,14 @@ $(document).ready(function () {
                                             <td class="border-1" colspan="9">
                                                 <span class="badge badge-primary">${warehouse_activities?.['warehouse']?.['code']}</span> <span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                             </td>
-                                            <td class="border-1">(<span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span>)</td>
-                                            <td class="border-1">(<span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span>)</td>
-                                            <td class="border-1 text-primary">(<span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span>)</td>
-                                            <td class="border-1 text-primary">(<span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span>)</td>
-                                            <td class="border-1 text-danger">(<span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span>)</td>
-                                            <td class="border-1 text-danger">(<span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span>)</td>
-                                            <td class="border-1">(<span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span>)</td>
-                                            <td class="border-1">(<span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span>)</td>                     
+                                            <td class="border-1"><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
+                                            <td class="border-1"><b><span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></b></td>
+                                            <td class="border-1 text-primary"><b><span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></b></td>
+                                            <td class="border-1 text-primary"><b><span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></b></td>
+                                            <td class="border-1 text-danger"><b><span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></b></td>
+                                            <td class="border-1 text-danger"><b><span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></b></td>
+                                            <td class="border-1"><b><span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></b></td>
+                                            <td class="border-1"><b><span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></b></td>                     
                                         </tr>
                                     `)
                                     table_inventory_report.find('tbody').append(`
@@ -649,14 +649,14 @@ $(document).ready(function () {
                                                 <td class="border-1" colspan="9">
                                                     <span class="badge badge-primary">${warehouse_activities?.['warehouse']?.['code']}</span> <span class="text-primary"><b>${warehouse_activities?.['warehouse']?.['title']}</b></span>
                                                 </td> 
-                                                <td class="border-1">(<span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span>)</td>
-                                                <td class="border-1">(<span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span>)</td>
-                                                <td class="border-1 text-primary">(<span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span>)</td>
-                                                <td class="border-1 text-primary">(<span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span>)</td>
-                                                <td class="border-1 text-danger">(<span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span>)</td>
-                                                <td class="border-1 text-danger">(<span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span>)</td>
-                                                <td class="border-1">(<span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span>)</td>
-                                                <td class="border-1">(<span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span>)</td>                             
+                                                <td class="border-1"><b><span class="wh-opening-quantity-span">${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}</span></b></td>
+                                                <td class="border-1"><b><span class="wh-opening-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['opening_balance_value']}"></span></b></td>
+                                                <td class="border-1 text-primary"><b><span class="wh-in-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}</span></b></td>
+                                                <td class="border-1 text-primary"><b><span class="wh-in-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_in_value']}"></span></b></td>
+                                                <td class="border-1 text-danger"><b><span class="wh-out-quantity-span">${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}</span></b></td>
+                                                <td class="border-1 text-danger"><b><span class="wh-out-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['sum_out_value']}"></span></b></td>
+                                                <td class="border-1"><b><span class="wh-ending-quantity-span">${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}</span></b></td>
+                                                <td class="border-1"><b><span class="wh-ending-value-span mask-money" data-init-money="${warehouse_activities?.['stock_activities']?.['ending_balance_value']}"></span></b></td>                             
                                             </tr>
                                         `)
                                         table_inventory_report.find('tbody').append(`

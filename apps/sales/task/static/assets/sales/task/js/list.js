@@ -1,4 +1,5 @@
 $(function () {
+    "use strict";
     // declare variable
     const $urlFact = $('#url-factory');
     const priority_list = {
@@ -55,7 +56,7 @@ $(function () {
         })
     }
 
-    function callDataTaskList(kanban, list, params = {}) {
+    function callDataTaskList(kanban, list, params = {}, isReturn=false) {
         function callBackModalChange(mutations, observer) {
             // function kiểm tra nếu form create/edit đang mở thì chỉnh sửa datalist của table show/hide icon
             // testcase: click view item 1 sau đó click view item 2
@@ -71,26 +72,34 @@ $(function () {
                 $('#table_task_list').DataTable().clear().rows.add(_tableDataList).draw()
             }
         }
-
-        $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET', 'data': params})
-            .then(
-                (req) => {
-                    let data = $.fn.switcherResp(req);
-                    if (data?.['status'] === 200) {
-                        const taskList = data?.['task_list']
-                        kanban.init(taskList)
-                        list.init(list, taskList)
-                        // Function to wait form create on submit
-                        $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
-                        let observer = new MutationObserver(callBackModalChange);
-                        const DOMCheck = document.getElementById('drawer_task_create')
-                        observer.observe(DOMCheck, {attributeFilter: ['class']});
-                    }
-                },
-                (err) => {
-                    console.log('call data error, ', err)
+        let callData = $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET', 'data': params})
+        if (isReturn) return callData
+        callData.then(
+            (req) => {
+                let data = $.fn.switcherResp(req);
+                if (data?.['status'] === 200) {
+                    const taskList = data?.['task_list']
+                    kanban.init(taskList)
+                    list.init(list, taskList)
+                    // Function to wait form create on submit
+                    $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
+                    let observer = new MutationObserver(callBackModalChange);
+                    const DOMCheck = document.getElementById('drawer_task_create')
+                    observer.observe(DOMCheck, {attributeFilter: ['class']});
+                    let temp = $.extend(true, {}, data)
+                    delete temp['task_list']
+                    $('.btn-task-bar').data('task_info', temp)
+                    $('#btn_load-more').prop('disabled', temp.page_next === 0)
                 }
-            );
+            },
+            (err) => {
+                console.log('call data error, ', err)
+            }
+        );
+    }
+
+    jQuery.fn.scroll_to_today = function () {
+        $('#scroll_now').click()
     }
 
     class initCommon {
@@ -275,7 +284,7 @@ $(function () {
         }
     }
 
-    // task util class
+    // kanban view handle
     class kanbanHandle {
         taskList = []
 
@@ -538,7 +547,7 @@ $(function () {
             const taskList = data
             this.setTaskList = taskList
             let count_parent = {}
-            // loop trong ds gán cho template html gán vào object theo status ID
+            // loop trong ds, lấy data parse ra HTML và cộng vào dict theo task status tương ứng
             for (const item of taskList) {
                 if (item.parent_n && Object.keys(item.parent_n).length)
                     if (count_parent?.[item.parent_n.id]) count_parent[item.parent_n.id] += 1
@@ -748,6 +757,7 @@ $(function () {
         }
     }
 
+    // list view handle
     class listViewTask {
 
         constructor() {
@@ -833,7 +843,7 @@ $(function () {
                             FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
                         }
                         initCommon.initTableLogWork(data?.['task_log_work'])
-                        initCommon.renderSubtask(data.id, cls.getTaskList)
+                        initCommon.renderSubtask(data.id, cls.getTaskList, data?.['sub_task_list'])
                     }
 
                 },
@@ -1027,6 +1037,280 @@ $(function () {
         }
     }
 
+    // gantt view handle
+    class GanttViewTask {
+        static taskList = []
+        static bk_taskList = []
+        static convertFromDictToArray(dataList, isReturn=false){
+            let reNewList = []
+            // loop trong danh sách dictionary và duyệt lại thành danh sách array task con sau task cha
+            for (let key in dataList){
+                const item = dataList[key]
+                if (!item.values?.[0]?.dataObj) continue;
+                item.show_expand = item.values?.[0].dataObj.child_task_count > 0 || false
+                reNewList.push(item)
+                const parent_n = item.values[0].dataObj['parent_n']
+                if (parent_n && Object.keys(parent_n).length){
+                    // có task con
+                    item.is_expand = true // mặc định ẩn task con "false" otherwise "true" show task con
+                    for (let value in parent_n){
+                        let child = parent_n[value]
+                        reNewList.push(child)
+                    }
+                }
+            }
+            GanttViewTask.taskList = reNewList
+            if (isReturn) return reNewList
+        }
+
+        static saveTaskList(data = []){
+            let settingColors = JSON.parse($('#task_config').text());
+            let bk_list = GanttViewTask.bk_taskList
+            let taskClr = {}
+            for (let item of settingColors.list_status){
+                taskClr[item.id] = item.task_color
+            }
+            if (data && data.length){
+                // convert data thành dictionary với parent_n là danh sách task con
+                for (let item of data){
+                    let from = new Date(item.start_date)
+                    from.setHours(0);
+                    from.setMinutes(0);
+                    from.setDate(from.getDate() + 1)
+                    let to = new Date(item.end_date)
+                    to.setHours(0);
+                    to.setMinutes(0);
+                    to.setDate(to.getDate() + 1);
+                    // kt có cấp cha và danh sách cấp con không rỗng
+                    if ('parent_n' in item && Object.keys(item['parent_n']).length){
+                        if (item.parent_n.id in bk_list){
+                            if (!('parent_n' in bk_list[item.parent_n.id])) bk_list[item.parent_n.id]['parent_n'] = []
+                            bk_list[item.parent_n.id]['parent_n'][item.id] = {
+                                desc: item.title,
+                                values: [{
+                                    label: item.title,
+                                    from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                                    to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                                    desc: item.remark,
+                                    customClass: "ganttGreen",
+                                    dataObj: {...item, customBg: taskClr[item.task_status.id]}
+                                }]
+                            }
+                        }
+                    }
+                    else {
+                        // ko có cấp cha
+                        bk_list[item.id] = {
+                            name: item.title,
+                            desc: item.remark,
+                            values: [{
+                                from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                                to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                                customClass: "ganttGreen",
+                                dataObj: {...item, customBg: taskClr[item.task_status.id]}
+                            }]
+                        }
+                    }
+                }
+            }
+            return bk_list
+        }
+
+        static loadTaskInfo(dataID){
+            const $form = $('#formOpportunityTask'), $oppElm = $('#opportunity_id');
+            if (!$('.hk-wrapper').hasClass('open'))
+                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+            $.fn.callAjax2({
+                url: $('#url-factory').attr('data-task-detail').format_url_with_uuid(dataID),
+                method: "get"
+            })
+                .then((resp) => {
+                    let data = resp.data
+                    $('.title-create').addClass("hidden")
+                    $('.title-detail').removeClass("hidden")
+                    $('#inputTextTitle', $form).val(data.title)
+                    $('#inputTextCode', $form).val(data.code)
+                    listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
+                    $form.find('input[name="id"]').remove()
+                    const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
+                    $formElm.append(taskIDElm).addClass('task_edit')
+                    $('#inputTextStartDate', $form).val(
+                        moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                    )
+                    $('#inputTextEndDate', $form).val(
+                        moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                    )
+                    $('#inputTextEstimate', $form).val(data.estimate)
+
+                    $('#selectPriority', $form).val(data.priority).trigger('change')
+                    $('#inputAssigner', $form).val(data.employee_created.full_name)
+                        .attr('data-value-id', data.employee_created.id)
+                        .attr('value', data.employee_created.id)
+                    if (data?.['opportunity'])
+                        listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity'])
+                    listViewTask.selfInitSelect2($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
+                    if (data.label) window.formLabel.renderLabel(data.label)
+                    if (data.remark) window.editor.setData(data.remark)
+                    if (data.checklist){
+                        window.checklist.setDataList = data.checklist
+                        window.checklist.render()
+                    }
+
+                    if (data.attach) {
+                        const fileDetail = data.attach[0]?.['files']
+                        FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                    }
+                    initCommon.initTableLogWork(data?.['task_log_work'])
+                    initCommon.renderSubtask(data.id, GanttViewTask.taskList, data?.['sub_task_list'])
+                });
+        }
+
+        static onClickParent(ID) {
+            let bk_list = GanttViewTask.bk_taskList
+            let obj_parent = bk_list[ID]
+            let settingColors = JSON.parse($('#task_config').text());
+            let taskClr = {}
+            for (let item of settingColors.list_status){
+                taskClr[item.id] = item.task_color
+            }
+            // nếu task cha đang hide (expand = false)
+            if (!obj_parent.is_expand){
+                let callChill = GanttViewTask.CallData({parent_n: ID})
+                callChill.then((rep) => {
+                    let data = $.fn.switcherResp(rep);
+                    let newData = {}
+                    if (data?.['status'] === 200 && data?.['task_list'].length) {
+                        for (let item of data['task_list']){
+                            let from = new Date(item.start_date)
+                            from.setHours(0);
+                            from.setMinutes(0);
+                            from.setDate(from.getDate() + 1)
+                            let to = new Date(item.end_date)
+                            to.setHours(0);
+                            to.setMinutes(0);
+                            to.setDate(to.getDate() + 1);
+                            newData[item.id] = {
+                                is_visible: true,
+                                desc: item.title,
+                                values: [{
+                                    label: item.title,
+                                    from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                                    to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                                    desc: item.remark,
+                                    customClass: "ganttGreen",
+                                    dataObj: {...item, customBg: taskClr[item.task_status.id]}
+                                }]
+                            }
+                        }
+                        obj_parent.is_expand = true
+                        obj_parent.values[0].dataObj.parent_n = newData
+                        bk_list[ID] = obj_parent
+                        GanttViewTask.bk_taskList = bk_list
+                        const afterCvt = GanttViewTask.convertFromDictToArray(bk_list, true)
+                        $('#gantt_reload').data('data', afterCvt).trigger('click')
+                    }
+                })
+            }
+            else{ // task cha đang show (expand = true)
+                obj_parent.is_expand = false
+                obj_parent.values[0].dataObj.parent_n = {}
+                bk_list[ID] = obj_parent
+                GanttViewTask.bk_taskList = bk_list
+                const afterCvt = GanttViewTask.convertFromDictToArray(bk_list, true)
+                $('#gantt_reload').data('data', afterCvt).trigger('click')
+            }
+        }
+
+        static clickLoadMore(e){
+            let load_moreif = $('.gantt_table').data('api_info')
+            if (load_moreif.page_next > 0){
+                const params = {"parent_n__isnull": true,
+                    "page":load_moreif.page_next,
+                    "pageSize": load_moreif.page_size
+                }
+                let loadMoreData = GanttViewTask.CallData(params)
+                loadMoreData.then(
+                    (req) => {
+                        let data = $.fn.switcherResp(req);
+                        if (data?.['status'] === 200) {
+                            const temp = Object.assign({}, req.data)
+                            delete temp['task_list'];
+                            $('.gantt_table').data('api_info', temp)
+                            $(e).prop("disabled", temp.page_next > 0)
+                            const dictList = GanttViewTask.saveTaskList(data['task_list'])
+                            const arrayList = GanttViewTask.convertFromDictToArray(dictList)
+                            $('#gantt_reload').data('data', arrayList).trigger('click')
+                        }
+                    })
+            }
+        }
+        static onCallback(){
+            const callDataInfo = $('.gantt_table').data('api_info')
+            $('#gantt_load-more_btn').prop("disabled", callDataInfo.page_next === 0)
+        }
+
+        static renderGantt(){
+            const $transElm = $('#trans-factory')
+            let columns_gantt = [
+                {value: 'title', label: $transElm.attr('data-name'), show: true,width: '300'},
+                {value: 'priority', label: $transElm.attr('data-priority'), show: true, width: '100'},
+                {value: 'employee_created', label: $transElm.attr('data-assigner'), show: true,  width: '50'},
+                {value: 'employee_inherit', label: $transElm.attr('data-assignee'), show: true,  width: '50'},
+                {value: 'start_date', label: $transElm.attr('data-st-date'), show: true,  width: '150'},
+                {value: 'end_date', label: $transElm.attr('data-ed-date'), show: true,  width: '150'},
+            ]
+            const sourceDT = GanttViewTask.taskList
+            $(".gantt").gantt({
+                source: sourceDT,
+                navigate: 'scroll',
+                columns: columns_gantt,
+                itemsPerPage: 100,
+                // scale: true,
+                // resizeable: true,
+                onClickParent: GanttViewTask.onClickParent,
+                loadTaskInfo: GanttViewTask.loadTaskInfo,
+                isShowSetting: true,
+                clickLoadMore: GanttViewTask.clickLoadMore,
+                onRender: GanttViewTask.onCallback
+                // resizeStartDate,
+                // resizeEndDate
+
+            });
+        }
+
+        static CallData(data= null){
+            let params = {"parent_n__isnull": true}
+            if (data) params = data
+            return $.fn.callAjax2({
+                    'url': $urlFact.attr('data-task-list'),
+                    'method': 'GET',
+                    'data': params
+                }
+            )
+        }
+
+        static initGantt() {
+            let firstCall = GanttViewTask.CallData()
+            firstCall.then(
+                (req) => {
+                    let data = $.fn.switcherResp(req);
+                    if (data?.['status'] === 200) {
+                        let cloneData = Object.assign({}, req.data)
+                        delete cloneData['task_list'];
+                        $('.gantt_table').data('api_info', cloneData)
+                        const afterDataConvert = GanttViewTask.saveTaskList(data['task_list'])
+                        GanttViewTask.convertFromDictToArray(afterDataConvert)
+                        GanttViewTask.renderGantt()
+                    }
+            })
+            if (!$('.gantt').length)
+                $('.gantt_table').append('<div class="gantt"></div>')
+            $('.tab-gantt[data-bs-toggle="tab"]').on('show.bs.tab', function (e) {
+                $('#gantt_reload').data('data', GanttViewTask.taskList).trigger('click')
+            });
+        }
+    }
+
     /** ********************************************* **/
     // render column status của task
     getSttAndRender()
@@ -1034,6 +1318,7 @@ $(function () {
     const kanbanTask = new kanbanHandle()
     const listTask = new listViewTask()
     callDataTaskList(kanbanTask, listTask)
+    GanttViewTask.initGantt()
     // on click save btn log work
     logworkSubmit()
     // init dragula
@@ -1071,4 +1356,36 @@ $(function () {
     $('.leave-filter-wrap button').off().on('click', function () {
         $('.leave-filter-wrap .form-group-filter').slideToggle()
     })
+
+    // load more button
+    $('#btn_load-more').on('click', function(){
+        let load_info = $('.btn-task-bar').data('task_info')
+        let params = {
+            "page":load_info.page_next,
+            "pageSize": load_info.page_size
+        }
+        if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
+        if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
+        if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
+        let request = callDataTaskList(null, null, params, true)
+        request.then((rep)=>{
+            let data = $.fn.switcherResp(rep);
+            if (data?.['status'] === 200) {
+                let temp = $.extend(true, {}, data)
+                delete temp['task_list']
+                $('.btn-task-bar').data('task_info', temp)
+                $('#btn_load-more').prop('disabled', temp.page_next === 0)
+                let currentData = kanbanTask.getTaskList.concat(data['task_list'])
+                kanbanTask.getAndRenderTask(currentData)
+                listTask.init(listTask, currentData)
+            }
+
+        })
+    });
+    // handle show/hide btn load more when scroll down
+    let contentElm = $('#idxPageContent .simplebar-content-wrapper');
+    const loadMoreBtn = $('.btn-task-bar')
+    $(contentElm).scroll(function () {
+        $(this).scrollTop() > 100 && !$('.tab-gantt').hasClass('active') ? loadMoreBtn.fadeIn() : loadMoreBtn.fadeOut();
+    });
 }, jQuery);

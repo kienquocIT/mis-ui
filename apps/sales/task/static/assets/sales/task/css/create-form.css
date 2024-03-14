@@ -112,3 +112,11 @@
     .max-w-280{margin-right: 0;min-width: 100%;}
 
 }
+#rangeValue{
+    font-size: 1.2rem;
+    font-weight: 500;
+    color:#e95144;
+}
+#rangeValue + small{
+    color:#e95144;
+}

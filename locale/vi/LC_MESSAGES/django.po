@@ -6884,3 +6884,10 @@ msgstr "Báo cáo doanh thu chung"
 #
 msgid "Some Opening balance values can be wrong because last sub period have not been closed."
 msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ kế toán tháng trước đó chưa được đóng."
+
+#
+msgid "Percent completed"
+msgstr "Phần trăm hoàn thành"
+#
+msgid "Finish task"
+msgstr "Hoàn thành Giao việc"

@@ -261,7 +261,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # E-Office
     #  Leave
     LEAVE_CONFIG = BreadcrumbChildren(
-        _('Leave Config'), 'LeaveConfigDetail'
+        _('Leave config'), 'LeaveConfigDetail'
     )
     LEAVE_REQUEST = BreadcrumbChildren(
         _('Leave request list'), 'LeaveRequestList'

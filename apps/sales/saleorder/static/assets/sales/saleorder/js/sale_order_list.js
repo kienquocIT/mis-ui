@@ -20,13 +20,14 @@ $(function () {
                 },
                 autoWidth: true,
                 scrollX: true,
-                columns: [  // 150, 250, 250, 200, 150, 200, 100, 100, 100 (1500p)
+                pageLength:50,
+                columns: [  // 100, 250, 250, 200, 150, 200, 150, 150, 50 (1500p)
                     {
                         targets: 0,
-                        width: '10%',
+                        width: '6.66%',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
+                            return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a></div>`
                         }
                     },
                     {
@@ -64,7 +65,9 @@ $(function () {
                         width: '10%',
                         data: "date_created",
                         render: (data) => {
-                            return $x.fn.displayRelativeTime(data);
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                     {
@@ -76,7 +79,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '6.66%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())
                             let sttData = [
@@ -91,7 +94,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '6.66%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#delivery_status').text())
                             let sttData = [
@@ -105,7 +108,7 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '6.66%',
+                        width: '3.33%',
                         className: 'action-center',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);

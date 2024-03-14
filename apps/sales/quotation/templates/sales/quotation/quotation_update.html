@@ -745,6 +745,13 @@
             type="text"
             id="quotation-copy-discount-on-total"
     >
+    <input
+            type="text"
+            id="data-init-customer"
+            data-url="{% url "AccountForSaleListAPI" %}"
+            data-method="GET"
+    >
+
 {% endblock %}
 
 {% block jsFooter %}

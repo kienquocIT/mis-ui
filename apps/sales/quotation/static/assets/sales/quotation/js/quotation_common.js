@@ -10,6 +10,7 @@ class QuotationLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
     static transEle = $('#app-trans-factory');
+    static customerInitEle = $('#data-init-customer')
 
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
@@ -52,9 +53,6 @@ class QuotationLoadDataHandle {
 
     static loadDataByOpportunity() {
         let tableProduct = $('#datable-quotation-create-product');
-        QuotationLoadDataHandle.loadBoxQuotationCustomer();
-        QuotationLoadDataHandle.loadBoxQuotationContact();
-        QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(QuotationLoadDataHandle.opportunitySelectEle).val());
             if (dataSelected) {
@@ -65,23 +63,18 @@ class QuotationLoadDataHandle {
                     'allowClear': true,
                 });
                 QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
-                let dataCustomer = dataSelected?.['customer'];
-                // load Shipping & Billing by Customer
-                QuotationLoadDataHandle.loadShippingBillingCustomer();
-                QuotationLoadDataHandle.loadShippingBillingCustomer(dataCustomer);
-                // clear shipping + billing text area
-                $('#quotation-create-shipping-address')[0].value = '';
-                $('#quotation-create-customer-shipping').val('');
-                $('#quotation-create-billing-address')[0].value = '';
-                $('#quotation-create-customer-billing').val('');
-                // Store Account Price List
-                if (Object.keys(dataCustomer?.['price_list_mapped']).length !== 0) {
-                    document.getElementById('customer-price-list').value = dataCustomer?.['price_list_mapped']?.['id'];
+                // load customer
+                if (QuotationLoadDataHandle.customerInitEle.val()) {
+                    let initCustomer = JSON.parse(QuotationLoadDataHandle.customerInitEle.val());
+                    QuotationLoadDataHandle.customerSelectEle.empty();
+                    QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                        data: initCustomer?.[dataSelected?.['customer']?.['id']],
+                    });
+                    QuotationLoadDataHandle.customerSelectEle.trigger('change');
                 }
             }
         } else {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-            document.getElementById('customer-price-list').value = "";
         }
         // Delete all promotion rows
         deletePromotionRows(tableProduct, true, false);
@@ -95,45 +88,58 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadInitCustomer() {
+        let result = {};
+        let ele = QuotationLoadDataHandle.customerInitEle;
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+                        for (let customer of data.account_sale_list) {
+                            if (!result.hasOwnProperty(customer?.['id'])) {
+                                result[customer?.['id']] = customer;
+                            }
+                        }
+                        ele.val(JSON.stringify(result));
+                    }
+                }
+            }
+        )
+    };
+
     static loadBoxQuotationCustomer(dataCustomer = {}) {
         QuotationLoadDataHandle.customerSelectEle.empty();
         let form = $('#frm_quotation_create');
         let data_filter = {};
-        if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) { // Has Opportunity
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(QuotationLoadDataHandle.opportunitySelectEle).val());
-            if (dataSelected) {
-                if (dataSelected?.['customer']) {
-                    dataSelected['customer']['name'] = dataSelected['customer']['title'];
-                    dataCustomer = dataSelected?.['customer'];
-                }
-                QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                    data: dataCustomer,
-                    disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-                });
-            }
-        } else { // No Opportunity
-            let sale_person_id = null;
-            let employee_current = $('#data-init-quotation-create-request-employee').val();
-            if (employee_current) {
-                let employee_current_data = JSON.parse(employee_current);
-                sale_person_id = employee_current_data?.['id'];
-            }
-            if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
-                sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val();
-            }
-            data_filter['employee__id'] = sale_person_id;
-            if (sale_person_id) { // Has SalePerson
-                QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                    data: dataCustomer,
-                    'dataParams': data_filter,
-                    disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-                });
-            } else { // No SalePerson
-                QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                    data: dataCustomer,
-                    disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-                });
-            }
+        let sale_person_id = null;
+        let employee_current = $('#data-init-quotation-create-request-employee').val();
+        if (employee_current) {
+            let employee_current_data = JSON.parse(employee_current);
+            sale_person_id = employee_current_data?.['id'];
+        }
+        if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
+            sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val();
+        }
+        data_filter['employee__id'] = sale_person_id;
+        if (sale_person_id) { // Has SalePerson
+            QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                data: dataCustomer,
+                'dataParams': data_filter,
+                disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
+            });
+        } else { // No SalePerson
+            QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                data: dataCustomer,
+                disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
+            });
         }
         if (form.attr('data-method').toLowerCase() !== 'get') {
             if (!dataCustomer?.['is_copy']) {
@@ -146,8 +152,8 @@ class QuotationLoadDataHandle {
         let tableProduct = $('#datable-quotation-create-product');
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
+        if (QuotationLoadDataHandle.customerSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
             if (dataSelected) {
                 // load Shipping & Billing by Customer
                 QuotationLoadDataHandle.loadShippingBillingCustomer();

@@ -874,6 +874,12 @@
             type="text"
             id="quotation-copy-discount-on-total"
     >
+    <input
+            type="text"
+            id="data-init-customer"
+            data-url="{% url "AccountForSaleListAPI" %}"
+            data-method="GET"
+    >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}
 {% endblock %}

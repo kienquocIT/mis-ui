@@ -2283,17 +2283,18 @@ class QuotationLoadDataHandle {
                 if (!row.querySelector('.table-row-group')) {
                     let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
                     $(row.querySelector('.table-row-item')).empty();
-                    QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
-                    $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']);
-                    let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-                    if (boxRender) {
-                        boxRender.innerHTML = dataRow?.['product']?.['title'];
-                        boxRender.setAttribute('title', dataRow?.['product']?.['title']);
-                    }
-                    if (table[0].id === "datable-quotation-create-product") {
+                    if (table[0].id === "datable-quotation-create-product") {  // product
+                        QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
+                        $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']);
+                        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+                        if (boxRender) {
+                            boxRender.innerHTML = dataRow?.['product']?.['title'];
+                            boxRender.setAttribute('title', dataRow?.['product']?.['title']);
+                        }
                         QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                     }
-                    if (table[0].id === "datable-quotation-create-cost") {
+                    if (table[0].id === "datable-quotation-create-cost") {  // cost
+                        QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
                         QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
                     }
 

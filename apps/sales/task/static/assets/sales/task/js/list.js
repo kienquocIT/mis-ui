@@ -203,7 +203,7 @@ $(function () {
                                         dataList[parentIdx]['child_task_count'] = 0
                                 }
                                 // reload count sub task in screen
-                                $(`[data-task-id="${taskID}"]`).parents('.tasklist-card').find('.sub_task_count').text(
+                                $(`[data-task-id="${taskID}"]`).parents('.tasklist-card').find('.sub_task_count small').text(
                                     dataList[parentIdx]['child_task_count'])
                                 // count number task in task status
                                 countSTT()
@@ -279,7 +279,7 @@ $(function () {
                 else countTemp[item.id] = 0
             }
             for (let key in countTemp) {
-                $(`[data-task-id="${key}"]`).parents('.tasklist-card').find('.sub_task_count').text(countTemp[key])
+                $(`[data-task-id="${key}"]`).parents('.tasklist-card').find('.sub_task_count small').text(countTemp[key])
             }
         }
     }
@@ -373,6 +373,8 @@ $(function () {
                             $('#inputTextEstimate').val(data.estimate)
 
                             $('#selectPriority').val(data.priority).trigger('change')
+                            $('#rangeValue').text(data['percent_completed'])
+                            $('#percent_completed').val(data['percent_completed'])
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
 
@@ -471,6 +473,7 @@ $(function () {
                 // loop in newTask object
                 taskStatus = newData.task_status
                 childHTML.find('.card-code').text(newData.code)
+                childHTML.find('.card-ticket span').text(newData['percent_completed'])
                 childHTML.find('.card-title').text(newData.title).attr('data-task-id', newData.id).attr('title',
                     newData.title)
                 let priorityHTML = $($('.priority-badges').html())
@@ -511,7 +514,7 @@ $(function () {
                 // if (newData.parent_n && Object.keys(newData?.parent_n).length)
                 //     childHTML.find('.task-discuss').remove()
                 if (newData?.['child_task_count'] > 0)
-                    childHTML.find('.sub_task_count').text(newData['child_task_count'])
+                    childHTML.find('.sub_task_count small').text(newData['child_task_count'])
                 else childHTML.find('.task-discuss').remove()
 
                 if (isReturn) return childHTML
@@ -607,9 +610,6 @@ $(function () {
             }
             const date = moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
             $elm.find('.task-deadline').text(date)
-            // const hasSub = this.getCountParent
-            // if (hasSub?.[data.id])
-            //     $elm.find('.sub_task_count').text(hasSub[data.id])
             $('.cancel-task').trigger('click')
             // reload sub count
             initCommon.reloadCountParent(this.getTaskList)
@@ -685,6 +685,7 @@ $(function () {
             countSTT()
             const $this = this
             $('[href="#tab_kanban"]').on('show.bs.tab', function(){
+                $('.wrap-child').html('')
                 $this.getAndRenderTask($this.getTaskList)
             })
         }
@@ -826,6 +827,8 @@ $(function () {
                         $('#inputTextEstimate', $form).val(data.estimate)
 
                         $('#selectPriority', $form).val(data.priority).trigger('change')
+                        $('#rangeValue').text(data['percent_completed'])
+                        $('#percent_completed').val(data['percent_completed'])
 
                         $('#inputAssigner', $form).val(data.employee_created.full_name)
                             .attr('data-value-id', data.employee_created.id)
@@ -895,7 +898,9 @@ $(function () {
                             render: (row, type, data) => {
                                 return `<span class="mr-2">${row ? row : "_"}</span>` +
                                     '<span class="badge badge-primary badge-indicator-processing badge-indicator" style="margin-top: -1px;"></span>'
-                                    + `<span class="ml-2 font-weight-bold">${data.code}</span>`
+                                    + `<span class="ml-2 font-weight-bold mr-2">${data.code}</span>`
+                                + `<label class="card-ticket" title="${$.fn.gettext('Percent completed')}">
+                                        <span>${data['percent_completed']}</span>%</label>`
                             }
                         },
                         {
@@ -1143,6 +1148,8 @@ $(function () {
                     $('#inputTextEstimate', $form).val(data.estimate)
 
                     $('#selectPriority', $form).val(data.priority).trigger('change')
+                    $('#rangeValue').text(data['percent_completed'])
+                    $('#percent_completed').val(data['percent_completed'])
                     $('#inputAssigner', $form).val(data.employee_created.full_name)
                         .attr('data-value-id', data.employee_created.id)
                         .attr('value', data.employee_created.id)
@@ -1265,7 +1272,6 @@ $(function () {
                 navigate: 'scroll',
                 columns: columns_gantt,
                 itemsPerPage: 100,
-                // scale: true,
                 // resizeable: true,
                 onClickParent: GanttViewTask.onClickParent,
                 loadTaskInfo: GanttViewTask.loadTaskInfo,
@@ -1287,6 +1293,23 @@ $(function () {
                     'data': params
                 }
             )
+        }
+
+        static CallFilter(data){
+            let params = {"parent_n__isnull": true, ...data}
+            let loadFilterData = GanttViewTask.CallData(params)
+            loadFilterData.then((req) => {
+                let data = $.fn.switcherResp(req);
+                if (data?.['status'] === 200) {
+                    const temp = Object.assign({}, req.data)
+                    delete temp['task_list'];
+                    $('.gantt_table').data('api_info', temp)
+                    GanttViewTask.bk_taskList = []
+                    const dictList = GanttViewTask.saveTaskList(data['task_list'])
+                    const arrayList = GanttViewTask.convertFromDictToArray(dictList, true)
+                    $('#gantt_reload').data('data', arrayList).trigger('click')
+                }
+            })
         }
 
         static initGantt() {
@@ -1341,6 +1364,7 @@ $(function () {
             if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
             if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
             callDataTaskList(kanbanTask, listTask, params)
+            GanttViewTask.CallFilter(params)
             $clearElm.addClass('d-block')
         })
     })
@@ -1349,6 +1373,7 @@ $(function () {
             $(elm).val('').trigger('change')
         })
         callDataTaskList(kanbanTask, listTask)
+        GanttViewTask.CallFilter({})
         $clearElm.removeClass('d-block')
     })
 

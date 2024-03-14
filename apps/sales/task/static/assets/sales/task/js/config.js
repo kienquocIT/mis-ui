@@ -28,8 +28,10 @@ $(function(){
                     elm.attr('data-id', item.id)
                     elm.find('.hand-drag, .icon-close').addClass('blur-35')
                     elm.find('.status_name').html(item.name)
+                    elm.find('.is_finish input').prop('checked', item['is_finish'])
                     if (item?.task_color && item.task_color.length === 7)
                         elm.find('.picker_color').val(item.task_color)
+
                     $todoElm.append(elm)
                 }
                 // loop in normal item and render
@@ -38,7 +40,7 @@ $(function(){
                     let elm = $($('#item_config').html())
                     elm.attr('data-id', item.id)
                     elm.find('.status_name').html(item.name)
-                    // elm.find('.status_translate_name').html(item.translate_name)
+                    elm.find('.is_finish input').prop(item['is_finish'])
                     if (item?.task_color && item.task_color.length === 7)
                         elm.find('.picker_color').val(item.task_color)
                     elm.insertBefore($('li', $todoElm).eq(positionCompleted))
@@ -53,6 +55,12 @@ $(function(){
                     placeholder: 'ui-state-highlight',
                     cancel: '.icon-close,[contenteditable]'
                 });
+
+                // init action checked input
+                $('.is_finish input').on('change', function () {
+                    $('.is_finish input').prop('checked', false)
+                    this.checked = true
+                })
                 WindowControl.hideLoading();
             }
         },
@@ -89,6 +97,7 @@ $(function(){
                 'task_color': $('.picker_color', $this).val(),
                 'name': $('.status_name', $this).text(),
                 'translate_name': $('.status_translate_name', $this).text(),
+                'is_finish': $('.is_finish input', $this).prop('checked'),
             })
             order += 1
         })
@@ -112,7 +121,6 @@ $(function(){
                 }
             )
             .catch((err) => {
-                console.log(err)
                 WindowControl.hideLoading();
             })
     })

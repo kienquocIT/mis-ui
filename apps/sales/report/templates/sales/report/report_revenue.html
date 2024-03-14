@@ -137,6 +137,19 @@
         </tbody>
     </table>
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="app-url-factory"
+            data-filter_customer="{% url 'AccountForSaleListAPI' %}"
+            data-filter_so="{% url 'SaleOrderListAPI' %}"
+    >
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-filter-customer="{% trans 'Customer' %}"
+        data-filter-so="{% trans 'Sale order' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

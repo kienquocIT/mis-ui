@@ -12,7 +12,12 @@ $(function () {
 
         function loadDbl(data) {
             $table.DataTableDefault({
+                ajax: {
+                    url: $table.attr('data-url'),
+                    dataSrc: 'data.report_customer_list',
+                },
                 data: data ? data : [],
+                pageLength: 50,
                 columns: [
                     {
                         targets: 0,
@@ -60,6 +65,7 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    loadTotal();
                 },
             });
         }

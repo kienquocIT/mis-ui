@@ -8,12 +8,35 @@ $(function () {
         let eleGrossProfit = $('#report-revenue-gross-profit');
         let eleNetIncome = $('#report-revenue-net-income');
         let $table = $('#table_report_revenue_list');
+        let $urlFact = $('#app-url-factory')
+        let $transFact = $('#app-trans-factory')
 
         function loadDbl(data) {
             $table.DataTableDefault({
+                ajax: {
+                    url: $table.attr('data-url'),
+                    dataSrc: 'data.report_revenue_list',
+                },
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
+                pageLength: 50,
+                cusFilter: [
+                    {
+                        dataUrl: $urlFact.attr('data-filter_so'),
+                        keyResp: 'sale_order_list',
+                        keyText: 'title',
+                        keyParam: "sale_order__id",
+                        placeholder: $transFact.attr('data-filter-so'),
+                    },
+                    {
+                        dataUrl: $urlFact.attr('data-filter_customer'),
+                        keyResp: 'account_sale_list',
+                        keyText: 'name',
+                        keyParam: "sale_order__customer_id",
+                        placeholder: $transFact.attr('data-filter-customer'),
+                    },
+                ],
                 columns: [  // 150,200,150,100,300,350,250,250,250 (2000p)
                     {
                         targets: 0,
@@ -86,6 +109,7 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    loadTotal();
                 },
             });
         }

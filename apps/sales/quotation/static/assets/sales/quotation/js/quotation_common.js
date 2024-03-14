@@ -109,9 +109,6 @@ class QuotationLoadDataHandle {
                 QuotationLoadDataHandle.customerSelectEle.initSelect2({
                     data: dataCustomer,
                     disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-                    callbackTextDisplay: function (item) {
-                        return item?.['name'] || '';
-                    },
                 });
             }
         } else { // No Opportunity
@@ -130,17 +127,11 @@ class QuotationLoadDataHandle {
                     data: dataCustomer,
                     'dataParams': data_filter,
                     disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-                    callbackTextDisplay: function (item) {
-                        return item?.['name'] || '';
-                    },
                 });
             } else { // No SalePerson
                 QuotationLoadDataHandle.customerSelectEle.initSelect2({
                     data: dataCustomer,
                     disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-                    callbackTextDisplay: function (item) {
-                        return item?.['name'] || '';
-                    },
                 });
             }
         }

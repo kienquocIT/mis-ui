@@ -35,6 +35,14 @@
         .advance-list-item:hover {
             transform: none;
             -webkit-transform: none;
+            box-shadow: inset 4px 4px 5px rgb(0 0 0 / 5%),
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04),
+            inset -4px -4px 5px rgb(255 255 255);
+            --webkit--box-shadow: inset 4px 4px 5px rgb(0 0 0 / 5%),
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04),
+            inset -4px -4px 5px rgb(255 255 255);
         }
 
         .hand-drag {
@@ -146,6 +154,7 @@
                                    data-bs-placement="bottom"
                                    title="{% trans 'Click on text to edit.' %}"></i>
                             </p>
+                            <p class="is_finish w-15">{% trans 'Finish task' %}</p>
                             <p class="status_color w-10">{% trans 'Color' %}</p>
                             <span class="w-10 text-right">
                         {% trans 'Action' %}
@@ -165,6 +174,9 @@
                 <div class="status-item d-flex justify-content-between align-items-center">
                     <span class="w-5 hand-drag"><i class="fa-solid fa-arrows-up-down"></i></span>
                     <p class="status_name w-35" contenteditable="true"></p>
+                    <div class="is_finish w-10 pl-2">
+                        <div class="form-check"><input type="checkbox" class="form-check-input"></div>
+                    </div>
                     <div class="status_color w-10 pl-2"><input type="color" class="picker_color"></div>
                     <span class="icon-close w-10 text-right">
                         <i class="fa-regular fa-circle-xmark fa-lg"></i>

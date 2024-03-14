@@ -5,7 +5,6 @@ $(function () {
         // init select function applied
         let $select_box = $("#select-box-features");
         $select_box.initSelect2({
-            'dataParams': {'is_workflow': true},
             'allowClear': true,
         });
 

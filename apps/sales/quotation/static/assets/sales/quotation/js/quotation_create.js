@@ -159,24 +159,24 @@ $(function () {
 
 // Action on click price list's option
         tableProduct.on('click', '.table-row-price-option', function () {
-            if (!$(this)[0].querySelector('.expired-price')) { // Check if price not expired
-                let priceValRaw = $(this)[0].getAttribute('data-value');
-                if (priceValRaw) {
-                    let row = $(this)[0].closest('tr');
-                    let elePrice = row.querySelector('.table-row-price');
-                    if (elePrice) {
-                        $(elePrice).attr('value', String(priceValRaw));
-                        $.fn.initMaskMoney2();
-                        QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
-                    }
-                    // make button option checked
-                    let allOption = $(row).find('.table-row-price-option');
-                    if (allOption) {
-                        allOption.removeClass('option-btn-checked');
-                    }
-                    $(this).addClass('option-btn-checked');
+            let row = this.closest('tr');
+            let priceValRaw = $(this)[0].getAttribute('data-value');
+            if (priceValRaw) {
+                let elePrice = row.querySelector('.table-row-price');
+                if (elePrice) {
+                    $(elePrice).attr('value', String(priceValRaw));
+                    $.fn.initMaskMoney2();
+                    QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
                 }
+                // make button option checked
+                let allOption = $(row).find('.table-row-price-option');
+                if (allOption) {
+                    allOption.removeClass('option-btn-checked');
+                }
+                $(this).addClass('option-btn-checked');
             }
+            // store data
+            QuotationStoreDataHandle.storeProduct(row);
         });
 
 // ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total
@@ -204,27 +204,41 @@ $(function () {
                 QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
                 // change value before tax table payment
                 QuotationLoadDataHandle.loadChangePSValueBTAll();
+                // store data
+                QuotationStoreDataHandle.storeProduct(row);
             }
         });
 
 // If change product uom then clear table COST
         tableProduct.on('change', '.table-row-uom', function () {
+            let row = this.closest('tr');
             // load again table cost
             QuotationLoadDataHandle.loadDataTableCost();
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
+            // store data
+            QuotationStoreDataHandle.storeProduct(row);
         });
 
 // Action on table row group title
         tableProduct.on('click', '.table-row-group', function () {
+            let row = this.closest('tr');
             $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+            // store data
+            QuotationStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('blur', '.table-row-group-title-edit', function () {
+            let row = this.closest('tr');
             QuotationLoadDataHandle.loadOnBlurGroupTitleEdit(this);
+            // store data
+            QuotationStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('click', '.btn-edit-group', function () {
+            let row = this.closest('tr');
             QuotationLoadDataHandle.loadOnClickBtnEditGroup(this);
+            // store data
+            QuotationStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('click', '.btn-del-group', function () {
@@ -239,6 +253,8 @@ $(function () {
                 // load products to another group after del group
                 QuotationLoadDataHandle.loadProductAfterDelGroup(row.querySelector('.table-row-group'));
             }
+            // store data
+            QuotationStoreDataHandle.storeProduct(row);
         });
 
 // Action on change discount rate on Total of product
@@ -254,20 +270,6 @@ $(function () {
             });
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
         });
-
-
-        // $('#quotation-create-product-discount').on('change', function () {
-        //     // Delete all promotion rows
-        //     deletePromotionRows(tableProduct, true, false);
-        //     // Delete all shipping rows
-        //     deletePromotionRows(tableProduct, false, true);
-        //     // Calculate with discount on Total
-        //     for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
-        //         let row = tableProduct[0].tBodies[0].rows[i];
-        //         QuotationCalculateCaseHandle.calculate(row);
-        //     }
-        //     QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
-        // });
 
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
@@ -385,16 +387,36 @@ $(function () {
                 validateNumber(this);
             }
             QuotationCalculateCaseHandle.commonCalculate(tableExpense, row, false, false, true);
+            // store data
+            QuotationStoreDataHandle.storeExpense(row);
         });
 
 // COST
-// COPY PRODUCT -> COST
-
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 QuotationCalculateCaseHandle.commonCalculate(tableCost, row, false, true, false);
+            }
+        });
+
+// Action on click price list's option
+        tableCost.on('click', '.table-row-price-option', function () {
+            let priceValRaw = $(this)[0].getAttribute('data-value');
+            if (priceValRaw) {
+                let row = $(this)[0].closest('tr');
+                let elePrice = row.querySelector('.table-row-price');
+                if (elePrice) {
+                    $(elePrice).attr('value', String(priceValRaw));
+                    $.fn.initMaskMoney2();
+                    QuotationCalculateCaseHandle.commonCalculate(tableCost, row, false, true, false);
+                }
+                // make button option checked
+                let allOption = $(row).find('.table-row-price-option');
+                if (allOption) {
+                    allOption.removeClass('option-btn-checked');
+                }
+                $(this).addClass('option-btn-checked');
             }
         });
 

@@ -2033,6 +2033,12 @@ class WFRTControl {
                         }
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                            // active btn cancel if owner & finished
+                            // let eleStatus = $('#systemStatus');
+                            // let currentEmployee = $x.fn.getEmployeeCurrentID();
+                            // if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
+                            //     WFRTControl.setBtnCancel();
+                            // }
                         }
                         // collab out form handler
                         WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);
@@ -2458,6 +2464,27 @@ class WFRTControl {
     static setCollabOutFormData(collabOutFormData) {
         if (collabOutFormData && Array.isArray(collabOutFormData)) {
             $('html').append(`<script class="hidden" id="idxCollabOutFormData">${JSON.stringify(collabOutFormData)}</script>`);
+        }
+    }
+
+    static setBtnCancel() {
+        let eleRealAction = $('#idxRealAction');
+        let btnCancel = $('#btnCancel');
+        if (eleRealAction) {
+            if (btnCancel.length <= 0) {
+                $(eleRealAction).append(`<button class="btn btn-outline-danger btn-action-wf" id="btnCancel" data-value="2">
+                                        <span>
+                                            <span>${$.fn.transEle.attr('data-cancel')}</span>
+                                            <span class="icon">
+                                                <i class="fas fa-times"></i>
+                                            </span>
+                                        </span>
+                                    </button>`);
+                // Add event
+                $('#btnCancel').on('click', function () {
+                    return WFRTControl.callActionWF($(this));
+                });
+            }
         }
     }
 
@@ -4534,9 +4561,9 @@ class DocumentControl {
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
 
-    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status') {
+    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit') {
         if (typeof detailData === 'object') {
-            let [code, is_active, system_status] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus]];
+            let [code, is_active, system_status, employee_inherit] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit]];
             if (code) {
                 let clsState = 'hidden';
                 if (is_active === true) {
@@ -4552,19 +4579,26 @@ class DocumentControl {
                 ).removeClass('hidden');
             }
             if (system_status) {
+                let draft = $.fn.transEle.attr('data-msg-draft');
+                let created = $.fn.transEle.attr('data-created');
+                let added = $.fn.transEle.attr('data-added');
+                let finish = $.fn.transEle.attr('data-finish');
+                let cancel = $.fn.transEle.attr('data-cancel');
                 let status_class = {
-                    "Draft": "badge badge-soft-light",
-                    "Created": "badge badge-soft-primary",
-                    "Added": "badge badge-soft-info",
-                    "Finish": "badge badge-soft-success",
-                    "Cancel": "badge badge-soft-danger",
+                    [draft]: "badge badge-soft-light",
+                    [created]: "badge badge-soft-primary",
+                    [added]: "badge badge-soft-info",
+                    [finish]: "badge badge-soft-success",
+                    [cancel]: "badge badge-soft-danger",
                 }
+                let dataStatus = system_status;
+                let dataInheritID = employee_inherit?.['id'];
                 if ($x.fn.checkNumber(system_status)) {
                     const key = Object.keys(status_class);
                     system_status = key[system_status]
                 }
                 $('#idx-breadcrumb-current-code').append(
-                    `<span class="${status_class[system_status]}">${system_status}</span>`
+                    `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}">${system_status}</span>`
                 ).removeClass('hidden');
             }
         }

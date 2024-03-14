@@ -100,6 +100,16 @@ class MenusCompanySystem:
 
 
 class MenusCoreConfigurations:
+    SYSTEM_CONFIG = MenuCommon(
+        name='System', code='menu_system', view_name='#',
+        icon='<i class="fas fa-cog"></i>',
+        child=[
+            MenuCommon(
+                name='Posting periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
+                icon='<i class="far fa-calendar-alt"></i>',
+            ),
+        ]
+    )
     MASTER_DATA_CONFIG = MenuCommon(
         name='Master data config', code='menu_masterdata', view_name='#',
         icon='<i class="fas fa-crown"></i>',
@@ -119,11 +129,7 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Price', code='id_menu_master_data_price', view_name='PriceMasterDataList',
                 icon='<i class="bi bi-currency-exchange"></i>',
-            ),
-            MenuCommon(
-                name='Periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
-                icon='<i class="fas fa-hourglass-end"></i>',
-            ),
+            )
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
@@ -702,6 +708,7 @@ class SpaceItem:
             'core-configurations',
             icon='<i class="fa-solid fa-screwdriver-wrench"></i>',
             menus=[
+                MenusCoreConfigurations.SYSTEM_CONFIG,
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,

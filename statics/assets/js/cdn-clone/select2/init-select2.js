@@ -55,6 +55,7 @@ class SelectDDControl {
     arrDataBackupLoaded = 'data-idx-data-loaded';
     page = 1;
     pageSize = 10;
+    pageInfinite = true;
 
     get __has_option_empty() {
         // check select allow render option empty value
@@ -305,14 +306,42 @@ class SelectDDControl {
         return {};
     }
 
-    _ajax_parse_params(params) {
+    _ajax_url__get_parameter(url){
+        let parameters = {};
+        let arr = url.split("?");
+        if (arr.length > 1){
+            arr[1].split("&").map(
+                (item) => {
+                    let arrTmp = item.split('=');
+                    if (arrTmp.length >= 2){
+                        parameters[arrTmp[0]] = arrTmp[1];
+                    }
+                }
+            )
+
+        }
+        return parameters;
+    }
+
+    _ajax_parse_params(params, configUrl) {
+        // current param in URL
+        let currentParams = this._ajax_url__get_parameter(configUrl);
+
         // setup params for ajax call
         let query = {};
         query.isDropdown = true;
         if (params.term) query.search = params.term;
         query.page = params.page || this.page;
         query.pageSize = params.pageSize || this.pageSize;
-        return $x.fn.removeEmptyValuesFromObj({...query, ...this._ajax_parse_params_external()});
+
+        // merge parameter!
+        let resultParams = $x.fn.removeEmptyValuesFromObj({...query, ...currentParams, ...this._ajax_parse_params_external()});
+        if (resultParams?.['pageSize'] === '-1' || resultParams?.['pageSize'] === -1) {
+            this.pageInfinite = false;  // disable infinite ajax!
+            params.isFinite = false;
+        }
+
+        return resultParams;
     }
 
     _ajax_parse_headers(headers) {
@@ -519,14 +548,14 @@ class SelectDDControl {
                 'delay': 250,
                 'headers': clsThis._ajax_parse_headers(),
                 'data': function (params) {
-                    return clsThis._ajax_parse_params(params);
+                    return clsThis._ajax_parse_params(params, config.url);
                 },
                 'processResults': function (resp, params) {
                     params.page = params.page || clsThis.page;
                     return {
                         results: clsThis._ajax_parse_resp_data(resp),
                         pagination: {
-                            more: (params.page * clsThis.pageSize) < (resp?.data?.['page_count'] || 1)
+                            more: clsThis.pageInfinite === true ? (params.page * clsThis.pageSize) < (resp?.data?.['page_count'] || 1) : false,
                             // Load More Scrolling | Infinite Scrolling : https://select2.org/data-sources/ajax#count_filtered
                         }
                     };

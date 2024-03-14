@@ -6,6 +6,8 @@ function resetFormTask() {
         $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
+    $('#rangeValue').text(0)
+    $('#percent_completed').val(0)
     $('[name="id"]').remove();
     const $inputAssigner = $('#inputAssigner');
     $inputAssigner.val($inputAssigner.attr('data-name'))
@@ -290,6 +292,8 @@ class Task_in_opps {
         // run init label function
         let formLabel = new labelHandle()
         formLabel.init()
+
+
 
         // auto load opp if in page opp
         const $selectElm = $('#opportunity_id')

@@ -1,4 +1,5 @@
 """system module"""
+from operator import itemgetter
 from django.urls import reverse, NoReverseMatch
 from django.utils.translation import gettext_lazy as _
 
@@ -260,7 +261,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # E-Office
     #  Leave
     LEAVE_CONFIG = BreadcrumbChildren(
-        _('Leave Config'), 'LeaveConfigDetail'
+        _('Leave config'), 'LeaveConfigDetail'
     )
     LEAVE_REQUEST = BreadcrumbChildren(
         _('Leave request list'), 'LeaveRequestList'
@@ -350,6 +351,7 @@ class BreadcrumbView:
                             'title': child.title,
                         }
                     )
+        arr = sorted(arr, key=itemgetter('title'))
         return arr
 
     @staticmethod

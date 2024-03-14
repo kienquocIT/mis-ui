@@ -109,6 +109,17 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-12 col-xs-12">
+                        <div class="slider w-100 mb-2">
+                            <label for="percent_completed" class="form-label">{% trans 'Percent completed' %}</label>
+                            <div class="d-block">
+                                <p id="rangeValue" class="d-inline-block">0</p><small>%</small>
+                            </div>
+                            <input class="w-100" type="range" min="0" max="100" value="0" step="5"
+                                   oninput="rangeValue.innerText=this.value" id="percent_completed"
+                                   name="percent_completed">
+                        </div>
+                    </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
                             <label for="inputAssigner" class="form-label">{% trans 'Assigner' %}</label>

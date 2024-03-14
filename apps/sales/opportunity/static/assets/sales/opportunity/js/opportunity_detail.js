@@ -1316,6 +1316,8 @@ $(document).ready(function () {
                                 $('.title-detail').removeClass('hidden')
                                 $('#inputTextTitle').val(data.title)
                                 $('#inputTextCode').val(data.code)
+                                $('#rangeValue').text(data['percent_completed'])
+                                $('#percent_completed').val(data['percent_completed'])
                                 $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status)).append(
                                     `<option value="${data.task_status.id}" selected>${data.task_status.title}</option>`
                                 ).trigger('change')

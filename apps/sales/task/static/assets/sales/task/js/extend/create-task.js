@@ -6,6 +6,8 @@ function resetFormTask() {
     $('#opportunity_id').val('').trigger('change').attr('disabled', false);
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
+    $('#rangeValue').text(0)
+    $('#percent_completed').val(0)
     $('[name="id"]').remove();
     const $inputAssigner = $('#inputAssigner');
     $inputAssigner.val($inputAssigner.attr('data-name'))

@@ -25,7 +25,7 @@
 
 #welcome-body {
     position: relative;
-    z-index: 99999;
+    z-index: 1054;
 }
 
 #welcome-canvas {

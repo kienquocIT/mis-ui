@@ -27,8 +27,9 @@
                 <select
                         id="inp-application"
                         name="application"
-                        class="select2 form-select"
-                        data-url="{% url 'TenantApplicationListAPI' %}?allow_print=true"
+                        class="form-select"
+                        data-url="{% url 'TenantApplicationListAPI' %}"
+                        data-params='{"allow_print":true,"pageSize":-1}'
                         data-method="GET"
                         data-keyResp="tenant_application_list"
                         required
@@ -116,7 +117,7 @@
             let txtArea = $('#inp-contents');
             let btnPrint = $('#idx-btn-print');
 
-            $('#inp-application').on('change', function (){
+            $('#inp-application').initSelect2().on('change', function (){
                 txtArea.prop('disabled', false);
                 btnPrint.prop('disabled', false);
                 if (txtArea.tinymce()) txtArea.tinymce().destroy();

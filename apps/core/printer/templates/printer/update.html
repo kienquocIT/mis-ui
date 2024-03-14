@@ -26,7 +26,8 @@
                 <select
                         id="inp-application"
                         class="select2 form-select"
-                        data-url="{% url 'TenantApplicationListAPI' %}?allow_print=true"
+                        data-url="{% url 'TenantApplicationListAPI' %}"
+                        data-params='{"allow_print":true,"pageSize":-1}'
                         data-method="GET"
                         data-keyResp="tenant_application_list"
                         disabled

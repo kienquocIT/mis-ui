@@ -1284,9 +1284,16 @@ $(document).ready(function () {
                                 if (!$('#drawer_task_create').hasClass('open')) {
                                     $($('.current-create-task span')[0]).trigger('click')
                                 }
+                                resetFormTask()
+                                $('.title-create').addClass('hidden')
+                                $('.title-detail').removeClass('hidden')
                                 $('#inputTextTitle').val(data.title)
                                 $('#inputTextCode').val(data.code)
-                                $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status))
+                                $('#rangeValue').text(data['percent_completed'])
+                                $('#percent_completed').val(data['percent_completed'])
+                                $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status)).append(
+                                    `<option value="${data.task_status.id}" selected>${data.task_status.title}</option>`
+                                ).trigger('change')
                                 $('#inputTextStartDate').val(
                                     moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                                 )
@@ -1294,27 +1301,21 @@ $(document).ready(function () {
                                     moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                                 )
                                 $('#inputTextEstimate').val(data.estimate)
-                                if (data?.opportunity_data && Object.keys(data.opportunity_data).length)
-                                    $('#selectOpportunity').attr('data-onload', JSON.stringify({
-                                        "id": data.opportunity_data.id,
-                                        "title": data.opportunity_data.code
-                                    }))
                                 $('#selectPriority').val(data.priority).trigger('change')
                                 window.formLabel.renderLabel(data.label)
                                 $('#inputLabel').attr('value', JSON.stringify(data.label))
                                 $('#inputAssigner').val(data.employee_created.last_name + '. ' + data.employee_created.first_name)
                                     .attr('value', data.employee_created.id)
-                                if (data.assign_to.length)
-                                    $('#selectAssignTo').attr('data-onload', JSON.stringify(data.assign_to))
+                                if (data?.employee_inherit.hasOwnProperty("id"))
+                                    $('#employee_inherit_id').attr('data-onload', JSON.stringify(data.employee_inherit))
+                                        .append(`<option value="${data.employee_inherit.id}" selected>${
+                                            data.employee_inherit.full_name}</option>`).trigger("change")
                                 window.editor.setData(data.remark)
                                 window.checklist.setDataList = data.checklist
                                 window.checklist.render()
-                                initSelectBox($('#selectOpportunity, #selectAssignTo, #selectStatus'))
                                 $('.create-subtask, .create-checklist').addClass('hidden')
-                                if (data.task_log_work.length) tabLogWork(data.task_log_work)
-                                tabSubtask(data.id)
-                                // to do here
-
+                               if (data?.['task_log_work'].length) tabLogWork(data['task_log_work'])
+                                if (data?.['sub_task_list']) tabSubtask(data['sub_task_list'])
                                 if (data.attach) {
                                     const fileDetail = data.attach[0]?.['files']
                                     FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
@@ -1422,7 +1423,7 @@ $(document).ready(function () {
                                 }
                                 if (row?.['log_type'] === 1) {
                                     title = row?.['task']?.['subject'];
-                                    return `<a><p>${title}</p></a>`;
+                                    return `<a href="#" class="show-task-detail" data-task-id="${row?.['task']['id']}"><p>${title}</p></a>`;
                                 } else if (row?.['log_type'] === 2) {
                                     title = row?.['call_log']?.['subject'];
                                     return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-call-log" class="detail-call-log-button text-primary" data-id="${row?.['call_log']['id']}"><p>${title}</p></a>`;
@@ -1450,6 +1451,12 @@ $(document).ready(function () {
                             }
                         }
                     ],
+                    rowCallback: (row, data, index) => {
+                        $('.show-task-detail', row).on('click', function(){
+                            const taskObj = data?.["task"]
+                            displayTaskView($("#url-factory").attr("data-task_detail").format_url_with_uuid(taskObj.id))
+                        })
+                    }
                 });
             }
 

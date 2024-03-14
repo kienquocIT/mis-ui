@@ -1138,7 +1138,6 @@
                             var _bar;
                             var from, to, cFrom, cTo, dFrom, dTo, dl, dp;
                             var topEl, top;
-
                             switch (settings.scale) {
                             // **Hourly data**
                             case "hours":
@@ -1169,8 +1168,8 @@
                             case "weeks":
                                 dFrom = tools.dateDeserialize(day.from);
                                 dTo = tools.dateDeserialize(day.to);
-
                                 from = $(element).find("#" + dFrom.getWeekId());
+                                console.log(from)
                                 cFrom = from.data("offset");
                                 to = $(element).find("#" + dTo.getWeekId());
                                 cTo = to.data("offset");
@@ -1230,8 +1229,6 @@
                                 break;
 
                             // **Days**
-                            case "days":
-                                /* falls through */
                             default:
                                 dFrom = tools.genId(tools.dateDeserialize(day.from));
                                 dTo = tools.genId(tools.dateDeserialize(day.to));
@@ -1662,12 +1659,9 @@
             },
 
             // Deserialize a date from a string or integer
-            dateDeserialize: function (date) {
-                if (typeof date === "string") {
-                    date = date.replace(/\/Date\((.*)\)\//, "$1");
-                    date = $.isNumeric(date) ? parseInt(date, 10) : $.trim(date);
-                }
-                return new Date( date );
+            dateDeserialize: function (dateStr) {
+                var date = eval("new" + dateStr.replace(/\//g, " "));
+                return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes());
             },
 
             // Generate an id for a date

@@ -26,7 +26,7 @@ $(function () {
                         dataUrl: $urlFact.attr('data-filter_so'),
                         keyResp: 'sale_order_list',
                         keyText: 'title',
-                        keyParam: "sale_order__id",
+                        keyParam: "sale_order_id",
                         placeholder: $transFact.attr('data-filter-so'),
                     },
                     {

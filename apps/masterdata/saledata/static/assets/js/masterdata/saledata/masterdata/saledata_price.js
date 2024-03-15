@@ -401,7 +401,6 @@ $(document).ready(function () {
             } else {
                 frm.dataForm['tax_type'] = typeSelectEle.val()[0];
             }
-            console.log(frm.dataForm)
             $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,

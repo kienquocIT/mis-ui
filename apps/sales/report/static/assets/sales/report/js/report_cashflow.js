@@ -1609,8 +1609,12 @@ $(function () {
 
             let eleTypeBegin = $eleTable[0].querySelector('.table-row-type[data-type="1"]');
             if (eleTypeBegin) {
-                let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="1"]`);
-                $(eleEstimateBegin).change();
+                for (let eleEstimateBegin of eleTypeBegin.closest('tr').querySelectorAll('.table-row-value-estimate')) {
+                    if (eleEstimateBegin.tagName.toLowerCase() === 'input') {
+                        $(eleEstimateBegin).change();
+                        break;
+                    }
+                }
             }
             return true;
         }
@@ -1973,17 +1977,37 @@ $(function () {
         });
 
         $table.on('change', '.table-row-value-estimate', function () {
-            let startValue = $(this).valCurrency();
-            let startMonth = parseInt(this.getAttribute('data-month'));
-            calculateIfChangeBeginning($table, startValue, startMonth);
-
-            for (let month = (startMonth + 1); month <= 12; month++) {
-                let eleTypeBegin = $table[0].querySelector('.table-row-type[data-type="1"]');
-                if (eleTypeBegin) {
-                    let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
-                    if (eleEstimateBegin.getAttribute('data-init-money')) {
-                        let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
-                        calculateIfChangeBeginning($table, value, month);
+            let year = boxYear.val();
+            if (year) {
+                let listMonths = getAllMonthsOfFiscalYear(parseInt(year));
+                let startValue = $(this).valCurrency();
+                let startMonth = parseInt(this.getAttribute('data-month'));
+                let startMonthNext = startMonth + 1;
+                if (startMonth === 12) {
+                    startMonthNext = 1;
+                }
+                if (startMonth <= 12 && startMonthNext <= 12) {
+                    calculateIfChangeBeginning($table, startValue, startMonth, startMonthNext);
+                }
+                for (let data of listMonths) {
+                    let month = data?.['month'];
+                    let monthNext = month + 1;
+                    if (month === 12) {
+                        monthNext = 1;
+                    }
+                    if (month !== startMonth) {
+                        let eleTypeBegin = $table[0].querySelector('.table-row-type[data-type="1"]');
+                        if (eleTypeBegin) {
+                            let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
+                            if (eleEstimateBegin) {
+                                if (eleEstimateBegin.getAttribute('data-init-money')) {
+                                    let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
+                                    if (month <= 12 && monthNext <= 12) {
+                                        calculateIfChangeBeginning($table, value, month, monthNext);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1992,23 +2016,28 @@ $(function () {
 
         $tableMonth.on('change', '.table-row-value-estimate', function () {
             let startValue = $(this).valCurrency();
-            let startMonth = parseInt(this.getAttribute('data-month'));
-            calculateIfChangeBeginning($tableMonth, startValue, startMonth);
-
-            for (let month = (startMonth + 1); month <= 5; month++) {
+            let startQuarter = parseInt(this.getAttribute('data-month'));
+            let startQuarterNext = startQuarter + 1;
+            if (startQuarter <= 5 && startQuarterNext <= 5) {
+                calculateIfChangeBeginning($tableMonth, startValue, startQuarter, startQuarterNext);
+            }
+            for (let quarter = (startQuarter + 1); quarter <= 5; quarter++) {
+                let quarterNext = quarter + 1;
                 let eleTypeBegin = $tableMonth[0].querySelector('.table-row-type[data-type="1"]');
                 if (eleTypeBegin) {
-                    let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
+                    let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${quarter}"]`);
                     if (eleEstimateBegin.getAttribute('data-init-money')) {
                         let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
-                        calculateIfChangeBeginning($tableMonth, value, month);
+                        if (quarter <= 5 && quarterNext <= 5) {
+                            calculateIfChangeBeginning($tableMonth, value, quarter, quarterNext);
+                        }
                     }
                 }
             }
             return true;
         });
 
-        function calculateIfChangeBeginning($eleTable, value, month) {
+        function calculateIfChangeBeginning($eleTable, value, month, nextMonth) {
             let eleTypeNet = $eleTable[0].querySelector('.table-row-type[data-type="4"]');
             let eleTypeEnd = $eleTable[0].querySelector('.table-row-type[data-type="5"]');
             if (eleTypeNet && eleTypeEnd) {
@@ -2021,7 +2050,7 @@ $(function () {
                         // set next beginning value
                         let eleTypeBegin = $eleTable[0].querySelector('.table-row-type[data-type="1"]');
                         if (eleTypeBegin) {
-                            let eleEstimateBeginNext = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month + 1}"]`);
+                            let eleEstimateBeginNext = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${nextMonth}"]`);
                             if (eleEstimateBeginNext) {
                                 $(eleEstimateBeginNext).attr('data-init-money', String(endValue));
                             }

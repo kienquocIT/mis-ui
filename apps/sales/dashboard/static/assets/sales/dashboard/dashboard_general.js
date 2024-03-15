@@ -83,6 +83,14 @@ $(document).ready(function () {
             space_month_Setting = period_selected_Setting?.['space_month']
             UpdateOptionRevenueChart()
             UpdateOptionProfitChart()
+            topSellersTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
+            topSellersNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
+            topCustomersTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
+            topCustomersNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
+            topCategoriesTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
+            topCategoriesNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
+            topProductsTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
+            topProductsNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
         })
     }
 
@@ -147,10 +155,6 @@ $(document).ready(function () {
             const month = dateApproved.getMonth()
             const year = dateApproved.getFullYear()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
-                if (month === 2) {
-                    console.log(item, month)
-                }
-
                 if (!group_filter) {
                     revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                 } else {
@@ -160,7 +164,6 @@ $(document).ready(function () {
                 }
             }
         }
-        console.log(revenue_chart_data)
 
         let revenue_expected_data = []
         if (group_filter) {
@@ -1094,68 +1097,40 @@ $(document).ready(function () {
             cast_billion = 1e9
         }
 
-        const current_year = new Date().getFullYear()
         const current_month = new Date().getMonth() + 1
-        const current_quarter = parseInt(current_month / 3) + 1
-        const filter_year = topSellersTimeFilterYearEle.val()
-        const filter_qq_mm = topSellersTimeFilterMMQQEle.val()
+        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
 
         let top_sellers_chart_data = []
         for (const item of top_sellers_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const year = dateApproved.getFullYear()
             const month = dateApproved.getMonth() + 1
-            const quarter = parseInt(month / 3) + 1
+            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
             const filterTimes = topSellersTimeEle.val()
-            if (filterTimes === '0') {
-                if (year === current_year && month === current_month) {
-                    top_sellers_chart_data.push({
-                        'id': item?.['employee_inherit']?.['id'],
-                        'full_name': item?.['employee_inherit']?.['full_name'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else if (filterTimes === '1') {
-                if (year === current_year && quarter === current_quarter) {
-                    top_sellers_chart_data.push({
-                        'id': item?.['employee_inherit']?.['id'],
-                        'full_name': item?.['employee_inherit']?.['full_name'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else if (filterTimes === '2') {
-                if (year === current_year) {
-                    top_sellers_chart_data.push({
-                        'id': item?.['employee_inherit']?.['id'],
-                        'full_name': item?.['employee_inherit']?.['full_name'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else {
-                if (topSellersTimeFilterSelectEle.val() === '0') {
-                    if (year === parseInt(filter_year)) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
+                if (filterTimes === '0') {
+                    if (month === current_month) {
                         top_sellers_chart_data.push({
                             'id': item?.['employee_inherit']?.['id'],
                             'full_name': item?.['employee_inherit']?.['full_name'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
                     }
-                } else if (topSellersTimeFilterSelectEle.val() === '1') {
-                    if (month === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                }
+                else if (filterTimes === '1') {
+                    if (quarter === current_quarter) {
                         top_sellers_chart_data.push({
                             'id': item?.['employee_inherit']?.['id'],
                             'full_name': item?.['employee_inherit']?.['full_name'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
                     }
-                } else if (topSellersTimeFilterSelectEle.val() === '2') {
-                    if (quarter === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
-                        top_sellers_chart_data.push({
+                }
+                else if (filterTimes === '2') {
+                    top_sellers_chart_data.push({
                             'id': item?.['employee_inherit']?.['id'],
                             'full_name': item?.['employee_inherit']?.['full_name'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
-                    }
                 }
             }
         }
@@ -1367,68 +1342,40 @@ $(document).ready(function () {
             cast_billion = 1e9
         }
 
-        const current_year = new Date().getFullYear()
         const current_month = new Date().getMonth() + 1
-        const current_quarter = parseInt(current_month / 3) + 1
-        const filter_year = topCustomersTimeFilterYearEle.val()
-        const filter_qq_mm = topCustomersTimeFilterMMQQEle.val()
+        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
 
         let top_customers_chart_data = []
         for (const item of top_customers_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const year = dateApproved.getFullYear()
             const month = dateApproved.getMonth() + 1
-            const quarter = parseInt(month / 3) + 1
+            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
             const filterTimes = topCustomersTimeEle.val()
-            if (filterTimes === '0') {
-                if (year === current_year && month === current_month) {
-                    top_customers_chart_data.push({
-                        'id': item?.['customer']?.['id'],
-                        'title': item?.['customer']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else if (filterTimes === '1') {
-                if (year === current_year && quarter === current_quarter) {
-                    top_customers_chart_data.push({
-                        'id': item?.['customer']?.['id'],
-                        'title': item?.['customer']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else if (filterTimes === '2') {
-                if (year === current_year) {
-                    top_customers_chart_data.push({
-                        'id': item?.['customer']?.['id'],
-                        'title': item?.['customer']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else {
-                if (topCustomersTimeFilterSelectEle.val() === '0') {
-                    if (year === parseInt(filter_year)) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
+                if (filterTimes === '0') {
+                    if (month === current_month) {
                         top_customers_chart_data.push({
                             'id': item?.['customer']?.['id'],
                             'title': item?.['customer']?.['title'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
                     }
-                } else if (topCustomersTimeFilterSelectEle.val() === '1') {
-                    if (month === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                }
+                else if (filterTimes === '1') {
+                    if (quarter === current_quarter) {
                         top_customers_chart_data.push({
                             'id': item?.['customer']?.['id'],
                             'title': item?.['customer']?.['title'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
                     }
-                } else if (topCustomersTimeFilterSelectEle.val() === '2') {
-                    if (quarter === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
-                        top_customers_chart_data.push({
+                }
+                else if (filterTimes === '2') {
+                    top_customers_chart_data.push({
                             'id': item?.['customer']?.['id'],
                             'title': item?.['customer']?.['title'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
-                    }
                 }
             }
         }
@@ -1639,68 +1586,40 @@ $(document).ready(function () {
             cast_billion = 1e9
         }
 
-        const current_year = new Date().getFullYear()
         const current_month = new Date().getMonth() + 1
-        const current_quarter = parseInt(current_month / 3) + 1
-        const filter_year = topCategoriesTimeFilterYearEle.val()
-        const filter_qq_mm = topCategoriesTimeFilterMMQQEle.val()
+        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
 
         let top_categories_chart_data = []
         for (const item of top_categories_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const year = dateApproved.getFullYear()
             const month = dateApproved.getMonth() + 1
-            const quarter = parseInt(month / 3) + 1
+            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
             const filterTimes = topCategoriesTimeEle.val()
-            if (filterTimes === '0') {
-                if (year === current_year && month === current_month) {
-                    top_categories_chart_data.push({
-                        'id': item?.['product']?.['general_product_category']?.['id'],
-                        'title': item?.['product']?.['general_product_category']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else if (filterTimes === '1') {
-                if (year === current_year && quarter === current_quarter) {
-                    top_categories_chart_data.push({
-                        'id': item?.['product']?.['general_product_category']?.['id'],
-                        'title': item?.['product']?.['general_product_category']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else if (filterTimes === '2') {
-                if (year === current_year) {
-                    top_categories_chart_data.push({
-                        'id': item?.['product']?.['general_product_category']?.['id'],
-                        'title': item?.['product']?.['general_product_category']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else {
-                if (topCategoriesTimeFilterSelectEle.val() === '0') {
-                    if (year === parseInt(filter_year)) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
+                if (filterTimes === '0') {
+                    if (month === current_month) {
                         top_categories_chart_data.push({
                             'id': item?.['product']?.['general_product_category']?.['id'],
                             'title': item?.['product']?.['general_product_category']?.['title'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
                     }
-                } else if (topCategoriesTimeFilterSelectEle.val() === '1') {
-                    if (month === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                }
+                else if (filterTimes === '1') {
+                    if (quarter === current_quarter) {
                         top_categories_chart_data.push({
                             'id': item?.['product']?.['general_product_category']?.['id'],
                             'title': item?.['product']?.['general_product_category']?.['title'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
                     }
-                } else if (topCategoriesTimeFilterSelectEle.val() === '2') {
-                    if (quarter === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
-                        top_categories_chart_data.push({
-                            'id': item?.['product']?.['general_product_category']?.['id'],
-                            'title': item?.['product']?.['general_product_category']?.['title'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
-                    }
+                }
+                else if (filterTimes === '2') {
+                    top_categories_chart_data.push({
+                        'id': item?.['product']?.['general_product_category']?.['id'],
+                        'title': item?.['product']?.['general_product_category']?.['title'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
                 }
             }
         }
@@ -1917,68 +1836,40 @@ $(document).ready(function () {
             cast_billion = 1e9
         }
 
-        const current_year = new Date().getFullYear()
         const current_month = new Date().getMonth() + 1
-        const current_quarter = parseInt(current_month / 3) + 1
-        const filter_year = topProductsTimeFilterYearEle.val()
-        const filter_qq_mm = topProductsTimeFilterMMQQEle.val()
+        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
 
         let top_products_chart_data = []
         for (const item of top_products_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const year = dateApproved.getFullYear()
             const month = dateApproved.getMonth() + 1
-            const quarter = parseInt(month / 3) + 1
+            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
             const filterTimes = topProductsTimeEle.val()
-            if (filterTimes === '0') {
-                if (year === current_year && month === current_month) {
-                    top_products_chart_data.push({
-                        'id': item?.['product']?.['id'],
-                        'title': item?.['product']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else if (filterTimes === '1') {
-                if (year === current_year && quarter === current_quarter) {
-                    top_products_chart_data.push({
-                        'id': item?.['product']?.['id'],
-                        'title': item?.['product']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else if (filterTimes === '2') {
-                if (year === current_year) {
-                    top_products_chart_data.push({
-                        'id': item?.['product']?.['id'],
-                        'title': item?.['product']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            } else {
-                if (topProductsTimeFilterSelectEle.val() === '0') {
-                    if (year === parseInt(filter_year)) {
+            if (Check_in_period(dateApproved, period_selected_Setting)) {
+                if (filterTimes === '0') {
+                    if (month === current_month) {
                         top_products_chart_data.push({
                             'id': item?.['product']?.['id'],
                             'title': item?.['product']?.['title'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
                     }
-                } else if (topProductsTimeFilterSelectEle.val() === '1') {
-                    if (month === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
+                }
+                else if (filterTimes === '1') {
+                    if (quarter === current_quarter) {
                         top_products_chart_data.push({
                             'id': item?.['product']?.['id'],
                             'title': item?.['product']?.['title'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
                     }
-                } else if (topProductsTimeFilterSelectEle.val() === '2') {
-                    if (quarter === parseInt(filter_qq_mm) && year === parseInt(filter_year)) {
-                        top_products_chart_data.push({
+                }
+                else if (filterTimes === '2') {
+                    top_products_chart_data.push({
                             'id': item?.['product']?.['id'],
                             'title': item?.['product']?.['title'],
                             'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                         })
-                    }
                 }
             }
         }

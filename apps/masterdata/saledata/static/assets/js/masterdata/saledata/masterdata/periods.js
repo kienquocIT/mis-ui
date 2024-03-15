@@ -1,7 +1,12 @@
 $(document).ready(function () {
     const periods_fiscal_year_Ele = $('#periods-fiscal-year')
     const periods_fiscal_month_start_Ele = $('#periods-fiscal-month-start')
+    const software_using_time_select = $('#software_using_time_select')
     const software_using_time_select_update = $('#software_using_time_select_update')
+    const generate_period_table = $('#generate-period-table')
+    const sub_periods_type_select = $('#sub-periods-select')
+    const period_title_Ele = $('#periods-title')
+    const period_code_Ele = $('#periods-code')
 
     function get_option_for_sw_using_time(ele, fiscal_year, fiscal_month_start, selected) {
         ele.html(`<option value="0"></option>`)
@@ -15,7 +20,7 @@ $(document).ready(function () {
             if (month < 10) {
                 month = '0' + month.toString()
             }
-            let option_text = month.toString() + '/' + year.toString()
+            let option_text = month.toString() + '-' + year.toString()
             if (option_text === selected) {
                 ele.append(`
                     <option value="${1}" selected>${option_text}</option>
@@ -31,10 +36,10 @@ $(document).ready(function () {
 
     $('#software_using_time_check').on('change', function () {
         if ($(this).prop('checked')) {
-            $('#software_using_time_select').prop('disabled', false)
+            software_using_time_select.prop('disabled', false)
         }
         else {
-            $('#software_using_time_select').val(0).prop('disabled', true)
+            software_using_time_select.val(0).prop('disabled', true)
         }
     })
 
@@ -48,16 +53,34 @@ $(document).ready(function () {
     })
 
     periods_fiscal_year_Ele.on('change', function () {
-        if ($(this).val() !== '' && periods_fiscal_month_start_Ele.val() !== '') {
-            get_option_for_sw_using_time($('#software_using_time_select'), parseInt(periods_fiscal_year_Ele.val()), parseInt(periods_fiscal_month_start_Ele.val()))
-            $('#periods-start-date').val(`${parseInt($(this).val())}-0${parseInt(periods_fiscal_month_start_Ele.val())}-01`)
+        if (periods_fiscal_year_Ele.val() !== '' && periods_fiscal_month_start_Ele.val() !== '0') {
+            software_using_time_select.removeClass('is-invalid').addClass('is-valid')
+            get_option_for_sw_using_time(software_using_time_select, parseInt(periods_fiscal_year_Ele.val()), parseInt(periods_fiscal_month_start_Ele.val()))
+            let month_data = periods_fiscal_month_start_Ele.val()
+            if (periods_fiscal_month_start_Ele.val().length === 1) {
+                month_data = 0 + periods_fiscal_month_start_Ele.val()
+            }
+            $('#periods-start-date').val(`01-${month_data}-${parseInt($(this).val())}`)
+        }
+        else {
+            software_using_time_select.removeClass('is-valid').addClass('is-invalid')
+            software_using_time_select.html(`<option value="0"></option>`)
         }
     })
 
     periods_fiscal_month_start_Ele.on('change', function () {
-        if ($(this).val() !== '' && periods_fiscal_year_Ele.val() !== '') {
-            get_option_for_sw_using_time($('#software_using_time_select'), parseInt(periods_fiscal_year_Ele.val()), parseInt(periods_fiscal_month_start_Ele.val()))
-            $('#periods-start-date').val(`${parseInt(periods_fiscal_year_Ele.val())}-0${parseInt($(this).val())}-01`)
+        if (periods_fiscal_year_Ele.val() !== '' && periods_fiscal_month_start_Ele.val() !== '0') {
+            software_using_time_select.removeClass('is-invalid').addClass('is-valid')
+            get_option_for_sw_using_time(software_using_time_select, parseInt(periods_fiscal_year_Ele.val()), parseInt(periods_fiscal_month_start_Ele.val()))
+            let month_data = periods_fiscal_month_start_Ele.val()
+            if (periods_fiscal_month_start_Ele.val().length === 1) {
+                month_data = 0 + periods_fiscal_month_start_Ele.val()
+            }
+            $('#periods-start-date').val(`01-${month_data}-${parseInt(periods_fiscal_year_Ele.val())}`)
+        }
+        else {
+            software_using_time_select.removeClass('is-valid').addClass('is-invalid')
+            software_using_time_select.html(`<option value="0"></option>`)
         }
     })
 
@@ -171,14 +194,30 @@ $(document).ready(function () {
         $('#periods-start-date-update').val(periods_start_date)
     })
 
+    function changeDateFormat(date) {
+        return moment(date, "DD-MM-YYYY").format("YYYY-MM-DD");
+    }
+
     function combinesDataPeriodsCreate(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $('#periods-title').val();
         frm.dataForm['code'] = $('#periods-code').val();
         frm.dataForm['fiscal_year'] = periods_fiscal_year_Ele.val();
-        frm.dataForm['start_date'] = $('#periods-start-date').val();
+        frm.dataForm['start_date'] = changeDateFormat($('#periods-start-date').val());
         frm.dataForm['software_start_using_time'] = $('#software_using_time_select option:selected').text();
+        frm.dataForm['sub_periods_type'] = sub_periods_type_select.val()
+        frm.dataForm['sub_period_data'] = []
+        generate_period_table.find('tbody tr').each(function (index) {
+            frm.dataForm['sub_period_data'].push({
+                'order': index,
+                'code': $(this).find('.code').text(),
+                'name': $(this).find('.name').text(),
+                'start_date': changeDateFormat($(this).find('.start_date').attr('data-value')),
+                'end_date': changeDateFormat($(this).find('.end_date').attr('data-value')),
+                'state': 0,
+            })
+        })
 
         console.log(frm.dataForm)
         return {
@@ -207,6 +246,121 @@ $(document).ready(function () {
             urlRedirect: frm.dataUrlRedirect,
         };
     }
+
+    function get_final_date_of_current_month(filter_year, filter_month) {
+        let currentDate = new Date();
+
+        let year = currentDate.getFullYear();
+
+        let nextMonth = currentDate.getMonth() + 1;
+
+        if (filter_year && filter_month) {
+            year = filter_year;
+            nextMonth = filter_month;
+        }
+
+        if (nextMonth > 11) {
+            year++;
+            nextMonth = 0;
+        }
+
+        let firstDayOfNextMonth = new Date(year, nextMonth, 0);
+
+        return firstDayOfNextMonth.getDate();
+    }
+
+    period_title_Ele.on('change', function () {
+        GeneratePeriodTable()
+    })
+
+    period_code_Ele.on('change', function () {
+        GeneratePeriodTable()
+    })
+
+    periods_fiscal_year_Ele.on('change', function () {
+        GeneratePeriodTable()
+    })
+
+    periods_fiscal_month_start_Ele.on('change', function () {
+        GeneratePeriodTable()
+    })
+
+    sub_periods_type_select.on('change', function () {
+        GeneratePeriodTable()
+    })
+
+    function GeneratePeriodTable() {
+        generate_period_table.DataTable().clear().destroy()
+        generate_period_table.find('.main-row').remove()
+        if (period_title_Ele.val() && period_code_Ele.val() && periods_fiscal_year_Ele.val() && periods_fiscal_month_start_Ele.val() !== '0') {
+            let first_month = $(software_using_time_select.find('option')[1]).text()
+            let last_month = $(software_using_time_select.find('option')[12]).text()
+
+            let from_value = `01-${first_month}`
+            let to_value = `${get_final_date_of_current_month(last_month.split('-')[1], last_month.split('-')[0])}-${last_month}`
+
+            generate_period_table.find('thead').append(`
+                <tr class="bg-secondary-light-5 main-row">
+                    <td><span class="badge badge-primary">${period_code_Ele.val()}</span></td>
+                    <td></td>
+                    <td><span class="text-primary">${period_title_Ele.val()}</span></td>
+                    <td>Opening</td>
+                    <td><i class="far fa-calendar-alt"></i> ${from_value}</td>
+                    <td><i class="far fa-calendar-alt"></i> ${to_value}</td>           
+                </tr>
+            `)
+
+            let key_sub = sub_periods_type_select.val() === '0' ? 'M' :
+                sub_periods_type_select.val() === '1' ? 'Q' :
+                sub_periods_type_select.val() === '2' ? 'Y' : '';
+
+            for (let i = 0; i < 12; i++) {
+                let sub_month = $(software_using_time_select.find('option')[i+1]).text()
+                let key_month = sub_month.split('-')[0]
+                let key_year = sub_month.split('-')[1]
+
+                generate_period_table.find('tbody').append(`
+                    <tr class="sub-periods-row">
+                        <td></td>
+                        <td><span class="code badge badge-soft-primary">${period_code_Ele.val()}-${key_sub}${key_month}</span></td>
+                        <td><span class="name text-primary">${period_code_Ele.val()}-${key_sub}${key_month}</span></td>
+                        <td>
+                            <div class="btn-group dropdown-sub-group">
+                                <button type="button" class="btn btn-soft-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
+                                    <i class="bi bi-door-open"></i> Open
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-door-open"></i> Open</a>
+                                    <a class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-door-closed-fill"></i> Close</a>
+                                    <a class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-lock"></i> Lock</a>
+                                </div>
+                            </div>                        
+                        </td>
+                        <td class="start_date" data-value="01-${sub_month}"><i class="far fa-calendar-alt"></i> 01-${sub_month}</td>
+                        <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}-${sub_month}"><i class="far fa-calendar-alt"></i> ${get_final_date_of_current_month(key_year, key_month)}-${sub_month}</td>           
+                    </tr>
+                `)
+            }
+            generate_period_table.DataTable( {
+                paging: false,
+                ordering: false,
+                searching: false,
+                scrollCollapse: true,
+                scrollY: '40vh'
+            });
+        }
+    }
+
+    // $(document).on("click", '.show-all-subs', function () {
+    //     let rows = generate_period_table.find('tbody .sub-periods-row')
+    //     let rows_state = rows.prop('hidden')
+    //     rows.prop('hidden', !rows_state)
+    // })
+
+    $(document).on("click", '.dropdown-sub-action', function () {
+        let state = $(this).html()
+        $(this).closest('.dropdown-sub-group').find('button').html(state)
+    })
 
     $('#form-create-periods-config').submit(function (event) {
         event.preventDefault();

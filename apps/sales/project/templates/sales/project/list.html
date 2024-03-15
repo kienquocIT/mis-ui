@@ -27,9 +27,10 @@
 
 {% block pageContent %}
     <!-- test gantt view-->
-    <div class="gantt-wrap" style="display: flex;">
-        <div class="has_resize" style="width:500px; height:566px;resize: horizontal;overflow: hidden;"></div>
-        <div class="gantt-wrap" style="resize: horizontal;overflow: hidden;">
+    <div class="gantt-wrap">
+        <div class="gantt-block gantt-left">
+        </div>
+        <div class="gantt-block gantt-right">
             <svg id="gantt"></svg>
         </div>
     </div>
@@ -38,82 +39,139 @@
 {% block jsFooter %}
 
     <script src="{% static 'vendors/frappe-gantt/dist/frappe-gantt.js' %}"></script>
+    <script src="{% static 'assets/project/js/frappe-gantt-custom.js' %}"></script>
     <script>
         $(document).ready(function(){
-            var s = new Gantt("#gantt", [{
-                id: "1",
-                name: "Draft the new contract document for sales team",
-                start: "2019-07-16",
-                end: "2019-07-20",
-                progress: 55
-            }, {
-                id: "2",
-                name: "Find out the old contract documents",
-                start: "2019-07-19",
-                end: "2019-07-21",
-                progress: 85,
-                dependencies: "1"
-            }, {
-                id: "3",
-                name: "Organize meeting with sales associates to understand need in detail",
-                start: "2019-07-21",
-                end: "2019-07-22",
-                progress: 80,
-                dependencies: "2"
-            }, {
-                id: "4",
-                name: "iOS App home page",
-                start: "2019-07-15",
-                end: "2019-07-17",
-                progress: 80
-            }, {
-                id: "5",
-                name: "Write a release note",
-                start: "2019-07-18",
-                end: "2019-07-22",
-                progress: 65,
-                dependencies: "4"
-            }, {
-                id: "6",
-                name: "Setup new sales project",
-                start: "2019-07-20",
-                end: "2019-07-31",
-                progress: 15
-            }, {
-                id: "7",
-                name: "Invite user to a project",
-                start: "2019-07-25",
-                end: "2019-07-26",
-                progress: 99,
-                dependencies: "6"
-            }, {
-                id: "8",
-                name: "Coordinate with business development",
-                start: "2019-07-28",
-                end: "2019-07-30",
-                progress: 35,
-                dependencies: "7"
-            }, {
-                id: "9",
-                name: "Kanban board design",
-                start: "2019-08-01",
-                end: "2019-08-03",
-                progress: 25,
-                dependencies: "8"
-            }, {
-                id: "10",
-                name: "Enable analytics tracking",
-                start: "2019-08-05",
-                end: "2019-08-07",
-                progress: 60,
-                dependencies: "9"
-            }], {
-                view_modes: ["Quarter Day", "Half Day", "Day", "Week", "Month"],
-                bar_height: 20,
-                padding: 18,
-                view_mode: "Week",
-                custom_popup_html: null
-            });
+            const LEFT_TITLE = [
+                {"code": 'title', "name": $.fn.gettext('Title'), width: 200},
+                {"code": 'data_from', "name": $.fn.gettext('Date from'), width: 100},
+                {"code": 'data_to', "name": $.fn.gettext('Date to'), width: 100},
+                {"code": 'work_status', "name": $.fn.gettext('Work status'), width: 100},
+            ]
+            var s = new Gantt(
+                "#gantt",
+                [
+                    {
+                        id: "11",
+                        name: "Khảo sát thị trường",
+                        start: "2023-07-16",
+                        end: "2023-12-20",
+                        progress: 0,
+                        objData: {
+                            id: "11",
+                            title: "Khảo sát thị trường",
+                            data_from: "2023-07-16",
+                            data_to: "2023-12-20",
+                            work_status: 'to do',
+                            is_group: true,
+                        }
+                    },
+                    {
+                        id: "1",
+                        name: "Draft the new contract document for sales team",
+                        start: "2023-07-16",
+                        end: "2023-07-20",
+                        progress: 55,
+                        objData: {
+                            relation_style: null,
+                            id: "1",
+                            title: "Draft the new contract document for sales team",
+                            data_from: "2023-07-16",
+                            data_to: "2023-07-20",
+                            work_status: 'to do',
+                        }
+                    },
+                    {
+                        id: "2",
+                        name: "Find out the old contract documents",
+                        start: "2023-07-19",
+                        end: "2023-07-21",
+                        progress: 85,
+                        dependencies: "1",
+                        objData: {
+                            relation_style: 'FS',
+                            id: "2",
+                            title: "Find out the old contract documents",
+                            data_from: "2023-07-19",
+                            data_to: "2023-07-21",
+                            work_status: 'pedding',
+                            dependencies: "1",
+                        }
+                    },
+                    {
+                        id: "3",
+                        name: "Organize meeting with sales associates to understand need in detail",
+                        start: "2023-07-21",
+                        end: "2023-07-22",
+                        progress: 80,
+                        dependencies: "2",
+                        objData: {
+                            relation_style: 'SS',
+                            id: "3",
+                            title: "Organize meeting with sales associates to understand need in detail",
+                            data_from: "2023-07-21",
+                            data_to: "2023-07-22",
+                            work_status: 'in progress',
+                            dependencies: "2",
+                        }
+                    },
+                    {
+                        id: "4",
+                        name: "iOS App home page",
+                        start: "2023-07-15",
+                        end: "2023-07-17",
+                        progress: 80,
+                        objData: {
+                            id: "4",
+                            title: "iOS App home page",
+                            data_from: "2023-07-15",
+                            data_to: "2023-07-17",
+                            work_status: 'completed'
+                        }
+                    },
+                    {
+                        id: "5",
+                        name: "Write a release note",
+                        start: "2023-07-18",
+                        end: "2024-07-22",
+                        progress: 65,
+                        dependencies: "4",
+                        objData: {
+                            id: "5",
+                            title: "Write a release note",
+                            data_from: "2023-07-18",
+                            data_to: "2024-07-22",
+                            work_status: 'inital',
+                            dependencies: "4"
+                        }
+                    },
+                    {
+                        id: "6",
+                        name: "Write a release note l2",
+                        start: "2023-07-18",
+                        end: "2023-07-22",
+                        progress: 55,
+                        dependencies: "5",
+                        objData: {
+                            id: "6",
+                            title: "Write a release note 2",
+                            data_from: "2023-07-18",
+                            data_to: "2023-07-22",
+                            work_status: 'inital',
+                            dependencies: "5"
+                        }
+                    }
+                ],
+                {
+                    view_modes: ["Quarter Day", "Half Day", "Day", "Week", "Month", "Year"],
+                    bar_height: 20,
+                    padding: 18,
+                    view_mode: "Week",
+                    custom_popup_html: null,
+                    left_list: LEFT_TITLE,
+                    call_left_render: fGanttCustom.setup_left_content
+                }
+            );
         });
     </script>
 {% endblock %}

@@ -588,7 +588,7 @@ var Gantt = (function () {
         update_bar_position({ x = null, width = null }) {
             const bar = this.$bar;
             if (x) {
-                // get all x values of parent task
+                // get all x values of parent task || lấy ra toạ độ x của all tag rect
                 const xs = this.task.dependencies.map((dep) => {
                     return this.gantt.get_bar(dep).$bar.getX();
                 });
@@ -956,7 +956,7 @@ var Gantt = (function () {
 
     class Gantt {
         constructor(wrapper, tasks, options) {
-            this.setup_wrapper(wrapper);
+            this.setup_wrapper(wrapper, options);
             this.setup_options(options);
             this.setup_tasks(tasks);
             // initialize with default view mode
@@ -964,7 +964,7 @@ var Gantt = (function () {
             this.bind_events();
         }
 
-        setup_wrapper(element) {
+        setup_wrapper(element, options) {
             let svg_element, wrapper_element;
 
             // CSS Selector is passed
@@ -994,7 +994,8 @@ var Gantt = (function () {
                     append_to: wrapper_element,
                     class: 'gantt',
                 });
-            } else {
+            }
+            else {
                 this.$svg = svg_element;
                 this.$svg.classList.add('gantt');
             }
@@ -1011,6 +1012,9 @@ var Gantt = (function () {
             this.popup_wrapper = document.createElement('div');
             this.popup_wrapper.classList.add('popup-wrapper');
             this.$container.appendChild(this.popup_wrapper);
+
+            // render header của block trái
+            fGanttCustom.setup_left_header(options)
         }
 
         setup_options(options) {
@@ -1090,6 +1094,9 @@ var Gantt = (function () {
                 if (!task.id) {
                     task.id = generate_id(task);
                 }
+                if (typeof task.objData === 'object' || !task.dependencies){
+
+                }
 
                 return task;
             });
@@ -1109,6 +1116,16 @@ var Gantt = (function () {
 
         refresh(tasks) {
             this.setup_tasks(tasks);
+            this.change_view_mode();
+        }
+
+        load_more(data){
+            // clone old task list
+            let temp = jQuery.extend([], this.tasks)
+            // render new task list
+            this.setup_tasks(data)
+            let temp2 = temp.concat(this.tasks)
+            this.setup_tasks(temp2)
             this.change_view_mode();
         }
 
@@ -1220,6 +1237,7 @@ var Gantt = (function () {
             this.map_arrows_on_bars();
             this.set_width();
             this.set_scroll_position();
+            this.make_custom_left();
         }
 
         setup_layers() {
@@ -1258,10 +1276,14 @@ var Gantt = (function () {
                 class: 'grid-background',
                 append_to: this.layers.grid,
             });
-
+            let main_svg_height = grid_height + this.options.padding + 100
             $.attr(this.$svg, {
-                height: grid_height + this.options.padding + 100,
+                height: main_svg_height,
                 width: '100%',
+            });
+            const gantt_height = main_svg_height + 17
+            $.attr($('.gantt-left'), {
+                style: "height: " + gantt_height + 'px'
             });
         }
 
@@ -1664,7 +1686,6 @@ var Gantt = (function () {
                         }
                     }
                     else if (is_dragging) {
-                        console.log('$bar.ox', $bar.ox)
                         bar.update_bar_position({ x: $bar.ox + $bar.finaldx });
                     }
                 });
@@ -1865,6 +1886,36 @@ var Gantt = (function () {
          */
         clear() {
             this.$svg.innerHTML = '';
+        }
+
+        make_custom_left(){
+            let div_outerwrap = jQuery('<div class="gantt-left-outerwrap"/>')
+            let div_wrapper = jQuery('<div class="gantt-left-container"/>')
+            let base_width = 0
+            let is_flag = true
+            for (let item of this.tasks){
+                let row = jQuery('<div class="grid-row"/>')
+                row.attr('data-id', item.id).css({"height": 38})
+                this.options.left_list.map((value) => {
+                    if (is_flag) base_width += value.width
+                    let item_html = jQuery('<p/>')
+                    item_html.text(item.objData[value.code]).css({"width": value.width})
+                    row.append(item_html)
+                })
+                is_flag = false
+                div_wrapper.append(row)
+            }
+            div_outerwrap.append(div_wrapper)
+            jQuery('.gantt-left').append(div_outerwrap)
+            let grid_height =
+                this.options.header_height +
+                this.options.padding +
+                (this.options.bar_height + this.options.padding) *
+                    this.tasks.length;
+            grid_height = grid_height + 58
+            div_wrapper.css({"min-width": base_width, "height": grid_height})
+            jQuery('.gantt-wrap-title').css({"min-width": base_width})
+            // todo here
         }
     }
 

@@ -397,10 +397,11 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($(form));
             let typeSelectEle = $('#select-box-type');
             if (typeSelectEle.val().length > 1) {
-                frm.dataForm['type'] = '2';
+                frm.dataForm['tax_type'] = '2';
             } else {
-                frm.dataForm['type'] = typeSelectEle.val()[0];
+                frm.dataForm['tax_type'] = typeSelectEle.val()[0];
             }
+            console.log(frm.dataForm)
             $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,

@@ -618,12 +618,9 @@ $(function () {
                     is_promotion_on_row = true;
                 }
             }
-            let order = 1;
-            let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
-            let tableLen = tableProduct[0].tBodies[0].rows.length;
-            if (tableLen !== 0 && !tableEmpty) {
-                order = (tableLen + 1);
-            }
+            let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
+            let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
+            let order = (TotalOrder - TotalGroup) + 1;
             let dataAdd = {
                 "tax": {
                     "id": "",
@@ -659,6 +656,7 @@ $(function () {
                 "is_promotion_on_row": is_promotion_on_row,
                 "promotion": {"id": $(this)[0].getAttribute('data-promotion-id')},
                 "is_shipping": false,
+                "shipping": {},
             };
             if (promotionResult.is_discount === true) { // DISCOUNT
                 if (promotionResult.row_apply_index !== null) { // on Specific product
@@ -712,7 +710,7 @@ $(function () {
                 }
             }
             // ReOrder STT
-            reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
+            reOrderSTT(tableProduct);
         });
 
 // SHIPPING
@@ -785,7 +783,7 @@ $(function () {
             // Load disabled
             QuotationLoadDataHandle.loadRowDisabled(newRow);
             // ReOrder STT
-            reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
+            reOrderSTT(tableProduct);
             // load again table cost
             QuotationLoadDataHandle.loadDataTableCost();
             QuotationLoadDataHandle.loadSetWFRuntimeZone();

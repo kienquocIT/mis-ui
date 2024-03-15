@@ -1164,10 +1164,11 @@ class QuotationLoadDataHandle {
         if ($form.attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.loadReInitPrice(dataPriceJSON);
         }
-        // load product group
+
         $table.DataTable().rows().every(function () {
             let row = this.node();
             QuotationCheckConfigHandle.checkConfig(false, row);
+            // load product group
             if (row.querySelector('.table-row-group')) {
                 let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
                 let areaGroupShow = row.querySelector('.area-group-show');
@@ -1197,6 +1198,12 @@ class QuotationLoadDataHandle {
                         }
                     }
                 }
+            }
+            if (row.querySelector('.table-row-shipping')) {
+                QuotationLoadDataHandle.loadRowDisabled(row);
+            }
+            if (row.querySelector('.table-row-promotion')) {
+                QuotationLoadDataHandle.loadRowDisabled(row);
             }
         });
         // load disabled if page detail
@@ -1282,264 +1289,6 @@ class QuotationLoadDataHandle {
                 }
             }
         });
-    };
-
-    static loadDataTablePaymentStage() {
-        let $table = $('#datable-quotation-payment-stage');
-        let term = [];
-        let dataSO = {};
-        let dataContract = {};
-        let dataDelivery = [];
-        let dataAcceptance = [];
-        let dataInvoice = {};
-        let valueSO = 0;
-        let tableProduct = document.getElementById('datable-quotation-create-product');
-        if (tableProduct.closest('.dataTables_scroll')) {
-            let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
-            if (tableProductFt.querySelector('.quotation-create-product-total-raw')) {
-                valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
-            }
-        }
-        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-            if (dataSelected) {
-                term = dataSelected?.['term'];
-            }
-        }
-        if (term.length > 0) {
-            for (let termData of term) {
-                let value = 0;
-                let ratio = 0;
-                let numberOfDay = 0;
-                let is_balance = false;
-                if (termData?.['unit_type'] === 0) {  // ratio
-                    if (termData?.['value']) {
-                       ratio = parseFloat(termData?.['value']);
-                       value = (ratio * valueSO) / 100;
-                    }
-                    if (termData?.['no_of_days']) {
-                        numberOfDay = parseInt(termData?.['no_of_days']);
-                    }
-                } else if (termData?.['unit_type'] === 2) {  // balance
-                    is_balance = true;
-                }
-                if (termData['after'] === 1) {  // contract
-                    dataContract = {
-                        'stage': 1,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    }
-                } else if (termData['after'] === 2) {  // delivery
-                    dataDelivery.push({
-                        'stage': 2,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    })
-                } else if (termData['after'] === 3) {  // invoice
-                    dataInvoice = {
-                        'stage': 4,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    }
-                } else if (termData['after'] === 4) {  // final acceptance
-                    dataAcceptance.push({
-                        'stage': 3,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    })
-                } else if (termData['after'] === 6) {  // so
-                    dataSO = {
-                        'stage': 0,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    }
-                }
-            }
-            if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
-                let data = [];
-                if (Object.keys(dataSO).length > 0) {
-                    data.push(dataSO);
-                } else {
-                    data.push({
-                        'stage': 0,
-                        'date_type': 6,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                if (Object.keys(dataContract).length > 0) {
-                    data.push(dataContract);
-                } else {
-                    data.push({
-                        'stage': 1,
-                        'date_type': 1,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                if (dataDelivery.length > 0) {
-                    for (let deli of dataDelivery) {
-                        if (Object.keys(deli).length > 0) {
-                            data.push(deli);
-                        }
-                    }
-                } else {
-                    data.push({
-                        'stage': 2,
-                        'date_type': 2,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                if (dataAcceptance.length > 0) {
-                    for (let acc of dataAcceptance) {
-                        if (Object.keys(acc).length > 0) {
-                            data.push(acc);
-                        }
-                    }
-                } else {
-                    data.push({
-                        'stage': 3,
-                        'date_type': 4,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                if (Object.keys(dataInvoice).length > 0) {
-                    data.push(dataInvoice);
-                } else {
-                    data.push({
-                        'stage': 4,
-                        'date_type': 3,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                let totalRatio = 0;
-                $table.DataTable().clear().draw();
-                $table.DataTable().rows.add(data).draw();
-                // load date picker
-                $table.DataTable().rows().every(function () {
-                    let row = this.node();
-                    if (row.querySelector('.table-row-date')) {
-                        $(row.querySelector('.table-row-date')).daterangepicker({
-                            singleDatePicker: true,
-                            timepicker: false,
-                            showDropdowns: false,
-                            minYear: 2023,
-                            locale: {
-                                format: 'DD/MM/YYYY'
-                            },
-                            maxYear: parseInt(moment().format('YYYY'), 10),
-                        });
-                        $(row.querySelector('.table-row-date')).val(null).trigger('change');
-                        row.querySelector('.table-row-due-date').innerHTML = '';
-                    }
-                    // calculate total ratio
-                    let eleRatio = row.querySelector('.table-row-ratio');
-                    if (eleRatio) {
-                        if (eleRatio.getAttribute('data-ratio')) {
-                            totalRatio += parseFloat(eleRatio.getAttribute('data-ratio'));
-                        }
-                    }
-                    // add data stage to row
-                    let eleStage = row.querySelector('.table-row-stage');
-                    if (eleStage) {
-                        let dataStage = eleStage.getAttribute('data-stage');
-                        if (dataStage) {
-                            row.setAttribute('data-row-stage', dataStage);
-                        }
-                    }
-                })
-                // check is_balance then update ratio for row balance
-                let eleBalance = $table[0].querySelector('[data-balance="true"]');
-                if (eleBalance) {
-                    let row = eleBalance.closest('tr');
-                    let eleRatio = row.querySelector('.table-row-ratio');
-                    if (eleRatio) {
-                        eleRatio.setAttribute('data-ratio', (100 - totalRatio));
-                        eleRatio.innerHTML = String((100 - totalRatio)) + ' %';
-                    }
-                }
-            } else {  // if dataTable is not empty then update data
-                $table.DataTable().rows().every(function () {
-                    let row = this.node();
-                    let eleStage = row.querySelector('.table-row-stage');
-                    if (eleStage) {
-                        let dataRowRaw = eleStage.getAttribute('data-row');
-                        if (dataRowRaw) {
-                            let dataRow = JSON.parse(dataRowRaw);
-                            if (dataRow?.['stage'] !== 0) {
-                                let eleRatio = row.querySelector('.table-row-ratio');
-                                let eleValue = row.querySelector('.table-row-value');
-                                if (eleRatio && eleValue) {
-                                    let value = (parseFloat(eleRatio.getAttribute('data-ratio')) * valueSO) / 100;
-                                    eleValue.setAttribute('data-init-money', String(value));
-                                }
-                            }
-                        }
-                    }
-                })
-            }
-        }
-        // mask money
-        $.fn.initMaskMoney2();
-        return true;
     };
 
     static loadAddPaymentStage() {
@@ -2291,7 +2040,9 @@ class QuotationLoadDataHandle {
                             boxRender.innerHTML = dataRow?.['product']?.['title'];
                             boxRender.setAttribute('title', dataRow?.['product']?.['title']);
                         }
-                        QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+                        if (row.querySelector('.table-row-item')) {
+                            QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+                        }
                     }
                     if (table[0].id === "datable-quotation-create-cost") {  // cost
                         QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
@@ -2517,7 +2268,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-gift text-brown"></i>
+                                                <i class="fas fa-gift text-primary"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row.product.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
@@ -2536,7 +2287,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-shipping-fast text-teal"></i>
+                                                <i class="fas fa-shipping-fast text-primary"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-shipping-price-margin="${price_margin}" data-bs-toggle="tooltip" title="${row?.['product_title']}" disabled>

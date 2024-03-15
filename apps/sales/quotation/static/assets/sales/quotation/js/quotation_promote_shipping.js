@@ -387,6 +387,7 @@ class promotionHandle {
             'product_price': 0
         };
         let tableProd = $('#datable-quotation-create-product');
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let shippingFee = 0;
         let eleShipping = tableProd[0].querySelector('.table-row-shipping');
         if (eleShipping) {
@@ -425,56 +426,82 @@ class promotionHandle {
             } else if (condition?.['is_on_order'] === true) { // discount on whole order
                 if (condition?.['is_on_percent'] === true) { // discount by percent
                     if (condition.is_before_tax === true) {
-                        let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
-                        let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
-                        let total = parseFloat(preTax) - parseFloat(discount);
-                        // check if shippingFee then minus
-                        if (shippingFee > 0) {
-                            total = (parseFloat(preTax) - parseFloat(discount)) - shippingFee;
-                        }
-                        DiscountAmount = ((total * parseFloat(condition.percent_discount)) / 100);
-                        // check discount amount with max discount amount & re calculate discount_rate_on_order
-                        discount_rate_on_order = parseFloat(condition.percent_discount);
-                        if (DiscountAmount > parseFloat(condition.max_amount)) {
-                            DiscountAmount = parseFloat(condition.max_amount)
-                            discount_rate_on_order = ((DiscountAmount / total) * 100)
+                        if (tableProductWrapper) {
+                            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                            let elePreTaxRaw = tableProductFt?.querySelector('.quotation-create-product-pretax-amount-raw');
+                            let eleDiscountRaw = tableProductFt?.querySelector('.quotation-create-product-discount-amount-raw');
+                            if (elePreTaxRaw && eleDiscountRaw) {
+                                let preTax = elePreTaxRaw.value;
+                                let discount = eleDiscountRaw.value;
+                                let total = parseFloat(preTax) - parseFloat(discount);
+                                // check if shippingFee then minus
+                                if (shippingFee > 0) {
+                                    total = (parseFloat(preTax) - parseFloat(discount)) - shippingFee;
+                                }
+                                DiscountAmount = ((total * parseFloat(condition.percent_discount)) / 100);
+                                // check discount amount with max discount amount & re calculate discount_rate_on_order
+                                discount_rate_on_order = parseFloat(condition.percent_discount);
+                                if (DiscountAmount > parseFloat(condition.max_amount)) {
+                                    DiscountAmount = parseFloat(condition.max_amount)
+                                    discount_rate_on_order = ((DiscountAmount / total) * 100)
+                                }
+                            }
                         }
                     } else if (condition.is_after_tax === true) {
-                        let total = document.getElementById('quotation-create-product-total-raw').value;
-                        // check if shippingFee then minus
-                        if (shippingFee > 0) {
-                            total = parseFloat(document.getElementById('quotation-create-product-total-raw').value) - shippingFee;
+                        if (tableProductWrapper) {
+                            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                            let eleTotal = tableProductFt?.querySelector('.quotation-create-product-total-raw');
+                            if (eleTotal) {
+                                let total = eleTotal.value;
+                                // check if shippingFee then minus
+                                if (shippingFee > 0) {
+                                    total = parseFloat(eleTotal.value) - shippingFee;
+                                }
+                                DiscountAmount = ((parseFloat(total) * parseFloat(condition.percent_discount)) / 100);
+                                // check discount amount with max discount amount & re calculate discount_rate_on_order
+                                discount_rate_on_order = parseFloat(condition.percent_discount);
+                                if (DiscountAmount > parseFloat(condition.max_amount)) {
+                                    DiscountAmount = parseFloat(condition.max_amount)
+                                    discount_rate_on_order = ((DiscountAmount / total) * 100)
+                                }
+                                is_before_tax = false;
+                            }
                         }
-                        DiscountAmount = ((parseFloat(total) * parseFloat(condition.percent_discount)) / 100);
-                        // check discount amount with max discount amount & re calculate discount_rate_on_order
-                        discount_rate_on_order = parseFloat(condition.percent_discount);
-                        if (DiscountAmount > parseFloat(condition.max_amount)) {
-                            DiscountAmount = parseFloat(condition.max_amount)
-                            discount_rate_on_order = ((DiscountAmount / total) * 100)
-                        }
-                        is_before_tax = false;
                     }
                 } else if (condition?.['is_fix_amount'] === true) { // discount by fix amount
                     if (condition.is_before_tax === true) {
                         DiscountAmount = condition.fix_value;
-                        // get promotion rate
-                        let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
-                        let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
-                        let total = parseFloat(preTax) - parseFloat(discount);
-                        // check if shippingFee then minus
-                        if (shippingFee > 0) {
-                            total = (parseFloat(preTax) - parseFloat(discount)) - shippingFee;
+                        if (tableProductWrapper) {
+                            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                            let elePreTaxRaw = tableProductFt?.querySelector('.quotation-create-product-pretax-amount-raw');
+                            let eleDiscountRaw = tableProductFt?.querySelector('.quotation-create-product-discount-amount-raw');
+                            if (elePreTaxRaw && eleDiscountRaw) {
+                                // get promotion rate
+                                let preTax = elePreTaxRaw.value;
+                                let discount = eleDiscountRaw.value;
+                                let total = parseFloat(preTax) - parseFloat(discount);
+                                // check if shippingFee then minus
+                                if (shippingFee > 0) {
+                                    total = (parseFloat(preTax) - parseFloat(discount)) - shippingFee;
+                                }
+                                discount_rate_on_order = ((DiscountAmount / total) * 100);
+                            }
                         }
-                        discount_rate_on_order = ((DiscountAmount / total) * 100)
                     } else if (condition.is_after_tax === true) {
                         DiscountAmount = condition.fix_value;
-                        let total = document.getElementById('quotation-create-product-total-raw').value;
-                        // check if shippingFee then minus
-                        if (shippingFee > 0) {
-                            total = parseFloat(document.getElementById('quotation-create-product-total-raw').value) - shippingFee;
+                        if (tableProductWrapper) {
+                            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                            let eleTotal = tableProductFt?.querySelector('.quotation-create-product-total-raw');
+                            if (eleTotal) {
+                                let total = eleTotal.value;
+                                // check if shippingFee then minus
+                                if (shippingFee > 0) {
+                                    total = parseFloat(eleTotal.value) - shippingFee;
+                                }
+                                discount_rate_on_order = ((DiscountAmount / total) * 100);
+                                is_before_tax = false;
+                            }
                         }
-                        discount_rate_on_order = ((DiscountAmount / total) * 100);
-                        is_before_tax = false
                     }
                 }
             }
@@ -510,161 +537,165 @@ class promotionHandle {
     }
 
     reCalculateIfPromotion(table, promotion_discount_rate, promotion_amount, is_before_tax = true) {
-        let eleTaxes = document.getElementById('quotation-create-product-taxes');
-        let eleTaxesRaw = document.getElementById('quotation-create-product-taxes-raw');
-        let taxAmountTotal = 0;
-        if (is_before_tax === true) {
-            for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-                let row = table[0].tBodies[0].rows[i];
-                if (!row.querySelector('.table-row-shipping')) {
-                    if (row.querySelector('.table-row-price')) {
-                        // setup data
-                        let price = 0;
-                        let quantity = 0;
-                        let elePrice = row.querySelector('.table-row-price');
-                        if (elePrice) {
-                            price = $(elePrice).valCurrency();
-                        }
-                        let eleQuantity = row.querySelector('.table-row-quantity');
-                        if (eleQuantity) {
-                            if (eleQuantity.value) {
-                                quantity = parseFloat(eleQuantity.value)
-                            } else if (!eleQuantity.value || eleQuantity.value === "0") {
-                                quantity = 0
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        if (tableProductWrapper) {
+            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+            let eleTaxes = tableProductFt?.querySelector('.quotation-create-product-taxes');
+            let eleTaxesRaw = tableProductFt?.querySelector('.quotation-create-product-taxes-raw');
+            let eleTotal = tableProductFt?.querySelector('.quotation-create-product-total');
+            let eleTotalRaw = tableProductFt?.querySelector('.quotation-create-product-total-raw');
+            let elePretaxAmountRaw = tableProductFt?.querySelector('.quotation-create-product-pretax-amount-raw');
+            let eleDiscountRaw = tableProductFt?.querySelector('.quotation-create-product-discount-amount-raw');
+            let eleRevenueBT = tableProductFt?.querySelector('.quotation-final-revenue-before-tax');
+
+            let taxAmountTotal = 0;
+            if (is_before_tax === true) {
+                for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+                    let row = table[0].tBodies[0].rows[i];
+                    if (!row.querySelector('.table-row-shipping')) {
+                        if (row.querySelector('.table-row-price')) {
+                            // setup data
+                            let price = 0;
+                            let quantity = 0;
+                            let elePrice = row.querySelector('.table-row-price');
+                            if (elePrice) {
+                                price = $(elePrice).valCurrency();
                             }
-                        }
-                        let tax = 0;
-                        let discount = 0;
-                        let subtotalPlus = 0;
-                        let eleTax = row.querySelector('.table-row-tax');
-                        if (eleTax) {
-                            if ($(eleTax).val()) {
-                                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-                                if (dataTax.hasOwnProperty('rate')) {
-                                    tax = parseInt(dataTax.rate);
+                            let eleQuantity = row.querySelector('.table-row-quantity');
+                            if (eleQuantity) {
+                                if (eleQuantity.value) {
+                                    quantity = parseFloat(eleQuantity.value)
+                                } else if (!eleQuantity.value || eleQuantity.value === "0") {
+                                    quantity = 0
                                 }
                             }
-                        }
-                        // calculate discount & tax
-                        let eleDiscount = row.querySelector('.table-row-discount');
-                        let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
-                        if (eleDiscount && eleDiscountAmount) {
-                            // apply discount ON ROW
-                            if (eleDiscount.value) {
-                                discount = parseFloat(eleDiscount.value)
-                            } else if (!eleDiscount.value || eleDiscount.value === "0") {
-                                discount = 0
+                            let tax = 0;
+                            let discount = 0;
+                            let subtotalPlus = 0;
+                            let eleTax = row.querySelector('.table-row-tax');
+                            if (eleTax) {
+                                if ($(eleTax).val()) {
+                                    let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                                    if (dataTax.hasOwnProperty('rate')) {
+                                        tax = parseInt(dataTax.rate);
+                                    }
+                                }
                             }
-                            let discountAmount = ((price * discount) / 100);
-                            let priceDiscountOnRow = (price - discountAmount);
-                            // apply discount ON TOTAL
-                            let discountRateOnTotal = 0;
-                            if (document.getElementById('quotation-create-product-discount').value) {
-                                discountRateOnTotal = parseFloat(document.getElementById('quotation-create-product-discount').value)
-                            }
-                            let discountAmountOnTotal = ((priceDiscountOnRow * discountRateOnTotal) / 100);
-                            let priceAfterDisCountTotal = (priceDiscountOnRow - discountAmountOnTotal);
-                            // apply discount PROMOTION
-                            let discountAmountPromotion = ((priceAfterDisCountTotal * promotion_discount_rate) / 100);
-                            let finalPrice = (priceAfterDisCountTotal - discountAmountPromotion);
-                            subtotalPlus = (finalPrice * quantity);
-                            // ReCalculate tax
-                            if (row.querySelector('.table-row-tax-amount')) {
-                                let taxAmount = ((subtotalPlus * tax) / 100);
-                                taxAmountTotal += taxAmount;
+                            // calculate discount & tax
+                            let eleDiscount = row.querySelector('.table-row-discount');
+                            let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+                            if (eleDiscount && eleDiscountAmount) {
+                                // apply discount ON ROW
+                                if (eleDiscount.value) {
+                                    discount = parseFloat(eleDiscount.value)
+                                } else if (!eleDiscount.value || eleDiscount.value === "0") {
+                                    discount = 0
+                                }
+                                let discountAmount = ((price * discount) / 100);
+                                let priceDiscountOnRow = (price - discountAmount);
+                                // apply discount ON TOTAL
+                                let discountRateOnTotal = 0;
+                                let eleDiscountRateOnTotal = tableProductFt?.querySelector('.quotation-create-product-discount');
+                                if (eleDiscountRateOnTotal) {
+                                    discountRateOnTotal = parseFloat(eleDiscountRateOnTotal.value);
+                                }
+                                let discountAmountOnTotal = ((priceDiscountOnRow * discountRateOnTotal) / 100);
+                                let priceAfterDisCountTotal = (priceDiscountOnRow - discountAmountOnTotal);
+                                // apply discount PROMOTION
+                                let discountAmountPromotion = ((priceAfterDisCountTotal * promotion_discount_rate) / 100);
+                                let finalPrice = (priceAfterDisCountTotal - discountAmountPromotion);
+                                subtotalPlus = (finalPrice * quantity);
+                                // ReCalculate tax
+                                if (row.querySelector('.table-row-tax-amount')) {
+                                    let taxAmount = ((subtotalPlus * tax) / 100);
+                                    taxAmountTotal += taxAmount;
+                                }
                             }
                         }
                     }
                 }
-            }
-        } else if (is_before_tax === false) {
-            let totalTaxAmountMinus = 0;
-            for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-                let row = table[0].tBodies[0].rows[i];
-                if (!row.querySelector('.table-row-shipping')) {
-                    if (row.querySelector('.table-row-price')) {
-                        // setup data
-                        let price = 0;
-                        let quantity = 0;
-                        let elePrice = row.querySelector('.table-row-price');
-                        if (elePrice) {
-                            price = $(elePrice).valCurrency();
-                        }
-                        let eleQuantity = row.querySelector('.table-row-quantity');
-                        if (eleQuantity) {
-                            if (eleQuantity.value) {
-                                quantity = parseFloat(eleQuantity.value)
-                            } else if (!eleQuantity.value || eleQuantity.value === "0") {
-                                quantity = 0
+            } else if (is_before_tax === false) {
+                let totalTaxAmountMinus = 0;
+                for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+                    let row = table[0].tBodies[0].rows[i];
+                    if (!row.querySelector('.table-row-shipping')) {
+                        if (row.querySelector('.table-row-price')) {
+                            // setup data
+                            let price = 0;
+                            let quantity = 0;
+                            let elePrice = row.querySelector('.table-row-price');
+                            if (elePrice) {
+                                price = $(elePrice).valCurrency();
                             }
-                        }
-                        let tax = 0;
-                        let discount = 0;
-                        let subtotalPlus = 0;
-                        let eleTax = row.querySelector('.table-row-tax');
-                        if (eleTax) {
-                            if ($(eleTax).val()) {
-                                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-                                if (dataTax.hasOwnProperty('rate')) {
-                                    tax = parseInt(dataTax.rate);
+                            let eleQuantity = row.querySelector('.table-row-quantity');
+                            if (eleQuantity) {
+                                if (eleQuantity.value) {
+                                    quantity = parseFloat(eleQuantity.value)
+                                } else if (!eleQuantity.value || eleQuantity.value === "0") {
+                                    quantity = 0
                                 }
                             }
-                        }
-                        // calculate discount & tax
-                        let eleDiscount = row.querySelector('.table-row-discount');
-                        let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
-                        if (eleDiscount && eleDiscountAmount) {
-                            // apply discount ON ROW
-                            if (eleDiscount.value) {
-                                discount = parseFloat(eleDiscount.value)
-                            } else if (!eleDiscount.value || eleDiscount.value === "0") {
-                                discount = 0
+                            let tax = 0;
+                            let discount = 0;
+                            let subtotalPlus = 0;
+                            let eleTax = row.querySelector('.table-row-tax');
+                            if (eleTax) {
+                                if ($(eleTax).val()) {
+                                    let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                                    if (dataTax.hasOwnProperty('rate')) {
+                                        tax = parseInt(dataTax.rate);
+                                    }
+                                }
                             }
-                            let discountAmount = ((price * discount) / 100);
-                            let priceDiscountOnRow = (price - discountAmount);
-                            // apply discount ON TOTAL
-                            let discountRateOnTotal = 0;
-                            if (document.getElementById('quotation-create-product-discount').value) {
-                                discountRateOnTotal = parseFloat(document.getElementById('quotation-create-product-discount').value)
-                            }
-                            let discountAmountOnTotal = ((priceDiscountOnRow * discountRateOnTotal) / 100);
-                            let finalPrice = (priceDiscountOnRow - discountAmountOnTotal);
-                            subtotalPlus = (finalPrice * quantity);
-                            // ReCalculate tax
-                            if (row.querySelector('.table-row-tax-amount')) {
-                                let taxAmount = ((subtotalPlus * tax) / 100);
-                                let subtotalPlusAfterTax = subtotalPlus + taxAmount;
-                                let discountAmountPromotion = ((subtotalPlusAfterTax * promotion_discount_rate) / 100)
-                                totalTaxAmountMinus += ((discountAmountPromotion * tax) / 100);
+                            // calculate discount & tax
+                            let eleDiscount = row.querySelector('.table-row-discount');
+                            let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+                            if (eleDiscount && eleDiscountAmount) {
+                                // apply discount ON ROW
+                                if (eleDiscount.value) {
+                                    discount = parseFloat(eleDiscount.value)
+                                } else if (!eleDiscount.value || eleDiscount.value === "0") {
+                                    discount = 0
+                                }
+                                let discountAmount = ((price * discount) / 100);
+                                let priceDiscountOnRow = (price - discountAmount);
+                                // apply discount ON TOTAL
+                                let discountRateOnTotal = 0;
+                                let eleDiscountRateOnTotal = tableProductFt?.querySelector('.quotation-create-product-discount');
+                                if (eleDiscountRateOnTotal) {
+                                    discountRateOnTotal = parseFloat(eleDiscountRateOnTotal.value)
+                                }
+                                let discountAmountOnTotal = ((priceDiscountOnRow * discountRateOnTotal) / 100);
+                                let finalPrice = (priceDiscountOnRow - discountAmountOnTotal);
+                                subtotalPlus = (finalPrice * quantity);
+                                // ReCalculate tax
+                                if (row.querySelector('.table-row-tax-amount')) {
+                                    let taxAmount = ((subtotalPlus * tax) / 100);
+                                    let subtotalPlusAfterTax = subtotalPlus + taxAmount;
+                                    let discountAmountPromotion = ((subtotalPlusAfterTax * promotion_discount_rate) / 100)
+                                    totalTaxAmountMinus += ((discountAmountPromotion * tax) / 100);
+                                }
                             }
                         }
                     }
                 }
+                taxAmountTotal = parseFloat(eleTaxesRaw.value) - totalTaxAmountMinus;
             }
-            taxAmountTotal = parseFloat(eleTaxesRaw.value) - totalTaxAmountMinus;
+            // apply Final Tax
+            $(eleTaxes).attr('data-init-money', String(taxAmountTotal));
+            eleTaxesRaw.value = taxAmountTotal;
+            // ReCalculate TOTAL
+            let totalFinal = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) - parseFloat(promotion_amount) + taxAmountTotal);
+            eleRevenueBT.value = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) - parseFloat(promotion_amount));
+            if (is_before_tax === false) { // CASE AFTER TAX
+                totalFinal = (parseFloat(eleTotalRaw.value) - promotion_amount);
+                eleRevenueBT.value = (totalFinal - taxAmountTotal);
+            }
+            // apply Final Total
+            $(eleTotal).attr('data-init-money', String(totalFinal));
+            eleTotalRaw.value = totalFinal;
+            $.fn.initMaskMoney2();
         }
-        // apply Final Tax
-        $(eleTaxes).attr('data-init-money', String(taxAmountTotal));
-        eleTaxesRaw.value = taxAmountTotal;
-
-        let eleTotal = document.getElementById('quotation-create-product-total');
-        let eleTotalRaw = document.getElementById('quotation-create-product-total-raw');
-
-        // ReCalculate TOTAL
-        let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
-        let eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
-        let totalFinal = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) - parseFloat(promotion_amount) + taxAmountTotal);
-        document.getElementById('quotation-final-revenue-before-tax').value = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) - parseFloat(promotion_amount));
-        if (is_before_tax === false) { // CASE AFTER TAX
-            totalFinal = (parseFloat(eleTotalRaw.value) - promotion_amount);
-            document.getElementById('quotation-final-revenue-before-tax').value = (totalFinal - taxAmountTotal);
-        }
-
-        // apply Final Total
-        $(eleTotal).attr('data-init-money', String(totalFinal));
-        eleTotalRaw.value = totalFinal;
-
-        $.fn.initMaskMoney2();
     }
 
     checkPromotionIfSubmit(promotion_id, customer_id = null) {
@@ -812,24 +843,27 @@ class shippingHandle {
     }
 
     reCalculateIfShipping(shipping_price) {
-        let elePretaxAmount = document.getElementById('quotation-create-product-pretax-amount');
-        let eleTotalAmount = document.getElementById('quotation-create-product-total');
-        let elePretaxAmountRaw = document.getElementById('quotation-create-product-pretax-amount-raw');
-        let eleDiscountAmountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
-        let eleTaxAmountRaw = document.getElementById('quotation-create-product-taxes-raw');
-        let eleTotalAmountRaw = document.getElementById('quotation-create-product-total-raw');
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        if (tableProductWrapper) {
+            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+            let elePretaxAmount = tableProductFt?.querySelector('.quotation-create-product-pretax-amount');
+            let eleTotalAmount = tableProductFt?.querySelector('.quotation-create-product-total');
+            let elePretaxAmountRaw = tableProductFt?.querySelector('.quotation-create-product-pretax-amount-raw');
+            let eleDiscountAmountRaw = tableProductFt?.querySelector('.quotation-create-product-discount-amount-raw');
+            let eleTaxAmountRaw = tableProductFt?.querySelector('.quotation-create-product-taxes-raw');
+            let eleTotalAmountRaw = tableProductFt?.querySelector('.quotation-create-product-total-raw');
+            let eleRevenueBT = tableProductFt?.querySelector('.quotation-final-revenue-before-tax');
+            // Re calculate pretax, discount, total
+            let pretaxNew = parseFloat(elePretaxAmountRaw.value) + parseFloat(shipping_price);
+            let totalNew = (pretaxNew - parseFloat(eleDiscountAmountRaw.value) + parseFloat(eleTaxAmountRaw.value));
+            eleRevenueBT.value = (pretaxNew - parseFloat(eleDiscountAmountRaw.value));
+            // Apply new pretax, total
+            $(elePretaxAmount).attr('data-init-money', String(pretaxNew));
+            elePretaxAmountRaw.value = pretaxNew;
+            $(eleTotalAmount).attr('data-init-money', String(totalNew));
+            eleTotalAmountRaw.value = totalNew;
 
-        // Re calculate pretax, discount, total
-        let pretaxNew = parseFloat(elePretaxAmountRaw.value) + parseFloat(shipping_price);
-        let totalNew = (pretaxNew - parseFloat(eleDiscountAmountRaw.value) + parseFloat(eleTaxAmountRaw.value));
-        document.getElementById('quotation-final-revenue-before-tax').value = (pretaxNew - parseFloat(eleDiscountAmountRaw.value));
-
-        // Apply new pretax, total
-        $(elePretaxAmount).attr('data-init-money', String(pretaxNew));
-        elePretaxAmountRaw.value = pretaxNew;
-        $(eleTotalAmount).attr('data-init-money', String(totalNew));
-        eleTotalAmountRaw.value = totalNew;
-
-        $.fn.initMaskMoney2();
+            $.fn.initMaskMoney2();
+        }
     }
 }

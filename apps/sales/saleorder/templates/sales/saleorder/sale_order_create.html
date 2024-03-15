@@ -84,6 +84,7 @@
                                             data-link-detail="{% url "AccountDetail" 1 %}"
                                             name="customer"
                                             data-keyResp="account_sale_list"
+                                            data-keyText="name"
                                             required
                                     ></select>
                                 </div>
@@ -899,6 +900,12 @@
             type="text"
             id="quotation-copy-discount-on-total"
             value="0"
+    >
+    <input
+            type="text"
+            id="data-init-customer"
+            data-url="{% url "AccountForSaleListAPI" %}"
+            data-method="GET"
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}

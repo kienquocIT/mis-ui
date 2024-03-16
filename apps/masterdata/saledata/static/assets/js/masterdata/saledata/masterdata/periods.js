@@ -7,6 +7,10 @@ $(document).ready(function () {
     const sub_periods_type_select = $('#sub-periods-select')
     const period_title_Ele = $('#periods-title')
     const period_code_Ele = $('#periods-code')
+    const period_title_update_Ele = $('#periods-title-update')
+    const period_code_update_Ele = $('#periods-code-update')
+    const periods_fiscal_year_update_Ele = $('#periods-fiscal-year-update')
+    const periods_fiscal_month_start_update_Ele = $('#periods-fiscal-month-start-update')
 
     function get_option_for_sw_using_time(ele, fiscal_year, fiscal_month_start, selected) {
         ele.html(`<option value="0"></option>`)
@@ -21,10 +25,12 @@ $(document).ready(function () {
                 month = '0' + month.toString()
             }
             let option_text = month.toString() + '-' + year.toString()
-            if (option_text === selected) {
-                ele.append(`
-                    <option value="${1}" selected>${option_text}</option>
-                `)
+            if (selected) {
+                if (option_text === selected.replace('/', '-')) {
+                    ele.append(`
+                        <option value="${1}" selected>${option_text}</option>
+                    `)
+                }
             }
             else {
                 ele.append(`
@@ -99,6 +105,7 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('periods_list')) {
+                            console.log(resp.data['periods_list'])
                             return resp.data['periods_list'] ? resp.data['periods_list'] : []
                         }
                         throw Error('Call data raise errors.')
@@ -106,43 +113,58 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'wrap-text',
                         render: () => {
                             return '';
                         }
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<span class="badge badge-primary">${row?.['code']}</span>`
                         }
                     },
                     {
-                        data: 'title',
-                        className: 'wrap-text w-30',
+                        data: 'subs',
+                        className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="text-primary"><b>${row?.['title']}</b></span>`
+                            return `<a href="#" data-period-id="${row?.['id']}" data-state="hidden" class="expand-sub-rows text-secondary">
+                                        <script>${JSON.stringify(row?.['subs'])}</script>
+                                        <b><i class="fas fa-angle-down"></i></b>
+                                    </a>`
                         }
                     },
                     {
-                        data: 'fiscal_year',
-                        className: 'wrap-text w-20',
+                        data: 'period_name',
+                        className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="initial-wrap">${row?.['fiscal_year']}</span>`
+                            return `<span class="text-secondary"><b>${row?.['title']}</b></span>`
                         }
                     },
                     {
-                        data: 'start_date',
-                        className: 'wrap-text w-25',
+                        data: 'status',
+                        className: 'wrap-text',
                         render: (data, type, row,) => {
-                            let parsedDate = new Date(row?.['start_date']);
-                            let formattedDate = `${parsedDate.getDate().toString().padStart(2, '0')}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getFullYear()}`;
-                            return `<span class="initial-wrap">${formattedDate}</span>`
+                            let state = ['Opening', 'Closed']
+                            let state_color = ['primary', 'secondary']
+                            return `<span class="text-${state_color[row?.['state']]}"><b>${state[row?.['state']]}</b></span>`
                         }
                     },
                     {
-                        className: 'wrap-text w-10 text-center',
+                        className: 'from',
+                        render: (data, type, row) => {
+                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${row?.['subs'][0]?.['start_date']}</span>`
+                        }
+                    },
+                    {
+                        className: 'to',
+                        render: (data, type, row) => {
+                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${row?.['subs'][row?.['subs'].length-1]?.['end_date']}</span>`
+                        }
+                    },
+                    {
+                        className: 'action',
                         render: (data, type, row) => {
                             return `<button data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}" data-fiscal-year="${row?.['fiscal_year']}" data-space-month="${row?.['space_month']}" data-start-date="${row?.['start_date']}" data-is-sw-start-using-time="${row?.['software_start_using_time']}"
                                             class="btn btn-icon btn-rounded btn-flush-primary edit-periods" type="button" data-bs-toggle="modal" data-bs-target="#modal-periods-update">
@@ -187,10 +209,10 @@ $(document).ready(function () {
         }
 
         $('#form-update-periods-config').attr('data-id', periods_id)
-        $('#periods-title-update').val(periods_title)
-        $('#periods-code-update').val(periods_code)
-        $('#periods-fiscal-year-update').val(periods_fiscal_year)
-        $('#periods-fiscal-month-start-update').val(periods_fiscal_month_start)
+        period_title_update_Ele.val(periods_title)
+        period_code_update_Ele.val(periods_code)
+        periods_fiscal_year_update_Ele.val(periods_fiscal_year)
+        periods_fiscal_month_start_update_Ele.val(periods_fiscal_month_start)
         $('#periods-start-date-update').val(periods_start_date)
     })
 
@@ -201,8 +223,8 @@ $(document).ready(function () {
     function combinesDataPeriodsCreate(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
-        frm.dataForm['title'] = $('#periods-title').val();
-        frm.dataForm['code'] = $('#periods-code').val();
+        frm.dataForm['title'] = period_title_Ele.val();
+        frm.dataForm['code'] = period_code_Ele.val();
         frm.dataForm['fiscal_year'] = periods_fiscal_year_Ele.val();
         frm.dataForm['start_date'] = changeDateFormat($('#periods-start-date').val());
         frm.dataForm['software_start_using_time'] = $('#software_using_time_select option:selected').text();
@@ -210,7 +232,7 @@ $(document).ready(function () {
         frm.dataForm['sub_period_data'] = []
         generate_period_table.find('tbody tr').each(function (index) {
             frm.dataForm['sub_period_data'].push({
-                'order': index,
+                'order': index + 1,
                 'code': $(this).find('.code').text(),
                 'name': $(this).find('.name').text(),
                 'start_date': changeDateFormat($(this).find('.start_date').attr('data-value')),
@@ -231,14 +253,27 @@ $(document).ready(function () {
     function combinesDataPeriodsUpdate(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
-        frm.dataForm['title'] = $('#periods-title-update').val();
-        frm.dataForm['code'] = $('#periods-code-update').val();
-        frm.dataForm['fiscal_year'] = $('#periods-fiscal-year-update').val();
+        frm.dataForm['title'] = period_title_update_Ele.val();
+        frm.dataForm['code'] = period_code_update_Ele.val();
+        frm.dataForm['fiscal_year'] = periods_fiscal_year_update_Ele.val();
         frm.dataForm['start_date'] = $('#periods-start-date-update').val();
         frm.dataForm['software_start_using_time'] = $('#software_using_time_select_update option:selected').text();
 
-        console.log(frm.dataForm)
         let pk = frmEle.attr('data-id');
+        return {
+            url: frmEle.attr('data-url').format_url_with_uuid(pk),
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
+    }
+
+    function combinesDataPeriodsUpdateSub(frmEle, pk, sub_id, state) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        frm.dataForm['sub_id'] = sub_id;
+        frm.dataForm['state'] = state;
+
         return {
             url: frmEle.attr('data-url').format_url_with_uuid(pk),
             method: frm.dataMethod,
@@ -322,11 +357,11 @@ $(document).ready(function () {
                 generate_period_table.find('tbody').append(`
                     <tr class="sub-periods-row">
                         <td></td>
-                        <td><span class="code badge badge-soft-primary">${period_code_Ele.val()}-${key_sub}${key_month}</span></td>
-                        <td><span class="name text-primary">${period_code_Ele.val()}-${key_sub}${key_month}</span></td>
+                        <td><span class="code badge badge-soft-primary">${period_code_Ele.val()}-${key_sub}${key_month}-${key_year}</span></td>
+                        <td><span class="name text-primary">${period_code_Ele.val()}-${key_sub}${key_month}-${key_year}</span></td>
                         <td>
                             <div class="btn-group dropdown-sub-group">
-                                <button type="button" class="btn btn-soft-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
+                                <button disabled readonly type="button" class="btn btn-soft-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
                                     <i class="bi bi-door-open"></i> Open
                                 </button>
                                 <div class="dropdown-menu">
@@ -336,8 +371,8 @@ $(document).ready(function () {
                                 </div>
                             </div>                        
                         </td>
-                        <td class="start_date" data-value="01-${sub_month}"><i class="far fa-calendar-alt"></i> 01-${sub_month}</td>
-                        <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}-${sub_month}"><i class="far fa-calendar-alt"></i> ${get_final_date_of_current_month(key_year, key_month)}-${sub_month}</td>           
+                        <td class="start_date" data-value="01-${sub_month}"><i class="far fa-calendar"></i> 01-${sub_month}</td>
+                        <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}-${sub_month}"><i class="far fa-calendar"></i> ${get_final_date_of_current_month(key_year, key_month)}-${sub_month}</td>           
                     </tr>
                 `)
             }
@@ -351,15 +386,124 @@ $(document).ready(function () {
         }
     }
 
-    // $(document).on("click", '.show-all-subs', function () {
-    //     let rows = generate_period_table.find('tbody .sub-periods-row')
-    //     let rows_state = rows.prop('hidden')
-    //     rows.prop('hidden', !rows_state)
-    // })
+    $(document).on("click", '.expand-sub-rows', function () {
+        if ($(this).find('script').text() !== '') {
+            if ($(this).attr('data-state') === 'show') {
+                $('.sub-periods-row').remove()
+                $(this).attr('data-state', 'hidden')
+            }
+            else {
+                $('.sub-periods-row').remove()
+                let data_subs = JSON.parse($(this).find('script').text())
+                let html = ``
+                for (const item of data_subs) {
+                    let dropdown_state = item?.['state']
+                    let dropdown_text = ['Open', 'Close', 'Lock'][item?.['state']]
+                    let dropdown_class = ['bi bi-door-open', 'bi bi-door-closed-fill', 'bi bi-lock'][item?.['state']]
+                    let btn_class = ['btn-soft-primary', 'btn-soft-secondary', 'btn-soft-danger'][item?.['state']]
+
+                    html += `<tr class="sub-periods-row">
+                                <td></td>
+                                <td></td>
+                                <td><span class="code badge badge-outline badge-primary">${item?.['code']}</span></td>
+                                <td><span class="name text-primary">${item?.['name']}</span></td> 
+                                <td>
+                                    <div class="btn-group dropdown-sub-group">
+                                        <button type="button" data-value="${dropdown_state}" class="btn-state btn ${btn_class} btn-sm dropdown-toggle" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
+                                            <i class="${dropdown_class}"></i> ${dropdown_text}
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a data-state="0" class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-door-open"></i> Open</a>
+                                            <a data-state="1" class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-door-closed-fill"></i> Close</a>
+                                            <a data-state="2" class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-lock"></i> Lock</a>
+                                        </div>
+                                    </div>                      
+                                </td>      
+                                <td class="start_date text-primary" data-value="${item?.['start_date']}"><i class="far fa-calendar"></i> ${item?.['start_date']}</td>
+                                <td class="end_date text-primary" data-value="${item?.['end_date']}"><i class="far fa-calendar"></i> ${item?.['end_date']}</td>
+                                <td>
+                                    <button data-period-id="${$(this).attr('data-period-id')}" data-id="${item?.['id']}" class="btn btn-icon btn-rounded btn-flush-primary save-changes-sub" type="button">
+                                        <span class="icon"><i class="far fa-save"></i></span>
+                                    </button>
+                                </td>
+                            </tr>`
+                }
+                $(this).closest('tr').after(`${html}`)
+                $(this).attr('data-state', 'show')
+            }
+        }
+    })
 
     $(document).on("click", '.dropdown-sub-action', function () {
-        let state = $(this).html()
-        $(this).closest('.dropdown-sub-group').find('button').html(state)
+        let state = $(this).attr('data-state')
+        $(this).closest('.dropdown-sub-group').find('.btn-state').attr('data-value', state)
+        $(this).closest('.dropdown-sub-group').find('.btn-state').html($(this).html())
+        let btn_class = ['btn-soft-primary', 'btn-soft-secondary', 'btn-soft-danger'][parseInt(state)]
+        $(this).closest('.dropdown-sub-group').find('.btn-state').attr('class', `btn-state btn ${btn_class} btn-sm dropdown-toggle`)
+    })
+
+    $(document).on("click", '.save-changes-sub', function () {
+        Swal.fire({
+            html:
+                '<span class="mt-3"><i class="fas fa-exclamation-triangle"></i></span>' +
+                '<p class="text-secondary">This update may affect inventory activities, still updated?</p>',
+            customClass: {
+                confirmButton: 'btn btn-outline-primary text-primary',
+                cancelButton: 'btn btn-outline-secondary text-secondary',
+                container:'swal2-has-bg',
+                actions:'w-100'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                let frm = $('#form-update-periods-config')
+                let period_id = $(this).attr('data-period-id')
+                let sub_id = $(this).attr('data-id')
+                let sub_state = $(this).closest('tr').find('.btn-state').attr('data-value')
+                let notify_des = ''
+                if (sub_state === '0') {
+                    notify_des = 'This sub period has Opened successfully.'
+                }
+                else if (sub_state === '1') {
+                    notify_des = 'This sub period has Closed successfully.'
+                }
+                else if (sub_state === '2') {
+                    notify_des = 'This sub period has Locked successfully.'
+                }
+                let combinesDataUpdSub = combinesDataPeriodsUpdateSub(frm, period_id, sub_id, sub_state);
+                if (combinesDataUpdSub) {
+                    $.fn.callAjax2(combinesDataUpdSub).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                Swal.fire({
+                                    html:
+                                    `<div class="text-center"><h5 class="text-primary">${notify_des}</h5></div>`,
+                                    customClass: {
+                                        confirmButton: 'btn btn-primary',
+                                    },
+                                    buttonsStyling: false,
+                                })
+                            }
+                        },
+                        (errs) => {
+                            Swal.fire({
+                                html:
+                                `<div class="text-center"><h5 class="text-danger">${errs.data.errors}</h5></div>`,
+                                customClass: {
+                                    confirmButton: 'btn btn-secondary',
+                                },
+                                buttonsStyling: false,
+                            })
+                        }
+                    )
+                }
+            }
+        })
     })
 
     $('#form-create-periods-config').submit(function (event) {

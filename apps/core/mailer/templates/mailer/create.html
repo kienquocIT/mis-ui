@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm-mailer-create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form data-url="{% url 'MailTemplateListAPI' %}" data-method="POST" id="frm-mailer-create">
+        <div class="row">
+            <div class="col-12 col-lg-4 col-xl-6 col-xxl-7">
+                <div class="form-group">
+                    <label class="form-label required" for="inp-title">{% trans 'Application' %}</label>
+                    <select
+                        id="inp-application"
+                        name="application"
+                        class="select2 form-select"
+                        data-url="{% url 'TenantApplicationListAPI' %}"
+                        data-params='{"allow_mail":true,"pageSize":-1}'
+                        data-method="GET"
+                        data-keyResp="tenant_application_list"
+                        required
+                ></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required" for="inp-title">{% trans 'Title' %}</label>
+                    <input type="text" class="form-control" id="inp-title" name="title" required/>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inp-remark">{% trans 'Remarks' %}</label>
+                    <textarea name="remark" id="inp-remark" class="form-control"></textarea>
+                </div>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="inp-is-active" name="is_active">
+                    <label class="form-check-label" for="inp-is-active">{% trans 'Using' %}</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="inp-is-default" name="is_default">
+                    <label class="form-check-label" for="inp-is-default">{% trans 'Is default' %}</label>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8 col-xl-6 col-xxl-5">
+                <label for="inp-contents" class="form-label required">{% trans 'Contents' %}</label>
+                <button
+                        class="btn btn-icon btn-rounded btn-soft-secondary btn-xs"
+                        onclick='$(this).siblings(".remark-data").animate({height: "toggle"})'
+                >
+                    <span class="icon"><i class="fa-solid fa-info"></i></span>
+                </button>
+                <div class="remark-data w-100 py-3" style="display: none;">
+                    <table class="table">
+                        <tr>
+                            <th>{% trans 'Standard email dimensions overview' %}</th>
+                            <th>{% trans 'Idea size' %}</th>
+                            <th>{% trans 'Maximum size' %}</th>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'Template width' %}</td>
+                            <td>{% trans '600-640 px (desktop) 320 px (mobile vertical)' %}</td>
+                            <td>{% trans '800 px (desktop) 480 px (mobile horizontal)' %}</td>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'Template height' %}</td>
+                            <td>1500 px</td>
+                            <td>3000 px</td>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'Header (height)' %}</td>
+                            <td>70 px</td>
+                            <td>200 px</td>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'Content blocks (total height)' %}</td>
+                            <td>800 px</td>
+                            <td>1200 px</td>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'Footer size (height)' %}</td>
+                            <td>100 px</td>
+                            <td>300 px</td>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'Email banner' %}</td>
+                            <td>600×730 px</td>
+                            <td>700×1730 px</td>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'Image' %}</td>
+                            <td>600×650 px (depends) - 200 KB</td>
+                            <td>1 MB</td>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'GIF' %}</td>
+                            <td>500 KB</td>
+                            <td>1 MB</td>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'Email file size' %}</td>
+                            <td>75 KB</td>
+                            <td>102 KB</td>
+                        </tr>
+                    </table>
+                </div>
+                <textarea
+                        id="inp-contents"
+                        data-mentions="{% url 'ApplicationPropertyForPrintListAPI' %}"
+                        name="contents"
+                        class="form-control"
+                        required
+                ></textarea>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'mailer/mailer.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            let textarea$ = $('#inp-contents');
+            MailerTinymceControl.init_tinymce_editable(textarea$);
+            new SetupFormSubmit($('#frm-mailer-create')).validate({
+                submitHandler: function (form, event){
+                    let frmSetup = new SetupFormSubmit($(form));
+                    frmSetup.dataForm['is_active'] = $(form).find('input[name=is_active]').prop('checked');
+                    frmSetup.dataForm['is_default'] = $(form).find('input[name=is_default]').prop('checked');
+                    $.fn.callAjax2({
+                        url: frmSetup.dataUrl,
+                        method: frmSetup.dataMethod,
+                        data: frmSetup.dataForm,
+                    }).then(
+                        resp => {
+                            let data = $.fn.switcherResp(resp);
+                            console.log('data:', data);
+                            if (data){}
+                        },
+                        errs => $.fn.switcherResp(errs),
+                    )
+                },
+            })
+        })
+    </script>
+{% endblock %}

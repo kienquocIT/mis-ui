@@ -38,7 +38,8 @@
                     <label for="inp-application" class="form-label required">{% trans 'Application' %}</label>
                     <select
                             id="inp-application" class="form-select"
-                            data-url="{% url 'TenantApplicationListAPI' %}?allow_import=true"
+                            data-url="{% url 'TenantApplicationListAPI' %}"
+                            data-params='{"allow_import":true,"pageSize":-1}'
                             data-method="GET" data-keyResp="tenant_application_list"
                             required
                     ></select>
@@ -108,17 +109,7 @@
 {% endblock %}
 
 {% block jsHeaderUnCompress %}
-    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-
-    <link
-            href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.1/b-3.0.0/b-html5-3.0.0/datatables.min.css"
-            rel="stylesheet"
-    >
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.1/b-3.0.0/b-html5-3.0.0/datatables.min.js"></script>
-
+    <script src="{% static 'vendors/xlsx/dist/xlsx.full.min.js' %}"></script>
     <script src="{% static 'assets/js/additional-methods.min.js' %}"></script>
 {% endblock %}
 

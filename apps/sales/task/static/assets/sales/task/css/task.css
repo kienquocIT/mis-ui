@@ -73,9 +73,11 @@
     height: 24px;
     justify-content: center;
     align-items: center;
-    font-size: 90%;
 }
 
+.sub_task_count small{
+    margin-left:-1px;
+}
 .card-title:hover {
     text-decoration: underline;
 }
@@ -135,4 +137,32 @@
 .subtask_item .sub-employee{
     width: 40%;
     text-align: right;
+}
+.btn-task-bar{
+    position: fixed;
+    left: 50%;
+    top: calc(100% - 20px);
+    transform: translate(-50%, -100%);
+    --webkit--transform: translate(-50%, -100%);
+}
+.card .card-header{
+    column-gap: 10px;
+    justify-content: flex-start;
+}
+.tasklist-card .card-header .card-action-wrap{
+    margin-left:auto;
+}
+.card .card-header .card-code{
+    line-height: 1;
+}
+.card-ticket{
+    background: #e95144;
+    font-size: 12px;
+    line-height: 1;
+    padding: 2px 6px 1px;
+    border-radius:2px;
+    color:#fff;
+}
+#table_task_list tr td .card-ticket{
+    vertical-align: 1px;
 }

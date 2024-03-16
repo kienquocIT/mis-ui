@@ -10,6 +10,7 @@ class QuotationLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
     static transEle = $('#app-trans-factory');
+    static customerInitEle = $('#data-init-customer')
 
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
@@ -52,9 +53,6 @@ class QuotationLoadDataHandle {
 
     static loadDataByOpportunity() {
         let tableProduct = $('#datable-quotation-create-product');
-        QuotationLoadDataHandle.loadBoxQuotationCustomer();
-        QuotationLoadDataHandle.loadBoxQuotationContact();
-        QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(QuotationLoadDataHandle.opportunitySelectEle).val());
             if (dataSelected) {
@@ -65,23 +63,18 @@ class QuotationLoadDataHandle {
                     'allowClear': true,
                 });
                 QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
-                let dataCustomer = dataSelected?.['customer'];
-                // load Shipping & Billing by Customer
-                QuotationLoadDataHandle.loadShippingBillingCustomer();
-                QuotationLoadDataHandle.loadShippingBillingCustomer(dataCustomer);
-                // clear shipping + billing text area
-                $('#quotation-create-shipping-address')[0].value = '';
-                $('#quotation-create-customer-shipping').val('');
-                $('#quotation-create-billing-address')[0].value = '';
-                $('#quotation-create-customer-billing').val('');
-                // Store Account Price List
-                if (Object.keys(dataCustomer?.['price_list_mapped']).length !== 0) {
-                    document.getElementById('customer-price-list').value = dataCustomer?.['price_list_mapped']?.['id'];
+                // load customer
+                if (QuotationLoadDataHandle.customerInitEle.val()) {
+                    let initCustomer = JSON.parse(QuotationLoadDataHandle.customerInitEle.val());
+                    QuotationLoadDataHandle.customerSelectEle.empty();
+                    QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                        data: initCustomer?.[dataSelected?.['customer']?.['id']],
+                    });
+                    QuotationLoadDataHandle.customerSelectEle.trigger('change');
                 }
             }
         } else {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-            document.getElementById('customer-price-list').value = "";
         }
         // Delete all promotion rows
         deletePromotionRows(tableProduct, true, false);
@@ -95,54 +88,58 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadInitCustomer() {
+        let result = {};
+        let ele = QuotationLoadDataHandle.customerInitEle;
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+                        for (let customer of data.account_sale_list) {
+                            if (!result.hasOwnProperty(customer?.['id'])) {
+                                result[customer?.['id']] = customer;
+                            }
+                        }
+                        ele.val(JSON.stringify(result));
+                    }
+                }
+            }
+        )
+    };
+
     static loadBoxQuotationCustomer(dataCustomer = {}) {
         QuotationLoadDataHandle.customerSelectEle.empty();
         let form = $('#frm_quotation_create');
         let data_filter = {};
-        if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) { // Has Opportunity
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(QuotationLoadDataHandle.opportunitySelectEle).val());
-            if (dataSelected) {
-                if (dataSelected?.['customer']) {
-                    dataSelected['customer']['name'] = dataSelected['customer']['title'];
-                    dataCustomer = dataSelected?.['customer'];
-                }
-                QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                    data: dataCustomer,
-                    disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-                    callbackTextDisplay: function (item) {
-                        return item?.['name'] || '';
-                    },
-                });
-            }
-        } else { // No Opportunity
-            let sale_person_id = null;
-            let employee_current = $('#data-init-quotation-create-request-employee').val();
-            if (employee_current) {
-                let employee_current_data = JSON.parse(employee_current);
-                sale_person_id = employee_current_data?.['id'];
-            }
-            if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
-                sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val();
-            }
-            data_filter['employee__id'] = sale_person_id;
-            if (sale_person_id) { // Has SalePerson
-                QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                    data: dataCustomer,
-                    'dataParams': data_filter,
-                    disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-                    callbackTextDisplay: function (item) {
-                        return item?.['name'] || '';
-                    },
-                });
-            } else { // No SalePerson
-                QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                    data: dataCustomer,
-                    disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-                    callbackTextDisplay: function (item) {
-                        return item?.['name'] || '';
-                    },
-                });
-            }
+        let sale_person_id = null;
+        let employee_current = $('#data-init-quotation-create-request-employee').val();
+        if (employee_current) {
+            let employee_current_data = JSON.parse(employee_current);
+            sale_person_id = employee_current_data?.['id'];
+        }
+        if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
+            sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val();
+        }
+        data_filter['employee__id'] = sale_person_id;
+        if (sale_person_id) { // Has SalePerson
+            QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                data: dataCustomer,
+                'dataParams': data_filter,
+                disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
+            });
+        } else { // No SalePerson
+            QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                data: dataCustomer,
+                disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
+            });
         }
         if (form.attr('data-method').toLowerCase() !== 'get') {
             if (!dataCustomer?.['is_copy']) {
@@ -155,8 +152,8 @@ class QuotationLoadDataHandle {
         let tableProduct = $('#datable-quotation-create-product');
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
+        if (QuotationLoadDataHandle.customerSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
             if (dataSelected) {
                 // load Shipping & Billing by Customer
                 QuotationLoadDataHandle.loadShippingBillingCustomer();
@@ -448,20 +445,25 @@ class QuotationLoadDataHandle {
                     description.innerHTML = data?.['description'];
                 }
                 // load UOM
-                if (uom && data.unit_of_measure && data.uom_group) {
+                if (uom && data?.['unit_of_measure'] && data?.['uom_group']) {
                     $(uom).empty();
-                    QuotationLoadDataHandle.loadBoxQuotationUOM($(uom), data.unit_of_measure, data.uom_group.id);
+                    QuotationLoadDataHandle.loadBoxQuotationUOM($(uom), data?.['unit_of_measure'], data?.['uom_group']?.['id']);
                 } else {
                     QuotationLoadDataHandle.loadBoxQuotationUOM($(uom));
                 }
                 // load PRICE
                 if (price && priceList) {
-                    QuotationLoadDataHandle.loadPriceProduct(ele[0], true);
+                    let {customerPrice, generalPrice} = QuotationLoadDataHandle.loadPriceProduct(ele[0]);
+                    if (customerPrice) {
+                        $(price).attr('value', String(customerPrice));
+                    } else {
+                        $(price).attr('value', String(generalPrice));
+                    }
                 }
                 // load TAX
-                if (tax && data.tax) {
+                if (tax && data?.['tax']) {
                     $(tax).empty();
-                    QuotationLoadDataHandle.loadBoxQuotationTax($(tax), data.tax);
+                    QuotationLoadDataHandle.loadBoxQuotationTax($(tax), data?.['tax']);
                 } else {
                     QuotationLoadDataHandle.loadBoxQuotationTax($(tax));
                 }
@@ -700,7 +702,9 @@ class QuotationLoadDataHandle {
         deletePromotionRows(tableProduct, false, true);
         // ReCalculate Total
         QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
-        let order = tableProduct[0].querySelectorAll('.table-row-order').length + 1;
+        let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
+        let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
+        let order = (TotalOrder - TotalGroup) + 1;
         let dataAdd = {
             "tax": {
                 "id": "",
@@ -1003,7 +1007,7 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadPriceProduct(eleProduct, is_change_item = false) {
+    static loadPriceProduct(eleProduct) {
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         let is_change_price = false;
         if (productData) {
@@ -1031,18 +1035,18 @@ class QuotationLoadDataHandle {
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
-                                                                <span class="mr-5">${data.price_list[i].title}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
-                                                                <small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            <div class="row">
+                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
+                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
                                                             </div>
                                                         </a>`);
                                 } else {
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="d-flex">
-                                                                <span class="mr-5">${data.price_list[i].title}</span>
-                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
-                                                                <small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                            <div class="row">
+                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
+                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
                                                             </div>
                                                         </a>`);
                                 }
@@ -1050,35 +1054,53 @@ class QuotationLoadDataHandle {
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="d-flex">
-                                                        <span class="mr-5">${data.price_list[i].title}</span>
-                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
-                                                        <small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small>
+                                                    <div class="row">
+                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
+                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                        <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
                                                     </div>
                                                 </a>`);
                         }
                     }
                 }
-                // get Price to display
-                if (is_change_item === true) {
-                    if (customer_price) {
-                        $(price).attr('value', String(customer_price));
-                    } else {
-                        $(price).attr('value', String(general_price));
-                    }
-                }
+                // If change price then remove promotion & shipping
                 if (current_price_checked !== price.getAttribute('value')) {
                     is_change_price = true;
+                }
+                if (is_change_price === true) {
+                    let tableProduct = document.getElementById('datable-quotation-create-product');
+                    deletePromotionRows($(tableProduct), true, false);
+                    deletePromotionRows($(tableProduct), false, true);
+                }
+
+                return {customerPrice: customer_price, generalPrice: general_price};
+            }
+        }
+        $.fn.initMaskMoney2();
+        return {customerPrice: null, generalPrice: null};
+    };
+
+    static loadCostProduct(eleProduct) {
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        if (productData) {
+            let data = productData;
+            let costList = eleProduct.closest('tr').querySelector('.table-row-cost-list');
+            // load PRICE
+            if (costList) {
+                $(costList).empty();
+                if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
+                    for (let costData of data?.['cost_list']) {
+                        $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['cost'])}">
+                                                <div class="row">
+                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mr-5">${costData?.['warehouse']?.['title']}</span></div>
+                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span></div>
+                                                </div>
+                                            </a>`);
+                    }
                 }
             }
         }
         $.fn.initMaskMoney2();
-        // If change price then remove promotion & shipping
-        if (is_change_price === true) {
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            deletePromotionRows($(tableProduct), true, false);
-            deletePromotionRows($(tableProduct), false, true);
-        }
     };
 
     static loadReInitDataTableProduct() {
@@ -1102,228 +1124,20 @@ class QuotationLoadDataHandle {
             }
         } else {
             $table.DataTable().rows().every(function () {
-                let rowData = {};
                 let row = this.node();
-                let eleProductGr = row.querySelector('.table-row-group');
+                let eleOrder = row.querySelector('.table-row-order');
                 let eleProduct = row.querySelector('.table-row-item');
-                let elePromotion = row.querySelector('.table-row-promotion');
-                let eleShipping = row.querySelector('.table-row-shipping');
-                if (eleProductGr) {  // PRODUCT GROUP
-                    rowData['is_group'] = true;
-                    if (eleProductGr.getAttribute('data-group-order')) {
-                        rowData['group_order'] = parseInt(eleProductGr.getAttribute('data-group-order'));
-                    }
-                    let eleGroupTitle = row.querySelector('.table-row-group-title-edit');
-                    if (eleGroupTitle) {
-                        rowData['group_title'] = eleGroupTitle.value;
-                    }
-                    rowData['product'] = {};
-                    rowData['unit_of_measure'] = {};
-                    rowData['is_promotion'] = false;
-                    rowData['promotion'] = {};
-                    rowData['is_shipping'] = false;
-                    rowData['shipping'] = {};
-                    tableData.push(rowData);
-                } else if (eleProduct) { // PRODUCT
-                    if ($(eleProduct).val()) {
-                        let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-                        if (dataProduct) {
-                            rowData['product'] = dataProduct;
-                            rowData['product_title'] = dataProduct?.['title'];
-                            rowData['product_code'] = dataProduct?.['code'];
-                        }
-                    }
-                    let eleUOM = row.querySelector('.table-row-uom');
-                    if ($(eleUOM).val()) {
-                        let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
-                        if (dataUOM) {
-                            rowData['unit_of_measure'] = dataUOM;
-                            rowData['product_uom_title'] = dataUOM?.['title'];
-                            rowData['product_uom_code'] = dataUOM?.['code'];
-                        }
-                    }
-                    let eleTax = row.querySelector('.table-row-tax');
-                    if ($(eleTax).val()) {
-                        let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-                        if (dataTax) {
-                            rowData['tax'] = dataTax;
-                            rowData['product_tax_title'] = dataTax?.['title'];
-                            rowData['product_tax_value'] = dataTax?.['rate'];
-                        } else {
-                            rowData['product_tax_value'] = 0;
-                        }
-                    }
-                    let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-                    if (eleTaxAmount) {
-                        rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-                    }
-                    let eleDescription = row.querySelector('.table-row-description');
-                    if (eleDescription) {
-                        rowData['product_description'] = eleDescription.innerHTML;
-                    }
-                    let eleQuantity = row.querySelector('.table-row-quantity');
-                    if (eleQuantity) {
-                        rowData['product_quantity'] = parseFloat(eleQuantity.value);
-                    }
-                    let elePrice = row.querySelector('.table-row-price');
-                    if (elePrice) {
-                        rowData['product_unit_price'] = $(elePrice).valCurrency();
-                    }
-                    let eleDiscount = row.querySelector('.table-row-discount');
-                    if (eleDiscount) {
-                        if (eleDiscount.value || eleDiscount.value === "0") {
-                            rowData['product_discount_value'] = parseFloat(eleDiscount.value);
-                        } else {
-                            rowData['product_discount_value'] = 0;
-                        }
-                    }
-                    let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
-                    if (eleDiscountAmount) {
-                        rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
-                    }
-                    let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-                    if (eleSubtotal) {
-                        rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-                    }
-                    if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
-                        rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
-                    }
-                    let eleOrder = row.querySelector('.table-row-order');
-                    if (eleOrder) {
-                        rowData['order'] = parseInt(eleOrder.innerHTML);
-                    }
-                    rowData['is_group'] = false;
-                    rowData['is_promotion'] = false;
-                    rowData['promotion'] = {};
-                    rowData['is_shipping'] = false;
-                    rowData['shipping'] = {};
-                    let dataGroupRaw = row.getAttribute('data-group');
-                    if (dataGroupRaw) {
-                        rowData['group_order'] = parseInt(dataGroupRaw);
-                    }
-                    tableData.push(rowData);
+                if (eleOrder.getAttribute('data-row')) {
+                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
+                    tableData.push(dataRow);
                     // setup price
-                    if (rowData?.['order'] && rowData?.['product_unit_price']) {
-                        if (!dataPriceJSON.hasOwnProperty(rowData?.['order'])) {
-                            dataPriceJSON[rowData?.['order']] = rowData?.['product_unit_price'];
-                        }
-                    }
-                } else if (elePromotion) { // PROMOTION
-                    let check_none_blank_list = ['', "", null, "undefined"];
-                    rowData['is_group'] = false;
-                    rowData['product'] = {};
-                    if (elePromotion.getAttribute('data-id-product') && !check_none_blank_list.includes(elePromotion.getAttribute('data-id-product'))) {
-                        rowData['product'] = elePromotion.getAttribute('data-id-product');
-                    }
-                    rowData['is_promotion'] = true;
-                    rowData['promotion'] = {'id': elePromotion.getAttribute('data-id')};
-                    rowData['is_shipping'] = false;
-                    rowData['shipping'] = {};
-                    rowData['product_title'] = elePromotion.value;
-                    rowData['product_code'] = elePromotion.value;
-                    rowData['unit_of_measure'] = null;
-                    rowData['product_uom_title'] = "";
-                    rowData['product_uom_code'] = "";
-                    let uomData = getDataByProductID(elePromotion.getAttribute('data-id-product'));
-                    if (uomData && Object.keys(uomData).length > 0) {
-                        rowData['unit_of_measure'] = uomData;
-                        rowData['product_uom_title'] = uomData?.['title'];
-                        rowData['product_uom_code'] = uomData?.['code'];
-                    }
-                    let eleTax = row.querySelector('.table-row-tax');
-                    if (eleTax) {
-                        let optionSelected = eleTax.options[eleTax.selectedIndex];
-                        if (optionSelected) {
-                            if (optionSelected.querySelector('.data-info')) {
-                                let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                                rowData['tax'] = dataInfo;
-                                rowData['product_tax_title'] = dataInfo?.['title'];
-                                rowData['product_tax_value'] = dataInfo?.['value'];
-                            } else {
-                                rowData['product_tax_value'] = 0;
+                    if (eleProduct) {
+                        if (dataRow?.['order'] && dataRow?.['product_unit_price']) {
+                            if (!dataPriceJSON.hasOwnProperty(dataRow?.['order'])) {
+                                dataPriceJSON[dataRow?.['order']] = dataRow?.['product_unit_price'];
                             }
                         }
                     }
-                    let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-                    if (eleTaxAmount) {
-                        rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-                    }
-                    let eleDescription = row.querySelector('.table-row-description');
-                    if (eleDescription) {
-                        rowData['product_description'] = eleDescription.value;
-                    }
-                    let eleQuantity = row.querySelector('.table-row-quantity');
-                    if (eleQuantity) {
-                        rowData['product_quantity'] = parseFloat(eleQuantity.value);
-                    }
-                    let elePrice = row.querySelector('.table-row-price');
-                    if (elePrice) {
-                        rowData['product_unit_price'] = $(elePrice).valCurrency();
-                    }
-                    rowData['product_discount_value'] = 0;
-                    rowData['product_discount_amount'] = 0;
-                    let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-                    if (eleSubtotal) {
-                        rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-                    }
-                    let eleOrder = row.querySelector('.table-row-order');
-                    if (eleOrder) {
-                        rowData['order'] = parseInt(eleOrder.innerHTML);
-                    }
-                    tableData.push(rowData);
-                } else if (eleShipping) { // SHIPPING
-                    rowData['is_group'] = false;
-                    rowData['product'] = {};
-                    rowData['is_shipping'] = true;
-                    rowData['shipping'] = {'id': eleShipping.getAttribute('data-id')};
-                    rowData['is_promotion'] = false;
-                    rowData['promotion'] = {};
-                    rowData['product_title'] = eleShipping.value;
-                    rowData['product_code'] = eleShipping.value;
-                    rowData['unit_of_measure'] = null;
-                    rowData['product_uom_title'] = "";
-                    rowData['product_uom_code'] = "";
-                    let eleTax = row.querySelector('.table-row-tax');
-                    if (eleTax) {
-                        let optionSelected = eleTax.options[eleTax.selectedIndex];
-                        if (optionSelected) {
-                            if (optionSelected.querySelector('.data-info')) {
-                                let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                                rowData['tax'] = dataInfo;
-                                rowData['product_tax_title'] = dataInfo?.['title'];
-                                rowData['product_tax_value'] = dataInfo?.['value'];
-                            } else {
-                                rowData['product_tax_value'] = 0;
-                            }
-                        }
-                    }
-                    let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-                    if (eleTaxAmount) {
-                        rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-                    }
-                    let eleDescription = row.querySelector('.table-row-description');
-                    if (eleDescription) {
-                        rowData['product_description'] = eleDescription.value;
-                    }
-                    let eleQuantity = row.querySelector('.table-row-quantity');
-                    if (eleQuantity) {
-                        rowData['product_quantity'] = parseFloat(eleQuantity.value);
-                    }
-                    let elePrice = row.querySelector('.table-row-price');
-                    if (elePrice) {
-                        rowData['product_unit_price'] = $(elePrice).valCurrency();
-                    }
-                    rowData['product_discount_value'] = 0;
-                    rowData['product_discount_amount'] = 0;
-                    let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-                    if (eleSubtotal) {
-                        rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-                    }
-                    let eleOrder = row.querySelector('.table-row-order');
-                    if (eleOrder) {
-                        rowData['order'] = parseInt(eleOrder.innerHTML);
-                    }
-                    tableData.push(rowData);
                 }
             })
         }
@@ -1350,10 +1164,11 @@ class QuotationLoadDataHandle {
         if ($form.attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.loadReInitPrice(dataPriceJSON);
         }
-        // load product group
+
         $table.DataTable().rows().every(function () {
             let row = this.node();
             QuotationCheckConfigHandle.checkConfig(false, row);
+            // load product group
             if (row.querySelector('.table-row-group')) {
                 let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
                 let areaGroupShow = row.querySelector('.area-group-show');
@@ -1383,6 +1198,12 @@ class QuotationLoadDataHandle {
                         }
                     }
                 }
+            }
+            if (row.querySelector('.table-row-shipping')) {
+                QuotationLoadDataHandle.loadRowDisabled(row);
+            }
+            if (row.querySelector('.table-row-promotion')) {
+                QuotationLoadDataHandle.loadRowDisabled(row);
             }
         });
         // load disabled if page detail
@@ -1414,79 +1235,12 @@ class QuotationLoadDataHandle {
             }
         } else {
             $table.DataTable().rows().every(function () {
-                let rowData = {};
                 let row = this.node();
-                let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
-                if (dataRowRaw) {
-                    let dataRow = JSON.parse(dataRowRaw);
-                    rowData['is_labor'] = dataRow?.['is_labor'];
-                }
-                let eleExpenseItem = row.querySelector('.table-row-item');
-                if ($(eleExpenseItem).val()) {
-                    let dataExpenseItem = SelectDDControl.get_data_from_idx($(eleExpenseItem), $(eleExpenseItem).val());
-                    if (dataExpenseItem) {
-                        rowData['expense_item'] = dataExpenseItem;
-                        rowData['expense_code'] = dataExpenseItem?.['code'];
-                        rowData['expense_type_title'] = dataExpenseItem?.['title'];
-                    }
-                }
-                if (row?.querySelector('.table-row-expense-title')) {
-                    rowData['expense_title'] = row.querySelector('.table-row-expense-title').value;
-                }
-                let eleLaborItem = row?.querySelector('.table-row-labor-item');
-                if (eleLaborItem) {
-                    if ($(eleLaborItem).val()) {
-                        let dataLaborItem = SelectDDControl.get_data_from_idx($(eleLaborItem), $(eleLaborItem).val());
-                        if (dataLaborItem) {
-                            rowData['expense'] = dataLaborItem;
-                            rowData['expense_title'] = dataLaborItem?.['title'];
-                        }
-                    }
-                }
-                let eleUOM = row.querySelector('.table-row-uom');
-                if ($(eleUOM).val()) {
-                    let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
-                    if (dataUOM) {
-                        rowData['unit_of_measure'] = dataUOM;
-                        rowData['product_uom_title'] = dataUOM?.['title'];
-                        rowData['product_uom_code'] = dataUOM?.['code'];
-                    }
-                }
-                let eleTax = row.querySelector('.table-row-tax');
-                if ($(eleTax).val()) {
-                    let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-                    if (dataTax) {
-                        rowData['tax'] = dataTax;
-                        rowData['product_tax_title'] = dataTax?.['title'];
-                        rowData['product_tax_value'] = dataTax?.['rate'];
-                    } else {
-                        rowData['product_tax_value'] = 0;
-                    }
-                }
-                let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-                if (eleTaxAmount) {
-                    rowData['expense_tax_amount'] = parseFloat(eleTaxAmount.value)
-                }
-                let eleQuantity = row.querySelector('.table-row-quantity');
-                if (eleQuantity) {
-                    rowData['expense_quantity'] = parseFloat(eleQuantity.value);
-                }
-                let elePrice = row.querySelector('.table-row-price');
-                if (elePrice) {
-                    rowData['expense_price'] = $(elePrice).valCurrency();
-                }
-                let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-                if (eleSubtotal) {
-                    rowData['expense_subtotal_price'] = parseFloat(eleSubtotal.value)
-                }
-                if (rowData.hasOwnProperty('expense_subtotal_price') && rowData.hasOwnProperty('expense_tax_amount')) {
-                    rowData['expense_subtotal_price_after_tax'] = rowData['expense_subtotal_price'] + rowData['expense_tax_amount']
-                }
                 let eleOrder = row.querySelector('.table-row-order');
-                if (eleOrder) {
-                    rowData['order'] = parseInt(eleOrder.innerHTML);
+                if (eleOrder.getAttribute('data-row')) {
+                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
+                    tableData.push(dataRow);
                 }
-                tableData.push(rowData);
             })
         }
         $table.DataTable().destroy();
@@ -1535,264 +1289,6 @@ class QuotationLoadDataHandle {
                 }
             }
         });
-    };
-
-    static loadDataTablePaymentStage() {
-        let $table = $('#datable-quotation-payment-stage');
-        let term = [];
-        let dataSO = {};
-        let dataContract = {};
-        let dataDelivery = [];
-        let dataAcceptance = [];
-        let dataInvoice = {};
-        let valueSO = 0;
-        let tableProduct = document.getElementById('datable-quotation-create-product');
-        if (tableProduct.closest('.dataTables_scroll')) {
-            let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
-            if (tableProductFt.querySelector('.quotation-create-product-total-raw')) {
-                valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
-            }
-        }
-        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-            if (dataSelected) {
-                term = dataSelected?.['term'];
-            }
-        }
-        if (term.length > 0) {
-            for (let termData of term) {
-                let value = 0;
-                let ratio = 0;
-                let numberOfDay = 0;
-                let is_balance = false;
-                if (termData?.['unit_type'] === 0) {  // ratio
-                    if (termData?.['value']) {
-                       ratio = parseFloat(termData?.['value']);
-                       value = (ratio * valueSO) / 100;
-                    }
-                    if (termData?.['no_of_days']) {
-                        numberOfDay = parseInt(termData?.['no_of_days']);
-                    }
-                } else if (termData?.['unit_type'] === 2) {  // balance
-                    is_balance = true;
-                }
-                if (termData['after'] === 1) {  // contract
-                    dataContract = {
-                        'stage': 1,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    }
-                } else if (termData['after'] === 2) {  // delivery
-                    dataDelivery.push({
-                        'stage': 2,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    })
-                } else if (termData['after'] === 3) {  // invoice
-                    dataInvoice = {
-                        'stage': 4,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    }
-                } else if (termData['after'] === 4) {  // final acceptance
-                    dataAcceptance.push({
-                        'stage': 3,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    })
-                } else if (termData['after'] === 6) {  // so
-                    dataSO = {
-                        'stage': 0,
-                        'date_type': termData['after'],
-                        'payment_ratio': ratio,
-                        'value_before_tax': value,
-                        'is_ar_invoice': false,
-                        'number_of_day': numberOfDay,
-                        'is_active': true,
-                        'is_balance': is_balance,
-                        'is_system': true,
-                    }
-                }
-            }
-            if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
-                let data = [];
-                if (Object.keys(dataSO).length > 0) {
-                    data.push(dataSO);
-                } else {
-                    data.push({
-                        'stage': 0,
-                        'date_type': 6,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                if (Object.keys(dataContract).length > 0) {
-                    data.push(dataContract);
-                } else {
-                    data.push({
-                        'stage': 1,
-                        'date_type': 1,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                if (dataDelivery.length > 0) {
-                    for (let deli of dataDelivery) {
-                        if (Object.keys(deli).length > 0) {
-                            data.push(deli);
-                        }
-                    }
-                } else {
-                    data.push({
-                        'stage': 2,
-                        'date_type': 2,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                if (dataAcceptance.length > 0) {
-                    for (let acc of dataAcceptance) {
-                        if (Object.keys(acc).length > 0) {
-                            data.push(acc);
-                        }
-                    }
-                } else {
-                    data.push({
-                        'stage': 3,
-                        'date_type': 4,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                if (Object.keys(dataInvoice).length > 0) {
-                    data.push(dataInvoice);
-                } else {
-                    data.push({
-                        'stage': 4,
-                        'date_type': 3,
-                        'payment_ratio': 0,
-                        'value_before_tax': 0,
-                        'is_ar_invoice': false,
-                        'number_of_day': 0,
-                        'is_active': false,
-                        'is_balance': false,
-                        'is_system': true,
-                    });
-                }
-                let totalRatio = 0;
-                $table.DataTable().clear().draw();
-                $table.DataTable().rows.add(data).draw();
-                // load date picker
-                $table.DataTable().rows().every(function () {
-                    let row = this.node();
-                    if (row.querySelector('.table-row-date')) {
-                        $(row.querySelector('.table-row-date')).daterangepicker({
-                            singleDatePicker: true,
-                            timepicker: false,
-                            showDropdowns: false,
-                            minYear: 2023,
-                            locale: {
-                                format: 'DD/MM/YYYY'
-                            },
-                            maxYear: parseInt(moment().format('YYYY'), 10),
-                        });
-                        $(row.querySelector('.table-row-date')).val(null).trigger('change');
-                        row.querySelector('.table-row-due-date').innerHTML = '';
-                    }
-                    // calculate total ratio
-                    let eleRatio = row.querySelector('.table-row-ratio');
-                    if (eleRatio) {
-                        if (eleRatio.getAttribute('data-ratio')) {
-                            totalRatio += parseFloat(eleRatio.getAttribute('data-ratio'));
-                        }
-                    }
-                    // add data stage to row
-                    let eleStage = row.querySelector('.table-row-stage');
-                    if (eleStage) {
-                        let dataStage = eleStage.getAttribute('data-stage');
-                        if (dataStage) {
-                            row.setAttribute('data-row-stage', dataStage);
-                        }
-                    }
-                })
-                // check is_balance then update ratio for row balance
-                let eleBalance = $table[0].querySelector('[data-balance="true"]');
-                if (eleBalance) {
-                    let row = eleBalance.closest('tr');
-                    let eleRatio = row.querySelector('.table-row-ratio');
-                    if (eleRatio) {
-                        eleRatio.setAttribute('data-ratio', (100 - totalRatio));
-                        eleRatio.innerHTML = String((100 - totalRatio)) + ' %';
-                    }
-                }
-            } else {  // if dataTable is not empty then update data
-                $table.DataTable().rows().every(function () {
-                    let row = this.node();
-                    let eleStage = row.querySelector('.table-row-stage');
-                    if (eleStage) {
-                        let dataRowRaw = eleStage.getAttribute('data-row');
-                        if (dataRowRaw) {
-                            let dataRow = JSON.parse(dataRowRaw);
-                            if (dataRow?.['stage'] !== 0) {
-                                let eleRatio = row.querySelector('.table-row-ratio');
-                                let eleValue = row.querySelector('.table-row-value');
-                                if (eleRatio && eleValue) {
-                                    let value = (parseFloat(eleRatio.getAttribute('data-ratio')) * valueSO) / 100;
-                                    eleValue.setAttribute('data-init-money', String(value));
-                                }
-                            }
-                        }
-                    }
-                })
-            }
-        }
-        // mask money
-        $.fn.initMaskMoney2();
-        return true;
     };
 
     static loadAddPaymentStage() {
@@ -2123,6 +1619,14 @@ class QuotationLoadDataHandle {
             })
             // Re calculate
             QuotationCalculateCaseHandle.calculateAllRowsTableCost($table);
+            // load cost list
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                let eleProduct = row.querySelector('.table-row-item');
+                if (eleProduct) {
+                    QuotationLoadDataHandle.loadCostProduct(eleProduct);
+                }
+            });
         }
     };
 
@@ -2218,7 +1722,7 @@ class QuotationLoadDataHandle {
         if (tableProductWrapper) {
             let tableProductBd = tableProductWrapper.querySelector('.dataTables_scrollBody');
             if (tableProductBd) {
-                tableProductBd.style.minHeight = '200px';
+                tableProductBd.style.minHeight = '150px';
             }
         }
     };
@@ -2429,7 +1933,6 @@ class QuotationLoadDataHandle {
                 $(row).find('td:eq(1)').attr('colspan', 2);
             }
             if (row.querySelector('.table-row-item')) {
-                QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
                     let dataRowRaw = eleOrder.getAttribute('data-row');
@@ -2449,6 +1952,7 @@ class QuotationLoadDataHandle {
         });
 
         tableCost.DataTable().rows.add(costs_data).draw();
+
         tableExpense.DataTable().rows.add(expenses_data).draw();
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {
@@ -2528,8 +2032,23 @@ class QuotationLoadDataHandle {
                 if (!row.querySelector('.table-row-group')) {
                     let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
                     $(row.querySelector('.table-row-item')).empty();
-                    QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
-                    $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']).trigger('change');
+                    if (table[0].id === "datable-quotation-create-product") {  // product
+                        QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
+                        $(row.querySelector('.table-row-item')).val(dataRow?.['product']?.['id']);
+                        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+                        if (boxRender) {
+                            boxRender.innerHTML = dataRow?.['product']?.['title'];
+                            boxRender.setAttribute('title', dataRow?.['product']?.['title']);
+                        }
+                        if (row.querySelector('.table-row-item')) {
+                            QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+                        }
+                    }
+                    if (table[0].id === "datable-quotation-create-cost") {  // cost
+                        QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
+                        QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
+                    }
+
                     $(row.querySelector('.table-row-uom')).empty();
                     QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow?.['unit_of_measure']);
                     $(row.querySelector('.table-row-tax')).empty();
@@ -2676,11 +2195,12 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50, 300, 350, 150, 200, 350, 200, 150, 200, 50 (2000p)  // 50, 250, 200, 100, 150, 250, 150, 100, 200, 50 (1500p)
+            columns: [  // 50, 300, 300, 150, 200, 350, 200, 150, 250, 50 (2000p)  // 50, 250, 200, 100, 150, 250, 150, 100, 200, 50 (1500p)
                 {
                     targets: 0,
                     width: '2.5%',
                     render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
                             let target = ".group-" + String(row?.['group_order']);
                             return `<button 
@@ -2692,11 +2212,12 @@ class QuotationDataTableHandle {
                                         aria-expanded="true"
                                         aria-controls="newGroup"
                                         data-group-order="${row?.['group_order']}"
+                                        data-row="${dataRow}"
                                     >
                                         <span class="icon"><i class="fas fa-chevron-down"></i></span>
-                                    </button>`;
+                                    </button>
+                                    <span class="table-row-order ml-2" data-row="${dataRow}" hidden>${row?.['order']}</span>`;
                         }
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order ml-2" data-row="${dataRow}">${row?.['order']}</span>`;
                     }
                 },
@@ -2712,7 +2233,6 @@ class QuotationDataTableHandle {
                                         <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                     </div>`;
                         }
-
                         let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
                         if ($form[0].classList.contains('sale-order')) {
@@ -2728,7 +2248,7 @@ class QuotationDataTableHandle {
                             }
                         }
                         if (itemType === 0) { // PRODUCT
-                            return `<div class="row">
+                            return `<div class="row table-row-item-area">
                                         <div class="col-12">
                                             <select 
                                             class="form-select table-row-item" 
@@ -2748,7 +2268,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-gift text-brown"></i>
+                                                <i class="fas fa-gift text-primary"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row.product.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
@@ -2767,7 +2287,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-shipping-fast text-teal"></i>
+                                                <i class="fas fa-shipping-fast text-primary"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-shipping-price-margin="${price_margin}" data-bs-toggle="tooltip" title="${row?.['product_title']}" disabled>
@@ -2779,7 +2299,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '17.5%',
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2997,7 +2517,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '10%',
+                    width: '12.5%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3149,14 +2669,25 @@ class QuotationDataTableHandle {
                             }
                         }
                         if (itemType === 0) {  // product
-                            return `<input 
-                                        type="text" 
-                                        class="form-control mask-money table-row-price" 
-                                        data-return-type="number"
-                                        value="${row?.['product_cost_price']}"
-                                        data-zone="${dataZone}"
-                                        required
-                                    >`;
+                            return `<div class="row">
+                                        <div class="dropdown">
+                                            <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
+                                            <div class="input-affix-wrapper">
+                                                <input 
+                                                    type="text" 
+                                                    class="form-control mask-money table-row-price" 
+                                                    value="${row?.['product_cost_price']}"
+                                                    data-return-type="number"
+                                                    data-zone="${dataZone}"
+                                                >
+                                                <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
+                                            </div>
+                                            </div>
+                                            <div role="menu" class="dropdown-menu table-row-cost-list w-500p">
+                                            <a class="dropdown-item" data-value=""></a>
+                                            </div>
+                                        </div>
+                                    </div>`;
                         } else if (itemType === 1) {  // shipping
                             return `<input 
                                         type="text" 
@@ -4771,6 +4302,302 @@ class indicatorHandle {
 
 let indicatorClass = new indicatorHandle();
 
+// Store data
+class QuotationStoreDataHandle {
+
+    static storeProduct(row) {
+        let rowData = {};
+        let eleOrder = row.querySelector('.table-row-order');
+        let eleProductGr = row.querySelector('.table-row-group');
+        let eleProduct = row.querySelector('.table-row-item');
+        let elePromotion = row.querySelector('.table-row-promotion');
+        let eleShipping = row.querySelector('.table-row-shipping');
+        if (eleProductGr) {  // PRODUCT GROUP
+            rowData['is_group'] = true;
+            if (eleProductGr.getAttribute('data-group-order')) {
+                rowData['group_order'] = parseInt(eleProductGr.getAttribute('data-group-order'));
+            }
+            let eleGroupTitle = row.querySelector('.table-row-group-title-edit');
+            if (eleGroupTitle) {
+                rowData['group_title'] = eleGroupTitle.value;
+            }
+            rowData['product'] = {};
+            rowData['unit_of_measure'] = {};
+            rowData['is_promotion'] = false;
+            rowData['promotion'] = {};
+            rowData['is_shipping'] = false;
+            rowData['shipping'] = {};
+        } else if (eleProduct) { // PRODUCT
+            if ($(eleProduct).val()) {
+                let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+                if (dataProduct) {
+                    rowData['product'] = dataProduct;
+                    rowData['product_title'] = dataProduct?.['title'];
+                    rowData['product_code'] = dataProduct?.['code'];
+                }
+            }
+            let eleUOM = row.querySelector('.table-row-uom');
+            if ($(eleUOM).val()) {
+                let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
+                if (dataUOM) {
+                    rowData['unit_of_measure'] = dataUOM;
+                    rowData['product_uom_title'] = dataUOM?.['title'];
+                    rowData['product_uom_code'] = dataUOM?.['code'];
+                }
+            }
+            let eleTax = row.querySelector('.table-row-tax');
+            if ($(eleTax).val()) {
+                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                if (dataTax) {
+                    rowData['tax'] = dataTax;
+                    rowData['product_tax_title'] = dataTax?.['title'];
+                    rowData['product_tax_value'] = dataTax?.['rate'];
+                } else {
+                    rowData['product_tax_value'] = 0;
+                }
+            }
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+            if (eleTaxAmount) {
+                rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+            }
+            let eleDescription = row.querySelector('.table-row-description');
+            if (eleDescription) {
+                rowData['product_description'] = eleDescription.innerHTML;
+            }
+            let eleQuantity = row.querySelector('.table-row-quantity');
+            if (eleQuantity) {
+                rowData['product_quantity'] = parseFloat(eleQuantity.value);
+            }
+            let elePrice = row.querySelector('.table-row-price');
+            if (elePrice) {
+                rowData['product_unit_price'] = $(elePrice).valCurrency();
+            }
+            let eleDiscount = row.querySelector('.table-row-discount');
+            if (eleDiscount) {
+                if (eleDiscount.value || eleDiscount.value === "0") {
+                    rowData['product_discount_value'] = parseFloat(eleDiscount.value);
+                } else {
+                    rowData['product_discount_value'] = 0;
+                }
+            }
+            let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+            if (eleDiscountAmount) {
+                rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
+            }
+            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+            if (eleSubtotal) {
+                rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+            }
+            if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
+                rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
+            }
+            if (eleOrder) {
+                rowData['order'] = parseInt(eleOrder.innerHTML);
+            }
+            rowData['is_group'] = false;
+            rowData['is_promotion'] = false;
+            rowData['promotion'] = {};
+            rowData['is_shipping'] = false;
+            rowData['shipping'] = {};
+            let dataGroupRaw = row.getAttribute('data-group');
+            if (dataGroupRaw) {
+                rowData['group_order'] = parseInt(dataGroupRaw);
+            }
+        } else if (elePromotion) { // PROMOTION
+            let check_none_blank_list = ['', "", null, "undefined"];
+            rowData['is_group'] = false;
+            rowData['product'] = {};
+            if (elePromotion.getAttribute('data-id-product') && !check_none_blank_list.includes(elePromotion.getAttribute('data-id-product'))) {
+                rowData['product'] = elePromotion.getAttribute('data-id-product');
+            }
+            rowData['is_promotion'] = true;
+            rowData['promotion'] = {'id': elePromotion.getAttribute('data-id')};
+            rowData['is_shipping'] = false;
+            rowData['shipping'] = {};
+            rowData['product_title'] = elePromotion.value;
+            rowData['product_code'] = elePromotion.value;
+            rowData['unit_of_measure'] = null;
+            rowData['product_uom_title'] = "";
+            rowData['product_uom_code'] = "";
+            let uomData = getDataByProductID(elePromotion.getAttribute('data-id-product'));
+            if (uomData && Object.keys(uomData).length > 0) {
+                rowData['unit_of_measure'] = uomData;
+                rowData['product_uom_title'] = uomData?.['title'];
+                rowData['product_uom_code'] = uomData?.['code'];
+            }
+            let eleTax = row.querySelector('.table-row-tax');
+            if (eleTax) {
+                let optionSelected = eleTax.options[eleTax.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['tax'] = dataInfo;
+                        rowData['product_tax_title'] = dataInfo?.['title'];
+                        rowData['product_tax_value'] = dataInfo?.['value'];
+                    } else {
+                        rowData['product_tax_value'] = 0;
+                    }
+                }
+            }
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+            if (eleTaxAmount) {
+                rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+            }
+            let eleDescription = row.querySelector('.table-row-description');
+            if (eleDescription) {
+                rowData['product_description'] = eleDescription.value;
+            }
+            let eleQuantity = row.querySelector('.table-row-quantity');
+            if (eleQuantity) {
+                rowData['product_quantity'] = parseFloat(eleQuantity.value);
+            }
+            let elePrice = row.querySelector('.table-row-price');
+            if (elePrice) {
+                rowData['product_unit_price'] = $(elePrice).valCurrency();
+            }
+            rowData['product_discount_value'] = 0;
+            rowData['product_discount_amount'] = 0;
+            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+            if (eleSubtotal) {
+                rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+            }
+            if (eleOrder) {
+                rowData['order'] = parseInt(eleOrder.innerHTML);
+            }
+        } else if (eleShipping) { // SHIPPING
+            rowData['is_group'] = false;
+            rowData['product'] = {};
+            rowData['is_shipping'] = true;
+            rowData['shipping'] = {'id': eleShipping.getAttribute('data-id')};
+            rowData['is_promotion'] = false;
+            rowData['promotion'] = {};
+            rowData['product_title'] = eleShipping.value;
+            rowData['product_code'] = eleShipping.value;
+            rowData['unit_of_measure'] = null;
+            rowData['product_uom_title'] = "";
+            rowData['product_uom_code'] = "";
+            let eleTax = row.querySelector('.table-row-tax');
+            if (eleTax) {
+                let optionSelected = eleTax.options[eleTax.selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['tax'] = dataInfo;
+                        rowData['product_tax_title'] = dataInfo?.['title'];
+                        rowData['product_tax_value'] = dataInfo?.['value'];
+                    } else {
+                        rowData['product_tax_value'] = 0;
+                    }
+                }
+            }
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+            if (eleTaxAmount) {
+                rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+            }
+            let eleDescription = row.querySelector('.table-row-description');
+            if (eleDescription) {
+                rowData['product_description'] = eleDescription.value;
+            }
+            let eleQuantity = row.querySelector('.table-row-quantity');
+            if (eleQuantity) {
+                rowData['product_quantity'] = parseFloat(eleQuantity.value);
+            }
+            let elePrice = row.querySelector('.table-row-price');
+            if (elePrice) {
+                rowData['product_unit_price'] = $(elePrice).valCurrency();
+            }
+            rowData['product_discount_value'] = 0;
+            rowData['product_discount_amount'] = 0;
+            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+            if (eleSubtotal) {
+                rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+            }
+            if (eleOrder) {
+                rowData['order'] = parseInt(eleOrder.innerHTML);
+            }
+        }
+        eleOrder.setAttribute('data-row', JSON.stringify(rowData));
+        return true;
+    };
+
+    static storeExpense(row) {
+        let eleOrder = row.querySelector('.table-row-order');
+        let rowData = {};
+        let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
+        if (dataRowRaw) {
+            let dataRow = JSON.parse(dataRowRaw);
+            rowData['is_labor'] = dataRow?.['is_labor'];
+        }
+        let eleExpenseItem = row.querySelector('.table-row-item');
+        if ($(eleExpenseItem).val()) {
+            let dataExpenseItem = SelectDDControl.get_data_from_idx($(eleExpenseItem), $(eleExpenseItem).val());
+            if (dataExpenseItem) {
+                rowData['expense_item'] = dataExpenseItem;
+                rowData['expense_code'] = dataExpenseItem?.['code'];
+                rowData['expense_type_title'] = dataExpenseItem?.['title'];
+            }
+        }
+        if (row?.querySelector('.table-row-expense-title')) {
+            rowData['expense_title'] = row.querySelector('.table-row-expense-title').value;
+        }
+        let eleLaborItem = row?.querySelector('.table-row-labor-item');
+        if (eleLaborItem) {
+            if ($(eleLaborItem).val()) {
+                let dataLaborItem = SelectDDControl.get_data_from_idx($(eleLaborItem), $(eleLaborItem).val());
+                if (dataLaborItem) {
+                    rowData['expense'] = dataLaborItem;
+                    rowData['expense_title'] = dataLaborItem?.['title'];
+                }
+            }
+        }
+        let eleUOM = row.querySelector('.table-row-uom');
+        if ($(eleUOM).val()) {
+            let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
+            if (dataUOM) {
+                rowData['unit_of_measure'] = dataUOM;
+                rowData['product_uom_title'] = dataUOM?.['title'];
+                rowData['product_uom_code'] = dataUOM?.['code'];
+            }
+        }
+        let eleTax = row.querySelector('.table-row-tax');
+        if ($(eleTax).val()) {
+            let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+            if (dataTax) {
+                rowData['tax'] = dataTax;
+                rowData['product_tax_title'] = dataTax?.['title'];
+                rowData['product_tax_value'] = dataTax?.['rate'];
+            } else {
+                rowData['product_tax_value'] = 0;
+            }
+        }
+        let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+        if (eleTaxAmount) {
+            rowData['expense_tax_amount'] = parseFloat(eleTaxAmount.value)
+        }
+        let eleQuantity = row.querySelector('.table-row-quantity');
+        if (eleQuantity) {
+            rowData['expense_quantity'] = parseFloat(eleQuantity.value);
+        }
+        let elePrice = row.querySelector('.table-row-price');
+        if (elePrice) {
+            rowData['expense_price'] = $(elePrice).valCurrency();
+        }
+        let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+        if (eleSubtotal) {
+            rowData['expense_subtotal_price'] = parseFloat(eleSubtotal.value)
+        }
+        if (rowData.hasOwnProperty('expense_subtotal_price') && rowData.hasOwnProperty('expense_tax_amount')) {
+            rowData['expense_subtotal_price_after_tax'] = rowData['expense_subtotal_price'] + rowData['expense_tax_amount']
+        }
+        if (eleOrder) {
+            rowData['order'] = parseInt(eleOrder.innerHTML);
+        }
+        eleOrder.setAttribute('data-row', JSON.stringify(rowData));
+        return true;
+    }
+
+}
+
 // Submit Form
 class QuotationSubmitHandle {
     static setupDataProduct() {
@@ -5333,9 +5160,9 @@ class QuotationSubmitHandle {
         if (quotation_products_data_setup.length > 0) {
             _form.dataForm[quotation_products_data] = quotation_products_data_setup;
             // total product
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            if (tableProduct.closest('.dataTables_scroll')) {
-                let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                 _form.dataForm['total_product_pretax_amount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
                 if (!_form.dataForm['total_product_pretax_amount']) {
                     _form.dataForm['total_product_pretax_amount'] = 0;
@@ -5388,9 +5215,9 @@ class QuotationSubmitHandle {
         if (quotation_expenses_data_setup.length > 0) {
             _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup;
             // total expense
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
-            if (tableExpense.closest('.dataTables_scroll')) {
-                let tableExpenseFt = tableExpense.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
+            let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
+            if (tableExpenseWrapper) {
+                let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
                 _form.dataForm['total_expense_pretax_amount'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount-raw').value);
                 if (!_form.dataForm['total_expense_pretax_amount']) {
                     _form.dataForm['total_expense_pretax_amount'] = 0;

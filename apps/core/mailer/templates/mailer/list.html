@@ -1,1 +1,345 @@
 {% extends 'base.html' %}
+{% load i18n static %}
+
+{% block cssHeader %}
+    <style>
+        .rotate-icon {
+            transition-duration: 0.5s;
+            transition-property: transform;
+            transform: rotate(0deg);
+        }
+
+        .rotate-90deg {
+            transform: rotate(90deg);
+        }
+
+        .groupCollapseData {
+            padding: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'MailTemplateCreateView' %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <ul class="nav nav-light nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tabSystem" data-not-push-tab>
+                <span class="nav-link-text">{% trans 'System' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tabFeature" data-not-push-tab>
+                <span class="nav-link-text">{% trans 'Feature' %}</span>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="tabSystem">
+            <div class="row">
+                <div class="col-lg-12 col-xl-6">
+                    <div class="w-100 mb-5 parentGroupInfo bg-light">
+                        <div class="w-100 d-flex">
+                            <button class="btn btn-gradient-info btn-square w-80 btnCollapseGroup" type="button">
+                                {% trans 'Welcome' %}
+                                <i class="btn-collapse-group-print fa-solid fa-angles-left ml-1 rotate-icon"></i>
+                            </button>
+                            <button class="btn btn-outline-primary btn-square w-10 btnShowInfo">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </button>
+                            <button class="btn btn-primary btn-square w-10" type="submit" form="frm-mail-welcome" disabled>
+                                <i class="fa-regular fa-floppy-disk"></i>
+                            </button>
+                        </div>
+                        <div class="w-100 groupInfo p-3" style="display: none;font-style: italic">
+                            <p>Đây là cấu hình thư điện tử được sử dụng để gửi thư chào mừng thành viên mới của tổ chức
+                                của bạn.</p>
+                            <p>Nó được sử dụng trong "cấu hình quy tắc tự động hóa" khi có phát sinh sự kiện tạo mới
+                                "người dùng" hoặc chức năng gửi thư tuỳ chỉnh nếu có.</p>
+                        </div>
+                        <div class="w-100 groupCollapseData" style="display: none;">
+                            <form
+                                    id="frm-mail-welcome"
+                                    data-url="{% url 'MailTemplateSystemDetailAPI' pk='__pk__' %}"
+                                    data-method="PUT"
+                                    data-url-get="{% url 'MailTemplateSystemAPI' system_code='1' %}"
+                                    data-key-template="welcome"
+                            >
+                                <div class="form-check form-switch mb-1">
+                                    <input type="checkbox" class="form-check-input" name="is_active">
+                                    <label class="form-check-label">{% trans 'Using' %}</label>
+                                </div>
+                                <textarea name="contents" class="mb-3"></textarea>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-6">
+                    <div class="w-100 mb-5 parentGroupInfo bg-light">
+                        <div class="w-100 d-flex">
+                            <button class="btn btn-gradient-info btn-square w-80 btnCollapseGroup" type="button">
+                                {% trans 'Calendar' %}
+                                <i class="btn-collapse-group-print fa-solid fa-angles-left ml-1 rotate-icon"></i>
+                            </button>
+                            <button class="btn btn-outline-primary btn-square w-10 btnShowInfo">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </button>
+                            <button class="btn btn-primary btn-square w-10" type="submit" form="frm-mail-calendar" disabled>
+                                <i class="fa-regular fa-floppy-disk"></i>
+                            </button>
+                        </div>
+                        <div class="w-100 groupInfo p-3" style="display: none;font-style: italic">
+                            <p>Đây là cấu hình thư điện tử được sử dụng gửi tệp đăng ký lịch sự kiện.</p>
+                        </div>
+                        <div class="w-100 groupCollapseData" style="display: none;">
+                            <form
+                                    id="frm-mail-calendar"
+                                    data-url="{% url 'MailTemplateSystemDetailAPI' pk='__pk__' %}"
+                                    data-method="PUT"
+                                    data-url-get="{% url 'MailTemplateSystemAPI' system_code='2' %}"
+                                    data-key-template="calendar"
+                            >
+                                <div class="form-check form-switch mb-1">
+                                    <input type="checkbox" class="form-check-input" name="is_active">
+                                    <label class="form-check-label">{% trans 'Using' %}</label>
+                                </div>
+                                <textarea name="contents" class="mb-3"></textarea>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="tabFeature">
+            <div class="w-100 mb-5">
+                <div class="w-100 d-flex">
+                    <button class="btn btn-gradient-info btn-square w-90 btnCollapseGroup" type="button">
+                        {% trans 'Welcome' %}
+                        <i class="btn-collapse-group-print fa-solid fa-angles-left ml-1 rotate-icon"></i>
+                    </button>
+                    <button class="btn btn-gradient-primary btn-square w-10 btnShowInfo">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                </div>
+                <div class="w-100 groupInfo p-3" style="display: none;font-style: italic">
+                    <p>Đây là cấu hình thư điện tử được sử dụng để gửi thư chào mừng thành viên mới của tổ chức của
+                        bạn.</p>
+                    <p>Nó được sử dụng trong "cấu hình quy tắc tự động hóa" khi có phát sinh sự kiện tạo mới "người
+                        dùng" hoặc chức năng gửi thư tuỳ chỉnh nếu có.</p>
+                </div>
+                <div class="w-100 groupCollapseData" style="display: none;">
+                    <table
+                            class="table no-wrap w-100"
+                            data-url-detail="{% url 'MailTemplateDetailView' pk='__pk__' %}"
+                            data-url-update="{% url 'MailTemplateUpdateView' pk='__pk__' %}"
+                            data-url-delete="{% url 'MailTemplateDetailAPI' pk='__pk__' %}"
+                    >
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans 'Title' %}</th>
+                            <th>{% trans 'Remarks' %}</th>
+                            <th>{% trans 'Using' %}</th>
+                            <th>{% trans 'Is default' %}</th>
+                            <th>{% trans 'Actions' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ data.system_template|json_script:"system_template_data" }}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'mailer/mailer.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            let staticPrefix = "{% static '' %}";
+            let templateData = JSON.parse($('#system_template_data').text());
+
+            $('.btnShowInfo').on('click', function () {
+                $(this).closest('.parentGroupInfo').find('.groupInfo').animate({
+                    height: "toggle",
+                    opacity: "toggle",
+                })
+            })
+            $('.btnCollapseGroup').on('click', function () {
+                $(this).find('i').toggleClass('rotate-90deg');
+                $(this).siblings('button[type=submit]').prop('disabled', (i, v) => !v);
+                let groupCollapse$ = $(this).closest('.parentGroupInfo').find('.groupCollapseData');
+                groupCollapse$.animate({
+                    height: "toggle",
+                    opacity: "toggle"
+                });
+                groupCollapse$.find('table').each(function () {
+                    if (!$(this).attr('id')) $(this).attr('id', $x.fn.randomStr(32, true));
+                    if (!$.fn.DataTable.isDataTable('#' + $(this).attr('id'))) {
+                        let tblEle = $(this);
+                        $(this).DataTableDefault({
+                            data: [
+                                {
+                                    'id': '436fcfdb-4c3e-4107-9a62-18bf5128b8c0',
+                                    'title': 'Hihi',
+                                    'remark': 'Hihiooo',
+                                    'is_active': true,
+                                    'is_default': true,
+                                }
+                            ],
+                            autoWidth: false,
+                            rowIdx: true,
+                            callbackGetLinkBlank: (row) => tblEle.attr('data-url-detail').replaceAll('__pk__', row.id),
+                            columns: [
+                                {
+                                    width: '10%',
+                                    render: () => ''
+                                },
+                                {
+                                    data: 'title',
+                                    width: '30%',
+                                    render: (data, type, row) => {
+                                        return `<a href="${tblEle.attr('data-url-detail').replaceAll('__pk__', row.id)}">${data}</a>`
+                                    },
+                                },
+                                {
+                                    data: 'remark',
+                                    width: '20%',
+                                    render: (data) => data,
+                                },
+                                {
+                                    data: 'is_active',
+                                    width: '15%',
+                                    render: (data) => {
+                                        let idx = $x.fn.randomStr(32, true);
+                                        return `<div class="form-check form-switch">
+                                            <input type="checkbox" class="form-check-input" id="${idx}" ${data ? "checked" : ""} disabled>
+                                            <label class="form-check-label d-none" for="${idx}"></label>
+                                        </div>`;
+                                    },
+                                },
+                                {
+                                    data: 'is_default',
+                                    width: '15%',
+                                    render: (data) => {
+                                        let idx = $x.fn.randomStr(32, true);
+                                        return `<div class="form-check form-switch">
+                                            <input type="checkbox" class="form-check-input" id="${idx}" ${data ? "checked" : ""} disabled>
+                                            <label class="form-check-label d-none" for="${idx}"></label>
+                                        </div>`;
+                                    },
+                                },
+                                {
+                                    width: '10%',
+                                    className: 'action-center',
+                                    render: (data, type, row) => {
+                                        let btnEdit = `
+                                            <a
+                                                class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="" data-bs-original-title="Edit"
+                                                href="${tblEle.attr('data-url-update').replaceAll('__pk__', row.id)}"
+                                            >
+                                                <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span>
+                                            </a>
+                                        `;
+                                        let btnDelete = `
+                                            <button
+                                                type="button"
+                                                class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title=""
+                                                data-bs-original-title="Delete" href="#"
+                                                data-url="${tblEle.attr('data-url-delete').replaceAll('__pk__', row.id)}}"
+                                                data-method="DELETE"
+                                                data-url-redirect="${window.location.href}"
+                                            >
+                                                <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
+                                            </button>
+                                        `;
+                                        return btnEdit + btnDelete;
+                                    },
+                                },
+                            ]
+                        });
+                    }
+                });
+                groupCollapse$.find('form').each(function () {
+                    if (!$(this).attr('data-loaded')) {
+                        let frm$ = $(this);
+                        $(frm$).attr('data-loaded', true);
+
+                        $.fn.callAjax2({
+                            url: $(this).attr('data-url-get'),
+                            method: 'GET',
+                            isLoading: true,
+                            sweetAlertOpts: {'allowOutsideClick': true},
+                        }).then(
+                            resp => {
+                                let data = $.fn.switcherResp(resp);
+                                if (typeof data === 'object' && data.hasOwnProperty('mailer_system')) {
+                                    let mailerSystem = data['mailer_system'];
+                                    //
+                                    let textarea$ = $(frm$).find('textarea[name=contents]');
+                                    MailerTinymceControl.init_tinymce_editable(textarea$, mailerSystem.contents, {}, {
+                                        {#'width': '430',#}
+                                        templates : (templateData?.[$(frm$).attr('data-key-template')] || []).map(
+                                            (item) => {
+                                                item.url = staticPrefix + item.url;
+                                                return item;
+                                            }
+                                        ),
+                                    });
+                                    //
+                                    let active$ = $(frm$).find('input[name=is_active]');
+                                    active$.prop('checked', mailerSystem.is_active);
+                                    //
+                                    $(frm$).attr('data-url', $(frm$).attr('data-url').replaceAll('__pk__', mailerSystem.id));
+
+                                    new SetupFormSubmit($(frm$)).validate({
+                                        submitHandler: function (form, event) {
+                                            let frmSetup = new SetupFormSubmit($(form));
+                                            frmSetup.dataForm['is_active'] = $(form).find('input[name=is_active]').prop('checked');
+                                            $.fn.callAjax2({
+                                                url: frmSetup.dataUrl,
+                                                method: frmSetup.dataMethod,
+                                                data: frmSetup.dataForm,
+                                            }).then(
+                                                resp => {
+                                                    let data = $.fn.switcherResp(resp);
+                                                    if (data) {
+                                                        $.fn.notifyB({
+                                                            'description': $.fn.gettext('Success'),
+                                                        }, 'success');
+                                                    }
+                                                },
+                                                errs => $.fn.switcherResp(errs),
+                                            )
+                                        }
+                                    })
+                                }
+                            },
+                            errs => $.fn.switcherResp(errs),
+                        )
+                    }
+                })
+            });
+
+            setTimeout(
+                () => {
+                    if (!$x.fn.getHashUrl()) $('.btnCollapseGroup:first').trigger('click');
+                },
+                100
+            );
+        })
+    </script>
+{% endblock %}

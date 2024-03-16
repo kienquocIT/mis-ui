@@ -13,14 +13,20 @@
     {% endif %}
     {% if permit_enabled == True %}
         <li class="nav-item">
-            <a class="nav-link {% if active_tab == 'tab-permissions' %}active{% endif %}" data-bs-toggle="tab" href="#tab-permissions">
+            <a
+                    class="nav-link {% if active_tab == 'tab-permissions' %}active{% endif %}" data-bs-toggle="tab"
+                    href="#tab-permissions"
+            >
                 <span class="nav-link-text">{% trans 'Permissions' %}</span>
             </a>
         </li>
     {% endif %}
     {% if summary_enabled == True %}
         <li class="nav-item">
-            <a class="nav-link {% if active_tab == 'tab-summary-permissions' %}active{% endif %}" data-bs-toggle="tab" href="#tab-summary-permissions">
+            <a
+                    class="nav-link {% if active_tab == 'tab-summary-permissions' %}active{% endif %}"
+                    data-bs-toggle="tab" href="#tab-summary-permissions"
+            >
                 <span class="nav-link-text">{% trans 'Summary of permissions' %}</span>
             </a>
         </li>
@@ -36,18 +42,62 @@
                 {% trans 'Action' %}
             </a>
             <div class="dropdown-menu">
+                <h6 class="dropdown-header">{% trans 'Application' %}</h6>
                 <a
                         class="dropdown-item" href="#" id="btnResetApp"
                 >
-                    {% trans 'Make empty' %} {% trans 'Application' %}
+                    <i class="fa-solid fa-broom mr-1"></i> {% trans 'Make empty' %} {% trans 'Application' %}
                 </a>
+                <a
+                        class="dropdown-item" href="#"
+                        data-bs-toggle="modal" data-bs-target="#getAppConfig"
+                >
+                    <i class="fa-regular fa-copy mr-1"></i> {% trans 'Get Application Configured' %}
+                </a>
+                <a
+                        class="dropdown-item" href="#"
+                        data-bs-toggle="modal" data-bs-target="#loadAppConfig"
+                >
+                    <i class="fa-regular fa-paste mr-1"></i> {% trans 'Load Application Configured' %}
+                </a>
+                <div class="dropdown-divider"></div>
+
+                <h6 class="dropdown-header">{% trans 'Permission' %}</h6>
                 <a
                         class="dropdown-item" href="#" id="btnResetPermit"
                 >
-                    {% trans 'Make empty' %} {% trans 'Permission' %}
+                    <i class="fa-solid fa-broom mr-1"></i> {% trans 'Make empty' %} {% trans 'Permission' %}
+                </a>
+                <a
+                        class="dropdown-item" href="#"
+                        data-bs-toggle="modal" data-bs-target="#getPermitConfig"
+                >
+                    <i class="fa-regular fa-copy mr-1"></i> {% trans 'Get Permit Configured' %}
+                </a>
+                <a
+                        class="dropdown-item" href="#"
+                        data-bs-toggle="modal" data-bs-target="#loadPermitConfig"
+                >
+                    <i class="fa-regular fa-paste mr-1"></i> {% trans 'Load Permit Configured' %}
                 </a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" id="btnResetAll">{% trans 'Make empty' %} {% trans 'all' %}</a>
+
+                <h6 class="dropdown-header">{% trans 'All' %}</h6>
+                <a class="dropdown-item" href="#" id="btnResetAll">
+                    <i class="fa-solid fa-broom mr-1"></i> {% trans 'Make empty' %} {% trans 'all' %}
+                </a>
+                <a
+                        class="dropdown-item" href="#"
+                        data-bs-toggle="modal" data-bs-target="#getAppPermitConfig"
+                >
+                    <i class="fa-regular fa-copy mr-1"></i> {% trans 'Get All Configured' %}
+                </a>
+                <a
+                        class="dropdown-item" href="#"
+                        data-bs-toggle="modal" data-bs-target="#loadAppPermitConfig"
+                >
+                    <i class="fa-regular fa-paste mr-1"></i> {% trans 'Load All Configured' %}
+                </a>
                 {% include extend_action|default:'extends/utility/empty.html' %}
             </div>
         </li>
@@ -63,12 +113,18 @@
         </div>
     {% endif %}
     {% if permit_enabled == True %}
-        <div class="tab-pane {% if active_tab == 'tab-permissions' %}show active{% else %}fade{% endif %}" id="tab-permissions">
+        <div
+                class="tab-pane {% if active_tab == 'tab-permissions' %}show active{% else %}fade{% endif %}"
+                id="tab-permissions"
+        >
             {% include 'core/hr/extends_new/permissions.html' with add_new_enabled=add_new_enabled range_allowed=range_allowed get_from=get_from %}
         </div>
     {% endif %}
     {% if summary_enabled == True %}
-        <div class="tab-pane {% if active_tab == 'tab-summary-permissions' %}show active{% else %}fade{% endif %}" id="tab-summary-permissions">
+        <div
+                class="tab-pane {% if active_tab == 'tab-summary-permissions' %}show active{% else %}fade{% endif %}"
+                id="tab-summary-permissions"
+        >
             {% include 'core/hr/extends_new/summary_permits.html' %}
         </div>
     {% endif %}
@@ -83,3 +139,218 @@
         data-msg-cancel="{% trans 'Cancel' %}"
         data-msg-delete="{% trans 'Delete' %}"
 ></span>
+
+<div class="modal fade" id="getAppConfig" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Get Application Configured' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <pre class="modal-body-data"></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-soft-primary btnCopyToClipboard">
+                    <span>{% trans 'Copy to clipboard' %}</span>
+                    <span class="d-none">{% trans 'Copied' %}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="loadAppConfig" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Load Application Configured' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea class="modal-body-load"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-soft-primary btnImportData">{% trans 'Import data' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="getPermitConfig" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Get Permit Configured' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <pre class="modal-body-data"></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-soft-primary btnCopyToClipboard">
+                    <span>{% trans 'Copy to clipboard' %}</span>
+                    <span class="d-none">{% trans 'Copied' %}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="loadPermitConfig" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Load Permit Configured' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea class="modal-body-load"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-soft-primary btnImportData">{% trans 'Import data' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="getAppPermitConfig" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Get All Configured' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <pre class="modal-body-data"></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-soft-primary btnCopyToClipboard">
+                    <span>{% trans 'Copy to clipboard' %}</span>
+                    <span class="d-none">{% trans 'Copied' %}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="loadAppPermitConfig" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Load All Configured' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea class="modal-body-load"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-soft-primary btnImportData">{% trans 'Import data' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-body-data {
+        padding: 10px;
+        background-color: #f1f1f1;
+        max-height: 400px;
+        overflow: auto;
+    }
+
+    .modal-body-load {
+        width: 100%;
+        height: 200px;
+        overflow: auto;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.modal-footer .btnCopyToClipboard').on('click', function () {
+            $(this).prop('disabled', !$(this).prop('disabled'));
+            $(this).children().toggleClass('d-none');
+
+            let modalData$ = $(this).closest('.modal-content').find('.modal-body .modal-body-data');
+            navigator.clipboard.writeText(modalData$.text())
+
+            setTimeout(
+                () => {
+                    $(this).prop('disabled', !$(this).prop('disabled'));
+                    $(this).children().toggleClass('d-none');
+                },
+                1000
+            )
+        }).each(function () {
+            if (!navigator.clipboard) {
+                $(this).closest('.modal-footer').hide();
+            }
+        })
+
+        $('#getAppConfig').on('shown.bs.modal', function () {
+            let data = new HandlePlanAppNew().combinesPlanApp();
+            $(this).find('.modal-body .modal-body-data').text(JSON.stringify(data))
+        });
+
+        $('#loadAppConfig').on('shown.bs.modal', function () {
+            let clsThis = this;
+            let data = new HandlePlanAppNew().combinesPlanApp();
+            let eleData$ = $(this).find('.modal-body .modal-body-load');
+            eleData$.text(JSON.stringify(data));
+            $(this).find('.btnImportData').off('click').on('click', function () {
+                new HandlePlanAppNew().renderAppSelected(JSON.parse(eleData$.text()));
+                $(clsThis).modal('hide');
+            });
+        });
+
+        $('#getPermitConfig').on('shown.bs.modal', function () {
+            let data = new HandlePlanAppNew().combinesPermissions();
+            $(this).find('.modal-body .modal-body-data').text(JSON.stringify(data))
+        });
+
+        $('#loadPermitConfig').on('shown.bs.modal', function () {
+            let clsThis = this;
+            let data = new HandlePlanAppNew().combinesPermissions();
+            let eleData$ = $(this).find('.modal-body .modal-body-load');
+            eleData$.val(JSON.stringify(data))
+            $(this).find('.btnImportData').off('click').on('click', function () {
+                new HandlePlanAppNew().renderTablePermissionSelected(false, JSON.parse(eleData$.val()));
+                $(clsThis).modal('hide');
+            });
+        });
+
+        $('#getAppPermitConfig').on('show.bs.modal', function () {
+            let dataApp = new HandlePlanAppNew().combinesPlanApp();
+            let dataPermit = new HandlePlanAppNew().combinesPermissions();
+            $(this).find('.modal-body .modal-body-data').text(JSON.stringify({
+                'app': dataApp,
+                'permit': dataPermit,
+            }))
+        });
+        $('#loadAppPermitConfig').on('show.bs.modal', function () {
+            let clsThis = this;
+            let dataApp = new HandlePlanAppNew().combinesPlanApp();
+            let dataPermit = new HandlePlanAppNew().combinesPermissions();
+            let eleData$ = $(this).find('.modal-body .modal-body-load');
+            eleData$.val(JSON.stringify({
+                'app': dataApp,
+                'permit': dataPermit,
+            }))
+            $(this).find('.btnImportData').off('click').on('click', function () {
+                let allData = JSON.parse(eleData$.val());
+                new HandlePlanAppNew().renderAppSelected(allData.app);
+                new HandlePlanAppNew().renderTablePermissionSelected(false, allData.permit);
+                $(clsThis).modal('hide');
+            });
+        });
+    })
+</script>

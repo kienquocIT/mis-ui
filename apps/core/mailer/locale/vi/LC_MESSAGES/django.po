@@ -1,0 +1,48 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Welcome Template"
+msgstr "Mẫu thư chào mừng"
+
+#
+msgid "Calendar Template"
+msgstr "Mẫu thư lịch sự kiện"
+
+#
+msgid "OTP Validation Template"
+msgstr "Mẫu thư OTP xác thực"
+
+#
+msgid "This is the email configuration used to send welcome messages to new members of your organization."
+msgstr "Đây là cấu hình thư điện tử được sử dụng để gửi thư chào mừng thành viên mới của tổ chức của bạn."
+
+#
+msgid "It is used in \"automation rule configuration\" when a new \"user\" or function creation event occurs "
+         "custom mailing capabilities if available."
+msgstr "Nó được sử dụng trong \"cấu hình quy tắc tự động hóa\" khi có phát sinh sự kiện tạo mới \"người dùng\" hoặc chức "
+        "năng gửi thư tuỳ chỉnh nếu có."
+
+#
+msgid "This is the email configuration used to send event calendar registration files."
+msgstr "Đây là cấu hình thư điện tử được sử dụng gửi tệp đăng ký lịch sự kiện."
+
+#
+msgid "This is the email configuration used to send OTP to authenticate users."
+msgstr "Đây là cấu hình thư điện tử được sử dụng gửi OTP xác thực người dùng."

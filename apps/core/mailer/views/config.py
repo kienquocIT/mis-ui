@@ -1,9 +1,11 @@
+from django.urls import reverse
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
 from apps.shared.apis import RespData
+from apps.shared.msg import TemplateMsg
 
 
 class MailTemplatesListView(View):
@@ -16,24 +18,65 @@ class MailTemplatesListView(View):
         jsi18n='mailer',
     )
     def get(self, request, *args, **kwargs):
-        base_url = 'mailer/template/';
+        base_url = 'mailer/template/'
         ctx = {
-            'system_template': {
-                'welcome': [
-                    {
-                        'title': 'Welcome 01',
-                        'url': base_url + 'welcome/template_1.html',
-                        'description': 'Hohoho',
-                    }
-                ],
-                'calendar': [
-                    {
-                        'title': 'Calendar 01',
-                        'url': base_url + 'calendar/template_1.html',
-                        'description': 'Hahaha',
-                    }
-                ],
-            }
+            'system_info': [
+                {
+                    'form_id': 'frm-welcome',
+                    'title': TemplateMsg.welcome_template,
+                    'remarks': f"""
+                        <p>{TemplateMsg.welcome_template_remark_1}</p>
+                        <p>{TemplateMsg.welcome_template_remark_2}</p>
+                    """,
+                    'url': reverse('MailTemplateSystemDetailAPI', kwargs={'pk': '__pk__'}),
+                    'method': 'PUT',
+                    'url_get': reverse('MailTemplateSystemAPI', kwargs={'system_code': '1'}),
+                    'system_code': '1',
+                    'templates': [
+                        {
+                            'title': TemplateMsg.welcome_template + ' 01',
+                            'url': base_url + 'welcome/template_1.html',
+                            'description': '',
+                        },
+                    ],
+                },
+                {
+                    'form_id': 'frm-otp-validate',
+                    'title': TemplateMsg.otp_validate_template,
+                    'remarks': f"""
+                        <p>{TemplateMsg.otp_validate_template_remark_1}</p>
+                    """,
+                    'url': reverse('MailTemplateSystemDetailAPI', kwargs={'pk': '__pk__'}),
+                    'method': 'PUT',
+                    'url_get': reverse('MailTemplateSystemAPI', kwargs={'system_code': '3'}),
+                    'system_code': '3',
+                    'templates': [
+                        {
+                            'title': TemplateMsg.otp_validate_template + ' 01',
+                            'url': base_url + 'otp_validation/template_1.html',
+                            'description': '',
+                        }
+                    ],
+                },
+                {
+                    'form_id': 'frm-calendar',
+                    'title': TemplateMsg.calendar_template,
+                    'remarks': f"""
+                        <p>{TemplateMsg.calendar_template_remark_1}</p>
+                    """,
+                    'url': reverse('MailTemplateSystemDetailAPI', kwargs={'pk': '__pk__'}),
+                    'method': 'PUT',
+                    'url_get': reverse('MailTemplateSystemAPI', kwargs={'system_code': '2'}),
+                    'system_code': '2',
+                    'templates': [
+                        {
+                            'title': TemplateMsg.calendar_template + ' 01',
+                            'url': base_url + 'calendar/template_1.html',
+                            'description': '',
+                        }
+                    ],
+                },
+            ]
         }
         return ctx, status.HTTP_200_OK
 

@@ -6521,7 +6521,7 @@ let $x = {
                 },
                 // zero with space: \u200B&nbsp; or \u200B
                 insert: item => `<span id="idx-${$x.fn.randomStr(16)}" class="params-data" data-code="${item.code}">#${item.title}</span>\u200B`,
-                render: item => `<li style="cursor: pointer;" class="d-flex align-items-center">${item.title}</li>`,
+                render: item => `<li style="cursor: pointer;" class="d-flex align-items-center"><span>${item.title}</span></li>`,
                 renderDropdown: () => '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>',
                 matcher: item => item,
             },

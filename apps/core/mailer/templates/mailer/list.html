@@ -46,77 +46,9 @@
     <div class="tab-content">
         <div class="tab-pane fade show active" id="tabSystem">
             <div class="row">
-                <div class="col-lg-12 col-xl-6">
-                    <div class="w-100 mb-5 parentGroupInfo bg-light">
-                        <div class="w-100 d-flex">
-                            <button class="btn btn-gradient-info btn-square w-80 btnCollapseGroup" type="button">
-                                {% trans 'Welcome' %}
-                                <i class="btn-collapse-group-print fa-solid fa-angles-left ml-1 rotate-icon"></i>
-                            </button>
-                            <button class="btn btn-outline-primary btn-square w-10 btnShowInfo">
-                                <i class="fa-solid fa-circle-info"></i>
-                            </button>
-                            <button class="btn btn-primary btn-square w-10" type="submit" form="frm-mail-welcome" disabled>
-                                <i class="fa-regular fa-floppy-disk"></i>
-                            </button>
-                        </div>
-                        <div class="w-100 groupInfo p-3" style="display: none;font-style: italic">
-                            <p>Đây là cấu hình thư điện tử được sử dụng để gửi thư chào mừng thành viên mới của tổ chức
-                                của bạn.</p>
-                            <p>Nó được sử dụng trong "cấu hình quy tắc tự động hóa" khi có phát sinh sự kiện tạo mới
-                                "người dùng" hoặc chức năng gửi thư tuỳ chỉnh nếu có.</p>
-                        </div>
-                        <div class="w-100 groupCollapseData" style="display: none;">
-                            <form
-                                    id="frm-mail-welcome"
-                                    data-url="{% url 'MailTemplateSystemDetailAPI' pk='__pk__' %}"
-                                    data-method="PUT"
-                                    data-url-get="{% url 'MailTemplateSystemAPI' system_code='1' %}"
-                                    data-key-template="welcome"
-                            >
-                                <div class="form-check form-switch mb-1">
-                                    <input type="checkbox" class="form-check-input" name="is_active">
-                                    <label class="form-check-label">{% trans 'Using' %}</label>
-                                </div>
-                                <textarea name="contents" class="mb-3"></textarea>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-12 col-xl-6">
-                    <div class="w-100 mb-5 parentGroupInfo bg-light">
-                        <div class="w-100 d-flex">
-                            <button class="btn btn-gradient-info btn-square w-80 btnCollapseGroup" type="button">
-                                {% trans 'Calendar' %}
-                                <i class="btn-collapse-group-print fa-solid fa-angles-left ml-1 rotate-icon"></i>
-                            </button>
-                            <button class="btn btn-outline-primary btn-square w-10 btnShowInfo">
-                                <i class="fa-solid fa-circle-info"></i>
-                            </button>
-                            <button class="btn btn-primary btn-square w-10" type="submit" form="frm-mail-calendar" disabled>
-                                <i class="fa-regular fa-floppy-disk"></i>
-                            </button>
-                        </div>
-                        <div class="w-100 groupInfo p-3" style="display: none;font-style: italic">
-                            <p>Đây là cấu hình thư điện tử được sử dụng gửi tệp đăng ký lịch sự kiện.</p>
-                        </div>
-                        <div class="w-100 groupCollapseData" style="display: none;">
-                            <form
-                                    id="frm-mail-calendar"
-                                    data-url="{% url 'MailTemplateSystemDetailAPI' pk='__pk__' %}"
-                                    data-method="PUT"
-                                    data-url-get="{% url 'MailTemplateSystemAPI' system_code='2' %}"
-                                    data-key-template="calendar"
-                            >
-                                <div class="form-check form-switch mb-1">
-                                    <input type="checkbox" class="form-check-input" name="is_active">
-                                    <label class="form-check-label">{% trans 'Using' %}</label>
-                                </div>
-                                <textarea name="contents" class="mb-3"></textarea>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                {% for data_info in data.system_info %}
+                    {% include 'mailer/extends/group_system_item.html' with data=data_info %}
+                {% endfor %}
             </div>
         </div>
         <div class="tab-pane fade" id="tabFeature">
@@ -159,7 +91,6 @@
             </div>
         </div>
     </div>
-    {{ data.system_template|json_script:"system_template_data" }}
 {% endblock %}
 
 {% block jsFooter %}
@@ -167,7 +98,6 @@
     <script>
         $(document).ready(function () {
             let staticPrefix = "{% static '' %}";
-            let templateData = JSON.parse($('#system_template_data').text());
 
             $('.btnShowInfo').on('click', function () {
                 $(this).closest('.parentGroupInfo').find('.groupInfo').animate({
@@ -290,9 +220,15 @@
                                     let mailerSystem = data['mailer_system'];
                                     //
                                     let textarea$ = $(frm$).find('textarea[name=contents]');
-                                    MailerTinymceControl.init_tinymce_editable(textarea$, mailerSystem.contents, {}, {
+                                    MailerTinymceControl.init_tinymce_editable(textarea$, mailerSystem.contents, {
+                                        url: $(frm$).attr('data-url-params'),
+                                        system_code: $(frm$).attr('data-system-code'),
+                                        application_id: null,
+                                    }, {
                                         {#'width': '430',#}
-                                        templates : (templateData?.[$(frm$).attr('data-key-template')] || []).map(
+                                        templates : JSON.parse(
+                                            $(frm$).find('script[type="application/json"]').text()
+                                        ).map(
                                             (item) => {
                                                 item.url = staticPrefix + item.url;
                                                 return item;

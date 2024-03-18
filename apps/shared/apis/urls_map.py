@@ -150,6 +150,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     MAILER_LIST = StringUrl('mailer/list')
     MAILER_DETAIL = StringUrl('mailer/detail/{pk}')
     MAILER_SYSTEM_GET = StringUrl('mailer/system/get/{system_code}')
+    MAILER_SYSTEM_PARAMS = StringUrl('mailer/system/params/{system_code}')
     MAILER_SYSTEM_DETAIL = StringUrl('mailer/system/detail/{pk}')
 
     # base

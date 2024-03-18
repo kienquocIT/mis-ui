@@ -120,8 +120,8 @@
                                     <label for="sub-periods-select" class="required form-label">{% trans 'Sub periods' %}</label>
                                     <select class="form-select" id="sub-periods-select">
                                         <option value="0">{% trans 'Month' %}</option>
-                                        <option value="1">{% trans 'Quarter' %}</option>
-                                        <option value="2">{% trans 'Year' %}</option>
+                                        <option value="1" hidden>{% trans 'Quarter' %}</option>
+                                        <option value="2" hidden>{% trans 'Year' %}</option>
                                     </select>
                                 </div>
                             </div>
@@ -227,8 +227,8 @@
                                     <label for="sub-periods-select-update" class="required form-label">{% trans 'Sub periods' %}</label>
                                     <select class="form-select" id="sub-periods-select-update" disabled readonly>
                                         <option value="0">{% trans 'Month' %}</option>
-                                        <option value="1">{% trans 'Quarter' %}</option>
-                                        <option value="2">{% trans 'Year' %}</option>
+                                        <option value="1" hidden>{% trans 'Quarter' %}</option>
+                                        <option value="2" hidden>{% trans 'Year' %}</option>
                                     </select>
                                 </div>
                             </div>

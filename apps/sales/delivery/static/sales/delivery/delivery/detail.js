@@ -421,12 +421,12 @@ $(async function () {
                     table.DataTable().clear().draw();
                     table.DataTable().rows.add(newData).draw();
                 }
+                let scrollLot = $('#scroll-table-lot');
+                let scrollSerial = $('#scroll-table-serial');
+                scrollLot[0].setAttribute('hidden', 'true');
+                scrollSerial[0].setAttribute('hidden', 'true');
                 if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
-                    let scrollLot = $('#scroll-table-lot');
-                    let scrollSerial = $('#scroll-table-serial');
                     if (scrollLot && scrollSerial && scrollLot.length > 0 && scrollSerial.length > 0) {
-                        scrollLot[0].setAttribute('hidden', 'true');
-                        scrollSerial[0].setAttribute('hidden', 'true');
                         if (prod_data?.['product_data']?.['general_traceability_method'] === 1) {
                             scrollLot[0].removeAttribute('hidden');
                             prodTable.dataTableTableLot();

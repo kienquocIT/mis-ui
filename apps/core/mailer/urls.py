@@ -14,7 +14,7 @@ urlpatterns = [
     path('system/get/<str:system_code>', MailTemplateSystemAPI.as_view(), name='MailTemplateSystemAPI'),
     path('system/detail/<str:pk>', MailTemplateSystemDetailAPI.as_view(), name='MailTemplateSystemDetailAPI'),
 
-    path('params', ApplicationPropertyForMailListAPI.as_view(), name='ApplicationPropertyForPrintListAPI'),
+    path('params', ApplicationPropertyForMailListAPI.as_view(), name='ApplicationPropertyForMailListAPI'),
     path('templates/<str:app_id>', MailApplicationTemplateSample.as_view(), name='MailApplicationTemplateSample'),
 
     path('list', MailTemplatesListView.as_view(), name='MailTemplatesListView'),

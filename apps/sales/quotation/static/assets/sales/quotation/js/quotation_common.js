@@ -1789,7 +1789,7 @@ class QuotationLoadDataHandle {
         }
         if (is_copy === false) {
             // check if finish then hidden btn edit page
-            if ([2, 3].includes(data?.['system_status'])) {
+            if ([2, 3, 4].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {
                     $btn[0].setAttribute('hidden', 'true');

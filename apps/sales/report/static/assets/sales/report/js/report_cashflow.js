@@ -1590,12 +1590,16 @@ $(function () {
             // custom total row
             if ($eleTable.DataTable().data().count() !== 0) {
                 let firstRow = $eleTable.DataTable().row(0).node();
-                $(firstRow).css('background-color', '#ebf5f5');
-                $(firstRow).css('color', '#007D88');
+                $(firstRow).css({
+                    'background-color': '#ebf5f5',
+                    'color': '#007D88',
+                });
                 for (let eleType of $eleTable[0].querySelectorAll('.table-row-type')) {
                     let row = eleType.closest('td');
-                    $(row).css('background-color', '#ebf5f5');
-                    $(row).css('color', '#007D88');
+                    $(row).css({
+                        'background-color': '#ebf5f5',
+                        'color': '#007D88',
+                    });
                     if (eleType.getAttribute('data-type')) {
                         if ([4, 5].includes(parseInt(eleType.getAttribute('data-type')))) {
                             $(row).css('text-align', 'right');

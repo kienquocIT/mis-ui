@@ -194,6 +194,10 @@ $(async function () {
                             targets: 0,
                             class: 'w-5',
                             render: (data, type, row) => {
+                                let productGRType = row?.['product']?.['general_traceability_method'];
+                                if (productGRType === 0) {  // if not Lot or Serial
+                                    return ``;
+                                }
                                 let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                                 if (row?.['is_checked'] === true) {
                                    return `<div class="form-check">

@@ -109,6 +109,7 @@
                                             data-link-detail="{% url "AccountDetail" 1 %}"
                                             name="customer"
                                             data-keyResp="account_sale_list"
+                                            data-keyText="name"
                                             disabled
                                     ></select>
                                 </div>
@@ -547,7 +548,7 @@
                                     disabled
                                     hidden
                             >
-                            <span><span>{% trans 'Refresh data' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
+                            <span><span>{% trans 'Refresh' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
                             </button>
                         </div>
                         <div class="col-10"></div>
@@ -694,6 +695,12 @@
     <input
             type="text"
             id="quotation-copy-discount-on-total"
+    >
+    <input
+            type="text"
+            id="data-init-customer"
+            data-url="{% url "AccountForSaleListAPI" %}"
+            data-method="GET"
     >
 
 {% endblock %}

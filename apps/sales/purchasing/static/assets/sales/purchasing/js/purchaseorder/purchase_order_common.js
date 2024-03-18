@@ -716,8 +716,8 @@ class POLoadDataHandle {
                     }
                 }
             }
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
             POLoadDataHandle.loadTableProductByPurchaseRequest();
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
             if (isProductNotIn === true) {
                 $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-product-not-in') + ' ' + POLoadDataHandle.transEle.attr('data-purchase-quotation')}, 'failure');
                 return false;

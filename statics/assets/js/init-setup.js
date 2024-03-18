@@ -6386,11 +6386,187 @@ let $x = {
 
         randomColor: Beautiful.randomColorClass,
 
+        getHashUrl: WindowControl.getHashUrl,
         pushHashUrl: WindowControl.pushHashUrl,
         scrollToIdx: WindowControl.scrollToIdx,
 
         numberWithCommas: DocumentControl.numberWithCommas,
     },
+    opts: {
+        tinymce_extends: function (opts){
+            let config = {
+                ...$x.opts.tinymce,
+                ...opts,
+                content_style: $x.opts.tinymce.content_style + (opts?.['content_style'] || ''),
+                setup: function (editor){
+                    $x.opts.tinymce.setup(editor);
+                    let funcSetup = opts?.['setup'] || null;
+                    if (funcSetup && funcSetup instanceof Function) funcSetup(editor);
+                },
+                init_instance_callback: function (editor) {
+                    $x.opts.tinymce.init_instance_callback(editor);
+                    let funcSetup = opts?.['init_instance_callback'] || null;
+                    if (funcSetup && funcSetup instanceof Function) funcSetup(editor);
+                },
+                mentions: {
+                    ...$x.opts.tinymce.mentions,
+                    ...opts.mentions,
+                },
+            };
+
+            let removeToolbar = opts?.['removeToolbar'] || [];
+            if (removeToolbar && Array.isArray(removeToolbar)) {
+                removeToolbar.map(
+                    (item) => {
+                        config['toolbar'] = config['toolbar'].replaceAll(item, '');
+                        config['quickbars_insert_toolbar'] = config['quickbars_insert_toolbar'].replaceAll(item, '');
+                    }
+                )
+            }
+            let removePlugin = opts?.['removePlugin'] || [];
+            if (removePlugin && Array.isArray(removePlugin)){
+                removePlugin.map(
+                    (item) => {
+                        config['plugins'] = config['plugins'].replaceAll(item, '')
+                    }
+                )
+            }
+
+            return config;
+        },
+        tinymce: {
+            branding: false,
+            readonly: 0,
+            convert_urls: false,  // keep path url real, don't convert to short if same domain
+            menubar: false,
+            height: 320,
+            // plugins: 'quickbars columns advlist autolink lists insertdatetime hr emoticons table mention link media image preview tabfocus visualchars visualblocks wordcount pagebreak print preview',
+            // toolbar: 'undo redo | styleselect | bold italic strikethrough sizeselect fontselect fontsizeselect | centerHeight centerWidth | forecolor backcolor | numlist bullist table twoColumn threeColumn | pagebreak preview print | link image media emoticons | outdent indent hr insertdatetime | visualblocks visualchars wordcount removeformat',
+            plugins: 'columns mention print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+            toolbar: 'bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist table twoColumn threeColumn removeColumnsSplit cleanColumnItem | forecolor backcolor removeformat removeSelectionEle | image template link hr pagebreak| preview print visualblocks | rarely_used',
+            quickbars_insert_toolbar: 'link image | numlist bullist table twoColumn threeColumn | hr pagebreak | removeSelectionEle',
+            toolbar_groups: {
+                rarely_used: {
+                    icon: 'more-drawer',
+                    tooltip: 'Rarely Used',
+                    items: 'ltr rtl | charmap emoticons | superscript subscript | nonbreaking anchor media | undo redo | '
+                }
+            },
+            fontsize_formats: "8px 9px 10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 28px 36px 48px 72px",
+            pagebreak_split_block: true,
+            pagebreak_separator: '<span class="page-break-here"><!-- my page break --></span>',
+            nonbreaking_force_tab: true,
+            insertdatetime_formats: ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', '%H:%M:%S', '%I:%M:%S %p'],
+            content_css: '/static/comment/css/style.css',
+            content_style: `
+                body { font-family: Arial, Helvetica, "Times New Roman", Times, serif, sans-serif; font-size: 11px; }
+                table tr { vertical-align: top; }
+                @media print {
+                    .mce-visual-caret {
+                        display: none;
+                    }
+                }
+                .params-data {
+                    padding: 3px;
+                    background-color: #f1f1f1;
+                }
+            `,
+            mentions__get_url: function (url, params, query){
+                return url + '?' + $.param(
+                    {
+                        ...params,
+                        ...(query ? {'search': query} : {})
+                    }
+                );
+            },
+            mentions: {
+                queryBy: 'code',
+                items: 10,
+                delimiter: '#',
+                source: function (query, process, delimiter) {
+                    // Do your ajax call
+                    // When using multiple delimiters you can alter the query depending on the delimiter used
+                    // if (delimiter === '#') {
+                    //     let params = $.param(
+                    //         $.extend(
+                    //             {
+                    //                 'page': 1,
+                    //                 'pageSize': 10,
+                    //                 'ordering': 'title',
+                    //                 // 'application': application_id,
+                    //                 // 'application__in': `${application_id},ba2ef9f1-63f4-4cfb-ae2f-9dee6a56da68`,
+                    //             },
+                    //             (query ? {'search': query} : {})
+                    //         )
+                    //     )
+                    //     $.fn.callAjax2({
+                    //         url: textarea$.attr('data-mentions') + '?' + params,
+                    //         cache: true,
+                    //     }).then(
+                    //         (resp) => {
+                    //             let data = $.fn.switcherResp(resp);
+                    //             if (data) {
+                    //                 let resource = (data?.['application_property_list'] || []).map(
+                    //                     (item) => {
+                    //                         return UtilControl.flattenObject(item)
+                    //                     }
+                    //                 )
+                    //                 process(resource);
+                    //             }
+                    //         },
+                    //         (errs) => $.fn.switcherResp(errs),
+                    //     )
+                    // }
+                    process([]);
+                },
+                // zero with space: \u200B&nbsp; or \u200B
+                insert: item => `<span id="idx-${$x.fn.randomStr(16)}" class="params-data" data-code="${item.code}">#${item.title}</span>\u200B`,
+                render: item => `<li style="cursor: pointer;" class="d-flex align-items-center"><span>${item.title}</span></li>`,
+                renderDropdown: () => '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>',
+                matcher: item => item,
+            },
+            setup: function (editor) {
+                editor.on('keydown', function (e) {
+                    if (e.key === 'Backspace' || e.key === 'Delete') {
+                        let node = editor.selection.getNode();
+
+                        if (node.classList.contains('params-data') && node.getAttribute('data-code')) {
+                            e.preventDefault();
+                            node.remove();
+                            if (editor.getContent() === '') editor.setContent('<p>&nbsp;</p>');
+                            editor.fire('change');
+                        }
+                    }
+                });
+                editor.on('init', function () {
+                    // https://www.tiny.cloud/blog/tinymce-and-modal-windows/
+                    // Include the following JavaScript into your tiny.init script to prevent the Bootstrap dialog from blocking focus:
+                    document.addEventListener('focusin', (e) => {
+                        if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                            e.stopImmediatePropagation();
+                        }
+                    })
+                })
+            },
+            default_link_target: '_blank',
+            link_assume_external_targets: true,
+            link_default_protocol: 'https',
+            init_instance_callback: function (editor) {
+                let bookmark;
+                editor.on('BeforeExecCommand', function (e) {
+                    if (e.command === 'mcePrint') {
+                        bookmark = editor.selection.getBookmark();
+                        editor.selection.setCursorLocation(editor.dom.select('div')[0]);
+                    }
+                });
+                editor.on('ExecCommand', function (e) {
+                    if (e.command === 'mcePrint') {
+                        editor.selection.moveToBookmark(bookmark);
+                    }
+                });
+            },
+        }
+    }
 }
 
 

@@ -145,12 +145,21 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRINT_TEMPLATES_USING = StringUrl('printer/using/default/{application_id}')
     PRINT_TEMPLATES_USING_DETAIL = StringUrl('printer/using/detail/{pk}')
 
+    # mail template
+    MAILER_TEMPLATES_APPS_LIST = StringUrl('mailer/apps')
+    MAILER_LIST = StringUrl('mailer/list')
+    MAILER_DETAIL = StringUrl('mailer/detail/{pk}')
+    MAILER_SYSTEM_GET = StringUrl('mailer/system/get/{system_code}')
+    MAILER_SYSTEM_PARAMS = StringUrl('mailer/system/params/{system_code}')
+    MAILER_SYSTEM_DETAIL = StringUrl('mailer/system/detail/{pk}')
+
     # base
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
     APPLICATION_DETAIL = StringUrl('base/application/{pk}')
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
     APPLICATION_PROPERTY_PRINT_LIST = StringUrl('base/tenant-applications-property/print')
+    APPLICATION_PROPERTY_MAIL_LIST = StringUrl('base/tenant-applications-property/mail')
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
     APPLICATION_PERMISSION = StringUrl('base/permissions')
     INDICATOR_PARAM = StringUrl('base/indicator-params')

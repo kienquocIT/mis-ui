@@ -3,13 +3,12 @@ from django.urls import path
 from apps.core.printer.views import (
     PrintTemplatesListAPI, PrintTemplatesListView, PrintTemplateUsingDetail,
     PrintTemplateCreateView, PrintTemplateCreateAPI, PrintTemplateDetailView, PrintTemplateDetailAPI,
-    PrintTemplateUpdateView, PrintTemplateApplicationListAPI, PrintApplicationTemplateSample,
+    PrintTemplateUpdateView, PrintApplicationTemplateSample,
     ApplicationPropertyForPrintListAPI, PrintTemplateDetailUsingAPI,
 )
 
 urlpatterns = [
     path('params', ApplicationPropertyForPrintListAPI.as_view(), name='ApplicationPropertyForPrintListAPI'),
-    path('apps', PrintTemplateApplicationListAPI.as_view(), name='PrintTemplateApplicationListAPI'),
     path('templates/<str:app_id>', PrintApplicationTemplateSample.as_view(), name='PrintApplicationTemplateSample'),
     path('list/api', PrintTemplatesListAPI.as_view(), name='PrintTemplatesListAPI'),
     path('list', PrintTemplatesListView.as_view(), name='PrintTemplatesListView'),

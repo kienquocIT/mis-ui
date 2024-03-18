@@ -369,6 +369,7 @@ class PrintTinymceControl {
                     textarea$.tinymce(
                         $.extend(
                             {
+                                convert_urls: false,
                                 branding: false,
                                 readonly : 0,
                                 menubar: false,

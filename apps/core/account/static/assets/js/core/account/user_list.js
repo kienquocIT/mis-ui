@@ -70,8 +70,8 @@ $(function () {
                 'render': (data, type, row) => {
                     let btn1 = `<button class="btn btn-icon btn-rounded bg-dark-hover btn-modal-change-passwd" data-bs-toggle="modal" data-bs-target="#modalChangePassword"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Change password" ><i class="fas fa-key"></i></span></button>`;
                     let btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button" href="${urlEle.data('url-user-detail').format_url_with_uuid(row.id)}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit" ><i class="fas fa-edit"></i></span></a>`;
-                    let btn3 = `<button class="btn btn-icon btn-rounded bg-dark-hover del-button" href="${urlEle.data('url-user-detail-api').format_url_with_uuid(row.id)}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" ><i class="fas fa-user-times"></i></span></button>`;
-                    return btn1 + btn2 + btn3;
+                    // let btn3 = `<button class="btn btn-icon btn-rounded bg-dark-hover del-button" href="${urlEle.data('url-user-detail-api').format_url_with_uuid(row.id)}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" ><i class="fas fa-user-times"></i></span></button>`;
+                    return btn1 + btn2;
                 }
             },
         ]

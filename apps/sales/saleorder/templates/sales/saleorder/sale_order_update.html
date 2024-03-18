@@ -84,6 +84,7 @@
                                             data-link-detail="{% url "AccountDetail" 1 %}"
                                             name="customer"
                                             data-keyResp="account_sale_list"
+                                            data-keyText="name"
                                             required
                                     ></select>
                                 </div>
@@ -722,7 +723,7 @@
                                     id="btn-refresh-quotation-indicator"
                                     data-zone="sale_order_indicators_data"
                             >
-                            <span><span>{% trans 'Refresh data' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
+                            <span><span>{% trans 'Refresh' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
                             </button>
                         </div>
                         <div class="col-10"></div>
@@ -872,6 +873,12 @@
     <input
             type="text"
             id="quotation-copy-discount-on-total"
+    >
+    <input
+            type="text"
+            id="data-init-customer"
+            data-url="{% url "AccountForSaleListAPI" %}"
+            data-method="GET"
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}

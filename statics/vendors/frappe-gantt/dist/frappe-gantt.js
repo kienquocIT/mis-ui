@@ -1896,12 +1896,20 @@ var Gantt = (function () {
             for (let item of this.tasks){
                 let row = jQuery('<div class="grid-row"/>')
                 row.attr('data-id', item.id).css({"height": 38})
-                this.options.left_list.map((value) => {
+                for ( let value of this.options['left_list']) {
                     if (is_flag) base_width += value.width
-                    let item_html = jQuery('<p/>')
-                    item_html.text(item.objData[value.code]).css({"width": value.width})
+                    let item_html = jQuery('<p/>');
+                    if (item.has_child && value.code === 'title'){
+                        let span = jQuery('<span class="expand-btn"/>')
+                        span.text("+")
+                        item_html.append(span)
+                        span.on('click', function(){
+                            change_child_show_hide()
+                        })
+                    }
+                    item_html.append(item.objData[value.code]).css({"width": value.width})
                     row.append(item_html)
-                })
+                }
                 is_flag = false
                 div_wrapper.append(row)
             }
@@ -1912,7 +1920,7 @@ var Gantt = (function () {
                 this.options.padding +
                 (this.options.bar_height + this.options.padding) *
                     this.tasks.length;
-            grid_height = grid_height + 58
+            grid_height = grid_height + 58 // 58 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
             div_wrapper.css({"min-width": base_width, "height": grid_height})
             jQuery('.gantt-wrap-title').css({"min-width": base_width})
             // todo here

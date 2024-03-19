@@ -1601,7 +1601,7 @@ $(function () {
                         'color': '#007D88',
                     });
                     if (eleType.getAttribute('data-type')) {
-                        if ([4, 5].includes(parseInt(eleType.getAttribute('data-type')))) {
+                        if ([2, 3, 4].includes(parseInt(eleType.getAttribute('data-type')))) {
                             $(row).css('text-align', 'right');
                         }
                     }

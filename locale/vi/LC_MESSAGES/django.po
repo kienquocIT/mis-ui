@@ -6891,3 +6891,19 @@ msgstr "Phần trăm hoàn thành"
 #
 msgid "Finish task"
 msgstr "Hoàn thành Giao việc"
+
+#
+msgid "Refresh"
+msgstr "Làm mới"
+
+#
+msgid "Revenue ytd"
+msgstr "Doanh thu"
+
+#
+msgid "Order number"
+msgstr "Số đơn hàng"
+
+#
+msgid "Revenue average"
+msgstr "Doanh thu trung bình"

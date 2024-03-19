@@ -59,7 +59,7 @@
     {#    </div>#}
 
     <table
-            id="datatable_account_list" class="table nowrap w-100"
+            id="datatable_account_list" class="table nowrap min-w-2000p w-100"
             data-url="{% url "AccountListAPI" %}" data-method="GET"
             data-url-employee="{% url 'EmployeeListAPI' %}"
     >
@@ -71,6 +71,9 @@
             <th>{% trans "Account Owner" %}</th>
             <th>{% trans "Phone number" %}</th>
             <th>{% trans "Website" %}</th>
+            <th>{% trans "Revenue ytd" %}</th>
+            <th>{% trans "Order number" %}</th>
+            <th>{% trans "Revenue average" %}</th>
             <th>{% trans "Account Manager" %}</th>
         </tr>
         </thead>

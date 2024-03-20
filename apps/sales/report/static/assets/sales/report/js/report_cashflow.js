@@ -2088,7 +2088,7 @@ $(function () {
                     $(eleValueEstimateFirst).attr('data-init-money', String(startValue));
                     let startQuarter = parseInt(eleValueEstimateFirst.getAttribute('data-month'));
                     let startQuarterNext = startQuarter + 1;
-                    if (startQuarter <= 5 && startQuarterNext <= 5) {
+                    if (startQuarter <= 5 && startQuarterNext <= 6) {
                         calculateIfChangeBeginning($tableMonth, startValue, startQuarter, startQuarterNext);
                     }
                     for (let quarter = (startQuarter + 1); quarter <= 5; quarter++) {
@@ -2098,7 +2098,7 @@ $(function () {
                             let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${quarter}"]`);
                             if (eleEstimateBegin.getAttribute('data-init-money')) {
                                 let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
-                                if (quarter <= 5 && quarterNext <= 5) {
+                                if (quarter <= 5 && quarterNext <= 6) {
                                     calculateIfChangeBeginning($tableMonth, value, quarter, quarterNext);
                                 }
                             }

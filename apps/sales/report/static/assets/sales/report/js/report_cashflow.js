@@ -1615,7 +1615,9 @@ $(function () {
                                 if (eleStoreYear.val() && year) {
                                     let dataStoreYear = JSON.parse(eleStoreYear.val());
                                     let dataYear = dataStoreYear?.[year];
-                                    $(eleEstimateBegin).val(dataYear);
+                                    if (dataYear) {
+                                        $(eleEstimateBegin).attr('value', String(dataYear));
+                                    }
                                 }
                             }
                         }
@@ -1998,7 +2000,11 @@ $(function () {
                 let startValue = $(this).valCurrency();
                 // store data year
                 if (eleStoreYear && eleStoreYear.length > 0) {
-                    let dataStoreYear = {year: startValue};
+                    let dataStoreYear = {};
+                    if (eleStoreYear.val()) {
+                        dataStoreYear = JSON.parse(eleStoreYear.val());
+                    }
+                    dataStoreYear[year] = startValue;
                     eleStoreYear.val(JSON.stringify(dataStoreYear));
                 }
                 let startMonth = parseInt(this.getAttribute('data-month'));

@@ -1081,7 +1081,7 @@ function dataTableActivity(data) {
                         'saleorder.saleorder': transEle.attr('data-sale-order'),
                     }
                     let appMapBadge = {
-                        'opportunity.opportunity': "badge-soft-info",
+                        'opportunity.opportunity': "badge-soft-sky",
                         'opportunity.opportunitymeeting': "badge-soft-warning",
                         'quotation.quotation': "badge-soft-primary",
                         'saleorder.saleorder': "badge-soft-success",

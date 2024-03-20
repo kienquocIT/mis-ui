@@ -24,4 +24,5 @@ class JavaScriptCatalogCustomize(JavaScriptCatalog):
 I18N_JS_MATCH_APP = {
     'hr': 'apps.core.hr',
     'fimport': 'apps.core.fimport',
+    'mailer': 'apps.core.mailer',
 }

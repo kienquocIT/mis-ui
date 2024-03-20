@@ -19,20 +19,6 @@ class ApplicationPropertyForPrintListAPI(APIView):
         return resp.auto_return(key_success='application_property_list')
 
 
-class PrintTemplateApplicationListAPI(APIView):
-    @mask_view(login_require=True, is_api=True)
-    def get(self, request, *args, **kwargs):
-        templates_apps_list = ServerAPI(
-            request=request, user=request.user,
-            url=ApiURL.PRINT_TEMPLATES_LIST
-        ).get(
-            data={
-                'pageSize': -1,  # full records
-            }
-        )
-        return templates_apps_list.auto_return(key_success='templates_apps_list')
-
-
 class PrintApplicationTemplateSample(APIView):
     @staticmethod
     def parse_template_detail(title, url, remarks=''):

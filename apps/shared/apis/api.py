@@ -2,6 +2,8 @@
 from typing import Callable, TypedDict, Union, Literal
 import requests
 
+from urllib import parse
+
 from django.db.models import Model
 from django.conf import settings
 from django.http import response
@@ -686,7 +688,7 @@ class ServerAPI:
             **(data if isinstance(data, dict) else {}),
         }
 
-        url_encode = [f"{key}={val}" for key, val in params.items()]
+        url_encode = [f"{key}={parse.quote(val)}" for key, val in params.items()]
         safe_url = self.url + f'?{"&".join(url_encode)}'
         return APIUtil(user_obj=self.user).call_get(safe_url=safe_url, headers=self.headers)
 

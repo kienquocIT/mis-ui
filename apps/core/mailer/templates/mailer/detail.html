@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block pageAction %}
+    <a href="{% url 'MailTemplateUpdateView' pk=pk %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12 col-lg-4 col-xl-6 col-xxl-7">
+            <div class="form-group">
+                <label class="form-label required" for="inp-title">{% trans 'Title' %}</label>
+                <input type="text" class="form-control" id="inp-title" name="title" required disabled/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="inp-remark">{% trans 'Remarks' %}</label>
+                <textarea name="remark" id="inp-remark" class="form-control" disabled></textarea>
+            </div>
+            <div class="form-check form-switch">
+                <input type="checkbox" class="form-check-input" id="inp-is-active" name="is_active" disabled>
+                <label class="form-check-label" for="inp-is-active">{% trans 'Using' %}</label>
+            </div>
+            <div class="form-check form-switch">
+                <input type="checkbox" class="form-check-input" id="inp-is-default" name="is_default" disabled>
+                <label class="form-check-label" for="inp-is-default">{% trans 'Is default' %}</label>
+            </div>
+        </div>
+        <div class="col-12 col-lg-8 col-xl-6 col-xxl-5">
+            <label for="inp-contents" class="form-label required">{% trans 'Contents' %}</label>
+            <textarea
+                    id="inp-contents"
+                    data-mentions="{% url 'ApplicationPropertyForPrintListAPI' %}"
+                    name="contents"
+                    class="form-control"
+                    required disabled
+            ></textarea>
+        </div>
+    </div>
+{% endblock %}

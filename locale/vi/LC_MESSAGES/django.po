@@ -6898,11 +6898,11 @@ msgstr "Làm mới"
 
 #
 msgid "Revenue ytd"
-msgstr "Doanh thu"
+msgstr "Doanh thu năm"
 
 #
-msgid "Order number"
-msgstr "Số đơn hàng"
+msgid "Number of order"
+msgstr "Số lượng đơn hàng"
 
 #
 msgid "Revenue average"

@@ -213,6 +213,9 @@ $(function () {
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
+            if (boxCategory.val()) {
+                dataParams['product__general_product_category_id'] = boxCategory.val().join(',');
+            }
             if (boxProduct.val()) {
                 dataParams['product_id__in'] = boxProduct.val().join(',');
             }

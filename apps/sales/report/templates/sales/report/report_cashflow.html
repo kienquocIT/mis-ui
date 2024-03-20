@@ -192,6 +192,14 @@
             data-url="{% url "PeriodsConfigListAPI" %}"
             data-method="GET"
     >
+    <input
+            type="text"
+            id="data-store-year"
+    >
+    <input
+            type="text"
+            id="data-store-month"
+    >
     {{ data.filter_quarter|json_script:'filter_quarter' }}
     {{ data.filter_month|json_script:'filter_month' }}
 {% endblock %}

@@ -16,6 +16,56 @@
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="row form-group">
                     <div class="col-12 col-md-2 col-lg-2">
+                        <label class="form-label" for="box-report-product-category">{% trans 'Category' %}</label>
+                    </div>
+                    <div class="col-12 col-md-10 col-lg-10">
+                        <select
+                                class="form-select"
+                                id="box-report-product-category"
+                                data-url="{% url "ProductCategoryListAPI" %}"
+                                data-method="GET"
+                                data-link-detail=""
+                                name="product_category"
+                                data-keyResp="product_category_list"
+                                multiple
+                        ></select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <label class="form-label" for="box-report-product-product">{% trans 'Product' %}</label>
+                    </div>
+                    <div class="col-12 col-md-10 col-lg-10">
+                        <select
+                                class="form-select"
+                                id="box-report-product-product"
+                                data-url="{% url "ProductListAPI" %}"
+                                data-method="GET"
+                                data-link-detail="{% url "ProductDetail" 1 %}"
+                                name="product"
+                                data-keyResp="product_list"
+                                multiple
+                        ></select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <label class="form-label" for="report-product-date-approved">{% trans 'Date' %}</label>
+                    </div>
+                    <div class="col-12 col-md-10 col-lg-10">
+                        <div class="input-affix-wrapper">
+                            <input type="text" name="date_approved" id="report-product-date-approved"
+                                   class="form-control date-picker" autocomplete="off">
+                            <div class="input-suffix">
+                                <i class="far fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="row form-group">
+                    <div class="col-12 col-md-2 col-lg-2">
                         <label class="form-label" for="box-report-product-group">{% trans 'Group' %}</label>
                     </div>
                     <div class="col-12 col-md-10 col-lg-10">
@@ -45,56 +95,6 @@
                                 name="employee"
                                 data-keyResp="employee_list"
                                 data-keyText="full_name"
-                                multiple
-                        ></select>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <label class="form-label" for="report-product-date-approved">{% trans 'Date' %}</label>
-                    </div>
-                    <div class="col-12 col-md-10 col-lg-10">
-                        <div class="input-affix-wrapper">
-                            <input type="text" name="date_approved" id="report-product-date-approved"
-                                   class="form-control date-picker" autocomplete="off">
-                            <div class="input-suffix">
-                                <i class="far fa-calendar"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="row form-group">
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <label class="form-label" for="box-report-product-category">{% trans 'Category' %}</label>
-                    </div>
-                    <div class="col-12 col-md-10 col-lg-10">
-                        <select
-                                class="form-select"
-                                id="box-report-product-category"
-                                data-url="{% url "ProductCategoryListAPI" %}"
-                                data-method="GET"
-                                data-link-detail=""
-                                name="product_category"
-                                data-keyResp="product_category_list"
-                                multiple
-                        ></select>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <label class="form-label" for="box-report-product-product">{% trans 'Product' %}</label>
-                    </div>
-                    <div class="col-12 col-md-10 col-lg-10">
-                        <select
-                                class="form-select"
-                                id="box-report-product-product"
-                                data-url="{% url "ProductListAPI" %}"
-                                data-method="GET"
-                                data-link-detail="{% url "ProductDetail" 1 %}"
-                                name="product"
-                                data-keyResp="product_list"
                                 multiple
                         ></select>
                     </div>

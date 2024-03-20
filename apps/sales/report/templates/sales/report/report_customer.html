@@ -16,6 +16,40 @@
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="row form-group">
                     <div class="col-12 col-md-2 col-lg-2">
+                        <label class="form-label" for="box-report-customer-customer">{% trans 'Customer' %}</label>
+                    </div>
+                    <div class="col-12 col-md-10 col-lg-10">
+                        <select
+                                class="form-select"
+                                id="box-report-customer-customer"
+                                data-url="{% url "AccountListAPI" %}"
+                                data-method="GET"
+                                data-link-detail="{% url "AccountDetail" 1 %}"
+                                name="customer"
+                                data-keyResp="account_list"
+                                data-keyText="name"
+                                multiple
+                        ></select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <label class="form-label" for="report-customer-date-approved">{% trans 'Date' %}</label>
+                    </div>
+                    <div class="col-12 col-md-10 col-lg-10">
+                        <div class="input-affix-wrapper">
+                            <input type="text" name="date_approved" id="report-customer-date-approved"
+                                   class="form-control date-picker" autocomplete="off">
+                            <div class="input-suffix">
+                                <i class="far fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="row form-group">
+                    <div class="col-12 col-md-2 col-lg-2">
                         <label class="form-label" for="box-report-customer-group">{% trans 'Group' %}</label>
                     </div>
                     <div class="col-12 col-md-10 col-lg-10">
@@ -47,40 +81,6 @@
                                 data-keyText="full_name"
                                 multiple
                         ></select>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="row form-group">
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <label class="form-label" for="box-report-customer-customer">{% trans 'Customer' %}</label>
-                    </div>
-                    <div class="col-12 col-md-10 col-lg-10">
-                        <select
-                                class="form-select"
-                                id="box-report-customer-customer"
-                                data-url="{% url "AccountListAPI" %}"
-                                data-method="GET"
-                                data-link-detail="{% url "AccountDetail" 1 %}"
-                                name="customer"
-                                data-keyResp="account_list"
-                                data-keyText="name"
-                                multiple
-                        ></select>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <label class="form-label" for="report-customer-date-approved">{% trans 'Date' %}</label>
-                    </div>
-                    <div class="col-12 col-md-10 col-lg-10">
-                        <div class="input-affix-wrapper">
-                            <input type="text" name="date_approved" id="report-customer-date-approved"
-                                   class="form-control date-picker" autocomplete="off">
-                            <div class="input-suffix">
-                                <i class="far fa-calendar"></i>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

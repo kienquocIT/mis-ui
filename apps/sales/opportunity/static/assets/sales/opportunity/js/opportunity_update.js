@@ -1334,12 +1334,19 @@ $(document).ready(function () {
                     'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
                     'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
                 }
-                let activityMapApp = {
+                let appMapTrans = {
                     'quotation.quotation': transEle.attr('data-trans-quotation'),
                     'saleorder.saleorder': transEle.attr('data-trans-sale-order'),
                     'cashoutflow.advancepayment': transEle.attr('data-trans-advance'),
                     'cashoutflow.payment': transEle.attr('data-trans-payment'),
                     'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
+                }
+                let appMapBadge = {
+                    'quotation.quotation': "badge-soft-primary",
+                    'saleorder.saleorder': "badge-soft-success",
+                    'cashoutflow.advancepayment': "badge-soft-pink",
+                    'cashoutflow.payment': "badge-soft-violet",
+                    'cashoutflow.returnadvance': "badge-soft-purple",
                 }
                 let typeMapActivity = {
                     1: transEle.attr('data-trans-task'),
@@ -1393,16 +1400,20 @@ $(document).ready(function () {
                                         }
 
                                         return `<div class="d-flex justify-content-start">
-                                            <span class="badge badge-soft-primary mr-2">${activityMapApp[row?.['app_code']]}</span>
+                                            <span class="badge ${appMapBadge[row?.['app_code']]} mr-2">${appMapTrans[row?.['app_code']]}</span>
                                             ${status}
                                         </div>`;
                                     }
                                 } else {
-                                    let status = ''
+                                    let status = '';
+                                    let badgeType = 'badge-soft-smoke';
                                     if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
                                         status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
                                     }
-                                    return `<span class="badge badge-soft-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                                    if (Object.keys(row?.['task']).length > 0) {
+                                        badgeType = 'badge-soft-sky';
+                                    }
+                                    return `<span class="badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                                 }
                                 return `<p></p>`;
                             }

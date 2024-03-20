@@ -509,6 +509,9 @@ function LoadDetail(option) {
                 $.fn.initMaskMoney2();
 
                 Disable(option);
+
+                // load activity
+                dataTableActivity(data?.['activity']);
             }
         })
 }
@@ -1058,6 +1061,66 @@ function loadCountries(countriesData) {
         keyText: 'title',
     })
 }
+
+
+// ACTIVITY
+function dataTableActivity(data) {
+    // init dataTable
+    let $tables = $('#datable-account-activity');
+    let transEle = $('#app-trans-factory');
+    $tables.DataTableDefault({
+        data: data ? data : [],
+        columns: [
+            {
+                targets: 0,
+                render: (data, type, row) => {
+                    let appMapTrans = {
+                        'opportunity.opportunity': transEle.attr('data-opportunity'),
+                        'opportunity.opportunitymeeting': transEle.attr('data-meeting'),
+                        'quotation.quotation': transEle.attr('data-quotation'),
+                        'saleorder.saleorder': transEle.attr('data-sale-order'),
+                    }
+                    let appMapBadge = {
+                        'opportunity.opportunity': "badge-soft-info",
+                        'opportunity.opportunitymeeting': "badge-soft-warning",
+                        'quotation.quotation': "badge-soft-primary",
+                        'saleorder.saleorder': "badge-soft-success",
+                    }
+                    return `<span class="badge ${appMapBadge[row?.['app_code']]}">${appMapTrans[row?.['app_code']]}</span>`;
+                }
+            },
+            {
+                targets: 1,
+                render: (data, type, row) => {
+                    return `<p class="text-primary">${row?.['title']}</p>`;
+                },
+            },
+            {
+                targets: 2,
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['date_activity'], {
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
+                }
+            },
+            {
+                targets: 3,
+                render: (data, type, row) => {
+                    if (['opportunity.opportunity', 'opportunity.opportunitymeeting'].includes(row?.['app_code'])) {
+                        return `<span>--</span>`;
+                    }
+                    return `<span class="mask-money" data-init-money="${parseFloat(row?.['revenue'] ? row?.['revenue'] : 0)}"></span>`;
+                }
+            },
+        ],
+        drawCallback: function () {
+            // mask money
+            $.fn.initMaskMoney2();
+        },
+    });
+}
+
+
 
 $(document).on('click', '#save-changes-modal-bank-account', function () {
     let bank_country_id = $('#country-select-box-id').val();

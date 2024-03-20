@@ -1699,25 +1699,69 @@ class WFRTControl {
         // -- wf call action
         let actionSelected = $(ele$).attr('data-value');
         let taskID = $('#idxGroupAction').attr('data-wf-task-id');
+        let runtimeID = WFRTControl.getRuntimeWF();
         let urlBase = globeTaskDetail;
+        let urlRTAfterBase = globeRuntimeAfterFinishDetail;
         let dataSuccessReload = $(ele$).attr('data-success-reload');
         let dataSubmit = {'action': actionSelected};
         let urlRedirect = ele$.attr('data-url-redirect');
         if (actionSelected !== undefined && taskID && urlBase) {
-            if (actionSelected === '1') {  // check approve if next node is out form need select person before submit
+            if (actionSelected === '1') {  // Approve: check if next node is out form need select person before submit
                 return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
-            } else if (actionSelected === '3') {  // check return need remark before submit
+            } else if (actionSelected === '3') {  // Return: check if remark before submit
                 return WFRTControl.callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload);
-            } else if (actionSelected === '4') {  // check receive if next node is out form need select person before submit
+            } else if (actionSelected === '4') {  // Receive: check if next node is out form need select person before submit
                 return WFRTControl.callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
             } else {
                 return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload);
             }
         }
+        if (actionSelected !== undefined && urlRTAfterBase) {
+            return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);  // Cancel after finished
+        }
     }
 
     static callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect = null) {
         let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
+        WindowControl.showLoading();
+        return $.fn.callAjax2({
+            'url': urlData,
+            'method': 'PUT',
+            'data': dataSubmit,
+        }).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data?.['status'] === 200) {
+                $.fn.notifyB({
+                    'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
+                }, 'success');
+                if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+                    setTimeout(() => {
+                        if (!urlRedirect) {
+                            window.location.reload()
+                        } else {
+                            window.location.replace(urlRedirect);
+                        }
+                    }, 1000)
+                }
+            }
+            setTimeout(() => {
+                WindowControl.hideLoading();
+                if (urlRedirect) {
+                    window.location.replace(urlRedirect);
+                }
+            }, 1000)
+        }, (errs) => {
+            setTimeout(() => {
+                WindowControl.hideLoading();
+                if (urlRedirect) {
+                    window.location.replace(urlRedirect);
+                }
+            }, 500)
+        });
+    }
+
+    static callAjaxActionWFAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
+        let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, runtimeID);
         WindowControl.showLoading();
         return $.fn.callAjax2({
             'url': urlData,
@@ -1982,6 +2026,9 @@ class WFRTControl {
 
     static setWFRuntimeID(runtime_id) {
         if (runtime_id) {
+            // set runtime
+            WFRTControl.setRuntimeWF(runtime_id);
+
             let btn = $('#btnLogShow');
             btn.removeClass('hidden');
             let url = SetupFormSubmit.getUrlDetailWithID(btn.attr('data-url-runtime-detail'), runtime_id);
@@ -2034,11 +2081,11 @@ class WFRTControl {
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             // active btn cancel if owner & finished
-                            // let eleStatus = $('#systemStatus');
-                            // let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            // if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
-                            //     WFRTControl.setBtnCancel();
-                            // }
+                            let eleStatus = $('#systemStatus');
+                            let currentEmployee = $x.fn.getEmployeeCurrentID();
+                            if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
+                                WFRTControl.setBtnCancel();
+                            }
                         }
                         // collab out form handler
                         WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);
@@ -2096,6 +2143,14 @@ class WFRTControl {
 
     static setTaskWF(taskID) {
         $('#idxGroupAction').attr('data-wf-task-id', taskID);
+    }
+
+    static getRuntimeWF() {
+        return $('#idxGroupAction').attr('data-wf-runtime-id');
+    }
+
+    static setRuntimeWF(runtimeID) {
+        $('#idxGroupAction').attr('data-wf-runtime-id', runtimeID);
     }
 
     static activeZoneInDoc() {

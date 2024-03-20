@@ -65,7 +65,7 @@ $(document).ready(function () {
                 },
             },
         ],
-        columns: [  // 50,300,200,150,150,200,200,100,200,400 (2000p)
+        columns: [  // 50,300,200,150,150,150,200,100,200,500 (2000p)
             {
                 width: "2.5%",
                 'render': () => {
@@ -109,19 +109,25 @@ $(document).ready(function () {
                 width: "7.5%",
                 data: 'phone',
                 render: (data, type, row) => {
-                    return `<div class="row">
+                    if (row?.['phone']) {
+                        return `<div class="row">
                                 <div class="d-flex justify-content-end">
                                     <small><i class="fa-solid fa-phone mr-1"></i></small>
-                                    <span>${row?.phone ? row.phone : ''}</span>
+                                    <span>${row?.['phone'] ? row?.['phone'] : ''}</span>
                                 </div>
                             </div>`;
+                    }
+                    return `<span>--</span>`;
                 },
             },
             {
-                width: "10%",
+                width: "7.5%",
                 data: 'website',
                 render: (data, type, row) => {
-                    return `<span class="text-primary">${row?.['website'] ? row['website'] : ''}</span>`
+                    if (row?.['website']) {
+                        return `<span>${row?.['website'] ? row['website'] : ''}</span>`;
+                    }
+                    return `<span>--</span>`;
                 },
             },
             {
@@ -135,7 +141,7 @@ $(document).ready(function () {
                 width: "7.5%",
                 data: 'revenue_information',
                 render: (data, type, row) => {
-                    return `<div class="text-center"><span class="text-primary">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span></div>`;
+                    return `<span class="text-primary">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
                 },
             },
             {
@@ -146,7 +152,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "20%",
+                width: "25%",
                 data: 'manager',
                 render: (data, type, row) => {
                     let element = ''

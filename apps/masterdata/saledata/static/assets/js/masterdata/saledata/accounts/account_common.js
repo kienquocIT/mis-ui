@@ -1106,6 +1106,9 @@ function dataTableActivity(data) {
             {
                 targets: 3,
                 render: (data, type, row) => {
+                    if (['opportunity.opportunity', 'opportunity.opportunitymeeting'].includes(row?.['app_code'])) {
+                        return `<span>--</span>`;
+                    }
                     return `<span class="mask-money" data-init-money="${parseFloat(row?.['revenue'] ? row?.['revenue'] : 0)}"></span>`;
                 }
             },

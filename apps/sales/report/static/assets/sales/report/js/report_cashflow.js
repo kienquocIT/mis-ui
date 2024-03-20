@@ -1337,11 +1337,7 @@ $(function () {
                                 }
                             }
                             if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
-                                } else {
-                                    return `<div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div>`;
-                                }
+                                return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
                             } else {
                                 return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
                             }
@@ -1550,7 +1546,6 @@ $(function () {
                         dataByMonth[keyMonth]['value_estimate_net'] = parseFloat(dataByMonth[keyMonth]['value_estimate_sale']) - parseFloat(dataByMonth[keyMonth]['value_estimate_cost']);
                     }
                 }
-
             }
             let dataOperation = {
                 'cashflow_type': 0,
@@ -1607,7 +1602,6 @@ $(function () {
                     }
                 }
             }
-
             // init money
             $.fn.initMaskMoney2();
 
@@ -1615,10 +1609,24 @@ $(function () {
             if (eleTypeBegin) {
                 for (let eleEstimateBegin of eleTypeBegin.closest('tr').querySelectorAll('.table-row-value-estimate')) {
                     if (eleEstimateBegin.tagName.toLowerCase() === 'input') {
+                        if ($eleTable[0].id === 'table_report_cashflow_year_list') {
+                            let eleStoreYear = $('#data-store-year');
+                            if (eleStoreYear && eleStoreYear.length > 0) {
+                                if (eleStoreYear.val() && year) {
+                                    let dataStoreYear = JSON.parse(eleStoreYear.val());
+                                    let dataYear = dataStoreYear?.[year];
+                                    $(eleEstimateBegin).val(dataYear);
+                                }
+                            }
+                        }
                         $(eleEstimateBegin).change();
                         break;
                     }
                 }
+            }
+            // auto calculate weeks by month
+            if (month) {
+                autoCalculateWeeksByMonth();
             }
             return true;
         }
@@ -1982,17 +1990,31 @@ $(function () {
 
         $table.on('change', '.table-row-value-estimate', function () {
             let year = boxYear.val();
+            let eleStoreYear = $('#data-store-year');
+            let eleStoreMonth = $('#data-store-month');
+            let dataStoreMonth = {};
             if (year) {
                 let listMonths = getAllMonthsOfFiscalYear(parseInt(year));
                 let startValue = $(this).valCurrency();
+                // store data year
+                if (eleStoreYear && eleStoreYear.length > 0) {
+                    let dataStoreYear = {year: startValue};
+                    eleStoreYear.val(JSON.stringify(dataStoreYear));
+                }
                 let startMonth = parseInt(this.getAttribute('data-month'));
                 let startMonthNext = startMonth + 1;
                 if (startMonth === 12) {
                     startMonthNext = 1;
                 }
+                // calculate first month
                 if (startMonth <= 12 && startMonthNext <= 12) {
-                    calculateIfChangeBeginning($table, startValue, startMonth, startMonthNext);
+                    let resultCal = calculateIfChangeBeginning($table, startValue, startMonth, startMonthNext);
+                    // store data first month
+                    for (let cal of resultCal) {
+                        dataStoreMonth[cal?.['month']] = cal?.['value'];
+                    }
                 }
+                // calculate all next months
                 for (let data of listMonths) {
                     let month = data?.['month'];
                     let monthNext = month + 1;
@@ -2007,13 +2029,21 @@ $(function () {
                                 if (eleEstimateBegin.getAttribute('data-init-money')) {
                                     let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
                                     if (month <= 12 && monthNext <= 12) {
-                                        calculateIfChangeBeginning($table, value, month, monthNext);
+                                        let resultCal = calculateIfChangeBeginning($table, value, month, monthNext);
+                                        // store data first month
+                                        for (let cal of resultCal) {
+                                            dataStoreMonth[cal?.['month']] = cal?.['value'];
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
+            // store all data
+            if (eleStoreMonth && eleStoreMonth.length > 0) {
+                eleStoreMonth.val(JSON.stringify(dataStoreMonth));
             }
             return true;
         });
@@ -2041,15 +2071,48 @@ $(function () {
             return true;
         });
 
+        function autoCalculateWeeksByMonth() {
+            let month = boxMonth.val();
+            let eleStoreMonth = $('#data-store-month');
+            let eleValueEstimateFirst = $tableMonth[0].querySelector('.table-row-value-estimate[data-month="1"]');
+            if (month && eleStoreMonth && eleStoreMonth.length > 0 && eleValueEstimateFirst) {
+                if (eleStoreMonth.val()) {
+                    let dataStore = JSON.parse(eleStoreMonth.val());
+                    let startValue = dataStore?.[month];
+                    $(eleValueEstimateFirst).attr('data-init-money', String(startValue));
+                    let startQuarter = parseInt(eleValueEstimateFirst.getAttribute('data-month'));
+                    let startQuarterNext = startQuarter + 1;
+                    if (startQuarter <= 5 && startQuarterNext <= 5) {
+                        calculateIfChangeBeginning($tableMonth, startValue, startQuarter, startQuarterNext);
+                    }
+                    for (let quarter = (startQuarter + 1); quarter <= 5; quarter++) {
+                        let quarterNext = quarter + 1;
+                        let eleTypeBegin = $tableMonth[0].querySelector('.table-row-type[data-type="1"]');
+                        if (eleTypeBegin) {
+                            let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${quarter}"]`);
+                            if (eleEstimateBegin.getAttribute('data-init-money')) {
+                                let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
+                                if (quarter <= 5 && quarterNext <= 5) {
+                                    calculateIfChangeBeginning($tableMonth, value, quarter, quarterNext);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
         function calculateIfChangeBeginning($eleTable, value, month, nextMonth) {
             let eleTypeNet = $eleTable[0].querySelector('.table-row-type[data-type="4"]');
             let eleTypeEnd = $eleTable[0].querySelector('.table-row-type[data-type="5"]');
+            let endValue = 0;
             if (eleTypeNet && eleTypeEnd) {
                 let eleEstimateNet = eleTypeNet.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
                 let eleEstimateEnd = eleTypeEnd.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
                 if (eleEstimateNet && eleEstimateEnd) {
                     if (eleEstimateNet.getAttribute('data-init-money')) {
-                        let endValue = parseFloat(value) + parseFloat(eleEstimateNet.getAttribute('data-init-money'));
+                        endValue = parseFloat(value) + parseFloat(eleEstimateNet.getAttribute('data-init-money'));
                         $(eleEstimateEnd).attr('data-init-money', String(endValue));
                         // set next beginning value
                         let eleTypeBegin = $eleTable[0].querySelector('.table-row-type[data-type="1"]');
@@ -2064,7 +2127,10 @@ $(function () {
             }
             // init money
             $.fn.initMaskMoney2();
-            return true;
+            return [
+                {'month': month, 'value': parseFloat(value)},
+                {'month': nextMonth, 'value': endValue}
+            ];
         }
 
         function changeTHTableMonthByWeeks() {

@@ -92,7 +92,7 @@
                             <label class="form-check-label" for="customRadio3">{% trans 'Custom' %}</label>
                         </div>
                     </div>
-                    <div class="col-12 col-md-5 col-lg-5">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="d-flex mr-2">
                             <label class="form-label mt-1 mr-2" for="report-pipeline-date-from">{% trans 'From' %}</label>
                             <div class="input-affix-wrapper">
@@ -104,7 +104,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-5 col-lg-5">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="d-flex">
                             <label class="form-label mt-1 mr-2" for="report-pipeline-date-to">{% trans 'To' %}</label>
                             <div class="input-affix-wrapper">
@@ -116,25 +116,29 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-outline-primary ml-3" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-chart-bar"></i></span></span></span></button>
+                            <button type="button" class="btn btn-outline-primary ml-3" id="btn-export" hidden><span><span>{% trans 'Export' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-file-export"></i></span></span></span></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-12">
             <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-primary ml-3" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-chart-bar"></i></span></span></span></button>
-                <button type="button" class="btn btn-outline-primary ml-3" id="btn-export" hidden><span><span>{% trans 'Export' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-file-export"></i></span></span></span></button>
-                <i
-                    class="fas fa-angle-double-up text-primary mt-2 ml-3"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseExample"
-                    data-bs-placement="top"
-                    aria-expanded="false"
-                    aria-controls="collapseExample"
-                    id="btn-collapse"
-                ></i>
+                <small><i
+                class="fas fa-angle-double-up text-primary mt-2 ml-3"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseExample"
+                data-bs-placement="top"
+                aria-expanded="false"
+                aria-controls="collapseExample"
+                id="btn-collapse"
+            ></i></small>
             </div>
         </div>
     </div>

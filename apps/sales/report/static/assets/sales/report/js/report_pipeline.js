@@ -65,7 +65,7 @@ $(function () {
                         targets: 5,
                         width: '4%',
                         render: (data, type, row) => {
-                            if ([0, 1, 2].includes(row?.['group_by'])) {
+                            if ([0, 1, 2].includes(row?.['type_group_by'])) {
                                 return `<p></p>`;
                             } else {
                                 return `<p>${row?.['opportunity']?.['win_rate'] ? row?.['opportunity']?.['win_rate'] : '0'} %</p>`;
@@ -98,6 +98,9 @@ $(function () {
                         targets: 8,
                         width: '9%',
                         render: (data, type, row) => {
+                            if ([1, 2].includes(row?.['type_group_by'])) {
+                                return `<span class="mask-money text-primary table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
+                            }
                             return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
                         }
                     },
@@ -105,6 +108,9 @@ $(function () {
                         targets: 9,
                         width: '9%',
                         render: (data, type, row) => {
+                            if ([1, 2].includes(row?.['type_group_by'])) {
+                                return `<span class="mask-money text-primary table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span>`;
+                            }
                             return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span>`;
                         }
                     },
@@ -112,6 +118,9 @@ $(function () {
                         targets: 10,
                         width: '9%',
                         render: (data, type, row) => {
+                            if ([1, 2].includes(row?.['type_group_by'])) {
+                                return `<span class="mask-money text-primary table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
+                            }
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
                         }
                     },
@@ -119,6 +128,9 @@ $(function () {
                         targets: 11,
                         width: '5%',
                         render: (data, type, row) => {
+                            if ([1, 2].includes(row?.['type_group_by'])) {
+                                return `<p class="text-primary">${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
+                            }
                             return `<p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
                         }
                     },
@@ -126,6 +138,9 @@ $(function () {
                         targets: 12,
                         width: '4%',
                         render: (data, type, row) => {
+                            if ([1, 2].includes(row?.['type_group_by'])) {
+                                return `<p class="text-primary">${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
+                            }
                             return `<p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
                         }
                     },
@@ -133,6 +148,9 @@ $(function () {
                         targets: 13,
                         width: '5%',
                         render: (data, type, row) => {
+                            if ([1, 2].includes(row?.['type_group_by'])) {
+                                return `<p class="text-primary">${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
+                            }
                             return `<p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
                         }
                     },
@@ -140,6 +158,9 @@ $(function () {
                         targets: 14,
                         width: '5%',
                         render: (data, type, row) => {
+                            if ([1, 2].includes(row?.['type_group_by'])) {
+                                return `<p class="text-primary">${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
+                            }
                             return `<p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
                         }
                     },
@@ -334,7 +355,6 @@ $(function () {
                     'document': totalDocument,
                 },
                 'group': {'title': eleTrans.attr('data-total')},
-                'group_by': 0,
                 'type_group_by': 0,  // total
             }
             result.push(dataTotal);  // push data total
@@ -351,7 +371,7 @@ $(function () {
                         'meeting': dataGroupMeeting?.[groupKey],
                         'document': dataGroupDocument?.[groupKey],
                     },
-                    'group_by': 1,
+                    'type_group_by': 1,  // group
                 });
                 for (let employeeKey in dataEmployee) {  // push data employee
                     if (dataEmployee[employeeKey]?.['group_id'] === groupKey) {
@@ -367,7 +387,7 @@ $(function () {
                                 'meeting': dataEmployeeMeeting?.[employeeKey],
                                 'document': dataEmployeeDocument?.[employeeKey],
                             },
-                            'group_by': 2
+                            'type_group_by': 2,  // employee
                         });
                         for (let data of dataList) {  // push data opp
                             if (data?.['employee_inherit']?.['id'] === employeeKey) {

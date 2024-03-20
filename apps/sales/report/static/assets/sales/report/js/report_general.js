@@ -17,7 +17,7 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                pageLength: 10,
+                pageLength: 50,
                 columns: [  // 250,250,200,250,250,150,250,250,150 (2000p)
                     {
                         targets: 0,

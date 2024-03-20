@@ -20,7 +20,7 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                pageLength: 10,
+                pageLength: 50,
                 columns: [  // 100,200,200,300,150,100,125,125,225,225,225,125,100,125,125 (2500p)
                     {
                         targets: 0,
@@ -99,7 +99,7 @@ $(function () {
                         width: '9%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
-                                return `<span class="mask-money text-primary table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
+                                return `<b><span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span></b>`;
                             }
                             return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span>`;
                         }
@@ -109,7 +109,7 @@ $(function () {
                         width: '9%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
-                                return `<span class="mask-money text-primary table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span>`;
+                                return `<b><span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span></b>`;
                             }
                             return `<span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span>`;
                         }
@@ -119,7 +119,7 @@ $(function () {
                         width: '9%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
-                                return `<span class="mask-money text-primary table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
+                                return `<b><span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span></b>`;
                             }
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span>`;
                         }
@@ -129,7 +129,7 @@ $(function () {
                         width: '5%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
-                                return `<p class="text-primary">${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
+                                return `<b><p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p></b>`;
                             }
                             return `<p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p>`;
                         }
@@ -139,7 +139,7 @@ $(function () {
                         width: '4%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
-                                return `<p class="text-primary">${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
+                                return `<b><p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p></b>`;
                             }
                             return `<p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p>`;
                         }
@@ -149,7 +149,7 @@ $(function () {
                         width: '5%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
-                                return `<p class="text-primary">${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
+                                return `<b><p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p></b>`;
                             }
                             return `<p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p>`;
                         }
@@ -159,7 +159,7 @@ $(function () {
                         width: '5%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
-                                return `<p class="text-primary">${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
+                                return `<b><p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p></b>`;
                             }
                             return `<p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p>`;
                         }

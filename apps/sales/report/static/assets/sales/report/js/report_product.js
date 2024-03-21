@@ -15,7 +15,16 @@ $(function () {
             $table.DataTableDefault({
                 ajax: {
                     url: $table.attr('data-url'),
-                    dataSrc: 'data.report_product_list',
+                    // dataSrc: 'data.report_product_list',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let dataResult = resp.data['report_product_list'] ? resp.data['report_product_list'] : [];
+                            setupDataLoadTable(dataResult);
+                            return dataResult;
+                        }
+                        return [];
+                    },
                 },
                 data: data ? data : [],
                 pageLength: 50,

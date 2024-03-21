@@ -1129,6 +1129,7 @@ $(async function () {
                 return false
             }
             else putData.products = prodSub
+            WindowControl.showLoading();
             $.fn.callAjax2({
                 'url': _form.dataUrl,
                 'method': _form.dataMethod,
@@ -1138,11 +1139,19 @@ $(async function () {
                     (resp) => {
                         const data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: data.detail}, 'success')
+                            $.fn.notifyB({description: "Successfully"}, 'success')
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
                     },
-                    (errs) => $.fn.notifyB({description: errs.data.errors?.detail}, 'failure')
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                    }
                 )
                 .catch((err) => console.log(err))
         })

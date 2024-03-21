@@ -191,6 +191,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     RUNTIME_DIAGRAM_DETAIL = StringUrl('workflow/diagram/{pk}')
     RUNTIME_TASK_LIST = StringUrl('workflow/tasks')
     RUNTIME_TASK_DETAIL = StringUrl('workflow/task/{pk}')
+    RUNTIME_AFTER_DETAIL = StringUrl('workflow/runtime-after/{pk}')
 
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')

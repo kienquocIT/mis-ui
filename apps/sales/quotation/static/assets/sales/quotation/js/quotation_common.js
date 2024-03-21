@@ -569,7 +569,6 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxSaleOrderQuotation(quotation_id, valueToSelect = null, opp_id = null, sale_person_id = null) {
-        let self = this;
         let jqueryId = '#' + quotation_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -1788,7 +1787,7 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if finish then hidden btn edit page
+            // check if finish or reject then hidden btn edit page
             if ([2, 3, 4].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {

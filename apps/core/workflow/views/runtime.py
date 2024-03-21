@@ -80,3 +80,16 @@ class FlowRuntimeTaskDetailAPI(APIView):
             resp = ServerAPI(request=request, user=request.user, url=url).put(data=request.data)
             return resp.auto_return(key_success='result')
         return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
+
+
+class FlowRuntimeAfterFinishDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            url = ApiURL.RUNTIME_AFTER_DETAIL.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).put(data=request.data)
+            return resp.auto_return(key_success='result')
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST

@@ -17,7 +17,7 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                pageLength: 10,
+                pageLength: 50,
                 columns: [  // 250,250,200,250,250,150,250,250,150 (2000p)
                     {
                         targets: 0,
@@ -202,11 +202,11 @@ $(function () {
                             let parts = detail.split('-');
                             if (parts.length > 1) {
                                 let quarter = parseInt(parts[1]);
-                                if (dataEmployeePlan[empPlanKey]?.[year]?.['revenue_quarter'].length >= 4) {
-                                    totalRevenuePlan += dataEmployeePlan[empPlanKey]?.[year]?.['revenue_quarter'][quarter];
+                                if (dataEmployeePlan[empPlanKey]?.[year]?.['revenue_quarter'].length >= 4 && 0 <= (quarter -1) <= 3) {
+                                    totalRevenuePlan += dataEmployeePlan[empPlanKey]?.[year]?.['revenue_quarter'][quarter - 1];
                                 }
-                                if (dataEmployeePlan[empPlanKey]?.[year]?.['profit_quarter'].length >= 4) {
-                                    totalProfitPlan += dataEmployeePlan[empPlanKey]?.[year]?.['profit_quarter'][quarter];
+                                if (dataEmployeePlan[empPlanKey]?.[year]?.['profit_quarter'].length >= 4 && 0 <= (quarter -1) <= 3) {
+                                    totalProfitPlan += dataEmployeePlan[empPlanKey]?.[year]?.['profit_quarter'][quarter - 1];
                                 }
                             }
                         }
@@ -214,11 +214,11 @@ $(function () {
                             let parts = detail.split('-');
                             if (parts.length > 1) {
                                 let month = parseInt(parts[1]);
-                                if (dataEmployeePlan[empPlanKey]?.[year]?.['revenue_month'].length >= 12) {
-                                    totalRevenuePlan += dataEmployeePlan[empPlanKey]?.[year]?.['revenue_month'][month];
+                                if (dataEmployeePlan[empPlanKey]?.[year]?.['revenue_month'].length >= 12 && 0 <= (month -1) <= 11) {
+                                    totalRevenuePlan += dataEmployeePlan[empPlanKey]?.[year]?.['revenue_month'][month - 1];
                                 }
-                                if (dataEmployeePlan[empPlanKey]?.[year]?.['profit_month'].length >= 12) {
-                                    totalProfitPlan += dataEmployeePlan[empPlanKey]?.[year]?.['profit_month'][month];
+                                if (dataEmployeePlan[empPlanKey]?.[year]?.['profit_month'].length >= 12 && 0 <= (month -1) <= 11) {
+                                    totalProfitPlan += dataEmployeePlan[empPlanKey]?.[year]?.['profit_month'][month - 1];
                                 }
                             }
                         }
@@ -257,11 +257,11 @@ $(function () {
                                     let parts = detail.split('-');
                                     if (parts.length > 1) {
                                         let quarter = parseInt(parts[1]);
-                                        if (dataEmployeePlan[empPlanKey]?.[year]?.['revenue_quarter'].length >= 4) {
-                                            totalGrRevenuePlan += dataEmployeePlan[empPlanKey]?.[year]?.['revenue_quarter'][quarter];
+                                        if (dataEmployeePlan[empPlanKey]?.[year]?.['revenue_quarter'].length >= 4 && 0 <= (quarter -1) <= 3) {
+                                            totalGrRevenuePlan += dataEmployeePlan[empPlanKey]?.[year]?.['revenue_quarter'][quarter - 1];
                                         }
-                                        if (dataEmployeePlan[empPlanKey]?.[year]?.['profit_quarter'].length >= 4) {
-                                            totalGrProfitPlan += dataEmployeePlan[empPlanKey]?.[year]?.['profit_quarter'][quarter];
+                                        if (dataEmployeePlan[empPlanKey]?.[year]?.['profit_quarter'].length >= 4 && 0 <= (quarter -1) <= 3) {
+                                            totalGrProfitPlan += dataEmployeePlan[empPlanKey]?.[year]?.['profit_quarter'][quarter - 1];
                                         }
                                     }
                                 }
@@ -269,11 +269,11 @@ $(function () {
                                     let parts = detail.split('-');
                                     if (parts.length > 1) {
                                         let month = parseInt(parts[1]);
-                                        if (dataEmployeePlan[empPlanKey]?.[year]?.['revenue_month'].length >= 12) {
-                                            totalGrRevenuePlan += dataEmployeePlan[empPlanKey]?.[year]?.['revenue_month'][month];
+                                        if (dataEmployeePlan[empPlanKey]?.[year]?.['revenue_month'].length >= 12 && 0 <= (month -1) <= 11) {
+                                            totalGrRevenuePlan += dataEmployeePlan[empPlanKey]?.[year]?.['revenue_month'][month - 1];
                                         }
-                                        if (dataEmployeePlan[empPlanKey]?.[year]?.['profit_month'].length >= 12) {
-                                            totalGrProfitPlan += dataEmployeePlan[empPlanKey]?.[year]?.['profit_month'][month];
+                                        if (dataEmployeePlan[empPlanKey]?.[year]?.['profit_month'].length >= 12 && 0 <= (month -1) <= 11) {
+                                            totalGrProfitPlan += dataEmployeePlan[empPlanKey]?.[year]?.['profit_month'][month - 1];
                                         }
                                     }
                                 }
@@ -316,11 +316,11 @@ $(function () {
                                     let parts = detail.split('-');
                                     if (parts.length > 1) {
                                         let quarter = parseInt(parts[1]);
-                                        if (dataEmployeePlan?.[employeeKey]?.[year]?.['revenue_quarter'].length >= 4) {
-                                            revenuePlan = dataEmployeePlan?.[employeeKey]?.[year]?.['revenue_quarter'][quarter];
+                                        if (dataEmployeePlan?.[employeeKey]?.[year]?.['revenue_quarter'].length >= 4 && 0 <= (quarter -1) <= 3) {
+                                            revenuePlan = dataEmployeePlan?.[employeeKey]?.[year]?.['revenue_quarter'][quarter - 1];
                                         }
-                                        if (dataEmployeePlan?.[employeeKey]?.[year]?.['profit_quarter'].length >= 4) {
-                                            profitPlan = dataEmployeePlan?.[employeeKey]?.[year]?.['profit_quarter'][quarter];
+                                        if (dataEmployeePlan?.[employeeKey]?.[year]?.['profit_quarter'].length >= 4 && 0 <= (quarter -1) <= 3) {
+                                            profitPlan = dataEmployeePlan?.[employeeKey]?.[year]?.['profit_quarter'][quarter - 1];
                                         }
                                     }
                                 }
@@ -328,11 +328,11 @@ $(function () {
                                     let parts = detail.split('-');
                                     if (parts.length > 1) {
                                         let month = parseInt(parts[1]);
-                                        if (dataEmployeePlan?.[employeeKey]?.[year]?.['revenue_month'].length >= 12) {
-                                            revenuePlan = dataEmployeePlan?.[employeeKey]?.[year]?.['revenue_month'][month];
+                                        if (dataEmployeePlan?.[employeeKey]?.[year]?.['revenue_month'].length >= 12 && 0 <= (month -1) <= 11) {
+                                            revenuePlan = dataEmployeePlan?.[employeeKey]?.[year]?.['revenue_month'][month - 1];
                                         }
-                                        if (dataEmployeePlan?.[employeeKey]?.[year]?.['profit_month'].length >= 12) {
-                                            profitPlan = dataEmployeePlan?.[employeeKey]?.[year]?.['profit_month'][month];
+                                        if (dataEmployeePlan?.[employeeKey]?.[year]?.['profit_month'].length >= 12 && 0 <= (month -1) <= 11) {
+                                            profitPlan = dataEmployeePlan?.[employeeKey]?.[year]?.['profit_month'][month - 1];
                                         }
                                     }
                                 }

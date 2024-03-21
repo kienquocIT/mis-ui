@@ -14,7 +14,16 @@ $(function () {
             $table.DataTableDefault({
                 ajax: {
                     url: $table.attr('data-url'),
-                    dataSrc: 'data.report_customer_list',
+                    // dataSrc: 'data.report_customer_list',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let dataResult = resp.data['report_customer_list'] ? resp.data['report_customer_list'] : [];
+                            setupDataLoadTable(dataResult);
+                            return dataResult;
+                        }
+                        return [];
+                    },
                 },
                 data: data ? data : [],
                 pageLength: 50,
@@ -118,7 +127,6 @@ $(function () {
             eleGrossProfit.attr('data-init-money', String(newGrossProfit));
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
-        loadDbl();
 
         function formatStartEndDate(startDate, endDate) {
             if (startDate && endDate) {
@@ -150,6 +158,8 @@ $(function () {
             boxGroup.initSelect2({'allowClear': true,});
             boxCustomer.initSelect2({'allowClear': true,});
             loadBoxEmployee();
+            loadDbl();
+            btnView.click();
         }
 
         initData();

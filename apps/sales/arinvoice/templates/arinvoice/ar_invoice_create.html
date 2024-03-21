@@ -221,19 +221,19 @@
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-file-alt"></i></span></span>
-                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                    </a>
-                </li>
-            </ul>
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-file-alt"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                        </a>
+                    </li>
+                </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <div class="row" style="position: relative; overflow: auto">
@@ -245,13 +245,17 @@
                                     <thead>
                                     <tr>
                                         <th class="text-center" style="min-width: 50px"></th>
-                                        <th class="required" style="min-width: 300px">{% trans 'Product' %}</th>
-                                        <th class="required" style="min-width: 200px">{% trans 'UoM' %}</th>
-                                        <th class="required" style="min-width: 200px">{% trans 'Quantity' %}</th>
+                                        <th style="min-width: 300px">{% trans 'Product' %}</th>
+                                        <th style="min-width: 300px">{% trans 'Description' %}</th>
+                                        <th>{% trans 'UoM' %}</th>
+                                        <th>{% trans 'Quantity' %}</th>
                                         <th class="required" style="min-width: 300px">{% trans 'Unit price' %}</th>
-                                        <th style="min-width: 200px">{% trans 'Tax value' %}</th>
-                                        <th class="required" style="min-width: 300px">{% trans 'Subtotal price' %}</th>
-                                        <th style="min-width: 50px"></th>
+                                        <th>{% trans 'Subtotal price' %}</th>
+                                        <th style="min-width: 150px">{% trans 'Discount' %}</th>
+                                        <th hidden>{% trans 'Discount value' %}</th>
+                                        <th>{% trans 'Tax' %}</th>
+                                        <th hidden>{% trans 'Tax value' %}</th>
+                                        <th hidden>{% trans 'Subtotal price final' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -259,39 +263,21 @@
                             </div>
                         </div>
                         <div class="row mt-5">
-                            <div class="col-7">
-                                <button class="btn btn-outline-primary" type="button" id="btn-add-row-line-detail">
-                                    <span>
-                                        <span class="icon">
-                                            <span class="feather-icon"><i class="far fa-edit"></i></span>
-                                        </span>
-                                        <span>{% trans 'Edit' %}</span>
-                                    </span>
-                                </button>
-                                <button class="btn btn-outline-secondary" type="button" id="btn-add-row-line-detail-discount">
-                                    <span>
-                                        <span class="icon">
-                                            <span class="feather-icon"><i class="fas fa-gift"></i></span>
-                                        </span>
-                                        <span>{% trans 'Add' %} {% trans 'discount' %}</span>
-                                    </span>
-                                </button>
-                            </div>
+                            <div class="col-7"></div>
                             <div class="col-4 border text-primary">
                                 <div class="row mt-3">
                                     <div class="col-4">{% trans "Pretax price" %}</div>
                                     <span class="col-8 text-right mask-money" id="pretax-value">0</span>
                                 </div>
-                                <div class="row"><i class="bi bi-plus"></i></div>
+                                <div class="row text-danger">
+                                    <div class="col-4">{% trans "Discount" %}</div>
+                                    <span class="col-8 text-right mask-money" id="discount-all">0</span>
+                                </div>
                                 <div class="row">
                                     <div class="col-4">{% trans "Taxes" %}</div>
                                     <span class="col-8 text-right mask-money" id="taxes-value">0</span>
                                 </div>
                                 <hr class="bg-teal">
-                                <div class="row mb-3 text-danger" style="font-weight: bold">
-                                    <div class="col-4">{% trans "Discount" %}</div>
-                                    <span class="col-8 text-right mask-money" id="discount-all">0</span>
-                                </div>
                                 <div class="row mb-3" style="font-weight: bold">
                                     <div class="col-4">{% trans "Total" %}</div>
                                     <span class="col-8 text-right mask-money" id="total-value">0</span>

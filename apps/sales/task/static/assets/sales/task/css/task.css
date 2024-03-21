@@ -166,3 +166,78 @@
 #table_task_list tr td .card-ticket{
     vertical-align: 1px;
 }
+/*custom filter desktop*/
+.form-group-filter{
+    display: flex;
+    justify-content: start;
+    align-items:center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.max-w-280{
+    width: 100%;
+    max-width: 280px;
+    margin-right: 15px;
+}
+.filter-label{
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.24px;
+    color:#232323;
+}
+
+.clear-all-btn > span{
+    cursor: pointer;
+    border: solid 1px #181a1d;
+    transition: all .2s ease-in;
+    color: #ffffff;
+    background: #181a1d;
+}
+.clear-all-btn > span:hover{
+    color: #181a1d;
+    background: #ffffff;
+}
+.clear-all-btn{display: none}
+.desktop-btn,
+.leave-filter-wrap .sp-btn{
+    display: none;
+}
+@media screen and (min-width:1025px){
+    .leave-filter-wrap{
+        position: relative;
+    }
+    .desktop-btn{
+        display: block;
+        position: absolute;
+        z-index: 1;
+    }
+    .form-group-filter{
+        position: absolute;
+        overflow: hidden;
+        right: 122px;
+        background: #fff;
+        z-index: 111;
+        width: calc(100% - 122px);
+        border-radius: 5px;
+        height: 150px;
+        padding: 10px;
+        box-shadow: 2px 2px 10px 4px rgb(205 205 205 / 40%);
+    }
+    .desktop-btn{right: 0}
+}
+@media screen and (max-width: 1024px) {
+    .leave-filter-wrap .sp-btn{
+        display: block;
+    }
+    .form-group-filter{
+        flex-direction: column;
+    }
+    .form-group-filter > div,
+    .form-group-filter > label,
+    .clear-all-btn{width: 100%;}
+    .form-group-filter > div{display: block;margin-bottom: 18px;}
+    .form-group-filter > span:first-child{display: none}
+    .max-w-280{margin-right: 0;min-width: 100%;}
+}

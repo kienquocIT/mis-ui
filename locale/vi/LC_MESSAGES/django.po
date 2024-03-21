@@ -6888,9 +6888,14 @@ msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ kế toán 
 #
 msgid "Percent completed"
 msgstr "Phần trăm hoàn thành"
+
 #
 msgid "Finish task"
 msgstr "Hoàn thành Giao việc"
+
+#
+msgid "Filter by"
+msgstr "Lọc bởi"
 
 #
 msgid "Refresh"

@@ -1329,6 +1329,7 @@ $(document).ready(function () {
                                 )
                                 $('#inputTextEstimate').val(data.estimate)
                                 $('#selectPriority').val(data.priority).trigger('change')
+                                $('.btn-log_work').addClass('disabled')
                                 // render label
                                 let htmlElm = $('.label-mark')
                                 htmlElm.html('')

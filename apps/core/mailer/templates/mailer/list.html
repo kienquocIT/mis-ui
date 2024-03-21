@@ -17,6 +17,15 @@
             padding: 20px;
         }
     </style>
+    <style>
+        #server-general-checkbox:checked ~ #group-server-mail {
+            display: none;
+        }
+
+        #server-general-checkbox:not(:checked) ~ #group-server-mail {
+            display: block;
+        }
+    </style>
 {% endblock %}
 
 {% block pageAction %}
@@ -40,6 +49,11 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="tab" href="#tabFeature" data-not-push-tab>
                 <span class="nav-link-text">{% trans 'Feature' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tabConfig" id="link-tab-config">  {# data-not-push-tab #}
+                <span class="nav-link-text"><i class="fa-solid fa-gear"></i></span>
             </a>
         </li>
     </ul>
@@ -90,11 +104,172 @@
                 </div>
             </div>
         </div>
+        <div class="tab-pane fade" id="tabConfig">
+            <form
+                    id="frm-mail-config"
+                    data-url="{% url 'MailConfigDetailAPI' pk='__pk__' %}"
+                    data-method="PUT"
+                    data-url-detail="{% url 'MailConfigAPI' %}"
+            >
+                <div class="w-100">
+                    <div class="d-flex">
+                        <div class="w-30">
+                            <div
+                                    class="chip chip-primary chip-ticked w-100 h-100"
+                                    data-bs-toggle="tooltip"
+                                    title="{% trans 'Click to toggle on/off' %}"
+                            >
+                                <input type="checkbox" id="inp-is-active" name="is_active">
+                                <span style="border-radius: unset;" class="w-100 h-100"><span
+                                        class="chip-text"
+                                >
+                                {% trans 'Enable mail notification' %}
+                            </span></span>
+                            </div>
+                        </div>
+                        <div class="w-30">
+                            <div
+                                    class="chip chip-primary chip-ticked w-100 h-100"
+                                    data-bs-toggle="tooltip"
+                                    title="{% trans 'Click to toggle on/off' %}"
+                            >
+                                <input type="checkbox" id="inp-server-general" name="use_our_server">
+                                <span style="border-radius: unset;" class="w-100 h-100"><span
+                                        class="chip-text"
+                                >
+                                {% trans 'Use our mail server' %}
+                            </span></span>
+                            </div>
+                        </div>
+                        <div class="w-40">
+                            <button class="btn btn-outline-primary btn-square w-100" type="submit" form="frm-mail-config">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                    <div class="row mt-5 p-3" id="group-server-mail">
+                        <div class="w-100">
+                            <ol>
+                                <li>
+                                    <p>{% trans 'All configurations will be encrypted before being stored to ensure the security of your information.' %}</p>
+                                </li>
+                                <li>
+                                    <p>{% trans 'Sensitive information such as password, host, port, username, and ssl file will be partially hidden when returning data.' %}</p>
+                                </li>
+                                <li>
+                                    <p>{% trans 'To ensure the best security standards for your server, we recommend using one of the two security methods SSL or TLS (if your mail server supports them). If both TLS and SSL services are enabled, the connection will prioritize using TLS.' %}</p>
+                                </li>
+                                <li>
+                                    <p>{% trans 'If you use SSL, then connection verification is mandatory after successfully saving the configuration.' %}</p>
+                                    <p>{% trans 'On the contrary, if you do not use SSL, then the connection can be checked with the data you entered without saving.' %}</p>
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label for="inp-host" class="form-label">{% trans 'Host mail server' %}</label>
+                                <input type="text" class="form-control" id="inp-host" name="host"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="inp-port" class="form-label">{% trans 'Port mail server' %}</label>
+                                <input type="text" class="form-control" id="inp-port" name="port"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label for="inp-username" class="form-label">{% trans 'Username' %}</label>
+                                <input type="text" class="form-control" id="inp-username" name="username"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="inp-password" class="form-label">{% trans 'Password' %}</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="inp-password" name="password"/>
+                                    <button
+                                            class="btn btn-outline-secondary w-100p" type="button"
+                                            id="btn-show-hide-password"
+                                    >
+                                        <span>{% trans 'Show' %}</span>
+                                        <span class="d-none">{% trans 'Hide' %}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="inp-use-tls" name="use_tls"/>
+                                    <label class="form-check-label" for="inp-use-tls">{% trans 'Use TLS' %}</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="inp-use-ssl" name="use_ssl"/>
+                                    <label class="form-check-label" for="inp-use-ssl">{% trans 'Use SSL' %}</label>
+                                </div>
+                            </div>
+                            <div class="row" id="group-ssl-config">
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label
+                                                for="inp-ssl-key-file" class="form-label"
+                                        >{% trans 'SSL Key file' %}</label>
+                                        <input
+                                                class="form-control" type="file" id="inp-ssl-key-file" name="ssl_key"
+                                                accept=".crt,.key,.txt"
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label
+                                                for="inp-ssl-cert-file" class="form-label"
+                                        >{% trans 'SSL Cert file' %}</label>
+                                        <input
+                                                class="form-control" type="file" id="inp-ssl-cert-file" name="ssl_cert"
+                                                accept=".crt,.key,.txt"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="w-100 bg-sky-light-5 p-3 mb-3" style="border-radius: 7px;display: none;" id="connection-group">
+                                <p>
+                                    <span>{% trans 'Connection status' %}:</span>
+                                    <span class="text-info connect-msg" id="connect-msg-in-progress" style="display: none;">{% trans 'Verification in progress' %}...</span>
+                                    <span class="text-danger connect-msg" id="connect-msg-fail" style="display: none;">{% trans 'Failure' %}</span>
+                                    <span class="text-success connect-msg" id="connect-msg-success" style="display: none;">{% trans 'Successfully' %}</span>
+                                    <span class="text-warning connect-msg" id="connect-msg-need-more" style="display: none;">{% trans 'Need more config value' %}</span>
+                                </p>
+                                <p id="group-connect-errs" style="display: none;">
+                                    <span>{% trans 'Errors' %}:</span>
+                                    <span class="text-danger" id="connect-errs-value"></span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button
+                                    type="button"
+                                    class="btn no-transform btn-primary"
+                                    id="btn-verify-saved-config"
+                                    data-url="{% url 'MailConfigConnectionTest' pk='__pk__' %}"
+                            >{% trans 'Verify Config' %}</button>
+                            <button
+                                    type="button"
+                                    class="btn no-transform btn-primary"
+                                    id="btn-verify-newly-config"
+                                    data-url="{% url 'MailConfigConnectionTestData' pk='__pk__' %}"
+                            >{% trans 'Verify New Config' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 {% endblock %}
 
 {% block jsFooter %}
     <script src="{% static 'mailer/mailer.js' %}"></script>
+    <script src="{% static 'mailer/list.js' %}"></script>
     <script>
         $(document).ready(function () {
             let staticPrefix = "{% static '' %}";
@@ -226,7 +401,7 @@
                                         application_id: null,
                                     }, {
                                         {#'width': '430',#}
-                                        templates : JSON.parse(
+                                        templates: JSON.parse(
                                             $(frm$).find('script[type="application/json"]').text()
                                         ).map(
                                             (item) => {
@@ -273,6 +448,7 @@
             setTimeout(
                 () => {
                     if (!$x.fn.getHashUrl()) $('.btnCollapseGroup:first').trigger('click');
+                    $('#inp-server-general').trigger('change');
                 },
                 100
             );

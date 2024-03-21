@@ -624,6 +624,31 @@
                 const outsideFrame = $('.hk-pg-wrapper').css('padding-top');
                 $(this).css('margin-top', outsideFrame).css('height', `calc(100vh - ${outsideFrame})`);
             })
+
+            //
+            $('button[type=submit]').on('click', function (){
+                let frmID = $(this).attr('form');
+                if (frmID) {
+                    $(this).prop('disabled', true);
+                    setTimeout( () => $(this).prop('disabled', false), 1000);
+                    $('#' + frmID).trigger('submit');
+                } else {
+                    let formOutSide = $(this).closest('form');
+                    if (formOutSide.length > 0){
+                        $(this).prop('disabled', true);
+                        setTimeout( () => $(this).prop('disabled', false), 1000);
+                        formOutSide.trigger('submit');
+                    }
+                }
+            })
+            $('button:not([type])').on('click', function (){
+                let formOutSide = $(this).closest('form');
+                if (formOutSide.length > 0){
+                    $(this).prop('disabled', true);
+                    setTimeout( () => $(this).prop('disabled', false), 1000);
+                    formOutSide.trigger('submit');
+                }
+            })
         })
 
         function onLoadDropdownInfoInherit(eleInfo, eleInfoData, selectedData) {

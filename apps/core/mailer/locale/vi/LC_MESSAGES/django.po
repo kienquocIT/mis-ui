@@ -46,3 +46,83 @@ msgstr "Đây là cấu hình thư điện tử được sử dụng gửi tệp
 #
 msgid "This is the email configuration used to send OTP to authenticate users."
 msgstr "Đây là cấu hình thư điện tử được sử dụng gửi OTP xác thực người dùng."
+
+#
+msgid "All configurations will be encrypted before being stored to ensure the security of your information."
+msgstr "Mọi cấu hình sẽ được mã hóa trước khi lưu trữ để đảm bảo an toàn cho thông tin của bạn."
+
+#
+msgid "Sensitive information such as password, host, port, username, and ssl file will be partially hidden when returning data."
+msgstr "Các thông tin nhạy cảm như mật khẩu, máy chủ, cổng, tên người dùng và file ssl sẽ bị ẩn một phần khi trả về dữ liệu."
+
+#
+msgid "After saving the configuration, you can check the connection by clicking the \"Verify connection\" button below. Our server will perform a check and return the connection result with full information stored on the server. Note: we do not check the connection for data that has not been saved."
+msgstr "Sau khi lưu cấu hình, bạn có thể kiểm tra kết nối bằng cách nhấp vào nút \"Xác minh kết nối\" bên dưới. Máy chủ của chúng tôi sẽ thực hiện kiểm tra và trả về kết quả kết nối với đầy đủ thông tin được lưu trữ trên máy chủ. Lưu ý: chúng tôi không kiểm tra kết nối đối với dữ liệu chưa được lưu."
+
+#
+msgid "If you use SSL, then connection verification is mandatory after successfully saving the configuration."
+msgstr "Nếu bạn sử dụng SSL thì việc xác minh kết nối là bắt buộc sau khi lưu cấu hình thành công."
+
+#
+msgid "On the contrary, if you do not use SSL, then the connection can be checked with the data you entered without saving."
+msgstr "Ngược lại, nếu bạn không sử dụng SSL thì kết nối có thể được kiểm tra bằng dữ liệu bạn đã nhập mà không cần lưu."
+
+#
+msgid "To ensure the best security standards for your server, we recommend using one of the two security methods SSL or TLS (if your mail server supports them). If both TLS and SSL services are enabled, the connection will prioritize using TLS."
+msgstr "Để đảm bảo tiêu chuẩn bảo mật tốt nhất cho máy chủ của bạn, chúng tôi khuyên bạn nên sử dụng một trong hai phương thức bảo mật SSL hoặc TLS (nếu máy chủ thư của bạn hỗ trợ chúng). Nếu cả hai dịch vụ TLS và SSL đều được bật, kết nối sẽ ưu tiên sử dụng TLS."
+
+#
+msgid "Verify Config"
+msgstr "Xác thực cấu hình"
+
+#
+msgid "Verify New Config"
+msgstr "Xác thực cấu hình mới"
+
+#
+msgid "Enable mail notification"
+msgstr "Kích hoạt thông báo thư điện tử"
+
+#
+msgid "Use our mail server"
+msgstr "Sử dụng máy chủ thư điện tử của chúng tôi"
+
+#
+msgid "Click to toggle on/off"
+msgstr "Nhấp chuột để bật/tắt"
+
+#
+msgid "Use TLS"
+msgstr "Sử dụng TLS"
+
+#
+msgid "Use SSL"
+msgstr "Sử dụng SSL"
+
+#
+msgid "SSL Key file"
+msgstr "Tệp khoá SSL"
+
+#
+msgid "SSL Cert file"
+msgstr "Tệp chứng chỉ SSL"
+
+#
+msgid "Host mail server"
+msgstr "Địa chỉ máy chủ thư"
+
+#
+msgid "Port mail server"
+msgstr "Cổng phục vụ máy chủ thư"
+
+#
+msgid "Connection status"
+msgstr "Trạng thái kết nối"
+
+#
+msgid "Need more config value"
+msgstr "Cần thêm thông tin cấu hình"
+
+#
+msgid "Verification in progress"
+msgstr "Đang xác minh"

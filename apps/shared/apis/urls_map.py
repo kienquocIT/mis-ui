@@ -152,6 +152,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     MAILER_SYSTEM_GET = StringUrl('mailer/system/get/{system_code}')
     MAILER_SYSTEM_PARAMS = StringUrl('mailer/system/params/{system_code}')
     MAILER_SYSTEM_DETAIL = StringUrl('mailer/system/detail/{pk}')
+    MAILER_CONFIG_GET = StringUrl('mailer/config/get')
+    MAILER_CONFIG_DETAIL = StringUrl('mailer/config/detail/{pk}')
+    MAILER_CONFIG_DETAIL_CONNECTION_TEST = StringUrl('mailer/config/detail/{pk}/connection/test')
+    MAILER_CONFIG_DETAIL_CONNECTION_TEST_DATA = StringUrl('mailer/config/detail/{pk}/connection/test/data')
 
     # base
     PLAN_LIST = StringUrl('base/plans')

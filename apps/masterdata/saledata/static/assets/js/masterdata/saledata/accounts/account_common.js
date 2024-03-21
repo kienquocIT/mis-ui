@@ -1086,7 +1086,24 @@ function dataTableActivity(data) {
                         'quotation.quotation': "badge-soft-primary",
                         'saleorder.saleorder': "badge-soft-success",
                     }
-                    return `<span class="badge ${appMapBadge[row?.['app_code']]}">${appMapTrans[row?.['app_code']]}</span>`;
+                    let appMapIcon = {
+                        'opportunity.opportunity': "far fa-lightbulb",
+                        'opportunity.opportunitymeeting': "fas fa-users",
+                        'quotation.quotation': "fas fa-file-invoice-dollar",
+                        'saleorder.saleorder': "fas fa-file-invoice",
+                    }
+                    // return `<div class="row">
+                    //             <div class="d-flex">
+                    //                 <small><i class="${appMapIcon[row?.['app_code']]} mt-2 mr-2"></i></small>
+                    //                 <span class="badge ${appMapBadge[row?.['app_code']]}">${appMapTrans[row?.['app_code']]}</span>
+                    //             </div>
+                    //         </div>`;
+                    return `<span class="badge ${appMapBadge[row?.['app_code']]}">
+                                <span>
+                                    <span class="icon"><span class="feather-icon"><small><i class="${appMapIcon[row?.['app_code']]}"></i></small></span></span>
+                                    ${appMapTrans[row?.['app_code']]}
+                                </span>
+                            </span>`;
                 }
             },
             {

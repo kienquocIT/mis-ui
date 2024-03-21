@@ -6283,7 +6283,7 @@ msgstr "Giá trị CHKD"
 
 #
 msgid "Forecast value"
-msgstr "Giá trị dự tính"
+msgstr "Doanh thu dự kiến"
 
 #
 msgid "Call"

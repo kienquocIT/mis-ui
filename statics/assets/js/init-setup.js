@@ -2069,7 +2069,6 @@ class WFRTControl {
                                 }
                             }
                         }
-
                         // zones handler
                         if (window.location.href.includes('/update/')) {
                             if (actionMySelf.hasOwnProperty('zones') && actionMySelf.hasOwnProperty('zones_hidden') && actionMySelf.hasOwnProperty('is_edit_all_zone')) {
@@ -2080,12 +2079,12 @@ class WFRTControl {
                         }
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
-                            // active btn cancel if owner & finished
-                            let eleStatus = $('#systemStatus');
-                            let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
-                                WFRTControl.setBtnCancel();
-                            }
+                            // // active btn cancel if owner & finished
+                            // let eleStatus = $('#systemStatus');
+                            // let currentEmployee = $x.fn.getEmployeeCurrentID();
+                            // if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
+                            //     WFRTControl.setBtnCancel();
+                            // }
                         }
                         // collab out form handler
                         WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);

@@ -112,7 +112,7 @@ $(document).ready(function () {
                     if (row?.['phone']) {
                         return `<div class="row">
                                 <div class="d-flex justify-content-end">
-                                    <small><i class="fa-solid fa-phone mr-1"></i></small>
+                                    <small><i class="fas fa-phone mr-1"></i></small>
                                     <span>${row?.['phone'] ? row?.['phone'] : ''}</span>
                                 </div>
                             </div>`;

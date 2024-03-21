@@ -644,19 +644,11 @@ $(function () {
         //                         }
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
-        //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<div class="row">
+        //                         return `<div class="row">
         //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
         //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
         //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
         //                                 </div>`;
-        //                         } else {
-        //                             return `<div class="row">
-        //                                     <div class="col-4"><div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div></div>
-        //                                     <div class="col-4 mt-2"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-        //                                     <div class="col-4 mt-2"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-        //                                 </div>`;
-        //                         }
         //                     } else {
         //                         return `<div class="row">
         //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
@@ -1934,6 +1926,10 @@ $(function () {
                 },
             });
         }
+
+        $('#btn-collapse').click(function () {
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
 
         // load init
         function initData() {

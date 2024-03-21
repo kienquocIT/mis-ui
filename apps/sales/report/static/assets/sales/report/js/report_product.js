@@ -155,7 +155,7 @@ $(function () {
         }
 
         $('#btn-collapse').click(function () {
-            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
         // load init

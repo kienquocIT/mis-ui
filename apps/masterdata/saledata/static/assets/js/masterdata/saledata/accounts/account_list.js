@@ -65,7 +65,7 @@ $(document).ready(function () {
                 },
             },
         ],
-        columns: [  // 50,300,200,150,150,150,200,100,200,500 (2000p)
+        columns: [  // 50,300,200,150,150,150,200,200,200,400 (2000p)
             {
                 width: "2.5%",
                 'render': () => {
@@ -138,10 +138,10 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "7.5%",
+                width: "10%",
                 data: 'revenue_information',
                 render: (data, type, row) => {
-                    return `<span class="text-primary">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
+                    return `<div class="text-center"><span class="badge badge-soft-sky text-primary">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span></div>`;
                 },
             },
             {
@@ -152,7 +152,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "25%",
+                width: "20%",
                 data: 'manager',
                 render: (data, type, row) => {
                     let element = ''

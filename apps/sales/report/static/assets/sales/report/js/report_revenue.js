@@ -15,6 +15,7 @@ $(function () {
             $table.DataTableDefault({
                 ajax: {
                     url: $table.attr('data-url'),
+                    data: {"is_initial": false},
                     dataSrc: 'data.report_revenue_list',
                 },
                 data: data ? data : [],
@@ -161,7 +162,7 @@ $(function () {
         }
 
         $('#btn-collapse').click(function () {
-            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
         // load init
@@ -201,6 +202,7 @@ $(function () {
 
         btnView.on('click', function () {
             let dataParams = {};
+            dataParams['is_initial'] = false;
             if (boxGroup.val()) {
                 dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
             }

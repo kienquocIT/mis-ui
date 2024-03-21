@@ -585,6 +585,10 @@ $(function () {
             });
         }
 
+        $('#btn-collapse').click(function () {
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
+
         // load init
         function initData() {
             boxGroup.initSelect2({'allowClear': true,});
@@ -593,7 +597,6 @@ $(function () {
         }
 
         initData();
-
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -627,6 +630,7 @@ $(function () {
 
         btnView.on('click', function () {
             let dataParams = {};
+            dataParams['is_initial'] = false;
             if (boxGroup.val()) {
                 dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
             }
@@ -663,15 +667,31 @@ $(function () {
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
-                    'data': dataParams,
-                    isLoading: true,
+                    'data': {'is_initial': true},
                 }
             ).then(
                 (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('report_general_list') && Array.isArray(data.report_general_list)) {
-                            setupDataLoadTable(data.report_general_list);
+                    let dataInit= $.fn.switcherResp(resp);
+                    if (dataInit) {
+                        if (dataInit.hasOwnProperty('report_general_list') && Array.isArray(dataInit.report_general_list)) {
+                            let dataInitial = dataInit.report_general_list;
+                            $.fn.callAjax2({
+                                    'url': $table.attr('data-url'),
+                                    'method': $table.attr('data-method'),
+                                    'data': dataParams,
+                                    isLoading: true,
+                                }
+                            ).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data) {
+                                        if (data.hasOwnProperty('report_general_list') && Array.isArray(data.report_general_list)) {
+                                            let dataFinal = dataInitial.concat(data.report_general_list);
+                                            setupDataLoadTable(dataFinal);
+                                        }
+                                    }
+                                }
+                            )
                         }
                     }
                 }

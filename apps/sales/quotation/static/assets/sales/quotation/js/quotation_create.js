@@ -422,8 +422,8 @@ $(function () {
         });
 
 // Action on click button collapse
-        $('#quotation-info-collapse').click(function () {
-            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+        $('#btn-collapse').click(function () {
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
 // Action on click choose shipping

@@ -290,9 +290,20 @@
 {#                                    <div class="col-4">{% trans "Discount" %}</div>#}
 {#                                    <span class="col-8 text-right mask-money" id="discount-all">0</span>#}
 {#                                </div>#}
-                                <div class="row mb-3" style="font-weight: bold">
+                                <div class="row" style="font-weight: bold">
                                     <div class="col-4">{% trans "Total" %}</div>
                                     <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                </div>
+                                <div class="row mt-5 mb-3">
+                                    <div class="col-4">
+                                        <button class="btn btn-gradient-primary">
+                                            <span>
+                                                <span class="icon"><i class="bi bi-receipt"></i></span><span>
+                                                {% trans 'Publish invoice' %}
+                                                </span>
+                                            </span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

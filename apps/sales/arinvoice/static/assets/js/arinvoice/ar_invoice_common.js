@@ -64,6 +64,7 @@ selectCustomerBtn.on('click', function () {
         customerCodeEle.val(selected_name)
         customerCodeEle.attr('data-id', selected_id)
         customerSelectModal.modal('hide')
+        loadSaleOrder()
     }
     else {
         $.fn.notifyB({description: 'Nothing selected'}, 'warning');
@@ -75,7 +76,7 @@ customerSelectBtn.on('click', function () {
 })
 
 function loadTableSelectDelivery() {
-    tableSelectDeliveryEle.DataTable().destroy()
+    tableSelectDeliveryEle.DataTable().clear().destroy()
     tableSelectDeliveryEle.DataTableDefault({
         dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
         useDataServer: true,
@@ -132,19 +133,17 @@ function loadTableSelectDelivery() {
                 data: 'already',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    if (parseInt(row?.['already']) > 0) {
+                    if (row?.['already']) {
                         return `<i class="fas fa-check-circle"></i>`
                     }
-                    else {
-                        return ``
-                    }
+                    return ``
                 }
             },
             {
                 data: 'select',
                 className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    if (parseInt(row?.['already']) > 0) {
+                    if (row?.['already']) {
                         let details = JSON.stringify(row.details)
                         return `<div class="form-check" hidden>
                                     <input checked data-already="1" data-id="${row.id}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery">
@@ -198,15 +197,14 @@ function SelectDeliveryOnChange() {
                     .filter(item => item?.['product_data']?.['id'] === productId)
                     .reduce((sum, item) => sum + item?.['picked_quantity'], 0),
                 picked_quantity: 0,
-                product_unit_price: entry.product_unit_price,
-                product_tax_value: entry.product_tax_value,
+                data_from_so: entry.data_from_so,
             };
         }
 
         merged_data_product[productId].picked_quantity += entry.picked_quantity;
     });
     data_product = Object.values(merged_data_product);
-    // console.log(data_product)
+    console.log(data_product)
 
     loadTableSelectDetailProduct(data_product)
     dataLineDetailTableScript.text(JSON.stringify(data_product))
@@ -287,15 +285,22 @@ function loadTableLineDetail(datasource=[]) {
                 }
             },
             {
-                data: 'uom_data__title',
+                data: 'product_data__des',
                 className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="w-90">${row?.['data_from_so']?.['product_description']}</span>`
+                }
+            },
+            {
+                data: 'uom_data__title',
+                className: 'wrap-text text-center',
                 render: (data, type, row) => {
                     return `<span class="uom-id" data-id="${row?.['uom_data']?.['id']}">${row?.['uom_data']?.['title']}</span>`
                 }
             },
             {
                 data: 'picked_quantity',
-                className: 'wrap-text',
+                className: 'wrap-text text-center',
                 render: (data, type, row) => {
                     return `<span class="picked_quantity">${row?.['picked_quantity']}</span>`
                 }
@@ -304,28 +309,61 @@ function loadTableLineDetail(datasource=[]) {
                 data: 'product_unit_price',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<input class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
-                }
-            },
-            {
-                data: 'product_tax_value',
-                className: 'wrap-text text-center',
-                render: (data, type, row) => {
-                    return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_tax_value']}"></span>`
+                    return `<input disabled readonly class="product_unit_price mask-money form-control w-80" value="${row?.['data_from_so']?.['product_unit_price']}">`
                 }
             },
             {
                 data: 'product_subtotal_price',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_unit_price'] * row?.['picked_quantity']}"></span>`
+                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']}"></span>`
                 }
             },
             {
-                render: () => {
-                    return ``
+                data: 'product_discount_rate',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<div class="input-affix-wrapper w-80">
+                                <input disabled readonly type="number" class="form-control product_discount_rate" value="${row?.['data_from_so']?.['product_discount_value']}">
+                                <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                            </div>`
                 }
             },
+            {
+                data: 'product_discount_value',
+                className: 'wrap-text hidden',
+                render: (data, type, row) => {
+                    return `<span class="product_discount_value mask-money text-primary" data-init-money="${row?.['data_from_so']?.['product_discount_value'] / 100 * row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']}"></span>`
+                }
+            },
+            {
+                data: 'product_tax_rate',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="text-primary product_taxes" data-tax-rate="${row?.['data_from_so']?.['product_tax_value']}" data-tax-amount="${row?.['data_from_so']?.['product_tax_amount']}">${row?.['data_from_so']?.['product_tax_title']}</span>`
+                }
+            },
+            {
+                data: 'product_tax_value',
+                className: 'wrap-text hidden',
+                render: (data, type, row) => {
+                    let subtotal = row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']
+                    let discount = subtotal * row?.['data_from_so']?.['product_discount_value'] / 100
+                    let tax_value = (subtotal - discount) * row?.['data_from_so']?.['product_tax_value'] / 100
+                    return `<span class="mask-money text-primary product_taxes_value" data-init-money="${tax_value}"></span>`
+                }
+            },
+            {
+                data: 'product_subtotal_price_final',
+                className: 'wrap-text hidden',
+                render: (data, type, row) => {
+                    let subtotal = row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']
+                    let discount = subtotal * row?.['data_from_so']?.['product_discount_value'] / 100
+                    let tax_value = (subtotal - discount) * row?.['data_from_so']?.['product_tax_value'] / 100
+                    let final = subtotal - discount + tax_value
+                    return `<span class="product_subtotal_price_final mask-money text-primary" data-init-money="${final}"></span>`
+                }
+            }
         ],
         initComplete: function(settings, json) {
             calculatePrice()
@@ -351,91 +389,84 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
                 data: 'product__title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="product-id" data-id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</span>`
-                    }
-                    else {
-                        return `<input class="discount-name form-control" value="${row?.['discount_name']}">`
-                    }
+                    return `<span class="product-id" data-id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</span>`
                 }
             },
             {
-                data: 'product_uom__title',
+                data: 'product_data__des',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="uom-id" data-id="${row?.['product_uom']?.['id']}">${row?.['product_uom']?.['title']}</span>`
-                    }
-                    else {
-                        return `<input class="discount-uom form-control" value="${row?.['discount_uom']}">`
-                    }
+                    return `<span>${row?.['product']?.['des']}</span>`
                 }
             },
             {
-                data: 'product_quantity',
-                className: 'wrap-text',
+                data: 'uom_data__title',
+                className: 'wrap-text text-center',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="picked_quantity">${row?.['product_quantity']}</span>`
-                    }
-                    else {
-                        return `<input type="number" class="discount-quantity form-control" value="${row?.['discount_quantity']}">`
-                    }
+                    return `<span class="uom-id" data-id="${row?.['product_uom']?.['id']}">${row?.['product_uom']?.['title']}</span>`
+                }
+            },
+            {
+                data: 'picked_quantity',
+                className: 'wrap-text text-center',
+                render: (data, type, row) => {
+                    return `<span class="picked_quantity">${row?.['product_quantity']}</span>`
                 }
             },
             {
                 data: 'product_unit_price',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<input class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
-                    }
-                    else {
-                        return `<input class="discount-unit-price mask-money form-control"  value="${row?.['discount_unit_price']}">`
-                    }
+                    return `<input disabled readonly class="product_unit_price mask-money form-control w-80" value="${row?.['product_unit_price']}">`
+                }
+            },
+            {
+                data: 'product_subtotal_price',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal']}"></span>`
+                }
+            },
+            {
+                data: 'product_discount_rate',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<div class="input-affix-wrapper w-80">
+                                <input disabled readonly type="number" class="form-control product_discount_rate" value="${row?.['product_discount_rate']}">
+                                <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                            </div>`
+                }
+            },
+            {
+                data: 'product_discount_value',
+                className: 'wrap-text hidden',
+                render: (data, type, row) => {
+                    return `<span class="product_discount_value mask-money text-primary" data-init-money="${row?.['product_discount_value']}"></span>`
+                }
+            },
+            {
+                data: 'product_tax_rate',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="text-primary product_taxes" data-tax-rate="${row?.['product_tax_rate']}" data-tax-amount="${row?.['product_tax_value']}">${row?.['product_tax_title']}</span>`
                 }
             },
             {
                 data: 'product_tax_value',
-                className: 'wrap-text text-center',
+                className: 'wrap-text hidden',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="product_taxes mask-money text-primary" data-init-money="${row?.['product_tax_value']}"></span>`
-                    }
-                    else {
-                        return `<span class="mask-money text-danger" data-init-money="0"></span>`
-                    }
+                    return `<span class="mask-money text-primary product_taxes_value" data-init-money="${(row?.['product_subtotal'] - row?.['product_discount_value']) * row?.['product_tax_rate'] / 100}"></span>`
                 }
             },
             {
-                data: 'product_subtotal',
-                className: 'wrap-text',
+                data: 'product_subtotal_final',
+                className: 'wrap-text hidden',
                 render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal']}"></span>`
-                    }
-                    else {
-                        return `<span class="discount-subtotal-price mask-money text-danger" data-init-money="${row?.['discount_subtotal']}"></span>`
-                    }
+                    return `<span class="product_subtotal_price_final mask-money text-primary" data-init-money="${row?.['product_subtotal_final']}"></span>`
                 }
-            },
-            {
-                render: (data, type, row) => {
-                    if (Object.keys(row?.['product']).length !== 0) {
-                        return ``
-                    }
-                    else {
-                        return `<button class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs del-discount">
-                            <span class="icon"><i class="bi bi-trash-fill"></i></span>
-                        </button>`;
-                    }
-                }
-            },
+            }
         ],
         initComplete: function(settings, json) {
-            if (option === 'detail') {
-                Disabled(option)
-            }
             calculatePrice()
         }
     });
@@ -446,6 +477,10 @@ $(document).on("change", '.product_unit_price', function () {
     $(this).closest('tr').find('.product_subtotal_price').attr('data-init-money', subtotal)
     $.fn.initMaskMoney2()
 
+    calculatePrice()
+})
+
+$(document).on("change", '.product_discount_value', function () {
     calculatePrice()
 })
 
@@ -520,16 +555,18 @@ function loadSaleOrder(data) {
     saleOrderEle.initSelect2({
         allowClear: true,
         ajax: {
-            url: saleOrderEle.attr('data-url'),
+            url: saleOrderEle.attr('data-url') + `?customer_id=${customerCodeEle.attr('data-id')}`,
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
+            console.log(resp.data[keyResp])
             let result = [];
             for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (resp.data[keyResp][i].system_status === 3 && resp.data[keyResp][i].customer.id === customerCodeEle.attr('data-id')) {
+                if (resp.data[keyResp][i].system_status === 3) {
                     result.push(resp.data[keyResp][i])
                 }
             }
+            console.log(result)
             return result;
         },
         templateResult: function(data) {
@@ -576,49 +613,6 @@ $('#btn-add-row-line-detail').on('click', function () {
     }
 })
 
-$('#btn-add-row-line-detail-discount').on('click', function () {
-    let index = tabLineDetailTable.find('tbody tr').length + 1
-    tabLineDetailTable.find('tbody').append(`
-        <tr>
-            <td>${index}</td>
-            <td><input class="discount-name form-control"></td>
-            <td><input class="discount-uom form-control"></td>
-            <td><input type="number" class="discount-quantity form-control"></td>
-            <td><input class="discount-unit-price mask-money form-control" value="0"></td>
-            <td><span class="mask-money text-danger" data-init-money="0"></td>
-            <td><span class="discount-subtotal-price mask-money text-danger" data-init-money="0"></span></td>
-            <td><button class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs del-discount">
-                <span class="icon"><i class="bi bi-trash-fill"></i></span>
-            </button></td>
-        </tr>
-    `)
-})
-
-$(document).on("change", '.discount-quantity', function () {
-    let subtotal = parseFloat($(this).val()) * parseFloat($(this).closest('tr').find('.discount-unit-price').attr('value'))
-    $(this).closest('tr').find('.discount-subtotal-price').attr('data-init-money', subtotal)
-    $.fn.initMaskMoney2()
-
-    calculatePrice()
-})
-
-$(document).on("change", '.discount-unit-price', function () {
-    let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.discount-quantity').val())
-    $(this).closest('tr').find('.discount-subtotal-price').attr('data-init-money', subtotal)
-    $.fn.initMaskMoney2()
-
-    calculatePrice()
-})
-
-$(document).on("click", '.del-discount', function () {
-    $(this).closest('tr').remove()
-    tabLineDetailTable.find('tbody tr').each(function (index) {
-        $(this).find('td:first-child').text(index+1)
-    })
-
-    calculatePrice()
-})
-
 function calculatePrice() {
     let sum_unit_price = 0
     let sum_taxes = 0
@@ -628,14 +622,12 @@ function calculatePrice() {
         if ($(this).find('.product_unit_price').length > 0) {
             sum_unit_price += parseFloat($(this).find('.product_unit_price').attr('value'))
         }
-        if ($(this).find('.product_subtotal_price').length > 0) {
+        if ($(this).find('.product_subtotal_price').length > 0 && $(this).find('.product_discount_rate').length > 0) {
             sum_subtotal_price += parseFloat($(this).find('.product_subtotal_price').attr('data-init-money'))
-        }
-        if ($(this).find('.discount-subtotal-price').length > 0) {
-            sum_discount += parseFloat($(this).find('.discount-subtotal-price').attr('data-init-money'))
+            sum_discount += parseFloat($(this).find('.product_discount_value').attr('data-init-money'))
         }
         if ($(this).find('.product_taxes').length > 0) {
-            sum_taxes += parseFloat($(this).find('.product_taxes').attr('data-init-money'))
+            sum_taxes += parseFloat($(this).find('.product_taxes_value').attr('data-init-money'))
         }
     })
     $('#pretax-value').attr('data-init-money', sum_subtotal_price)
@@ -667,7 +659,6 @@ class ARInvoiceHandle {
         frm.dataForm['delivery_mapped_list'] = tabLineDetailTable.attr('data-delivery-selected').split(',')
 
         frm.dataForm['data_item_list'] = []
-        frm.dataForm['data_discount_list'] = []
         tabLineDetailTable.find('tbody tr').each(function () {
             if ($(this).find('.product-id').length > 0) {
                 frm.dataForm['data_item_list'].push({
@@ -676,18 +667,13 @@ class ARInvoiceHandle {
                     'product_uom_id': $(this).find('.uom-id').attr('data-id'),
                     'product_quantity': $(this).find('.picked_quantity').text(),
                     'product_unit_price': $(this).find('.product_unit_price').attr('value'),
-                    'product_tax_value': $(this).find('.product_taxes').attr('data-init-money'),
                     'product_subtotal': $(this).find('.product_subtotal_price').attr('data-init-money'),
-                })
-            }
-            else {
-                frm.dataForm['data_discount_list'].push({
-                    'item_index': $(this).find('td:first-child').text(),
-                    'discount_name': $(this).find('.discount-name').val(),
-                    'discount_uom': $(this).find('.discount-uom').val(),
-                    'discount_quantity': $(this).find('.discount-quantity').val(),
-                    'discount_unit_price': $(this).find('.discount-unit-price').attr('value'),
-                    'discount_subtotal': $(this).find('.discount-subtotal-price').attr('data-init-money'),
+                    'product_discount_rate': $(this).find('.product_discount_rate').attr('value'),
+                    'product_discount_value': parseFloat($(this).find('.product_discount_rate').attr('value')) * parseFloat($(this).find('.product_subtotal_price').attr('data-init-money')) / 100,
+                    'product_tax_rate': $(this).find('.product_taxes').attr('data-tax-rate'),
+                    'product_tax_title': $(this).find('.product_taxes').text(),
+                    'product_tax_value': $(this).find('.product_taxes').attr('data-tax-amount'),
+                    'product_subtotal_final': $(this).find('.product_subtotal_price_final').attr('data-init-money')
                 })
             }
         })
@@ -723,10 +709,8 @@ function Disabled(option) {
         $('#collapse-area input').prop('readonly', true).prop('disabled', true)
         $('#collapse-area select').prop('disabled', true)
         $('tr input').prop('readonly', true).prop('disabled', true)
-        $('.del-discount').addClass('disabled')
         customerSelectBtn.addClass('disabled')
         $('#btn-add-row-line-detail').remove()
-        $('#btn-add-row-line-detail-discount').remove()
     }
 }
 
@@ -754,7 +738,7 @@ function LoadDetailARInvoice(option) {
 
                 tabLineDetailTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
 
-                loadTableLineDetailForDetailPage(data?.['item_and_discount_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                loadTableLineDetailForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
 
                 Disabled(option)
 

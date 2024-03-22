@@ -13,6 +13,7 @@ const postingDateEle = $('#posting-date')
 const documentDateEle = $('#document-date')
 const invoiceDateEle= $('#invoice-date')
 const customerSelectBtn = $('#customer-select-btn')
+let EZ_invoice_headers = null
 
 
 postingDateEle.daterangepicker({
@@ -186,25 +187,26 @@ function SelectDeliveryOnChange() {
 
     const merged_data_product = {};
     data_product.forEach(entry => {
-        const productId = entry.product_data.id;
+        if (parseFloat(entry.picked_quantity) > 0) {
+            const productId = entry.product_data.id;
 
-        if (!merged_data_product[productId]) {
-            merged_data_product[productId] = {
-                product_data: entry.product_data,
-                uom_data: entry.uom_data,
-                delivery_quantity: entry.delivery_quantity,
-                delivered_quantity_before: data_product_already
-                    .filter(item => item?.['product_data']?.['id'] === productId)
-                    .reduce((sum, item) => sum + item?.['picked_quantity'], 0),
-                picked_quantity: 0,
-                data_from_so: entry.data_from_so,
-            };
+            if (!merged_data_product[productId]) {
+                merged_data_product[productId] = {
+                    product_data: entry.product_data,
+                    uom_data: entry.uom_data,
+                    delivery_quantity: entry.delivery_quantity,
+                    delivered_quantity_before: data_product_already
+                        .filter(item => item?.['product_data']?.['id'] === productId)
+                        .reduce((sum, item) => sum + item?.['picked_quantity'], 0),
+                    picked_quantity: 0,
+                    data_from_so: entry.data_from_so,
+                };
+            }
+
+            merged_data_product[productId].picked_quantity += entry.picked_quantity;
         }
-
-        merged_data_product[productId].picked_quantity += entry.picked_quantity;
     });
     data_product = Object.values(merged_data_product);
-    console.log(data_product)
 
     loadTableSelectDetailProduct(data_product)
     dataLineDetailTableScript.text(JSON.stringify(data_product))
@@ -279,9 +281,9 @@ function loadTableLineDetail(datasource=[]) {
             },
             {
                 data: 'product_data__title',
-                className: 'wrap-text',
+                className: 'wrap-text text-primary',
                 render: (data, type, row) => {
-                    return `<span class="product-id" data-id="${row?.['product_data']?.['id']}">${row?.['product_data']?.['title']}</span>`
+                    return `<span class="product-id" data-id="${row?.['product_data']?.['id']}"><b>${row?.['product_data']?.['title']}</b></span>`
                 }
             },
             {
@@ -345,11 +347,12 @@ function loadTableLineDetail(datasource=[]) {
             },
             {
                 data: 'product_tax_value',
-                className: 'wrap-text hidden',
+                className: 'wrap-text',
                 render: (data, type, row) => {
                     let subtotal = row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']
                     let discount = subtotal * row?.['data_from_so']?.['product_discount_value'] / 100
                     let tax_value = (subtotal - discount) * row?.['data_from_so']?.['product_tax_value'] / 100
+                    console.log(subtotal, discount, tax_value)
                     return `<span class="mask-money text-primary product_taxes_value" data-init-money="${tax_value}"></span>`
                 }
             },
@@ -387,9 +390,9 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
             },
             {
                 data: 'product__title',
-                className: 'wrap-text',
+                className: 'wrap-text text-primary',
                 render: (data, type, row) => {
-                    return `<span class="product-id" data-id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</span>`
+                    return `<span class="product-id" data-id="${row?.['product']?.['id']}"><b>${row?.['product']?.['title']}</b></span>`
                 }
             },
             {
@@ -672,7 +675,7 @@ class ARInvoiceHandle {
                     'product_discount_value': parseFloat($(this).find('.product_discount_rate').attr('value')) * parseFloat($(this).find('.product_subtotal_price').attr('data-init-money')) / 100,
                     'product_tax_rate': $(this).find('.product_taxes').attr('data-tax-rate'),
                     'product_tax_title': $(this).find('.product_taxes').text(),
-                    'product_tax_value': $(this).find('.product_taxes').attr('data-tax-amount'),
+                    'product_tax_value': $(this).find('.product_taxes_value').attr('data-init-money'),
                     'product_subtotal_final': $(this).find('.product_subtotal_price_final').attr('data-init-money')
                 })
             }
@@ -685,7 +688,6 @@ class ARInvoiceHandle {
             return false
         }
 
-        console.log(frm.dataForm)
         if (for_update) {
             let pk = $.fn.getPkDetail();
             return {
@@ -710,7 +712,6 @@ function Disabled(option) {
         $('#collapse-area select').prop('disabled', true)
         $('tr input').prop('readonly', true).prop('disabled', true)
         customerSelectBtn.addClass('disabled')
-        $('#btn-add-row-line-detail').remove()
     }
 }
 
@@ -722,8 +723,12 @@ function LoadDetailARInvoice(option) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['ar_invoice_detail'];
-                console.log(data)
                 $x.fn.renderCodeBreadcrumb(data);
+
+                $('#easy_invoice_type').text(data?.['easy_invoice_type'])
+                if (data?.['easy_invoice_type'] === null) {
+                    $('#view_invoice_btn').closest('a').remove()
+                }
 
                 $('#name').val(data?.['title'])
                 customerCodeEle.val(data?.['customer_mapped']?.['name'])
@@ -751,3 +756,36 @@ function LoadDetailARInvoice(option) {
             }
         })
 }
+
+$('#create_invoice_btn').on('click', function () {
+    let combinesData = new ARInvoiceHandle().combinesData($('#form-detail-ar-invoice'), true);
+    let pk = $.fn.getPkDetail();
+    WindowControl.showLoading();
+    combinesData['data']['create_invoice'] = true
+    $.fn.callAjax2(combinesData).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $.fn.notifyB({description: "Successfully"}, 'success')
+                setTimeout(() => {
+                    window.location.replace($('#form-detail-ar-invoice').attr('data-url-redirect').format_url_with_uuid(pk));
+                    location.reload.bind(location);
+                }, 1000);
+            }
+        },
+        (errs) => {
+            setTimeout(
+                () => {
+                    WindowControl.hideLoading();
+                },
+                1000
+            )
+            $.fn.notifyB({description: errs.data.errors}, 'failure');
+        }
+    )
+})
+
+$('#view_invoice_btn').on('click', function () {
+    let pk = $.fn.getPkDetail();
+    $(this).closest('a').attr('href', $(this).closest('a').attr('data-href').replace(0, pk) + `?pattern=${$('#easy_invoice_type').text()}`)
+})

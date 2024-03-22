@@ -1407,8 +1407,10 @@ class QuotationLoadDataHandle {
                 let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
                 if (tableProductWrapper) {
                     let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-                    if (tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw')) {
-                        valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
+                    let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                    let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                    if (elePretax && eleDiscount) {
+                        valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
                         if (dataSelected?.['value']) {
                             let value = (parseFloat(dataSelected?.['value']) * valueSO) / 100;
                             $(eleValueBT).attr('value', String(value));
@@ -1449,8 +1451,10 @@ class QuotationLoadDataHandle {
                     let tableProduct = document.getElementById('datable-quotation-create-product');
                     if (tableProduct.closest('.dataTables_scroll')) {
                         let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
-                        if (tableProductFt.querySelector('.quotation-create-product-total-raw')) {
-                            valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
+                        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                        if (elePretax && eleDiscount) {
+                            valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
                             if (eleRatio.value) {
                                 let value = (parseFloat(eleRatio.value) * valueSO) / 100;
                                 $(eleValueBT).attr('value', String(value));

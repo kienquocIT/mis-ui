@@ -4,6 +4,8 @@ $(function () {
         let boxGroup = $('#box-report-customer-group');
         let boxEmployee = $('#box-report-customer-employee');
         let boxCustomer = $('#box-report-customer-customer');
+        let boxStart = $('#report-product-date-from');
+        let boxEnd = $('#report-product-date-to');
         let btnView = $('#btn-view');
         let eleRevenue = $('#report-customer-revenue');
         let eleGrossProfit = $('#report-customer-gross-profit');
@@ -149,8 +151,8 @@ $(function () {
                                     let endDateObj = new Date(endDate);
                                     let formattedStartDate = `${padWithZero(startDateObj.getDate())}/${padWithZero(startDateObj.getMonth() + 1)}/${startDateObj.getFullYear()}`;
                                     let formattedEndDate = `${padWithZero(endDateObj.getDate())}/${padWithZero(endDateObj.getMonth() + 1)}/${endDateObj.getFullYear()}`;
-                                    let formattedDateRange = `${formattedStartDate} - ${formattedEndDate}`;
-                                    $('#report-customer-date-approved').val(formattedDateRange);
+                                    boxStart.val(formattedStartDate);
+                                    boxEnd.val(formattedEndDate);
                                     $.fn.callAjax2({
                                             'url': $table.attr('data-url'),
                                             'method': $table.attr('data-method'),
@@ -213,6 +215,22 @@ $(function () {
             return {startDate: '', endDate: ''};
         }
 
+        function formatStartDate(startDate) {
+            if (startDate) {
+                startDate = startDate + ' 00:00:00';
+                return startDate;
+            }
+            return '';
+        }
+
+        function formatEndDate(endDate) {
+            if (endDate) {
+                endDate = endDate + ' 23:59:59';
+                return endDate;
+            }
+            return '';
+        }
+
         function loadBoxEmployee() {
             boxEmployee.empty();
             let dataParams = {};
@@ -242,12 +260,15 @@ $(function () {
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
-            minYear: 1901,
-            timePicker: true,
-            showDropdowns: true,
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
             locale: {
                 format: 'DD/MM/YYYY'
-            }
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true,
         });
         $('input[type=text].date-picker').val(null).trigger('change');
 
@@ -282,14 +303,13 @@ $(function () {
             if (boxCustomer.val()) {
                 dataParams['customer_id__in'] = boxCustomer.val().join(',');
             }
-            let date = $('#report-customer-date-approved').val();
-            if (date) {
-                let dateStrings = date.split(' - ');
-                let dateStart = moment(dateStrings[0], 'DD/MM/YYYY').format('YYYY-MM-DD');
-                let dateEnd = moment(dateStrings[1], 'DD/MM/YYYY').format('YYYY-MM-DD');
-                let datesFormat = formatStartEndDate(dateStart, dateEnd);
-                dataParams['date_approved__gte'] = datesFormat?.['startDate'];
-                dataParams['date_approved__lte'] = datesFormat?.['endDate'];
+            if (boxStart.val()) {
+                let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                dataParams['date_approved__gte'] = formatStartDate(dateStart);
+            }
+            if (boxEnd.val()) {
+                let dateEnd = moment(boxEnd.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                dataParams['date_approved__lte'] = formatEndDate(dateEnd);
             }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),

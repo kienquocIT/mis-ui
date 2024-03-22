@@ -13,7 +13,7 @@
 
     <div class="collapse multi-collapse show" id="collapseExample">
         <div class="row">
-            <div class="col-12 col-md-5 col-lg-5">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="row form-group">
                     <div class="col-12 col-md-3 col-lg-3">
                         <label class="form-label" for="box-report-revenue-group">{% trans 'Group' %}</label>
@@ -49,23 +49,43 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-5 col-lg-5">
-                <div class="row form-group">
-                    <div class="col-12 col-md-3 col-lg-3">
-                        <label class="form-label" for="report-revenue-date-approved">{% trans 'Date' %}</label>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row form-group">
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <label class="form-label" for="report-revenue-date-from">{% trans 'From' %}</label>
+                            </div>
+                            <div class="col-12 col-md-9 col-lg-9">
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_from" id="report-revenue-date-from"
+                                           class="form-control date-picker" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="far fa-calendar"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 col-md-9 col-lg-9">
-                        <div class="input-affix-wrapper">
-                            <input type="text" name="date_approved" id="report-revenue-date-approved"
-                                   class="form-control date-picker" autocomplete="off">
-                            <div class="input-suffix">
-                                <i class="far fa-calendar"></i>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row form-group">
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <label class="form-label" for="report-revenue-date-to">{% trans 'To' %}</label>
+                            </div>
+                            <div class="col-12 col-md-9 col-lg-9">
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_from" id="report-revenue-date-to"
+                                           class="form-control date-picker" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="far fa-calendar"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="d-flex justify-content-end">
                     <button type="button" class="btn btn-outline-primary ml-3" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-chart-bar"></i></span></span></span></button>
                     <button type="button" class="btn btn-outline-primary ml-3" id="btn-export" hidden><span><span>{% trans 'Export' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-file-export"></i></span></span></span></button>

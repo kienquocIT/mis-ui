@@ -2535,7 +2535,7 @@ class WFRTControl {
                                         </span>
                                     </button>`);
                 // Add event
-                $('#btnCancel').on('click', function () {
+                btnCancel.on('click', function () {
                     return WFRTControl.callActionWF($(this));
                 });
             }

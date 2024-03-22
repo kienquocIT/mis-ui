@@ -149,8 +149,8 @@ $(function () {
                                     // set init val date range
                                     let startDateObj = new Date(startDate);
                                     let endDateObj = new Date(endDate);
-                                    let formattedStartDate = `${startDateObj.getDate()}/${startDateObj.getMonth() + 1}/${startDateObj.getFullYear()}`;
-                                    let formattedEndDate = `${endDateObj.getDate()}/${endDateObj.getMonth() + 1}/${endDateObj.getFullYear()}`;
+                                    let formattedStartDate = `${padWithZero(startDateObj.getDate())}/${padWithZero(startDateObj.getMonth() + 1)}/${startDateObj.getFullYear()}`;
+                                    let formattedEndDate = `${padWithZero(endDateObj.getDate())}/${padWithZero(endDateObj.getMonth() + 1)}/${endDateObj.getFullYear()}`;
                                     let formattedDateRange = `${formattedStartDate} - ${formattedEndDate}`;
                                     $('#report-product-date-approved').val(formattedDateRange);
                                     $.fn.callAjax2({
@@ -178,6 +178,10 @@ $(function () {
                     }
                 }
             )
+        }
+
+        function padWithZero(num) {
+            return num < 10 ? '0' + num : num;
         }
 
         function getYearRange(startDate) {

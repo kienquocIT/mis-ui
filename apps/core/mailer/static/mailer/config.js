@@ -12,7 +12,7 @@ $(document).ready(function () {
         let checked = $(this).prop('checked');
         checked === true ? groupConfigEle.slideUp() : groupConfigEle.slideDown();
         inpUseSSLEle.trigger('change');
-    })
+    });
 
     inpUseSSLEle.on('change', function () {
         let checked = $(this).prop('checked');
@@ -265,5 +265,10 @@ $(document).ready(function () {
                 errs => console.log(errs),
             )
         }
+    });
+
+    $('#btn-collapse-policy').on('click', function (){
+        $(this).siblings('ol').slideToggle();
+        $(this).find('i').toggleClass('rotate-180deg');
     });
 })

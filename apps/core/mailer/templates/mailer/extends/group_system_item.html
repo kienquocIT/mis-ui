@@ -29,11 +29,18 @@
                     data-url-params="{% url 'ApplicationPropertyForMailListAPI' %}"
                     data-system-code="{{ data.system_code }}"
             >
+                <div class="form-group">
+                    <label for="{{ data.form_id }}-inp-subject">{% trans 'Subject' %}</label>
+                    <input type="text" name="subject"  class="form-control" id="{{ data.form_id }}-inp-subject"/>
+                </div>
                 <div class="form-check form-switch mb-1">
                     <input type="checkbox" class="form-check-input" name="is_active">
                     <label class="form-check-label">{% trans 'Using' %}</label>
                 </div>
-                <textarea name="contents" class="mb-3"></textarea>
+                <div class="form-group">
+                    <label for="{{ data.form_id }}-inp-contents">{% trans 'Contents' %}</label>
+                    <textarea name="contents" class="mb-3" id="{{ data.form_id }}-inp-contents"></textarea>
+                </div>
                 {{ data.templates|json_script }}
             </form>
         </div>

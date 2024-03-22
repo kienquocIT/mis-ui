@@ -20,3 +20,11 @@ msgstr ""
 #
 msgid "This field is required"
 msgstr "Trường này là bắt buộc"
+
+#
+msgid "Successful"
+msgstr "Thành công"
+
+#
+msgid "Failed"
+msgstr "Thất bại"

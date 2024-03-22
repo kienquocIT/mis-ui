@@ -20,6 +20,7 @@
             rel="stylesheet"
     >
     {% compress css %}
+        <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
         <!-- CSS -->
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
@@ -232,6 +233,8 @@
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
 
+    <script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
+
     <!-- Init JS -->
     <script src="{% static 'assets/js/init.js' %}"></script>
     <script src="{% static 'login/backdrop-animated.js' %}"></script>
@@ -258,7 +261,6 @@
                 }
 
                 $(this).on('error', function () {
-                    debugger
                     $(this).attr('data-old-src', $(this).attr('src'));
                     $(this).attr('data-toggle', 'tooltip');
                     $(this).attr('title', resolve_title_tooltip($(this)));
@@ -940,9 +942,39 @@
                     [kv.name]: kv.value
                 }), {});
             },
+            cusShowLoading: function (){
+                Swal.fire({
+                    icon: 'info',
+                    title: '',
+                    text: `Loading...`,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    didDestroy: () => {
+                        Swal.hideLoading();
+                    },
+                });
+            },
+            cusHideLoading: function (){
+                let checkIsLoading = true;
+                try {
+                    if (Swal.isLoading()) {
+                        checkIsLoading = false;
+                    }
+                } catch (e) {
+                    checkIsLoading = false;
+                }
+                if (checkIsLoading === false) {
+                    swal.close();
+                }
+            },
             callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
                 return new Promise(function (resolve, reject) {
                     // Setup then Call Ajax
+                    $.fn.cusShowLoading();
                     let ctx = {
                         url: url,
                         type: method,
@@ -953,9 +985,11 @@
                             "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers
                         },
                         success: function (rest, textStatus, jqXHR) {
+                            $.fn.cusHideLoading();
                             resolve(rest);
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
+                            $.fn.cusHideLoading();
                             reject(jqXHR.responseJSON);
                         },
                     };

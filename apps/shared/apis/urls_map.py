@@ -38,7 +38,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')
-    USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
+    USER_RESET_PASSWORD = StringUrl('account/user/{pk}/reset-password')
+    USER_MAIL_WELCOME = StringUrl('account/user/{pk}/mail-welcome')
     LANGUAGE_CHANGE = 'auth/language'
 
     #

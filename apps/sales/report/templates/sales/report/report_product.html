@@ -177,6 +177,14 @@
         </tbody>
     </table>
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="data-fiscal-year"
+            data-url="{% url "PeriodsConfigListAPI" %}"
+            data-method="GET"
+    >
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

@@ -8,8 +8,9 @@ $(function () {
         let eleGrossProfit = $('#report-revenue-gross-profit');
         let eleNetIncome = $('#report-revenue-net-income');
         let $table = $('#table_report_revenue_list');
-        let $urlFact = $('#app-url-factory')
-        let $transFact = $('#app-trans-factory')
+        let $urlFact = $('#app-url-factory');
+        let $transFact = $('#app-trans-factory');
+        let eleFiscalYear = $('#data-fiscal-year');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -19,7 +20,16 @@ $(function () {
                         "is_initial": false,
                         "group_inherit__is_delete": false,
                     },
-                    dataSrc: 'data.report_revenue_list',
+                    // dataSrc: 'data.report_revenue_list',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let dataResult = resp.data['report_revenue_list'] ? resp.data['report_revenue_list'] : [];
+                            storeLoadInitByDataFiscalYear();
+                            return dataResult;
+                        }
+                        return [];
+                    },
                 },
                 data: data ? data : [],
                 autoWidth: true,
@@ -142,6 +152,72 @@ $(function () {
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
         loadDbl();
+
+        function storeLoadInitByDataFiscalYear() {
+            $.fn.callAjax2({
+                    'url': eleFiscalYear.attr('data-url'),
+                    'method': eleFiscalYear.attr('data-method'),
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
+                            eleFiscalYear.val(JSON.stringify(data.periods_list));
+                            let currentYear = new Date().getFullYear();
+                            for (let period of data.periods_list) {
+                                if (period?.['fiscal_year'] === currentYear) {
+                                    let {startDate, endDate} = getYearRange(period?.['start_date']);
+                                    $.fn.callAjax2({
+                                            'url': $table.attr('data-url'),
+                                            'method': $table.attr('data-method'),
+                                            'data': {
+                                                'date_approved__gte': startDate,
+                                                'date_approved__lte': endDate,
+                                            },
+                                            isLoading: true,
+                                        }
+                                    ).then(
+                                        (resp) => {
+                                            let data = $.fn.switcherResp(resp);
+                                            if (data) {
+                                                if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
+                                                    $table.DataTable().clear().draw();
+                                                    $table.DataTable().rows.add(data.report_revenue_list).draw();
+                                                    loadTotal();
+                                                }
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+        }
+
+        function getYearRange(startDate) {
+            let endDate = getFiscalYearEndDate(startDate);
+            let datesFormat = formatStartEndDate(startDate, endDate);
+            return {startDate: datesFormat?.['startDate'], endDate: datesFormat?.['endDate']};
+        }
+
+        function getFiscalYearEndDate(startDate) {
+            let endDateFY = '';
+            if (startDate) {
+                let startDateFY = new Date(startDate);
+                endDateFY = new Date(startDateFY);
+                // Add 12 months to the start date
+                endDateFY.setMonth(startDateFY.getMonth() + 12);
+                // Subtract 1 day to get the last day of the fiscal year
+                endDateFY.setDate(endDateFY.getDate() - 1);
+                // Format the end date as 'YYYY-MM-DD'
+                endDateFY = endDateFY.toISOString().slice(0, 10);
+                return endDateFY;
+            }
+            return endDateFY;
+        }
 
         function formatStartEndDate(startDate, endDate) {
             if (startDate && endDate) {

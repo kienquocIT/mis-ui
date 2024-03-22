@@ -10,6 +10,7 @@ $(function () {
         let eleGrossProfit = $('#report-product-gross-profit');
         let eleNetIncome = $('#report-product-net-income');
         let $table = $('#table_report_product_list');
+        let eleFiscalYear = $('#data-fiscal-year');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -20,7 +21,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             let dataResult = resp.data['report_product_list'] ? resp.data['report_product_list'] : [];
-                            setupDataLoadTable(dataResult);
+                            storeLoadInitByDataFiscalYear();
                             return dataResult;
                         }
                         return [];
@@ -129,6 +130,70 @@ $(function () {
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
         loadDbl();
+
+        function storeLoadInitByDataFiscalYear() {
+            $.fn.callAjax2({
+                    'url': eleFiscalYear.attr('data-url'),
+                    'method': eleFiscalYear.attr('data-method'),
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
+                            eleFiscalYear.val(JSON.stringify(data.periods_list));
+                            let currentYear = new Date().getFullYear();
+                            for (let period of data.periods_list) {
+                                if (period?.['fiscal_year'] === currentYear) {
+                                    let {startDate, endDate} = getYearRange(period?.['start_date']);
+                                    $.fn.callAjax2({
+                                            'url': $table.attr('data-url'),
+                                            'method': $table.attr('data-method'),
+                                            'data': {
+                                                'date_approved__gte': startDate,
+                                                'date_approved__lte': endDate,
+                                            },
+                                            isLoading: true,
+                                        }
+                                    ).then(
+                                        (resp) => {
+                                            let data = $.fn.switcherResp(resp);
+                                            if (data) {
+                                                if (data.hasOwnProperty('report_product_list') && Array.isArray(data.report_product_list)) {
+                                                    setupDataLoadTable(data.report_product_list);
+                                                }
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+        }
+
+        function getYearRange(startDate) {
+            let endDate = getFiscalYearEndDate(startDate);
+            let datesFormat = formatStartEndDate(startDate, endDate);
+            return {startDate: datesFormat?.['startDate'], endDate: datesFormat?.['endDate']};
+        }
+
+        function getFiscalYearEndDate(startDate) {
+            let endDateFY = '';
+            if (startDate) {
+                let startDateFY = new Date(startDate);
+                endDateFY = new Date(startDateFY);
+                // Add 12 months to the start date
+                endDateFY.setMonth(startDateFY.getMonth() + 12);
+                // Subtract 1 day to get the last day of the fiscal year
+                endDateFY.setDate(endDateFY.getDate() - 1);
+                // Format the end date as 'YYYY-MM-DD'
+                endDateFY = endDateFY.toISOString().slice(0, 10);
+                return endDateFY;
+            }
+            return endDateFY;
+        }
 
         function formatStartEndDate(startDate, endDate) {
             if (startDate && endDate) {

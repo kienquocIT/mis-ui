@@ -156,6 +156,12 @@
         data-filter-customer="{% trans 'Customer' %}"
         data-filter-so="{% trans 'Sale order' %}"
     >
+    <input
+            type="text"
+            id="data-fiscal-year"
+            data-url="{% url "PeriodsConfigListAPI" %}"
+            data-method="GET"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>

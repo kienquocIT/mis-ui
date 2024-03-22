@@ -5293,9 +5293,10 @@ class QuotationSubmitHandle {
         // Auto fill data when form calling submit "$('.btn-saving-form')..."
         // ****************************
         // system fields
-        // if (_form.dataMethod === "POST") {
-        //     _form.dataForm['system_status'] = 1;
-        // }
+
+        if (_form.dataMethod.toLowerCase() === 'post') {
+            _form.dataForm['system_status'] = 1;
+        }
     };
 }
 

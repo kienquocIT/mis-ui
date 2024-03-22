@@ -15,7 +15,10 @@ $(function () {
             $table.DataTableDefault({
                 ajax: {
                     url: $table.attr('data-url'),
-                    data: {"is_initial": false},
+                    data: {
+                        "is_initial": false,
+                        "group_inherit__is_delete": false,
+                    },
                     dataSrc: 'data.report_revenue_list',
                 },
                 data: data ? data : [],
@@ -203,6 +206,7 @@ $(function () {
         btnView.on('click', function () {
             let dataParams = {};
             dataParams['is_initial'] = false;
+            dataParams['group_inherit__is_delete'] = false;
             if (boxGroup.val()) {
                 dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
             }

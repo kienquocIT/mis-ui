@@ -652,12 +652,14 @@ $(function () {
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
             singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
+            timepicker: false,
+            showDropdowns: false,
             minYear: 2023,
             locale: {
                 format: 'DD/MM/YYYY'
-            }
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true,
         });
         $('input[type=text].date-picker').val(null).trigger('change');
 

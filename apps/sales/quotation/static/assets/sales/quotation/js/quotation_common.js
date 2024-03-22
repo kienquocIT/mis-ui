@@ -1310,6 +1310,8 @@ class QuotationLoadDataHandle {
                         format: 'DD/MM/YYYY'
                     },
                     maxYear: parseInt(moment().format('YYYY'), 10),
+                    drops: 'up',
+                    autoApply: true,
                 });
                 $(newRow.querySelector('.table-row-date')).val(null).trigger('change');
             }
@@ -1323,6 +1325,8 @@ class QuotationLoadDataHandle {
                         format: 'DD/MM/YYYY'
                     },
                     maxYear: parseInt(moment().format('YYYY'), 10),
+                    drops: 'up',
+                    autoApply: true,
                 });
                 $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
             }
@@ -1970,6 +1974,8 @@ class QuotationLoadDataHandle {
                                 format: 'DD/MM/YYYY'
                             },
                             maxYear: parseInt(moment().format('YYYY'), 10),
+                            drops: 'up',
+                            autoApply: true,
                         });
                     }
                     if (row.querySelector('.table-row-due-date')) {
@@ -1982,6 +1988,8 @@ class QuotationLoadDataHandle {
                                 format: 'DD/MM/YYYY'
                             },
                             maxYear: parseInt(moment().format('YYYY'), 10),
+                            drops: 'up',
+                            autoApply: true,
                         });
                     }
                 })

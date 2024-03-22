@@ -208,7 +208,7 @@ $(function () {
             dataParams['is_initial'] = false;
             dataParams['group_inherit__is_delete'] = false;
             if (boxGroup.val()) {
-                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
+                dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');

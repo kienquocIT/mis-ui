@@ -817,6 +817,8 @@ class POLoadDataHandle {
                 format: 'DD/MM/YYYY'
             },
             maxYear: parseInt(moment().format('YYYY'), 10),
+            drops: 'up',
+            autoApply: true,
         });
         $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
         // init maskMoney
@@ -1031,6 +1033,8 @@ class POLoadDataHandle {
                         format: 'DD/MM/YYYY'
                     },
                     maxYear: parseInt(moment().format('YYYY'), 10),
+                    drops: 'up',
+                    autoApply: true,
                 });
             }
         })

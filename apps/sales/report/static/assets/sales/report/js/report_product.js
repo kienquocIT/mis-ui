@@ -146,6 +146,13 @@ $(function () {
                             for (let period of data.periods_list) {
                                 if (period?.['fiscal_year'] === currentYear) {
                                     let {startDate, endDate} = getYearRange(period?.['start_date']);
+                                    // set init val date range
+                                    let startDateObj = new Date(startDate);
+                                    let endDateObj = new Date(endDate);
+                                    let formattedStartDate = `${startDateObj.getDate()}/${startDateObj.getMonth() + 1}/${startDateObj.getFullYear()}`;
+                                    let formattedEndDate = `${endDateObj.getDate()}/${endDateObj.getMonth() + 1}/${endDateObj.getFullYear()}`;
+                                    let formattedDateRange = `${formattedStartDate} - ${formattedEndDate}`;
+                                    $('#report-product-date-approved').val(formattedDateRange);
                                     $.fn.callAjax2({
                                             'url': $table.attr('data-url'),
                                             'method': $table.attr('data-method'),

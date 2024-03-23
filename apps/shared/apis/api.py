@@ -714,7 +714,7 @@ class ServerAPI:
             **(data if isinstance(data, dict) else {}),
         }
 
-        url_encode = [f"{key}={parse.quote(val)}" for key, val in params.items()]
+        url_encode = [f"{str(key)}={parse.quote(str(val))}" for key, val in params.items()]
         safe_url = self.url + f'?{"&".join(url_encode)}'
         return APIUtil(user_obj=self.user).call_get(safe_url=safe_url, headers=self.headers)
 

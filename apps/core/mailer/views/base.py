@@ -30,10 +30,6 @@ class MailApplicationTemplateSample(APIView):
 class ApplicationPropertyForMailListAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, url=ApiURL.APPLICATION_PROPERTY_MAIL_LIST, user=request.user).get(
-            data={
-                'ordering': 'title',
-                'application__in': request.query_params.get('application__in', ''),
-            }
-        )
+        data = {'ordering': 'title'}
+        resp = ServerAPI(request=request, url=ApiURL.APPLICATION_PROPERTY_MAIL_LIST, user=request.user).get(data=data)
         return resp.auto_return(key_success='application_property_list')

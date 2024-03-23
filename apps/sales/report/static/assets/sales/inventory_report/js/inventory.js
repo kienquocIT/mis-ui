@@ -146,9 +146,12 @@ $(document).ready(function () {
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
     $('#btn-view').on('click', function () {
+        $('table thead').find('span').text('0')
+        $('table thead').find('span').attr('data-init-money', 0)
         NOT_CLOSED_SUB_PERIOD = 0
         if ($('#show-detail-cb').prop('checked')) {
-            const table_inventory_report = $('#table-inventory-report-detail').prop('hidden', false)
+            const table_inventory_report = $('#table-inventory-report-detail')
+            table_inventory_report.prop('hidden', false)
             $('#table-inventory-report').prop('hidden', true)
             if (periodMonthEle.val()) {
                 WindowControl.showLoading();

@@ -68,6 +68,16 @@ class UserResetPassword(APIView):
         return {}, status.HTTP_404_NOT_FOUND
 
 
+class UserMailWelcome(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            url = ApiURL.USER_MAIL_WELCOME.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).put(data={})
+            return resp.auto_return(key_success='mail_welcome')
+        return {}, status.HTTP_404_NOT_FOUND
+
+
 class UserListAPI(APIView):
     permission_classes = [IsAuthenticated]
 

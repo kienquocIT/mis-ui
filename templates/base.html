@@ -501,6 +501,7 @@
         // workflow
         const globeTaskDetail = "{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}";
         const globeFormMappedZone = "{% if data.form_id %}{{ data.form_id }}{% endif %}";
+        const globeRuntimeAfterFinishDetail = "{% url 'FlowRuntimeAfterFinishDetailAPI' pk=1 %}";
 
         // msg
         const globeResourceLoadFailed = "{% trans 'Failed to load resource' %}.";
@@ -623,6 +624,31 @@
             $('.modal').on('show.bs.modal', function (){
                 const outsideFrame = $('.hk-pg-wrapper').css('padding-top');
                 $(this).css('margin-top', outsideFrame).css('height', `calc(100vh - ${outsideFrame})`);
+            })
+
+            //
+            $('button[type=submit]').on('click', function (){
+                let frmID = $(this).attr('form');
+                if (frmID) {
+                    $(this).prop('disabled', true);
+                    setTimeout( () => $(this).prop('disabled', false), 1000);
+                    $('#' + frmID).trigger('submit');
+                } else {
+                    let formOutSide = $(this).closest('form');
+                    if (formOutSide.length > 0){
+                        $(this).prop('disabled', true);
+                        setTimeout( () => $(this).prop('disabled', false), 1000);
+                        formOutSide.trigger('submit');
+                    }
+                }
+            })
+            $('button:not([type])').on('click', function (){
+                let formOutSide = $(this).closest('form');
+                if (formOutSide.length > 0){
+                    $(this).prop('disabled', true);
+                    setTimeout( () => $(this).prop('disabled', false), 1000);
+                    formOutSide.trigger('submit');
+                }
             })
         })
 

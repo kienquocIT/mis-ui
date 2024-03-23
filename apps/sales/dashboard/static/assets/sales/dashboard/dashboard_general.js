@@ -189,7 +189,7 @@ $(document).ready(function () {
             {name: "Reality", data: revenue_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth(); i < 12; i++) {
+            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
                 revenue_chart_data[i] = null;
             }
             series_data = [
@@ -339,7 +339,7 @@ $(document).ready(function () {
             {name: "Reality", data: revenue_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth(); i < 12; i++) {
+            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
                 revenue_chart_data[i] = null;
             }
             series_data = [
@@ -663,7 +663,7 @@ $(document).ready(function () {
             {name: "Reality", data: profit_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth(); i < 12; i++) {
+            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
                 profit_chart_data[i] = null;
             }
             series_data = [
@@ -815,7 +815,7 @@ $(document).ready(function () {
             {name: "Reality", data: profit_chart_data}
         ]
         if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth(); i < 12; i++) {
+            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
                 profit_chart_data[i] = null;
             }
             series_data = [

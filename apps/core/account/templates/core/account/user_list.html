@@ -21,8 +21,12 @@
 
 {% block pageContent %}
     <table
-            id="datatable_user_list" class="table nowrap w-100 mb-5" data-url='{% url "UserListAPI" %}'
+            id="datatable_user_list" class="table nowrap w-100 mb-5"
+            data-url='{% url "UserListAPI" %}'
             data-method="GET"
+            data-url-mail-welcome="{% url 'UserMailWelcome' pk='__pk__' %}"
+            data-method-mail-welcome="PUT"
+            data-msg-mail-welcome="{% trans 'Click to send mail welcome' %}"
     >
         <thead>
         <tr>

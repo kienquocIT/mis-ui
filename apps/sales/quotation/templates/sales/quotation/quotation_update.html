@@ -5,7 +5,15 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    {% include 'extends/systems/page_actions.html' with is_save=True is_save_draft=True save_frm="frm_quotation_create" %}
+{#    {% include 'extends/systems/page_actions.html' with is_save=True is_save_draft=True save_frm="frm_quotation_create" %}#}
+    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
@@ -139,15 +147,20 @@
                         </div>
                     </div>
                     <div class="row collapse-arrow mt-2 mb-2">
-                        <i
-                            class="fas fa-angle-double-up"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseExample"
-                            data-bs-placement="top"
-                            aria-expanded="false"
-                            aria-controls="collapseExample"
-                            id="quotation-info-collapse"
-                        ></i>
+                        <div class="d-flex justify-content-end">
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded flush-soft-hover"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapseExample"
+                                    data-bs-placement="top"
+                                    aria-expanded="false"
+                                    aria-controls="collapseExample"
+                                    id="btn-collapse"
+                            >
+                                <span class="icon"><small><i class="fas fa-angle-double-up text-primary collapse-icon"></i></small></span>
+                            </button>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="row">
@@ -607,7 +620,7 @@
                                     id="btn-refresh-quotation-indicator"
                                     data-zone="quotation_indicators_data"
                             >
-                            <span><span>{% trans 'Refresh data' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
+                            <span><span>{% trans 'Refresh' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
                             </button>
                         </div>
                         <div class="col-10"></div>

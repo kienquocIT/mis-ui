@@ -17,6 +17,32 @@ $(function () {
             },
         },
         autoWidth: false,
+        rowCallback: function (row, data){
+            $(row).find('.btn-mail-welcome').on('click', function (){
+                let url = $(tb).attr('data-url-mail-welcome');
+                let method = $(tb).attr('data-method-mail-welcome');
+                $.fn.callAjax2({
+                    url: url.replaceAll('__pk__', data.id),
+                    method: method,
+                    data: {},
+                    isLoading: true,
+                    sweetAlertOpts: {'allowOutsideClick': true},
+                }).then(
+                    resp => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data){
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Successful'),
+                            }, 'success')
+                        }
+                    },
+                    errs => {
+                        console.log('errs:', errs);
+                        $.fn.switcherResp(errs)
+                    },
+                )
+            })
+        },
         columns: [
             {
                 width: '10%',
@@ -71,7 +97,20 @@ $(function () {
                     let btn1 = `<button class="btn btn-icon btn-rounded bg-dark-hover btn-modal-change-passwd" data-bs-toggle="modal" data-bs-target="#modalChangePassword"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Change password" ><i class="fas fa-key"></i></span></button>`;
                     let btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button" href="${urlEle.data('url-user-detail').format_url_with_uuid(row.id)}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit" ><i class="fas fa-edit"></i></span></a>`;
                     // let btn3 = `<button class="btn btn-icon btn-rounded bg-dark-hover del-button" href="${urlEle.data('url-user-detail-api').format_url_with_uuid(row.id)}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" ><i class="fas fa-user-times"></i></span></button>`;
-                    return btn1 + btn2;
+                    let btnMailWelcome = `<button 
+                        type="button"
+                        class="btn btn-xs btn-outline-primary btn-mail-welcome"
+                        data-bs-toggle="tooltip"
+                        title="${$(tb).attr('data-msg-mail-welcome')}"
+                    >
+                        <span>
+                            <span class="icon">
+                                <i class="fa-regular fa-envelope"></i>
+                            </span>
+                            <span>(${row?.['is_mail_welcome'] || 0})</span>
+                        </span>
+                    </button>`;
+                    return btn1 + btn2 + btnMailWelcome;
                 }
             },
         ]

@@ -135,10 +135,12 @@ $(function () {
                     $('#create_delivery', row).off().on('click', function () {
                         WindowControl.showLoading();
                         const url = $('#sale-order-link').attr('data-create-delivery').replace('1', data.id);
-                        $.fn.callAjax(
-                            url,
-                            'POST', {}, true
-                        ).then(
+                        $.fn.callAjax2({
+                            url: url,
+                            method: 'POST',
+                            data: {},
+                            urlRedirect: null,
+                        }).then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data?.['status'] === 200) {
@@ -151,9 +153,9 @@ $(function () {
                                     }, 1000);
                                 }
                             },
-                            (err) => {
+                            (errs) => {
                                 WindowControl.hideLoading();
-                                $.fn.notifyB({"description": err?.data?.errors, "timeout": 3500}, 'failure')
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )
                     })

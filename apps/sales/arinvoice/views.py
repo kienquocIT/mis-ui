@@ -58,7 +58,10 @@ class ARInvoiceCreate(View):
         menu_active='menu_ar_invoice_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
+        return {
+            'invoice_signs': resp.result[0] if len(resp.result) > 0 else ''
+        }, status.HTTP_200_OK
 
 
 class ARInvoiceDetail(View):
@@ -71,7 +74,10 @@ class ARInvoiceDetail(View):
         menu_active='menu_ar_invoice_detail',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
+        return {
+            'invoice_signs': resp.result[0] if len(resp.result) > 0 else ''
+        }, status.HTTP_200_OK
 
 
 class ARInvoiceUpdate(View):
@@ -84,7 +90,10 @@ class ARInvoiceUpdate(View):
         menu_active='menu_ar_invoice_detail',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
+        return {
+            'invoice_signs': resp.result[0] if len(resp.result) > 0 else ''
+        }, status.HTTP_200_OK
 
 
 class ARInvoiceDetailAPI(APIView):

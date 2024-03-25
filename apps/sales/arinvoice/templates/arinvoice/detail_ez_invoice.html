@@ -36,31 +36,21 @@
         const html_data = JSON.parse($('#html').text());
         $('#invoice_space').html(html_data)
 
-        function getParam(paramName) {
-            const queryString = window.location.search;
-            const paramsString = queryString.substring(1);
-            const paramsArray = paramsString.split('&');
-            for (const param of paramsArray) {
-                const [key, value] = param.split('=');
-                if (key === paramName) {
-                    return value;
-                }
-            }
-            return null;
-        }
-
         function DownloadInvoicePDF() {
+            WindowControl.showLoading();
             let invoice_ele = $('#printView .VATTEMP')[0];
             let opt = {
                 margin:       -0.6,
                 filename:     `${pk}.pdf`,
                 image:        { type: 'jpeg', quality: 1.0 },
-                html2canvas:  { scale: 10 },
+                html2canvas:  { scale: 5 },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
                 enableLinks:  true,
             };
 
-            html2pdf().from(invoice_ele).set(opt).save();
+            html2pdf().from(invoice_ele).set(opt).save().then(function () {
+                WindowControl.hideLoading();
+            });
         }
     </script>
     <!-- Daterangepicker JS -->

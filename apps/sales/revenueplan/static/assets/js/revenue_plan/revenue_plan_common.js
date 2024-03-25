@@ -953,7 +953,7 @@ class RevenuePlanHandle {
             })
         }
 
-        console.log(frm.dataForm)
+        // console.log(frm.dataForm)
         if (for_update) {
             let pk = $.fn.getPkDetail();
             return {
@@ -1004,7 +1004,7 @@ function LoadDetailRevenuePlan(option) {
         (results) => {
             let data = results[0];
             $x.fn.renderCodeBreadcrumb(data);
-            console.log(data)
+            // console.log(data)
             DETAIL_DATA = data
             getMonthOrder(data?.['period_mapped']?.['space_month'])
 

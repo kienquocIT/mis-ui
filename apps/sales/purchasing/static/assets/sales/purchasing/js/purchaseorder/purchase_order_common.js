@@ -827,7 +827,7 @@ class POLoadDataHandle {
         if (tablePRWrapper) {
             let tablePRBd = tablePRWrapper.querySelector('.dataTables_scrollBody');
             if (tablePRBd) {
-                tablePRBd.style.minHeight = '200px';
+                tablePRBd.style.minHeight = '150px';
             }
         }
     };

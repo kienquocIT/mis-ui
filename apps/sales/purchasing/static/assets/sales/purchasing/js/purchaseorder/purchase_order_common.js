@@ -334,16 +334,6 @@ class POLoadDataHandle {
         if (POLoadDataHandle.supplierSelectEle.val()) {
             dataFilter = {'supplier_mapped_id': POLoadDataHandle.supplierSelectEle.val()}
         }
-        // by PR
-        // let purchase_requests_data = POLoadDataHandle.PRDataEle;
-        // if (purchase_requests_data.val()) {
-        //     let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
-        //     if (Array.isArray(purchase_requests_data_parse)) {
-        //         if (purchase_requests_data_parse.length > 0) {
-        //             dataFilter = {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')};
-        //         }
-        //     }
-        // }
         $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,
@@ -852,9 +842,11 @@ class POLoadDataHandle {
                 $btn[0].setAttribute('hidden', 'true');
             }
         }
-        $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
-        POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
-        POLoadDataHandle.loadBoxContact(data?.['contact']);
+        let delivered_date = '';
+        if (data?.['delivered_date']) {
+            delivered_date = data?.['delivered_date'];
+            $('#purchase-order-date-delivered').val(moment(delivered_date).format('DD/MM/YYYY'));
+        }
 
         POLoadDataHandle.loadDataShowPRPQ(data);
         PODataTableHandle.dataTablePurchaseRequest();
@@ -862,6 +854,9 @@ class POLoadDataHandle {
         POLoadDataHandle.loadModalPurchaseQuotation(false, data);
         POLoadDataHandle.loadTablesDetailPage(data);
         POLoadDataHandle.loadTotals(data);
+
+        POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
+        POLoadDataHandle.loadBoxContact(data?.['contact']);
     };
 
     static loadDataShowPRPQ(data) {

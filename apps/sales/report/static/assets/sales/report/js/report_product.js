@@ -271,19 +271,24 @@ $(function () {
 
         initData();
 
-        // run datetimepicker
-        $('input[type=text].date-picker').daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            autoApply: true,
-        });
-        $('input[type=text].date-picker').val(null).trigger('change');
+        // init date picker
+        $('.date-picker').each(function () {
+            $(this).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                autoApply: true,
+                autoUpdateInput: false,
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            });
+            $(this).val('').trigger('change');
+        })
 
         // mask money
         $.fn.initMaskMoney2();

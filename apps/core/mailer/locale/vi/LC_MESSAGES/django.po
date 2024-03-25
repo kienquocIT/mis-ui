@@ -46,3 +46,103 @@ msgstr "Đây là cấu hình thư điện tử được sử dụng gửi tệp
 #
 msgid "This is the email configuration used to send OTP to authenticate users."
 msgstr "Đây là cấu hình thư điện tử được sử dụng gửi OTP xác thực người dùng."
+
+#
+msgid "Data Security"
+msgstr "Bảo mật dữ liệu"
+
+#
+msgid "We take the security of your data very seriously. All data stored on our servers is encrypted at rest and in transit. We use industry-standard encryption methods to protect your data."
+msgstr "Chúng tôi rất coi trọng việc bảo mật dữ liệu của bạn. Tất cả dữ liệu được lưu trữ trên máy chủ của chúng tôi đều được mã hóa khi lưu trữ và truyền đi. Chúng tôi sử dụng các phương pháp mã hóa tiêu chuẩn ngành để bảo vệ dữ liệu của bạn."
+
+#
+msgid "SSL Files"
+msgstr "Tập tin SSL"
+
+#
+msgid "The system may access and use SSL files (if any) to send notification emails for your organization only. SSL files are used to secure the communication between the mail server and your organization. We only access SSL files for the purpose of maintaining the email notification service."
+msgstr "Hệ thống có thể truy cập và sử dụng file SSL (nếu có) để gửi email thông báo chỉ cho tổ chức của bạn. Các tệp SSL được sử dụng để bảo mật liên lạc giữa máy chủ thư và tổ chức của bạn. Chúng tôi chỉ truy cập các tệp SSL nhằm mục đích duy trì dịch vụ thông báo qua email."
+
+#
+msgid "Sensitive Information"
+msgstr "Thông tin nhạy cảm"
+
+#
+msgid "Sensitive information will be partially masked when returning data. We mask sensitive information to protect your privacy. Only our authorized personnel can access unmasked data."
+msgstr "Thông tin nhạy cảm sẽ bị che đi một phần khi trả về dữ liệu. Chúng tôi che giấu thông tin nhạy cảm để bảo vệ quyền riêng tư của bạn. Chỉ những nhân viên của chúng tôi được ủy quyền mới có thể truy cập dữ liệu chưa mã hoá."
+
+#
+msgid "Recommend"
+msgstr "Khuyến nghị"
+
+#
+msgid "We recommend using TLS or SSL to secure your email connections. If both TLS and SSL are enabled, the system will prioritize using TLS for connections. TLS is a newer and more secure protocol than SSL. We recommend using TLS whenever possible to ensure the best possible security for your email communications."
+msgstr "Chúng tôi khuyên bạn nên sử dụng TLS hoặc SSL để bảo mật kết nối email của mình. Nếu cả TLS và SSL đều được bật, hệ thống sẽ ưu tiên sử dụng TLS cho các kết nối. TLS là giao thức mới hơn và an toàn hơn SSL. Chúng tôi khuyên bạn nên sử dụng TLS bất cứ khi nào có thể để đảm bảo tính bảo mật tốt nhất có thể cho việc liên lạc qua email của bạn."
+
+#
+msgid "Verifications"
+msgstr "Kiểm tra"
+
+#
+msgid "If you use SSL, then connection verification is mandatory after successfully saving the configuration."
+msgstr "Nếu bạn sử dụng SSL thì việc xác minh kết nối là bắt buộc sau khi lưu cấu hình thành công."
+
+#
+msgid "On the contrary, if you do not use SSL, then the connection can be checked with the data you entered without saving."
+msgstr "Ngược lại, nếu bạn không sử dụng SSL thì kết nối có thể được kiểm tra bằng dữ liệu bạn đã nhập mà không cần lưu."
+
+#
+msgid "Verify saved config"
+msgstr "Xác thực cấu hình đã lưu"
+
+#
+msgid "Verify new config"
+msgstr "Xác thực cấu hình mới"
+
+#
+msgid "Enable mail notification"
+msgstr "Kích hoạt thông báo thư điện tử"
+
+#
+msgid "Use our mail server"
+msgstr "Sử dụng máy chủ thư điện tử của chúng tôi"
+
+#
+msgid "Click to toggle on/off"
+msgstr "Nhấp chuột để bật/tắt"
+
+#
+msgid "Use TLS"
+msgstr "Sử dụng TLS"
+
+#
+msgid "Use SSL"
+msgstr "Sử dụng SSL"
+
+#
+msgid "SSL Key file"
+msgstr "Tệp khoá SSL"
+
+#
+msgid "SSL Cert file"
+msgstr "Tệp chứng chỉ SSL"
+
+#
+msgid "Host mail server"
+msgstr "Địa chỉ máy chủ thư"
+
+#
+msgid "Port mail server"
+msgstr "Cổng phục vụ máy chủ thư"
+
+#
+msgid "Connection status"
+msgstr "Trạng thái kết nối"
+
+#
+msgid "Need more config value"
+msgstr "Cần thêm thông tin cấu hình"
+
+#
+msgid "Verification in progress"
+msgstr "Đang xác minh"

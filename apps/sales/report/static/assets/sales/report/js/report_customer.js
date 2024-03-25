@@ -4,17 +4,29 @@ $(function () {
         let boxGroup = $('#box-report-customer-group');
         let boxEmployee = $('#box-report-customer-employee');
         let boxCustomer = $('#box-report-customer-customer');
+        let boxStart = $('#report-customer-date-from');
+        let boxEnd = $('#report-customer-date-to');
         let btnView = $('#btn-view');
         let eleRevenue = $('#report-customer-revenue');
         let eleGrossProfit = $('#report-customer-gross-profit');
         let eleNetIncome = $('#report-customer-net-income');
         let $table = $('#table_report_customer_list');
+        let eleFiscalYear = $('#data-fiscal-year');
 
         function loadDbl(data) {
             $table.DataTableDefault({
                 ajax: {
                     url: $table.attr('data-url'),
-                    dataSrc: 'data.report_customer_list',
+                    // dataSrc: 'data.report_customer_list',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let dataResult = resp.data['report_customer_list'] ? resp.data['report_customer_list'] : [];
+                            storeLoadInitByDataFiscalYear();
+                            return dataResult;
+                        }
+                        return [];
+                    },
                 },
                 data: data ? data : [],
                 pageLength: 50,
@@ -118,7 +130,81 @@ $(function () {
             eleGrossProfit.attr('data-init-money', String(newGrossProfit));
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
-        loadDbl();
+
+        function storeLoadInitByDataFiscalYear() {
+            $.fn.callAjax2({
+                    'url': eleFiscalYear.attr('data-url'),
+                    'method': eleFiscalYear.attr('data-method'),
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
+                            eleFiscalYear.val(JSON.stringify(data.periods_list));
+                            let currentYear = new Date().getFullYear();
+                            for (let period of data.periods_list) {
+                                if (period?.['fiscal_year'] === currentYear) {
+                                    let {startDate, endDate} = getYearRange(period?.['start_date']);
+                                    // set init val date range
+                                    let startDateObj = new Date(startDate);
+                                    let endDateObj = new Date(endDate);
+                                    let formattedStartDate = `${padWithZero(startDateObj.getDate())}/${padWithZero(startDateObj.getMonth() + 1)}/${startDateObj.getFullYear()}`;
+                                    let formattedEndDate = `${padWithZero(endDateObj.getDate())}/${padWithZero(endDateObj.getMonth() + 1)}/${endDateObj.getFullYear()}`;
+                                    boxStart.val(formattedStartDate);
+                                    boxEnd.val(formattedEndDate);
+                                    $.fn.callAjax2({
+                                            'url': $table.attr('data-url'),
+                                            'method': $table.attr('data-method'),
+                                            'data': {
+                                                'date_approved__gte': startDate,
+                                                'date_approved__lte': endDate,
+                                            },
+                                            isLoading: true,
+                                        }
+                                    ).then(
+                                        (resp) => {
+                                            let data = $.fn.switcherResp(resp);
+                                            if (data) {
+                                                if (data.hasOwnProperty('report_customer_list') && Array.isArray(data.report_customer_list)) {
+                                                    setupDataLoadTable(data.report_customer_list);
+                                                }
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+        }
+
+        function padWithZero(num) {
+            return num < 10 ? '0' + num : num;
+        }
+
+        function getYearRange(startDate) {
+            let endDate = getFiscalYearEndDate(startDate);
+            let datesFormat = formatStartEndDate(startDate, endDate);
+            return {startDate: datesFormat?.['startDate'], endDate: datesFormat?.['endDate']};
+        }
+
+        function getFiscalYearEndDate(startDate) {
+            let endDateFY = '';
+            if (startDate) {
+                let startDateFY = new Date(startDate);
+                endDateFY = new Date(startDateFY);
+                // Add 12 months to the start date
+                endDateFY.setMonth(startDateFY.getMonth() + 12);
+                // Subtract 1 day to get the last day of the fiscal year
+                endDateFY.setDate(endDateFY.getDate() - 1);
+                // Format the end date as 'YYYY-MM-DD'
+                endDateFY = endDateFY.toISOString().slice(0, 10);
+                return endDateFY;
+            }
+            return endDateFY;
+        }
 
         function formatStartEndDate(startDate, endDate) {
             if (startDate && endDate) {
@@ -127,6 +213,22 @@ $(function () {
                 return {startDate, endDate};
             }
             return {startDate: '', endDate: ''};
+        }
+
+        function formatStartDate(startDate) {
+            if (startDate) {
+                startDate = startDate + ' 00:00:00';
+                return startDate;
+            }
+            return '';
+        }
+
+        function formatEndDate(endDate) {
+            if (endDate) {
+                endDate = endDate + ' 23:59:59';
+                return endDate;
+            }
+            return '';
         }
 
         function loadBoxEmployee() {
@@ -142,7 +244,7 @@ $(function () {
         }
 
         $('#btn-collapse').click(function () {
-            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
         // load init
@@ -150,18 +252,26 @@ $(function () {
             boxGroup.initSelect2({'allowClear': true,});
             boxCustomer.initSelect2({'allowClear': true,});
             loadBoxEmployee();
+            loadDbl();
+            btnView.click();
         }
 
         initData();
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
-            minYear: 1901,
-            timePicker: true,
-            showDropdowns: true,
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
             locale: {
-                format: 'DD/MM/YYYY'
-            }
+                format: 'DD/MM/YYYY',
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true,
+            autoUpdateInput: false,
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY'));
         });
         $('input[type=text].date-picker').val(null).trigger('change');
 
@@ -188,7 +298,7 @@ $(function () {
         btnView.on('click', function () {
             let dataParams = {};
             if (boxGroup.val()) {
-                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
+                dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
@@ -196,14 +306,13 @@ $(function () {
             if (boxCustomer.val()) {
                 dataParams['customer_id__in'] = boxCustomer.val().join(',');
             }
-            let date = $('#report-customer-date-approved').val();
-            if (date) {
-                let dateStrings = date.split(' - ');
-                let dateStart = moment(dateStrings[0], 'DD/MM/YYYY').format('YYYY-MM-DD');
-                let dateEnd = moment(dateStrings[1], 'DD/MM/YYYY').format('YYYY-MM-DD');
-                let datesFormat = formatStartEndDate(dateStart, dateEnd);
-                dataParams['date_approved__gte'] = datesFormat?.['startDate'];
-                dataParams['date_approved__lte'] = datesFormat?.['endDate'];
+            if (boxStart.val()) {
+                let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                dataParams['date_approved__gte'] = formatStartDate(dateStart);
+            }
+            if (boxEnd.val()) {
+                let dateEnd = moment(boxEnd.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                dataParams['date_approved__lte'] = formatEndDate(dateEnd);
             }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),

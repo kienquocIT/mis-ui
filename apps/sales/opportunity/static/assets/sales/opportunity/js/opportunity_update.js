@@ -161,6 +161,10 @@ $(document).ready(function () {
                         condition_is_quotation_confirm = true;
                     }
                 }
+                // store data detail
+                $('#data-detail').val(JSON.stringify(opportunity_detail));
+                // check permission app relate
+                checkPermissionAppRelated();
                 $.fn.initMaskMoney2();
             }
 
@@ -1334,12 +1338,19 @@ $(document).ready(function () {
                     'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
                     'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
                 }
-                let activityMapApp = {
+                let appMapTrans = {
                     'quotation.quotation': transEle.attr('data-trans-quotation'),
                     'saleorder.saleorder': transEle.attr('data-trans-sale-order'),
                     'cashoutflow.advancepayment': transEle.attr('data-trans-advance'),
                     'cashoutflow.payment': transEle.attr('data-trans-payment'),
                     'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
+                }
+                let appMapBadge = {
+                    'quotation.quotation': "badge-soft-primary",
+                    'saleorder.saleorder': "badge-soft-success",
+                    'cashoutflow.advancepayment': "badge-soft-pink",
+                    'cashoutflow.payment': "badge-soft-violet",
+                    'cashoutflow.returnadvance': "badge-soft-purple",
                 }
                 let typeMapActivity = {
                     1: transEle.attr('data-trans-task'),
@@ -1393,16 +1404,20 @@ $(document).ready(function () {
                                         }
 
                                         return `<div class="d-flex justify-content-start">
-                                            <span class="badge badge-soft-primary mr-2">${activityMapApp[row?.['app_code']]}</span>
+                                            <span class="badge ${appMapBadge[row?.['app_code']]} mr-2">${appMapTrans[row?.['app_code']]}</span>
                                             ${status}
                                         </div>`;
                                     }
                                 } else {
-                                    let status = ''
+                                    let status = '';
+                                    let badgeType = 'badge-soft-smoke';
                                     if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
                                         status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
                                     }
-                                    return `<span class="badge badge-soft-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                                    if (Object.keys(row?.['task']).length > 0) {
+                                        badgeType = 'badge-soft-sky';
+                                    }
+                                    return `<span class="badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                                 }
                                 return `<p></p>`;
                             }
@@ -1462,6 +1477,51 @@ $(document).ready(function () {
 
             loadDblActivityLogs();
 
+            function checkPermissionAppRelated() {
+                let $dataDetail = $('#data-detail');
+                let appRelateList = $('#dropdown-menu-relate-app')[0].querySelectorAll('.relate-app');
+                if ($dataDetail.val() && appRelateList.length > 0) {
+                    let detail = JSON.parse($dataDetail.val());
+                    let appMapPerm = {
+                        'quotation.quotation': 'quotation.quotation.create',
+                        'saleorder.saleorder': 'saleorder.saleorder.create',
+                    };
+                    for (let eleApp of appRelateList) {
+                        if ($(eleApp).attr('data-label')) {
+                            let label = $(eleApp).attr('data-label');
+                            $.fn.callAjax2({
+                                    'url': $('#script-url').attr('data-url-opp-list'),
+                                    'method': 'GET',
+                                    'data': {'list_from_app': appMapPerm[label]},
+                                }
+                            ).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data) {
+                                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                            if (data.opportunity_list.length > 0) {
+                                                let countCheck = 0;
+                                                for (let opp of data.opportunity_list) {
+                                                    countCheck++;
+                                                    if (opp?.['id'] === detail?.['id']) {
+                                                        break;
+                                                    }
+                                                    if (countCheck >= data.opportunity_list.length) {
+                                                        eleApp.classList.add('disabled');
+                                                    }
+                                                }
+                                            } else {
+                                                eleApp.classList.add('disabled');
+                                            }
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
             // for task
             Task_in_opps.init(opportunity_detail_data, loadDblActivityLogs)
 
@@ -1486,8 +1546,46 @@ $(document).ready(function () {
 
             // event on click to create relate apps from opportunity
             $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
-                let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
-                window.open(url, '_blank');
+                // check permission before redirect
+                let $dataDetail = $('#data-detail');
+                if ($(this).attr('data-label') && $dataDetail.val()) {
+                    let detail = JSON.parse($dataDetail.val());
+                    let label = $(this).attr('data-label');
+                    let appMapPerm = {
+                        'quotation.quotation': 'quotation.quotation.create',
+                        'saleorder.saleorder': 'saleorder.saleorder.create',
+                    };
+                    $.fn.callAjax2({
+                            'url': $('#script-url').attr('data-url-opp-list'),
+                            'method': 'GET',
+                            'data': {'list_from_app': appMapPerm[label]},
+                            isLoading: true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                    let countCheck = 0;
+                                    for (let opp of data.opportunity_list) {
+                                        countCheck++;
+                                        if (opp?.['id'] === detail?.['id']) {
+                                            let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
+                                            window.open(url, '_blank');
+                                            return true;
+                                        }
+                                        if (countCheck >= data.opportunity_list.length) {
+                                            $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
+                                            return false
+                                        }
+                                    }
+                                    $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
+                                    return false
+                                }
+                            }
+                        }
+                    )
+                }
             })
 
             $('#btn-create-related-feature').on('click', function () {

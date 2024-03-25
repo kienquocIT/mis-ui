@@ -919,6 +919,8 @@ class GRLoadDataHandle {
                     format: 'DD/MM/YYYY'
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
             $(newRow.querySelector('.table-row-expire-date')).val(null).trigger('change');
         }
@@ -932,6 +934,8 @@ class GRLoadDataHandle {
                     format: 'DD/MM/YYYY'
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
             $(newRow.querySelector('.table-row-manufacture-date')).val(null).trigger('change');
         }
@@ -945,6 +949,8 @@ class GRLoadDataHandle {
                     format: 'DD/MM/YYYY'
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
             $(newRow.querySelector('.table-row-warranty-start')).val(null).trigger('change');
         }
@@ -958,6 +964,8 @@ class GRLoadDataHandle {
                     format: 'DD/MM/YYYY'
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
             $(newRow.querySelector('.table-row-warranty-end')).val(null).trigger('change');
         }
@@ -974,6 +982,8 @@ class GRLoadDataHandle {
                     format: 'DD/MM/YYYY'
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
         }
         if (newRow.querySelector('.table-row-manufacture-date')) {
@@ -986,6 +996,8 @@ class GRLoadDataHandle {
                     format: 'DD/MM/YYYY'
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
         }
         if (newRow.querySelector('.table-row-warranty-start')) {
@@ -998,6 +1010,8 @@ class GRLoadDataHandle {
                     format: 'DD/MM/YYYY'
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
         }
         if (newRow.querySelector('.table-row-warranty-end')) {
@@ -1010,6 +1024,8 @@ class GRLoadDataHandle {
                     format: 'DD/MM/YYYY'
                 },
                 maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
         }
     };

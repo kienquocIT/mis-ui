@@ -16,3 +16,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "This field is required"
+msgstr "Trường này là bắt buộc"
+
+#
+msgid "Successful"
+msgstr "Thành công"
+
+#
+msgid "Failed"
+msgstr "Thất bại"

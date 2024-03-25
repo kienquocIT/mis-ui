@@ -569,7 +569,6 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxSaleOrderQuotation(quotation_id, valueToSelect = null, opp_id = null, sale_person_id = null) {
-        let self = this;
         let jqueryId = '#' + quotation_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url');
@@ -1311,6 +1310,8 @@ class QuotationLoadDataHandle {
                         format: 'DD/MM/YYYY'
                     },
                     maxYear: parseInt(moment().format('YYYY'), 10),
+                    drops: 'up',
+                    autoApply: true,
                 });
                 $(newRow.querySelector('.table-row-date')).val(null).trigger('change');
             }
@@ -1324,6 +1325,8 @@ class QuotationLoadDataHandle {
                         format: 'DD/MM/YYYY'
                     },
                     maxYear: parseInt(moment().format('YYYY'), 10),
+                    drops: 'up',
+                    autoApply: true,
                 });
                 $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
             }
@@ -1404,8 +1407,10 @@ class QuotationLoadDataHandle {
                 let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
                 if (tableProductWrapper) {
                     let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-                    if (tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw')) {
-                        valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
+                    let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                    let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                    if (elePretax && eleDiscount) {
+                        valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
                         if (dataSelected?.['value']) {
                             let value = (parseFloat(dataSelected?.['value']) * valueSO) / 100;
                             $(eleValueBT).attr('value', String(value));
@@ -1446,8 +1451,10 @@ class QuotationLoadDataHandle {
                     let tableProduct = document.getElementById('datable-quotation-create-product');
                     if (tableProduct.closest('.dataTables_scroll')) {
                         let tableProductFt = tableProduct.closest('.dataTables_scroll').querySelector('.dataTables_scrollFoot');
-                        if (tableProductFt.querySelector('.quotation-create-product-total-raw')) {
-                            valueSO = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
+                        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                        if (elePretax && eleDiscount) {
+                            valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
                             if (eleRatio.value) {
                                 let value = (parseFloat(eleRatio.value) * valueSO) / 100;
                                 $(eleValueBT).attr('value', String(value));
@@ -1788,7 +1795,7 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if finish then hidden btn edit page
+            // check if finish or reject then hidden btn edit page
             if ([2, 3, 4].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {
@@ -1971,6 +1978,8 @@ class QuotationLoadDataHandle {
                                 format: 'DD/MM/YYYY'
                             },
                             maxYear: parseInt(moment().format('YYYY'), 10),
+                            drops: 'up',
+                            autoApply: true,
                         });
                     }
                     if (row.querySelector('.table-row-due-date')) {
@@ -1983,6 +1992,8 @@ class QuotationLoadDataHandle {
                                 format: 'DD/MM/YYYY'
                             },
                             maxYear: parseInt(moment().format('YYYY'), 10),
+                            drops: 'up',
+                            autoApply: true,
                         });
                     }
                 })
@@ -5294,9 +5305,10 @@ class QuotationSubmitHandle {
         // Auto fill data when form calling submit "$('.btn-saving-form')..."
         // ****************************
         // system fields
-        // if (_form.dataMethod === "POST") {
-        //     _form.dataForm['system_status'] = 1;
-        // }
+
+        if (_form.dataMethod.toLowerCase() === 'post') {
+            _form.dataForm['system_status'] = 1;
+        }
     };
 }
 

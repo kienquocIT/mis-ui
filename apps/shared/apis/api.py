@@ -542,10 +542,36 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.put(
-            url=safe_url, headers=headers, json=data,
-            timeout=REQUEST_TIMEOUT
-        )
+        if 'content-type' in headers:
+            content_type = headers.get('content-type', None)
+        elif 'Content-Type' in headers:
+            content_type = headers.get('Content-Type', None)
+        else:
+            content_type = None
+
+        config = {
+            'url': safe_url,
+            'headers': headers,
+            'timeout': REQUEST_TIMEOUT,
+        }
+
+        if content_type:
+            match content_type.split(":")[0]:
+                case 'multipart/form-data':
+                    config['files'] = data
+                case 'application/json':
+                    config['json'] = data
+                case _:
+                    config['data'] = data
+        else:
+            headers['content-type'] = 'application/json'
+            config['data'] = data
+
+        # resp = requests.put(
+        #     url=safe_url, headers=headers, json=data,
+        #     timeout=REQUEST_TIMEOUT
+        # )
+        resp = requests.put(**config)
         if resp.status_code == 401:
             if self.user_obj:
                 # refresh token
@@ -688,7 +714,7 @@ class ServerAPI:
             **(data if isinstance(data, dict) else {}),
         }
 
-        url_encode = [f"{key}={parse.quote(val)}" for key, val in params.items()]
+        url_encode = [f"{str(key)}={parse.quote(str(val))}" for key, val in params.items()]
         safe_url = self.url + f'?{"&".join(url_encode)}'
         return APIUtil(user_obj=self.user).call_get(safe_url=safe_url, headers=self.headers)
 
@@ -716,7 +742,7 @@ class ServerAPI:
 
         Returns: APIUtil --> call_put()
         """
-        if isinstance(data, dict):
+        if isinstance(data, (dict, MultipartEncoder)):
             return APIUtil(user_obj=self.user).call_put(
                 safe_url=self.url,
                 headers=self.headers,

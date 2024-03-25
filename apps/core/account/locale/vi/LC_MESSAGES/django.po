@@ -20,3 +20,7 @@ msgstr ""
 #
 msgid "Is admin tenant"
 msgstr "Là quản trị tenant"
+
+#
+msgid "Click to send mail welcome"
+msgstr "Nhấn để gửi thư chào mừng"

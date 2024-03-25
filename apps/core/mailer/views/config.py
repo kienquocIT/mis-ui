@@ -1,6 +1,8 @@
 from django.urls import reverse
 from django.views import View
+from requests_toolbelt import MultipartEncoder
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
@@ -151,4 +153,63 @@ class MailTemplateDetailAPI(APIView):
         if pk and TypeCheck.check_uuid(pk):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_LIST).delete(data=request.data)
             return resp.auto_return(key_success='mailer')
+        return RespData.resp_404()
+
+
+class MailConfigAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        url = ApiURL.MAILER_CONFIG_GET
+        resp = ServerAPI(request=request, user=request.user, url=url).get(data=request.query_params.dict())
+        return resp.auto_return(key_success='config_detail')
+
+
+class MailConfigDetailAPI(APIView):
+    parser_classes = [MultiPartParser]
+
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            multipart_fields = request.data.dict()
+
+            ssl_key_file = request.FILES.get('ssl_key', None)
+            if ssl_key_file:
+                multipart_fields['ssl_key'] = (ssl_key_file.name, ssl_key_file, ssl_key_file.content_type)
+            ssl_cert_file = request.FILES.get('ssl_cert', None)
+            if ssl_cert_file:
+                multipart_fields['ssl_cert'] = (ssl_cert_file.name, ssl_cert_file, ssl_cert_file.content_type)
+
+            multipart = MultipartEncoder(fields=multipart_fields)
+            resp = ServerAPI(
+                request=request, user=request.user,
+                url=ApiURL.MAILER_CONFIG_DETAIL.fill_key(pk=pk),
+                cus_headers={
+                    'content-type': multipart.content_type,
+                }
+            ).put(data=multipart)
+            return resp.auto_return(key_success='config_detail')
+        return RespData.resp_404()
+
+
+class MailConfigConnectionTest(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            resp = ServerAPI(
+                request=request, user=request.user,
+                url=ApiURL.MAILER_CONFIG_DETAIL_CONNECTION_TEST.fill_key(pk=pk),
+            ).get(data=request.query_params.dict())
+            return resp.auto_return(key_success='connection_detail')
+        return RespData.resp_404()
+
+
+class MailConfigConnectionTestData(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            resp = ServerAPI(
+                request=request, user=request.user,
+                url=ApiURL.MAILER_CONFIG_DETAIL_CONNECTION_TEST_DATA.fill_key(pk=pk),
+            ).post(data=request.data)
+            return resp.auto_return(key_success='connection_detail')
         return RespData.resp_404()

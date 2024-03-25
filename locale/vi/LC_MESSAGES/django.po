@@ -6283,7 +6283,7 @@ msgstr "Giá trị CHKD"
 
 #
 msgid "Forecast value"
-msgstr "Giá trị dự tính"
+msgstr "Doanh thu dự kiến"
 
 #
 msgid "Call"
@@ -6888,6 +6888,27 @@ msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ kế toán 
 #
 msgid "Percent completed"
 msgstr "Phần trăm hoàn thành"
+
 #
 msgid "Finish task"
 msgstr "Hoàn thành Giao việc"
+
+#
+msgid "Filter by"
+msgstr "Lọc bởi"
+
+#
+msgid "Refresh"
+msgstr "Làm mới"
+
+#
+msgid "Revenue ytd"
+msgstr "Doanh thu năm"
+
+#
+msgid "Number of order"
+msgstr "Số lượng đơn hàng"
+
+#
+msgid "Revenue average"
+msgstr "Doanh thu trung bình"

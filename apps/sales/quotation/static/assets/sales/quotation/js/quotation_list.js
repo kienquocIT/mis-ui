@@ -76,7 +76,7 @@ $(function () {
                         targets: 5,
                         width: '13.33%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`
+                            return `<span class="mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`;
                         }
                     },
                     {
@@ -114,18 +114,10 @@ $(function () {
                     }
                 ],
                 drawCallback: function () {
-                    loadDataRowTable();
+                    // mask money
+                    $.fn.initMaskMoney2();
                 },
             });
-        }
-
-        function loadDataRowTable() {
-            let $table = $('#table_quotation_list');
-            // callBack Row to load data
-            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
-                // mask money
-                $.fn.initMaskMoney2();
-            }
         }
 
         loadDbl();

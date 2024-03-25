@@ -13,21 +13,26 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form data-url="{% url 'MailTemplateListAPI' %}" data-method="POST" id="frm-mailer-create">
+    <form
+            data-url="{% url 'MailTemplateListAPI' %}"
+            data-method="POST"
+            id="frm-mailer-create"
+            data-url-params="{% url 'ApplicationPropertyForMailListAPI' %}"
+    >
         <div class="row">
             <div class="col-12 col-lg-4 col-xl-6 col-xxl-7">
                 <div class="form-group">
-                    <label class="form-label required" for="inp-title">{% trans 'Application' %}</label>
+                    <label class="form-label required" for="inp-application">{% trans 'Application' %}</label>
                     <select
-                        id="inp-application"
-                        name="application"
-                        class="select2 form-select"
-                        data-url="{% url 'TenantApplicationListAPI' %}"
-                        data-params='{"allow_mail":true,"pageSize":-1}'
-                        data-method="GET"
-                        data-keyResp="tenant_application_list"
-                        required
-                ></select>
+                            id="inp-application"
+                            name="application"
+                            class="select2 form-select"
+                            data-url="{% url 'TenantApplicationListAPI' %}"
+                            data-params='{"allow_mail":true,"pageSize":-1}'
+                            data-method="GET"
+                            data-keyResp="tenant_application_list"
+                            required
+                    ></select>
                 </div>
                 <div class="form-group">
                     <label class="form-label required" for="inp-title">{% trans 'Title' %}</label>
@@ -35,7 +40,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="inp-remark">{% trans 'Remarks' %}</label>
-                    <textarea name="remark" id="inp-remark" class="form-control"></textarea>
+                    <textarea name="remarks" id="inp-remark" class="form-control"></textarea>
                 </div>
                 <div class="form-check form-switch">
                     <input type="checkbox" class="form-check-input" id="inp-is-active" name="is_active">
@@ -114,6 +119,7 @@
                         name="contents"
                         class="form-control"
                         required
+                        disabled
                 ></textarea>
             </div>
         </div>
@@ -124,10 +130,26 @@
     <script src="{% static 'mailer/mailer.js' %}"></script>
     <script>
         $(document).ready(function () {
+            let frm$ = $('#frm-mailer-create');
             let textarea$ = $('#inp-contents');
-            MailerTinymceControl.init_tinymce_editable(textarea$);
-            new SetupFormSubmit($('#frm-mailer-create')).validate({
-                submitHandler: function (form, event){
+
+            let inpApplication$ = $('#inp-application');
+            let inpContent$ = $('#inp-contents');
+            inpApplication$.on('change', function () {
+                let val = $(this).val();
+                if (val) {
+                    inpContent$.prop('disabled', false);
+                    MailerTinymceControl.init_tinymce_editable(textarea$, '', {
+                        url: $(frm$).attr('data-url-params'),
+                        application_id: val,
+                    });
+                } else {
+                    inpContent$.prop('disabled', true);
+                }
+            })
+
+            new SetupFormSubmit(frm$).validate({
+                submitHandler: function (form, event) {
                     let frmSetup = new SetupFormSubmit($(form));
                     frmSetup.dataForm['is_active'] = $(form).find('input[name=is_active]').prop('checked');
                     frmSetup.dataForm['is_default'] = $(form).find('input[name=is_default]').prop('checked');
@@ -139,12 +161,13 @@
                         resp => {
                             let data = $.fn.switcherResp(resp);
                             console.log('data:', data);
-                            if (data){}
+                            if (data) {
+                            }
                         },
                         errs => $.fn.switcherResp(errs),
                     )
                 },
-            })
+            });
         })
     </script>
 {% endblock %}

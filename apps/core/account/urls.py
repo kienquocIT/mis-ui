@@ -4,6 +4,7 @@ from apps.core.account.views import (
     UserListAPI, UserList, UserDetailAPI, UserCreate, UserDetail,
     UserEdit, UserResetPassword,
     UserTenantOverviewListAPI, UserMailWelcome,
+    UserAdminTenant,
 )
 
 urlpatterns = [
@@ -16,4 +17,5 @@ urlpatterns = [
     path('user/mail-welcome/<str:pk>', UserMailWelcome.as_view(), name='UserMailWelcome'),
     path('users/api', UserListAPI.as_view(), name='UserListAPI'),
     path('user/detail/api/<str:pk>', UserDetailAPI.as_view(), name='UserDetailAPI'),
+    path('user-admin-tenant', UserAdminTenant.as_view(), name='UserAdminTenant'),
 ]

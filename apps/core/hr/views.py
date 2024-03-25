@@ -241,6 +241,14 @@ class EmployeeCompanyListAPI(APIView):
         return resp.auto_return(key_success='employee_company_list')
 
 
+class EmployeeAdminCompanyAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, url=ApiURL.EMPLOYEE_ADMIN_COMPANY, user=request.user).get(data)
+        return resp.auto_return(key_success='employee_admin_company')
+
+
 # Role
 class RoleList(View):
     @mask_view(

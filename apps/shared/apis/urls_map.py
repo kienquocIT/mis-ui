@@ -37,7 +37,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SWITCH_COMPANY = StringUrl('auth/switch-company')
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
-    user_detail = StringUrl('account/user')
+    USER_DETAIL = StringUrl('account/user/{pk}')
     USER_RESET_PASSWORD = StringUrl('account/user/{pk}/reset-password')
     USER_MAIL_WELCOME = StringUrl('account/user/{pk}/mail-welcome')
     LANGUAGE_CHANGE = 'auth/language'
@@ -93,6 +93,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
+    ACCOUNT_USER_ADMIN_TENANT = StringUrl('account/user-admin-tenant')
 
     # employee
     EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/{pk}/upload-avatar')
@@ -109,6 +110,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
     EMPLOYEE_COMPANY_LIST = StringUrl('hr/employees-company')
+    EMPLOYEE_ADMIN_COMPANY = StringUrl('hr/employee-admin-company')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
@@ -147,9 +149,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRINT_TEMPLATES_USING_DETAIL = StringUrl('printer/using/detail/{pk}')
 
     # mail template
-    MAILER_TEMPLATES_APPS_LIST = StringUrl('mailer/apps')
-    MAILER_LIST = StringUrl('mailer/list')
-    MAILER_DETAIL = StringUrl('mailer/detail/{pk}')
+    MAILER_FEATURE_APP_LIST = StringUrl('mailer/feature/app/list')
+    MAILER_FEATURE_LIST = StringUrl('mailer/feature/list')
+    MAILER_FEATURE_BY_APPLICATION_LIST = StringUrl('mailer/feature/list/{application_id}')
+    MAILER_FEATURE_DETAIL = StringUrl('mailer/feature/detail/{pk}')
     MAILER_SYSTEM_GET = StringUrl('mailer/system/get/{system_code}')
     MAILER_SYSTEM_PARAMS = StringUrl('mailer/system/params/{system_code}')
     MAILER_SYSTEM_DETAIL = StringUrl('mailer/system/detail/{pk}')

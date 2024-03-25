@@ -670,7 +670,12 @@
             data-trans-meeting="{% trans "Meeting with customer" %}"
             data-trans-valid="{% trans "Valid" %}"
             data-trans-invalid="{% trans "invalid" %}"
+            data-forbidden="{% trans "Forbidden" %}"
     ></script>
+    <input
+            type="text"
+            id="data-detail"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

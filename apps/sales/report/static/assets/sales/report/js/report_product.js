@@ -278,10 +278,13 @@ $(function () {
             showDropdowns: false,
             minYear: 2023,
             locale: {
-                format: 'DD/MM/YYYY'
+                format: 'DD/MM/YYYY',
             },
             maxYear: parseInt(moment().format('YYYY'), 10),
             autoApply: true,
+            autoUpdateInput: false,
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY'));
         });
         $('input[type=text].date-picker').val(null).trigger('change');
 

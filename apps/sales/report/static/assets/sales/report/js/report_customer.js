@@ -4,8 +4,8 @@ $(function () {
         let boxGroup = $('#box-report-customer-group');
         let boxEmployee = $('#box-report-customer-employee');
         let boxCustomer = $('#box-report-customer-customer');
-        let boxStart = $('#report-product-date-from');
-        let boxEnd = $('#report-product-date-to');
+        let boxStart = $('#report-customer-date-from');
+        let boxEnd = $('#report-customer-date-to');
         let btnView = $('#btn-view');
         let eleRevenue = $('#report-customer-revenue');
         let eleGrossProfit = $('#report-customer-gross-profit');
@@ -265,10 +265,13 @@ $(function () {
             showDropdowns: false,
             minYear: 2023,
             locale: {
-                format: 'DD/MM/YYYY'
+                format: 'DD/MM/YYYY',
             },
             maxYear: parseInt(moment().format('YYYY'), 10),
             autoApply: true,
+            autoUpdateInput: false,
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY'));
         });
         $('input[type=text].date-picker').val(null).trigger('change');
 

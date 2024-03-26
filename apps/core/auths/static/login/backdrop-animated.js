@@ -1,7 +1,7 @@
 // https://codepen.io/mladen___/pen/gbvqBo
 // https://webdesign.tutsplus.com/21-ridiculously-impressive-html5-canvas-experiments--net-14210a
 
-var c = document.getElementById("canvas");
+var c = document.getElementById("canvas1");
 var ctx = c.getContext("2d");
 
 function resize() {

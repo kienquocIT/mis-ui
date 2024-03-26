@@ -39,6 +39,9 @@
 {% block pageContent %}
     {{ data.invoice_signs | json_script:"invoice_signs" }}
     <script id="script-url"
+            data-url-product-list="{% url 'ProductListAPI' %}"
+            data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+            data-url-tax-list="{% url 'TaxListAPI' %}"
             data-url-delivery-list="{% url 'DeliveryListForARInvoiceAPI' %}"
     >
     </script>
@@ -63,13 +66,13 @@
                         <input class="form-control" id="name">
                     </div>
                     <div class="row">
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="customer-code">{% trans "Customer code" %}</label>
                                 <input class="form-control for-free-input" id="customer-code">
                             </div>
                         </div>
-                        <div class="col-12 col-md-9 col-lg-9">
+                        <div class="col-12 col-md-8 col-lg-8">
                             <div class="form-group">
                                 <label class="form-label" for="customer-name">{% trans "Customer" %}</label>
                                 <div class="input-group">
@@ -80,15 +83,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="mst">{% trans "Tax number" %}</label>
-                        <div class="input-group">
-                            <span class="input-affix-wrapper">
-                                <input class="form-control for-free-input" id="mst">
-                            </span>
-                            <button type="button" class="btn btn-light">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="buyer-name">{% trans "Buyer name" %}</label>
+                                <input class="form-control" id="buyer-name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8 col-lg-8">
+                            <div class="form-group">
+                                <label class="form-label" for="mst">{% trans "Tax number" %}</label>
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <input class="form-control for-free-input" id="mst">
+                                    </span>
+                                    <button type="button" class="btn btn-light">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -96,13 +109,13 @@
                         <input class="form-control for-free-input" id="billing-address">
                     </div>
                     <div class="row">
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="bank-code">{% trans "Bank code" %}</label>
                                 <input class="form-control for-free-input" id="bank-code">
                             </div>
                         </div>
-                        <div class="col-12 col-md-5 col-lg-5">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="bank-number">{% trans "Bank number" %}</label>
                                 <input class="form-control for-free-input" id="bank-number">
@@ -314,9 +327,10 @@
                                         <th style="min-width: 250px">{% trans 'Subtotal price' %}</th>
                                         <th style="min-width: 150px">{% trans 'Discount' %}</th>
                                         <th style="min-width: 250px">{% trans 'Discount value' %}</th>
-                                        <th style="min-width: 100px">{% trans 'Tax' %}</th>
+                                        <th style="min-width: 200px">{% trans 'Tax' %}</th>
                                         <th style="min-width: 250px">{% trans 'Tax value' %}</th>
                                         <th style="min-width: 250px">{% trans 'Total amount' %}</th>
+                                        <th class="text-center" style="min-width: 100px">{% trans 'Action' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>

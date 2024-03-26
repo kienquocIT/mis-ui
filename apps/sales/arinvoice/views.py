@@ -165,7 +165,7 @@ class EZInvoiceDetail(View):
             "http://0317493763.softdreams.vn/api/publish/viewInvoice",
             headers=headers,
             json={
-                'Ikey': pk,
+                'Ikey': pk + '-' + request.GET.get('pattern'),
                 'Pattern': request.GET.get('pattern'),
                 'Option': 0
             },

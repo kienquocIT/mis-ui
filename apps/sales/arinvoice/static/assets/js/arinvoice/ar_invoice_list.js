@@ -45,17 +45,22 @@ $(document).ready(function () {
                         data: 'sale_order',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-soft-primary">${row?.['sale_order_mapped']?.['code']}</span> ${row?.['sale_order_mapped']?.['title']}`
+                            if (row?.['sale_order_mapped']?.['id']) {
+                                return `<span class="badge badge-soft-primary">${row?.['sale_order_mapped']?.['code']}</span> ${row?.['sale_order_mapped']?.['title']}`
+                            }
+                            else {
+                                return ``
+                            }
                         }
                     },
                     {
                         data: 'supplier',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            if (row?.['customer_mapped']) {
-                                return `${row?.['customer_mapped']?.['name']}`
+                            if (row?.['customer_mapped']?.['id']) {
+                                return `<b>${row?.['customer_mapped']?.['name']}</b>`
                             }
-                            return `${row?.['customer_name']}`
+                            return `(${row?.['customer_name']})`
                         }
                     },
                     {
@@ -69,7 +74,7 @@ $(document).ready(function () {
                         data: 'status',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-success">Open</span>`;
+                            return `<span class="badge badge-primary">Created</span>`;
                         }
                     },
                 ],

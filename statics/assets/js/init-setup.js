@@ -1187,13 +1187,19 @@ class ListeningEventController {
                         `
                     );
 
+                    // Attach click event listener to submit buttons
+                    $(document).find('button[type="submit"], input[type="submit"]').on('click', function () {
+                        DocumentControl.setBtnLastSubmit($(this));
+                    });
+
                     // append input status if not exist
                     if (frmEle.find('input[name="system_status"]').length === 0) frmEle.append(statusInputEle);
                     else statusInputEle = frmEle.find('input[name="system_status"]');
 
                     // on submit push status to form
                     $(frmEle).on('submit', function (event) {
-                        let submitterEle = $(event.originalEvent.submitter);
+                        // let submitterEle = $(event.originalEvent.submitter);
+                        let submitterEle = DocumentControl.getBtnLastSubmit();
                         if (submitterEle && submitterEle.length > 0) {
                             let systemStatus = submitterEle.attr('data-status-submit');
                             let statusCode = statusInputEle.val();
@@ -1978,9 +1984,13 @@ class WFRTControl {
                     )
                 }
             });
-        } else {
-            if (_form.dataForm.hasOwnProperty('system_status')) {
-                _form.dataForm['system_status'] = 1;
+        } else {  // original submit
+            let $eleLastSubmit = DocumentControl.getBtnLastSubmit();
+            if ($eleLastSubmit && $eleLastSubmit.length > 0) {
+                let systemStatus = $eleLastSubmit.attr('data-status-submit');
+                if (systemStatus) {
+                    _form.dataForm['system_status'] = parseInt(systemStatus);
+                }
             }
             WindowControl.showLoading();
             $.fn.callAjax2(
@@ -2018,6 +2028,26 @@ class WFRTControl {
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
+                                </div>
+                            </div><hr class="bg-teal">`;
+        }
+        return htmlCustom;
+    }
+
+    static setupHTMLDraftOrSave() {
+        let htmlCustom = ``;
+        let statusList = [0, 1];
+        let statusMapText = {
+            0: 'Save draft',
+            1: 'Save'
+        };
+        for (let status of statusList) {
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="d-flex align-items-center">
+                                    <span>${statusMapText[status]}</span>
+                                </div>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
                                 </div>
                             </div><hr class="bg-teal">`;
         }
@@ -4457,6 +4487,14 @@ class DocumentControl {
 
     static getElePageContent() {
         return $('#idxPageContent');
+    }
+
+    static getBtnLastSubmit() {
+        return globeEleLastSubmit;
+    }
+
+    static setBtnLastSubmit($ele) {
+        globeEleLastSubmit = $ele;
     }
 
     static async getCompanyConfig() {

@@ -5300,15 +5300,6 @@ class QuotationSubmitHandle {
                 _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
-
-        // ****************************
-        // Auto fill data when form calling submit "$('.btn-saving-form')..."
-        // ****************************
-        // system fields
-
-        if (_form.dataMethod.toLowerCase() === 'post') {
-            _form.dataForm['system_status'] = 1;
-        }
     };
 }
 

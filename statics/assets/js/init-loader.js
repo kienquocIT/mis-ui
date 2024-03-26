@@ -1,6 +1,7 @@
 let globeDataCompanyConfig = null;
 let globeWFRuntimeID = null;
 let globeIDLastSubmit = null;
+let globeEleLastSubmit = null;
 
 $.fn.extend({
     transEle: $('#base-trans-factory'),

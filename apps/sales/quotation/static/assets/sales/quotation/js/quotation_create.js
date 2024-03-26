@@ -1024,30 +1024,6 @@ $(function () {
                 }
             }
             WFRTControl.callWFSubmitForm(_form);
-
-
-            // WindowControl.showLoading();
-            // $.fn.callAjax2(
-            //     {
-            //         'url': _form.dataUrl,
-            //         'method': _form.dataMethod,
-            //         'data': _form.dataForm,
-            //     }
-            // ).then(
-            //     (resp) => {
-            //         let data = $.fn.switcherResp(resp);
-            //         if (data) {
-            //             $.fn.notifyB({description: data.message}, 'success')
-            //             $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-            //         }
-            //     }, (err) => {
-            //         setTimeout(() => {
-            //             WindowControl.hideLoading();
-            //         }, 1000)
-            //         $.fn.notifyB({description: err.data.errors}, 'failure');
-            //     }
-            // )
-
         }
 
         $('#btn-remove-promotion').on('click', function() {

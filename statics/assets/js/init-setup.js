@@ -1192,6 +1192,10 @@ class ListeningEventController {
                         DocumentControl.setBtnLastSubmit($(this));
                     });
 
+                    $(document).find('button[type="submit"], input[type="submit"]').on('click', function () {
+                        DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                    });
+
                     // append input status if not exist
                     if (frmEle.find('input[name="system_status"]').length === 0) frmEle.append(statusInputEle);
                     else statusInputEle = frmEle.find('input[name="system_status"]');
@@ -1641,7 +1645,8 @@ class WFRTControl {
         // True: convert body data with Zone Accept
         let pk = $.fn.getPkDetail();
         let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
-        if ((btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext')
+        let IDRuntime = WFRTControl.getRuntimeWF();
+        if (IDRuntime
             && WFRTControl.getWFRuntimeID() && WFRTControl.getTaskWF() && pk && url.includes(pk) && method.toLowerCase() === 'put') {
             let taskID = WFRTControl.getTaskWF();
             let isEditAllZone = WFRTControl.getIsEditAllZone();
@@ -1665,41 +1670,6 @@ class WFRTControl {
         }
         return reqBodyData;
     }
-
-    // static callActionWF(ele$) {
-    //     // -- wf call action
-    //     let actionSelected = $(ele$).attr('data-value');
-    //     let taskID = $('#idxGroupAction').attr('data-wf-task-id');
-    //     let urlBase = globeTaskDetail;
-    //     if (actionSelected !== undefined && taskID && urlBase) {
-    //         let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
-    //         WindowControl.showLoading();
-    //         return $.fn.callAjax2({
-    //             'url': urlData,
-    //             'method': 'PUT',
-    //             'data': {'action': actionSelected},
-    //         }).then((resp) => {
-    //             let data = $.fn.switcherResp(resp);
-    //             if (data?.['status'] === 200) {
-    //                 $.fn.notifyB({
-    //                     'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
-    //                 }, 'success');
-    //                 if (!($(ele$).attr('data-success-reload') === 'false' || $(ele$).attr('data-success-reload') === false)) {
-    //                     setTimeout(() => {
-    //                         window.location.reload()
-    //                     }, 1000)
-    //                 }
-    //             }
-    //             setTimeout(() => {
-    //                 WindowControl.hideLoading();
-    //             }, 1000)
-    //         }, (errs) => {
-    //             setTimeout(() => {
-    //                 WindowControl.hideLoading();
-    //             }, 500)
-    //         });
-    //     }
-    // }
 
     static callActionWF(ele$) {
         // -- wf call action
@@ -1873,59 +1843,13 @@ class WFRTControl {
     }
 
     static callWFSubmitForm(_form) {
-        let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
-        if (btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext') {  // check if btn idxSaveInZoneWF then submit not select collab
-            if (_form.dataForm.hasOwnProperty('system_status')) {
-                _form.dataForm['system_status'] = 1;
-            }
-            WindowControl.showLoading();
-            $.fn.callAjax2(
-                {
-                    'url': _form.dataUrl,
-                    'method': _form.dataMethod,
-                    'data': _form.dataForm,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && (data['status'] === 201 || data['status'] === 200)) {
-                        if (btnIDLastSubmit === 'idxSaveInZoneWFThenNext') {
-                            let btnWF = document.querySelector('.btn-action-wf');
-                            if (btnWF) {
-                                btnWF.setAttribute('data-url-redirect', _form.dataUrlRedirect);
-                            }
-                            let btnSubmit = $('#idxSaveInZoneWFThenNext');
-                            let dataWFAction = btnSubmit.attr('data-wf-action');
-                            if (btnSubmit && dataWFAction) {
-                                let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
-                                if (eleActionDoneTask.length > 0) {
-                                    DocumentControl.setBtnIDLastSubmit(null);
-                                    $(eleActionDoneTask[0]).attr('data-success-reload', false)
-                                    WFRTControl.callActionWF($(eleActionDoneTask[0]));
-                                }
-                            }
-                        }
-                        $.fn.notifyB({description: data.message}, 'success');
-                        if (btnIDLastSubmit === 'idxSaveInZoneWF') {
-                            setTimeout(() => {
-                                window.location.replace(_form.dataUrlRedirect);
-                            }, 1000);
-                        }
-                    }
-                }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-                }
-            )
-            return true;
-        }
+        let IDRuntime = WFRTControl.getRuntimeWF();
         let collabOutForm = WFRTControl.getCollabOutFormData();
-        if (collabOutForm && collabOutForm.length > 0) {
+        if (!IDRuntime) {  // create document, run WF by @decorator_run_workflow in API
+            // select save status before select collaborator
             Swal.fire({
-                title: $.fn.transEle.attr('data-select-next-node-collab'),
-                html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                title: $.fn.transEle.attr('data-select-save-status'),
+                html: String(WFRTControl.setupHTMLDraftOrSave()),
                 allowOutsideClick: false,
                 showConfirmButton: true,
                 confirmButtonText: $.fn.transEle.attr('data-confirm'),
@@ -1933,7 +1857,7 @@ class WFRTControl {
                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 didOpen: () => {
                     // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                    let checkboxes = document.querySelectorAll('.checkbox-save-status');
                     checkboxes.forEach((checkbox) => {
                         checkbox.addEventListener('click', function () {
                             let checked = checkbox.checked;
@@ -1946,76 +1870,140 @@ class WFRTControl {
                 }
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                    let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                    let eleChecked = document.querySelector('.checkbox-save-status:checked');
                     if (eleChecked) {
-                        if (_form.dataMethod.toLowerCase() === 'post') {
-                            _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                        }
-                        if (_form.dataMethod.toLowerCase() === 'put') {
-                            if (_form.dataForm.hasOwnProperty('system_status')) {
-                                _form.dataForm['system_status'] = 1;
+                        let saveStatus = eleChecked.getAttribute('data-status');
+                        if (saveStatus) {
+                            _form.dataForm['system_status'] = parseInt(saveStatus);
+                            if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
+                                if (_form.dataForm['system_status'] === 0) {
+                                    WFRTControl.callAjaxWFCreate(_form);
+                                }
+                                if (_form.dataForm['system_status'] === 1) {
+                                    Swal.fire({
+                                        title: $.fn.transEle.attr('data-select-next-node-collab'),
+                                        html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                                        allowOutsideClick: false,
+                                        showConfirmButton: true,
+                                        confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                                        showCancelButton: true,
+                                        cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                                        didOpen: () => {
+                                            // Add event listener after the modal is shown
+                                            let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                                            checkboxes.forEach((checkbox) => {
+                                                checkbox.addEventListener('click', function () {
+                                                    let checked = checkbox.checked;
+                                                    for (let eleCheck of checkboxes) {
+                                                        eleCheck.checked = false;
+                                                    }
+                                                    checkbox.checked = checked;
+                                                });
+                                            });
+                                        }
+                                    }).then((result) => {
+                                        if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                                            let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                                            if (eleChecked) {
+                                                if (_form.dataMethod.toLowerCase() === 'post') {
+                                                    _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                                                }
+                                                if (_form.dataMethod.toLowerCase() === 'put') {
+                                                    if (_form.dataForm.hasOwnProperty('system_status')) {
+                                                        _form.dataForm['system_status'] = 1;
+                                                    }
+                                                }
+                                            } else {
+                                                return "You need to select one person!";
+                                            }
+                                            WFRTControl.callAjaxWFCreate(_form);
+                                        }
+                                    });
+                                }
+                            } else {  // No collaborator -> original submit
+                                WFRTControl.callAjaxWFCreate(_form);
                             }
                         }
                     } else {
-                        return "You need to select one person!";
+                        return "You need to select one!";
                     }
-                    WindowControl.showLoading();
-                    $.fn.callAjax2(
-                        {
-                            'url': _form.dataUrl,
-                            'method': _form.dataMethod,
-                            'data': _form.dataForm,
-                        }
-                    ).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && (data['status'] === 201 || data['status'] === 200)) {
-                                $.fn.notifyB({description: data.message}, 'success');
-                                setTimeout(() => {
-                                    window.location.replace(_form.dataUrlRedirect);
-                                }, 1000);
-                            }
-                        }, (err) => {
-                            setTimeout(() => {
-                                WindowControl.hideLoading();
-                            }, 1000)
-                            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-                        }
-                    )
                 }
             });
-        } else {  // original submit
-            let $eleLastSubmit = DocumentControl.getBtnLastSubmit();
-            if ($eleLastSubmit && $eleLastSubmit.length > 0) {
-                let systemStatus = $eleLastSubmit.attr('data-status-submit');
-                if (systemStatus) {
-                    _form.dataForm['system_status'] = parseInt(systemStatus);
-                }
+        } else { // update document with zones, already runtime WF
+            _form.dataForm['system_status'] = 1;
+            WFRTControl.callAjaxWFUpdate(_form);
+        }
+    }
+
+    static callAjaxWFCreate(_form) {
+        WindowControl.showLoading();
+        $.fn.callAjax2(
+            {
+                'url': _form.dataUrl,
+                'method': _form.dataMethod,
+                'data': _form.dataForm,
             }
-            WindowControl.showLoading();
-            $.fn.callAjax2(
-                {
-                    'url': _form.dataUrl,
-                    'method': _form.dataMethod,
-                    'data': _form.dataForm,
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    setTimeout(() => {
+                        window.location.replace(_form.dataUrlRedirect);
+                    }, 3000);
                 }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && (data['status'] === 201 || data['status'] === 200)) {
-                        $.fn.notifyB({description: data.message}, 'success');
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
+    }
+
+    static callAjaxWFUpdate(_form) {
+        WindowControl.showLoading();
+        $.fn.callAjax2(
+            {
+                'url': _form.dataUrl,
+                'method': _form.dataMethod,
+                'data': _form.dataForm,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
+                    if (btnIDLastSubmit === 'idxSaveInZoneWFThenNext') {
+                        let btnWF = document.querySelector('.btn-action-wf');
+                        if (btnWF) {
+                            btnWF.setAttribute('data-url-redirect', _form.dataUrlRedirect);
+                        }
+                        let btnSubmit = $('#idxSaveInZoneWFThenNext');
+                        let dataWFAction = btnSubmit.attr('data-wf-action');
+                        if (btnSubmit && dataWFAction) {
+                            let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
+                            if (eleActionDoneTask.length > 0) {
+                                DocumentControl.setBtnIDLastSubmit(null);
+                                $(eleActionDoneTask[0]).attr('data-success-reload', false)
+                                WFRTControl.callActionWF($(eleActionDoneTask[0]));
+                            }
+                        }
+                    }
+                    $.fn.notifyB({description: data.message}, 'success');
+                    if (btnIDLastSubmit === 'idxSaveInZoneWF') {
                         setTimeout(() => {
                             window.location.replace(_form.dataUrlRedirect);
-                        }, 3000);
+                        }, 1000);
                     }
-                }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                 }
-            )
-        }
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
     }
 
     static setupHTMLCollabNextNode(collabOutForm) {
@@ -2038,14 +2026,12 @@ class WFRTControl {
         let htmlCustom = ``;
         let statusList = [0, 1];
         let statusMapText = {
-            0: 'Save draft',
-            1: 'Save'
+            0: $.fn.transEle.attr('data-save-draft'),
+            1: $.fn.transEle.attr('data-save'),
         };
         for (let status of statusList) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="d-flex align-items-center">
-                                    <span>${statusMapText[status]}</span>
-                                </div>
+                                <span>${statusMapText[status]}</span>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
                                 </div>
@@ -2193,7 +2179,9 @@ class WFRTControl {
                 let idFormID = globeFormMappedZone;
                 if (idFormID) {
                     DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
+                        DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                    });
 
                     let actionList = WFRTControl.getActionsList();
                     let actionBubble = null;
@@ -2203,7 +2191,9 @@ class WFRTControl {
                         actionBubble = 4;
                     }
                     if (actionBubble) {
-                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
+                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden').on('click', function () {
+                            DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                        });
                     }
                 }
             }
@@ -2379,7 +2369,9 @@ class WFRTControl {
                 let idFormID = globeFormMappedZone;
                 if (idFormID) {
                     DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
+                        DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                    });
 
                     let actionList = WFRTControl.getActionsList();
                     let actionBubble = null;
@@ -2389,7 +2381,9 @@ class WFRTControl {
                         actionBubble = 4;
                     }
                     if (actionBubble) {
-                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
+                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden').on('click', function () {
+                            DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                        });
                     }
                 }
             }
@@ -2450,8 +2444,9 @@ class WFRTControl {
             WFRTControl.setZoneHiddenData(zonesHiddenData);
             WFRTControl.setIsEditAllZoneData(isEditAllZone);
             if (zonesData && Array.isArray(zonesData) && zonesHiddenData && Array.isArray(zonesHiddenData)) {
-                $('#btn-active-edit-zone-wf').removeClass('hidden');
-                $('#btn-active-edit-zone-wf').click();
+                // $('#btn-active-edit-zone-wf').removeClass('hidden');
+                // $('#btn-active-edit-zone-wf').click();
+                WFRTControl.activeZoneInDoc();
             }
         }
     }

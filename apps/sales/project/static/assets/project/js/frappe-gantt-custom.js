@@ -19,4 +19,5 @@ class fGanttCustom {
         parentElm.appendChild(left_header)
         parentElm.style.width = total_w
     }
+    static get
 }

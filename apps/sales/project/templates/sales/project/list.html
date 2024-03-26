@@ -27,6 +27,7 @@
 
 {% block pageContent %}
     <!-- test gantt view-->
+    <button id="get_tasks">get task</button>
     <div class="gantt-wrap">
         <div class="gantt-block gantt-left">
         </div>
@@ -48,23 +49,23 @@
                 {"code": 'data_to', "name": $.fn.gettext('Date to'), width: 100},
                 {"code": 'work_status', "name": $.fn.gettext('Work status'), width: 100},
             ]
-            var s = new Gantt(
+            var new_gantt = new Gantt(
                 "#gantt",
                 [
                     {
                         id: "11",
                         name: "Khảo sát thị trường",
                         start: "2023-07-16",
-                        end: "2023-12-20",
+                        end: "2023-07-22",
                         progress: 0,
-                        has_child: false,
+                        is_group: true,
+                        is_toggle: true,
                         objData: {
                             id: "11",
                             title: "Khảo sát thị trường",
                             data_from: "2023-07-16",
-                            data_to: "2023-12-20",
-                            work_status: 'to do',
-                            is_group: true,
+                            data_to: "2023-07-22",
+                            work_status: '',
                         }
                     },
                     {
@@ -73,7 +74,8 @@
                         start: "2023-07-16",
                         end: "2023-07-20",
                         progress: 55,
-                        has_child: true,
+                        child_of_group: true,
+                        child_group_id: "11",
                         is_show: true,
                         objData: {
                             relation_style: null,
@@ -91,9 +93,11 @@
                         end: "2023-07-21",
                         progress: 85,
                         dependencies: "1",
-                        is_child: true,
+                        child_of_group: true,
+                        child_group_id: "11",
+                        is_show: true,
                         objData: {
-                            relation_style: 'FS',
+                            relation_style: 'SS',
                             id: "2",
                             title: "Find out the old contract documents",
                             data_from: "2023-07-19",
@@ -105,12 +109,15 @@
                     {
                         id: "3",
                         name: "Organize meeting with sales associates to understand need in detail",
-                        start: "2023-07-21",
-                        end: "2023-07-22",
+                        start: "2023-07-22",
+                        end: "2023-07-23",
                         progress: 80,
                         dependencies: "2",
+                        child_of_group: true,
+                        child_group_id: "11",
+                        is_show: true,
                         objData: {
-                            relation_style: 'SS',
+                            relation_style: 'FS',
                             id: "3",
                             title: "Organize meeting with sales associates to understand need in detail",
                             data_from: "2023-07-21",
@@ -126,6 +133,7 @@
                         end: "2023-07-17",
                         progress: 80,
                         objData: {
+                            relation_style: null,
                             id: "4",
                             title: "iOS App home page",
                             data_from: "2023-07-15",
@@ -137,14 +145,14 @@
                         id: "5",
                         name: "Write a release note",
                         start: "2023-07-18",
-                        end: "2024-07-22",
+                        end: "2023-07-22",
                         progress: 65,
                         dependencies: "4",
                         objData: {
                             id: "5",
                             title: "Write a release note",
                             data_from: "2023-07-18",
-                            data_to: "2024-07-22",
+                            data_to: "2023-07-22",
                             work_status: 'inital',
                             dependencies: "4"
                         }
@@ -173,9 +181,14 @@
                     view_mode: "Week",
                     custom_popup_html: null,
                     left_list: LEFT_TITLE,
+                    disable_on_click: true,
                     call_left_render: fGanttCustom.setup_left_content
                 }
             );
+            $('#get_tasks').on('click', function (){
+                let getTasks = new_gantt.tasks
+                console.log('new_gantt', getTasks)
+            })
         });
     </script>
 {% endblock %}

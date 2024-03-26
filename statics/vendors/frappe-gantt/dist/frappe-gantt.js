@@ -408,10 +408,11 @@ var Gantt = (function () {
                 class: 'bar-group',
                 append_to: this.group,
             });
-            this.handle_group = createSVG('g', {
-                class: 'handle-group',
-                append_to: this.group,
-            });
+            if (this.task.is_group !== true)
+                this.handle_group = createSVG('g', {
+                    class: 'handle-group',
+                    append_to: this.group,
+                });
         }
 
         prepare_helpers() {
@@ -488,10 +489,10 @@ var Gantt = (function () {
 
         draw_resize_handles() {
             if (this.invalid) return;
+            if (this.task.is_group) return; // setup nếu task là group thì ko show resize
 
             const bar = this.$bar;
             const handle_width = 8;
-
             createSVG('rect', {
                 x: bar.getX() + bar.getWidth() - 9,
                 y: bar.getY() + 1,
@@ -546,9 +547,9 @@ var Gantt = (function () {
                     // just finished a move action, wait for a few seconds
                     return;
                 }
-
-                this.show_popup();
-                this.gantt.unselect_all();
+                // ẩn action show popup khi click vào gantt bar
+                // this.show_popup();
+                // this.gantt.unselect_all();
                 this.group.classList.add('active');
             });
 
@@ -557,7 +558,6 @@ var Gantt = (function () {
                     // just finished a move action, wait for a few seconds
                     return;
                 }
-
                 this.gantt.trigger_event('click', [this.task]);
             });
         }
@@ -589,10 +589,15 @@ var Gantt = (function () {
             const bar = this.$bar;
             if (x) {
                 // get all x values of parent task || lấy ra toạ độ x của all tag rect
+                // nếu loại start là finish to start thì lấy diểm kết thúc thay vì điềm bắt đầu của task
                 const xs = this.task.dependencies.map((dep) => {
-                    return this.gantt.get_bar(dep).$bar.getX();
+                    let normal = this.gantt.get_bar(dep).$bar.getX();
+                    if (this.task.objData.relation_style === 'FS')
+                        normal = this.gantt.get_bar(dep).$bar.getEndX()
+                    return normal
                 });
-                // child task must not go before parent
+
+                // child task must not go before/end parent
                 const valid_x = xs.reduce((prev, curr) => {
                     return x >= curr;
                 }, x);
@@ -745,7 +750,8 @@ var Gantt = (function () {
         update_label_position() {
             const bar = this.$bar,
                 label = this.group.querySelector('.bar-label');
-
+            // label.classList.add('big');
+            // label.setAttribute('x', bar.getX() + bar.getWidth() + 5);
             if (label.getBBox().width > bar.getWidth()) {
                 label.classList.add('big');
                 label.setAttribute('x', bar.getX() + bar.getWidth() + 5);
@@ -788,25 +794,28 @@ var Gantt = (function () {
         }
 
         calculate_path() {
-            let start_x =
-                this.from_task.$bar.getEndX();
-                // this.from_task.$bar.getX();
-                // this.from_task.$bar.getX() + this.from_task.$bar.getWidth() / 2;
+            const dict_temp = this.to_task.task,
+                is_SS = dict_temp.objData.relation_style === "SS", // start to start
+                is_FS = dict_temp.objData.relation_style === "FS"; // finish to start
+            let start_x = this.from_task.$bar.getX() + this.from_task.$bar.getWidth() / 2;
+            if (is_SS) start_x = this.from_task.$bar.getX() + 1;
+            else if (is_FS) start_x = this.from_task.$bar.getEndX() - 1;
 
-            const condition = () =>
-                this.to_task.$bar.getX() < start_x + this.gantt.options.padding &&
-                start_x > this.from_task.$bar.getX() + this.gantt.options.padding;
 
-            while (condition()) {
-                start_x -= 10;
-            }
+            // const condition = () =>
+            //     this.to_task.$bar.getX() < start_x + this.gantt.options. padding&&
+            //     start_x > this.from_task.$bar.getX() + this.gantt.options.padding;
+            //
+            // while (condition()) {
+            //     start_x -= 10;
+            // }
 
             const start_y =
                 this.gantt.options.header_height +
                 this.gantt.options.bar_height +
                 (this.gantt.options.padding + this.gantt.options.bar_height) *
                     this.from_task.task._index +
-                this.gantt.options.padding;
+                this.gantt.options.padding - 1;
 
             const end_x = this.to_task.$bar.getX() - this.gantt.options.padding / 2;
             const end_y =
@@ -834,10 +843,8 @@ var Gantt = (function () {
             l 5 5
             l -5 5`;
 
-            if (
-                this.to_task.$bar.getX() <
-                this.from_task.$bar.getX() + this.gantt.options.padding
-            )
+            if (this.to_task.$bar.getX() <= this.from_task.$bar.getX()
+                || (this.to_task.$bar.getX() <= this.from_task.$bar.getEndX() && is_FS))
             {
                 const down_1 = this.gantt.options.padding / 2 - curve;
                 const down_2 =
@@ -1100,13 +1107,14 @@ var Gantt = (function () {
 
                 return task;
             });
-
             this.setup_dependencies();
         }
 
         setup_dependencies() {
             this.dependency_map = {};
-            for (let t of this.tasks) {
+            let tasksList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
+            tasksList = tasksList.map((task, i) => {task._index = i; return task})
+            for (let t of tasksList) {
                 for (let d of t.dependencies) {
                     this.dependency_map[d] = this.dependency_map[d] || [];
                     this.dependency_map[d].push(t.id);
@@ -1168,8 +1176,8 @@ var Gantt = (function () {
 
         setup_gantt_dates() {
             this.gantt_start = this.gantt_end = null;
-
-            for (let task of this.tasks) {
+            const taskList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
+            for (let task of taskList) {
                 // set global start and end date
                 if (!this.gantt_start || task._start < this.gantt_start) {
                     this.gantt_start = task._start;
@@ -1262,11 +1270,12 @@ var Gantt = (function () {
 
         make_grid_background() {
             const grid_width = this.dates.length * this.options.column_width;
+            const tasksLength = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
             const grid_height =
                 this.options.header_height +
                 this.options.padding +
                 (this.options.bar_height + this.options.padding) *
-                    this.tasks.length;
+                    tasksLength.length;
 
             createSVG('rect', {
                 x: 0,
@@ -1295,8 +1304,8 @@ var Gantt = (function () {
             const row_height = this.options.bar_height + this.options.padding;
 
             let row_y = this.options.header_height + this.options.padding / 2;
-
-            for (let task of this.tasks) {
+            const tasksList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
+            for (let task of tasksList) {
                 createSVG('rect', {
                     x: 0,
                     y: row_y,
@@ -1335,9 +1344,10 @@ var Gantt = (function () {
         make_grid_ticks() {
             let tick_x = 0;
             let tick_y = this.options.header_height + this.options.padding / 2;
+            const tasksLength = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
             let tick_height =
                 (this.options.bar_height + this.options.padding) *
-                this.tasks.length;
+                tasksLength.length;
 
             for (let date of this.dates) {
                 let tick_class = 'tick';
@@ -1377,6 +1387,7 @@ var Gantt = (function () {
 
         make_grid_highlights() {
             // highlight today's date
+            const tasksLength = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
             if (this.view_is(VIEW_MODE.DAY)) {
                 const x =
                     (date_utils.diff(date_utils.today(), this.gantt_start, 'hour') /
@@ -1387,7 +1398,7 @@ var Gantt = (function () {
                 const width = this.options.column_width;
                 const height =
                     (this.options.bar_height + this.options.padding) *
-                        this.tasks.length +
+                        tasksLength.length +
                     this.options.header_height +
                     this.options.padding / 2;
 
@@ -1530,7 +1541,9 @@ var Gantt = (function () {
         }
 
         make_bars() {
-            this.bars = this.tasks.map((task) => {
+            let tasksList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
+            tasksList = tasksList.map((task, i) => {task._index = i; return task})
+            this.bars = tasksList.map((task) => {
                 const bar = new Bar(this, task);
                 this.layers.bar.appendChild(bar.group);
                 return bar;
@@ -1539,10 +1552,11 @@ var Gantt = (function () {
 
         make_arrows() {
             this.arrows = [];
-            for (let task of this.tasks) {
+            let tasksList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
+            tasksList = tasksList.map((task, i) => {task._index = i; return task})
+            for (let task of tasksList) {
                 let arrows = [];
-                arrows = task.dependencies
-                    .map((task_id) => {
+                arrows = task.dependencies.map((task_id) => {
                         const dependency = this.get_task(task_id);
                         if (!dependency) return;
                         const arrow = new Arrow(
@@ -1685,7 +1699,7 @@ var Gantt = (function () {
                             });
                         }
                     }
-                    else if (is_dragging) {
+                    else if (is_dragging && bar.task.is_group !== true) {
                         bar.update_bar_position({ x: $bar.ox + $bar.finaldx });
                     }
                 });
@@ -1764,6 +1778,7 @@ var Gantt = (function () {
                 bar.progress_changed();
                 bar.set_action_completed();
             });
+            $()
         }
 
         get_all_dependent_tasks(task_id) {
@@ -1789,28 +1804,16 @@ var Gantt = (function () {
 
             if (this.view_is(VIEW_MODE.WEEK)) {
                 rem = dx % (this.options.column_width / 7);
-                position =
-                    odx -
-                    rem +
+                position = odx - rem +
                     (rem < this.options.column_width / 14
                         ? 0
                         : this.options.column_width / 7);
             } else if (this.view_is(VIEW_MODE.MONTH)) {
                 rem = dx % (this.options.column_width / 30);
-                position =
-                    odx -
-                    rem +
-                    (rem < this.options.column_width / 60
-                        ? 0
-                        : this.options.column_width / 30);
+                position = odx - rem + (rem < this.options.column_width / 60 ? 0 : this.options.column_width / 30);
             } else {
                 rem = dx % this.options.column_width;
-                position =
-                    odx -
-                    rem +
-                    (rem < this.options.column_width / 2
-                        ? 0
-                        : this.options.column_width);
+                position = odx - rem + (rem < this.options.column_width / 2 ? 0 : this.options.column_width);
             }
             return position;
         }
@@ -1834,7 +1837,9 @@ var Gantt = (function () {
         }
 
         get_task(id) {
-            return this.tasks.find((task) => {
+            let tasksList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
+            tasksList = tasksList.map((task, i) => {task._index = i; return task})
+            return tasksList.find((task) => {
                 return task.id === id;
             });
         }
@@ -1872,7 +1877,8 @@ var Gantt = (function () {
          * @memberof Gantt
          */
         get_oldest_starting_date() {
-            return this.tasks
+            const tasksList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
+            return tasksList
                 .map((task) => task._start)
                 .reduce((prev_date, cur_date) =>
                     cur_date <= prev_date ? cur_date : prev_date
@@ -1888,27 +1894,44 @@ var Gantt = (function () {
             this.$svg.innerHTML = '';
         }
 
+        change_child_show_hide(groupID){
+            let reloadList = this.tasks.map((task)=>{
+                if(task.child_group_id === groupID) task.is_show = !task.is_show
+                if(task.id === groupID) task.is_toggle = !task.is_toggle
+                return task
+            })
+            jQuery('.gantt-left .gantt-left-outerwrap').remove()
+            this.setup_tasks(reloadList)
+            this.change_view_mode();
+        }
+
         make_custom_left(){
+            /*
+            * @base_width: cộng tất cả width của danh sách title ( this.options['left_list'] ) khai báo và xét width
+            * cho block trái
+            * */
             let div_outerwrap = jQuery('<div class="gantt-left-outerwrap"/>')
             let div_wrapper = jQuery('<div class="gantt-left-container"/>')
-            let base_width = 0
-            let is_flag = true
-            for (let item of this.tasks){
+            let base_width = 0, is_flag = true;
+            const tasksList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
+            for (let item of tasksList){
                 let row = jQuery('<div class="grid-row"/>')
                 row.attr('data-id', item.id).css({"height": 38})
                 for ( let value of this.options['left_list']) {
                     if (is_flag) base_width += value.width
                     let item_html = jQuery('<p/>');
-                    if (item.has_child && value.code === 'title'){
+                    if (item.is_group && value.code === 'title'){
                         let span = jQuery('<span class="expand-btn"/>')
-                        span.text("+")
-                        item_html.append(span)
-                        span.on('click', function(){
-                            change_child_show_hide()
+                        span.text(item.is_toggle ? "-" : "+")
+                        item_html.append(span).addClass('txt-bold')
+                        span.on('click', () => {
+                            this.change_child_show_hide(item.id)
                         })
                     }
+                    if (item.child_of_group && value.code === 'title') item_html.addClass('pd-30')
                     item_html.append(item.objData[value.code]).css({"width": value.width})
                     row.append(item_html)
+
                 }
                 is_flag = false
                 div_wrapper.append(row)
@@ -1919,11 +1942,10 @@ var Gantt = (function () {
                 this.options.header_height +
                 this.options.padding +
                 (this.options.bar_height + this.options.padding) *
-                    this.tasks.length;
+                    tasksList.length;
             grid_height = grid_height + 58 // 58 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
             div_wrapper.css({"min-width": base_width, "height": grid_height})
             jQuery('.gantt-wrap-title').css({"min-width": base_width})
-            // todo here
         }
     }
 

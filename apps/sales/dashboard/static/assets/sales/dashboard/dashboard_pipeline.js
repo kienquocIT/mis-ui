@@ -1230,7 +1230,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#166138', '#E48873', '#13C0E5', '#F8B4C1'
+                '#7A7D68', '#018F8C', '#13C0E5', '#F8B4C1'
             ],
             responsive: [{
                 breakpoint: 480,

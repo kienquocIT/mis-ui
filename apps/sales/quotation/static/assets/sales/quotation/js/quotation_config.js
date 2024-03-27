@@ -15,16 +15,19 @@ let dataAcceptanceAffectJSON = {
 }
 
 function loadConfig(data) {
-    if (data.short_sale_config) {
-        $('#is-choose-price-list')[0].checked = data.short_sale_config.is_choose_price_list;
-        $('#is-input-price')[0].checked = data.short_sale_config.is_input_price;
-        $('#is-discount-on-product')[0].checked = data.short_sale_config.is_discount_on_product;
-        $('#is-discount-on-total')[0].checked = data.short_sale_config.is_discount_on_total;
+    if (data?.['short_sale_config']) {
+        $('#is-choose-price-list')[0].checked = data?.['short_sale_config']?.['is_choose_price_list'];
+        $('#is-input-price')[0].checked = data?.['short_sale_config']?.['is_input_price'];
+        $('#is-discount-on-product')[0].checked = data?.['short_sale_config']?.['is_discount_on_product'];
+        $('#is-discount-on-total')[0].checked = data?.['short_sale_config']?.['is_discount_on_total'];
     }
-    if (data.long_sale_config) {
-        $('#is-not-input-price')[0].checked = data.long_sale_config.is_not_input_price;
-        $('#is-not-discount-on-product')[0].checked = data.long_sale_config.is_not_discount_on_product;
-        $('#is-not-discount-on-total')[0].checked = data.long_sale_config.is_not_discount_on_total;
+    if (data?.['long_sale_config']) {
+        $('#is-not-input-price')[0].checked = data?.['long_sale_config']?.['is_not_input_price'];
+        $('#is-not-discount-on-product')[0].checked = data?.['long_sale_config']?.['is_not_discount_on_product'];
+        $('#is-not-discount-on-total')[0].checked = data?.['long_sale_config']?.['is_not_discount_on_total'];
+    }
+    if (data?.['is_require_payment']) {
+        $('#is-require-payment')[0].checked = data?.['is_require_payment'];
     }
 }
 
@@ -151,6 +154,7 @@ function setupSubmit() {
         'is_not_discount_on_product': $('#is-not-discount-on-product')[0].checked,
         'is_not_discount_on_total': $('#is-not-discount-on-total')[0].checked,
     }
+    result['is_require_payment'] = $('#is-require-payment')[0].checked
     return result
 }
 
@@ -198,10 +202,12 @@ $(function () {
             if (dataSubmit) {
                 _form.dataForm['short_sale_config'] = dataSubmit.short_sale_config;
                 _form.dataForm['long_sale_config'] = dataSubmit.long_sale_config;
+                _form.dataForm['is_require_payment'] = dataSubmit.is_require_payment;
             }
             let submitFields = [
                 'short_sale_config',
                 'long_sale_config',
+                'is_require_payment',
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {

@@ -4676,7 +4676,7 @@ class DocumentControl {
                 `
                 ).removeClass('hidden');
             }
-            if (system_status) {
+            if (system_status || system_status === 0) {
                 let draft = $.fn.transEle.attr('data-msg-draft');
                 let created = $.fn.transEle.attr('data-created');
                 let added = $.fn.transEle.attr('data-added');

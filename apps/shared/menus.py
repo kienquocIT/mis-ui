@@ -192,6 +192,11 @@ class MenusCoreConfigurations:
                 name='Revenue plan config', code='id_menu_master_data_revenue_plan_config', view_name='RevenuePlanConfigList',
                 icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
+            MenuCommon(
+                name='AR invoice sign', code='menu_invoice_sign',
+                view_name='InvoiceSignList',
+                icon='<i class="fas fa-signature"></i>',
+            ),
         ]
     )
     TEMPLATES_DATA_CONFIG = MenuCommon(

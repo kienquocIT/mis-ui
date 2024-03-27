@@ -215,7 +215,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#5a9a9a', '#955cfa'],
+            colors: ['#51C9C2', '#908DB9'],
             dataLabels: {
                 enabled: false,
             },
@@ -365,7 +365,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#5a9a9a', '#955cfa'],
+            colors: ['#51C9C2', '#908DB9'],
             dataLabels: {
                 enabled: false,
             },
@@ -690,8 +690,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#5a9a9a',
-                '#E92990'
+                '#51C9C2',
+                '#EF424C'
             ],
             dataLabels: {
                 enabled: false,
@@ -842,8 +842,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#5a9a9a',
-                '#E92990'
+                '#51C9C2',
+                '#EF424C'
             ],
             dataLabels: {
                 enabled: false,
@@ -1157,7 +1157,7 @@ $(document).ready(function () {
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#147945'],
+            colors: ['#819C4B'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,
@@ -1402,7 +1402,7 @@ $(document).ready(function () {
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#c07725'],
+            colors: ['#EC7A49'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,
@@ -1646,7 +1646,7 @@ $(document).ready(function () {
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#fd8b9f'],
+            colors: ['#DC474F'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,
@@ -1896,7 +1896,7 @@ $(document).ready(function () {
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#28abbe'],
+            colors: ['#2B77A4'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,

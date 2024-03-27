@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'AR Invoice View Invoice' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block jsHeaderUnCompress %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    {{ data.data.html | json_script:"html" }}
+    <div class="row">
+        <div class="col-12">
+            <a href="javascript:DownloadInvoicePDF()">
+                <button type="button" class="btn btn-sm btn-rounded btn-custom btn-outline-secondary" id="pdf_invoice_btn">
+                    <span>
+                        <span>{% trans 'Download PDF' %}</span>
+                        <span class="icon"><i class="fa-regular fa-file-pdf"></i></span>
+                    </span>
+                </button>
+            </a>
+        </div>
+        <div id="invoice_space" class="col-12 mb-10"></div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+
+    <script>
+        const pk = $.fn.getPkDetail();
+        const html_data = JSON.parse($('#html').text());
+        $('#invoice_space').html(html_data)
+
+        function DownloadInvoicePDF() {
+            WindowControl.showLoading();
+            let invoice_ele = $('#printView .VATTEMP')[0];
+            let opt = {
+                margin:       -0.6,
+                filename:     `${pk}.pdf`,
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 5 },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+                enableLinks:  true,
+            };
+
+            html2pdf().from(invoice_ele).set(opt).save().then(function () {
+                WindowControl.hideLoading();
+            });
+        }
+    </script>
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+{% endblock %}

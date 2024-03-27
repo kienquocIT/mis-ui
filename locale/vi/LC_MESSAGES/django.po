@@ -6920,3 +6920,7 @@ msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với �
 #
 msgid "Show data have 100% win rate"
 msgstr "Hiển thị dữ liệu có tỷ lệ thắng 100%"
+
+#
+msgid "Select document save status"
+msgstr "Chọn trạng thái lưu phiếu"

@@ -6,7 +6,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'QuotationUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
+        <button class="btn btn-outline-primary" id="btn-enable-edit" hidden>
             <span>
                 <span>{% trans 'Edit' %}</span>
                 <span class="icon">

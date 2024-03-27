@@ -2097,7 +2097,7 @@ class WFRTControl {
                             let eleStatus = $('#systemStatus');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
-                                WFRTControl.setBtnCancel();
+                                WFRTControl.setBtnWFAfterFinish();
                             }
                         }
                         // collab out form handler
@@ -2544,12 +2544,20 @@ class WFRTControl {
         }
     }
 
-    static setBtnCancel() {
+    static setBtnWFAfterFinish() {
         let eleRealAction = $('#idxRealAction');
         let btnCancel = $('#btnCancel');
         if (eleRealAction) {
             if (btnCancel.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-danger btn-wf-after-finish" id="btnCancel" data-value="2">
+                $(eleRealAction).append(`<button class="btn btn-outline-primary btn-wf-after-finish" id="btnCR" data-value="1">
+                                            <span>
+                                                <span>${$.fn.transEle.attr('data-change-request')}</span>
+                                                <span class="icon">
+                                                    <i class="fa-regular fa-pen-to-square"></i>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-wf-after-finish" id="btnCancel" data-value="2">
                                             <span>
                                                 <span>${$.fn.transEle.attr('data-cancel')}</span>
                                                 <span class="icon">

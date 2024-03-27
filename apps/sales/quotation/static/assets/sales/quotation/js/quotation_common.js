@@ -1795,11 +1795,11 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if finish or reject then hidden btn edit page
-            if ([2, 3, 4].includes(data?.['system_status'])) {
+            // check if not finish or reject then remove hidden btn edit page
+            if (![2, 3, 4].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {
-                    $btn[0].setAttribute('hidden', 'true');
+                    $btn[0].removeAttribute('hidden');
                 }
             }
             // check if is not finish then hidden btn delivery (Sale Order)

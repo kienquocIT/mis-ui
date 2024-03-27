@@ -139,7 +139,6 @@ $(document).ready(function () {
                 item.opp_stage_winrate !== 0
                 && item.opp_stage_winrate !== 100
                 && item.employee_group_id === group_filter
-                // && Check_in_period(item.opp_open_date)
                 && new Date(item.opp_open_date).getFullYear() === parseInt(totalPipelineYearFilterEle.val())
             ) {
                 if (!data_stage_value_dict[oppStageId]) {
@@ -678,9 +677,9 @@ $(document).ready(function () {
                 ) {
                     if (item?.['opp_stage_winrate'] === 100) {
                         winrate_100 += item.forecast_value
-                    } else if (item?.['opp_stage_winrate'] <= 70) {
+                    } else if (item?.['opp_stage_winrate'] <= 70 && item?.['opp_stage_winrate'] !== 0) {
                         winrate_70s += item.forecast_value
-                    } else if (item?.['opp_stage_winrate'] > 70 && item?.['opp_stage_winrate'] < 100) {
+                    } else if (item?.['opp_stage_winrate'] > 70 && item?.['opp_stage_winrate'] !== 100) {
                         winrate_70g += item.forecast_value
                     }
                 }
@@ -688,30 +687,34 @@ $(document).ready(function () {
             all_data_year[`${i+1}`] = {
                 'group_1': winrate_70s / cast_billion,
                 'group_2': winrate_70g / cast_billion,
-                'group_3': winrate_100 / cast_billion
+                // 'group_3': winrate_100 / cast_billion
             }
         }
 
         let group_1_list = []
         let group_2_list = []
-        let group_3_list = []
+        // let group_3_list = []
         for (let i = 0; i < 12; i++) {
             group_1_list.push(all_data_year[i+1]['group_1'])
             group_2_list.push(all_data_year[i+1]['group_2'])
-            group_3_list.push(all_data_year[i+1]['group_3'])
+            // group_3_list.push(all_data_year[i+1]['group_3'])
         }
 
         return {
-            series: [{
-                name: '<= 70%',
-                data: group_1_list
-            }, {
-                name: '> 70%',
-                data: group_2_list
-            }, {
-                name: '100%',
-                data: group_3_list
-            }],
+            series: [
+                {
+                    name: '<= 70% (!= 0%)',
+                    data: group_1_list
+                },
+                {
+                    name: '> 70% (!= 100%)',
+                    data: group_2_list
+                },
+                // {
+                //     name: '100%',
+                //     data: group_3_list
+                // }
+            ],
             chart: {
                 type: 'bar',
                 height: HEIGHT[2],

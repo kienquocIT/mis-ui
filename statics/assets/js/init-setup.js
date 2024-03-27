@@ -1765,13 +1765,11 @@ class WFRTControl {
                     window.location.replace(urlRedirect);
                 }
             }, 1000)
-        }, (errs) => {
+        }, (err) => {
             setTimeout(() => {
                 WindowControl.hideLoading();
-                if (urlRedirect) {
-                    window.location.replace(urlRedirect);
-                }
-            }, 500)
+            }, 1000)
+            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
         });
     }
 
@@ -2095,12 +2093,12 @@ class WFRTControl {
                         }
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
-                            // // active btn cancel if owner & finished
-                            // let eleStatus = $('#systemStatus');
-                            // let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            // if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
-                            //     WFRTControl.setBtnCancel();
-                            // }
+                            // active btn cancel if owner & status is finished
+                            let eleStatus = $('#systemStatus');
+                            let currentEmployee = $x.fn.getEmployeeCurrentID();
+                            if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
+                                WFRTControl.setBtnCancel();
+                            }
                         }
                         // collab out form handler
                         WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);
@@ -2551,16 +2549,16 @@ class WFRTControl {
         let btnCancel = $('#btnCancel');
         if (eleRealAction) {
             if (btnCancel.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-danger btn-action-wf" id="btnCancel" data-value="2">
-                                        <span>
-                                            <span>${$.fn.transEle.attr('data-cancel')}</span>
-                                            <span class="icon">
-                                                <i class="fas fa-times"></i>
+                $(eleRealAction).append(`<button class="btn btn-outline-danger btn-wf-after-finish" id="btnCancel" data-value="2">
+                                            <span>
+                                                <span>${$.fn.transEle.attr('data-cancel')}</span>
+                                                <span class="icon">
+                                                    <i class="fas fa-times"></i>
+                                                </span>
                                             </span>
-                                        </span>
-                                    </button>`);
+                                        </button>`);
                 // Add event
-                btnCancel.on('click', function () {
+                eleRealAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
                 });
             }

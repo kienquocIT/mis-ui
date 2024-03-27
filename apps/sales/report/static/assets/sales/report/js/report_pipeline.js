@@ -7,6 +7,7 @@ $(function () {
         let boxMonth = $('#box-report-pipeline-month');
         let boxFrom = $('#report-pipeline-date-from');
         let boxTo = $('#report-pipeline-date-to');
+        let checkWin100 = $('#checkbox-show-win-100');
         let eleAreaPeriodAll = $('#area-period-all');
         let eleFiscalYear = $('#data-fiscal-year');
         let btnView = $('#btn-view');
@@ -198,7 +199,15 @@ $(function () {
             let totalEmail = 0;
             let totalMeeting = 0;
             let totalDocument = 0;
+            let isShowWin100 = checkWin100[0].checked;
             for (let data of dataList) {
+                if (isShowWin100 === false) {  // if not check show data have 100% win rate then pass
+                    if (data?.['opportunity']?.['win_rate']) {
+                        if (data?.['opportunity']?.['win_rate'] === 100) {
+                            continue;
+                        }
+                    }
+                }
                 if (data?.['opportunity']?.['value']) {
                     totalValue += data?.['opportunity']?.['value'];
                 }
@@ -393,6 +402,13 @@ $(function () {
                             if (data?.['employee_inherit']?.['id'] === employeeKey) {
                                 data['group'] = {};
                                 data['employee_inherit'] = {};
+                                if (isShowWin100 === false) {  // if not check show data have 100% win rate then pass
+                                    if (data?.['opportunity']?.['win_rate']) {
+                                        if (data?.['opportunity']?.['win_rate'] === 100) {
+                                            continue;
+                                        }
+                                    }
+                                }
                                 result.push(data);
                             }
                         }

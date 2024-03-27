@@ -310,6 +310,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     BALANCE_INIT_PAGE = BreadcrumbChildren(_('Balance initialization'), 'BalanceInitList')
 
+    INVOICE_SIGN_PAGE = BreadcrumbChildren(_('Invoice sign'), 'BalanceInitList')
+
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 
     REVENUE_PLAN_LIST_PAGE = BreadcrumbChildren(_('Revenue plan list'), 'RevenuePlanList')
@@ -815,6 +817,8 @@ class BreadcrumbView:
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
 
     BALANCE_INIT_PAGE = [BreadcrumbItem.BALANCE_INIT_PAGE]
+
+    INVOICE_SIGN_PAGE = [BreadcrumbItem.INVOICE_SIGN_PAGE]
 
     REVENUE_PLAN_CONFIG_PAGE = [BreadcrumbItem.REVENUE_PLAN_CONFIG_PAGE]
 

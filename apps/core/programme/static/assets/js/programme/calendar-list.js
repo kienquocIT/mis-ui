@@ -215,11 +215,12 @@ class programmeHandle {
                     let nextDay = {}
                     for (let item of data) {
                         item.calendar_type = 3
-                        let endD = item.date_to
+                        const dateStart = programmeHandle.checkHour(item, true)
+                        const dateEnd = programmeHandle.checkHour(item, false)
                         let temp = {
                             title: item.title,
-                            start: item.date_from,
-                            end: item.date_to,
+                            start: dateStart,
+                            end: dateEnd,
                             allDay: item.date_from !== item.date_to,
                             source: item,
                         }
@@ -229,7 +230,7 @@ class programmeHandle {
                             time_from: item.morning_shift_f,
                             time_to: item.morning_shift_t
                         })
-                        if (item.date_from !== endD) isClass += 'hasDiff'
+                        if (item.date_from !== item.date_to) isClass += 'hasDiff'
                         if (isClass) temp.className = isClass
                         if (!nextDay?.start && moment(temp.start).isAfter(moment())) nextDay = temp
                         else if (moment(temp.start).isAfter(moment(nextDay.start))) nextDay = temp
@@ -244,6 +245,56 @@ class programmeHandle {
                 (errs) => {console.log('callLeave_ ', errs)
                 }
             )
+    }
+
+    static checkHour(item, is_from){
+        let date_from = item.date_from,
+            date_to = item.date_to,
+            shift_f = item.morning_shift_f,
+            shift_t = item.morning_shift_t,
+            same_date = item.date_from === item.date_to;
+
+        let hourDate = is_from ? date_from : date_to;
+        const numstart = new Date(hourDate).getDay()
+        hourDate += " ";
+        if (same_date){ // cùng ngày
+            if (is_from){ // từ ngày date_from
+                    if (shift_f === shift_t && shift_f === false)
+                        hourDate +=  window.work_shift?.[numstart]['aft']['from'] || '12:00:00';
+                    else
+                        hourDate += window.work_shift?.[numstart]['mor']['from'] || '00:00:00';
+            }
+            else{ // đến ngày date_to
+                if (shift_f === shift_t && shift_t === true)
+                    hourDate += window.work_shift?.[numstart]['mor']['to'] || '11:59:59';
+                else
+                    hourDate += window.work_shift?.[numstart]['aft']['to'] || '23:59:59';
+            }
+        }
+        else{ // khác ngày
+             if (shift_f === shift_t && shift_f === true)
+                 if (is_from)
+                     hourDate += window.work_shift?.[numstart]['mor']['from'] || '00:00:00'
+                 else
+                     hourDate += window.work_shift?.[numstart]['mor']['to'] || '11:59:59'
+             else if (shift_f === shift_t && shift_f === false)
+                 if (is_from)
+                     hourDate += window.work_shift?.[numstart]['aft']['from'] || '12:00:00'
+                 else
+                     hourDate += window.work_shift?.[numstart]['aft']['to'] || '23:59:59'
+             else if (shift_f && !shift_t)
+                 if (is_from)
+                     hourDate += window.work_shift?.[numstart]['mor']['from'] || '00:00:00'
+                 else
+                     hourDate += window.work_shift?.[numstart]['aft']['to'] || '23:59:59'
+             else
+                 if (is_from)
+                     hourDate += window.work_shift?.[numstart]['aft']['from'] || '12:00:00'
+                 else
+                     hourDate += window.work_shift?.[numstart]['mor']['to'] || '11:59:59'
+
+        }
+        return hourDate
     }
 
     static init(calendar) {
@@ -287,11 +338,16 @@ class programmeHandle {
                 "border": "none",
                 "box-shadow": "0 8px 10px rgba(0, 0, 0, 0.1)"
             }).addClass('drawer-toggle');
-            let sltData = programmeHandle.prepareData(window.targetEvent.extendedProps.source)
+            let source = window.targetEvent.extendedProps.source;
+            if (source.calendar_type === 3){
+                source.date_from = window.targetEvent.start
+                source.date_to = window.targetEvent.end
+            }
+            let sltData = programmeHandle.prepareData(source)
             let $elmPopup = $('.calendar-drawer')
             $elmPopup.find('.event-name').text(sltData.title);
             $elmPopup.find('.date_txt').text(sltData?.date);
-            $elmPopup.find('.time_txt').text(sltData?.time);
+            $elmPopup.find('.time_txt').text(sltData?.time || '--');
             $elmPopup.find('.loca_txt').text(sltData?.location);
             $elmPopup.find('.type_txt').text(sltData?.type);
             $elmPopup.find('.member_txt').html(sltData?.member);
@@ -323,7 +379,6 @@ class programmeHandle {
             // loop in app has checked
             loopCallAPI(DStart.format('YYYY-MM-DD'))
         });
-
 
         $('.categories-wrap input').on('change', function () {
             programmeHandle.triggerCallAPI(calendar)
@@ -419,6 +474,47 @@ $(document).ready(function () {
             meridiem: 'short'
         },
     });
+
+    let work_shift = JSON.parse($('#ws_data').text())
+    work_shift = work_shift['working_days']
+    window.work_shift = Object.keys(work_shift).map((item) =>{
+        let value = work_shift[item];
+
+        // morning from
+        let mf = value.mor.from
+        if (mf.split(' ')[1] === 'AM')
+            mf = `0${parseInt(mf.split(' ')[0].split(':')[0])}:${mf.split(' ')[0].split(':')[1]}:00`
+        else if (mf.split(' ')[1] === 'PM')
+            mf = `${parseInt(mf.split(' ')[0].split(':')[0]) + 12}:${mf.split(' ')[0].split(':')[1]}:00`
+
+        // morning to
+        let mt = value.mor.to
+        if (mt.split(' ')[1] === 'AM')
+            mt = `${parseInt(mt.split(' ')[0].split(':')[0])}:${mt.split(' ')[0].split(':')[1]}:00`
+        else if (mt.split(' ')[1] === 'PM')
+            mt = `${parseInt(mt.split(' ')[0].split(':')[0]) + 12}:${mt.split(' ')[0].split(':')[1]}:00`
+
+        // afternoon from
+        let af = value.aft.from
+        if (af.split(' ')[1] === 'AM')
+            af = `0${parseInt(af.split(' ')[0].split(':')[0])}:${af.split(' ')[0].split(':')[1]}:00`
+        else if (af.split(' ')[1] === 'PM')
+            af = `${parseInt(af.split(' ')[0].split(':')[0]) + 12}:${af.split(' ')[0].split(':')[1]}:00`
+
+        // afternoon to
+        let at = value.aft.to
+        if (at.split(' ')[1] === 'AM')
+            at = `0${parseInt(at.split(' ')[0].split(':')[0])}:${at.split(' ')[0].split(':')[1]}:00`
+        else if (at.split(' ')[1] === 'PM')
+            at = `${parseInt(at.split(' ')[0].split(':')[0]) + 12}:${at.split(' ')[0].split(':')[1]}:00`
+
+        value = {
+            mor: {from: mf, to: mt},
+            aft: {from: af, to: at}
+        }
+        return value
+    })
+
     programmeHandle.init(calendar);
     // tạo DateListCallable tháng hiện tại
     const newDate = moment().format('YYYY-MM')

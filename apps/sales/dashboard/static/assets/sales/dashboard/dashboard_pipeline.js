@@ -348,12 +348,12 @@ $(document).ready(function () {
 
     AjaxTotalPipelineChart()
 
-    $('.timechart-total-pipeline').on('change', function () {
-        UpdateOptionTotalPipelineChart()
-        TOP_FROM = 0
-        TOP_TO = 5
-        UpdateOptionTopSaleByTotalPipelineChart(0, 5)
-    })
+    // totalPipelineYearFilterEle.on('change', function () {
+    //     UpdateOptionTotalPipelineChart()
+    //     TOP_FROM = 0
+    //     TOP_TO = 5
+    //     UpdateOptionTopSaleByTotalPipelineChart(0, 5)
+    // })
 
     // Top sale by total pipeline chart
 
@@ -1058,9 +1058,9 @@ $(document).ready(function () {
         }
     }
 
-    $('#forecast-year').on('change', function () {
-        UpdateOptionForecastChart()
-    })
+    // $('#forecast-year').on('change', function () {
+    //     UpdateOptionForecastChart()
+    // })
 
     $('#forecast-type').on('change', function () {
         UpdateOptionForecastChart(parseInt($(this).val()))
@@ -1301,17 +1301,17 @@ $(document).ready(function () {
         }
     })
 
-    $('#customer-activities-year').on('change', function () {
-        FROM = 0
-        TO = 10
-        customer_title_chart_data_DF = []
-        call_chart_data_DF = []
-        email_chart_data_DF = []
-        meeting_chart_data_DF = []
-        document_chart_data_DF = []
-        ProcessDataCustomerActivities()
-        UpdateOptionCustomerActivitiesPipelineChart(0, 10)
-    })
+    // $('#customer-activities-year').on('change', function () {
+    //     FROM = 0
+    //     TO = 10
+    //     customer_title_chart_data_DF = []
+    //     call_chart_data_DF = []
+    //     email_chart_data_DF = []
+    //     meeting_chart_data_DF = []
+    //     document_chart_data_DF = []
+    //     ProcessDataCustomerActivities()
+    //     UpdateOptionCustomerActivitiesPipelineChart(0, 10)
+    // })
 
     customerActivitiesMonthEle.on('change', function () {
         FROM = 0

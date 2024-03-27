@@ -2,7 +2,6 @@ import hashlib
 import uuid
 import time
 import base64
-from xhtml2pdf import pisa
 import requests
 import json
 

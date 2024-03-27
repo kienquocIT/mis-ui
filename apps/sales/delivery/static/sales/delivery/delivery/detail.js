@@ -664,7 +664,7 @@ $(async function () {
                             if (row) {
                                 return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                             } else {
-                                return `<p></p>`;
+                                return `<p>--</p>`;
                             }
                         }
                     },
@@ -676,7 +676,7 @@ $(async function () {
                             if (row) {
                                 return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                             } else {
-                                return `<p></p>`;
+                                return `<p>--</p>`;
                             }
                         }
                     },
@@ -711,9 +711,6 @@ $(async function () {
             let tableLot = $('#datable-delivery-wh-serial');
             tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
-                // ordering: false,
-                // paginate: false,
-                // info: false,
                 columns: [
                     {
                         targets: 0,
@@ -796,7 +793,7 @@ $(async function () {
                             if (row) {
                                 return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                             } else {
-                                return `<p></p>`;
+                                return `<p>--</p>`;
                             }
                         }
                     },
@@ -808,7 +805,7 @@ $(async function () {
                             if (row) {
                                 return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                             } else {
-                                return `<p></p>`;
+                                return `<p>--</p>`;
                             }
                         }
                     },
@@ -857,6 +854,7 @@ $(async function () {
                     });
                     if (newQuantity <= parseFloat(valueWHStock)) {
                         eleWHInput.value = newQuantity;
+                        // store new row data & redraw row
                         let rowIndex = tableWH.DataTable().row(rowChecked).index();
                         let $row = tableWH.DataTable().row(rowIndex);
                         let rowData = $row.data();
@@ -899,6 +897,7 @@ $(async function () {
                     });
                     if (newQuantity <= parseFloat(valueWHStock)) {
                         eleWHInput.value = newQuantity;
+                        // store new row data & redraw row
                         let rowIndex = tableWH.DataTable().row(rowChecked).index();
                         let $row = tableWH.DataTable().row(rowIndex);
                         let rowData = $row.data();

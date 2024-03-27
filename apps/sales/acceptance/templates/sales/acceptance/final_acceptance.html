@@ -27,9 +27,7 @@
     >
     {% csrf_token %}
         <div class="row">
-{#            {% trans 'Select Sale Person' as inherit_title %}#}
-{#            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}#}
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="employee_inherit_id">{% trans 'Employee inherit' %}</label>
                     <select
@@ -42,23 +40,6 @@
                             data-keyText="full_name"
                     ></select>
                 </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="opportunity_id">{% trans 'Opportunity' %}</label>
-                    <select
-                            class="form-select"
-                            id="opportunity_id"
-                            data-url="{% url 'OpportunityListAPI' %}"
-                            data-method="GET"
-                            name="opportunity_id"
-                            data-keyResp="opportunity_list"
-                    ></select>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
                     <select
@@ -73,18 +54,33 @@
             </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label" for="final-acceptance-date-save">{% trans 'Date' %}</label>
-                    <div class="input-affix-wrapper">
-                        <input type="text" name="date_save" id="final-acceptance-date-save"
-                               class="form-control date-picker" autocomplete="off" disabled>
-                        <div class="input-suffix">
-                            <i class="far fa-calendar"></i>
+                    <label class="form-label" for="opportunity_id">{% trans 'Opportunity' %}</label>
+                    <select
+                            class="form-select"
+                            id="opportunity_id"
+                            data-url="{% url 'OpportunityListAPI' %}"
+                            data-method="GET"
+                            name="opportunity_id"
+                            data-keyResp="opportunity_list"
+                    ></select>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="final-acceptance-date-save">{% trans 'Date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_save" id="final-acceptance-date-save"
+                                       class="form-control date-picker" autocomplete="off" disabled>
+                                <div class="input-suffix">
+                                    <i class="far fa-calendar"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-2 col-lg-2">
-                <div class="d-flex mt-5 justify-content-end">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="d-flex justify-content-end">
                     <button
                             type="button"
                             class="btn btn-outline-primary"
@@ -95,7 +91,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <table
                     id="table_final_acceptance_list"

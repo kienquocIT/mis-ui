@@ -305,6 +305,15 @@
                             <h6 class="dropdown-header">
                                 {% trans 'Manage Account' %}
                             </h6>
+                            <span
+                                    class="d-none"
+                                    id="data-current-base"
+                                    data-has-company-list="{% if base.companies_data|length > 0 %}true{% else %}false{% endif %}"
+                                    data-has-current-company="{% if base.company_current_data %}true{% else %}false{% endif %}"
+                                    data-has-current-employee="{% if base.employee_current_data %}true{% else %}false{% endif %}"
+                                    data-url-admin-tenant="{% url 'UserAdminTenant' %}"
+                                    data-url-admin-company="{% url 'EmployeeAdminCompanyAPI' %}"
+                            ></span>
                             {% if base.company_current_data %}
                                 <a
                                         id="company-current-id"
@@ -318,7 +327,9 @@
                                         <i class="fa-solid fa-retweet"></i>
                                     </span>
                                     <span
-                                        id="btnChangeCurrentCompany" data-bs-toggle="modal" data-bs-target="#switchMyCompany"
+                                        id="btnChangeCurrentCompany"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#switchMyCompany"
                                     > {{ base.company_current_data.code }} - {{ base.company_current_data.title }} </span>
                                 </a>
                                 {% if base.employee_current_data %}

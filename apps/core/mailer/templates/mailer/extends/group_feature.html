@@ -1,0 +1,43 @@
+{% load i18n %}
+
+<div class="w-100 mb-5 parentGroupInfo">
+    <div class="w-100 d-flex">
+        <button class="btn btn-gradient-info btn-square no-transform w-90 btnCollapseGroup" type="button">
+            __feature_title__
+            <i class="btn-collapse-group-print fa-solid fa-angles-left ml-1 rotate-icon"></i>
+        </button>
+        <button class="btn btn-gradient-primary btn-square w-10 btnShowInfo">
+            <i class="fa-solid fa-circle-info"></i>
+        </button>
+        <button
+                class="btn btn-outline-primary btn-square w-10 d-none"
+                onclick="window.location.href = '{% url 'MailTemplateCreateView' %}"
+        >
+            <i class="fa-solid fa-plus"></i>
+        </button>
+    </div>
+    <div class="w-100 groupInfo p-3" style="display: none;font-style: italic">
+
+    </div>
+    <div class="w-100 groupCollapseData" style="display: none;">
+        <table
+                class="table no-wrap w-100"
+                data-url="{% url 'MailTemplateListByApplicationAPI' application_id='__application_id__' %}"
+                data-url-detail="{% url 'MailTemplateDetailView' pk='__pk__' %}"
+                data-url-update="{% url 'MailTemplateUpdateView' pk='__pk__' %}"
+                data-url-delete="{% url 'MailTemplateDetailAPI' pk='__pk__' %}"
+        >
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Title' %}</th>
+                <th>{% trans 'Remarks' %}</th>
+                <th>{% trans 'Using' %}</th>
+                <th>{% trans 'Is default' %}</th>
+                <th>{% trans 'Actions' %}</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>

@@ -4398,6 +4398,19 @@ class WindowControl {
         let offsetTop = ele$.offset().top;
         parent$.animate({scrollTop: offsetTop > 150 ? offsetTop - 150 : offsetTop}, 200);
     }
+
+    static findGetParameter(parameterName) {
+        let result = null,
+            tmp = [];
+        location.search
+            .substr(1)
+            .split("&")
+            .forEach(function (item) {
+                tmp = item.split("=");
+                if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+            });
+        return result;
+    }
 }
 
 class PersonControl {
@@ -6474,6 +6487,7 @@ let $x = {
         getHashUrl: WindowControl.getHashUrl,
         pushHashUrl: WindowControl.pushHashUrl,
         scrollToIdx: WindowControl.scrollToIdx,
+        findGetParameter: WindowControl.findGetParameter,
 
         numberWithCommas: DocumentControl.numberWithCommas,
     },

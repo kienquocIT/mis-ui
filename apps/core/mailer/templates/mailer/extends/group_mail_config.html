@@ -1,0 +1,196 @@
+{% load i18n %}
+
+<form
+        id="frm-mail-config"
+        data-url="{% url 'MailConfigDetailAPI' pk='__pk__' %}"
+        data-method="PUT"
+        data-url-detail="{% url 'MailConfigAPI' %}"
+>
+    <div class="row">
+        <div class="col-12">
+            <div class="w-100 d-flex">
+                <div class="w-40">
+                    <div
+                            class="chip chip-primary chip-ticked w-100 h-100"
+                            data-bs-toggle="tooltip"
+                            title="{% trans 'Click to toggle on/off' %}"
+                    >
+                        <input type="checkbox" id="inp-is-active" name="is_active">
+                        <span style="border-radius: unset;" class="w-100 h-100"><span
+                                class="chip-text"
+                        >
+                            {% trans 'Enable mail notification' %}
+                        </span></span>
+                    </div>
+                </div>
+                <div class="w-40">
+                    <div
+                            class="chip chip-primary chip-ticked w-100 h-100"
+                            data-bs-toggle="tooltip"
+                            title="{% trans 'Click to toggle on/off' %}"
+                    >
+                        <input type="checkbox" id="inp-server-general" name="use_our_server">
+                        <span style="border-radius: unset;" class="w-100 h-100"><span
+                                class="chip-text"
+                        >
+                            {% trans 'Use our mail server' %}
+                        </span></span>
+                    </div>
+                </div>
+                <div class="w-20">
+                    <button
+                            class="btn btn-outline-primary btn-square w-100" type="submit"
+                            form="frm-mail-config"
+                    >{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="group-server-mail" style="display: none;">
+        <div class="col-12 mb-3">
+            <div class="w-100 bg-green-light-5">
+                <ol class="py-3">
+                    <li class="mb-3">
+                        <h6>{% trans 'Data Security' %}</h6>
+                        <p>{% trans 'We take the security of your data very seriously. All data stored on our servers is encrypted at rest and in transit. We use industry-standard encryption methods to protect your data.' %}</p>
+                        <p></p>
+                    </li>
+                    <li class="mb-3">
+                        <h6>{% trans 'SSL Files' %}</h6>
+                        <p>{% trans 'The system may access and use SSL files (if any) to send notification emails for your organization only. SSL files are used to secure the communication between the mail server and your organization. We only access SSL files for the purpose of maintaining the email notification service.' %}</p>
+                        <p></p>
+                    </li>
+                    <li class="mb-3">
+                        <h6>{% trans 'Sensitive Information' %}</h6>
+                        <p>{% trans 'Sensitive information will be partially masked when returning data. We mask sensitive information to protect your privacy. Only our authorized personnel can access unmasked data.' %}</p>
+                        <p></p>
+                    </li>
+                    <li class="mb-3">
+                        <h6>{% trans 'Recommend' %}</h6>
+                        <p>{% trans 'We recommend using TLS or SSL to secure your email connections. If both TLS and SSL are enabled, the system will prioritize using TLS for connections. TLS is a newer and more secure protocol than SSL. We recommend using TLS whenever possible to ensure the best possible security for your email communications.' %}</p>
+                        <p></p>
+                    </li>
+                    <li>
+                        <h6>{% trans 'Verifications' %}</h6>
+                        <p>{% trans 'If you use SSL, then connection verification is mandatory after successfully saving the configuration.' %}</p>
+                        <p>{% trans 'On the contrary, if you do not use SSL, then the connection can be checked with the data you entered without saving.' %}</p>
+                    </li>
+                </ol>
+                <button
+                        class="w-100 btn btn-square" type="button"
+                        id="btn-collapse-policy"
+                ><i class="fa-solid fa-angles-up"></i></button>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-4 mb-3">
+            <div class="form-group">
+                <label for="inp-host" class="form-label">{% trans 'Host mail server' %}</label>
+                <input type="text" class="form-control" id="inp-host" name="host"/>
+            </div>
+            <div class="form-group">
+                <label for="inp-port" class="form-label">{% trans 'Port mail server' %}</label>
+                <input type="text" class="form-control" id="inp-port" name="port"/>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-4 mb-3">
+            <div class="form-group">
+                <label for="inp-username" class="form-label">{% trans 'Username' %}</label>
+                <input type="text" class="form-control" id="inp-username" name="username"/>
+            </div>
+            <div class="form-group">
+                <label for="inp-password" class="form-label">{% trans 'Password' %}</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="inp-password" name="password"/>
+                    <button
+                            class="btn btn-outline-secondary w-100p" type="button"
+                            id="btn-show-hide-password"
+                    >
+                        <span>{% trans 'Show' %}</span>
+                        <span class="d-none">{% trans 'Hide' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-4 mb-3">
+            <div class="form-group">
+                <label class="form-label"></label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="inp-use-tls" name="use_tls"/>
+                    <label class="form-check-label" for="inp-use-tls">{% trans 'Use TLS' %}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="inp-use-ssl" name="use_ssl"/>
+                    <label class="form-check-label" for="inp-use-ssl">{% trans 'Use SSL' %}</label>
+                </div>
+            </div>
+            <div class="row" id="group-ssl-config">
+                <div class="col-md-12 col-lg-6">
+                    <div class="form-group">
+                        <label
+                                for="inp-ssl-key-file" class="form-label"
+                        >{% trans 'SSL Key file' %}</label>
+                        <input
+                                class="form-control" type="file" id="inp-ssl-key-file" name="ssl_key"
+                                accept=".crt,.key,.txt"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-6">
+                    <div class="form-group">
+                        <label
+                                for="inp-ssl-cert-file" class="form-label"
+                        >{% trans 'SSL Cert file' %}</label>
+                        <input
+                                class="form-control" type="file" id="inp-ssl-cert-file" name="ssl_cert"
+                                accept=".crt,.key,.txt"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mb-3">
+            <div
+                    class="w-100 bg-sky-light-5 p-3 mb-3" style="border-radius: 7px;display: none;"
+                    id="connection-group"
+            >
+                <p>
+                    <span>{% trans 'Connection status' %}:</span>
+                    <span
+                            class="text-info connect-msg" id="connect-msg-in-progress"
+                            style="display: none;"
+                    >{% trans 'Verification in progress' %}...</span>
+                    <span
+                            class="text-danger connect-msg" id="connect-msg-fail" style="display: none;"
+                    >{% trans 'Failure' %}</span>
+                    <span
+                            class="text-success connect-msg" id="connect-msg-success" style="display: none;"
+                    >{% trans 'Successfully' %}</span>
+                    <span
+                            class="text-warning connect-msg" id="connect-msg-need-more"
+                            style="display: none;"
+                    >{% trans 'Need more config value' %}</span>
+                </p>
+                <p id="group-connect-errs" style="display: none;">
+                    <span>{% trans 'Errors' %}:</span>
+                    <span class="text-danger" id="connect-errs-value"></span>
+                </p>
+            </div>
+        </div>
+        <div class="col-12 mb-3">
+            <button
+                    type="button"
+                    class="btn no-transform btn-primary"
+                    id="btn-verify-saved-config"
+                    data-url="{% url 'MailConfigConnectionTest' pk='__pk__' %}"
+            >{% trans 'Verify saved config' %}</button>
+            <button
+                    type="button"
+                    class="btn no-transform btn-primary"
+                    id="btn-verify-newly-config"
+                    data-url="{% url 'MailConfigConnectionTestData' pk='__pk__' %}"
+            >{% trans 'Verify new config' %}</button>
+        </div>
+    </div>
+</form>

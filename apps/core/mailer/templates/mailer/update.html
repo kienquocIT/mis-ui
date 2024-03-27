@@ -13,16 +13,34 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form data-url="{% url 'MailTemplateDetailAPI' pk=pk %}" data-method="PUT" id="frm-mailer-update">
+    <form
+            data-url="{% url 'MailTemplateDetailAPI' pk=pk %}"
+            data-method="PUT" id="frm-mailer-update"
+            data-url-params="{% url 'ApplicationPropertyForMailListAPI' %}"
+    >
         <div class="row">
             <div class="col-12 col-lg-4 col-xl-6 col-xxl-7">
+                <div class="form-group">
+                    <label class="form-label" for="inp-application">{% trans 'Application' %}</label>
+                    <select
+                            id="inp-application"
+                            name="application"
+                            class="select2 form-select"
+                            data-url="{% url 'TenantApplicationListAPI' %}"
+                            data-params='{"allow_mail":true,"pageSize":-1}'
+                            data-method="GET"
+                            data-keyResp="tenant_application_list"
+                            disabled
+                            readonly
+                    ></select>
+                </div>
                 <div class="form-group">
                     <label class="form-label required" for="inp-title">{% trans 'Title' %}</label>
                     <input type="text" class="form-control" id="inp-title" name="title" required/>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="inp-remark">{% trans 'Remarks' %}</label>
-                    <textarea name="remark" id="inp-remark" class="form-control"></textarea>
+                    <textarea name="remarks" id="inp-remark" class="form-control"></textarea>
                 </div>
                 <div class="form-check form-switch">
                     <input type="checkbox" class="form-check-input" id="inp-is-active" name="is_active">
@@ -36,6 +54,7 @@
             <div class="col-12 col-lg-8 col-xl-6 col-xxl-5">
                 <label for="inp-contents" class="form-label required">{% trans 'Contents' %}</label>
                 <button
+                        type="button"
                         class="btn btn-icon btn-rounded btn-soft-secondary btn-xs"
                         onclick='$(this).siblings(".remark-data").animate({height: "toggle"})'
                 >
@@ -111,10 +130,38 @@
     <script src="{% static 'mailer/mailer.js' %}"></script>
     <script>
         $(document).ready(function () {
-            let textarea$ = $('#inp-contents');
-            MailerTinymceControl.init_tinymce_editable(textarea$);
-            new SetupFormSubmit($('#frm-mailer-update')).validate({
-                submitHandler: function (form, event){
+            let frm$ = $('#frm-mailer-update');
+            $.fn.callAjax2({
+                url: "{% url 'MailTemplateDetailAPI' pk=pk %}",
+                method: 'GET',
+            }).then(
+                resp => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('mailer')) {
+                        let mailerData = data['mailer'];
+                        $('#inp-title').val(mailerData['title']);
+                        $('#inp-remark').val(mailerData['remarks']);
+                        $('#inp-is-active').prop('checked', mailerData['is_active']);
+                        $('#inp-is-default').prop('checked', mailerData['is_default']);
+                        $('#inp-application').initSelect2({
+                            data: [
+                                {
+                                    'id': mailerData['application']['id'],
+                                    'title': mailerData['application']['title'],
+                                    'selected': true
+                                }
+                            ]
+                        })
+                        MailerTinymceControl.init_tinymce_editable($('#inp-contents'), mailerData['contents'], {
+                            url: $(frm$).attr('data-url-params'),
+                            application_id: mailerData['application']?.['id'] || '',
+                        });
+                    }
+                },
+                errs => console.log(errs),
+            )
+            new SetupFormSubmit(frm$).validate({
+                submitHandler: function (form, event) {
                     let frmSetup = new SetupFormSubmit($(form));
                     frmSetup.dataForm['is_active'] = $(form).find('input[name=is_active]').prop('checked');
                     frmSetup.dataForm['is_default'] = $(form).find('input[name=is_default]').prop('checked');
@@ -122,11 +169,22 @@
                         url: frmSetup.dataUrl,
                         method: frmSetup.dataMethod,
                         data: frmSetup.dataForm,
+                        notifyOpts: {
+                            'keyNotMatch': '',
+                            'replaceKey': {
+                                'title': $(form).find('input[name=titke]').closest('form-group').find('label').text(),
+                                'contents': $(form).find('input[name=titke]').closest('form-group').find('label').text(),
+                            },
+                            'isShowKey': true
+                        },
                     }).then(
                         resp => {
                             let data = $.fn.switcherResp(resp);
-                            console.log('data:', data);
-                            if (data){}
+                            if (data) {
+                                $.fn.notifyB({
+                                    'description': $.fn.gettext('Success'),
+                                }, 'success');
+                            }
                         },
                         errs => $.fn.switcherResp(errs),
                     )

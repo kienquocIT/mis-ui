@@ -93,14 +93,7 @@
                         <div class="col-12 col-md-8 col-lg-8">
                             <div class="form-group">
                                 <label class="form-label" for="mst">{% trans "Tax number" %}</label>
-                                <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <input class="form-control for-free-input" id="mst">
-                                    </span>
-                                    <button type="button" class="btn btn-light">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </button>
-                                </div>
+                                <input class="form-control for-free-input" id="mst">
                             </div>
                         </div>
                     </div>
@@ -188,7 +181,7 @@
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="form-label" for="invoice-date">{% trans "Invoice date" %}</label>
+                                <label class="form-label required" for="invoice-date">{% trans "Invoice date" %}</label>
                                 <div class="input-group mb-3">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
@@ -339,9 +332,12 @@
                         </div>
                         <div class="row mt-5 mb-5">
                             <div class="col-8">
-                                <button type="button" class="btn btn-sm btn-rounded btn-custom btn-info" id="create_invoice_btn">
+                                <button type="button" class="btn btn-sm btn-rounded btn-custom btn-primary" id="create_invoice_btn">
                                     <span>
-                                        <span>{% trans 'Create invoice' %}</span>
+                                        <span id="invoice-action"
+                                              data-trans-create="{% trans 'Create invoice' %}"
+                                              data-trans-update="{% trans 'Update invoice' %}"
+                                        >{% trans 'Create invoice' %}</span>
                                         <span class="icon"><i class="fa-solid fa-plus"></i></span>
                                     </span>
                                 </button>

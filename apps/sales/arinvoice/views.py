@@ -5,6 +5,7 @@ import base64
 import requests
 import json
 
+from django.http import JsonResponse
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated

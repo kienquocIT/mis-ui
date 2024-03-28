@@ -29,7 +29,7 @@ postingDateEle.daterangepicker({
     maxYear: parseInt(moment().format('YYYY'), 10),
     drops: 'up',
     autoApply: true,
-}).val('');
+});
 
 documentDateEle.daterangepicker({
     singleDatePicker: true,
@@ -42,7 +42,7 @@ documentDateEle.daterangepicker({
     maxYear: parseInt(moment().format('YYYY'), 10),
     drops: 'up',
     autoApply: true,
-}).val('');
+});
 
 invoiceDateEle.daterangepicker({
     singleDatePicker: true,
@@ -55,7 +55,7 @@ invoiceDateEle.daterangepicker({
     maxYear: parseInt(moment().format('YYYY'), 10),
     drops: 'up',
     autoApply: true,
-}).val('');
+});
 
 selectCustomerBtn.on('click', function () {
     let selected_id = null
@@ -932,6 +932,10 @@ function LoadDetailARInvoice(option) {
                 if (data?.['is_created_einvoice'] === false) {
                     $('#view_invoice_btn').closest('a').remove()
                 }
+                else {
+                    $('#invoice-action').text($('#invoice-action').attr('data-trans-update'))
+                    $('#invoice-action').closest('button').find('.icon').html('<i class="fa-solid fa-retweet"></i>')
+                }
 
                 if (data?.['is_free_input'] === false) {
                     $('.for-free-input').prop('readonly', true).prop('disabled', true)
@@ -1183,4 +1187,63 @@ $(document).on("change", '.recalculate-field', function () {
             $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
         }
     }
+})
+
+$('#get-vat-number-info-btn').on('click', function () {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', `https://api.vietqr.io/v2/business/${$('#mst').val()}`, true);
+    xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            let responseData = JSON.parse(xhr.responseText);
+            if (responseData.code !== '00') {
+                Swal.fire({
+                        html:
+                            '<span class="text-danger mt-3"><i class="fas fa-exclamation-triangle"></i></span>' +
+                            `<p class="text-danger mt-3">${responseData.desc}</p>`,
+                        customClass: {
+                            confirmButton: 'btn btn-outline-primary text-secondary',
+                            cancelButton: 'btn btn-outline-secondary text-secondary',
+                            container: 'swal2-has-bg',
+                            actions: 'w-100'
+                        },
+                        showCancelButton: false,
+                        buttonsStyling: false,
+                        confirmButtonText: 'Cancel',
+                        cancelButtonText: 'No',
+                        reverseButtons: false
+                    })
+            }
+            else {
+                console.log(responseData.data)
+                Swal.fire({
+                        html:
+                            `<p class="text-left text-secondary mt-1">International Name: <input class="form-control mb-1" readonly value="${responseData?.['data']?.['internationalName']}"></p>` +
+                            `<p class="text-left text-secondary mt-1">Name: <input class="form-control mb-1" readonly value="${responseData?.['data']?.['name']}"></p>` +
+                            `<p class="text-left text-secondary mt-1">ShortName: <input class="form-control mb-1" readonly value="${responseData?.['data']?.['shortName']}"></p>` +
+                            `<p class="text-left text-secondary mt-1">Tax number: <input class="form-control mb-1" readonly value="${responseData?.['data']?.['id']}"></p>` +
+                            `<p class="text-left text-secondary mt-1">Address: <textarea class="form-control mb-1" readonly>${responseData?.['data']?.['address']}</textarea></p>`,
+                        customClass: {
+                            confirmButton: 'btn btn-outline-primary text-primary',
+                            cancelButton: 'btn btn-outline-secondary text-secondary',
+                            container: 'swal2-has-bg',
+                            actions: 'w-100'
+                        },
+                        showCancelButton: false,
+                        buttonsStyling: false,
+                        confirmButtonText: 'OK',
+                        cancelButtonText: 'Cancel',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.value) {
+                        }
+                    })
+            }
+        } else {
+            $.fn.notifyB({description: 'Can not get this Tax number information'}, 'failure');
+        }
+    };
+    xhr.onerror = function() {
+        $.fn.notifyB({description: 'Request failed'}, 'failure');
+    };
+    xhr.send();
 })

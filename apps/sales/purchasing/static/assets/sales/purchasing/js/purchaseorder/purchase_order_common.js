@@ -2285,11 +2285,6 @@ class POSubmitHandle {
         if (dataPaymentStage.length > 0) {
             _form.dataForm['purchase_order_payment_stage'] = dataPaymentStage;
         }
-
-        // system fields
-        if (_form.dataMethod === "POST") {
-            _form.dataForm['system_status'] = 1;
-        }
         // attachment
         _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm['attachment'], []);
     };

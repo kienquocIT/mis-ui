@@ -311,6 +311,7 @@ class GRLoadDataHandle {
                                                                     dataWarehouse['purchase_request_product_id'] = dataPR?.['purchase_request_product']?.['id'];
                                                                     GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
                                                                 }
+                                                                dataPRProduct['purchase_order_request_product'] = dataPR?.['purchase_order_request_product'];
                                                                 dataPRProduct['warehouse_data'] = dataPR?.['warehouse_data'];
                                                             }
                                                         }
@@ -2288,7 +2289,7 @@ class GRStoreDataHandle {
                     rowData['warehouse_data'] = new_data;
                     rowData['quantity_import'] = quantityImportTotal;
                     tablePO.DataTable().row(rowIndex).data(rowData).draw();
-                    tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).checked;
+                    tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).checked = true;
                 }
             }
         }
@@ -2874,116 +2875,6 @@ class GRSubmitHandle {
                     result.push(dataRow);
                 }
             });
-
-
-
-            // if (!table[0].querySelector('.dataTables_empty')) {
-            //     let order = 0;
-            //     // Setup Merge Data by Product
-            //     for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            //         let row = table[0].tBodies[0].rows[i];
-            //         let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
-            //         if (dataRowRaw) {
-            //             order++;
-            //             let dataRow = JSON.parse(dataRowRaw);
-            //             let quantityImport = 0;
-            //             if (dataRow?.['product']?.['product_choice'].includes(1) || dataRow?.['purchase_request_products_data'].length > 0) { // If PO Product have inventory choice or PO have PR
-            //                 quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
-            //             } else { // If PO Product doesn't have inventory choice and PO doesn't have PR
-            //                 quantityImport = parseFloat(row.querySelector('.table-row-import').value);
-            //             }
-            //             if (quantityImport > 0) {
-            //                 dataRow['purchase_order_product'] = dataRow?.['id'];
-            //                 dataRow['product_description'] = dataRow?.['product']?.['description'] ? dataRow?.['product']?.['description'] : '';
-            //                 dataRow['uom'] = dataRow?.['uom_order_actual'];
-            //                 dataRow['quantity_import'] = quantityImport;
-            //                 dataRow['order'] = order;
-            //                 let data_id = dataRow?.['id'];
-            //                 if (is_submit === true) {
-            //                     let field_list = [
-            //                         'purchase_order_product',
-            //                         'product',
-            //                         'uom',
-            //                         'tax',
-            //                         'warehouse',
-            //                         'quantity_import',
-            //                         'product_title',
-            //                         'product_code',
-            //                         'product_description',
-            //                         'product_unit_price',
-            //                         'product_subtotal_price',
-            //                         'product_subtotal_price_after_tax',
-            //                         'order',
-            //                         'purchase_request_products_data',
-            //                         'warehouse_data'
-            //                     ]
-            //                     filterFieldList(field_list, dataRow);
-            //                     dataRow['product'] = dataRow?.['product']?.['id']
-            //                     dataRow['uom'] = dataRow?.['uom']?.['id']
-            //                     dataRow['tax'] = dataRow?.['tax']?.['id']
-            //                     let tableLineDetailPO = GRDataTableHandle.tableLineDetailPO;
-            //                     for (let i = 0; i < tableLineDetailPO[0].tBodies[0].rows.length; i++) {
-            //                         let row = tableLineDetailPO[0].tBodies[0].rows[i];
-            //                         if (row.querySelector('.table-row-order').id === data_id) {
-            //                             let elePrice = row.querySelector('.table-row-price');
-            //                             if (elePrice) {
-            //                                 dataRow['product_unit_price'] = $(elePrice).valCurrency();
-            //                             }
-            //                             let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-            //                             if (eleSubtotal) {
-            //                                 dataRow['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-            //                             }
-            //                             let eleTax = row.querySelector('.table-row-tax');
-            //                             if ($(eleTax).val()) {
-            //                                 let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-            //                                 if (dataInfo) {
-            //                                     dataRow['tax'] = dataInfo.id;
-            //                                     dataRow['product_tax_title'] = dataInfo.title;
-            //                                     dataRow['product_tax_value'] = dataInfo.rate;
-            //                                 } else {
-            //                                     dataRow['product_tax_value'] = 0;
-            //                                 }
-            //                             }
-            //                             let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-            //                             if (eleTaxAmount) {
-            //                                 dataRow['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-            //                             }
-            //                             if (dataRow.hasOwnProperty('product_subtotal_price') && dataRow.hasOwnProperty('product_tax_amount')) {
-            //                                 dataRow['product_subtotal_price_after_tax'] = dataRow['product_subtotal_price'] + dataRow['product_tax_amount'];
-            //                             }
-            //                         }
-            //                     }
-            //                     if (dataRow['product_unit_price'] <= 0) {
-            //                         delete dataRow['product_unit_price'];
-            //                     }
-            //                     // If PO have PR
-            //                     let pr_product_submit_list = [];
-            //                     for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
-            //                         let field_list = [
-            //                             'purchase_order_request_product',
-            //                             'purchase_request_product',
-            //                             'quantity_import',
-            //                             'warehouse_data',
-            //                             'is_stock',
-            //                         ]
-            //                         filterFieldList(field_list, pr_product);
-            //                         if (pr_product?.['quantity_import'] > 0) {
-            //                             pr_product_submit_list.push(pr_product);
-            //                         }
-            //                     }
-            //                     dataRow['purchase_request_products_data'] = pr_product_submit_list;
-            //                     for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
-            //                         pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id'] ? pr_product?.['purchase_request_product']?.['id'] : null;
-            //                         GRSubmitHandle.setupDataWHLotSerial(pr_product);
-            //                     }
-            //                     // If PO doesn't have PR
-            //                     GRSubmitHandle.setupDataWHLotSerial(dataRow);
-            //                 }
-            //                 result.push(dataRow);
-            //             }
-            //         }
-            //     }
-            // }
         }
         return result
     };
@@ -3222,10 +3113,6 @@ class GRSubmitHandle {
             _form.dataForm['total_product_tax'] = parseFloat($(eleTaxesRaw).val());
             _form.dataForm['total_product'] = parseFloat($(eleTotalRaw).val());
             _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
-        }
-        // system fields
-        if (_form.dataMethod === "POST") {
-            _form.dataForm['system_status'] = 1;
         }
     };
 }

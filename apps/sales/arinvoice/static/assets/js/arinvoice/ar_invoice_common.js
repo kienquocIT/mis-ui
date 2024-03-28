@@ -1122,6 +1122,9 @@ function loadRowTax(ele, data) {
 
 $(document).on("click", '.delete-item-row', function () {
     $(this).closest('tr').remove()
+    if (tabLineDetailTable.find('tbody tr').length === 0) {
+        loadTableLineDetail([])
+    }
     tabLineDetailTable.find('tbody tr').each(function (index, ele) {
         $(this).find('td:first-child').text(index + 1)
     })

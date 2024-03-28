@@ -526,7 +526,8 @@ $(document).ready(function () {
             }
         }
         else {
-            const table_inventory_report = $('#table-inventory-report').prop('hidden', false)
+            const table_inventory_report = $('#table-inventory-report')
+            table_inventory_report.prop('hidden', false)
             $('#table-inventory-report-detail').prop('hidden', true)
             if (periodMonthEle.val()) {
                 WindowControl.showLoading();

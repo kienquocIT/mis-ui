@@ -38,68 +38,59 @@
                 <div class="row" id="common-information-area">
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="input-prefix">
-                                            <i class="fas fa-file-import text-primary"></i>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
+                                        <div class="input-group">
+                                            <div class="input-affix-wrapper">
+                                                <div class="input-prefix">
+                                                    <i class="fas fa-file-import text-primary"></i>
+                                                </div>
+                                                <select
+                                                    class="form-select"
+                                                    id="box-good-receipt-type"
+                                                    data-url=""
+                                                    data-method="GET"
+                                                    data-link-detail=""
+                                                    name="good_receipt_type"
+                                                    data-keyResp=""
+                                                    disabled
+                                                >
+                                                </select>
+                                            </div>
                                         </div>
-                                        <select
-                                            class="form-select"
-                                            id="box-good-receipt-type"
-                                            data-url=""
-                                            data-method="GET"
-                                            data-link-detail=""
-                                            name="good_receipt_type"
-                                            data-keyResp=""
-                                            disabled
-                                        >
-                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" name="date_received" id="good-receipt-date-received"
+                                                   class="form-control date-picker" autocomplete="off" disabled>
+                                            <div class="input-suffix">
+                                                <i class="far fa-calendar"></i>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <input type="text" name="date_received" id="good-receipt-date-received"
-                                           class="form-control date-picker" autocomplete="off" disabled>
-                                    <div class="input-suffix">
-                                        <i class="far fa-calendar"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label required" for="good-receipt-title">{% trans 'Title' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <input
-                                            type="text" class="form-control"
-                                            name="title"
-                                            id="good-receipt-title"
-                                            disabled
-                                        >
-                                    </div>
-                                </div>
+                                <input
+                                    type="text" class="form-control"
+                                    name="title"
+                                    id="good-receipt-title"
+                                    disabled
+                                >
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <input
-                                            type="text" class="form-control"
-                                            name="remarks"
-                                            id="good-receipt-note"
-                                            disabled
-                                        >
+                            <div class="row">
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="form-group">
+                                        <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
+                                        <textarea class="form-control" rows="5" id="good-receipt-note" name="remarks" disabled></textarea>
                                     </div>
                                 </div>
                             </div>

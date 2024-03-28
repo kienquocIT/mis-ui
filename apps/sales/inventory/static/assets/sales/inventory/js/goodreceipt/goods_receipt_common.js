@@ -409,12 +409,12 @@ class GRLoadDataHandle {
         if (ele.checked === true) {
             is_checked = true;
         }
+        GRStoreDataHandle.storeDataAll();
         for (let eleCheck of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox')) {
             eleCheck.checked = false;
             let row = eleCheck.closest('tr');
             $(row).css('background-color', '');
         }
-        GRStoreDataHandle.storeDataAll();
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
         if (is_checked === true) {
@@ -1108,19 +1108,10 @@ class GRLoadDataHandle {
         let formSubmit = $('#frm_good_receipt_create');
         $('#good-receipt-title').val(data?.['title']);
         $('#good-receipt-note').val(data?.['remarks']);
-        if (formSubmit.attr('data-method') === 'GET') {
-            if (data?.['date_received']) {
-                $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY'));
-            } else {
-                $('#good-receipt-date-received').val('');
-            }
-        }
-        if (formSubmit.attr('data-method') === 'PUT') {
-            if (data?.['date_received']) {
-                $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY hh:mm A'));
-            } else {
-                $('#good-receipt-date-received').val('');
-            }
+        if (data?.['date_received']) {
+            $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY'));
+        } else {
+            $('#good-receipt-date-received').val('');
         }
         if ([2, 3].includes(data?.['system_status'])) {
             let $btn = $('#btn-enable-edit');
@@ -2196,6 +2187,7 @@ class GRStoreDataHandle {
         let tablePO = GRDataTableHandle.tablePOProduct;
         if (!table[0].querySelector('.dataTables_empty')) {
             let POProductID = null;
+            let quantityImportTotal = 0;
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
@@ -2210,6 +2202,7 @@ class GRStoreDataHandle {
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
                     dataRow['quantity_import'] = quantityImport;
+                    quantityImportTotal += quantityImport;
                     POProductID = dataRow?.['purchase_order_product_id'];
                     dataRow['purchase_order_request_product'] = dataRow?.['id'];
                     new_data.push(dataRow);
@@ -2220,6 +2213,7 @@ class GRStoreDataHandle {
                 if (dataPOCheckedRaw) {
                     let dataPOChecked = JSON.parse(dataPOCheckedRaw);
                     dataPOChecked['purchase_request_products_data'] = new_data;
+                    dataPOChecked['quantity_import'] = quantityImportTotal;
                     let rowChecked = tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`)?.closest('tr');
                     tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).setAttribute('data-row', JSON.stringify(dataPOChecked));
                     // store new row data & redraw row
@@ -2227,7 +2221,9 @@ class GRStoreDataHandle {
                     let $row = tablePO.DataTable().row(rowIndex);
                     let rowData = $row.data();
                     rowData['purchase_request_products_data'] = new_data;
+                    rowData['quantity_import'] = quantityImportTotal;
                     tablePO.DataTable().row(rowIndex).data(rowData).draw();
+                    tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).checked = true;
                 }
             }
         }
@@ -2242,6 +2238,7 @@ class GRStoreDataHandle {
         if (!table[0].querySelector('.dataTables_empty')) {
             let PRProductID = null;
             let POProductID = null;
+            let quantityImportTotal = 0;
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
@@ -2251,6 +2248,7 @@ class GRStoreDataHandle {
                         let dataRow = JSON.parse(dataRowRaw);
                         dataRow['warehouse'] = dataRow?.['id'];
                         dataRow['quantity_import'] = quantityImport;
+                        quantityImportTotal += quantityImport;
                         PRProductID = dataRow?.['purchase_request_product_id'];
                         POProductID = dataRow?.['purchase_order_product_id'];
                         new_data.push(dataRow);
@@ -2262,6 +2260,7 @@ class GRStoreDataHandle {
                 if (dataPRCheckedRaw) {
                     let dataPRChecked = JSON.parse(dataPRCheckedRaw);
                     dataPRChecked['warehouse_data'] = new_data;
+                    dataPRChecked['quantity_import'] = quantityImportTotal;
                     let rowChecked = tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`)?.closest('tr');
                     tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).setAttribute('data-row', JSON.stringify(dataPRChecked));
                     // store new row data & redraw row
@@ -2269,7 +2268,9 @@ class GRStoreDataHandle {
                     let $row = tablePR.DataTable().row(rowIndex);
                     let rowData = $row.data();
                     rowData['warehouse_data'] = new_data;
+                    rowData['quantity_import'] = quantityImportTotal;
                     tablePR.DataTable().row(rowIndex).data(rowData).draw();
+                    tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).checked = true;
                 }
             }
             if (POProductID) {
@@ -2277,6 +2278,7 @@ class GRStoreDataHandle {
                 if (dataPOCheckedRaw) {
                     let dataPOChecked = JSON.parse(dataPOCheckedRaw);
                     dataPOChecked['warehouse_data'] = new_data;
+                    dataPOChecked['quantity_import'] = quantityImportTotal;
                     let rowChecked = tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`)?.closest('tr');
                     tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).setAttribute('data-row', JSON.stringify(dataPOChecked));
                     // store new row data & redraw row
@@ -2284,7 +2286,9 @@ class GRStoreDataHandle {
                     let $row = tablePO.DataTable().row(rowIndex);
                     let rowData = $row.data();
                     rowData['warehouse_data'] = new_data;
+                    rowData['quantity_import'] = quantityImportTotal;
                     tablePO.DataTable().row(rowIndex).data(rowData).draw();
+                    tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).checked;
                 }
             }
         }
@@ -2297,6 +2301,7 @@ class GRStoreDataHandle {
         let tableWH = GRDataTableHandle.tableWH;
         if (!table[0].querySelector('.dataTables_empty')) {
             let WHID = null;
+            let quantityImportTotal = 0;
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let lotChecked = row.querySelector(".dropdown-item-lot[data-checked='true']");
@@ -2313,6 +2318,7 @@ class GRStoreDataHandle {
                         }
                         dataRow['lot_number'] = lotNumber;
                         dataRow['quantity_import'] = quantityImport;
+                        quantityImportTotal += quantityImport;
                         dataRow['expire_date'] = expireDate;
                         dataRow['manufacture_date'] = manufactureDate;
                         WHID = dataRow?.['warehouse_id'];
@@ -2325,6 +2331,7 @@ class GRStoreDataHandle {
                 if (dataWHCheckedRaw) {
                     let dataWHChecked = JSON.parse(dataWHCheckedRaw);
                     dataWHChecked['lot_data'] = new_data;
+                    dataWHChecked['quantity_import'] = quantityImportTotal;
                     let rowChecked = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`)?.closest('tr');
                     tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).setAttribute('data-row', JSON.stringify(dataWHChecked));
                     // store new row data & redraw row
@@ -2332,7 +2339,9 @@ class GRStoreDataHandle {
                     let $row = tableWH.DataTable().row(rowIndex);
                     let rowData = $row.data();
                     rowData['lot_data'] = new_data;
+                    rowData['quantity_import'] = quantityImportTotal;
                     tableWH.DataTable().row(rowIndex).data(rowData).draw();
+                    tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).checked = true;
                 }
             }
         }
@@ -2345,6 +2354,7 @@ class GRStoreDataHandle {
         let tableWH = GRDataTableHandle.tableWH;
         if (!table[0].querySelector('.dataTables_empty')) {
             let WHID = null;
+            let quantityImportTotal = 0;
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let vendorSerialNumber = row.querySelector('.table-row-vendor-serial-number').value;
@@ -2357,6 +2367,7 @@ class GRStoreDataHandle {
                 if (dataRowRaw) {
                     if (vendorSerialNumber && serialNumber) {
                         let dataRow = JSON.parse(dataRowRaw);
+                        quantityImportTotal++;
                         dataRow['vendor_serial_number'] = vendorSerialNumber;
                         dataRow['serial_number'] = serialNumber;
                         dataRow['expire_date'] = expireDate;
@@ -2373,6 +2384,7 @@ class GRStoreDataHandle {
                 if (dataWHCheckedRaw) {
                     let dataWHChecked = JSON.parse(dataWHCheckedRaw);
                     dataWHChecked['serial_data'] = new_data;
+                    dataWHChecked['quantity_import'] = quantityImportTotal;
                     let rowChecked = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`)?.closest('tr');
                     tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).setAttribute('data-row', JSON.stringify(dataWHChecked));
                     // store new row data & redraw row
@@ -2380,7 +2392,9 @@ class GRStoreDataHandle {
                     let $row = tableWH.DataTable().row(rowIndex);
                     let rowData = $row.data();
                     rowData['serial_data'] = new_data;
+                    rowData['quantity_import'] = quantityImportTotal;
                     tableWH.DataTable().row(rowIndex).data(rowData).draw();
+                    tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).checked = true;
                 }
             }
         }

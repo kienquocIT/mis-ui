@@ -37,16 +37,23 @@ $(function () {
         }
 
         // run datetimepicker
-        $('input[type=text].date-picker').daterangepicker({
-            minYear: 1901,
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: 'DD/MM/YYYY hh:mm A'
-            }
+        $('.date-picker').each(function () {
+            $(this).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                autoApply: true,
+                autoUpdateInput: false,
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            });
+            $(this).val('').trigger('change');
         });
-        // $('#good-receipt-date-created').val(null).trigger('change');
 
         GRLoadDataHandle.typeSelectEle.on('change', function () {
             GRLoadDataHandle.loadCustomAreaByType();
@@ -302,28 +309,7 @@ $(function () {
             if (_form.dataForm) {
                 filterFieldList(submitFields, _form.dataForm);
             }
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-            WindowControl.showLoading();
-            $.fn.callAjax2(
-                {
-                    'url': _form.dataUrl,
-                    'method': _form.dataMethod,
-                    'data': _form.dataForm,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: data.message}, 'success')
-                        $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-                    }
-                }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err.data.errors}, 'failure');
-                }
-            )
+            WFRTControl.callWFSubmitForm(_form);
         });
 
 

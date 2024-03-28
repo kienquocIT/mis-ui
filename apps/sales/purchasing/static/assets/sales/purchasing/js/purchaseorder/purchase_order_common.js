@@ -15,10 +15,8 @@ class POLoadDataHandle {
         ele.initSelect2({
             data: dataCustomer,
             'dataParams': {'account_types_mapped__account_type_order': 1},
+            'allowClear': true,
             disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['name'] || '';
-            },
         });
     };
 
@@ -275,32 +273,7 @@ class POLoadDataHandle {
         POLoadDataHandle.loadBoxSupplier();
         POLoadDataHandle.contactSelectEle.empty();
         POLoadDataHandle.loadBoxContact();
-        // reset PQ
-        let $tableProductPR = $('#datable-purchase-order-product-request');
-        let $tableProductAdd = $('#datable-purchase-order-product-add');
-        let $tablePQ = $('#datable-purchase-quotation');
-        $tablePQ.DataTable().clear().draw();
-        if ($tableProductPR.DataTable().rows().count() !== 0 || $tableProductAdd.DataTable().rows().count() !== 0) {
-            POLoadDataHandle.loadModalPurchaseQuotation();
-        }
-        let $elePQ = $('#purchase-order-purchase-quotation');
-        $elePQ.empty();
-        POLoadDataHandle.PQDataEle.val('');
-        // clear prices by PQ
-        let $table = $tableProductAdd;
-        if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
-            $table = $tableProductPR;
-        }
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            let elePrice = row.querySelector('.table-row-price');
-            let elePriceList = row.querySelector('.table-row-price-list');
-            elePrice.removeAttribute('disabled');
-            $(elePrice).attr('value', String(0));
-            $(elePriceList).empty();
-            $.fn.initMaskMoney2();
-            POCalculateHandle.calculateMain($table, row);
-        });
+        POLoadDataHandle.loadResetPQAndPriceList();
         // uncheck merge product
         let eleMergeProduct = $('#merge-same-product');
         if (eleMergeProduct[0].checked === true) {
@@ -831,6 +804,48 @@ class POLoadDataHandle {
             }
         }
     };
+
+    static loadResetPQAndPriceList() {
+        // reset PQ
+        let $tableProductPR = $('#datable-purchase-order-product-request');
+        let $tableProductAdd = $('#datable-purchase-order-product-add');
+        let $tablePQ = $('#datable-purchase-quotation');
+        $tablePQ.DataTable().clear().draw();
+        if ($tableProductPR.DataTable().rows().count() !== 0 || $tableProductAdd.DataTable().rows().count() !== 0) {
+            POLoadDataHandle.loadModalPurchaseQuotation();
+        }
+        let $elePQ = $('#purchase-order-purchase-quotation');
+        $elePQ.empty();
+        POLoadDataHandle.PQDataEle.val('');
+        // clear prices by PQ
+        let $table = $tableProductAdd;
+        if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
+            $table = $tableProductPR;
+        }
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let elePrice = row.querySelector('.table-row-price');
+            let elePriceList = row.querySelector('.table-row-price-list');
+            elePrice.removeAttribute('disabled');
+            $(elePrice).attr('value', String(0));
+            $(elePriceList).empty();
+            $.fn.initMaskMoney2();
+            POCalculateHandle.calculateMain($table, row);
+        });
+        // reset status
+        let tablePRProduct = $('#datable-purchase-request-product');
+        for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked, .table-row-checkbox.disabled-by-pq')) {
+            let row = eleChecked.closest('tr');
+            eleChecked.classList.remove('disabled-by-pq');
+            eleChecked.removeAttribute('disabled');
+            row.querySelector('.table-row-quantity-order').removeAttribute('disabled');
+            $(row).css('background-color', '');
+            row.removeAttribute('data-bs-toggle');
+            row.removeAttribute('data-bs-placement');
+            row.removeAttribute('title');
+        }
+        return true;
+    }
 
     // LOAD DETAIL
     static loadDetailPage(data) {

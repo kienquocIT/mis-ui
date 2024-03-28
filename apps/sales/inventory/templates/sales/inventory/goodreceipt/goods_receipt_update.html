@@ -64,7 +64,7 @@
                                     <div class="form-group">
                                         <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
                                         <div class="input-affix-wrapper">
-                                            <input type="text" name="date_received" id="good-receipt-date-received"
+                                            <input type="text" name="date-received" id="good-receipt-date-received"
                                                    class="form-control date-picker" autocomplete="off">
                                             <div class="input-suffix">
                                                 <i class="far fa-calendar"></i>
@@ -111,21 +111,6 @@
                                         required
                                 ></select>
                             </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Purchase Request' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
-                                        <input type="hidden" id="purchase_requests_data">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label required" for="box-good-receipt-supplier">{% trans 'Supplier' %}</label>
                                 <select
@@ -138,6 +123,21 @@
                                         data-keyResp="account_sale_list"
                                         required
                                 ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Purchase Request' %}</label>
+                                        <div class="input-group">
+                                            <div class="input-affix-wrapper">
+                                                <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
+                                                <input type="hidden" id="purchase_requests_data">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -635,6 +635,7 @@
             data-for-po="{% trans 'For purchase order' %}"
             data-for-ia="{% trans 'For inventory adjustment' %}"
             data-for-product="{% trans 'For production' %}"
+            data-ia-quantity-valid="{% trans 'Please enter sufficient quantity' %}"
         >
         <input
             type="text"

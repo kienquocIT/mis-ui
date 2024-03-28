@@ -112,6 +112,7 @@ $(document).ready(function () {
         NOT_CLOSED_SUB_PERIOD = 0
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
+            items_detail_report_table_Ele.DataTable().clear().destroy()
             let dataParam = {}
             dataParam['sub_period_order'] = parseInt(periodMonthEle.val())
             dataParam['period_mapped'] = periodEle.val()
@@ -344,6 +345,13 @@ $(document).ready(function () {
                         () => {
                             $('#notify-div').prop('hidden', NOT_CLOSED_SUB_PERIOD === 0)
                             WindowControl.hideLoading();
+                            items_detail_report_table_Ele.DataTable( {
+                                paging: false,
+                                ordering: false,
+                                searching: false,
+                                scrollCollapse: true,
+                                scrollY: '65vh'
+                            });
                         },
                         500
                     )

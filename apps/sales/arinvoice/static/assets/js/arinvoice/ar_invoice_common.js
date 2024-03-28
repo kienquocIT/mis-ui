@@ -1247,3 +1247,15 @@ $('#get-vat-number-info-btn').on('click', function () {
     };
     xhr.send();
 })
+
+$(document).on("change", '.product_discount_rate', function () {
+    if ($(this).val() < 0) {
+        $(this).val(0)
+    }
+})
+
+$(document).on("change", '.picked_quantity', function () {
+    if ($(this).val() < 0) {
+        $(this).val(0)
+    }
+})

@@ -358,7 +358,12 @@ class programmeHandle {
         // click next btn
         $(document).on("click", ".calendarapp-wrap .fc-next-button", function () {
             // check opt filter, check display date current
+            const crtStart = calendar.view.currentStart,
+                crtEnd = calendar.view.currentEnd;
             let DStart = moment(calendar.view.currentStart);
+            if (moment(crtStart).format('YYYY-MM') !== moment(crtEnd).format('YYYY-MM'))
+                DStart = moment(crtEnd)
+
 
             // logic: nếu tháng next có trong danh sách thì ko call API,
             if (window.DateListCallable.includes(DStart.format('YYYY-MM'))) return true

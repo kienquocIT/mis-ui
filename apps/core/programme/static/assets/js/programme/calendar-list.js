@@ -361,7 +361,8 @@ class programmeHandle {
             const crtStart = calendar.view.currentStart,
                 crtEnd = calendar.view.currentEnd;
             let DStart = moment(calendar.view.currentStart);
-            if (moment(crtStart).format('YYYY-MM') !== moment(crtEnd).format('YYYY-MM'))
+            if (moment(crtStart).format('YYYY-MM') !== moment(crtEnd).format('YYYY-MM') && calendar.view.type !==
+            "dayGridMonth")
                 DStart = moment(crtEnd)
 
 

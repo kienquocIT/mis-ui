@@ -119,16 +119,35 @@ class MailTemplateUpdateView(View):
         return {}, status.HTTP_200_OK
 
 
+class MailFeatureAppListAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        url = ApiURL.MAILER_FEATURE_APP_LIST
+        resp = ServerAPI(request=request, user=request.user, url=url).get(data=request.query_params.dict())
+        return resp.auto_return(key_success='feature_app_list')
+
+
 class MailTemplateListAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_LIST).get(data=params)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_FEATURE_LIST).get(data=params)
         return resp.auto_return(key_success='mailer')
 
     @mask_view(login_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_LIST).post(data=request.data)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_FEATURE_LIST).post(data=request.data)
+        return resp.auto_return(key_success='mailer')
+
+
+class MailTemplateListByApplicationAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, application_id, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(
+            request=request, user=request.user,
+            url=ApiURL.MAILER_FEATURE_BY_APPLICATION_LIST.fill_key(application_id=application_id)
+        ).get(data=params)
         return resp.auto_return(key_success='mailer')
 
 
@@ -137,21 +156,27 @@ class MailTemplateDetailAPI(APIView):
     def get(self, request, *args, pk, **kwargs):
         if pk and TypeCheck.check_uuid(pk):
             params = request.query_params.dict()
-            resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_LIST).get(data=params)
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_FEATURE_DETAIL.fill_key(pk=pk)).get(
+                data=params
+            )
             return resp.auto_return(key_success='mailer')
         return RespData.resp_404()
 
     @mask_view(login_require=True, is_api=True)
-    def post(self, request, *args, pk, **kwargs):
+    def put(self, request, *args, pk, **kwargs):
         if pk and TypeCheck.check_uuid(pk):
-            resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_LIST).post(data=request.data)
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_FEATURE_DETAIL.fill_key(pk=pk)).put(
+                data=request.data
+            )
             return resp.auto_return(key_success='mailer')
         return RespData.resp_404()
 
     @mask_view(login_require=True, is_api=True)
     def delete(self, request, *args, pk, **kwargs):
         if pk and TypeCheck.check_uuid(pk):
-            resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_LIST).delete(data=request.data)
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.MAILER_FEATURE_DETAIL.fill_key(pk=pk)).delete(
+                data=request.data
+            )
             return resp.auto_return(key_success='mailer')
         return RespData.resp_404()
 

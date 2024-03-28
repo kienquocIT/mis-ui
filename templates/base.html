@@ -650,6 +650,104 @@
                     formOutSide.trigger('submit');
                 }
             })
+
+            // warning not link employee | not company
+            let eleDataBase = $('#data-current-base');
+            if (eleDataBase.length > 0){
+                let hasCompanyList = eleDataBase.attr('data-has-company-list') === 'true';
+                let hasCurrentCompany = eleDataBase.attr('data-has-current-company') === 'true';
+                let hasCurrentEmployee = eleDataBase.attr('data-has-current-employee') === 'true';
+                let urlAdminTenant = eleDataBase.attr('data-url-admin-tenant');
+                let urlAdminCompany = eleDataBase.attr('data-url-admin-company');
+
+                if (!hasCompanyList) {
+                    let msgTmp = $.fn.gettext("You do not belong to any company in the organization. Please contact the organization administrator to update the company information for you in the Tenant Administration section.");
+                    $.fn.callAjax2({
+                        url: urlAdminTenant,
+                        method: 'GET',
+                    }).then(
+                        resp => {
+                            let data = $.fn.switcherResp(resp);
+                            if (typeof data == 'object' && data.hasOwnProperty('user_admin_tenant')){
+                                let userData = data['user_admin_tenant'];
+                                if (Array.isArray(userData)){
+                                    let htmlTmp = `<p class="mb-1 mr-1">${$.fn.gettext('Admin')}:</p>`;
+                                    userData.map(
+                                        (item) => {
+                                            htmlTmp += `<span class="badge no-transform badge-primary mb-1 mr-1">${item?.['full_name'] || ''} - ${item?.['email'] || ''}</span>`
+                                        }
+                                    )
+                                    return htmlTmp;
+                                }
+                            }
+                            return '';
+                        },
+                        errs => '',
+                    ).then(
+                        msg => Swal.fire({
+                            title: $.fn.gettext("Some apps will be working wrong"),
+                            html: `<p>${msgTmp}</p><br/>${msg}`,
+                            icon: 'warning',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Ok',
+                            showDenyButton: false,
+                            denyButtonText: $.fn.transEle.attr('data-cancel'),
+                        })
+                    )
+                }
+                else if (!hasCurrentCompany) {
+                    let msgTmp = $.fn.gettext("Please update the company information in the Current Company Switch section for your account.");
+                    Swal.fire({
+                        title: $.fn.gettext("Some apps will be working wrong"),
+                        html: `<p>${msgTmp}</p>`,
+                        icon: 'warning',
+                        showConfirmButton: true,
+                        confirmButtonText: $.fn.gettext("Goto switch current company"),
+                        showDenyButton: false,
+                        denyButtonText: $.fn.transEle.attr('data-cancel'),
+                    }).then((result)=>{
+                        if (result.isConfirmed) {
+                            $('#btnChangeCurrentCompany').trigger('click');
+                        }
+                    })
+                }
+                else if(!hasCurrentEmployee) {
+                    let msgTmp = $.fn.gettext("The account is not linked to an employee. Please contact the company administrator to update the employee information for the account.");
+                    $.fn.callAjax2({
+                        url: urlAdminCompany,
+                        method: "GET",
+                    }).then(
+                        resp => {
+                            let data = $.fn.switcherResp(resp);
+                            if (typeof data === 'object' && data.hasOwnProperty('employee_admin_company')) {
+                                let empData = data['employee_admin_company'];
+                                if (Array.isArray(empData)){
+                                    let htmlTmp = `<p class="mb-1 mr-1">${$.fn.gettext('Admin')}:</p>`;
+                                    empData.map(
+                                        item => {
+                                            htmlTmp += `<span class="badge no-transform badge-primary mb-1 mr-1">${item?.['full_name'] || ''} - ${item?.['email'] || ''}</span>`
+                                        },
+                                    )
+                                    return htmlTmp;
+                                }
+                            }
+                            return '';
+                        },
+                        errs => '',
+                    ).then(
+                        msg => Swal.fire({
+                            title: $.fn.gettext("Some apps will be working wrong"),
+                            html: `<p>${msgTmp}</p><br/>${msg}`,
+                            icon: 'warning',
+                            showConfirmButton: true,
+                            confirmButtonText: "Ok",
+                        })
+                    )
+
+
+                }
+                else {}
+            }
         })
 
         function onLoadDropdownInfoInherit(eleInfo, eleInfoData, selectedData) {

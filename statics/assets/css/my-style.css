@@ -147,6 +147,39 @@ div.inline {
 
 /*data table css */
 
+/* width */
+.dataTables_scrollBody::-webkit-scrollbar ~ .dataTables_scrollHead .table {
+    padding-right: 10px;
+}
+.dataTables_scrollBody::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+/* Track */
+.dataTables_scrollBody::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #f1f1f1;
+  border-radius: 0;
+}
+
+/* Handle */
+.dataTables_scrollBody::-webkit-scrollbar-thumb {
+  background: #eaeaea;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
+  background: #cfcfcf;
+}
+
+div.dataTables_wrapper .dataTables_scrollHeadInner  {
+    width: 100% !important;
+}
+
+div.dataTables_wrapper .dataTables_scrollBody table {
+    margin-bottom: 3px !important;
+}
+
 .dataTables_paginate .paginate_button i {
     font-size: 1.2rem;
     vertical-align: -4px

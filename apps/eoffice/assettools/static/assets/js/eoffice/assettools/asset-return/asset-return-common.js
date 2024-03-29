@@ -178,7 +178,7 @@ class AssetReturnProductList {
 }
 
 function submitHandleFunc() {
-    WindowControl.showLoading();
+    // WindowControl.showLoading();
     let $FormElm = $('#asset_return_form')
     const frm = new SetupFormSubmit($FormElm);
     let formData = frm.dataForm;

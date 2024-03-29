@@ -482,7 +482,7 @@ $(document).on('Employee.Loaded', function () {
 });
 
 function submitHandleFunc() {
-    WindowControl.showLoading();
+    // WindowControl.showLoading();
     const frm = new SetupFormSubmit($FormElm);
     let formData = frm.dataForm;
     if (frm.dataMethod.toLowerCase() === 'post') formData.system_status = 1

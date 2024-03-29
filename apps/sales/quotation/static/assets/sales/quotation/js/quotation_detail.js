@@ -24,12 +24,10 @@ $(function () {
                     } else {
                         QuotationLoadDataHandle.loadDataTablesAndDropDowns(data, false);
                     }
-
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
                         $('#data-copy-quotation-detail').val(JSON.stringify(data))
                     }
-
                     if ($form.attr('data-method').toLowerCase() === 'put') {
                         // Check config when begin edit
                         let check_config = QuotationCheckConfigHandle.checkConfig(true);
@@ -41,7 +39,6 @@ $(function () {
                         }
                     }
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-
                     // delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');
                     else $('#btnDeliverySaleOrder').addClass('hidden');

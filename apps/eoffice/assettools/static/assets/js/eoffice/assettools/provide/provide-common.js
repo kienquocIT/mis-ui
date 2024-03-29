@@ -215,7 +215,7 @@ class ProductsTable {
 }
 
 function submitHandleFunc() {
-    WindowControl.showLoading();
+    // WindowControl.showLoading();
     let $FormElm = $('#asset_provide_form')
     let $EmpElm = $('#selectEmployeeInherit')
     const frm = new SetupFormSubmit($FormElm);

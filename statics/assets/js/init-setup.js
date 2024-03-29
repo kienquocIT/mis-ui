@@ -1693,7 +1693,11 @@ class WFRTControl {
             }
         }
         if (actionSelected !== undefined && urlRTAfterBase) {
-            return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);  // Cancel after finished
+            if (actionSelected === '0') {
+                $('#btn-enable-edit').click();
+            } else {
+                return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);  // Cancel after finished
+            }
         }
     }
 
@@ -2549,7 +2553,7 @@ class WFRTControl {
         let btnCancel = $('#btnCancel');
         if (eleRealAction) {
             if (btnCancel.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-primary btn-wf-after-finish" id="btnCR" data-value="1">
+                $(eleRealAction).append(`<button class="btn btn-outline-primary btn-wf-after-finish" id="btnCR" data-value="0">
                                             <span>
                                                 <span>${$.fn.transEle.attr('data-change-request')}</span>
                                                 <span class="icon">

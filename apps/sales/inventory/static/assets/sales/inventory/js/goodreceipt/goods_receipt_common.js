@@ -592,7 +592,6 @@ class GRLoadDataHandle {
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
             if (eleWHData?.['lot_data']) {
-                // GRDataTableHandle.tableLot.DataTable().rows.add(eleWHData?.['lot_data']).draw();
                 for (let lot_data of eleWHData?.['lot_data']) {
                     let newRow = GRDataTableHandle.tableLot.DataTable().row.add(lot_data).draw().node();
                     GRLoadDataHandle.loadDDLot(newRow.querySelector('.dropdown-menu-lot'), lot_data?.['lot']);
@@ -1239,6 +1238,7 @@ class GRLoadDataHandle {
                                 for (let dataLot of dataWH?.['lot_data']) {
                                     dataLot['product_id'] = dataIAProduct?.['id'];
                                     dataLot['uom'] = dataIAProduct?.['uom'];
+                                    dataLot['lot'] = dataLot?.['lot_id'];
                                     dataLot['expire_date'] = '';
                                     if (dataLot?.['expire_date']) {
                                         dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');

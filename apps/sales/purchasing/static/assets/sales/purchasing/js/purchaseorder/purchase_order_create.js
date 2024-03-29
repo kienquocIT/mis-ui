@@ -70,7 +70,9 @@ $(function () {
                 POLoadDataHandle.loadBoxContact();
             }
             POLoadDataHandle.loadResetPQAndPriceList();
-            POLoadDataHandle.loadTableProductByPurchaseRequest();
+            if (POLoadDataHandle.PRDataEle.val()) {
+                POLoadDataHandle.loadTableProductByPurchaseRequest();
+            }
         });
 
         // Purchase request modal

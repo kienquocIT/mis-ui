@@ -587,26 +587,22 @@ class POLoadDataHandle {
                                         $(elePriceList).empty();
                                         for (let price of priceListData) {
                                             let priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
-                                                                    <div class="row">
-                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['purchase_quotation']?.['title']}</span></div>
-                                                                        <div class="col-12 col-md-4 col-lg-4">
-                                                                            <span
-                                                                                class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
-                                                                            ></span>
-                                                                        </div>
-                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['uom']?.['title']}</span></div>
+                                                                    <div class="d-flex">
+                                                                        <span class="mr-5">${price?.['purchase_quotation']?.['title']}</span>
+                                                                        <span
+                                                                            class="mask-money mr-5" data-init-money="${parseFloat(price?.['unit_price'])}"
+                                                                        ></span>
+                                                                        <span>${price?.['uom']?.['title']}</span>
                                                                     </div>
                                                                 </div>`
                                             if (price?.['purchase_quotation']?.['id'] === checked_id) { // If check PQ
                                                 priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1 bg-light" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
-                                                                    <div class="row">
-                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['purchase_quotation']?.['title']}</span></div>
-                                                                        <div class="col-12 col-md-4 col-lg-4">
-                                                                            <span
-                                                                                class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
-                                                                            ></span>
-                                                                        </div>
-                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['uom']?.['title']}</span></div>
+                                                                    <div class="d-flex">
+                                                                        <span class="mr-5">${price?.['purchase_quotation']?.['title']}</span>
+                                                                        <span
+                                                                            class="mask-money mr-5" data-init-money="${parseFloat(price?.['unit_price'])}"
+                                                                        ></span>
+                                                                        <span>${price?.['uom']?.['title']}</span>
                                                                     </div>
                                                                 </div>`;
                                                 // Price && UOM must follow PQ checked

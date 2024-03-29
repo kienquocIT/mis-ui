@@ -1034,18 +1034,16 @@ class QuotationLoadDataHandle {
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="row">
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <span class="mr-5">${data.price_list[i].title}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
                                                         </a>`);
                                 } else {
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="row">
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <span class="mr-5">${data.price_list[i].title}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
                                                         </a>`);
                                 }
@@ -1053,10 +1051,9 @@ class QuotationLoadDataHandle {
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
-                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="mr-5">${data.price_list[i].title}</span>
+                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                     </div>
                                                 </a>`);
                         }
@@ -1090,9 +1087,9 @@ class QuotationLoadDataHandle {
                 if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
                     for (let costData of data?.['cost_list']) {
                         $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['cost'])}">
-                                                <div class="row">
-                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mr-5">${costData?.['warehouse']?.['title']}</span></div>
-                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span></div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
+                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span>
                                                 </div>
                                             </a>`);
                     }

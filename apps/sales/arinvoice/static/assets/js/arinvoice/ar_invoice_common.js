@@ -98,7 +98,11 @@ selectCustomerBtn.on('click', function () {
 
 $('#invoice-exp').on('change', function () {
     if ($(this).val() === '2') {
-        $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+        if (invoice_signs?.['sale_invoice_sign']) {
+            $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+        } else {
+            $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+        }
     }
     else {
         if (tabLineDetailTable.find('.product_taxes').length > 0) {
@@ -123,7 +127,11 @@ $('#invoice-exp').on('change', function () {
                         $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
                     }
                 } else if ($('#invoice-exp').val() === '2') {
-                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    if (invoice_signs?.['sale_invoice_sign']) {
+                        $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    } else {
+                        $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+                    }
                 } else {
                     $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
                 }
@@ -135,7 +143,11 @@ $('#invoice-exp').on('change', function () {
                         $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
                     }
                 } else if ($('#invoice-exp').val() === '2') {
-                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    if (invoice_signs?.['sale_invoice_sign']) {
+                        $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    } else {
+                        $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+                    }
                 } else {
                     $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
                 }
@@ -354,7 +366,11 @@ function loadTableLineDetail(datasource=[]) {
                 }
             }
             else if ($('#invoice-exp').val() === '2') {
-                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                if (invoice_signs?.['sale_invoice_sign']) {
+                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                } else {
+                    $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+                }
             }
             else {
                 $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
@@ -370,7 +386,11 @@ function loadTableLineDetail(datasource=[]) {
                 }
             }
             else if ($('#invoice-exp').val() === '2') {
-                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                if (invoice_signs?.['sale_invoice_sign']) {
+                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                } else {
+                    $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+                }
             }
             else {
                 $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
@@ -1266,7 +1286,11 @@ $(document).on("change", '.recalculate-field', function () {
             }
         }
         else if ($('#invoice-exp').val() === '2') {
-            $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            if (invoice_signs?.['sale_invoice_sign']) {
+                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            } else {
+                $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+            }
         }
         else {
             $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
@@ -1280,7 +1304,11 @@ $(document).on("change", '.recalculate-field', function () {
             }
         }
         else if ($('#invoice-exp').val() === '2') {
-            $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            if (invoice_signs?.['sale_invoice_sign']) {
+                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            } else {
+                $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+            }
         }
         else {
             $.fn.notifyB({description: "Invalid invoice form."}, 'failure')

@@ -867,8 +867,8 @@ class POLoadDataHandle {
         POLoadDataHandle.loadTablesDetailPage(data);
         POLoadDataHandle.loadTotals(data);
 
-        POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
-        POLoadDataHandle.loadBoxContact(data?.['contact']);
+        POLoadDataHandle.loadBoxSupplier(data?.['supplier_data']);
+        POLoadDataHandle.loadBoxContact(data?.['contact_data']);
     };
 
     static loadDataShowPRPQ(data) {
@@ -2245,6 +2245,12 @@ class POSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
+        if (POLoadDataHandle.supplierSelectEle.val()) {
+            _form.dataForm['supplier_data'] = SelectDDControl.get_data_from_idx(POLoadDataHandle.supplierSelectEle, POLoadDataHandle.supplierSelectEle.val());
+        }
+        if (POLoadDataHandle.contactSelectEle.val()) {
+            _form.dataForm['contact_data'] = SelectDDControl.get_data_from_idx(POLoadDataHandle.contactSelectEle, POLoadDataHandle.contactSelectEle.val());
+        }
         if (POLoadDataHandle.PRDataEle.val()) {
             _form.dataForm['purchase_requests_data'] = JSON.parse(POLoadDataHandle.PRDataEle.val());
         }

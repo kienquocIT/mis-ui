@@ -6928,3 +6928,7 @@ msgstr "Chọn trạng thái lưu phiếu"
 #
 msgid "Please enter sufficient quantity"
 msgstr "Vui lòng nhập đủ số lượng"
+
+#
+msgid "Cancel document"
+msgstr "Hủy phiếu"

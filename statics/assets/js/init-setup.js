@@ -1693,9 +1693,13 @@ class WFRTControl {
             }
         }
         if (actionSelected !== undefined && urlRTAfterBase) {
-            if (actionSelected === '0') {
+            if (actionSelected === '1') {
                 $('#btn-enable-edit').click();
-            } else {
+            }
+            if (actionSelected === '4') {
+                // $('#btn-enable-edit').click();
+            }
+            if (['2', '3'].includes(actionSelected)) {
                 return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);  // Cancel after finished
             }
         }
@@ -2094,6 +2098,12 @@ class WFRTControl {
                             } else {
                                 WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             }
+                            // active btn cancel if owner & status is finished
+                            let eleStatus = $('#systemStatus');
+                            let currentEmployee = $x.fn.getEmployeeCurrentID();
+                            if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
+                                WFRTControl.setBtnWFAfterFinishUpdate();
+                            }
                         }
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
@@ -2101,7 +2111,7 @@ class WFRTControl {
                             let eleStatus = $('#systemStatus');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
-                                WFRTControl.setBtnWFAfterFinish();
+                                WFRTControl.setBtnWFAfterFinishDetail();
                             }
                         }
                         // collab out form handler
@@ -2548,12 +2558,13 @@ class WFRTControl {
         }
     }
 
-    static setBtnWFAfterFinish() {
+    static setBtnWFAfterFinishDetail() {
         let eleRealAction = $('#idxRealAction');
         let btnCancel = $('#btnCancel');
+        let btnEnableCR = $('#btnEnableCR');
         if (eleRealAction) {
-            if (btnCancel.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-primary btn-wf-after-finish" id="btnCR" data-value="0">
+            if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
+                $(eleRealAction).append(`<button class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">
                                             <span>
                                                 <span>${$.fn.transEle.attr('data-change-request')}</span>
                                                 <span class="icon">
@@ -2562,6 +2573,37 @@ class WFRTControl {
                                             </span>
                                         </button>
                                         <button class="btn btn-outline-danger btn-wf-after-finish" id="btnCancel" data-value="2">
+                                            <span>
+                                                <span>${$.fn.transEle.attr('data-cancel-document')}</span>
+                                                <span class="icon">
+                                                    <i class="fas fa-times"></i>
+                                                </span>
+                                            </span>
+                                        </button>`);
+                // Add event
+                eleRealAction.on('click', '.btn-wf-after-finish', function () {
+                    return WFRTControl.callActionWF($(this));
+                });
+            }
+        }
+    }
+
+    static setBtnWFAfterFinishUpdate() {
+        let eleRealAction = $('#idxRealAction');
+        let btnSaveCR = $('#btnSaveCR');
+        let btnCancelCR = $('#btnCancelCR');
+        let formID = globeFormMappedZone;
+        if (eleRealAction && formID) {
+            if (btnSaveCR.length <= 0 && btnCancelCR.length <= 0) {
+                $(eleRealAction).append(`<button class="btn btn-outline-primary btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">
+                                            <span>
+                                                <span>${$.fn.transEle.attr('data-save')} CR</span>
+                                                <span class="icon">
+                                                    <i class="fa-regular fa-floppy-disk"></i>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-wf-after-finish" id="btnCancelCR" data-value="4">
                                             <span>
                                                 <span>${$.fn.transEle.attr('data-cancel')}</span>
                                                 <span class="icon">

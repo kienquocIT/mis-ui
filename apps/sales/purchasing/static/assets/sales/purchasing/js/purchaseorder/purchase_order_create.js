@@ -291,7 +291,9 @@ $(function () {
                 'purchase_quotations_data',
                 'purchase_request_products_data',
                 'supplier',
+                'supplier_data',
                 'contact',
+                'contact_data',
                 'delivered_date',
                 'status_delivered',
                 // purchase order tabs

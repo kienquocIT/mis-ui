@@ -95,7 +95,7 @@
                                     <span class="input-affix-wrapper">
                                         <input class="form-control for-free-input" id="mst">
                                     </span>
-                                    <button type="button" class="btn btn-light">
+                                    <button type="button" class="btn btn-light" id="get-vat-number-info-btn">
                                         <i class="fas fa-sync-alt"></i>
                                     </button>
                                 </div>
@@ -164,7 +164,7 @@
 {#                                    <option></option>#}
                                     <option value="0">01GTKT0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn giá trị gia tăng (hoá đơn điện tử)</option>
 {#                                    <option value="1">01GTKT3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn giá trị gia tăng</option>#}
-{#                                    <option value="2">02GTTT0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn bán hàng (hoá đơn điện tử)</option>#}
+                                    <option value="2">02GTTT0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn bán hàng (hoá đơn điện tử)</option>
 {#                                    <option value="3">02GTTT3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn bán hàng</option>#}
 {#                                    <option value="4">03XKNB3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Phiếu xuất kho kiêm vận chuyển hàng hoá nội bộ</option>#}
 {#                                    <option value="5">04HGDL3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Phiếu xuất kho gửi bán hàng đại lí</option>#}
@@ -175,18 +175,18 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="form-label required" for="invoice-sign">{% trans "Kí hiệu hoá đơn" %}</label>
-                                <select disabled readonly class="form-select" id="invoice-sign"></select>
+                                <input disabled readonly class="form-control" id="invoice-sign">
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="form-label" for="invoice-number">{% trans "Invoice number" %}</label>
-                                <input class="form-control" id="invoice-number">
+                                <input class="form-control" id="invoice-number" disabled readonly placeholder="<No invoice number>">
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="form-label" for="invoice-date">{% trans "Invoice date" %}</label>
+                                <label class="form-label required" for="invoice-date">{% trans "Invoice date" %}</label>
                                 <div class="input-group mb-3">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>

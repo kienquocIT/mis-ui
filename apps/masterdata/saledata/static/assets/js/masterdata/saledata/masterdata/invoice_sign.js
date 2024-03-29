@@ -9,12 +9,16 @@ if (invoice_signs?.['one_vat_sign']) {
 if (invoice_signs?.['many_vat_sign']) {
     $('#sign-n-vat').val(invoice_signs?.['many_vat_sign'].slice(-2))
 }
+if (invoice_signs?.['sale_invoice_sign']) {
+    $('#sign-sales-invoice-type').val(invoice_signs?.['sale_invoice_sign'].slice(-2))
+}
 
 function combinesDataCreate(frmEle) {
     let frm = new SetupFormSubmit($(frmEle));
 
     frm.dataForm['one_vat_sign'] = $('#sign-1-vat').val();
     frm.dataForm['many_vat_sign'] = $('#sign-n-vat').val();
+    frm.dataForm['sale_invoice_sign'] = $('#sign-sales-invoice-type').val();
 
     return {
         url: frm.dataUrl,

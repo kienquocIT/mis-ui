@@ -29,7 +29,7 @@ postingDateEle.daterangepicker({
     maxYear: parseInt(moment().format('YYYY'), 10),
     drops: 'up',
     autoApply: true,
-}).val('');
+});
 
 documentDateEle.daterangepicker({
     singleDatePicker: true,
@@ -42,7 +42,7 @@ documentDateEle.daterangepicker({
     maxYear: parseInt(moment().format('YYYY'), 10),
     drops: 'up',
     autoApply: true,
-}).val('');
+});
 
 invoiceDateEle.daterangepicker({
     singleDatePicker: true,
@@ -55,7 +55,7 @@ invoiceDateEle.daterangepicker({
     maxYear: parseInt(moment().format('YYYY'), 10),
     drops: 'up',
     autoApply: true,
-}).val('');
+});
 
 selectCustomerBtn.on('click', function () {
     let selected_id = null
@@ -93,6 +93,57 @@ selectCustomerBtn.on('click', function () {
     }
     else {
         $.fn.notifyB({description: 'Nothing selected'}, 'warning');
+    }
+})
+
+$('#invoice-exp').on('change', function () {
+    if ($(this).val() === '2') {
+        $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+    }
+    else {
+        if (tabLineDetailTable.find('.product_taxes').length > 0) {
+            let vat_number = []
+            tabLineDetailTable.find('.product_taxes').each(function () {
+                if ($(this).val()) {
+                    let tax_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+                    if (vat_number.includes(parseFloat(tax_selected?.['rate'])) === false) {
+                        vat_number.push(parseFloat(tax_selected?.['rate']))
+                    }
+                } else {
+                    if (vat_number.includes(0) === false) {
+                        vat_number.push(0)
+                    }
+                }
+            })
+            if (vat_number.length > 1) {
+                if ($('#invoice-exp').val() === '0') {
+                    if (invoice_signs?.['many_vat_sign']) {
+                        $('#invoice-sign').val(invoice_signs?.['many_vat_sign'])
+                    } else {
+                        $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
+                    }
+                } else if ($('#invoice-exp').val() === '2') {
+                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                } else {
+                    $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
+                }
+            } else {
+                if ($('#invoice-exp').val() === '0') {
+                    if (invoice_signs?.['one_vat_sign']) {
+                        $('#invoice-sign').val(invoice_signs?.['one_vat_sign'])
+                    } else {
+                        $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
+                    }
+                } else if ($('#invoice-exp').val() === '2') {
+                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                } else {
+                    $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
+                }
+            }
+        }
+        else {
+            $('#invoice-sign').val('')
+        }
     }
 })
 
@@ -294,17 +345,35 @@ function loadTableLineDetail(datasource=[]) {
             }
         }
         if (vat_number.length > 1) {
-            if (invoice_signs?.['many_vat_sign']) {
-                $('#invoice-sign').append(`<option value="${invoice_signs?.['many_vat_sign']}" selected>${invoice_signs?.['many_vat_sign']}</option>`)
-            } else {
-                $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
+            if ($('#invoice-exp').val() === '0') {
+                if (invoice_signs?.['many_vat_sign']) {
+                    $('#invoice-sign').val(invoice_signs?.['many_vat_sign'])
+                } else {
+                    $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
+                    return;
+                }
+            }
+            else if ($('#invoice-exp').val() === '2') {
+                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            }
+            else {
+                $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
                 return;
             }
         } else {
-            if (invoice_signs?.['one_vat_sign']) {
-                $('#invoice-sign').append(`<option value="${invoice_signs?.['one_vat_sign']}" selected>${invoice_signs?.['one_vat_sign']}</option>`)
-            } else {
-                $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
+            if ($('#invoice-exp').val() === '0') {
+                if (invoice_signs?.['one_vat_sign']) {
+                    $('#invoice-sign').val(invoice_signs?.['one_vat_sign'])
+                } else {
+                    $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
+                    return;
+                }
+            }
+            else if ($('#invoice-exp').val() === '2') {
+                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            }
+            else {
+                $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
                 return;
             }
         }
@@ -414,7 +483,7 @@ function loadTableLineDetail(datasource=[]) {
             {
                 className: 'wrap-text text-center',
                 render: () => {
-                    return `<button type='button' class="delete-item-row btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                    return `<button type='button' disabled class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
                 }
             },
         ],
@@ -437,13 +506,11 @@ function loadTableLineDetail(datasource=[]) {
 
 function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_free_input=false) {
     tabLineDetailTable.DataTable().clear().destroy()
-    let disabled = ''
     let input_disabled = ''
     if (option === 'detail') {
         input_disabled = 'disabled readonly'
     }
     if (is_free_input === false) {
-        disabled = 'disabled'
         tabLineDetailTable.DataTableDefault({
             dom: "",
             rowIdx: true,
@@ -540,7 +607,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
                 {
                     className: 'wrap-text text-center',
                     render: () => {
-                        return `<button ${disabled} class="delete-item-row btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                        return `<button disabled class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
                     }
                 },
             ],
@@ -841,9 +908,13 @@ class ARInvoiceHandle {
 
         frm.dataForm['delivery_mapped_list'] = tabLineDetailTable.attr('data-delivery-selected') !== '' ? tabLineDetailTable.attr('data-delivery-selected').split(',') : []
 
+        let vat_number = []
         frm.dataForm['data_item_list'] = []
         if (saleOrderEle.val()) {
             tabLineDetailTable.find('tbody tr').each(function () {
+                if ($(this).find('.product_taxes').val()) {
+                    vat_number.push($(this).find('.product_taxes').val())
+                }
                 frm.dataForm['data_item_list'].push({
                     'item_index': $(this).find('td:first-child').text(),
                     'product_id': $(this).find('.product-id').attr('data-id'),
@@ -861,6 +932,9 @@ class ARInvoiceHandle {
         }
         else {
             tabLineDetailTable.find('tbody tr').each(function () {
+                if ($(this).find('.product_taxes').val()) {
+                    vat_number.push($(this).find('.product_taxes').val())
+                }
                 frm.dataForm['data_item_list'].push({
                     'item_index': $(this).find('td:first-child').text(),
                     'product_id': $(this).find('.product-select').val(),
@@ -881,6 +955,11 @@ class ARInvoiceHandle {
 
         if (frm.dataForm['data_item_list'].length === 0) {
             $.fn.notifyB({description: "No item in tab line detail"}, 'failure')
+            return false
+        }
+
+        if (vat_number.length > 0 && $('#invoice-exp').val() === '2') {
+            $.fn.notifyB({description: "Product rows in sales invoice can not have VAT."}, 'failure')
             return false
         }
 
@@ -922,15 +1001,23 @@ function LoadDetailARInvoice(option) {
                 $x.fn.renderCodeBreadcrumb(data);
 
                 if (invoice_signs?.['many_vat_sign'] === data?.['invoice_sign']) {
-                    $('#invoice-sign').append(`<option value="${invoice_signs?.['many_vat_sign']}" selected>${invoice_signs?.['many_vat_sign']}</option>`)
+                    $('#invoice-sign').val(invoice_signs?.['many_vat_sign'])
                 }
 
                 if (invoice_signs?.['one_vat_sign'] === data?.['invoice_sign']) {
-                    $('#invoice-sign').append(`<option value="${invoice_signs?.['one_vat_sign']}" selected>${invoice_signs?.['one_vat_sign']}</option>`)
+                    $('#invoice-sign').val(invoice_signs?.['one_vat_sign'])
+                }
+
+                if (invoice_signs?.['sale_invoice_sign'] === data?.['invoice_sign']) {
+                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
                 }
 
                 if (data?.['is_created_einvoice'] === false) {
                     $('#view_invoice_btn').closest('a').remove()
+                }
+                else {
+                    $('#invoice-action').text($('#invoice-action').attr('data-trans-update'))
+                    $('#invoice-action').closest('button').find('.icon').html('<i class="fa-solid fa-retweet"></i>')
                 }
 
                 if (data?.['is_free_input'] === false) {
@@ -1171,16 +1258,103 @@ $(document).on("change", '.recalculate-field', function () {
         }
     })
     if (vat_number.length > 1) {
-        if (invoice_signs?.['many_vat_sign']) {
-            $('#invoice-sign').append(`<option value="${invoice_signs?.['many_vat_sign']}" selected>${invoice_signs?.['many_vat_sign']}</option>`)
-        } else {
-            $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
+        if ($('#invoice-exp').val() === '0') {
+            if (invoice_signs?.['many_vat_sign']) {
+                $('#invoice-sign').val(invoice_signs?.['many_vat_sign'])
+            } else {
+                $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
+            }
+        }
+        else if ($('#invoice-exp').val() === '2') {
+            $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+        }
+        else {
+            $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
         }
     } else {
-        if (invoice_signs?.['one_vat_sign']) {
-            $('#invoice-sign').append(`<option value="${invoice_signs?.['one_vat_sign']}" selected>${invoice_signs?.['one_vat_sign']}</option>`)
-        } else {
-            $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
+        if ($('#invoice-exp').val() === '0') {
+            if (invoice_signs?.['one_vat_sign']) {
+                $('#invoice-sign').val(invoice_signs?.['one_vat_sign'])
+            } else {
+                $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
+            }
         }
+        else if ($('#invoice-exp').val() === '2') {
+            $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+        }
+        else {
+            $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
+        }
+    }
+})
+
+$('#get-vat-number-info-btn').on('click', function () {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', `https://api.vietqr.io/v2/business/${$('#mst').val()}`, true);
+    xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            let responseData = JSON.parse(xhr.responseText);
+            if (responseData.code !== '00') {
+                Swal.fire({
+                        html:
+                            '<span class="text-danger mt-3"><i class="fas fa-exclamation-triangle"></i></span>' +
+                            `<p class="text-danger mt-3">${responseData.desc}</p>`,
+                        customClass: {
+                            confirmButton: 'btn btn-outline-primary text-secondary',
+                            cancelButton: 'btn btn-outline-secondary text-secondary',
+                            container: 'swal2-has-bg',
+                            actions: 'w-100'
+                        },
+                        showCancelButton: false,
+                        buttonsStyling: false,
+                        confirmButtonText: 'Cancel',
+                        cancelButtonText: 'No',
+                        reverseButtons: false
+                    })
+            }
+            else {
+                console.log(responseData.data)
+                Swal.fire({
+                        html:
+                            `<p class="text-left text-secondary mt-1">International Name: <input class="form-control mb-1" readonly value="${responseData?.['data']?.['internationalName']}"></p>` +
+                            `<p class="text-left text-secondary mt-1">Name: <input class="form-control mb-1" readonly value="${responseData?.['data']?.['name']}"></p>` +
+                            `<p class="text-left text-secondary mt-1">ShortName: <input class="form-control mb-1" readonly value="${responseData?.['data']?.['shortName']}"></p>` +
+                            `<p class="text-left text-secondary mt-1">Tax number: <input class="form-control mb-1" readonly value="${responseData?.['data']?.['id']}"></p>` +
+                            `<p class="text-left text-secondary mt-1">Address: <textarea class="form-control mb-1" readonly>${responseData?.['data']?.['address']}</textarea></p>`,
+                        customClass: {
+                            confirmButton: 'btn btn-outline-primary text-primary',
+                            cancelButton: 'btn btn-outline-secondary text-secondary',
+                            container: 'swal2-has-bg',
+                            actions: 'w-100'
+                        },
+                        showCancelButton: false,
+                        buttonsStyling: false,
+                        confirmButtonText: 'OK',
+                        cancelButtonText: 'Cancel',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.value) {
+                        }
+                    })
+            }
+        } else {
+            $.fn.notifyB({description: 'Can not get this Tax number information'}, 'failure');
+        }
+    };
+    xhr.onerror = function() {
+        $.fn.notifyB({description: 'Request failed'}, 'failure');
+    };
+    xhr.send();
+})
+
+$(document).on("change", '.product_discount_rate', function () {
+    if ($(this).val() < 0) {
+        $(this).val(0)
+    }
+})
+
+$(document).on("change", '.picked_quantity', function () {
+    if ($(this).val() < 0) {
+        $(this).val(0)
     }
 })

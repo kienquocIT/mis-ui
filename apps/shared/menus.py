@@ -193,7 +193,7 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
             MenuCommon(
-                name='AR invoice sign', code='menu_invoice_sign',
+                name='Invoice form config', code='menu_invoice_sign',
                 view_name='InvoiceSignList',
                 icon='<i class="fas fa-signature"></i>',
             ),

@@ -8,7 +8,6 @@ $(document).ready(function () {
     if (current_period_Ele.text() !== '') {
         current_period = JSON.parse(current_period_Ele.text())
     }
-    console.log(current_period)
 
     function Check_in_period(dateApproved) {
         dateApproved = new Date(dateApproved)
@@ -210,8 +209,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#2D4777', '#0082A6', '#967BB6', '#E7A572',
-                '#2D4777', '#0082A6', '#967BB6', '#E7A572',
+                '#2D4777', '#0082A6', '#3CAD99', '#096344',
+                '#2D4777', '#0082A6', '#3CAD99', '#096344',
             ],
             dataLabels: {
                 enabled: true,
@@ -482,8 +481,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#2D4777', '#0082A6', '#967BB6', '#E7A572',
-                '#2D4777', '#0082A6', '#967BB6', '#E7A572',
+                '#2D4777', '#0082A6', '#3CAD99', '#096344',
+                '#2D4777', '#0082A6', '#3CAD99', '#096344',
             ],
             plotOptions: {
                 bar: {
@@ -759,7 +758,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#21839A', '#3BCBB2', '#AEBE89'
+                '#21839A', '#3BCBB2', '#3CAD99'
             ],
             plotOptions: {
                 bar: {
@@ -951,7 +950,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#21839A', '#3BCBB2', '#AEBE89'
+                '#21839A', '#3BCBB2', '#3CAD99'
             ],
             plotOptions: {
                 bar: {
@@ -1230,7 +1229,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#547794', '#018F8C', '#9D78BE', '#A9A9C4'
+                '#FF6F5E', '#F7AF25', '#18A4E0', '#A3DCBE'
             ],
             responsive: [{
                 breakpoint: 480,

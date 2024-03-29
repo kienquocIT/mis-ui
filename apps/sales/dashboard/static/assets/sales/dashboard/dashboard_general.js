@@ -215,7 +215,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#51C9C2', '#908DB9'],
+            colors: ['#9EC9E2', '#097abe'],
             dataLabels: {
                 enabled: false,
             },
@@ -365,7 +365,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#51C9C2', '#908DB9'],
+            colors: ['#9EC9E2', '#097abe'],
             dataLabels: {
                 enabled: false,
             },
@@ -690,8 +690,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#51C9C2',
-                '#EF424C'
+                '#49d381',
+                '#158040'
             ],
             dataLabels: {
                 enabled: false,
@@ -842,8 +842,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#51C9C2',
-                '#EF424C'
+                '#49d381',
+                '#158040'
             ],
             dataLabels: {
                 enabled: false,

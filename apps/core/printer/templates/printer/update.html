@@ -195,6 +195,7 @@
                                     }, 'success');
                                     setTimeout(
                                         () => {
+                                            window.onbeforeunload = null;
                                             window.location.reload();
                                         },
                                         1000

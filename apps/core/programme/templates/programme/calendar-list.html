@@ -320,7 +320,10 @@
            data-business="{% url 'BusinessTripRequestListAPI' %}"
     >
     <input type="text" id="trans-factory" data-meet="{% trans 'Meeting' %}"
-    data-business="{% trans 'Business trip' %}" data-leave="{% trans 'Leave' %}">
+    data-business="{% trans 'Business trip' %}"
+           data-leave="{% trans 'Leave' %}"
+    >
+    {{ data.working_shift|json_script:'ws_data' }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

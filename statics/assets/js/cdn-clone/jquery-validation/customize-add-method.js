@@ -39,6 +39,10 @@
     }
 
     $.validator.addMethod("check_phone_vn", function (value, element) {
+        // allow empty
+        if (!$(element).attr('required') && !value) return true;
+
+        // check rule
         let ruleOfMethod = this.settings.rules?.[$(element).attr('name')] || null;
         if (typeof ruleOfMethod === 'object' && ruleOfMethod.hasOwnProperty('check_phone_vn')) {
             let valueOfMethod = ruleOfMethod['check_phone_vn'];

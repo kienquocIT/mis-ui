@@ -138,7 +138,6 @@ class AuthLogin(APIView):
         frm = AuthLoginForm(data=request.data)
         frm.is_valid()
         resp = ServerAPI(request=request, user=None, url=ApiURL.login).post(frm.cleaned_data)
-        print(resp.result)
         match resp.state:
             case True:
                 user = User.regis_with_api_result(resp.result)

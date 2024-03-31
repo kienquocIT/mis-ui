@@ -720,6 +720,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
             loadRowUOM(row.find('.uom-select'), item?.['product_uom'], item?.['product_uom']?.['group_id'])
             loadRowTax(row.find('.product_taxes'), item?.['product_tax'])
         }
+        calculatePrice()
     }
 }
 

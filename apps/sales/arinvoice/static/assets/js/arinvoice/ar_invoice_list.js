@@ -105,7 +105,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     WindowControl.hideLoading();
-                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $.fn.notifyB({description: "Update successfully"}, 'success')
                     setTimeout(() => {
                         window.location.replace($('#datatable_ar_invoice_list').attr('data-url-redirect'));
                         location.reload.bind(location);

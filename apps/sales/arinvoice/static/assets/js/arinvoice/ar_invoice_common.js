@@ -423,7 +423,7 @@ function loadTableLineDetail(datasource=[]) {
                 data: 'product_data__des',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="small">${row?.['data_from_so']?.['product_description']}</span>`
+                    return `<textarea rows="5" disabled readonly class="des small form-control">${row?.['data_from_so']?.['product_description']}</textarea>`
                 }
             },
             {
@@ -554,7 +554,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
                     data: 'product_data__des',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="small">${row?.['product']?.['des']}</span>`
+                        return `<textarea rows="5" disabled readonly class="des small form-control">${row?.['product']?.['des']}</textarea>`
                     }
                 },
                 {
@@ -658,7 +658,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
                         <select class="form-select select-2 product-select"></select>
                     </td>
                     <td class="wrap-text">
-                        <span class="des small">${item?.['product']?.['des']}</span>
+                        <textarea rows="5" disabled readonly class="des small form-control">${item?.['product']?.['des']}</textarea>
                     </td>
                     <td class="wrap-text">
                         <select class="form-select select-2 uom-select"></select>
@@ -1043,6 +1043,7 @@ function LoadDetailARInvoice(option) {
 
                 if (data?.['is_free_input'] === false) {
                     $('.for-free-input').prop('readonly', true).prop('disabled', true)
+                    $('#add_row_items_btn').remove()
                 }
 
                 $('#name').val(data?.['title'])
@@ -1083,7 +1084,6 @@ $('#create_invoice_btn').on('click', function () {
     let combinesData = new ARInvoiceHandle().combinesData($('#form-detail-ar-invoice'), true);
     let pk = $.fn.getPkDetail();
     WindowControl.showLoading();
-    combinesData['data']['create_invoice'] = true
     $.fn.callAjax2(combinesData).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -1132,7 +1132,7 @@ $('#add_row_items_btn').on('click', function () {
                 <select class="form-select select-2 product-select"></select>
             </td>
             <td class="wrap-text">
-                <span class="des small"></span>
+                <textarea rows="5" disabled readonly class="des small form-control"></textarea>
             </td>
             <td class="wrap-text">
                 <select class="form-select select-2 uom-select"></select>

@@ -60,7 +60,12 @@ $(document).ready(function () {
                             if (row?.['customer_mapped']?.['id']) {
                                 return `<b>${row?.['customer_mapped']?.['name']}</b>`
                             }
-                            return `(${row?.['customer_name']})`
+                            else if (row?.['customer_name']) {
+                                return `${row?.['customer_name']}`
+                            }
+                            else {
+                                return `${row?.['buyer_name']}`
+                            }
                         }
                     },
                     {

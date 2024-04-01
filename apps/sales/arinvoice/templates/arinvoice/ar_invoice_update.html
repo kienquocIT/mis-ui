@@ -20,6 +20,9 @@
         #tab_line_detail_datatable tbody .dropdown-toggle::after {
             content: none;
         }
+        textarea {
+            resize: none;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -318,7 +321,7 @@
                                     <tr>
                                         <th class="text-center" style="min-width: 50px"></th>
                                         <th style="min-width: 250px">{% trans 'Product' %}</th>
-                                        <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                        <th style="min-width: 300px">{% trans 'Description' %}</th>
                                         <th style="min-width: 100px">{% trans 'UoM' %}</th>
                                         <th style="min-width: 100px">{% trans 'Quantity' %}</th>
                                         <th class="required" style="min-width: 250px">{% trans 'Unit price' %}</th>
@@ -332,6 +335,19 @@
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
+                                    <tfoot>
+                                        <th>
+                                            <span id="add_row_items_btn"
+                                                  class="text-primary"
+                                                  data-bs-toggle="tooltip"
+                                                  data-bs-placement="right"
+                                                  title="{% trans 'Add new row' %}"
+                                            >
+                                                <i class="fas fa-plus"></i>
+                                            </span>
+                                        </th>
+                                        <th colspan="12"></th>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>

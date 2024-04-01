@@ -20,6 +20,9 @@
         #tab_line_detail_datatable tbody .dropdown-toggle::after {
             content: none;
         }
+        textarea {
+            resize: none;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -318,7 +321,7 @@
                                     <tr>
                                         <th class="text-center" style="min-width: 50px"></th>
                                         <th style="min-width: 500px">{% trans 'Product' %}</th>
-                                        <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                        <th style="min-width: 300px">{% trans 'Description' %}</th>
                                         <th style="min-width: 200px">{% trans 'UoM' %}</th>
                                         <th style="min-width: 200px">{% trans 'Quantity' %}</th>
                                         <th class="required" style="min-width: 250px">{% trans 'Unit price' %}</th>
@@ -332,24 +335,33 @@
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
+                                    <tfoot>
+                                        <th>
+                                            <span id="add_row_items_btn"
+                                                  class="text-primary"
+                                                  data-bs-toggle="tooltip"
+                                                  data-bs-placement="right"
+                                                  title="{% trans 'Add new row' %}"
+                                            >
+                                                <i class="fas fa-plus"></i>
+                                            </span>
+                                            <span id="edit_items_btn"
+                                                  class="text-primary"
+                                                  data-bs-toggle="tooltip"
+                                                  data-bs-placement="right"
+                                                  title="{% trans 'Edit items' %}"
+                                                  hidden
+                                            >
+                                                <i class="far fa-edit"></i>
+                                            </span>
+                                        </th>
+                                        <th colspan="12"></th>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
                         <div class="row mt-5 mb-5">
-                            <div class="col-8">
-                                <button type="button" class="btn btn-outline-primary" id="add_row_items_btn">
-                                    <span>
-                                        <span>{% trans 'Add new row' %}</span>
-                                        <span class="icon"><i class="fas fa-plus"></i></span>
-                                    </span>
-                                </button>
-                                <button hidden type="button" class="btn btn-outline-primary" id="edit_items_btn">
-                                    <span>
-                                        <span>{% trans 'Edit' %}</span>
-                                        <span class="icon"><i class="far fa-edit"></i></span>
-                                    </span>
-                                </button>
-                            </div>
+                            <div class="col-8"></div>
                             <div class="col-4 text-primary">
                                 <div class="border rounded-3 py-3 px-3">
                                     <div class="row mt-3">

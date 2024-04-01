@@ -13,7 +13,6 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            console.log(resp.data['ar_invoice_list'])
                             return resp.data['ar_invoice_list'] ? resp.data['ar_invoice_list'] : [];
                         }
                         return [];
@@ -72,20 +71,55 @@ $(document).ready(function () {
                         data: 'invoice_number',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `${row.invoice_number}`
+                            return `${row?.['invoice_number'] !== '0' ? row?.['invoice_number'] : ''}`
                         }
                     },
                     {
                         data: 'status',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-primary">Created</span>`;
+                            let color = [
+                                'badge-soft-primary',
+                                'badge-primary',
+                                'badge-info',
+                                'badge-soft-warning',
+                                'badge-warning'
+                            ]
+                            return `<span class="badge ${color[row?.['invoice_status']]} status-span">${[
+                                'Khởi tạo', 'Đã phát hành', 'Đã kê khai', 'Đã thay thế', 'Đã điều chỉnh'
+                            ][row?.['invoice_status']]}</span>`;
                         }
                     },
-                ],
+                ]
             });
         }
     }
 
     loadARInvoiceList();
+
+    $('#reload-invoice-status-btn').on('click', function () {
+        WindowControl.showLoading();
+        let url_loaded = $('#datatable_ar_invoice_list').attr('data-url') + `?update_status=true`
+        $.fn.callAjax(url_loaded, 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    WindowControl.hideLoading();
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    setTimeout(() => {
+                        window.location.replace($('#datatable_ar_invoice_list').attr('data-url-redirect'));
+                        location.reload.bind(location);
+                    }, 1000);
+                }
+            },
+            (errs) => {
+                setTimeout(
+                    () => {
+                        WindowControl.hideLoading();
+                    },
+                    1000
+                )
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            })
+    })
 })

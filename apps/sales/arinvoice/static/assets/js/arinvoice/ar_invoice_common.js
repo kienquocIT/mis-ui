@@ -1054,6 +1054,8 @@ function LoadDetailARInvoice(option) {
                 invoiceDateEle.val(moment(data?.['invoice_date'].split(' ')[0]).format('DD/MM/YYYY'))
                 $('#invoice-sign').val(data?.['invoice_sign'])
                 $('#invoice-number').val(data?.['invoice_number'])
+                $('#invoice-status').text(['Khởi tạo', 'Đã phát hành', 'Đã kê khai', 'Đã thay thế', 'Đã điều chỉnh'][data?.['invoice_status']])
+
                 $('#invoice-exp').val(data?.['invoice_example'])
 
                 customerCodeEle.val(data?.['customer_code'])

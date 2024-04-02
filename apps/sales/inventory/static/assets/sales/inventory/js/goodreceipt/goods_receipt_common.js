@@ -1668,7 +1668,7 @@ class GRDataTableHandle {
                     width: '2.5%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row.order}</span>`
+                        return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${row?.['order']}</span>`
                     }
                 },
                 {
@@ -1761,23 +1761,12 @@ class GRDataTableHandle {
                     targets: 5,
                     width: '17.5%',
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <div class="dropdown">
-                                        <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
-                                        <span class="input-affix-wrapper">
-                                            <input 
-                                                type="text" 
-                                                class="form-control mask-money table-row-price" 
-                                                value="${row.product_unit_price}"
-                                                data-return-type="number"
-                                            >
-                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></span>
-                                        </span>
-                                        </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                        <a class="dropdown-item" data-value=""></a>
-                                        </div>
-                                    </div>`;
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-price" 
+                                    value="${row?.['product_unit_price'] ? row?.['product_unit_price'] : 0}"
+                                    data-return-type="number"
+                                >`;
                     }
                 },
                 {
@@ -1795,14 +1784,14 @@ class GRDataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     data-return-type="number"
                                     hidden
                                 >
                                 <input
                                     type="text"
                                     class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     hidden
                                 >
                             </div>`;

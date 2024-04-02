@@ -207,6 +207,12 @@ $(function () {
                 QuotationLoadDataHandle.loadChangePSValueBTAll();
                 // store data
                 QuotationStoreDataHandle.storeProduct(row);
+                // load reinit if row has product value
+                // if ($(this).hasClass('table-row-item')) {
+                //     if ($(this).val()) {
+                //         QuotationLoadDataHandle.loadReInitDataTableProduct();
+                //     }
+                // }
             }
         });
 
@@ -817,7 +823,7 @@ $(function () {
             QuotationLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-due-date', function () {
+        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 if ($(this).hasClass('table-row-date')) {
                     let row = this.closest('tr');
@@ -842,6 +848,9 @@ $(function () {
                 }
                 if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                     validateNumber(this);
+                }
+                if ($(this).hasClass('table-row-value-before-tax')) {
+                    validatePSValue(this);
                 }
                 if ($(this).hasClass('table-row-due-date')) {
                     let row = this.closest('tr');

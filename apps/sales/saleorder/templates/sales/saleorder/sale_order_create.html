@@ -49,13 +49,11 @@
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
                         <div class="row">
-                            <div class="col-12 col-md-10 col-lg-10">
-                                {% trans 'Select Sale Person' as inherit_title %}
-                                {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
-                            </div>
+                            {% trans 'Select Sale Person' as inherit_title %}
+                            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                         </div>
                         <div class="row">
-                            <div class="col-12 col-md-5 col-lg-5">
+                            <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="quotation-create-title">{% trans 'Title' %}</label>
                                     <input
@@ -93,7 +91,7 @@
                                     ></select>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-5 col-lg-5">
+                            <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
                                     <select

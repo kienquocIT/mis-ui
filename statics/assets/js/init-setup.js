@@ -2123,7 +2123,7 @@ class WFRTControl {
                 let data = $.fn.switcherResp(resp);
                 if ($.fn.hasOwnProperties(data, ['runtime_detail'])) {
                     // khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
-                    if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').addClass('hidden')
+                    if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
                     if (data['runtime_detail']?.['state'] === 3) $('#idxDataRuntimeNotFound').removeClass('hidden');
 
                     let actionMySelf = data['runtime_detail']['action_myself'];

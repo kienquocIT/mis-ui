@@ -2601,16 +2601,20 @@ class QuotationDataTableHandle {
                             }
                         }
                         if (itemType === 0) {  // product
-                            return `<select
-                                        class="form-select table-row-item disabled-custom-show"
-                                        data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
-                                        data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                        data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
-                                        data-keyResp="product_sale_list"
-                                        data-zone="${dataZone}"
-                                        disabled
-                                    >
-                                    </select>`;
+                            return `<div class="row">
+                                        <div class="col-12 col-md-11 col-lg-11">
+                                            <select
+                                                class="form-select table-row-item disabled-custom-show"
+                                                data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
+                                                data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
+                                                data-keyResp="product_sale_list"
+                                                data-zone="${dataZone}"
+                                                disabled
+                                            >
+                                            </select>
+                                        </div>
+                                    </div>`;
                         } else if (itemType === 1) {  // shipping
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
@@ -5432,5 +5436,32 @@ function validateNumber(ele) {
     value = value.replace("-", "").replace(/^0+(?=\d)/, '');
     // Update value of input
     ele.value = value;
+    return true;
+}
+
+function validatePSValue(ele) {
+    let tablePS = $('#datable-quotation-payment-stage');
+    let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+    if (tableProductWrapper) {
+        let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+        if (elePretax && eleDiscount) {
+            let valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+            let totalBT = 0;
+            tablePS.DataTable().rows().every(function () {
+                let row = this.node();
+                let eleValueBT = row.querySelector('.table-row-value-before-tax');
+                if (eleValueBT) {
+                    totalBT += $(eleValueBT).valCurrency();
+                }
+            });
+            if (totalBT > valueSO) {
+                $(ele).attr('value', String(0));
+                $.fn.notifyB({description: 'Total payment must less than total sale order before tax'}, 'failure');
+                return false
+            }
+        }
+    }
     return true;
 }

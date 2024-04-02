@@ -516,9 +516,9 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row ml-2"><h6>{% trans 'Product list' %}</h6></div>
+                        <div class="row ml-2"><h6 class="text-primary"><b>{% trans 'Product list' %}</b></h6></div>
                         <div class="row">
-                            <div class="col-5">
+                            <div class="col-6">
                                 <div class="row">
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll">
                                         <table
@@ -530,11 +530,11 @@
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-25">{% trans 'Product' %}</th>
-                                                <th class="w-5">{% trans 'UOM' %}</th>
-                                                <th class="w-20">{% trans 'Quantity' %}</th>
-                                                <th class="w-25">{% trans 'Warehouse' %}</th>
-                                                <th class="w-20">{% trans 'This time' %}</th>
+                                                <th class="w-30">{% trans 'Product' %}</th>
+                                                <th class="w-10">{% trans 'UOM' %}</th>
+                                                <th class="w-10">{% trans 'Quantity' %}</th>
+                                                <th class="w-30">{% trans 'Warehouse' %}</th>
+                                                <th class="w-15">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -543,7 +543,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-7">
+                            <div class="col-6">
                                 <div class="row">
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-ia-lot-serial" hidden>
                                         <div id="table-good-receipt-ia-lot-area" hidden>

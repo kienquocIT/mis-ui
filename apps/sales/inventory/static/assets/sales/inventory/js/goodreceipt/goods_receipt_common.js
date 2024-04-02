@@ -2052,17 +2052,21 @@ class GRDataTableHandle {
                     targets: 1,
                     width: '16.66%',
                     render: (data, type, row) => {
-                        return `<select
-                                    class="form-select table-row-item"
-                                    data-product-id="${row?.['product']?.['id']}"
-                                    data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
-                                    data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                    data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
-                                    data-keyResp="product_sale_list"
-                                    required
-                                    disabled
-                                >
-                                </select>`;
+                        return `<div class="row">
+                                    <div class="col-12 col-md-11 col-lg-11">
+                                        <select
+                                            class="form-select table-row-item"
+                                            data-product-id="${row?.['product']?.['id']}"
+                                            data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
+                                            data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                            data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
+                                            data-keyResp="product_sale_list"
+                                            required
+                                            disabled
+                                        >
+                                        </select>
+                                    </div>
+                                </div>`;
                     },
                 },
                 {

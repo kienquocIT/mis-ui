@@ -71,7 +71,7 @@ $(document).ready(function () {
                         data: 'invoice_number',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `${row?.['invoice_number'] !== '0' ? row?.['invoice_number'] : ''}`
+                            return `${row?.['invoice_number'] !== '0' ? row?.['invoice_number'] : `<span class="text-danger">Chưa cấp số</span>`}`
                         }
                     },
                     {

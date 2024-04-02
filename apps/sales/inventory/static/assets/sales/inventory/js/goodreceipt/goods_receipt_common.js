@@ -348,18 +348,19 @@ class GRLoadDataHandle {
             if (ele.checked === true) {
                 is_checked = true;
             }
-            for (let eleCheck of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
-                eleCheck.checked = false;
-                let row = eleCheck.closest('tr');
-                $(row).css('background-color', '#fff');
-            }
-            //
+            // store data
             GRStoreDataHandle.storeDataAll();
             GRDataTableHandle.tableLot.DataTable().clear().draw();
             GRDataTableHandle.tableSerial.DataTable().clear().draw();
             $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
             GRDataTableHandle.tableWH.DataTable().clear().draw();
             GRDataTableHandle.tablePR.DataTable().clear().draw();
+            // uncheck all then check current ele
+            for (let eleCheck of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
+                eleCheck.checked = false;
+                let row = eleCheck.closest('tr');
+                $(row).css('background-color', '#fff');
+            }
             if (is_checked === true) {
                 ele.checked = true;
                 if (dataRow?.['purchase_request_products_data'].length > 0) { // If PO have PR
@@ -1662,7 +1663,7 @@ class GRDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50,350,350,150,200,350,150,350,50 (2000p)
+            columns: [  // 50,350,450,150,200,350,150,250,50 (2000p)
                 {
                     targets: 0,
                     width: '2.5%',
@@ -1711,7 +1712,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '17.5%',
+                    width: '22.5%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -1799,7 +1800,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '17.5%',
+                    width: '12.5%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>

@@ -1676,30 +1676,37 @@ class GRDataTableHandle {
                     width: '17.5%',
                     render: (data, type, row) => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
-                            return `<select
-                                        class="form-select table-row-item"
-                                        data-product-id="${row?.['product']?.['id']}"
-                                        data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
-                                        data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                        data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
-                                        data-keyResp="product_sale_list"
-                                        required
-                                    >
-                                    </select>`;
+                            return `<div class="row">
+                                        <div class="col-12 col-md-11 col-lg-11">
+                                            <select
+                                                class="form-select table-row-item"
+                                                data-product-id="${row?.['product']?.['id']}"
+                                                data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
+                                                data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
+                                                data-keyResp="product_sale_list"
+                                                required
+                                            >
+                                            </select>
+                                        </div>
+                                    </div>`;
                         } else {
-                            return `<select
-                                        class="form-select table-row-item"
-                                        data-product-id="${row?.['product']?.['id']}"
-                                        data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
-                                        data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                        data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
-                                        data-keyResp="product_sale_list"
-                                        required
-                                        disabled
-                                    >
-                                    </select>`;
+                            return `<div class="row">
+                                        <div class="col-12 col-md-11 col-lg-11">
+                                            <select
+                                                class="form-select table-row-item"
+                                                data-product-id="${row?.['product']?.['id']}"
+                                                data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
+                                                data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
+                                                data-keyResp="product_sale_list"
+                                                required
+                                                disabled
+                                            >
+                                            </select>
+                                        </div>
+                                    </div>`;
                         }
-
                     },
                 },
                 {

@@ -65,16 +65,16 @@ $(document).ready(function () {
                 },
             },
         ],
-        columns: [  // 50,300,200,150,150,150,200,200,200,400 (2000p)
+        columns: [  // 50,200,150,100,100,100,200,100,200,300 (1500p)
             {
-                width: "2.5%",
+                width: "3.33%",
                 'render': () => {
                     return ``;
                 },
             },
             {
                 orderable: true,
-                width: "15%",
+                width: "13.33%",
                 data: 'name',
                 render: (data, type, row) => {
                     let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row.id);
@@ -96,7 +96,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "7.5%",
+                width: "6.66%",
                 data: 'owner',
                 render: (data, type, row) => {
                     if (row.owner.fullname) {
@@ -106,7 +106,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "7.5%",
+                width: "6.66%",
                 data: 'phone',
                 render: (data, type, row) => {
                     if (row?.['phone']) {
@@ -121,7 +121,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "7.5%",
+                width: "6.66%",
                 data: 'website',
                 render: (data, type, row) => {
                     if (row?.['website']) {
@@ -131,21 +131,21 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "10%",
+                width: "13.33%",
                 data: 'revenue_information',
                 render: (data, type, row) => {
                     return `<span class="mask-money text-primary" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
                 },
             },
             {
-                width: "10%",
+                width: "6.66%",
                 data: 'revenue_information',
                 render: (data, type, row) => {
-                    return `<div class="text-center"><span class="badge badge-soft-sky text-primary">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span></div>`;
+                    return `<div class="text-center"><span class="text-primary">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span></div>`;
                 },
             },
             {
-                width: "10%",
+                width: "13.33%",
                 data: 'revenue_information',
                 render: (data, type, row) => {
                     return `<span class="mask-money text-primary" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>`;

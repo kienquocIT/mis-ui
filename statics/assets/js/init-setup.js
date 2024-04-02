@@ -1679,7 +1679,11 @@ class WFRTControl {
         let urlBase = globeTaskDetail;
         let urlRTAfterBase = globeRuntimeAfterFinishDetail;
         let dataSuccessReload = $(ele$).attr('data-success-reload');
+        let dataCR = $(ele$).attr('data-cr');
         let dataSubmit = {'action': actionSelected};
+        if (dataCR) {
+            dataSubmit['data_cr'] = JSON.parse(dataCR)
+        }
         let urlRedirect = ele$.attr('data-url-redirect');
         if (actionSelected !== undefined && taskID && urlBase) {
             if (actionSelected === '1') {  // Approve: check if next node is out form need select person before submit
@@ -1693,14 +1697,24 @@ class WFRTControl {
             }
         }
         if (actionSelected !== undefined && urlRTAfterBase) {
-            if (actionSelected === '1') {
-                $('#btn-enable-edit').click();
+            if (actionSelected === '1') {  // open change request page
+                return WFRTControl.callAjaxOpenCRAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);
             }
-            if (actionSelected === '4') {
-                // $('#btn-enable-edit').click();
+            if (actionSelected === '2') {  // cancel after finished
+                return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);
             }
-            if (['2', '3'].includes(actionSelected)) {
-                return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);  // Cancel after finished
+            if (actionSelected === '3') {  // save change request
+                if (dataSubmit.hasOwnProperty('data_cr')) {
+                    return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);
+                }
+                return true;
+            }
+            if (actionSelected === '4') {  // cancel change request
+                WindowControl.showLoading();
+                setTimeout(function () {
+                    // Redirect to the previous page
+                    window.history.back();
+                }, 1000);
             }
         }
     }
@@ -1764,6 +1778,36 @@ class WFRTControl {
                         } else {
                             window.location.replace(urlRedirect);
                         }
+                    }, 1000)
+                }
+            }
+            setTimeout(() => {
+                WindowControl.hideLoading();
+                if (urlRedirect) {
+                    window.location.replace(urlRedirect);
+                }
+            }, 1000)
+        }, (err) => {
+            setTimeout(() => {
+                WindowControl.hideLoading();
+            }, 1000)
+            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+        });
+    }
+
+    static callAjaxOpenCRAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
+        let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, runtimeID);
+        WindowControl.showLoading();
+        return $.fn.callAjax2({
+            'url': urlData,
+            'method': 'PUT',
+            'data': dataSubmit,
+        }).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data?.['status'] === 200) {
+                if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+                    setTimeout(() => {
+                        $('#btn-enable-edit').click();
                     }, 1000)
                 }
             }
@@ -1851,6 +1895,20 @@ class WFRTControl {
     static callWFSubmitForm(_form) {
         let IDRuntime = WFRTControl.getRuntimeWF();
         let collabOutForm = WFRTControl.getCollabOutFormData();
+        let eleStatus = $('#systemStatus');
+        let $eleCode = $('#documentCode');
+        let currentEmployee = $x.fn.getEmployeeCurrentID();
+        if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change request
+            let $eleForm = $(`#${globeFormMappedZone}`);
+            if ($eleForm && $eleForm.length > 0) {
+                _form.dataMethod = 'POST';
+                _form.dataUrl = $eleForm.attr('data-url-cr');
+                _form.dataForm['code'] = $eleCode.text();
+                _form.dataForm['system_status'] = 0;
+                WFRTControl.callAjaxWFCreate(_form);
+            }
+            return true;
+        }
         if (!IDRuntime) {  // create document, run WF by @decorator_run_workflow in API
             // select save status before select collaborator
             Swal.fire({
@@ -2035,9 +2093,13 @@ class WFRTControl {
             0: $.fn.transEle.attr('data-save-draft'),
             1: $.fn.transEle.attr('data-save'),
         };
+        let statusMapColor = {
+            0: "text-secondary",
+            1: "text-primary",
+        };
         for (let status of statusList) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
-                                <span>${statusMapText[status]}</span>
+                                <span class="${statusMapColor[status]}"><b>${statusMapText[status]}</b></span>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
                                 </div>
@@ -2099,9 +2161,9 @@ class WFRTControl {
                                 WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             }
                             // active btn cancel if owner & status is finished
-                            let eleStatus = $('#systemStatus');
+                            let eleDocCR = $('#documentCR');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
+                            if (eleDocCR.attr('data-status') === '3' && eleDocCR.attr('data-inherit') === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishUpdate();
                             }
                         }
@@ -4726,7 +4788,7 @@ class DocumentControl {
                 $('#idx-breadcrumb-current-code').html(
                     `
                     <span class="${clsState}"></span>
-                    <span class="badge badge-primary">${code}</span>
+                    <span class="badge badge-primary" id="documentCode">${code}</span>
                 `
                 ).removeClass('hidden');
             }
@@ -4749,9 +4811,15 @@ class DocumentControl {
                     const key = Object.keys(status_class);
                     system_status = key[system_status]
                 }
-                $('#idx-breadcrumb-current-code').append(
-                    `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}">${system_status}</span>`
-                ).removeClass('hidden');
+                if (window.location.href.includes('/update/') && dataStatus === 3) {
+                    $('#idx-breadcrumb-current-code').append(
+                        `<span class="badge badge-soft-warning" id="documentCR" data-status="${dataStatus}" data-inherit="${dataInheritID}">Change request</span>`
+                    ).removeClass('hidden');
+                } else {
+                    $('#idx-breadcrumb-current-code').append(
+                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}">${system_status}</span>`
+                    ).removeClass('hidden');
+                }
             }
         }
     }

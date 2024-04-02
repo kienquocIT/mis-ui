@@ -2203,7 +2203,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50, 300, 300, 150, 200, 350, 200, 150, 250, 50 (2000p)  // 50, 250, 200, 100, 150, 250, 150, 100, 200, 50 (1500p)
+            columns: [  // 50,350,350,150,150,350,150,150,250,50 (2000p)
                 {
                     targets: 0,
                     width: '2.5%',
@@ -2231,7 +2231,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '15%',
+                    width: '17.5%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2257,7 +2257,7 @@ class QuotationDataTableHandle {
                         }
                         if (itemType === 0) { // PRODUCT
                             return `<div class="row table-row-item-area">
-                                        <div class="col-12">
+                                        <div class="col-12 col-md-11 col-lg-11">
                                             <select 
                                             class="form-select table-row-item" 
                                             data-zone="${dataZone}"
@@ -2307,7 +2307,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '17.5%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2370,7 +2370,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '10%',
+                    width: '7.5%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2420,7 +2420,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '10%',
+                    width: '7.5%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;

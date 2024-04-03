@@ -1172,7 +1172,7 @@ $(document).ready(function () {
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#819C4B'],
+            colors: ['#095D6A'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,

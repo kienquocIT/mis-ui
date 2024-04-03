@@ -652,15 +652,15 @@ $(document).ready(function () {
 
             date_input.daterangepicker({
                 singleDatePicker: true,
-                timePicker: true,
-                showDropdowns: true,
-                drops: 'up',
-                minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
                 locale: {
-                    format: 'YYYY-MM-DD'
+                    format: 'DD/MM/YYYY'
                 },
-                "cancelClass": "btn-secondary",
-                maxYear: parseInt(moment().format('YYYY'), 10) + 100
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
 
             function combinesData_CallLog(frmEle) {
@@ -670,7 +670,7 @@ $(document).ready(function () {
                 frm.dataForm['opportunity'] = call_log_Opp_slb.val();
                 frm.dataForm['customer'] = customer_slb.val();
                 frm.dataForm['contact'] = contact_slb.val();
-                frm.dataForm['call_date'] = date_input.val();
+                frm.dataForm['call_date'] = moment(date_input.val(), "DD/MM/YYYY").format('YYYY-MM-DD');
                 frm.dataForm['input_result'] = $('#result-text-area').val();
                 if ($('#repeat-activity').is(':checked')) {
                     frm.dataForm['repeat'] = 1;
@@ -736,7 +736,7 @@ $(document).ready(function () {
                         $('#detail-contact-select-box option').remove();
                         $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
 
-                        $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
+                        $('#detail-date-input').val(moment(call_log_obj.call_date.split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY"));
                         $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
                         $('#detail-result-text-area').val(call_log_obj.input_result);
 
@@ -991,17 +991,16 @@ $(document).ready(function () {
 
             meeting_date_input.daterangepicker({
                 singleDatePicker: true,
-                timePicker: true,
-                showDropdowns: true,
-                drops: 'down',
-                minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
                 locale: {
-                    format: 'YYYY-MM-DD'
+                    format: 'DD/MM/YYYY'
                 },
-                "cancelClass": "btn-secondary",
-                maxYear: parseInt(moment().format('YYYY'), 10) + 100
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
-            meeting_date_input.val('');
 
             $('#meeting-address-input-btn').on('click', function () {
                 $('#meeting-address-select-div').prop('hidden', true);
@@ -1055,7 +1054,7 @@ $(document).ready(function () {
 
                 frm.dataForm['subject'] = $('#meeting-subject-input').val();
                 frm.dataForm['opportunity'] = $('#meeting-sale-code-select-box option:selected').val();
-                frm.dataForm['meeting_date'] = meeting_date_input.val();
+                frm.dataForm['meeting_date'] = moment(meeting_date_input.val(), "DD/MM/YYYY").format('YYYY-MM-DD');
                 if ($('#meeting-address-select-div').is(':hidden')) {
                     frm.dataForm['meeting_address'] = $('#meeting-address-input').val();
                 }
@@ -1165,8 +1164,9 @@ $(document).ready(function () {
                         }
                         detail_meeting_customer_member_slb.prop('disabled', true);
 
-                        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]).prop('readonly', true);
-                        moment.locale('en')
+                        $('#detail-meeting-date-input').val(
+                            moment(meeting_obj.meeting_date.split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY")
+                        ).prop('readonly', true);
                         $('#detail-meeting #meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
                         $('#detail-meeting #meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
 

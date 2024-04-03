@@ -98,7 +98,11 @@ selectCustomerBtn.on('click', function () {
 
 $('#invoice-exp').on('change', function () {
     if ($(this).val() === '2') {
-        $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+        if (invoice_signs?.['sale_invoice_sign']) {
+            $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+        } else {
+            $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+        }
     }
     else {
         if (tabLineDetailTable.find('.product_taxes').length > 0) {
@@ -123,7 +127,11 @@ $('#invoice-exp').on('change', function () {
                         $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
                     }
                 } else if ($('#invoice-exp').val() === '2') {
-                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    if (invoice_signs?.['sale_invoice_sign']) {
+                        $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    } else {
+                        $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+                    }
                 } else {
                     $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
                 }
@@ -135,7 +143,11 @@ $('#invoice-exp').on('change', function () {
                         $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
                     }
                 } else if ($('#invoice-exp').val() === '2') {
-                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    if (invoice_signs?.['sale_invoice_sign']) {
+                        $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    } else {
+                        $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+                    }
                 } else {
                     $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
                 }
@@ -354,7 +366,11 @@ function loadTableLineDetail(datasource=[]) {
                 }
             }
             else if ($('#invoice-exp').val() === '2') {
-                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                if (invoice_signs?.['sale_invoice_sign']) {
+                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                } else {
+                    $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+                }
             }
             else {
                 $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
@@ -370,7 +386,11 @@ function loadTableLineDetail(datasource=[]) {
                 }
             }
             else if ($('#invoice-exp').val() === '2') {
-                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                if (invoice_signs?.['sale_invoice_sign']) {
+                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                } else {
+                    $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+                }
             }
             else {
                 $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
@@ -403,7 +423,7 @@ function loadTableLineDetail(datasource=[]) {
                 data: 'product_data__des',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="small">${row?.['data_from_so']?.['product_description']}</span>`
+                    return `<textarea rows="5" disabled readonly class="des small form-control">${row?.['data_from_so']?.['product_description']}</textarea>`
                 }
             },
             {
@@ -534,7 +554,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
                     data: 'product_data__des',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="small">${row?.['product']?.['des']}</span>`
+                        return `<textarea rows="5" disabled readonly class="des small form-control">${row?.['product']?.['des']}</textarea>`
                     }
                 },
                 {
@@ -638,7 +658,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
                         <select class="form-select select-2 product-select"></select>
                     </td>
                     <td class="wrap-text">
-                        <span class="des small">${item?.['product']?.['des']}</span>
+                        <textarea rows="5" disabled readonly class="des small form-control">${item?.['product']?.['des']}</textarea>
                     </td>
                     <td class="wrap-text">
                         <select class="form-select select-2 uom-select"></select>
@@ -700,6 +720,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
             loadRowUOM(row.find('.uom-select'), item?.['product_uom'], item?.['product_uom']?.['group_id'])
             loadRowTax(row.find('.product_taxes'), item?.['product_tax'])
         }
+        calculatePrice()
     }
 }
 
@@ -1022,6 +1043,7 @@ function LoadDetailARInvoice(option) {
 
                 if (data?.['is_free_input'] === false) {
                     $('.for-free-input').prop('readonly', true).prop('disabled', true)
+                    $('#add_row_items_btn').remove()
                 }
 
                 $('#name').val(data?.['title'])
@@ -1032,6 +1054,8 @@ function LoadDetailARInvoice(option) {
                 invoiceDateEle.val(moment(data?.['invoice_date'].split(' ')[0]).format('DD/MM/YYYY'))
                 $('#invoice-sign').val(data?.['invoice_sign'])
                 $('#invoice-number').val(data?.['invoice_number'])
+                $('#invoice-status').text(['Khởi tạo', 'Đã phát hành', 'Đã kê khai', 'Đã thay thế', 'Đã điều chỉnh'][data?.['invoice_status']])
+
                 $('#invoice-exp').val(data?.['invoice_example'])
 
                 customerCodeEle.val(data?.['customer_code'])
@@ -1062,7 +1086,6 @@ $('#create_invoice_btn').on('click', function () {
     let combinesData = new ARInvoiceHandle().combinesData($('#form-detail-ar-invoice'), true);
     let pk = $.fn.getPkDetail();
     WindowControl.showLoading();
-    combinesData['data']['create_invoice'] = true
     $.fn.callAjax2(combinesData).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -1111,7 +1134,7 @@ $('#add_row_items_btn').on('click', function () {
                 <select class="form-select select-2 product-select"></select>
             </td>
             <td class="wrap-text">
-                <span class="des small"></span>
+                <textarea rows="5" disabled readonly class="des small form-control"></textarea>
             </td>
             <td class="wrap-text">
                 <select class="form-select select-2 uom-select"></select>
@@ -1266,7 +1289,11 @@ $(document).on("change", '.recalculate-field', function () {
             }
         }
         else if ($('#invoice-exp').val() === '2') {
-            $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            if (invoice_signs?.['sale_invoice_sign']) {
+                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            } else {
+                $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+            }
         }
         else {
             $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
@@ -1280,7 +1307,11 @@ $(document).on("change", '.recalculate-field', function () {
             }
         }
         else if ($('#invoice-exp').val() === '2') {
-            $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            if (invoice_signs?.['sale_invoice_sign']) {
+                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            } else {
+                $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
+            }
         }
         else {
             $.fn.notifyB({description: "Invalid invoice form."}, 'failure')

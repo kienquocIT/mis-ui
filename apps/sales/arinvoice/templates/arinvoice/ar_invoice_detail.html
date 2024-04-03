@@ -20,6 +20,9 @@
         #tab_line_detail_datatable tbody .dropdown-toggle::after {
             content: none;
         }
+        textarea {
+            resize: none;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -59,6 +62,11 @@
     >
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <span class="text-primary"><b>{% trans 'Status' %}: </b></span><span id="invoice-status"></span>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12 col-md-8 col-lg-8">
                     <div class="form-group">
@@ -313,7 +321,7 @@
                                     <tr>
                                         <th class="text-center" style="min-width: 50px"></th>
                                         <th style="min-width: 250px">{% trans 'Product' %}</th>
-                                        <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                        <th style="min-width: 300px">{% trans 'Description' %}</th>
                                         <th style="min-width: 100px">{% trans 'UoM' %}</th>
                                         <th style="min-width: 100px">{% trans 'Quantity' %}</th>
                                         <th class="required" style="min-width: 250px">{% trans 'Unit price' %}</th>

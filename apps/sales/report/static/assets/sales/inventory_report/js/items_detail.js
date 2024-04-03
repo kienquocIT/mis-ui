@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let NOT_CLOSED_SUB_PERIOD = 0
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
     const items_detail_report_table_Ele = $('#items_detail_report_table')
@@ -109,7 +108,6 @@ $(document).ready(function () {
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
     $('#btn-view').on('click', function () {
-        NOT_CLOSED_SUB_PERIOD = 0
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
@@ -165,9 +163,6 @@ $(document).ready(function () {
                             </tr>`
                         )
                         for (const stock_activity of item?.['stock_activities']) {
-                            if (stock_activity?.['is_close'] === false) {
-                                NOT_CLOSED_SUB_PERIOD += 1
-                            }
                             if (warehouses_select_Ele.val().length > 0) {
                                 if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {
                                     let stock_type_label = `<span class="text-secondary">Opening balance</span>`
@@ -342,7 +337,6 @@ $(document).ready(function () {
                     $.fn.initMaskMoney2()
                     setTimeout(
                         () => {
-                            $('#notify-div').prop('hidden', NOT_CLOSED_SUB_PERIOD === 0)
                             WindowControl.hideLoading();
                         },
                         500

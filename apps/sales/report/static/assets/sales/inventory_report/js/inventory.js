@@ -93,6 +93,15 @@ $(document).ready(function () {
                 url: periodEle.attr('data-url'),
                 method: 'GET',
             },
+            callbackDataResp: function (resp, keyResp) {
+                let res = []
+                for (const item of resp.data[keyResp]) {
+                    if (item?.['fiscal_year'] <= new Date().getFullYear()) {
+                        res.push(item)
+                    }
+                }
+                return res
+            },
             data: (data ? data : null),
             keyResp: 'periods_list',
             keyId: 'id',
@@ -147,6 +156,7 @@ $(document).ready(function () {
     $('#btn-view').on('click', function () {
         $('table thead').find('span').text('0')
         $('table thead').find('span').attr('data-init-money', 0)
+        $('table tbody').html('')
         if ($('#show-detail-cb').prop('checked')) {
             const table_inventory_report = $('#table-inventory-report-detail')
             table_inventory_report.prop('hidden', false)

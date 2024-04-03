@@ -262,7 +262,10 @@ $(function () {
         });
 
         tablePaymentStage.on('change', '.table-row-value-before-tax, .table-row-tax', function () {
-           POCalculateHandle.calculateValueAfterTax(this.closest('tr'));
+            if ($(this).hasClass('table-row-value-before-tax')) {
+                POValidateHandle.validatePOPSValue(this);
+            }
+            POCalculateHandle.calculateValueAfterTax(this.closest('tr'));
         });
 
         tablePaymentStage.on('click', '.del-row', function () {

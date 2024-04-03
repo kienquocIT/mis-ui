@@ -1650,7 +1650,7 @@ class PODataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50,350,350,150,200,350,150,350,50 (2000p)
+            columns: [  // 50,350,350,200,200,350,200,250,50 (2000p)
                 {
                     targets: 0,
                     width: '2.5%',
@@ -1663,7 +1663,11 @@ class PODataTableHandle {
                     targets: 1,
                     width: '17.5%',
                     render: () => {
-                            return `<select class="form-select table-row-item"></select>`;
+                        return `<div class="row">
+                                    <div class="col-12 col-md-11 col-lg-11">
+                                        <select class="form-select table-row-item"></select>
+                                    </div>
+                                </div>`;
                     },
                 },
                 {
@@ -1677,7 +1681,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '7.5%',
+                    width: '10%',
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -1726,7 +1730,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '7.5%',
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -1754,7 +1758,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '17.5%',
+                    width: '12.5%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -2059,6 +2063,35 @@ class POValidateHandle {
             }
         }
         return true
+    };
+
+    static validatePOPSValue(ele) {
+        let tablePS = $('#datable-po-payment-stage');
+        let tableProductWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
+        if (document.getElementById('purchase-order-purchase-request').innerHTML) {
+            tableProductWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
+        }
+        if (tableProductWrapper) {
+            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+            let elePretax = tableProductFt.querySelector('.purchase-order-product-pretax-amount-raw');
+            if (elePretax) {
+                let valuePO = parseFloat(elePretax.value);
+                let totalBT = 0;
+                tablePS.DataTable().rows().every(function () {
+                    let row = this.node();
+                    let eleValueBT = row.querySelector('.table-row-value-before-tax');
+                    if (eleValueBT) {
+                        totalBT += $(eleValueBT).valCurrency();
+                    }
+                });
+                if (totalBT > valuePO) {
+                    $(ele).attr('value', String(0));
+                    $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                    return false
+                }
+            }
+        }
+        return true;
     };
 
 }

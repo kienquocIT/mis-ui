@@ -35,7 +35,7 @@
     <div class="row">
         <div class="col-lg-3 col-md-4 col-xs-12" id="idx-box-control">
             <div class="w-100 mb-5">
-                <div class="form-group">
+                <div class="form-group mb-5">
                     <label for="inp-application" class="form-label required">{% trans 'Application' %}</label>
                     <select
                             id="inp-application" class="form-select"
@@ -45,14 +45,21 @@
                             required
                     ></select>
                 </div>
-                <a
-                        href="#"
-                        id="idx-link-template"
-                        style="display: none;"
-                        data-static-url="{% static '' %}"
-                >{% trans 'Click here to download template file' %}.</a>
+                <div class="w-100">
+                    <a
+                            href="#"
+                            id="idx-link-template"
+                            style="display: none;"
+                            data-static-url="{% static '' %}"
+                    ><i class="fa-solid fa-file-arrow-down mr-1"></i>{% trans 'Click here to download template file' %}.</a>
+                </div>
+                <div class="w-100">
+                    <a
+                            href="{% static 'fimport/template/mega-import.xlsx' %}"
+                    ><i class="fa-solid fa-file-arrow-down mr-1"></i>{% trans "Import template file of all feature" %}.</a>
+                </div>
             </div>
-            <div class="w-100 mb-5">
+            <div class="w-100 mb-3">
                 <div class="form-group">
                     <label
                             for="formFile" class="form-label required"
@@ -66,6 +73,13 @@
                             disabled required
                     >
                     <small class="text-muted form-text" id="file-remarks"></small>
+                </div>
+            </div>
+            <div class="w-100 mb-3">
+                <div class="form-group">
+                    <label for="inp-sheet-name" class="form-label required">{% trans 'Sheet name' %}</label>
+                    <select id="inp-sheet-name" class="form-select"></select>
+                    <small class="text-muted form-text" id="sheet-remarks"></small>
                 </div>
             </div>
             <div class="w-100 mb-3">
@@ -90,7 +104,7 @@
                     </div>
                 </div>
                 <button
-                        class="btn btn-primary w-100 mb-1" disabled id="btnLoadFileData"
+                        class="btn btn-primary w-100 mb-1 no-transform" disabled id="btnLoadFileData"
                 >{% trans 'Load File Data' %}</button>
             </div>
         </div>
@@ -102,12 +116,17 @@
                 >
                     <span class="icon"><i class="fa-solid fa-angles-left"></i></span>
                 </button>
-                <a href="#" class="ml-3" id="btnPageListLink" style="display:none;" target="_blank"><small>{% trans 'List page' %}</small></a>
-                <a href="#" class="ml-3" id="btnPageCreateLink" style="display:none;" target="_blank"><small>{% trans 'Create page' %}</small></a>
+                <span class="badge badge-primary ml-3" id="spanAppNameSelected"></span>
+                <a
+                        href="#" class="ml-3" id="btnPageListLink" style="display:none;" target="_blank"
+                ><small>{% trans 'List page' %}</small></a>
+                <a
+                        href="#" class="ml-3" id="btnPageCreateLink" style="display:none;" target="_blank"
+                ><small>{% trans 'Create page' %}</small></a>
             </div>
             <div class="w-100 mb-1 p-3 bg-blue-light-5" id="group-tbl-utils" style="display: none;"></div>
             <div class="w-100">
-                <table class="table w-100 no-wrap" id="tbl-display-data"></table>
+                <table class="table w-100 no-wrap border-bottom" id="tbl-display-data"></table>
             </div>
         </div>
     </div>

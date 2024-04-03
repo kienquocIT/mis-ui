@@ -26,6 +26,14 @@ msgid "The feature is not support import file data"
 msgstr "Chức năng này không hỗ trợ nhập dữ liệu từ tập tin"
 
 #
+msgid "Column in file not match with config of template"
+msgstr "Cột trong tệp không khớp với cấu hình của mẫu"
+
+#
+msgid "The resource is empty"
+msgstr "Dữ liệu đang trống"
+
+#
 msgid "Successfully"
 msgstr "Thành công"
 
@@ -40,3 +48,79 @@ msgstr "Kích thước"
 #
 msgid "Total rows"
 msgstr "Số lượng dòng"
+
+#
+msgid "Data field"
+msgstr "Trường dữ liệu"
+
+#
+msgid "Ident"
+msgstr "Định danh"
+
+#
+msgid "Unique"
+msgstr "Duy nhất"
+
+#
+msgid "Foreign key"
+msgstr "Khóa ngoại"
+
+#
+msgid "Foreign key remark"
+msgstr "Liên kết tới dữ liệu bảng khác"
+
+#
+msgid "required"
+msgstr "Bắt buộc"
+
+#
+msgid "unique"
+msgstr "Duy nhất"
+
+#
+msgid "type"
+msgstr "Kiểu"
+
+#
+msgid "minlength"
+msgstr "Độ dài tối thiểu"
+
+#
+msgid "maxlength"
+msgstr "Độ dài tối đa"
+
+#
+msgid "Phone Number Vietnam"
+msgstr "Số điện thoại Việt Nam"
+
+#
+msgid "True"
+msgstr "Có"
+
+#
+msgid "False"
+msgstr "Không"
+
+#
+msgid "Check all in current page"
+msgstr "Chọn tất cả dòng trong trang hiện tại"
+
+#
+msgid "Un-check all in current page"
+msgstr "Bỏ chọn tất cả dòng trong trang hiện tại"
+
+#
+msgid "Show / hide remarks of columns"
+msgstr "Hiển thị / ẩn mô tả các cột"
+
+#
+msgid "Edit with big field"
+msgstr "Chỉnh sửa với trường dữ liệu lớn hơn"
+
+#
+msgid "Update value to main field and close"
+msgstr "Cập nhật dữ liệu vào trường chính và đóng"
+
+#
+msgid "You can resize the input box by clicking and dragging the button at the bottom right corner."
+msgstr "Bạn có thể thay đổi kích thước hộp nhập bằng cách nhấp và kéo nút ở góc dưới cùng bên phải."

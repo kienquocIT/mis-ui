@@ -7,6 +7,7 @@ $(document).ready(function () {
                 validate: {},
                 columns: [], ...props?.['templateConfig'] || {}
             };
+            this.sheetName = this.templateConfig?.['sheet_name'] || null;
             this.tbl$ = props?.['table'] || $('#tbl-display-data');
             if (!$(this.tbl$).attr('id')) this.tbl$.attr('id', $x.fn.randomStr(32));
 
@@ -33,40 +34,127 @@ $(document).ready(function () {
             return total;
         }
 
+        generate_col(config) {
+            let colAttrs = {
+                'style': 'min-width: 100px;',
+                ...config?.['col_attrs'],
+                'class': 'col mb-1 ' + (config?.['col_attrs']?.['class'] || ''),
+            };
+            let col$ = $(`<div></div>`);
+            Object.keys(colAttrs).map((key) => {
+                col$.attr(key, colAttrs[key]);
+            })
+            return col$;
+        }
+
         generate_head() {
             let columnsConfig = this.templateConfig.columns || [];
             if (!columnsConfig) return false;
 
-            //
+            // init row
             let row$ = $(`<div class="row"></div>`);
             columnsConfig.map((item) => {
-                let col$ = $(`<div class="col">${item.name}</div>`);
+                let col$ = this.generate_col().append(`<span class="badge badge-primary wrap-text">${item.name}</span>`);
+                let colRemark$ = $(`<div class="col fimport-remark-col"></div>`);
                 let colConfig = item?.['col_attrs'] || null;
                 if (colConfig) {
                     Object.keys(colConfig).map((key) => {
                         col$.attr(key, colConfig[key]);
+                        colRemark$.attr(key, colConfig[key]);
                     })
                 }
-                col$.append(`<i class="fa-solid fa-circle-info ml-1" data-bs-toggle="tooltip" title="${item.type} - ${item.remarks}"></i>`);
+                if (item?.['is_primary_key'] === true){
+                    let iconPrimary = $(`<i class="fa-solid fa-key ml-1" style="color: blue;transform: rotate(-45deg);" data-bs-toggle="tooltip" title="${$.fn.gettext('Ident')} - ${$.fn.gettext('Unique')}"></i>`);
+                    col$.append(iconPrimary);
+                }
+                if (item?.['is_foreign_key']){
+                    let iconPrimary = $(`<i class="fa-solid fa-key ml-1" style="color: green;transform: rotate(-45deg);" data-bs-toggle="tooltip" title="${$.fn.gettext("Foreign key")} - ${item?.['is_foreign_key']}"></i>`);
+                    col$.append(iconPrimary);
+                }
+                // attribute
+                let txtAttribute = [];
+                if (item?.['input_attrs']){
+                    (item?.['input_attrs']?.['args'] || []).map(
+                        (item2) => {
+                            switch (item2) {
+                                case "required":
+                                    col$.append(`<i class="fa-solid fa-asterisk fa-2xs ml-1" style="color:red;" data-bs-toggle="tooltip" title="${$.fn.gettext('required')}"></i>`)
+                                    txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('required')}</small></li>`)
+                                    break
+                                case "data-unique":
+                                    txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('unique')}</small></li>`)
+                                    break
+                            }
+                        }
+                    )
+                    let kwargs = item?.['input_attrs']?.['kwargs'] || {};
+                    for (let item2 in kwargs){
+                        switch (item2) {
+                            case "type":
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${kwargs[item2]}</small></li>`)
+                                break
+                            case "minlength":
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('minlength')}: ${kwargs[item2]}</small></li>`)
+                                break
+                            case "maxlength":
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('maxlength')}: ${kwargs[item2]}</small></li>`)
+                                break
+                            case "data-valid-check-phone-vn":
+                                let state = kwargs[item2] === true ? $.fn.gettext('True') : $.fn.gettext('False');
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('Phone Number Vietnam')}: ${state}</small></li>`)
+                                break
+                        }
+                    }
+                    if (txtAttribute.length > 0){
+                        txtAttribute = `<ul class="fimport-remark-col" style="display: none;">${txtAttribute.join("")}</ul>`;
+                    } else {
+                        txtAttribute = '';
+                    }
+                }
+
+                // remarks
+                let txtRemarks = '';
+                if (Array.isArray(item.remarks)){
+                    txtRemarks = item.remarks.map(
+                        (item2) => {
+                            return `<li><small class="no-transform">${item2}</small></li>`
+                        }
+                    ).join("")
+                } else if (item.remarks){
+                    txtRemarks = `<li><small class="no-transform">${item.remarks.toString()}</small></li>`;
+                }
+                if (txtRemarks) txtRemarks = `<ul class="fimport-remark-col" style="display: none;">${txtRemarks}</ul>`
+
+                //
+                col$.append(`${txtAttribute}${txtRemarks}`);
                 row$.append(col$);
             })
+
             // setup thead
             let headStart$ = `
                 <button 
                     id="inp-checkall" 
-                    class="btn btn-icon btn-success btn-xs btn-square" type="button"
+                    class="btn btn-icon btn-success btn-xs btn-square mr-1 mb-1" type="button"
                     data-bs-toggle="tooltip"
-                    title="Check all in current page"
+                    title="${$.fn.gettext('Check all in current page')}"
                 >
                     <span class="icon"><i class="fa-solid fa-check"></i></span>
                 </button>
                 <button 
                     id="inp-un-checkall" 
-                    class="btn btn-icon btn-danger btn-xs btn-square" type="button"
+                    class="btn btn-icon btn-danger btn-xs btn-square mr-1 mb-1" type="button"
                     data-bs-toggle="tooltip"
-                    title="Un-check all in current page"
+                    title="${$.fn.gettext('Un-check all in current page')}"
                 >
                     <span class="icon"><i class="fa-solid fa-xmark"></i></span>
+                </button>
+                <button 
+                    id="inp-show-info" 
+                    class="btn btn-icon btn-light btn-xs btn-square mr-1 mb-1" type="button"
+                    data-bs-toggle="tooltip"
+                    title="${$.fn.gettext('Show / hide remarks of columns')}"
+                >
+                    <span class="icon"><i class="fa-solid fa-info"></i></span>
                 </button>
             `
             let headEnd$ = `
@@ -79,27 +167,31 @@ $(document).ready(function () {
                     <span class="icon"><i class="fa-solid fa-save"></i></span>
                 </button>
             `;
-            let thead$ = $(`<thead><tr><th>${headStart$}</th><th>${row$.prop('outerHTML')}</th><th>${headEnd$}</th></tr></thread>`);
-            // thead$.append(`<tr><td colspan="3" id="groupDataSelected"></td></tr>`);
+            let thead$ = $(`
+                <thead>
+                    <tr class="dataShowInfo">
+                        <th class="no-transform">${headStart$}</th>
+                        <th class="no-transform">${row$.prop('outerHTML')}</th>
+                        <th class="no-transform">${headEnd$}</th>
+                    </tr>
+                </thread>
+            `);
+
             // add thead to table
             this.tbl$.append(thead$);
+
+            // on collapse
+            $(this.tbl$).find('#inp-show-info').off('click').on('click', function (){
+                $(this).closest('table').find('.dataShowInfo .fimport-remark-col').toggle('fast');
+            })
         }
 
         get_columns() {
             let columnData = this.columnData || {};
 
-            function generate_col(config) {
-                let colAttrs = config?.['col_attrs'] || {'class': 'col'};
-                let col$ = $(`<div></div>`);
-                Object.keys(colAttrs).map((key) => {
-                    col$.attr(key, colAttrs[key]);
-                })
-                return col$;
-            }
-
             function generate_form_group(data, config, dataIndex) {
-                let group$ = $(`<div class="form-group"></div>`);
-                let inp$ = $(`<input class="form-control" value="${data ? data : ''}" />`);
+                let group$ = $(`<div class="form-group position-relative fimport-main-group-input"></div>`);
+                let inp$ = $(`<input class="form-control" value="${data ? data : ''}"/>`);
 
                 let inpName = config?.['input_name'] || null;
                 if (inpName) inp$.attr('name', inpName);
@@ -110,14 +202,52 @@ $(document).ready(function () {
                         class: 'form-control-plaintext',
                     }, ...config?.['input_attrs'] || {},
                 };
-                inp$.attr('data-index', dataIndex);
+                inp$
+                    .attr('data-index', dataIndex);
+                group$
+                    .attr('data-bs-toggle', 'tooltip')
+                    .attr('title', `${$.fn.gettext('Data field')}: ${config.name || ''}`);
+
+                // fill args kwargs to input
                 inpAttrs.args.map((attData) => inp$.prop(attData, true))
                 Object.keys(inpAttrs.kwargs).map((key) => {
                     inp$.attr(key, inpAttrs.kwargs[key]);
                 })
-
                 group$.append(inp$);
-                return group$;
+
+                //
+                let groupBigEdit$ = $(``);
+                if (config?.['allow_edit_big_field'] === true) {
+                    group$.append(
+                        `<button 
+                            type="button" 
+                            class="btn btn-icon btn-rounded btn-warning btn-xs btnBigInputEdit"
+                            data-bs-toggle="tooltip"
+                            title="${$.fn.gettext('Edit with big field')}"
+                        ><span class="icon"><i class="fa-solid fa-pen"></i></span></button>`
+                    );
+
+                    groupBigEdit$ = $(`
+                        <div 
+                            class="form-group position-relative fimport-sub-group-input" style="display: none;"
+                            data-bs-toggle="tooltip"
+                            title="${$.fn.gettext('Update value to main field and close')}"
+                        ></div>
+                    `)
+                    groupBigEdit$.append(
+                        `<textarea 
+                            rows="4"
+                            class="form-control textareaUpdateInputCell"
+                            data-bs-toggle="tooltip" title="${$.fn.gettext('You can resize the input box by clicking and dragging the button at the bottom right corner.')}"
+                        ></textarea>`
+                    ).append(
+                        `<button 
+                            type="button" 
+                            class="btn btn-icon btn-rounded btn-soft-success btn-xs btnBigInputSave"><span class="icon"><i class="fa-solid fa-check"></i></span>
+                        </button>`
+                    );
+                }
+                return [group$, groupBigEdit$];
             }
 
             return [
@@ -136,24 +266,26 @@ $(document).ready(function () {
                         `;
                     }
                 }, {
-                    width: "80%",
+                    width: "85%",
                     data: 'data',
                     className: 'my-custom-align',
                     render: (data, type, row) => {
                         let cell$ = $(`<div class="row"></div>`);
                         for (let key_index in columnData) {
                             let config = columnData[key_index.toString()];
-                            let col$ = generate_col(config);
+
+                            console.log('my-custom-align:', config.name, config);
+                            let col$ = this.generate_col(config);
                             col$.attr('data-index', key_index);
 
-                            let group$ = generate_form_group(data?.[key_index] || '', config, key_index);
-                            col$.append(group$);
+                            let [group$, groupBigEdit$] = generate_form_group(data?.[key_index] || '', config, key_index);
+                            col$.append(group$).append(groupBigEdit$);
                             cell$.append(col$);
                         }
                         return `<form data-url="${this.templateConfig.url}" data-method="POST" id="${$x.fn.randomStr(32)}">${cell$.prop('outerHTML')}</form>`;
                     }
                 }, {
-                    width: '10%',
+                    width: '5%',
                     className: 'my-custom-align',
                     render: (data, type, row) => {
                         return `<button class="btn btn-icon btn-outline-primary btn-xs btn-square btnSubmit" type="button" disabled><span class="icon"><i class="fa-solid fa-save"></i></span></button>`
@@ -179,6 +311,7 @@ $(document).ready(function () {
                         'selected': false,
                     }
                 });
+                // console.log('this.bodyDatas:', this.bodyDatas);
                 this.tbl$.DataTable().clear().rows.add(this.bodyDatas).draw();
 
                 // hide selected on table when reload data
@@ -366,6 +499,40 @@ $(document).ready(function () {
                 ],
                 pageLength: 10,
                 rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
+                    $(row).find('.btnBigInputEdit').off('click').on('click', function (){
+                        let btnThis = $(this);
+
+                        let mainGroup = $(this).closest('.fimport-main-group-input');
+                        let subGroup = mainGroup.parent().find('.fimport-sub-group-input');
+                        if (mainGroup.length > 0 && subGroup.length > 0){
+                            let mainInput = mainGroup.find('input');
+                            let subTextarea = subGroup.find('textarea');
+                            let subBtn = subGroup.find('.btnBigInputSave');
+                            if (mainInput.length > 0 && subTextarea.length > 0 && subBtn.length > 0){
+                                subTextarea.val(mainInput.val());
+
+                                subTextarea.off('input').on('input', function (){
+                                    mainInput.val(subTextarea.val()).trigger('change');
+                                })
+
+                                subGroup.slideToggle('fast', function (){
+                                    mainInput.prop('readonly', subGroup.is(':visible'));
+                                    if (subGroup.is(':visible') === true){
+                                        btnThis.closest('.col').addClass('edit-big-field-open');
+                                    } else {
+                                        btnThis.closest('.col').removeClass('edit-big-field-open');
+                                    }
+                                });
+                                subBtn.off('click').on('click', function (){
+                                    mainInput.prop('readonly', false);
+                                    mainInput.val(subTextarea.val()).trigger('change');
+                                    subGroup.slideUp('fast');
+                                    btnThis.closest('.col').removeClass('edit-big-field-open');
+                                })
+                            }
+                        }
+                    })
+
                     if (!$(row).attr('id')) $(row).attr('id', `id-${$x.fn.randomStr(32)}`);
                     $(row).attr('data-url', '#');
                     $(row).attr('data-method', "POST");
@@ -494,16 +661,21 @@ $(document).ready(function () {
             this.linkTemplateList$ = $('#idx-link-template');
             this.inpFile$ = $('#formFile');
             this.inpApp$ = $('#inp-application');
+            this.inpSheetName$ = $('#inp-sheet-name');
             this.starting$ = $('#inpStartRecord');
             this.ending$ = $('#inpEndRecord');
             this.btnSetMin$ = $('#btnSetMin');
             this.btnSetMax$ = $('#btnSetMax');
             this.btnPageList$ = $('#btnPageListLink');
-            this.btnPageCreate$ = $('#btnPageCreateLink')
+            this.btnPageCreate$ = $('#btnPageCreateLink');
+            this.btnLoadFileData$ = $('#btnLoadFileData');
+            this.spanAppText$ = $('#spanAppNameSelected');
 
             this.templateData = JSON.parse($('#idx-template-link').text());
             this.templateSelectedData = {};
             this.previousState = '1';  // 0: hide, 1: show
+
+            this.clsRenderData = null;
         }
 
         update_max_start_end(data_length) {
@@ -515,39 +687,90 @@ $(document).ready(function () {
             let clsThis = this;
             let reader = new FileReader();
             reader.onload = function (e) {
-                let data = new Uint8Array(e.target.result);
-                let workbook = XLSX.read(data, {type: 'array'});
-
-                // Get first worksheet
-                let worksheetName = workbook.SheetNames[0];
-                let worksheet = workbook.Sheets[worksheetName];
-
-                // Convert to JSON
-                let jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-
                 // update remarks
                 let sizeToMB = f.size / (1024 * 1024);
-                $('#file-remarks').text(`${$.fn.gettext("Size")}: ${sizeToMB.toFixed(2)}MB  ●  ${$.fn.gettext("Total rows")}: ${jsonData.length - 1}`);
+                $('#file-remarks').text(`${$.fn.gettext("Size")}: ${sizeToMB.toFixed(2)}MB`);
 
-                // update starting and ending records
-                clsThis.update_max_start_end(jsonData.length - 1);
+                let data = new Uint8Array(e.target.result);
+                let workbook = XLSX.read(data, {type: 'array'});
+                let worksheetName = null;  // workbook.SheetNames[0];
+                let worksheet = null;  // workbook.Sheets[worksheetName];
+                let jsonData = [];  // XLSX.utils.sheet_to_json(worksheet, {header: 1});
 
-                $x.fn.hideLoadingPage();
-                $('#btnLoadFileData').prop('disabled', false).on('click', function () {
-                    let startNum = Number.parseInt(clsThis.starting$.val());
-                    let endNum = Number.parseInt(clsThis.ending$.val());
-                    if (startNum <= endNum) clsThis.clsRenderData.render_data(jsonData.slice(startNum, endNum + 1)); else $.fn.notifyB({
-                        'description': $.fn.gettext('The feature is not support import file data'),
-                    })
+                function disableNextData(){
+                    clsThis.starting$.prop('disabled', true);
+                    clsThis.ending$.prop('disabled', true);
+                    clsThis.btnLoadFileData$.prop('disabled', true);
+                }
 
+                function enableNextData(){
+                    clsThis.starting$.prop('disabled', false);
+                    clsThis.ending$.prop('disabled', false);
+                    clsThis.btnLoadFileData$.prop('disabled', false);
+                }
+
+                clsThis.inpSheetName$.empty();
+                workbook.SheetNames.map((item, index) => {
+                    if (item && item.startsWith('#')){
+                        let html = ``;
+                        if (clsThis.clsRenderData.sheetName){
+                            html = `<option value="${item}" ${clsThis.clsRenderData.sheetName === item ? "selected" : ""}>${item}</option>`;
+                        } else {
+                            html = `<option value="${item}" ${index === 0 ? "selected": "" }>${item}</option>`;
+                        }
+                        clsThis.inpSheetName$.append(html)
+                    }
                 })
+                clsThis.inpSheetName$.off('change').on('change', function () {
+                    // check if not condition return disabled
+                    if (!workbook) return disableNextData();
+                    worksheetName = $(this).val();
+                    if (!worksheetName) return disableNextData();
+                    worksheet = workbook.Sheets[worksheetName];
+                    if (!worksheet) return disableNextData();
+                    if (!clsThis.clsRenderData.templateConfig?.['url_create']) return disableNextData();
+
+                    // enable button and handle data
+                    enableNextData();
+                    jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                    $('#sheet-remarks').text(`${$.fn.gettext("Total rows")}: ${jsonData.length - 1}`);
+                    if (jsonData.length > 0){
+                        const dataHead = jsonData[0];
+                        const configHead = clsThis.clsRenderData.templateConfig.columns;
+                        if (dataHead.length === configHead.length){
+                            // update starting and ending records
+                            clsThis.update_max_start_end(jsonData.length - 1);
+                            // button load + start + end
+                            clsThis.btnLoadFileData$.prop('disabled', false).off('click').on('click', function () {
+                                if ($(this).prop('disabled') === false){
+                                    let startNum = Number.parseInt(clsThis.starting$.val());
+                                    let endNum = Number.parseInt(clsThis.ending$.val());
+                                    if (startNum <= endNum) clsThis.clsRenderData.render_data(jsonData.slice(startNum, endNum + 1));
+                                    else $.fn.notifyB({
+                                        'description': $.fn.gettext('The feature is not support import file data'),
+                                    }, 'failure');
+                                }
+                            })
+                        } else {
+                            disableNextData();
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Column in file not match with config of template'),
+                            }, 'failure');
+                        }
+                    } else {
+                        disableNextData();
+                        $.fn.notifyB({
+                            'description': $.fn.gettext("The resource is empty"),
+                        }, 'failure')
+                    }
+                }).trigger('change');
+                $x.fn.hideLoadingPage();
             };
             reader.readAsArrayBuffer(f);
         }
 
         on_events() {
             let clsThis = this;
-            this.clsRenderData = null;
 
             this.inpApp$.initSelect2().on('change', function () {
                 let idx = $(this).val();
@@ -561,14 +784,21 @@ $(document).ready(function () {
                         'templateConfig': clsThis.templateSelectedData,
                     });
                     clsThis.clsRenderData.render_frame();
-
+                    if (clsThis.clsRenderData.sheetName){
+                        clsThis.inpSheetName$.val(clsThis.clsRenderData.sheetName)
+                    }
                     //
                     let urlList = clsThis.templateSelectedData?.['url_list'] || null;
                     urlList ? clsThis.btnPageList$.attr('href', urlList).show() : clsThis.btnPageList$.attr('href', '#').hide();
 
                     //
+                    clsThis.spanAppText$.text(clsThis.inpApp$.find(`option[value=${idx}]`).text() || '');
+
+                    //
                     let urlCreate = clsThis.templateSelectedData?.['url_create'] || null;
                     urlCreate ? clsThis.btnPageCreate$.attr('data-href', urlCreate).show() : clsThis.btnPageCreate$.attr('data-href', '#').hide();
+
+                    clsThis.inpSheetName$.trigger('change');
                 } else {
                     clsThis.linkTemplateList$.attr('href', '#').hide();
                     $.fn.notifyB({

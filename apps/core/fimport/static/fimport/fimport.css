@@ -1,0 +1,59 @@
+.textFilter {
+    max-height: 4rem;
+    overflow-y: auto !important;
+}
+
+/* width */
+.textFilter::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+/* Track */
+.textFilter::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #f1f1f1;
+  border-radius: 0;
+}
+
+/* Handle */
+.textFilter::-webkit-scrollbar-thumb {
+  background: #eaeaea;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.textFilter::-webkit-scrollbar-thumb:hover {
+  background: #cfcfcf;
+}
+
+/* Import In progress */
+
+.fimport-in-progress {
+    background: linear-gradient(270deg, #28afd7, #e6e214);
+    background-size: 400% 400%;
+
+    -webkit-animation: AnimationName 1s ease infinite;
+    -moz-animation: AnimationName 1s ease infinite;
+    -o-animation: AnimationName 1s ease infinite;
+    animation: AnimationName 1s ease infinite;
+}
+
+@-webkit-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-o-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}

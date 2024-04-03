@@ -3171,6 +3171,10 @@ class UtilControl {
         }
         return result;
     }
+
+    static sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 }
 
 class DTBControl {
@@ -3186,8 +3190,8 @@ class DTBControl {
     }
 
     static updateDataRow(clsThis, func, isDraw = false) {
-        clsThis = $(clsThis).closest('tr');
-        let dtb = $(clsThis).closest('table').DataTable();
+        clsThis = $(clsThis).is('tr') ? $(clsThis) : $(clsThis).closest('tr');
+        let dtb = ($(clsThis).is('table') ? $(clsThis) : $(clsThis).closest('table')).DataTable();
         let rowIdx = dtb.row(clsThis).index();
         let rowData = $x.fn.getRowData($(clsThis));
         let newData = func(clsThis, rowIdx, rowData);
@@ -6594,6 +6598,7 @@ let $x = {
         convertToSlug: UtilControl.convertToSlug,
         flattenObject: UtilControl.flattenObject,
         flattenObjectParams: UtilControl.flattenObjectParams,
+        sleep: UtilControl.sleep,
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,
@@ -6861,16 +6866,16 @@ String.prototype.valid_uuid4 = function () {
     return /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(isCheck);
 }
 
-Array.prototype.convert_to_key = function (key = 'id') {
-    if (Array.isArray(this)) {
-        let objData = {};
-        this.map((item) => {
-            objData[item[key]] = item
-        })
-        return objData;
-    }
-    return {};
-}
+// Array.prototype.convert_to_key = function (key = 'id') {
+//     if (Array.isArray(this)) {
+//         let objData = {};
+//         this.map((item) => {
+//             objData[item[key]] = item
+//         })
+//         return objData;
+//     }
+//     return {};
+// }
 
 // -- Array Customize}
 /**

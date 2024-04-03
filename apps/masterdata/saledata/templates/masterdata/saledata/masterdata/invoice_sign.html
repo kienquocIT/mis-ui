@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Invoice sign' %}{% endblock %}
+{% block cssHeader %}
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-invoice-sign">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    {{ data.invoice_signs | json_script:"invoice_signs" }}
+
+    <form id="form-invoice-sign"
+              data-url="{% url 'InvoiceSignListAPI' %}"
+              data-url-redirect="{% url 'InvoiceSignList' %}"
+              data-method="POST">
+            {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="invoice-type-1-vat" class="required form-label">{% trans 'Type' %}</label>
+                    <select class="form-select" id="invoice-type-1-vat">
+                        <option>{% trans 'VAT invoice' %} (một thuế)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="sign-1-vat" class="required form-label">Kí hiệu</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text text-1" id="basic-addon3">1C<span class="year"></span>T</span>
+                        <input class="form-control" id="sign-1-vat" placeholder="2 letters">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="invoice-type-n-vat" class="required form-label">{% trans 'Type' %}</label>
+                    <select class="form-select" id="invoice-type-n-vat">
+                        <option>{% trans 'VAT invoice' %} (nhiều thuế)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="sign-n-vat" class="required form-label">Kí hiệu</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text text-n" id="basic-addon3">1C<span class="year"></span>T</span>
+                        <input class="form-control" id="sign-n-vat" placeholder="2 letters">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="sales-invoice-type" class="required form-label">{% trans 'Type' %}</label>
+                    <select class="form-select" id="sales-invoice-type">
+                        <option>{% trans 'Sales invoice' %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="sign-sales-invoice-type" class="required form-label">Kí hiệu</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text text-n" id="basic-addon3">2C<span class="year"></span>T</span>
+                        <input class="form-control" id="sign-sales-invoice-type" placeholder="2 letters">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/invoice_sign.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+{% endblock %}
+

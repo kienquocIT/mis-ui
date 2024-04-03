@@ -139,7 +139,7 @@ $(document).ready(function () {
                 item.opp_stage_winrate !== 0
                 && item.opp_stage_winrate !== 100
                 && item.employee_group_id === group_filter
-                // && Check_in_period(item.opp_open_date)
+                && Check_in_period(item.opp_open_date)
                 && new Date(item.opp_open_date).getFullYear() === parseInt(totalPipelineYearFilterEle.val())
             ) {
                 if (!data_stage_value_dict[oppStageId]) {
@@ -204,13 +204,13 @@ $(document).ready(function () {
                     distributed: true,
                     horizontal: true,
                     dataLabels: {
-                        position: 'top',
+                        // position: 'top',
                     }
                 }
             },
             colors: [
-                '#3932ff', '#009b50', '#a88500', '#ce007b',
-                '#ff5e5e', '#b9ec8f', '#e3b388', '#3d3aaf',
+                '#2D4777', '#0082A6', '#3CAD99', '#096344',
+                '#2D4777', '#0082A6', '#3CAD99', '#096344',
             ],
             dataLabels: {
                 enabled: true,
@@ -349,12 +349,12 @@ $(document).ready(function () {
 
     AjaxTotalPipelineChart()
 
-    $('.timechart-total-pipeline').on('change', function () {
-        UpdateOptionTotalPipelineChart()
-        TOP_FROM = 0
-        TOP_TO = 5
-        UpdateOptionTopSaleByTotalPipelineChart(0, 5)
-    })
+    // totalPipelineYearFilterEle.on('change', function () {
+    //     UpdateOptionTotalPipelineChart()
+    //     TOP_FROM = 0
+    //     TOP_TO = 5
+    //     UpdateOptionTopSaleByTotalPipelineChart(0, 5)
+    // })
 
     // Top sale by total pipeline chart
 
@@ -374,16 +374,18 @@ $(document).ready(function () {
             let stage_id = item?.['opportunity']?.['stage']?.['id']
             let stage_winrate = item?.['opportunity']?.['stage']?.['win_rate']
             let stage_title = `${item?.['opportunity']?.['stage']?.['indicator']} (${item?.['opportunity']?.['stage']?.['win_rate']}%)`
-            data_process.push({
-                'employee_id': item?.['employee_inherit']?.['id'],
-                'employee_fullname': item?.['employee_inherit']?.['full_name'],
-                'employee_group_id': item?.['employee_inherit']?.['group_id'],
-                'opp_stage_id': stage_id,
-                'opp_stage_title': stage_title,
-                'opp_stage_winrate': stage_winrate,
-                'opp_open_date': item?.['opportunity']?.['open_date'],
-                'value': item?.['opportunity']?.['value'],
-            })
+            if (Check_in_period(item?.['opportunity']?.['open_date'])) {
+                data_process.push({
+                    'employee_id': item?.['employee_inherit']?.['id'],
+                    'employee_fullname': item?.['employee_inherit']?.['full_name'],
+                    'employee_group_id': item?.['employee_inherit']?.['group_id'],
+                    'opp_stage_id': stage_id,
+                    'opp_stage_title': stage_title,
+                    'opp_stage_winrate': stage_winrate,
+                    'opp_open_date': item?.['opportunity']?.['open_date'],
+                    'value': item?.['opportunity']?.['value'],
+                })
+            }
         }
 
         data_process.forEach(item => {
@@ -479,8 +481,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#3932ff', '#009b50', '#a88500', '#ce007b',
-                '#ff5e5e', '#b9ec8f', '#e3b388', '#3d3aaf',
+                '#2D4777', '#0082A6', '#3CAD99', '#096344',
+                '#2D4777', '#0082A6', '#3CAD99', '#096344',
             ],
             plotOptions: {
                 bar: {
@@ -489,7 +491,7 @@ $(document).ready(function () {
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
-                        position: "top",
+                        // position: "top",
                         total: {
                             enabled: true,
                             offsetX: 10,
@@ -644,6 +646,25 @@ $(document).ready(function () {
 
     let forecast_chart_list_DF = null
 
+    function GetMonth(current_period) {
+        let month = []
+        let month_text = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ]
+        for (let i = 1; i <= 12; i++) {
+            let temp = current_period?.['space_month'] + i
+            let year = current_period?.['fiscal_year']
+            if (temp > 12) {
+                year += 1
+                temp -= 12
+            }
+            month.push(month_text[temp-1]+`/${year}`)
+        }
+
+        return month
+    }
+
     function CombineForecastMonthChartData(group_filter, show_billion, titleY = "Month", titleX = 'Total (million)', chart_title='Forecast value chart') {
         let cast_billion = 1e6
         if (show_billion) {
@@ -652,14 +673,16 @@ $(document).ready(function () {
 
         let data_process = []
         for (const item of total_pipeline_chart_list_DF) {
-            let stage_winrate = item?.['opportunity']?.['stage']?.['win_rate']
-            data_process.push({
-                'group_id': item?.['employee_inherit']?.['group_id'],
-                'opp_stage_winrate': stage_winrate,
-                'opp_id': item?.['opportunity']?.['id'],
-                'opp_close_date': item?.['opportunity']?.['close_date'],
-                'forecast_value': item?.['opportunity']?.['forecast_value'],
-            })
+            if (Check_in_period(item?.['opportunity']?.['close_date'])) {
+                let stage_winrate = item?.['opportunity']?.['stage']?.['win_rate']
+                data_process.push({
+                    'group_id': item?.['employee_inherit']?.['group_id'],
+                    'opp_stage_winrate': stage_winrate,
+                    'opp_id': item?.['opportunity']?.['id'],
+                    'opp_close_date': item?.['opportunity']?.['close_date'],
+                    'forecast_value': item?.['opportunity']?.['forecast_value'],
+                })
+            }
         }
 
         if (group_filter) {
@@ -678,40 +701,44 @@ $(document).ready(function () {
                 ) {
                     if (item?.['opp_stage_winrate'] === 100) {
                         winrate_100 += item.forecast_value
-                    } else if (item?.['opp_stage_winrate'] <= 70) {
+                    } else if (item?.['opp_stage_winrate'] <= 70 && item?.['opp_stage_winrate'] !== 0) {
                         winrate_70s += item.forecast_value
-                    } else if (item?.['opp_stage_winrate'] > 70 && item?.['opp_stage_winrate'] < 100) {
+                    } else if (item?.['opp_stage_winrate'] > 70 && item?.['opp_stage_winrate'] !== 100) {
                         winrate_70g += item.forecast_value
                     }
                 }
             }
-            all_data_year[`${i+1}`] = {
+            all_data_year[`${i+1+current_period?.['space_month']}`] = {
                 'group_1': winrate_70s / cast_billion,
                 'group_2': winrate_70g / cast_billion,
-                'group_3': winrate_100 / cast_billion
+                // 'group_3': winrate_100 / cast_billion
             }
         }
 
         let group_1_list = []
         let group_2_list = []
-        let group_3_list = []
-        for (let i = 0; i < 12; i++) {
+        // let group_3_list = []
+        for (let i = current_period?.['space_month']; i < current_period?.['space_month']+12; i++) {
             group_1_list.push(all_data_year[i+1]['group_1'])
             group_2_list.push(all_data_year[i+1]['group_2'])
-            group_3_list.push(all_data_year[i+1]['group_3'])
+            // group_3_list.push(all_data_year[i+1]['group_3'])
         }
 
         return {
-            series: [{
-                name: '<= 70%',
-                data: group_1_list
-            }, {
-                name: '> 70%',
-                data: group_2_list
-            }, {
-                name: '100%',
-                data: group_3_list
-            }],
+            series: [
+                {
+                    name: '<= 70% (!= 0%)',
+                    data: group_1_list
+                },
+                {
+                    name: '> 70% (!= 100%)',
+                    data: group_2_list
+                },
+                // {
+                //     name: '100%',
+                //     data: group_3_list
+                // }
+            ],
             chart: {
                 type: 'bar',
                 height: HEIGHT[2],
@@ -731,16 +758,16 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#4885e1', '#69d5a0', '#007a3e'
+                '#21839A', '#3BCBB2', '#3CAD99'
             ],
             plotOptions: {
                 bar: {
                     borderRadius: 5,
-                    barHeight: '80%',
+                    barHeight: '90%',
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
-                        position: "top",
+                        // position: "top",
                         total: {
                             enabled: true,
                             offsetX: 10,
@@ -779,12 +806,7 @@ $(document).ready(function () {
                 colors: ['#fff']
             },
             xaxis: {
-                categories: [
-                    'Jan','Feb','Mar',
-                    'Apr','May','Jun',
-                    'Jul','Aug','Sep',
-                    'Oct','Nov','Dec'
-                ],
+                categories: GetMonth(current_period),
                 labels: {
                     show: true,
                     formatter: function (val) {
@@ -835,13 +857,15 @@ $(document).ready(function () {
 
         let data_process = []
         for (const item of total_pipeline_chart_list_DF) {
-            let stage_winrate = item?.['opportunity']?.['stage']?.['win_rate']
-            data_process.push({
-                'group_id': item?.['employee_inherit']?.['group_id'],
-                'opp_stage_winrate': stage_winrate,
-                'opp_close_date': item?.['opportunity']?.['close_date'],
-                'forecast_value': item?.['opportunity']?.['forecast_value'],
-            })
+            if (Check_in_period(item?.['opportunity']?.['close_date'])) {
+                let stage_winrate = item?.['opportunity']?.['stage']?.['win_rate']
+                data_process.push({
+                    'group_id': item?.['employee_inherit']?.['group_id'],
+                    'opp_stage_winrate': stage_winrate,
+                    'opp_close_date': item?.['opportunity']?.['close_date'],
+                    'forecast_value': item?.['opportunity']?.['forecast_value'],
+                })
+            }
         }
 
         if (group_filter) {
@@ -860,14 +884,14 @@ $(document).ready(function () {
                 ) {
                     if (item?.['opp_stage_winrate'] === 100) {
                         winrate_100 += item.forecast_value
-                    } else if (item?.['opp_stage_winrate'] <= 70) {
+                    } else if (item?.['opp_stage_winrate'] <= 70 && item?.['opp_stage_winrate'] !== 0) {
                         winrate_70s += item.forecast_value
-                    } else if (item?.['opp_stage_winrate'] > 70 && item?.['opp_stage_winrate'] < 100) {
+                    } else if (item?.['opp_stage_winrate'] > 70 && item?.['opp_stage_winrate'] !== 100) {
                         winrate_70g += item.forecast_value
                     }
                 }
             }
-            all_data_year[`${i+1}`] = {
+            all_data_year[`${i+1+current_period?.['space_month']}`] = {
                 'group_1': winrate_70s / cast_billion,
                 'group_2': winrate_70g / cast_billion,
                 'group_3': winrate_100 / cast_billion
@@ -876,34 +900,37 @@ $(document).ready(function () {
 
         let group_1_list = []
         let group_2_list = []
-        let group_3_list = []
-        for (let i = 0; i < 12; i++) {
+        // let group_3_list = []
+        for (let i = current_period?.['space_month']; i < current_period?.['space_month']+12; i++) {
             group_1_list.push(all_data_year[i+1]['group_1'])
             group_2_list.push(all_data_year[i+1]['group_2'])
-            group_3_list.push(all_data_year[i+1]['group_3'])
+            // group_3_list.push(all_data_year[i+1]['group_3'])
         }
 
         let group_1_list_quarter = [];
         let group_2_list_quarter = [];
-        let group_3_list_quarter = [];
-
+        // let group_3_list_quarter = [];
         for (let i = 0; i < group_1_list.length; i += 3) {
             group_1_list_quarter.push(group_1_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(parseInt(moneyRoundEle.val())));
             group_2_list_quarter.push(group_2_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(parseInt(moneyRoundEle.val())));
-            group_3_list_quarter.push(group_3_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(parseInt(moneyRoundEle.val())));
+            // group_3_list_quarter.push(group_3_list.slice(i, i + 3).reduce((sum, value) => sum + value, 0).toFixed(parseInt(moneyRoundEle.val())));
         }
 
         return {
-            series: [{
-                name: '<= 70%',
-                data: group_1_list_quarter
-            }, {
-                name: '> 70%',
-                data: group_2_list_quarter
-            }, {
-                name: '100%',
-                data: group_3_list_quarter
-            }],
+            series: [
+                {
+                    name: '<= 70% (!= 0%)',
+                    data: group_1_list_quarter
+                },
+                {
+                    name: '> 70% (!= 100%)',
+                    data: group_2_list_quarter
+                },
+                // {
+                //     name: '100%',
+                //     data: group_3_list_quarter
+                // }
+            ],
             chart: {
                 type: 'bar',
                 height: HEIGHT[2],
@@ -923,16 +950,16 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#4885e1', '#69d5a0', '#007a3e'
+                '#21839A', '#3BCBB2', '#3CAD99'
             ],
             plotOptions: {
                 bar: {
                     borderRadius: 5,
-                    barHeight: '80%',
+                    barHeight: '90%',
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
-                        position: "top",
+                        // position: "top",
                         total: {
                             enabled: true,
                             offsetX: 10,
@@ -971,7 +998,7 @@ $(document).ready(function () {
                 colors: ['#fff']
             },
             xaxis: {
-                categories: ['1','2','3','4'],
+                categories: ['1', '2', '3', '4'],
                 labels: {
                     show: true,
                     formatter: function (val) {
@@ -1055,9 +1082,9 @@ $(document).ready(function () {
         }
     }
 
-    $('#forecast-year').on('change', function () {
-        UpdateOptionForecastChart()
-    })
+    // $('#forecast-year').on('change', function () {
+    //     UpdateOptionForecastChart()
+    // })
 
     $('#forecast-type').on('change', function () {
         UpdateOptionForecastChart(parseInt($(this).val()))
@@ -1078,26 +1105,45 @@ $(document).ready(function () {
     let FROM = 0
     let TO = 10
 
+    function GetMonthOption(current_period) {
+        let month_text = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ]
+        for (let i = 1; i <= 12; i++) {
+            let temp = current_period?.['space_month'] + i
+            let year = current_period?.['fiscal_year']
+            if (temp > 12) {
+                year += 1
+                temp -= 12
+            }
+            customerActivitiesMonthEle.append(`<option value="${i+current_period?.['space_month']}">${month_text[temp-1]+` / ${year}`}</option>`)
+        }
+    }
+    GetMonthOption(current_period)
+
     function ProcessDataCustomerActivities() {
         let activities_data = []
         for (const item of total_pipeline_chart_list_DF) {
-            let month_filter = parseInt(customerActivitiesMonthEle.val())
-            let flag_month = true
-            if (month_filter !== 0) {
-                flag_month = new Date(item?.['opportunity']?.['open_date']).getMonth() + 1 === month_filter
-            }
-            if (
-                flag_month &&
-                new Date(item?.['opportunity']?.['open_date']).getFullYear() === parseInt($('#customer-activities-year').val())
-            ) {
-                activities_data.push({
-                    'id': item?.['opportunity']['customer']['id'],
-                    'title': item?.['opportunity']['customer']['title'],
-                    'call': item?.['opportunity']['call'],
-                    'email': item?.['opportunity']['email'],
-                    'meeting': item?.['opportunity']['meeting'],
-                    'document': item?.['opportunity']['document']
-                })
+            if (Check_in_period(item?.['opportunity']?.['open_date'])) {
+                let month_filter = parseInt(customerActivitiesMonthEle.val())
+                let flag_month = true
+                if (month_filter !== 0) {
+                    flag_month = new Date(item?.['opportunity']?.['open_date']).getMonth() + 1 === month_filter
+                }
+                if (
+                    flag_month &&
+                    new Date(item?.['opportunity']?.['open_date']).getFullYear() === parseInt($('#customer-activities-year').val())
+                ) {
+                    activities_data.push({
+                        'id': item?.['opportunity']['customer']['id'],
+                        'title': item?.['opportunity']['customer']['title'],
+                        'call': item?.['opportunity']['call'],
+                        'email': item?.['opportunity']['email'],
+                        'meeting': item?.['opportunity']['meeting'],
+                        'document': item?.['opportunity']['document']
+                    })
+                }
             }
         }
 
@@ -1183,7 +1229,7 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#ff9090', '#69d5a0', '#74acff', '#b6b6b6'
+                '#FF6F5E', '#F7AF25', '#18A4E0', '#A3DCBE'
             ],
             responsive: [{
                 breakpoint: 480,
@@ -1202,7 +1248,6 @@ $(document).ready(function () {
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
-                        position: "center",
                         total: {
                             enabled: true,
                             formatter: function (val) {
@@ -1298,17 +1343,17 @@ $(document).ready(function () {
         }
     })
 
-    $('#customer-activities-year').on('change', function () {
-        FROM = 0
-        TO = 10
-        customer_title_chart_data_DF = []
-        call_chart_data_DF = []
-        email_chart_data_DF = []
-        meeting_chart_data_DF = []
-        document_chart_data_DF = []
-        ProcessDataCustomerActivities()
-        UpdateOptionCustomerActivitiesPipelineChart(0, 10)
-    })
+    // $('#customer-activities-year').on('change', function () {
+    //     FROM = 0
+    //     TO = 10
+    //     customer_title_chart_data_DF = []
+    //     call_chart_data_DF = []
+    //     email_chart_data_DF = []
+    //     meeting_chart_data_DF = []
+    //     document_chart_data_DF = []
+    //     ProcessDataCustomerActivities()
+    //     UpdateOptionCustomerActivitiesPipelineChart(0, 10)
+    // })
 
     customerActivitiesMonthEle.on('change', function () {
         FROM = 0

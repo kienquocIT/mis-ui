@@ -919,11 +919,11 @@ $(document).ready(function () {
         return {
             series: [
                 {
-                    name: '<= 70% (!= 0%)',
+                    name: '≤ 70%',
                     data: group_1_list_quarter
                 },
                 {
-                    name: '> 70% (!= 100%)',
+                    name: '> 70%',
                     data: group_2_list_quarter
                 },
                 // {

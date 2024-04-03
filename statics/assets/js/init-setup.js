@@ -2675,7 +2675,7 @@ class WFRTControl {
             if (btnSaveCR.length <= 0 && btnCancelCR.length <= 0) {
                 $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">
                                             <span>
-                                                <span>${$.fn.transEle.attr('data-save')}</span>
+                                                <span>${$.fn.transEle.attr('data-save-change')}</span>
                                                 <span class="icon">
                                                     <i class="fa-regular fa-floppy-disk"></i>
                                                 </span>

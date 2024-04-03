@@ -1580,12 +1580,14 @@ $(function () {
                 $(firstRow).css({
                     'background-color': '#ebf5f5',
                     'color': '#007D88',
+                    'font-weight': 'bold',
                 });
                 for (let eleType of $eleTable[0].querySelectorAll('.table-row-type')) {
                     let row = eleType.closest('td');
                     $(row).css({
                         'background-color': '#ebf5f5',
                         'color': '#007D88',
+                        'font-weight': 'bold',
                     });
                     if (eleType.getAttribute('data-type')) {
                         if ([2, 3, 4].includes(parseInt(eleType.getAttribute('data-type')))) {

@@ -22,10 +22,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                columns: [  // 100,200,200,300,150,100,125,125,225,225,225,125,100,125,125 (2500p)
+                columns: [  // 150,150,150,350,150,100,125,125,250,250,250,100,100,100,100 (2500p)
                     {
                         targets: 0,
-                        width: '4%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
@@ -36,21 +36,21 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '8%',
+                        width: '6%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '8%',
+                        width: '6%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-soft-primary">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '12%',
+                        width: '14%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
@@ -97,7 +97,7 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '9%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span></b>`;
@@ -107,7 +107,7 @@ $(function () {
                     },
                     {
                         targets: 9,
-                        width: '9%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span></b>`;
@@ -117,7 +117,7 @@ $(function () {
                     },
                     {
                         targets: 10,
-                        width: '9%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span></b>`;
@@ -127,7 +127,7 @@ $(function () {
                     },
                     {
                         targets: 11,
-                        width: '5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p></b>`;
@@ -147,7 +147,7 @@ $(function () {
                     },
                     {
                         targets: 13,
-                        width: '5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p></b>`;
@@ -157,7 +157,7 @@ $(function () {
                     },
                     {
                         targets: 14,
-                        width: '5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p></b>`;

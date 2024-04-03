@@ -6948,3 +6948,7 @@ msgstr "Quay lại"
 #
 msgid "Save and apply workflow"
 msgstr "Lưu và áp dụng quy trình"
+
+#
+msgid "Save change"
+msgstr "Lưu thay đổi"

@@ -18,10 +18,10 @@ $(function () {
                 paging: false,
                 autoWidth: true,
                 scrollX: true,
-                columns: [  // 250,200,250,300,300,300,100,300 (2000p)
+                columns: [  // 300,100,300,250,250,250,100,450 (2000p)
                     {
                         targets: 0,
-                        width: '12.5%',
+                        width: '15%',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_indicator'] === true) {
@@ -37,7 +37,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
                             let code = '';
                             if (row?.['is_sale_order'] === true) {
@@ -49,12 +49,12 @@ $(function () {
                             if (row?.['is_delivery'] === true) {
                                 code = row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : '';
                             }
-                            return `<div class="row"><span class="badge badge-soft-primary">${code}</span></div>`;
+                            return `<div class="row"><span class="badge badge-primary">${code}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '12.5%',
+                        width: '15%',
                         render: (data, type, row) => {
                             let title = '';
                             if (row?.['is_sale_order'] === true) {
@@ -71,7 +71,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '15%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
                                 return `<b><span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span></b>`;
@@ -82,7 +82,7 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '15%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) { // INDICATOR ROWS
                                 if (row?.['indicator']?.['acceptance_affect_by'] === 2) { // Plan value
@@ -123,7 +123,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '15%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
                                 return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
@@ -145,7 +145,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '15%',
+                        width: '22.5%',
                         render: (data, type, row) => {
                             return `<input class="form-control" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
                         }

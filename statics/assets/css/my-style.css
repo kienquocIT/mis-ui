@@ -862,3 +862,24 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     color: #bfcbd0;
 }
 /* -- Workflow */
+
+/* Button */
+.btn-outline-blue {
+    border: 1px solid #298dff;
+    color: #298dff;
+    background-color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-outline-blue:hover {
+    background-color: #298dff;
+    color: white;
+}
+/* -- Button */
+
+/* Badge */
+.badge.badge-soft-blue {
+    background: #eef6ff;
+    color: #298dff;
+}
+/* Badge */

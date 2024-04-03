@@ -5458,7 +5458,7 @@ function validatePSValue(ele) {
             });
             if (totalBT > valueSO) {
                 $(ele).attr('value', String(0));
-                $.fn.notifyB({description: 'Total payment must less than total sale order before tax'}, 'failure');
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
                 return false
             }
         }

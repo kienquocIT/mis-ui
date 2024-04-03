@@ -6932,3 +6932,19 @@ msgstr "Vui lòng nhập đủ số lượng"
 #
 msgid "Cancel document"
 msgstr "Hủy phiếu"
+
+#
+msgid "Total payment must less than or equal to total before tax"
+msgstr "Tổng thanh toán phải nhỏ hơn hoặc bằng tổng giá trị trước thuế"
+
+#
+msgid "Change"
+msgstr "Thay đổi"
+
+#
+msgid "Back"
+msgstr "Quay lại"
+
+#
+msgid "Save and apply workflow"
+msgstr "Lưu và áp dụng quy trình"

@@ -1895,17 +1895,33 @@ class WFRTControl {
     static callWFSubmitForm(_form) {
         let IDRuntime = WFRTControl.getRuntimeWF();
         let collabOutForm = WFRTControl.getCollabOutFormData();
-        let eleStatus = $('#systemStatus');
+        let eleDocChange = $('#documentCR');
         let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
-        if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change request
+        if (eleDocChange.attr('data-status') === '5' && eleDocChange.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change document after finish
             let $eleForm = $(`#${globeFormMappedZone}`);
             if ($eleForm && $eleForm.length > 0) {
                 _form.dataMethod = 'POST';
                 _form.dataUrl = $eleForm.attr('data-url-cr');
                 _form.dataForm['code'] = $eleCode.text();
-                _form.dataForm['system_status'] = 0;
-                WFRTControl.callAjaxWFCreate(_form);
+                _form.dataForm['system_status'] = 1;
+                _form.dataForm['is_document_change'] = true;
+                _form.dataForm['document_root_id'] = eleDocChange.attr('data-doc-id');
+                _form.dataForm['document_change_order'] = 1;
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-msg-are-u-sure'),
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showConfirmButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    showCancelButton: true,
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        WFRTControl.callAjaxWFCreate(_form);
+                    }
+                })
             }
             return true;
         }
@@ -2091,7 +2107,7 @@ class WFRTControl {
         let statusList = [0, 1];
         let statusMapText = {
             0: $.fn.transEle.attr('data-save-draft'),
-            1: $.fn.transEle.attr('data-save'),
+            1: $.fn.transEle.attr('data-save-run-wf'),
         };
         let statusMapColor = {
             0: "text-secondary",
@@ -2160,16 +2176,16 @@ class WFRTControl {
                             } else {
                                 WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             }
-                            // active btn cancel if owner & status is finished
+                            // active btn save change and back if current employee is owner, status is finished
                             let eleDocCR = $('#documentCR');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (eleDocCR.attr('data-status') === '3' && eleDocCR.attr('data-inherit') === currentEmployee) {
+                            if (eleDocCR.attr('data-status') === '5' && eleDocCR.attr('data-inherit') === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishUpdate();
                             }
                         }
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
-                            // active btn cancel if owner & status is finished
+                            // active btn change and cancel if current employee is owner, status is finished
                             let eleStatus = $('#systemStatus');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
@@ -2626,7 +2642,7 @@ class WFRTControl {
         let btnEnableCR = $('#btnEnableCR');
         if (eleRealAction) {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">
+                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" id="btnEnableCR" data-value="1">
                                             <span>
                                                 <span>${$.fn.transEle.attr('data-change-request')}</span>
                                                 <span class="icon">
@@ -2636,13 +2652,13 @@ class WFRTControl {
                                         </button>
                                         <button class="btn btn-outline-danger btn-wf-after-finish" id="btnCancel" data-value="2">
                                             <span>
-                                                <span>${$.fn.transEle.attr('data-cancel-document')}</span>
+                                                <span>${$.fn.transEle.attr('data-cancel')}</span>
                                                 <span class="icon">
                                                     <i class="fas fa-times"></i>
                                                 </span>
                                             </span>
                                         </button>`);
-                // Add event
+                // add event
                 eleRealAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
                 });
@@ -2657,9 +2673,9 @@ class WFRTControl {
         let formID = globeFormMappedZone;
         if (eleRealAction && formID) {
             if (btnSaveCR.length <= 0 && btnCancelCR.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-primary btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">
+                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">
                                             <span>
-                                                <span>${$.fn.transEle.attr('data-save')} CR</span>
+                                                <span>${$.fn.transEle.attr('data-save')}</span>
                                                 <span class="icon">
                                                     <i class="fa-regular fa-floppy-disk"></i>
                                                 </span>
@@ -2667,9 +2683,9 @@ class WFRTControl {
                                         </button>
                                         <button class="btn btn-outline-secondary btn-wf-after-finish" id="btnCancelCR" data-value="4">
                                             <span>
-                                                <span>${$.fn.transEle.attr('data-cancel')}</span>
+                                                <span>${$.fn.transEle.attr('data-go-back')}</span>
                                                 <span class="icon">
-                                                    <i class="fas fa-times"></i>
+                                                    <i class="fas fa-arrow-left"></i>
                                                 </span>
                                             </span>
                                         </button>`);
@@ -4775,9 +4791,9 @@ class DocumentControl {
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
 
-    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit') {
+    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit', keyDocID = 'id', keyDocChangeOrder = 'document_change_order') {
         if (typeof detailData === 'object') {
-            let [code, is_active, system_status, employee_inherit] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit]];
+            let [code, is_active, system_status, employee_inherit, doc_id, doc_change_order] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit], detailData?.[keyDocID], detailData?.[keyDocChangeOrder]];
             if (code) {
                 let clsState = 'hidden';
                 if (is_active === true) {
@@ -4788,7 +4804,7 @@ class DocumentControl {
                 $('#idx-breadcrumb-current-code').html(
                     `
                     <span class="${clsState}"></span>
-                    <span class="badge badge-primary" id="documentCode">${code}</span>
+                    <span class="badge badge-primary" id="documentCode" data-doc-id="${doc_id}" data-doc-change-order="${doc_change_order}">${code}</span>
                 `
                 ).removeClass('hidden');
             }
@@ -4813,11 +4829,11 @@ class DocumentControl {
                 }
                 if (window.location.href.includes('/update/') && dataStatus === 3) {
                     $('#idx-breadcrumb-current-code').append(
-                        `<span class="badge badge-soft-warning" id="documentCR" data-status="${dataStatus}" data-inherit="${dataInheritID}">Change request</span>`
+                        `<span class="badge badge-soft-blue" id="documentCR" data-status="${dataStatus + 2}" data-inherit="${dataInheritID}" data-doc-id="${doc_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
                     ).removeClass('hidden');
                 } else {
                     $('#idx-breadcrumb-current-code').append(
-                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}">${system_status}</span>`
+                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}" data-doc-id="${doc_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
                 }
             }

@@ -1,4 +1,19 @@
 $(document).ready(function () {
+    function GetQuarterFromMonth(month) {
+        if ([1,2,3].includes(month)) {
+            return 1
+        }
+        if ([4,5,6].includes(month)) {
+            return 2
+        }
+        if ([7,8,9].includes(month)) {
+            return 3
+        }
+        if ([10,11,12].includes(month)) {
+            return 4
+        }
+    }
+
     $('#modal-dashboard-setting .modal-dialog').draggable({
         "handle": ".modal-header"
     });
@@ -1098,13 +1113,13 @@ $(document).ready(function () {
         }
 
         const current_month = new Date().getMonth() + 1
-        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
+        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
 
         let top_sellers_chart_data = []
         for (const item of top_sellers_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
-            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
+            const quarter = GetQuarterFromMonth(month - space_month_Setting)
             const filterTimes = topSellersTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {
@@ -1343,13 +1358,14 @@ $(document).ready(function () {
         }
 
         const current_month = new Date().getMonth() + 1
-        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
-
+        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
+        console.log(current_quarter)
         let top_customers_chart_data = []
         for (const item of top_customers_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
-            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
+            const quarter = GetQuarterFromMonth(month - space_month_Setting)
+            console.log(dateApproved, month, quarter)
             const filterTimes = topCustomersTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {
@@ -1587,13 +1603,13 @@ $(document).ready(function () {
         }
 
         const current_month = new Date().getMonth() + 1
-        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
+        const current_quarter = (current_month - space_month_Setting)
 
         let top_categories_chart_data = []
         for (const item of top_categories_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
-            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
+            const quarter = GetQuarterFromMonth(month - space_month_Setting)
             const filterTimes = topCategoriesTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {
@@ -1837,7 +1853,7 @@ $(document).ready(function () {
         }
 
         const current_month = new Date().getMonth() + 1
-        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
+        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
 
         let top_products_chart_data = []
         for (const item of top_products_chart_list_DF) {

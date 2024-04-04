@@ -230,7 +230,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#9EC9E2', '#097abe'],
+            colors: ['#91c2e0', '#0a5b8c'],
             dataLabels: {
                 enabled: false,
             },
@@ -380,7 +380,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#9EC9E2', '#097abe'],
+            colors: ['#91c2e0', '#0a5b8c'],
             dataLabels: {
                 enabled: false,
             },
@@ -1172,7 +1172,7 @@ $(document).ready(function () {
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#095D6A'],
+            colors: ['#d29128'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,

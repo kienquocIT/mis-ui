@@ -1900,14 +1900,19 @@ class WFRTControl {
         let currentEmployee = $x.fn.getEmployeeCurrentID();
         if (eleDocChange.attr('data-status') === '5' && eleDocChange.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change document after finish
             let $eleForm = $(`#${globeFormMappedZone}`);
-            if ($eleForm && $eleForm.length > 0) {
+            let docID = eleDocChange.attr('data-doc-id');
+            let docChangeOrder = eleDocChange.attr('data-doc-change-order');
+            if ($eleForm && $eleForm.length > 0 && docID) {
                 _form.dataMethod = 'POST';
                 _form.dataUrl = $eleForm.attr('data-url-cr');
                 _form.dataForm['code'] = $eleCode.text();
                 _form.dataForm['system_status'] = 1;
                 _form.dataForm['is_document_change'] = true;
-                _form.dataForm['document_root_id'] = eleDocChange.attr('data-doc-id');
+                _form.dataForm['document_root_id'] = docID;
                 _form.dataForm['document_change_order'] = 1;
+                if (docChangeOrder) {
+                    _form.dataForm['document_change_order'] = parseInt(docChangeOrder) + 1;
+                }
                 Swal.fire({
                     title: $.fn.transEle.attr('data-msg-are-u-sure'),
                     text: "You won't be able to revert this!",

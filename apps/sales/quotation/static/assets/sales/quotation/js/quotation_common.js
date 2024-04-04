@@ -750,6 +750,8 @@ class QuotationLoadDataHandle {
         $(newRow.querySelector('.table-row-item')).val('').trigger('change');
         QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
         QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
+        // add css to row box select2
+        QuotationLoadDataHandle.loadCssRowSelect2(tableProduct);
         // load again table cost
         QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
@@ -1156,6 +1158,8 @@ class QuotationLoadDataHandle {
         $table.DataTable().rows.add(tableData).draw();
         // load dropdowns
         QuotationLoadDataHandle.loadDropDowns($table);
+        // add css to row box select2
+        QuotationLoadDataHandle.loadCssRowSelect2($table);
         // load price
         if ($form.attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.loadReInitPrice(dataPriceJSON);
@@ -1731,6 +1735,17 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadCssRowSelect2($table) {
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let boxItemRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+            if (boxItemRender) {
+                boxItemRender.style.maxWidth = '300px';
+            }
+        });
+        return true;
+    };
+
     // Load detail
     static loadDetailQuotation(data, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
@@ -2257,7 +2272,7 @@ class QuotationDataTableHandle {
                         }
                         if (itemType === 0) { // PRODUCT
                             return `<div class="row table-row-item-area">
-                                        <div class="col-12 col-md-11 col-lg-11">
+                                        <div class="col-12 col-md-12 col-lg-12">
                                             <select 
                                             class="form-select table-row-item" 
                                             data-zone="${dataZone}"
@@ -2319,7 +2334,7 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
-                                    <p><span class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
+                                    <p class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</p>
                                 </div>`;
                     }
                 },

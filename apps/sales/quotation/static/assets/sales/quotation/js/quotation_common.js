@@ -318,6 +318,12 @@ class QuotationLoadDataHandle {
         ele.initSelect2({
             data: dataDD,
         });
+        // add css to row box select2
+        let row = ele[0].closest('tr');
+        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+        if (boxRender) {
+            boxRender.style.maxWidth = '270px';
+        }
     };
 
     static loadBoxQuotationExpenseItem(ele, dataExpenseItem = {}) {
@@ -1577,11 +1583,6 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
                     QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
                     QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
-                    // add css to row box select2
-                    let boxRender = newRow?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-                    if (boxRender) {
-                        boxRender.style.maxWidth = '270px';
-                    }
                 } else if (shipping) { // SHIPPING
                     let shippingID = shipping.getAttribute('data-id');
                     let shippingTitle = shipping.value;
@@ -1739,17 +1740,6 @@ class QuotationLoadDataHandle {
                 tableProductBd.style.minHeight = '150px';
             }
         }
-    };
-
-    static loadCssRowSelect2($table) {
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            let boxItemRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
-            if (boxItemRender) {
-                boxItemRender.style.maxWidth = '270px';
-            }
-        });
-        return true;
     };
 
     // Load detail
@@ -2068,7 +2058,6 @@ class QuotationLoadDataHandle {
                         if (boxRender) {
                             boxRender.innerHTML = dataRow?.['product']?.['title'];
                             boxRender.setAttribute('title', dataRow?.['product']?.['title']);
-                            boxRender.style.maxWidth = '270px';
                         }
                         if (row.querySelector('.table-row-item')) {
                             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));

@@ -1365,7 +1365,6 @@ $(document).ready(function () {
 
         const current_month = new Date().getMonth() + 1
         const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
-        console.log(current_quarter)
         let top_customers_chart_data = []
         for (const item of top_customers_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
@@ -1424,7 +1423,7 @@ $(document).ready(function () {
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#EC7A49'],
+            colors: ['#00A8A8'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,

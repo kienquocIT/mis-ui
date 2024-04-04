@@ -108,256 +108,298 @@
     </div>
     <div class="row">
         <div id="see1" class="pl-5 pr-4 col-12 col-lg-6 col-md-6">
-            <div class="card mb-6">
+            <div class="card mb-6" style="border-color: #91c2e0">
                 <div class="card-header">
-                    <div class="col-6">
-                        <select class="form-select select2" id="revenue-group"
-                                data-url="{% url 'GroupListAPI' %}"
-                                data-method="GET"
-                        ></select>
-                    </div>
-                    <div class="col-5">
-                        <select class="form-select select2" id="revenue-type">
-                            <option value="0" selected>{% trans 'Period revenue' %}</option>
-                            <option value="1">{% trans 'Accumulated revenue' %}</option>
-                        </select>
-                    </div>
-                    <div class="col-1">
-                        <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="{% trans 'Reload revenue data' %}"
-                                id="reload-revenue-data-btn"
-                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm">
-                            <span class="icon"><i class="fas fa-sync"></i></span>
-                        </button>
-                    </div>
+                    <h5><b><i class="bi bi-graph-up"></i>&nbsp;{% trans 'Revenue chart' %}</b></h5>
                 </div>
                 <div class="card-body" id="revenue_chart">
-                    <div id="revenue-spinner" class="spinner-border" role="status"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <select class="form-select select2" id="revenue-group"
+                                    data-url="{% url 'GroupListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                        <div class="col-5">
+                            <select class="form-select select2" id="revenue-type">
+                                <option value="0" selected>{% trans 'Period revenue' %}</option>
+                                <option value="1">{% trans 'Accumulated revenue' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-1">
+                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    title="{% trans 'Reload revenue data' %}"
+                                    id="reload-revenue-data-btn"
+                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm">
+                                <span class="icon"><i class="fas fa-sync"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div id="revenue-spinner" class="spinner-border" role="status"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="see2" class="pr-5 pl-4 col-12 col-lg-6 col-md-6">
-            <div class="card mb-6">
+            <div class="card mb-6" style="border-color: #49d381">
                 <div class="card-header">
-                    <div class="col-2">
+                    <h5><b><i class="bi bi-graph-up"></i>&nbsp;{% trans 'Profit chart' %}</b></h5>
+                    <div class="col-3">
                         <div class="form-check">
                             <input class="form-check-input" name='profit-type' id="gross-profit" type="radio" checked>
-                            <label class="form-check-label small" for="gross-profit">{% trans 'Gross profit' %}</label>
+                            <label class="form-check-label" for="gross-profit">{% trans 'Gross profit' %}</label>
                         </div>
-                    </div>
-                    <div class="col-2">
-                        <div class="form-check">
-                            <input class="form-check-input" name='profit-type' id="net-income" type="radio">
-                            <label class="form-check-label small" for="net-income">{% trans 'Net income' %}</label>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <select class="form-select select2" id="profit-group"
-                                    data-url="{% url 'GroupListAPI' %}"
-                                    data-method="GET"
-                            ></select>
                     </div>
                     <div class="col-3">
-                        <select class="form-select select2" id="profit-type">
-                                <option value="0" selected>{% trans 'Period revenue' %}</option>
-                                <option value="1">{% trans 'Accumulated revenue' %}</option>
-                            </select>
-                    </div>
-                    <div class="col-1">
-                        <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="{% trans 'Reload profit data' %}"
-                                id="reload-profit-data-btn"
-                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm">
-                            <span class="icon"><i class="fas fa-sync"></i></span>
-                        </button>
+                        <div class="form-check">
+                            <input class="form-check-input" name='profit-type' id="net-income" type="radio">
+                            <label class="form-check-label" for="net-income">{% trans 'Net income' %}</label>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body" id="profit_chart">
-                    <div id="profit-spinner" class="spinner-border" role="status"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <select class="form-select select2" id="profit-group"
+                                        data-url="{% url 'GroupListAPI' %}"
+                                        data-method="GET"
+                                ></select>
+                        </div>
+                        <div class="col-5">
+                            <select class="form-select select2" id="profit-type">
+                                    <option value="0" selected>{% trans 'Period revenue' %}</option>
+                                    <option value="1">{% trans 'Accumulated revenue' %}</option>
+                                </select>
+                        </div>
+                        <div class="col-1">
+                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    title="{% trans 'Reload profit data' %}"
+                                    id="reload-profit-data-btn"
+                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm">
+                                <span class="icon"><i class="fas fa-sync"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div id="profit-spinner" class="spinner-border" role="status"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
         <div id="see3" class="pl-5 pr-4 col-12 col-lg-6 col-md-6">
-            <div class="card mb-6">
+            <div class="card mb-6" style="border-color: #d9b27c">
                 <div class="card-header">
-                    <div class="col-6">
-                        <select class="form-select select2" id="top-sellers-time">
-                            <option value="0" selected>{% trans 'This month' %}</option>
-                            <option value="1">{% trans 'This quarter' %}</option>
-                            <option value="2">{% trans 'This year' %}</option>
-{#                                <option value="3">{% trans 'Optional' %}</option>#}
-                        </select>
-                    </div>
-                    <div class="col-5">
-                        <div class="input-group">
-                            <span class="input-group-text">Top</span>
-                            <input class="form-control" type="number" id="top-sellers-number" min="1" max="20" value="5">
-                        </div>
-                    </div>
-                    <div class="col-6 mt-1" hidden>
-                        <select disabled id="top-sellers-time-filter-select" class="form-select timechart-sellers">
-                            <option value="0" selected>{% trans "Whole year" %}</option>
-                            <option value="1">{% trans "Month" %}</option>
-                            <option value="2">{% trans "Quarter" %}</option>
-                        </select>
-                    </div>
-                    <div class="col-3 mt-1" hidden>
-                        <input type="number" disabled id="top-sellers-time-filter-mm-qq" class="form-control timechart-sellers">
-                    </div>
-                    <div class="col-3 mt-1" hidden>
-                        <input type="number" disabled id="top-sellers-time-filter-year" class="form-control timechart-sellers">
-                    </div>
-                    <div class="col-1">
-                        <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="{% trans 'Reload top sellers data' %}"
-                                id="reload-top-sellers-data-btn"
-                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
-                        >
-                            <span class="icon"><i class="fas fa-sync"></i></span>
-                        </button>
-                    </div>
+                    <h5><b><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Top sellers chart' %}</b></h5>
                 </div>
                 <div class="card-body" id="top_sellers_chart">
-                    <div id="top-sellers-spinner" class="spinner-border" role="status"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <select class="form-select select2" id="top-sellers-time">
+                                <option value="0" selected>{% trans 'This month' %}</option>
+                                <option value="1">{% trans 'This quarter' %}</option>
+                                <option value="2">{% trans 'This year' %}</option>
+    {#                                <option value="3">{% trans 'Optional' %}</option>#}
+                            </select>
+                        </div>
+                        <div class="col-5">
+                            <div class="input-group">
+                                <span class="input-group-text">Top</span>
+                                <input class="form-control" type="number" id="top-sellers-number" min="1" max="20" value="5">
+                            </div>
+                        </div>
+                        <div class="col-6 mt-1" hidden>
+                            <select disabled id="top-sellers-time-filter-select" class="form-select timechart-sellers">
+                                <option value="0" selected>{% trans "Whole year" %}</option>
+                                <option value="1">{% trans "Month" %}</option>
+                                <option value="2">{% trans "Quarter" %}</option>
+                            </select>
+                        </div>
+                        <div class="col-3 mt-1" hidden>
+                            <input type="number" disabled id="top-sellers-time-filter-mm-qq" class="form-control timechart-sellers">
+                        </div>
+                        <div class="col-3 mt-1" hidden>
+                            <input type="number" disabled id="top-sellers-time-filter-year" class="form-control timechart-sellers">
+                        </div>
+                        <div class="col-1">
+                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    title="{% trans 'Reload top sellers data' %}"
+                                    id="reload-top-sellers-data-btn"
+                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                            >
+                                <span class="icon"><i class="fas fa-sync"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div id="top-sellers-spinner" class="spinner-border" role="status"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="see4" class="pr-5 pl-4 col-12 col-lg-6 col-md-6">
-            <div class="card mb-6">
+            <div class="card mb-6" style="border-color: #00d5d5">
                 <div class="card-header">
-                    <div class="col-6">
-                        <select class="form-select select2" id="top-customers-time">
-                            <option value="0" selected>{% trans 'This month' %}</option>
-                            <option value="1">{% trans 'This quarter' %}</option>
-                            <option value="2">{% trans 'This year' %}</option>
-{#                                <option value="3">{% trans 'Optional' %}</option>#}
-                        </select>
-                    </div>
-                    <div class="col-5">
-                        <div class="input-group">
-                            <span class="input-group-text">Top</span>
-                            <input class="form-control" type="number" id="top-customers-number" min="1" max="20" value="5">
-                        </div>
-                    </div>
-                    <div class="col-6 mt-1" hidden>
-                        <select disabled id="top-customers-time-filter-select" class="form-select timechart-customers">
-                            <option value="0" selected>{% trans "Whole year" %}</option>
-                            <option value="1">{% trans "Month" %}</option>
-                            <option value="2">{% trans "Quarter" %}</option>
-                        </select>
-                    </div>
-                    <div class="col-3 mt-1" hidden>
-                        <input type="number" disabled id="top-customers-time-filter-mm-qq" class="form-control timechart-customers">
-                    </div>
-                    <div class="col-3 mt-1" hidden>
-                        <input type="number" disabled id="top-customers-time-filter-year" class="form-control timechart-customers">
-                    </div>
-                    <div class="col-1">
-                        <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="{% trans 'Reload top customers data' %}"
-                                id="reload-top-customers-data-btn"
-                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
-                        >
-                            <span class="icon"><i class="fas fa-sync"></i></span>
-                        </button>
-                    </div>
+                    <h5><b><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Top customers chart' %}</b></h5>
                 </div>
                 <div class="card-body" id="top_customers_chart">
-                    <div id="top-customers-spinner" class="spinner-border" role="status"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <select class="form-select select2" id="top-customers-time">
+                                <option value="0" selected>{% trans 'This month' %}</option>
+                                <option value="1">{% trans 'This quarter' %}</option>
+                                <option value="2">{% trans 'This year' %}</option>
+    {#                                <option value="3">{% trans 'Optional' %}</option>#}
+                            </select>
+                        </div>
+                        <div class="col-5">
+                            <div class="input-group">
+                                <span class="input-group-text">Top</span>
+                                <input class="form-control" type="number" id="top-customers-number" min="1" max="20" value="5">
+                            </div>
+                        </div>
+                        <div class="col-6 mt-1" hidden>
+                            <select disabled id="top-customers-time-filter-select" class="form-select timechart-customers">
+                                <option value="0" selected>{% trans "Whole year" %}</option>
+                                <option value="1">{% trans "Month" %}</option>
+                                <option value="2">{% trans "Quarter" %}</option>
+                            </select>
+                        </div>
+                        <div class="col-3 mt-1" hidden>
+                            <input type="number" disabled id="top-customers-time-filter-mm-qq" class="form-control timechart-customers">
+                        </div>
+                        <div class="col-3 mt-1" hidden>
+                            <input type="number" disabled id="top-customers-time-filter-year" class="form-control timechart-customers">
+                        </div>
+                        <div class="col-1">
+                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    title="{% trans 'Reload top customers data' %}"
+                                    id="reload-top-customers-data-btn"
+                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                            >
+                                <span class="icon"><i class="fas fa-sync"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div id="top-customers-spinner" class="spinner-border" role="status"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
         <div id="see5" class="pl-5 pr-4 col-12 col-lg-6 col-md-6">
-            <div class="card mb-6">
+            <div class="card mb-6" style="border-color: #fda7ab">
                 <div class="card-header">
-                    <div class="col-6">
-                        <select class="form-select select2" id="top-categories-time">
-                            <option value="0" selected>{% trans 'This month' %}</option>
-                            <option value="1">{% trans 'This quarter' %}</option>
-                            <option value="2">{% trans 'This year' %}</option>
-{#                                <option value="3">{% trans 'Optional' %}</option>#}
-                        </select>
-                    </div>
-                    <div class="col-5">
-                        <div class="input-group">
-                            <span class="input-group-text">Top</span>
-                            <input class="form-control" type="number" id="top-categories-number" min="1" max="20" value="5">
-                        </div>
-                    </div>
-                    <div class="col-6 mt-1" hidden>
-                        <select disabled id="top-categories-time-filter-select" class="form-select timechart-categories">
-                            <option value="0" selected>{% trans "Whole year" %}</option>
-                            <option value="1">{% trans "Month" %}</option>
-                            <option value="2">{% trans "Quarter" %}</option>
-                        </select>
-                    </div>
-                    <div class="col-3 mt-1" hidden>
-                        <input type="number" disabled id="top-categories-time-filter-mm-qq" class="form-control timechart-categories">
-                    </div>
-                    <div class="col-3 mt-1" hidden>
-                        <input type="number" disabled id="top-categories-time-filter-year" class="form-control timechart-categories">
-                    </div>
-                    <div class="col-1">
-                        <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="{% trans 'Reload top categories data' %}"
-                                id="reload-top-categories-data-btn"
-                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
-                        >
-                            <span class="icon"><i class="fas fa-sync"></i></span>
-                        </button>
-                    </div>
+                    <h5><b><i class="bi bi-bar-chart-line-fill"></i>&nbsp;{% trans 'Top categories chart' %}</b></h5>
                 </div>
                 <div class="card-body" id="top_categories_chart">
-                    <div id="top-categories-spinner" class="spinner-border" role="status"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <select class="form-select select2" id="top-categories-time">
+                                <option value="0" selected>{% trans 'This month' %}</option>
+                                <option value="1">{% trans 'This quarter' %}</option>
+                                <option value="2">{% trans 'This year' %}</option>
+    {#                                <option value="3">{% trans 'Optional' %}</option>#}
+                            </select>
+                        </div>
+                        <div class="col-5">
+                            <div class="input-group">
+                                <span class="input-group-text">Top</span>
+                                <input class="form-control" type="number" id="top-categories-number" min="1" max="20" value="5">
+                            </div>
+                        </div>
+                        <div class="col-6 mt-1" hidden>
+                            <select disabled id="top-categories-time-filter-select" class="form-select timechart-categories">
+                                <option value="0" selected>{% trans "Whole year" %}</option>
+                                <option value="1">{% trans "Month" %}</option>
+                                <option value="2">{% trans "Quarter" %}</option>
+                            </select>
+                        </div>
+                        <div class="col-3 mt-1" hidden>
+                            <input type="number" disabled id="top-categories-time-filter-mm-qq" class="form-control timechart-categories">
+                        </div>
+                        <div class="col-3 mt-1" hidden>
+                            <input type="number" disabled id="top-categories-time-filter-year" class="form-control timechart-categories">
+                        </div>
+                        <div class="col-1">
+                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    title="{% trans 'Reload top categories data' %}"
+                                    id="reload-top-categories-data-btn"
+                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                            >
+                                <span class="icon"><i class="fas fa-sync"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div id="top-categories-spinner" class="spinner-border" role="status"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="see6" class="pr-5 pl-4 col-12 col-lg-6 col-md-6">
-            <div class="card mb-6">
+            <div class="card mb-6" style="border-color: #3db3f8">
                 <div class="card-header">
-                    <div class="col-6">
-                        <select class="form-select select2" id="top-products-time">
-                            <option value="0" selected>{% trans 'This month' %}</option>
-                            <option value="1">{% trans 'This quarter' %}</option>
-                            <option value="2">{% trans 'This year' %}</option>
-{#                                <option value="3">{% trans 'Optional' %}</option>#}
-                        </select>
-                    </div>
-                    <div class="col-5">
-                        <div class="input-group">
-                            <span class="input-group-text">Top</span>
-                            <input class="form-control" type="number" id="top-products-number" min="1" max="20" value="5">
-                        </div>
-                    </div>
-                    <div class="col-6 mt-1" hidden>
-                        <select disabled id="top-products-time-filter-select" class="form-select timechart-products">
-                            <option value="0" selected>{% trans "Whole year" %}</option>
-                            <option value="1">{% trans "Month" %}</option>
-                            <option value="2">{% trans "Quarter" %}</option>
-                        </select>
-                    </div>
-                    <div class="col-3 mt-1" hidden>
-                        <input type="number" disabled id="top-products-time-filter-mm-qq" class="form-control timechart-products">
-                    </div>
-                    <div class="col-3 mt-1" hidden>
-                        <input type="number" disabled id="top-products-time-filter-year" class="form-control timechart-products">
-                    </div>
-                    <div class="col-1">
-                        <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="{% trans 'Reload top products data' %}"
-                                id="reload-top-products-data-btn"
-                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
-                        >
-                            <span class="icon"><i class="fas fa-sync"></i></span>
-                        </button>
-                    </div>
+                    <h5><b><i class="bi bi-bar-chart-line-fill"></i>&nbsp;{% trans 'Top products chart' %}</b></h5>
                 </div>
                 <div class="card-body" id="top_products_chart">
-                    <div id="top-products-spinner" class="spinner-border" role="status"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <select class="form-select select2" id="top-products-time">
+                                <option value="0" selected>{% trans 'This month' %}</option>
+                                <option value="1">{% trans 'This quarter' %}</option>
+                                <option value="2">{% trans 'This year' %}</option>
+    {#                                <option value="3">{% trans 'Optional' %}</option>#}
+                            </select>
+                        </div>
+                        <div class="col-5">
+                            <div class="input-group">
+                                <span class="input-group-text">Top</span>
+                                <input class="form-control" type="number" id="top-products-number" min="1" max="20" value="5">
+                            </div>
+                        </div>
+                        <div class="col-6 mt-1" hidden>
+                            <select disabled id="top-products-time-filter-select" class="form-select timechart-products">
+                                <option value="0" selected>{% trans "Whole year" %}</option>
+                                <option value="1">{% trans "Month" %}</option>
+                                <option value="2">{% trans "Quarter" %}</option>
+                            </select>
+                        </div>
+                        <div class="col-3 mt-1" hidden>
+                            <input type="number" disabled id="top-products-time-filter-mm-qq" class="form-control timechart-products">
+                        </div>
+                        <div class="col-3 mt-1" hidden>
+                            <input type="number" disabled id="top-products-time-filter-year" class="form-control timechart-products">
+                        </div>
+                        <div class="col-1">
+                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    title="{% trans 'Reload top products data' %}"
+                                    id="reload-top-products-data-btn"
+                                    class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"
+                            >
+                                <span class="icon"><i class="fas fa-sync"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div id="top-products-spinner" class="spinner-border" role="status"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

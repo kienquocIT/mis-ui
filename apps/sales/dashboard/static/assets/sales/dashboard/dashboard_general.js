@@ -24,15 +24,21 @@ $(document).ready(function () {
     $('.view-radio').on('change', function () {
         if ($('#grid-view').prop('checked')) {
             HEIGHT = GRID_HEIGHT
-            $('.px-7').each(function () {
-                $(this).attr('class', 'px-7 mt-3 col-12 col-md-6 col-lg-6')
-            })
+            $('#see1').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
+            $('#see2').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
+            $('#see3').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
+            $('#see4').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
+            $('#see5').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
+            $('#see6').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
         }
         else {
             HEIGHT = FULL_HEIGHT
-            $('.px-7').each(function () {
-                $(this).attr('class', 'px-7 mt-3 col-12 col-md-12 col-lg-12')
-            })
+            $('#see1').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see2').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see3').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see4').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see5').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see6').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
         }
         UpdateOptionRevenueChart()
         UpdateOptionProfitChart()

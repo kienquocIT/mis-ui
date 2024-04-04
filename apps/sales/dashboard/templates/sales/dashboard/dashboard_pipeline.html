@@ -81,8 +81,8 @@
         </div>
     </div>
     <div class="row mb-6">
-        <div class="pl-5 pr-4 col-12 col-lg-6 col-md-6">
-            <div class="card">
+        <div id="see1" class="pl-5 pr-4 col-12 col-lg-6 col-md-6">
+            <div class="card mb-6">
                 <div class="card-header">
                     <div class="col-12">
                         <select class="form-select select2" id="total-pipeline-group"
@@ -105,48 +105,53 @@
                 </div>
             </div>
         </div>
-        <div class="pr-5 pl-4 col-12 col-lg-6 col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="col-8">
-                        <select class="form-select select2" id="forecast-group"
-                                data-url="{% url 'GroupListAPI' %}"
-                                data-method="GET"
-                        ></select>
+        <div id="see2" class="pr-5 pl-4 col-12 col-lg-6 col-md-6">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                    <div class="card-header">
+                        <div class="col-8">
+                            <select class="form-select select2" id="forecast-group"
+                                    data-url="{% url 'GroupListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select select2" id="forecast-type">
+                                <option value="0" selected>{% trans 'Month' %}</option>
+                                <option value="1">{% trans 'Quarter' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-3" hidden>
+                            <input disabled type="number" class="form-control" id="forecast-year">
+                        </div>
                     </div>
-                    <div class="col-4">
-                        <select class="form-select select2" id="forecast-type">
-                            <option value="0" selected>{% trans 'Month' %}</option>
-                            <option value="1">{% trans 'Quarter' %}</option>
-                        </select>
-                    </div>
-                    <div class="col-3" hidden>
-                        <input disabled type="number" class="form-control" id="forecast-year">
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="forecast-spinner" class="spinner-border" role="status"></div>
-                    <div id="forecast_pipeline_chart"></div>
-                </div>
-            </div>
-
-            <div class="card mt-6">
-                <div class="card-header">
-                    <div class="col-12">
-                        <select class="form-select select2" id="customer-activities-month">
-                            <option value="0">{% trans 'All' %}</option>
-                        </select>
-                    </div>
-                    <div class="col-6" hidden>
-                        <input disabled type="number" class="form-control" id="customer-activities-year">
+                    <div class="card-body">
+                        <div id="forecast-spinner" class="spinner-border" role="status"></div>
+                        <div id="forecast_pipeline_chart"></div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div id="customer_activities_pipeline_chart"></div>
-                    <div class="col-12 text-right">
-                        <button id="previous" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-left-fill"></i></span></button>
-                        <button id="next" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-right-fill"></i></span></button>
+                </div>
+                <div class="col-12">
+                    <div class="card mt-6">
+                    <div class="card-header">
+                        <div class="col-12">
+                            <select class="form-select select2" id="customer-activities-month">
+                                <option value="0">{% trans 'All' %}</option>
+                            </select>
+                        </div>
+                        <div class="col-6" hidden>
+                            <input disabled type="number" class="form-control" id="customer-activities-year">
+                        </div>
                     </div>
+                    <div class="card-body">
+                        <div id="customer_activities_pipeline_chart"></div>
+                        <div class="col-12 text-right">
+                            <button id="previous" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-left-fill"></i></span></button>
+                            <button id="next" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-right-fill"></i></span></button>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>

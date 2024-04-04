@@ -32,26 +32,25 @@ $(document).ready(function () {
     const moneyRadioEle = $('.money-radio')
     const billionCheckboxEle = $('#billion-checkbox')
     const moneyRoundEle = $('#money-round')
-    const GRID_HEIGHT = [400, 500, 450, 280]
-    const FULL_HEIGHT = [410, 410, 450, 400]
+    const GRID_HEIGHT = [400, 500, 500, 250]
+    const FULL_HEIGHT = [400, 500, 500, 400]
     let HEIGHT = GRID_HEIGHT
 
     $('.view-radio').on('change', function () {
         if ($('#grid-view').prop('checked')) {
             HEIGHT = GRID_HEIGHT
-            $('.px-7').each(function () {
-                $(this).attr('class', 'px-7 mt-3 col-12 col-md-6 col-lg-6')
-            })
+            $('#see1').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
+            $('#see2').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
         }
         else {
             HEIGHT = FULL_HEIGHT
-            $('.px-7').each(function () {
-                $(this).attr('class', 'px-7 mt-3 col-12 col-md-12 col-lg-12')
-            })
+            $('#see1').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see2').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
         }
         UpdateOptionTotalPipelineChart()
         UpdateOptionTopSaleByTotalPipelineChart(TOP_FROM, TOP_TO)
         UpdateOptionForecastChart(parseInt($('#forecast-type').val()))
+        UpdateOptionCustomerActivitiesPipelineChart(FROM, TO)
     })
 
     moneyRadioEle.on('change', function () {

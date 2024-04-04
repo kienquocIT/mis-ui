@@ -112,7 +112,7 @@
                 <div class="card-header">
                     <h5><b><i class="bi bi-graph-up"></i>&nbsp;{% trans 'Revenue chart' %}</b></h5>
                 </div>
-                <div class="card-body" id="revenue_chart">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-6">
                             <select class="form-select select2" id="revenue-group"
@@ -138,6 +138,7 @@
                     <div class="row mt-5">
                         <div class="col-12">
                             <div id="revenue-spinner" class="spinner-border" role="status"></div>
+                            <div id="revenue_chart"></div>
                         </div>
                     </div>
                 </div>
@@ -160,7 +161,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body" id="profit_chart">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-6">
                             <select class="form-select select2" id="profit-group"
@@ -186,6 +187,7 @@
                     <div class="row mt-5">
                         <div class="col-12">
                             <div id="profit-spinner" class="spinner-border" role="status"></div>
+                            <div id="profit_chart"></div>
                         </div>
                     </div>
                 </div>
@@ -198,7 +200,7 @@
                 <div class="card-header">
                     <h5><b><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Top sellers chart' %}</b></h5>
                 </div>
-                <div class="card-body" id="top_sellers_chart">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-6">
                             <select class="form-select select2" id="top-sellers-time">
@@ -238,8 +240,9 @@
                         </div>
                     </div>
                     <div class="row mt-5">
-                        <div class="col-12">
+                        <div class="col-12" id="">
                             <div id="top-sellers-spinner" class="spinner-border" role="status"></div>
+                            <div id="top_sellers_chart"></div>
                         </div>
                     </div>
                 </div>
@@ -250,7 +253,7 @@
                 <div class="card-header">
                     <h5><b><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Top customers chart' %}</b></h5>
                 </div>
-                <div class="card-body" id="top_customers_chart">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-6">
                             <select class="form-select select2" id="top-customers-time">
@@ -292,6 +295,7 @@
                     <div class="row mt-5">
                         <div class="col-12">
                             <div id="top-customers-spinner" class="spinner-border" role="status"></div>
+                            <div id="top_customers_chart"></div>
                         </div>
                     </div>
                 </div>
@@ -304,7 +308,7 @@
                 <div class="card-header">
                     <h5><b><i class="bi bi-bar-chart-line-fill"></i>&nbsp;{% trans 'Top categories chart' %}</b></h5>
                 </div>
-                <div class="card-body" id="top_categories_chart">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-6">
                             <select class="form-select select2" id="top-categories-time">
@@ -346,6 +350,7 @@
                     <div class="row mt-5">
                         <div class="col-12">
                             <div id="top-categories-spinner" class="spinner-border" role="status"></div>
+                            <div id="top_categories_chart"></div>
                         </div>
                     </div>
                 </div>
@@ -356,7 +361,7 @@
                 <div class="card-header">
                     <h5><b><i class="bi bi-bar-chart-line-fill"></i>&nbsp;{% trans 'Top products chart' %}</b></h5>
                 </div>
-                <div class="card-body" id="top_products_chart">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-6">
                             <select class="form-select select2" id="top-products-time">
@@ -398,6 +403,7 @@
                     <div class="row mt-5">
                         <div class="col-12">
                             <div id="top-products-spinner" class="spinner-border" role="status"></div>
+                            <div id="top_products_chart"></div>
                         </div>
                     </div>
                 </div>

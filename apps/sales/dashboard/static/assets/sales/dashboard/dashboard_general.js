@@ -1370,7 +1370,6 @@ $(document).ready(function () {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
             const quarter = GetQuarterFromMonth(month - space_month_Setting)
-            console.log(dateApproved, month, quarter)
             const filterTimes = topCustomersTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {

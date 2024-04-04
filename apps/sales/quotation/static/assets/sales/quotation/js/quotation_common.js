@@ -1740,7 +1740,7 @@ class QuotationLoadDataHandle {
             let row = this.node();
             let boxItemRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
             if (boxItemRender) {
-                boxItemRender.style.maxWidth = '300px';
+                boxItemRender.style.maxWidth = '220px';
             }
         });
         return true;
@@ -2218,10 +2218,10 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50,350,350,150,150,350,150,150,250,50 (2000p)
+            columns: [  // 25,275,275,150,150,300,130,150,200,25 (1680p)
                 {
                     targets: 0,
-                    width: '2.5%',
+                    width: '1.4880952381%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
@@ -2246,7 +2246,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '17.5%',
+                    width: '16.369047619%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2322,7 +2322,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '17.5%',
+                    width: '16.369047619%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2340,7 +2340,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '7.5%',
+                    width: '8.92857142857%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2385,7 +2385,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '7.5%',
+                    width: '8.92857142857%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2401,7 +2401,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '17.5%',
+                    width: '17.8571428571%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2435,7 +2435,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '7.5%',
+                    width: '7.7380952381%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2470,7 +2470,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '7.5%',
+                    width: '8.92857142857%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2540,7 +2540,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '12.5%',
+                    width: '11.9047619048%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2564,7 +2564,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '2.5%',
+                    width: '1.4880952381%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;

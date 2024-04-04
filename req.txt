@@ -24,4 +24,3 @@ sqlparse==0.4.3
 tzdata==2022.6
 urllib3==1.26.13
 xmltodict
-xhtml2pdf==0.2.15

@@ -22,6 +22,10 @@ msgid "Choose the Excel file data"
 msgstr "Chọn tệp tin dữ liệu Excel"
 
 #
+msgid "Import template file of all feature"
+msgstr "Tệp nhập dữ liệu của tất cả tính năng"
+
+#
 msgid "Click here to download template file"
 msgstr "Nhấn vào đây để tải xuống tệp mẫu"
 
@@ -52,3 +56,99 @@ msgstr "Trang danh sách"
 #
 msgid "Create page"
 msgstr "Trang tạo mới"
+
+#
+msgid "Order Numbering"
+msgstr "Số thứ tự"
+
+#
+msgid "Members"
+msgstr "Thành viên"
+
+#
+msgid "Name of roles"
+msgstr "Tên của vai trò"
+
+#
+msgid "Abbreviation of roles"
+msgstr "Tên viết tắt của vai trò"
+
+#
+msgid "Members of roles. Array ID split by commas."
+msgstr "Thành viên thuộc vai trò. Mảng định danh kết nối bởi dấu phẩy."
+
+#
+msgid "Sheet name"
+msgstr "Tên trang tính"
+
+#
+msgid "It is a unique identifier string for users within the organization."
+msgstr "Nó là một chuỗi định danh duy nhất cho người dùng trong tổ chức."
+
+#
+msgid "The string includes lowercase and uppercase letters, numbers, hyphens, and underscores."
+msgstr "Chuỗi bao gồm chữ thường và chữ hoa, số, dấu gạch ngang và dấu gạch dưới."
+
+#
+msgid "Must meet 2 of the following conditions"
+msgstr "Phải đáp ứng 2 trong các điều kiện sau"
+
+#
+msgid "Contains at least 1 lowercase letter"
+msgstr "Chứa ít nhất 1 chữ cái viết thường"
+
+#
+msgid "Contains at least 1 uppercase letter"
+msgstr "Chứa ít nhất 1 chữ hoa"
+
+#
+msgid "Contains at least 1 number"
+msgstr "Chứa ít nhất 1 số"
+
+#
+msgid "Contains at least 1 special character"
+msgstr "Chứa ít nhất 1 ký tự đặc biệt"
+
+#
+msgid "Remarks of first manager"
+msgstr "Mô tả về quản lý chính"
+
+#
+msgid "Remarks of second manager"
+msgstr "Mô tả về quản lý phụ"
+
+#
+msgid "First name"
+msgstr "Tên"
+
+#
+msgid "Last name"
+msgstr "Họ"
+
+#
+msgid "Password"
+msgstr "Mật khẩu"
+
+#
+msgid "First manager remarks"
+msgstr "Mô tả quản lý chính"
+
+#
+msgid "Second manager remarks"
+msgstr "Mô tả quản lý phụ"
+
+#
+msgid "Phone number"
+msgstr "Số điện thoại"
+
+#
+msgid "Level"
+msgstr "Cấp bậc"
+
+#
+msgid "Code"
+msgstr "Mã"
+
+#
+msgid "Parent"
+msgstr "Cấp trên/Thành phần cha"

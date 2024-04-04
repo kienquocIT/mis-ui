@@ -11,6 +11,7 @@ class ResolveColumnsFImport:
             app_id: str or UUID,
             url_name: str,
             template_link: str,
+            sheet_name: str,
             columns: list[dict] = None,
             validate: dict[str, dict] = None,
             list_name: str = None, create_name: str = None,
@@ -19,8 +20,16 @@ class ResolveColumnsFImport:
         self.url_name = url_name
         self.template_link = template_link
         self.columns = [
-            self.validate_column(col_data=col_data)
-            for col_data in (
+            self.validate_column(
+                col_data=col_data if index != 0 else {
+                    **col_data,
+                    'allow_edit_big_field': False,
+                    'col_attrs': {
+                        'style': 'max-width: 50px',
+                    },
+                }
+            )
+            for index, col_data in enumerate(
                 columns if isinstance(columns, list) else []
             )
         ]
@@ -29,19 +38,24 @@ class ResolveColumnsFImport:
         )
         self.list_name = list_name
         self.create_name = create_name
+        self.sheet_name = sheet_name
 
     @classmethod
     def validate_column(cls, col_data):
         if col_data and isinstance(col_data, dict):
-            return {
+            ctx = {
                 'name': '',
                 'input_name': None,
                 'type': 'string',
                 'remarks': '',
                 'input_attrs': None,
-                'col': 'auto',
+                'is_primary_key': False,
+                'is_foreign_key': None,
+                'allow_edit_big_field': True,
+                'col_attrs': {},
                 **col_data
             }
+            return ctx
         raise ValueError('[ResolveColumnsFImport] Columns Data type should be dictionary.')
 
     def add_column(self, data):
@@ -81,6 +95,7 @@ class ResolveColumnsFImport:
     def data(self):
         return {
             self.app_id: {
+                'sheet_name': self.sheet_name,
                 'url': self.url,
                 'url_list': self.url_list,
                 'url_create': self.url_create,

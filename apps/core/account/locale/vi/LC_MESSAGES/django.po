@@ -24,3 +24,7 @@ msgstr "Là quản trị tenant"
 #
 msgid "Click to send mail welcome"
 msgstr "Nhấn để gửi thư chào mừng"
+
+#
+msgid "This company list is the list of companies that the user belongs to. If you want to add a company for the user, please use the Tenant Management feature."
+msgstr "Danh sách công ty này là danh sách các công ty mà người dùng thuộc về. Nếu bạn muốn thêm công ty cho người dùng, vui lòng sử dụng tính năng Quản lý người thuê."

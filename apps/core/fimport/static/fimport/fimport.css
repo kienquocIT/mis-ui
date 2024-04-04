@@ -57,3 +57,44 @@
     50%{background-position:100% 50%}
     100%{background-position:0% 50%}
 }
+
+.fimport-remark-col > div:not(:first-child) {
+    border-top: 1px solid #f1f1f1;
+}
+
+#tbl-display-data_wrapper thead ul {
+    list-style-type:square;
+    padding-left: 1rem;
+    margin-top: 5px;
+    margin-bottom: 0;
+    border-top: 1px solid #f1f1f1;
+}
+
+/* import big edit cell */
+.fimport-main-group-input .btnBigInputEdit {
+    position: absolute;
+    left: -12px;
+    top: -12px;
+    display: none;
+}
+
+.fimport-main-group-input .btnBigInputEdit:hover {
+    display: block!important;
+}
+
+.fimport-main-group-input input:hover ~ .btnBigInputEdit {
+    display: block!important;
+}
+
+.fimport-sub-group-input .btnBigInputSave {
+    position: absolute;
+    left: -12px;
+    top: -12px;
+}
+
+tbody .col.edit-big-field-open {
+    margin: 1px;
+    background-color: #eaeaea;
+    padding: 14px;
+    border-radius: 5px;
+}

@@ -751,7 +751,10 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
         QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
         // add css to row box select2
-        QuotationLoadDataHandle.loadCssRowSelect2(tableProduct);
+        let boxRender = newRow?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+        if (boxRender) {
+            boxRender.style.maxWidth = '270px';
+        }
         // load again table cost
         QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
@@ -1158,8 +1161,6 @@ class QuotationLoadDataHandle {
         $table.DataTable().rows.add(tableData).draw();
         // load dropdowns
         QuotationLoadDataHandle.loadDropDowns($table);
-        // add css to row box select2
-        QuotationLoadDataHandle.loadCssRowSelect2($table);
         // load price
         if ($form.attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.loadReInitPrice(dataPriceJSON);
@@ -1576,6 +1577,11 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
                     QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
                     QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
+                    // add css to row box select2
+                    let boxRender = newRow?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+                    if (boxRender) {
+                        boxRender.style.maxWidth = '270px';
+                    }
                 } else if (shipping) { // SHIPPING
                     let shippingID = shipping.getAttribute('data-id');
                     let shippingTitle = shipping.value;
@@ -1740,7 +1746,7 @@ class QuotationLoadDataHandle {
             let row = this.node();
             let boxItemRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
             if (boxItemRender) {
-                boxItemRender.style.maxWidth = '220px';
+                boxItemRender.style.maxWidth = '270px';
             }
         });
         return true;
@@ -2062,6 +2068,7 @@ class QuotationLoadDataHandle {
                         if (boxRender) {
                             boxRender.innerHTML = dataRow?.['product']?.['title'];
                             boxRender.setAttribute('title', dataRow?.['product']?.['title']);
+                            boxRender.style.maxWidth = '270px';
                         }
                         if (row.querySelector('.table-row-item')) {
                             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
@@ -2218,10 +2225,10 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 25,275,275,150,150,300,130,150,200,25 (1680p)
+            columns: [  // 25,325,325,150,175,325,150,150,270,25 (1920p)
                 {
                     targets: 0,
-                    width: '1.4880952381%',
+                    width: '1.30208333333%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
@@ -2246,7 +2253,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '16.369047619%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2322,7 +2329,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '16.369047619%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2340,7 +2347,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '8.92857142857%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2385,7 +2392,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '8.92857142857%',
+                    width: '9.11458333333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2401,7 +2408,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '17.8571428571%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2435,7 +2442,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '7.7380952381%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2470,7 +2477,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '8.92857142857%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2540,7 +2547,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '11.9047619048%',
+                    width: '14.0625%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2564,7 +2571,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '1.4880952381%',
+                    width: '1.30208333333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2616,8 +2623,8 @@ class QuotationDataTableHandle {
                             }
                         }
                         if (itemType === 0) {  // product
-                            return `<div class="row">
-                                        <div class="col-12 col-md-11 col-lg-11">
+                            return `<div class="row table-row-item-area">
+                                        <div class="col-12 col-md-12 col-lg-12">
                                             <select
                                                 class="form-select table-row-item disabled-custom-show"
                                                 data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"

@@ -180,6 +180,7 @@ $(document).ready(function () {
                 data: stage_value
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT[0],
                 animations: {
@@ -462,6 +463,7 @@ $(document).ready(function () {
         return {
             series: series_data_DF,
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT[1],
                 stacked: true,
@@ -739,6 +741,7 @@ $(document).ready(function () {
                 // }
             ],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT[2],
                 stacked: true,
@@ -931,6 +934,7 @@ $(document).ready(function () {
                 // }
             ],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT[2],
                 stacked: true,
@@ -1204,6 +1208,7 @@ $(document).ready(function () {
                 data: document_chart_data_DF.slice(from, to)
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT[3],
                 stacked: true,

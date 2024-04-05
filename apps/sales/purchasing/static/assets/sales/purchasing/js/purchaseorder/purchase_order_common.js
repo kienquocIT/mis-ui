@@ -1490,10 +1490,10 @@ class PODataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50,300,300,100,100,100,150,150,350,150,250 (2000p)
+            columns: [  // 25,325,325,100,100,100,125,125,300,125,270 (1920p)
                 {
                     targets: 0,
-                    width: '2.5%',
+                    width: '1.30208333333%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -1501,24 +1501,28 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '15%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
-                        return `<select
-                                    class="form-select table-row-item"
-                                    data-product-id="${row?.['product']?.['id']}"
-                                    data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
-                                    data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
-                                    data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
-                                    data-keyResp="product_sale_list"
-                                    required
-                                    disabled
-                                >
-                                </select>`;
+                        return `<div class="row table-row-item-area">
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <select
+                                            class="form-select table-row-item"
+                                            data-product-id="${row?.['product']?.['id']}"
+                                            data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
+                                            data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
+                                            data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
+                                            data-keyResp="product_sale_list"
+                                            required
+                                            disabled
+                                        >
+                                        </select>
+                                    </div>
+                                </div>`;
                     },
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -1527,7 +1531,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '5%',
+                    width: '5.20833333333%',
                     render: (data, type, row) => {
                         let dataStr = JSON.stringify(row?.['uom_order_request']).replace(/"/g, "&quot;");
                         return `<span class="table-row-uom-order-request" id="${row?.['uom_order_request']?.['id']}">${row?.['uom_order_request']?.['title']}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
@@ -1535,21 +1539,21 @@ class PODataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '5%',
+                    width: '5.20833333333%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-order-request">${row?.['product_quantity_order_request']}</span>`;
                     }
                 },
                 {
                     targets: 5,
-                    width: '5%',
+                    width: '5.20833333333%',
                     render: (data, type, row) => {
                         return `<span class="table-row-stock">${row?.['stock']}</span>`
                     }
                 },
                 {
                     targets: 6,
-                    width: '7.5%',
+                    width: '6.51041666667%',
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -1565,7 +1569,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '7.5%',
+                    width: '6.51041666667%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row?.['product_quantity_order_actual']}" required>
@@ -1574,7 +1578,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '17.5%',
+                    width: '15.625%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropdown">
@@ -1597,7 +1601,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '7.5%',
+                    width: '6.51041666667%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -1625,7 +1629,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '12.5%',
+                    width: '14.0625%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>

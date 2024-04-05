@@ -6972,3 +6972,47 @@ msgstr "Đơn giá xuất"
 #
 msgid "Out value"
 msgstr "Giá trị xuất kho"
+
+#
+msgid "Reload invoice stats"
+msgstr "Đồng bộ trạng thái hoá đơn"
+
+#
+msgid "Buyer name"
+msgstr "Tên người mua hàng"
+
+#
+msgid "Billing address"
+msgstr "Địa chỉ xuất hoá đơn"
+
+#
+msgid "Bank code"
+msgstr "Mã ngân hàng"
+
+#
+msgid "Bank number"
+msgstr "STK ngân hàng"
+
+#
+msgid "Discount value"
+msgstr "Giá trị giảm giá"
+
+#
+msgid "Total amount"
+msgstr "Tổng giá trị"
+
+#
+msgid "<No invoice number>"
+msgstr "<Chưa có số HĐ>"
+
+#
+msgid "Create invoice"
+msgstr "Tạo HĐ điện tử"
+
+#
+msgid "Update invoice"
+msgstr "Cập nhập HĐ điện tử"
+
+#
+msgid "View invoice"
+msgstr "Xem HĐ điện tử"

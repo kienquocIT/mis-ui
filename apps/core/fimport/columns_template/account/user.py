@@ -10,7 +10,7 @@ from apps.core.fimport.columns_template.tools import ResolveColumnsFImport
 COLUMNS_ACCOUNT_USER = ResolveColumnsFImport(
     sheet_name=SHEET_ACCOUNT_USERS,
     app_id='af9c6fd3-1815-4d5a-aa24-fca9d095cb7a',
-    url_name='UserListAPI',
+    url_name='CoreAccountUserImportAPI',
     list_name='UserList',
     create_name='UserCreate',
     template_link='fimport/template/import-account-user.xlsx',

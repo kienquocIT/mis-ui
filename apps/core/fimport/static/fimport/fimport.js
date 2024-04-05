@@ -634,7 +634,7 @@ $(document).ready(function () {
                         }
                     });
 
-                    let validator = new SetupFormSubmit(frm$).validate({
+                    new SetupFormSubmit(frm$).validate({
                         rules: clsThis.templateConfig?.['validate'] || {},
                         submitHandler: async function (form, event) {
                             return await clsThis.formSubmit(form);
@@ -660,7 +660,7 @@ $(document).ready(function () {
             });
 
             dataTbl.on('page', function () {
-                let info = dataTbl.page.info();
+                // let info = dataTbl.page.info();
                 emptyToSelected();
                 clsThis.tbl$.find('input[type=checkbox].inp-checkall[checked]').trigger('change');
             });
@@ -708,7 +708,7 @@ $(document).ready(function () {
                         $.fn.notifyB({
                             'description': $.fn.gettext('Successfully'),
                         }, 'success');
-                        $(row).addClass('bg-success bg-opacity-25 text-dark');
+                        $(row).alterClass('bg-*').addClass('bg-success bg-opacity-25 text-dark');
                     }
                     return true;
                 },
@@ -728,7 +728,7 @@ $(document).ready(function () {
                             if (errors && typeof errors === 'object') $(form).validate().showErrors(errors);
                         }
                     }
-                    $(row).addClass('bg-danger bg-opacity-25 text-dark');
+                    $(row).alterClass('bg-*').addClass('bg-danger bg-opacity-25 text-dark');
                     return false;
                 }
             ).then(

@@ -55,6 +55,13 @@ class FImportCreateView(View):
         return self.filter_enable_import(ctx), status.HTTP_200_OK
 
 
+class CoreAccountUserImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_CORE_ACCOUNT_USER, user=request.user).post(data=request.data)
+        return resp.auto_return(key_success='group_level')
+
+
 class HrGroupLevelImportAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def post(self, request, *args, **kwargs):

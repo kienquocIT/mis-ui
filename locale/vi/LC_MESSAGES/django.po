@@ -6912,3 +6912,63 @@ msgstr "Số lượng đơn hàng"
 #
 msgid "Revenue average"
 msgstr "Doanh thu trung bình"
+
+#
+msgid "OPENING"
+msgstr "TỒN ĐẦU"
+
+#
+msgid "INPUT"
+msgstr "NHẬP"
+
+#
+msgid "OUTPUT"
+msgstr "XUẤT"
+
+#
+msgid "ENDING"
+msgstr "TỒN CUỐI"
+
+#
+msgid "Show detail"
+msgstr "Xem chi tiết"
+
+#
+msgid "Valuation method"
+msgstr "Phương pháp tính"
+
+#
+msgid "System date"
+msgstr "Ngày hệ thống"
+
+#
+msgid "Trans description"
+msgstr "Mô tả giao dịch"
+
+#
+msgid "Trans code"
+msgstr "Mã giao dịch"
+
+#
+msgid "In quantity"
+msgstr "SL nhập"
+
+#
+msgid "In cost"
+msgstr "Đơn giá nhập"
+
+#
+msgid "In value"
+msgstr "Giá trị nhập kho"
+
+#
+msgid "Out quantity"
+msgstr "SL xuất"
+
+#
+msgid "Out cost"
+msgstr "Đơn giá xuất"
+
+#
+msgid "Out value"
+msgstr "Giá trị xuất kho"

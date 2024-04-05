@@ -1749,7 +1749,6 @@ class GRDataTableHandle {
                                     >
                                     </select>`;
                         }
-
                     }
                 },
                 {
@@ -1761,7 +1760,6 @@ class GRDataTableHandle {
                         } else {
                             return `<input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required disabled>`;
                         }
-
                     }
                 },
                 {

@@ -6587,7 +6587,7 @@ msgstr "Số hoá đơn"
 
 #
 msgid "Tax value"
-msgstr "Thuế"
+msgstr "Giá trị thuế"
 
 #
 msgid "Tax number"
@@ -6992,6 +6992,10 @@ msgstr "Mã ngân hàng"
 #
 msgid "Bank number"
 msgstr "STK ngân hàng"
+
+#
+msgid "Discount rate"
+msgstr "% giảm giá"
 
 #
 msgid "Discount value"

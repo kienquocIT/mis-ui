@@ -7020,3 +7020,19 @@ msgstr "Cập nhập HĐ điện tử"
 #
 msgid "View invoice"
 msgstr "Xem HĐ điện tử"
+
+#
+msgid "Inventory Report"
+msgstr "Báo cáo tồn kho"
+
+#
+msgid "Cumulative quantity"
+msgstr "Số lượng tích luỹ"
+
+#
+msgid "Cumulative cost"
+msgstr "Đơn giá tích luỹ"
+
+#
+msgid "Cumulative value"
+msgstr "Giá trị tích luỹ"

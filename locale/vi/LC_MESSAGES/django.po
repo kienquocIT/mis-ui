@@ -6974,7 +6974,7 @@ msgid "Out value"
 msgstr "Giá trị xuất kho"
 
 #
-msgid "Reload invoice stats"
+msgid "Reload invoice status"
 msgstr "Đồng bộ trạng thái hoá đơn"
 
 #

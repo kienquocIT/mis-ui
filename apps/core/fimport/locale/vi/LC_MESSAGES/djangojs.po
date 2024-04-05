@@ -26,6 +26,10 @@ msgid "The feature is not support import file data"
 msgstr "Chức năng này không hỗ trợ nhập dữ liệu từ tập tin"
 
 #
+msgid "No data found"
+msgstr "Không có dữ liệu"
+
+#
 msgid "Column in file not match with config of template"
 msgstr "Cột trong tệp không khớp với cấu hình của mẫu"
 
@@ -124,3 +128,7 @@ msgstr "Cập nhật dữ liệu vào trường chính và đóng"
 #
 msgid "You can resize the input box by clicking and dragging the button at the bottom right corner."
 msgstr "Bạn có thể thay đổi kích thước hộp nhập bằng cách nhấp và kéo nút ở góc dưới cùng bên phải."
+
+#
+msgid "The saving loop was broken due to an error."
+msgstr "Vòng lặp lưu dữ đã bị dừng do có lỗi."

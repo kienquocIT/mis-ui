@@ -152,3 +152,91 @@ msgstr "Mã"
 #
 msgid "Parent"
 msgstr "Cấp trên/Thành phần cha"
+
+#
+msgid "Code of employee"
+msgstr "Mã của nhân viên"
+
+#
+msgid "First name of employee"
+msgstr "Tên của nhân viên"
+
+#
+msgid "Last name of employee"
+msgstr "Họ của nhân viên"
+
+#
+msgid "Email of employee"
+msgstr "Thư điện tử của nhân viên"
+
+#
+msgid "Phone of employee"
+msgstr "Số điện thoại của nhân viên"
+
+#
+msgid "User link to employee"
+msgstr "Người dùng liên kết với nhân viên"
+
+#
+msgid "Date joined"
+msgstr "Ngày tham gia"
+
+#
+msgid "Date joined of employee"
+msgstr "Ngày tham gia của nhân viên"
+
+#
+msgid "DOB of employee"
+msgstr "Ngày sinh của nhân viên"
+
+#
+msgid "Format: dd/mm/YYYY"
+msgstr "Định dạnh ngày/tháng/năm (dd/mm/YYYY)"
+
+#
+msgid "Group of employee"
+msgstr "Nhóm/Phòng ban của nhân viên"
+
+#
+msgid "Role of employee"
+msgstr "Vai trò của nhân viên"
+
+#
+msgid "Code of groups"
+msgstr "Mã của nhóm"
+
+#
+msgid "Name of groups"
+msgstr "Tên của nhóm"
+
+#
+msgid "Level of groups"
+msgstr "Cấp bậc của nhóm"
+
+#
+msgid "Parent of groups"
+msgstr "Cấp trên/Thành phần cha của nhóm"
+
+#
+msgid "Members of groups"
+msgstr "Thành viên của nhóm"
+
+#
+msgid "First manager of groups"
+msgstr "Quản lý trưởng của nhóm"
+
+#
+msgid "First manager title of groups"
+msgstr "Tiêu đề quản lý trưởng của nhóm"
+
+#
+msgid "Second manager of groups"
+msgstr "Quản lý phó của nhóm"
+
+#
+msgid "Second manager title of groups"
+msgstr "Tiêu đề quản lý phó của nhóm"
+
+#
+msgid "Remarks of groups"
+msgstr "Mô tả về nhóm"

@@ -5,25 +5,49 @@
 
 /* width */
 .textFilter::-webkit-scrollbar {
-  width: 0.5rem;
+    width: 0.5rem;
 }
 
 /* Track */
 .textFilter::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px #f1f1f1;
-  border-radius: 0;
+    box-shadow: inset 0 0 5px #f1f1f1;
+    border-radius: 0;
 }
 
 /* Handle */
 .textFilter::-webkit-scrollbar-thumb {
-  background: #eaeaea;
-  border-radius: 10px;
+    background: #eaeaea;
+    border-radius: 10px;
 }
 
 /* Handle on hover */
 .textFilter::-webkit-scrollbar-thumb:hover {
-  background: #cfcfcf;
+    background: #cfcfcf;
 }
+
+/* Textarea */
+/* width */
+textarea::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+textarea::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #f1f1f1;
+    border-radius: 15px;
+}
+
+/* Handle */
+textarea::-webkit-scrollbar-thumb {
+    background: #666666;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #cfcfcf;
+}
+
 
 /* Import In progress */
 
@@ -38,24 +62,51 @@
 }
 
 @-webkit-keyframes AnimationName {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
+    0% {
+        background-position: 0% 50%
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
 }
+
 @-moz-keyframes AnimationName {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
+    0% {
+        background-position: 0% 50%
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
 }
+
 @-o-keyframes AnimationName {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
+    0% {
+        background-position: 0% 50%
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
 }
+
 @keyframes AnimationName {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
+    0% {
+        background-position: 0% 50%
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
 }
 
 .fimport-remark-col > div:not(:first-child) {
@@ -63,7 +114,7 @@
 }
 
 #tbl-display-data_wrapper thead ul {
-    list-style-type:square;
+    list-style-type: square;
     padding-left: 1rem;
     margin-top: 5px;
     margin-bottom: 0;
@@ -79,11 +130,11 @@
 }
 
 .fimport-main-group-input .btnBigInputEdit:hover {
-    display: block!important;
+    display: block !important;
 }
 
 .fimport-main-group-input input:hover ~ .btnBigInputEdit {
-    display: block!important;
+    display: block !important;
 }
 
 .fimport-sub-group-input .btnBigInputSave {
@@ -92,9 +143,24 @@
     top: -12px;
 }
 
-tbody .col.edit-big-field-open {
-    margin: 1px;
-    background-color: #eaeaea;
-    padding: 14px;
+tbody .edit-big-field-open {
+    background-color: #fff799;
     border-radius: 5px;
+}
+
+.fimport-cell-data {}
+
+/* another */
+
+.btn-tbl-control {
+    height: 14px!important;
+    width: 14px!important;
+}
+
+.mr-1p {
+    margin-right: 1px;
+}
+
+.mb-1p {
+    margin-bottom: 1px;
 }

@@ -126,3 +126,10 @@ class UserAdminTenant(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.ACCOUNT_USER_ADMIN_TENANT).get()
         return resp.auto_return(key_success='user_admin_tenant')
+
+
+class UserCompaniesAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_COMPANIES.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='company_list')

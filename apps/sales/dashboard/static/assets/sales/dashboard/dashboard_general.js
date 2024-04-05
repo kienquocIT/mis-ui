@@ -1,4 +1,19 @@
 $(document).ready(function () {
+    function GetQuarterFromMonth(month) {
+        if ([1,2,3].includes(month)) {
+            return 1
+        }
+        if ([4,5,6].includes(month)) {
+            return 2
+        }
+        if ([7,8,9].includes(month)) {
+            return 3
+        }
+        if ([10,11,12].includes(month)) {
+            return 4
+        }
+    }
+
     $('#modal-dashboard-setting .modal-dialog').draggable({
         "handle": ".modal-header"
     });
@@ -9,15 +24,21 @@ $(document).ready(function () {
     $('.view-radio').on('change', function () {
         if ($('#grid-view').prop('checked')) {
             HEIGHT = GRID_HEIGHT
-            $('.px-7').each(function () {
-                $(this).attr('class', 'px-7 mt-3 col-12 col-md-6 col-lg-6')
-            })
+            $('#see1').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
+            $('#see2').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
+            $('#see3').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
+            $('#see4').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
+            $('#see5').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
+            $('#see6').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
         }
         else {
             HEIGHT = FULL_HEIGHT
-            $('.px-7').each(function () {
-                $(this).attr('class', 'px-7 mt-3 col-12 col-md-12 col-lg-12')
-            })
+            $('#see1').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see2').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see3').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see4').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see5').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
+            $('#see6').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
         }
         UpdateOptionRevenueChart()
         UpdateOptionProfitChart()
@@ -201,6 +222,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
+                foreColor: "#999",
                 height: HEIGHT,
                 type: 'line',
                 dropShadow: {
@@ -215,7 +237,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#9EC9E2', '#097abe'],
+            colors: ['#91c2e0', '#0a5b8c'],
             dataLabels: {
                 enabled: false,
             },
@@ -351,6 +373,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
+                foreColor: "#999",
                 height: HEIGHT,
                 type: 'line',
                 dropShadow: {
@@ -365,7 +388,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#9EC9E2', '#097abe'],
+            colors: ['#91c2e0', '#0a5b8c'],
             dataLabels: {
                 enabled: false,
             },
@@ -675,6 +698,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
+                foreColor: "#999",
                 height: HEIGHT,
                 type: 'line',
                 dropShadow: {
@@ -827,6 +851,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
+                foreColor: "#999",
                 height: HEIGHT,
                 type: 'line',
                 dropShadow: {
@@ -1098,13 +1123,13 @@ $(document).ready(function () {
         }
 
         const current_month = new Date().getMonth() + 1
-        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
+        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
 
         let top_sellers_chart_data = []
         for (const item of top_sellers_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
-            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
+            const quarter = GetQuarterFromMonth(month - space_month_Setting)
             const filterTimes = topSellersTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {
@@ -1154,10 +1179,11 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#819C4B'],
+            colors: ['#d29128'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,
@@ -1343,13 +1369,12 @@ $(document).ready(function () {
         }
 
         const current_month = new Date().getMonth() + 1
-        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
-
+        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
         let top_customers_chart_data = []
         for (const item of top_customers_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
-            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
+            const quarter = GetQuarterFromMonth(month - space_month_Setting)
             const filterTimes = topCustomersTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {
@@ -1399,10 +1424,11 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#EC7A49'],
+            colors: ['#00A8A8'],
             plotOptions: {
                 bar: {
                     borderRadius: 5,
@@ -1587,13 +1613,13 @@ $(document).ready(function () {
         }
 
         const current_month = new Date().getMonth() + 1
-        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
+        const current_quarter = (current_month - space_month_Setting)
 
         let top_categories_chart_data = []
         for (const item of top_categories_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
-            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
+            const quarter = GetQuarterFromMonth(month - space_month_Setting)
             const filterTimes = topCategoriesTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {
@@ -1643,6 +1669,7 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
@@ -1837,7 +1864,7 @@ $(document).ready(function () {
         }
 
         const current_month = new Date().getMonth() + 1
-        const current_quarter = Math.floor((current_month - space_month_Setting) / 3) + 1
+        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
 
         let top_products_chart_data = []
         for (const item of top_products_chart_list_DF) {
@@ -1893,6 +1920,7 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },

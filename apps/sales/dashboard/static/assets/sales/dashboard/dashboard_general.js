@@ -222,6 +222,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
+                foreColor: "#999",
                 height: HEIGHT,
                 type: 'line',
                 dropShadow: {
@@ -372,6 +373,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
+                foreColor: "#999",
                 height: HEIGHT,
                 type: 'line',
                 dropShadow: {
@@ -696,6 +698,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
+                foreColor: "#999",
                 height: HEIGHT,
                 type: 'line',
                 dropShadow: {
@@ -848,6 +851,7 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
+                foreColor: "#999",
                 height: HEIGHT,
                 type: 'line',
                 dropShadow: {
@@ -1175,6 +1179,7 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
@@ -1419,6 +1424,7 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
@@ -1663,6 +1669,7 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
@@ -1913,6 +1920,7 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
+                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },

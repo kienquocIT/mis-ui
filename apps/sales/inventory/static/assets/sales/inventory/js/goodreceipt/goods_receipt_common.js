@@ -143,6 +143,12 @@ class GRLoadDataHandle {
             data: dataProduct,
             disabled: !(ele.attr('data-url')),
         });
+        // add css to row box select2
+        let row = ele[0].closest('tr');
+        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+        if (boxRender) {
+            boxRender.style.maxWidth = '270px';
+        }
     };
 
     static loadBoxUOM(ele, dataUOM = {}, uom_group_id = null) {
@@ -1386,7 +1392,7 @@ class GRDataTableHandle {
                             return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
                         } else { // If PO Product doesn't have inventory choice and PO doesn't have PR
                             return `<div class="row">
-                                        <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
+                                        <input type="text" class="form-control table-row-import validated-number text-primary" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
                                     </div>`;
                         }
 
@@ -1457,11 +1463,11 @@ class GRDataTableHandle {
                             let PODataChecked = JSON.parse(dataPOCheckedRaw);
                             if (!PODataChecked?.['product']?.['product_choice'].includes(1)) { // If Product PO have inventory choice
                                 return `<div class="row">
-                                            <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
+                                            <input type="text" class="form-control table-row-import validated-number text-primary" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
                                         </div>`;
                             }
                         }
-                        return `<span class="table-row-import">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
+                        return `<span class="table-row-import text-primary"><b>${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</b></span>`;
                     }
                 },
             ],
@@ -1513,7 +1519,7 @@ class GRDataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
+                                    <input type="text" class="form-control table-row-import validated-number text-primary" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">
                                 </div>`;
                     }
                 },
@@ -1663,10 +1669,10 @@ class GRDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50,350,450,150,200,350,150,250,50 (2000p)
+            columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
                 {
                     targets: 0,
-                    width: '2.5%',
+                    width: '1.30208333333%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -1674,11 +1680,11 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '17.5%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
-                            return `<div class="row">
-                                        <div class="col-12 col-md-11 col-lg-11">
+                            return `<div class="row table-row-item-area">
+                                        <div class="col-12 col-md-12 col-lg-12">
                                             <select
                                                 class="form-select table-row-item"
                                                 data-product-id="${row?.['product']?.['id']}"
@@ -1692,8 +1698,8 @@ class GRDataTableHandle {
                                         </div>
                                     </div>`;
                         } else {
-                            return `<div class="row">
-                                        <div class="col-12 col-md-11 col-lg-11">
+                            return `<div class="row table-row-item-area">
+                                        <div class="col-12 col-md-12 col-lg-12">
                                             <select
                                                 class="form-select table-row-item"
                                                 data-product-id="${row?.['product']?.['id']}"
@@ -1712,7 +1718,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '22.5%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
@@ -1721,7 +1727,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '7.5%',
+                    width: '7.8125%',
                     render: () => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
                             return `<select 
@@ -1748,7 +1754,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '10%',
+                    width: '9.11458333333%',
                     render: (data, type, row) => {
                         if (!GRLoadDataHandle.POSelectEle.val()) {
                             return `<input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required>`;
@@ -1760,7 +1766,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '17.5%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
@@ -1772,7 +1778,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '7.5%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -1800,7 +1806,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '12.5%',
+                    width: '14.0625%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -1815,7 +1821,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '2.5%',
+                    width: '1.30208333333%',
                     render: () => {
                         return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }

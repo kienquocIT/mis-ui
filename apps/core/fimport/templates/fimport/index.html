@@ -48,15 +48,23 @@
                 <div class="w-100">
                     <a
                             href="#"
+                            target="_blank"
                             id="idx-link-template"
                             style="display: none;"
                             data-static-url="{% static '' %}"
-                    ><i class="fa-solid fa-file-arrow-down mr-1"></i>{% trans 'Click here to download template file' %}.</a>
+                    >
+                        <i class="fa-solid fa-file-arrow-down mr-1"></i>
+                        {% trans 'Click here to download template file' %}.
+                    </a>
                 </div>
                 <div class="w-100">
                     <a
                             href="{% static 'fimport/template/mega-import.xlsx' %}"
-                    ><i class="fa-solid fa-file-arrow-down mr-1"></i>{% trans "Import template file of all feature" %}.</a>
+                            target="_blank"
+                    >
+                        <i class="fa-solid fa-file-arrow-down mr-1"></i>
+                        {% trans "Import template file of all feature" %}.
+                    </a>
                 </div>
             </div>
             <div class="w-100 mb-3">

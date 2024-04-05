@@ -16,11 +16,13 @@ $(document).ready(function () {
             this.keyMap = {};
             this.columnData = {};
             (this.templateConfig.columns || []).map((item, index) => {
-                let input_title = item?.['name'] || null;
-                let input_name = item?.['input_name'] || null;
-                if (input_name && input_title) this.keyMap[input_name] = input_title;
+                if (index !== 0) {
+                    let input_title = item?.['name'] || null;
+                    let input_name = item?.['input_name'] || null;
+                    if (input_name && input_title) this.keyMap[input_name] = input_title;
 
-                this.columnData[index.toString()] = item;
+                    this.columnData[index.toString()] = item;
+                }
             })
         }
 
@@ -34,11 +36,56 @@ $(document).ready(function () {
             return total;
         }
 
-        generate_col(config) {
+        get_class_col(listColConfig) {
+            let colNumber = 0;
+            if (typeof listColConfig === 'object') {
+                colNumber = Object.keys(listColConfig).length;
+            } else if (Array.isArray(listColConfig)) {
+                colNumber = listColConfig.length;
+            }
+
+            switch (colNumber) {
+                case 0:
+                case 1:
+                    return 'col';
+                case 2:
+                    return 'col-6';
+                case 3:
+                    return 'col-4';
+                case 5:
+                case 6:
+                    return 'col-2';
+                case 7:
+                case 8:
+                    return 'col-3';
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                    return 'col-2';
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 20:
+                case 21:
+                case 22:
+                case 23:
+                case 24:
+                    return 'col-1';
+                default:
+                    return 'col'
+            }
+        }
+
+        generate_col(config, colCls) {
             let colAttrs = {
                 'style': 'min-width: 100px;',
                 ...config?.['col_attrs'],
-                'class': 'col mb-1 ' + (config?.['col_attrs']?.['class'] || ''),
+                'class': colCls + ' fimport-col-data mb-1 ' + (config?.['col_attrs']?.['class'] || ''),
             };
             let col$ = $(`<div></div>`);
             Object.keys(colAttrs).map((key) => {
@@ -53,82 +100,86 @@ $(document).ready(function () {
 
             // init row
             let row$ = $(`<div class="row"></div>`);
-            columnsConfig.map((item) => {
-                let col$ = this.generate_col().append(`<span class="badge badge-primary wrap-text">${item.name}</span>`);
-                let colRemark$ = $(`<div class="col fimport-remark-col"></div>`);
-                let colConfig = item?.['col_attrs'] || null;
-                if (colConfig) {
-                    Object.keys(colConfig).map((key) => {
-                        col$.attr(key, colConfig[key]);
-                        colRemark$.attr(key, colConfig[key]);
-                    })
-                }
-                if (item?.['is_primary_key'] === true){
-                    let iconPrimary = $(`<i class="fa-solid fa-key ml-1" style="color: blue;transform: rotate(-45deg);" data-bs-toggle="tooltip" title="${$.fn.gettext('Ident')} - ${$.fn.gettext('Unique')}"></i>`);
-                    col$.append(iconPrimary);
-                }
-                if (item?.['is_foreign_key']){
-                    let iconPrimary = $(`<i class="fa-solid fa-key ml-1" style="color: green;transform: rotate(-45deg);" data-bs-toggle="tooltip" title="${$.fn.gettext("Foreign key")} - ${item?.['is_foreign_key']}"></i>`);
-                    col$.append(iconPrimary);
-                }
-                // attribute
-                let txtAttribute = [];
-                if (item?.['input_attrs']){
-                    (item?.['input_attrs']?.['args'] || []).map(
-                        (item2) => {
+            let colCls = this.get_class_col(this.columnData);
+            Object.keys(this.columnData).map(
+                (index) => {
+                    let item = this.columnData[index];
+                    let col$ = this.generate_col({}, colCls).append(`<span class="badge badge-primary wrap-text">${item.name}</span>`);
+                    let colRemark$ = $(`<div class="col fimport-remark-col"></div>`);
+                    let colConfig = item?.['col_attrs'] || null;
+                    if (colConfig) {
+                        Object.keys(colConfig).map((key) => {
+                            col$.attr(key, colConfig[key]);
+                            colRemark$.attr(key, colConfig[key]);
+                        })
+                    }
+                    if (item?.['is_primary_key'] === true) {
+                        let iconPrimary = $(`<i class="fa-solid fa-key ml-1" style="color: blue;transform: rotate(-45deg);" data-bs-toggle="tooltip" title="${$.fn.gettext('Ident')} - ${$.fn.gettext('Unique')}"></i>`);
+                        col$.append(iconPrimary);
+                    }
+                    if (item?.['is_foreign_key']) {
+                        let iconPrimary = $(`<i class="fa-solid fa-key ml-1" style="color: green;transform: rotate(-45deg);" data-bs-toggle="tooltip" title="${$.fn.gettext("Foreign key")} - ${item?.['is_foreign_key']}"></i>`);
+                        col$.append(iconPrimary);
+                    }
+                    // attribute
+                    let txtAttribute = [];
+                    if (item?.['input_attrs']) {
+                        (item?.['input_attrs']?.['args'] || []).map(
+                            (item2) => {
+                                switch (item2) {
+                                    case "required":
+                                        col$.append(`<i class="fa-solid fa-asterisk fa-2xs ml-1" style="color:red;" data-bs-toggle="tooltip" title="${$.fn.gettext('required')}"></i>`)
+                                        txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('required')}</small></li>`)
+                                        break
+                                    case "data-unique":
+                                        txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('unique')}</small></li>`)
+                                        break
+                                }
+                            }
+                        )
+                        let kwargs = item?.['input_attrs']?.['kwargs'] || {};
+                        for (let item2 in kwargs) {
                             switch (item2) {
-                                case "required":
-                                    col$.append(`<i class="fa-solid fa-asterisk fa-2xs ml-1" style="color:red;" data-bs-toggle="tooltip" title="${$.fn.gettext('required')}"></i>`)
-                                    txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('required')}</small></li>`)
+                                case "type":
+                                    txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${kwargs[item2]}</small></li>`)
                                     break
-                                case "data-unique":
-                                    txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('unique')}</small></li>`)
+                                case "minlength":
+                                    txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('minlength')}: ${kwargs[item2]}</small></li>`)
+                                    break
+                                case "maxlength":
+                                    txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('maxlength')}: ${kwargs[item2]}</small></li>`)
+                                    break
+                                case "data-valid-check-phone-vn":
+                                    let state = kwargs[item2] === true ? $.fn.gettext('True') : $.fn.gettext('False');
+                                    txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('Phone Number Vietnam')}: ${state}</small></li>`)
                                     break
                             }
                         }
-                    )
-                    let kwargs = item?.['input_attrs']?.['kwargs'] || {};
-                    for (let item2 in kwargs){
-                        switch (item2) {
-                            case "type":
-                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${kwargs[item2]}</small></li>`)
-                                break
-                            case "minlength":
-                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('minlength')}: ${kwargs[item2]}</small></li>`)
-                                break
-                            case "maxlength":
-                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('maxlength')}: ${kwargs[item2]}</small></li>`)
-                                break
-                            case "data-valid-check-phone-vn":
-                                let state = kwargs[item2] === true ? $.fn.gettext('True') : $.fn.gettext('False');
-                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('Phone Number Vietnam')}: ${state}</small></li>`)
-                                break
+                        if (txtAttribute.length > 0) {
+                            txtAttribute = `<ul class="fimport-remark-col" style="display: none;">${txtAttribute.join("")}</ul>`;
+                        } else {
+                            txtAttribute = '';
                         }
                     }
-                    if (txtAttribute.length > 0){
-                        txtAttribute = `<ul class="fimport-remark-col" style="display: none;">${txtAttribute.join("")}</ul>`;
-                    } else {
-                        txtAttribute = '';
+
+                    // remarks
+                    let txtRemarks = '';
+                    if (Array.isArray(item.remarks)) {
+                        txtRemarks = item.remarks.map(
+                            (item2) => {
+                                return `<li><small class="no-transform">${item2}</small></li>`
+                            }
+                        ).join("")
+                    } else if (item.remarks) {
+                        txtRemarks = `<li><small class="no-transform">${item.remarks.toString()}</small></li>`;
                     }
-                }
+                    if (txtRemarks) txtRemarks = `<ul class="fimport-remark-col" style="display: none;">${txtRemarks}</ul>`
 
-                // remarks
-                let txtRemarks = '';
-                if (Array.isArray(item.remarks)){
-                    txtRemarks = item.remarks.map(
-                        (item2) => {
-                            return `<li><small class="no-transform">${item2}</small></li>`
-                        }
-                    ).join("")
-                } else if (item.remarks){
-                    txtRemarks = `<li><small class="no-transform">${item.remarks.toString()}</small></li>`;
+                    //
+                    col$.append(`${txtAttribute}${txtRemarks}`);
+                    row$.append(col$);
                 }
-                if (txtRemarks) txtRemarks = `<ul class="fimport-remark-col" style="display: none;">${txtRemarks}</ul>`
-
-                //
-                col$.append(`${txtAttribute}${txtRemarks}`);
-                row$.append(col$);
-            })
+            )
 
             // setup thead
             let headStart$ = `
@@ -148,14 +199,6 @@ $(document).ready(function () {
                 >
                     <span class="icon"><i class="fa-solid fa-xmark"></i></span>
                 </button>
-                <button 
-                    id="inp-show-info" 
-                    class="btn btn-icon btn-light btn-xs btn-square mr-1 mb-1" type="button"
-                    data-bs-toggle="tooltip"
-                    title="${$.fn.gettext('Show / hide remarks of columns')}"
-                >
-                    <span class="icon"><i class="fa-solid fa-info"></i></span>
-                </button>
             `
             let headEnd$ = `
                 <button 
@@ -171,6 +214,16 @@ $(document).ready(function () {
                 <thead>
                     <tr class="dataShowInfo">
                         <th class="no-transform">${headStart$}</th>
+                        <th class="no-transform">
+                            <button 
+                                id="inp-show-info" 
+                                class="btn btn-icon btn-light btn-xs btn-square mr-1 mb-1" type="button"
+                                data-bs-toggle="tooltip"
+                                title="${$.fn.gettext('Show / hide remarks of columns')}"
+                            >
+                                <span class="icon"><i class="fa-solid fa-info"></i></span>
+                            </button>
+                        </th>
                         <th class="no-transform">${row$.prop('outerHTML')}</th>
                         <th class="no-transform">${headEnd$}</th>
                     </tr>
@@ -181,7 +234,7 @@ $(document).ready(function () {
             this.tbl$.append(thead$);
 
             // on collapse
-            $(this.tbl$).find('#inp-show-info').off('click').on('click', function (){
+            $(this.tbl$).find('#inp-show-info').off('click').on('click', function () {
                 $(this).closest('table').find('.dataShowInfo .fimport-remark-col').toggle('fast');
             })
         }
@@ -243,7 +296,7 @@ $(document).ready(function () {
                     ).append(
                         `<button 
                             type="button" 
-                            class="btn btn-icon btn-rounded btn-soft-success btn-xs btnBigInputSave"><span class="icon"><i class="fa-solid fa-check"></i></span>
+                            class="btn btn-icon btn-rounded btn-success btn-xs btnBigInputSave"><span class="icon"><i class="fa-solid fa-check"></i></span>
                         </button>`
                     );
                 }
@@ -252,7 +305,7 @@ $(document).ready(function () {
 
             return [
                 {
-                    width: "10%",
+                    width: "70px",
                     data: 'selected',
                     className: 'my-custom-align',
                     render: (data, type, row) => {
@@ -265,27 +318,39 @@ $(document).ready(function () {
                             </div>
                         `;
                     }
-                }, {
-                    width: "85%",
+                },
+                {
+                    width: "30px",
+                    data: "data",
+                    className: 'my-custom-align',
+                    render: (data, type, row) => {
+                        return data[0] || '';
+                    }
+                },
+                {
+                    // width: "80%",
                     data: 'data',
                     className: 'my-custom-align',
                     render: (data, type, row) => {
                         let cell$ = $(`<div class="row"></div>`);
+                        let colCls = this.get_class_col(columnData);
+
                         for (let key_index in columnData) {
                             let config = columnData[key_index.toString()];
 
-                            console.log('my-custom-align:', config.name, config);
-                            let col$ = this.generate_col(config);
+                            let col$ = this.generate_col(config, colCls);
                             col$.attr('data-index', key_index);
 
                             let [group$, groupBigEdit$] = generate_form_group(data?.[key_index] || '', config, key_index);
-                            col$.append(group$).append(groupBigEdit$);
+                            let groupOfCol$ = $(`<div class="fimport-cell-data"></div>`);
+                            groupOfCol$.append(group$).append(groupBigEdit$);
+                            col$.append(groupOfCol$);
                             cell$.append(col$);
                         }
                         return `<form data-url="${this.templateConfig.url}" data-method="POST" id="${$x.fn.randomStr(32)}">${cell$.prop('outerHTML')}</form>`;
                     }
                 }, {
-                    width: '5%',
+                    width: '30px',
                     className: 'my-custom-align',
                     render: (data, type, row) => {
                         return `<button class="btn btn-icon btn-outline-primary btn-xs btn-square btnSubmit" type="button" disabled><span class="icon"><i class="fa-solid fa-save"></i></span></button>`
@@ -333,14 +398,8 @@ $(document).ready(function () {
 
             this.generate_head();
 
-            const idPrefixSelected = 'row-data-selected-';
-
-            function getIdSelectedGroup(inpCheckAllID){
-                return `${idPrefixSelected}${inpCheckAllID}`
-            }
-
             function addToSelected(data, idCheck) {
-                let idx = idCheck ? getIdSelectedGroup(idCheck) : getIdSelectedGroup(data['id']);
+                let idx = idCheck ? RenderData.getIdSelectedGroup(idCheck) : RenderData.getIdSelectedGroup(data['id']);
                 if (clsThis.textBtn$.find(`#${idx}`).length === 0) {
                     clsThis.textBtn$.append(`<span class="badge badge-primary mr-1 mb-1 dtb-selected-item" id="${idx}">${data.data ? data.data['0'] : ''}</span>`);
                 }
@@ -352,7 +411,7 @@ $(document).ready(function () {
             }
 
             function removeToSelected(data, idCheck) {
-                let idx = idCheck ? getIdSelectedGroup(idCheck) : getIdSelectedGroup(data['id']);
+                let idx = idCheck ? RenderData.getIdSelectedGroup(idCheck) : RenderData.getIdSelectedGroup(data['id']);
                 clsThis.textBtn$.find(`#${idx}`).remove();
                 if (clsThis.textBtn$.children().length === 0) {
                     clsThis.textBtn$.hide();
@@ -454,7 +513,6 @@ $(document).ready(function () {
                     // clsThis.tex?tBtn$ = $('#groupDataSelected');
                     // clsThis.textBtn$.hide();
 
-
                     clsThis.dtbBodyScroll$ = clsThis.wrapper$.find('.dataTables_scrollBody');
 
                     clsThis.bodyScrollToRow = function bodyScrollToRow(row$) {
@@ -480,14 +538,18 @@ $(document).ready(function () {
                                 clsThis.bodyScrollToRow(tr$);
                                 tr$.removeClass('selected').addClass('fimport-in-progress');
                                 eleSelected.removeClass('badge-primary').addClass('badge-warning');
-                                frm$.trigger( "submit" );
-                                // setTimeout(
-                                //     () => {
-                                //         tr$.addClass('selected').removeClass('fimport-in-progress');
-                                //         eleSelected.removeClass('badge-warning').addClass('badge-primary');
-                                //     },
-                                //     1000,
-                                // )
+
+                                // solution 1: call trigger
+                                // frm$.trigger( "submit" );
+
+                                // solution 2: call function with await
+                                let state = await clsThis.formSubmit(frm$);
+                                if (state !== true){
+                                    $.fn.notifyB({
+                                        'description': $.fn.gettext('The saving loop was broken due to an error.')
+                                    }, 'failure')
+                                    break;
+                                }
                             }
                             await $x.fn.sleep(1000)
                         }
@@ -499,35 +561,35 @@ $(document).ready(function () {
                 ],
                 pageLength: 10,
                 rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
-                    $(row).find('.btnBigInputEdit').off('click').on('click', function (){
+                    $(row).find('.btnBigInputEdit').off('click').on('click', function () {
                         let btnThis = $(this);
 
                         let mainGroup = $(this).closest('.fimport-main-group-input');
                         let subGroup = mainGroup.parent().find('.fimport-sub-group-input');
-                        if (mainGroup.length > 0 && subGroup.length > 0){
+                        if (mainGroup.length > 0 && subGroup.length > 0) {
                             let mainInput = mainGroup.find('input');
                             let subTextarea = subGroup.find('textarea');
                             let subBtn = subGroup.find('.btnBigInputSave');
-                            if (mainInput.length > 0 && subTextarea.length > 0 && subBtn.length > 0){
+                            if (mainInput.length > 0 && subTextarea.length > 0 && subBtn.length > 0) {
                                 subTextarea.val(mainInput.val());
 
-                                subTextarea.off('input').on('input', function (){
+                                subTextarea.off('input').on('input', function () {
                                     mainInput.val(subTextarea.val()).trigger('change');
                                 })
 
-                                subGroup.slideToggle('fast', function (){
+                                subGroup.slideToggle('fast', function () {
                                     mainInput.prop('readonly', subGroup.is(':visible'));
-                                    if (subGroup.is(':visible') === true){
-                                        btnThis.closest('.col').addClass('edit-big-field-open');
+                                    if (subGroup.is(':visible') === true) {
+                                        btnThis.closest('.fimport-col-data').find('.fimport-cell-data').addClass('edit-big-field-open');
                                     } else {
-                                        btnThis.closest('.col').removeClass('edit-big-field-open');
+                                        btnThis.closest('.fimport-col-data').find('.fimport-cell-data').removeClass('edit-big-field-open');
                                     }
                                 });
-                                subBtn.off('click').on('click', function (){
+                                subBtn.off('click').on('click', function () {
                                     mainInput.prop('readonly', false);
                                     mainInput.val(subTextarea.val()).trigger('change');
                                     subGroup.slideUp('fast');
-                                    btnThis.closest('.col').removeClass('edit-big-field-open');
+                                    btnThis.closest('.fimport-col-data').find('.fimport-cell-data').removeClass('edit-big-field-open');
                                 })
                             }
                         }
@@ -572,58 +634,10 @@ $(document).ready(function () {
                         }
                     });
 
-                    let validator = new SetupFormSubmit(frm$).validate({
+                    new SetupFormSubmit(frm$).validate({
                         rules: clsThis.templateConfig?.['validate'] || {},
                         submitHandler: async function (form, event) {
-                            let frm = new SetupFormSubmit(form);
-
-                            function resolve_callback(){
-                                setTimeout(
-                                    () => {
-                                        $(row).addClass('selected').removeClass('fimport-in-progress');
-                                        let eleSelected = clsThis.textBtn$.find(
-                                            `#${getIdSelectedGroup(inpCheckAll$.attr('id'))}`
-                                        );
-                                        eleSelected.removeClass('badge-warning').addClass('badge-primary');
-                                    },
-                                    1000,
-                                )
-                            }
-
-                            return await $.fn.callAjax2({
-                                url: frm.dataUrl,
-                                method: frm.dataMethod,
-                                data: frm.dataForm,
-                            }).then((resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyB({
-                                        'description': $.fn.gettext('Successfully'),
-                                    }, 'success');
-                                    $(row).addClass('bg-success bg-opacity-25 text-dark');
-                                }
-                            }, (errs) => {
-                                $.fn.switcherResp(errs, {
-                                    'notifyOpts': {
-                                        'keyNotMatch': '',
-                                        'replaceKey': clsThis.keyMap,
-                                        'isShowKey': true
-                                    },
-                                    'swalOpts': {'allowOutsideClick': true},
-                                });
-                                if (errs && typeof errs === 'object' && errs.hasOwnProperty('data')) {
-                                    let data = errs['data'];
-                                    if (data && typeof data === 'object' && data.hasOwnProperty('errors')) {
-                                        let errors = data['errors'];
-                                        if (errors && typeof errors === 'object') {
-                                            validator.showErrors(errors);
-                                        }
-                                    }
-                                }
-                                $(row).addClass('bg-danger bg-opacity-25 text-dark');
-                            },).then(
-                                () => resolve_callback(),
-                            )
+                            return await clsThis.formSubmit(form);
                         },
                     });
 
@@ -646,10 +660,83 @@ $(document).ready(function () {
             });
 
             dataTbl.on('page', function () {
-                let info = dataTbl.page.info();
+                // let info = dataTbl.page.info();
                 emptyToSelected();
                 clsThis.tbl$.find('input[type=checkbox].inp-checkall[checked]').trigger('change');
             });
+        }
+
+        static getIdSelectedGroup(inpCheckAllID) {
+            return `row-data-selected-${inpCheckAllID}`
+        }
+
+        resolve_callback(inpCheckAll$) {
+            let clsThis = this;
+            setTimeout(
+                () => {
+                    let row$ = inpCheckAll$.closest('tr');
+                    row$.removeClass('fimport-in-progress');
+
+                    let selectedState = inpCheckAll$.length > 0 ? inpCheckAll$.prop('checked') : false;
+                    if (selectedState === true) row$.addClass('selected');
+
+                    clsThis.textBtn$
+                        .find(
+                            `#${RenderData.getIdSelectedGroup(inpCheckAll$.attr('id'))}`
+                        )
+                        .removeClass('badge-warning')
+                        .addClass('badge-primary');
+                },
+                1000,
+            )
+        }
+
+        async formSubmit(form) {
+            let clsThis = this;
+            let row = $(form).closest('tr');
+            let frm = new SetupFormSubmit(form);
+            let inpCheckAll$ = $(form).closest('tr').find('input[type=checkbox].inp-checkall');
+
+            return await $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({
+                            'description': $.fn.gettext('Successfully'),
+                        }, 'success');
+                        $(row).alterClass('bg-*').addClass('bg-success bg-opacity-25 text-dark');
+                    }
+                    return true;
+                },
+                (errs) => {
+                    $.fn.switcherResp(errs, {
+                        'notifyOpts': {
+                            'keyNotMatch': '',
+                            'replaceKey': clsThis.keyMap,
+                            'isShowKey': true
+                        },
+                        'swalOpts': {'allowOutsideClick': true},
+                    });
+                    if (errs && typeof errs === 'object' && errs.hasOwnProperty('data')) {
+                        let data = errs['data'];
+                        if (data && typeof data === 'object' && data.hasOwnProperty('errors')) {
+                            let errors = data['errors'] || {};
+                            if (errors && typeof errors === 'object') $(form).validate().showErrors(errors);
+                        }
+                    }
+                    $(row).alterClass('bg-*').addClass('bg-danger bg-opacity-25 text-dark');
+                    return false;
+                }
+            ).then(
+                (state) => {
+                    clsThis.resolve_callback(inpCheckAll$);
+                    return state;
+                },
+            )
         }
     }
 
@@ -697,13 +784,13 @@ $(document).ready(function () {
                 let worksheet = null;  // workbook.Sheets[worksheetName];
                 let jsonData = [];  // XLSX.utils.sheet_to_json(worksheet, {header: 1});
 
-                function disableNextData(){
+                function disableNextData() {
                     clsThis.starting$.prop('disabled', true);
                     clsThis.ending$.prop('disabled', true);
                     clsThis.btnLoadFileData$.prop('disabled', true);
                 }
 
-                function enableNextData(){
+                function enableNextData() {
                     clsThis.starting$.prop('disabled', false);
                     clsThis.ending$.prop('disabled', false);
                     clsThis.btnLoadFileData$.prop('disabled', false);
@@ -711,12 +798,12 @@ $(document).ready(function () {
 
                 clsThis.inpSheetName$.empty();
                 workbook.SheetNames.map((item, index) => {
-                    if (item && item.startsWith('#')){
+                    if (item && item.startsWith('#')) {
                         let html = ``;
-                        if (clsThis.clsRenderData.sheetName){
+                        if (clsThis.clsRenderData.sheetName) {
                             html = `<option value="${item}" ${clsThis.clsRenderData.sheetName === item ? "selected" : ""}>${item}</option>`;
                         } else {
-                            html = `<option value="${item}" ${index === 0 ? "selected": "" }>${item}</option>`;
+                            html = `<option value="${item}" ${index === 0 ? "selected" : ""}>${item}</option>`;
                         }
                         clsThis.inpSheetName$.append(html)
                     }
@@ -728,26 +815,26 @@ $(document).ready(function () {
                     if (!worksheetName) return disableNextData();
                     worksheet = workbook.Sheets[worksheetName];
                     if (!worksheet) return disableNextData();
-                    if (!clsThis.clsRenderData.templateConfig?.['url_create']) return disableNextData();
+                    if (!clsThis.clsRenderData.templateConfig?.['url']) return disableNextData();
 
                     // enable button and handle data
                     enableNextData();
                     jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-                    $('#sheet-remarks').text(`${$.fn.gettext("Total rows")}: ${jsonData.length - 1}`);
-                    if (jsonData.length > 0){
+                    $('#sheet-remarks').text(`${$.fn.gettext("Total rows")}: ${jsonData.length - 2}`);
+                    if (jsonData.length > 0) {
                         const dataHead = jsonData[0];
                         const configHead = clsThis.clsRenderData.templateConfig.columns;
-                        if (dataHead.length === configHead.length){
+                        if (dataHead.length === configHead.length) {
                             // update starting and ending records
-                            clsThis.update_max_start_end(jsonData.length - 1);
+                            clsThis.update_max_start_end(jsonData.length - 2);
                             // button load + start + end
                             clsThis.btnLoadFileData$.prop('disabled', false).off('click').on('click', function () {
-                                if ($(this).prop('disabled') === false){
+                                if ($(this).prop('disabled') === false) {
                                     let startNum = Number.parseInt(clsThis.starting$.val());
                                     let endNum = Number.parseInt(clsThis.ending$.val());
-                                    if (startNum <= endNum) clsThis.clsRenderData.render_data(jsonData.slice(startNum, endNum + 1));
+                                    if (startNum <= endNum) clsThis.clsRenderData.render_data(jsonData.slice(startNum + 1, endNum + 1 + 1));
                                     else $.fn.notifyB({
-                                        'description': $.fn.gettext('The feature is not support import file data'),
+                                        'description': $.fn.gettext('No data found'),
                                     }, 'failure');
                                 }
                             })
@@ -784,7 +871,7 @@ $(document).ready(function () {
                         'templateConfig': clsThis.templateSelectedData,
                     });
                     clsThis.clsRenderData.render_frame();
-                    if (clsThis.clsRenderData.sheetName){
+                    if (clsThis.clsRenderData.sheetName) {
                         clsThis.inpSheetName$.val(clsThis.clsRenderData.sheetName)
                     }
                     //
@@ -811,24 +898,31 @@ $(document).ready(function () {
             });
 
             this.inpFile$.on('change', function (event) {
-                $x.fn.showLoadingPage();
+                $x.fn.showLoadingPage({
+                    didOpenEnd: function (){
+                        let files = event.target.files;
+                        let f = files[0];
+                        if (!(files && f)) {
+                            $x.fn.hideLoadingPage();
+                            return;
+                        }
 
-                let files = event.target.files;
-                let f = files[0];
-                let sizeToMB = f.size / (1024 * 1024);
+                        let sizeToMB = f.size / (1024 * 1024);
 
-                if (sizeToMB > 5) {
-                    $.fn.notifyB({
-                        'description': $.fn.gettext('File size must be less than or equal to __size__').replaceAll('__size__', '5MB')
-                    }, 'failure');
-                    this.value = "";
-                    $x.fn.hideLoadingPage();
-                    return;
-                }
+                        if (sizeToMB > 5) {
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('File size must be less than or equal to __size__').replaceAll('__size__', '5MB')
+                            }, 'failure');
+                            this.value = "";
+                            $x.fn.hideLoadingPage();
+                            return;
+                        }
 
-                setTimeout(() => {
-                    clsThis.readerBufferFile(f);
-                }, 100);
+                        setTimeout(() => {
+                            clsThis.readerBufferFile(f);
+                        }, 100);
+                    },
+                });
             });
 
             $('#btn-collapse').on('click', function () {

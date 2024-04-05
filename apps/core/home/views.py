@@ -260,7 +260,9 @@ class GatewayPKMiddleDetailView(APIView):
 class GatewayViewNameListView(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        return {'views_name': BreadcrumbView.get_list_view()}, status.HTTP_200_OK
+        return {'views_name': BreadcrumbView.get_list_view(
+            search_txt=request.query_params.get('search', '')
+        )}, status.HTTP_200_OK
 
 
 class GatewayViewNameParseView(APIView):

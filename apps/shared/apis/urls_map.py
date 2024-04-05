@@ -178,8 +178,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     TENANT = StringUrl('tenant/userlist')
 
     # F-Import-Data
+    IMPORT_CORE_ACCOUNT_USER = StringUrl('import-data/core/account/user')
     IMPORT_HR_GROUP_LEVEL = StringUrl('import-data/hr/group-level')
     IMPORT_HR_GROUP = StringUrl('import-data/hr/group')
+    IMPORT_HR_ROLE = StringUrl('import-data/hr/role')
+    IMPORT_HR_EMPLOYEE = StringUrl('import-data/hr/employee')
 
     # HR
 

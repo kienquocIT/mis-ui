@@ -4,12 +4,13 @@ __all__ = [
 
 from django.utils.translation import gettext_lazy as _
 
+from apps.core.fimport.columns_template.app_name import SHEET_ACCOUNT_USERS
 from apps.core.fimport.columns_template.tools import ResolveColumnsFImport
 
 COLUMNS_ACCOUNT_USER = ResolveColumnsFImport(
-    sheet_name='#account.users',
+    sheet_name=SHEET_ACCOUNT_USERS,
     app_id='af9c6fd3-1815-4d5a-aa24-fca9d095cb7a',
-    url_name='UserListAPI',
+    url_name='CoreAccountUserImportAPI',
     list_name='UserList',
     create_name='UserCreate',
     template_link='fimport/template/import-account-user.xlsx',
@@ -23,10 +24,6 @@ COLUMNS_ACCOUNT_USER = ResolveColumnsFImport(
         {
             'name': 'No.',
             'type': 'number',
-            'remarks': _('Order Numbering'),
-            'col_attrs': {
-                'style': 'max-width: 50px',
-            },
         },
         {
             'name': _('User name'),

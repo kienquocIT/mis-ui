@@ -252,6 +252,7 @@ class detailTab {
                 // run date picker after render row
                 $('.date-picker', row).daterangepicker({
                     singleDatePicker: true,
+                    autoApply: true,
                     timepicker: false,
                     showDropdowns: false,
                     minYear: 2023,

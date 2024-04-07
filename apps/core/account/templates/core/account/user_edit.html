@@ -52,11 +52,12 @@
                     <select
                             class="form-select"
                             id="select-box-company"
-                            data-url="{% url "CompanyListAPI" %}"
+                            data-url="{% url "UserCompaniesAPI" pk=pk %}"
                             data-method="GET"
                             name="company_current"
                     >
                     </select>
+                    <small class="text-muted form-text">{% trans 'This company list is the list of companies that the user belongs to. If you want to add a company for the user, please use the Tenant Management feature.' %}</small>
                 </div>
             </div>
             <div class="col-6 col-lg-4">

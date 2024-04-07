@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let NOT_CLOSED_SUB_PERIOD = 0
     const current_period_Ele = $('#current_period')
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
@@ -94,6 +93,15 @@ $(document).ready(function () {
                 url: periodEle.attr('data-url'),
                 method: 'GET',
             },
+            callbackDataResp: function (resp, keyResp) {
+                let res = []
+                for (const item of resp.data[keyResp]) {
+                    if (item?.['fiscal_year'] <= new Date().getFullYear()) {
+                        res.push(item)
+                    }
+                }
+                return res
+            },
             data: (data ? data : null),
             keyResp: 'periods_list',
             keyId: 'id',
@@ -148,7 +156,7 @@ $(document).ready(function () {
     $('#btn-view').on('click', function () {
         $('table thead').find('span').text('0')
         $('table thead').find('span').attr('data-init-money', 0)
-        NOT_CLOSED_SUB_PERIOD = 0
+        $('table tbody').html('')
         if ($('#show-detail-cb').prop('checked')) {
             const table_inventory_report = $('#table-inventory-report-detail')
             table_inventory_report.prop('hidden', false)
@@ -189,9 +197,6 @@ $(document).ready(function () {
                         let out_sum_value = 0
                         let ending_sum_value = 0
                         for (const warehouse_activities of results[0]) {
-                            if (warehouse_activities?.['stock_activities']?.['is_close'] === false) {
-                                NOT_CLOSED_SUB_PERIOD += 1
-                            }
                             if (warehouses_select_Ele.val().length === 0) {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
@@ -526,7 +531,8 @@ $(document).ready(function () {
             }
         }
         else {
-            const table_inventory_report = $('#table-inventory-report').prop('hidden', false)
+            const table_inventory_report = $('#table-inventory-report')
+            table_inventory_report.prop('hidden', false)
             $('#table-inventory-report-detail').prop('hidden', true)
             if (periodMonthEle.val()) {
                 WindowControl.showLoading();
@@ -553,7 +559,6 @@ $(document).ready(function () {
 
                 Promise.all([inventory_detail_list_ajax]).then(
                     (results) => {
-                        console.log(results[0])
                         table_inventory_report.find('tbody').html('')
                         let opening_sum_quantity = 0
                         let in_sum_quantity = 0
@@ -564,9 +569,6 @@ $(document).ready(function () {
                         let out_sum_value = 0
                         let ending_sum_value = 0
                         for (const warehouse_activities of results[0]) {
-                            if (warehouse_activities?.['stock_activities']?.['is_close'] === false) {
-                                NOT_CLOSED_SUB_PERIOD += 1
-                            }
                             if (warehouses_select_Ele.val().length === 0) {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
@@ -745,7 +747,6 @@ $(document).ready(function () {
                         $.fn.initMaskMoney2()
                         setTimeout(
                             () => {
-                                $('#notify-div').prop('hidden', NOT_CLOSED_SUB_PERIOD === 0)
                                 WindowControl.hideLoading();
                             },
                             500

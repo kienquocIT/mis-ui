@@ -40,6 +40,8 @@ from apps.masterdata.saledata.views.warehouse import (
 )
 from apps.masterdata.saledata.views.meeting_config import MeetingConfigList, MeetingRoomListAPI, \
     MeetingRoomDetailAPI, MeetingZoomConfigListAPI, MeetingZoomConfigDetailAPI
+from apps.masterdata.saledata.views.invoice_sign import InvoiceSignList, InvoiceSignListAPI
+
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -298,4 +300,9 @@ urlpatterns += [
         'balance_init/api', BalanceInitListAPI.as_view(),
         name='BalanceInitListAPI'
     ),
+]
+
+urlpatterns += [
+    path('invoice_sign', InvoiceSignList.as_view(), name='InvoiceSignList'),
+    path('invoice_sign/api', InvoiceSignListAPI.as_view(), name='InvoiceSignListAPI'),
 ]

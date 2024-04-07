@@ -2,6 +2,7 @@
 from operator import itemgetter
 from django.urls import reverse, NoReverseMatch
 from django.utils.translation import gettext_lazy as _
+from unidecode import unidecode
 
 
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
@@ -310,6 +311,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     BALANCE_INIT_PAGE = BreadcrumbChildren(_('Balance initialization'), 'BalanceInitList')
 
+    INVOICE_SIGN_PAGE = BreadcrumbChildren(_('Invoice sign'), 'BalanceInitList')
+
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 
     REVENUE_PLAN_LIST_PAGE = BreadcrumbChildren(_('Revenue plan list'), 'RevenuePlanList')
@@ -338,18 +341,21 @@ class BreadcrumbView:
     """menu vertical item view"""
 
     @staticmethod
-    def get_list_view():
+    def get_list_view(search_txt=''):
         arr = []
         for att in dir(BreadcrumbItem()):
             if not att.startswith('__'):
                 child = getattr(BreadcrumbItem, att)
                 if child.url:
-                    arr.append(
-                        {
-                            'view_name': child.url,
-                            'title': child.title,
-                        }
-                    )
+                    search_txt = unidecode(search_txt.lower())
+                    main_txt = unidecode(child.title.lower())
+                    if search_txt in main_txt:
+                        arr.append(
+                            {
+                                'view_name': child.url,
+                                'title': child.title,
+                            }
+                        )
         arr = sorted(arr, key=itemgetter('title'))
         return arr
 
@@ -815,6 +821,8 @@ class BreadcrumbView:
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
 
     BALANCE_INIT_PAGE = [BreadcrumbItem.BALANCE_INIT_PAGE]
+
+    INVOICE_SIGN_PAGE = [BreadcrumbItem.INVOICE_SIGN_PAGE]
 
     REVENUE_PLAN_CONFIG_PAGE = [BreadcrumbItem.REVENUE_PLAN_CONFIG_PAGE]
 

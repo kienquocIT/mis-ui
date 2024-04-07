@@ -28,3 +28,27 @@ msgstr "Thành công"
 #
 msgid "Failed"
 msgstr "Thất bại"
+
+#
+msgid "Some apps will be working wrong"
+msgstr "Một số ứng dụng sẽ không hoạt động"
+
+#
+msgid "You do not belong to any company in the organization. Please contact the organization administrator to update the company information for you in the Tenant Administration section."
+msgstr "Bạn không thuộc về bất kỳ công ty nào trong tổ chức. Vui lòng liên hệ với quản trị viên tổ chức để cập nhật thông tin công ty cho bạn trong phần Quản trị Tenant."
+
+#
+msgid "Please update the company information in the Current Company Switch section for your account."
+msgstr "Vui lòng cập nhật thông tin công ty trong phần chuyển đổi công ty hiện hành của tài khoản."
+
+#
+msgid "Goto switch current company"
+msgstr "Đi đến chuyển đổi công ty hiện hành"
+
+#
+msgid "The account is not linked to an employee. Please contact the company administrator to update the employee information for the account."
+msgstr "Tài khoản không được liên kết với nhân viên. Vui lòng liên hệ với quản trị viên công ty để cập nhật thông tin nhân viên cho tài khoản."
+
+#
+msgid "Admin"
+msgstr "Quản trị viên"

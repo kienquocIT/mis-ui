@@ -355,28 +355,28 @@ class OpportunityLoadDetail {
         // config input date
         $('input[name="open_date"]').daterangepicker({
             singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            drops: 'auto',
-            minYear: 2000,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
             locale: {
-                format: 'YYYY-MM-DD'
+                format: 'DD/MM/YYYY'
             },
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            drops: 'up',
+            autoApply: true,
         });
 
         $('input[name="close_date"]').daterangepicker({
             singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            drops: 'auto',
-            minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
             locale: {
-                format: 'YYYY-MM-DD'
+                format: 'DD/MM/YYYY'
             },
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY'), 10) + 100
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            drops: 'up',
+            autoApply: true,
         });
     }
 
@@ -397,10 +397,14 @@ class OpportunityLoadDetail {
             $('#check-input-rate').prop('checked', false);
 
         if (opportunity_detail?.['open_date'])
-            $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
+            $('#input-open-date').val(
+                moment(opportunity_detail?.['open_date'].split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY")
+            );
 
         if (opportunity_detail?.['close_date'])
-            $('#input-close-date').val(opportunity_detail?.['close_date'].split(' ')[0]);
+            $('#input-close-date').val(
+                moment(opportunity_detail?.['close_date'].split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY")
+            );
         else {
             $('#input-close-date').val('');
         }
@@ -689,6 +693,9 @@ class OpportunityLoadDetail {
         ele_end_customer.val() !== undefined ? data_form['end_customer'] = ele_end_customer.val() : undefined;
         ele_budget.attr('value') !== undefined ? data_form['budget_value'] = ele_budget.attr('value') : undefined;
         ele_decision_maker.data('id') !== undefined ? data_form['decision_maker'] = ele_decision_maker.data('id') : undefined;
+
+        data_form['open_date'] = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+        data_form['close_date'] = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
 
         ele_product_category.val() !== undefined ? data_form['product_category'] = ele_product_category.val() : undefined;
         ele_decision_factor.val() !== undefined ? data_form['customer_decision_factor'] = ele_decision_factor.val() : undefined;
@@ -1638,8 +1645,16 @@ function sortStage(list_stage) {
     return list_result
 }
 
-$('#estimated-gross-profit-percent').on('change', function () {
-    let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
-    $('#estimated-gross-profit-value').attr('value', value)
-    $.fn.initMaskMoney2()
+$('#estimated-gross-profit-percent').on('input', function () {
+    if ($(this).val()) {
+        $(this).val(parseFloat($(this).val()))
+        let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
+        $('#estimated-gross-profit-value').attr('value', value)
+        $.fn.initMaskMoney2()
+    }
+    else {
+        $(this).val(0)
+        $('#estimated-gross-profit-value').attr('value', 0)
+        $.fn.initMaskMoney2()
+    }
 })

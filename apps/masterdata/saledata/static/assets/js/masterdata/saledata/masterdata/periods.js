@@ -359,18 +359,7 @@ $(document).ready(function () {
                         <td></td>
                         <td><span class="code badge badge-soft-primary">${period_code_Ele.val()}-${key_sub}${key_month}-${key_year}</span></td>
                         <td><span class="name text-primary">${period_code_Ele.val()}-${key_sub}${key_month}-${key_year}</span></td>
-                        <td>
-                            <div class="btn-group dropdown-sub-group">
-                                <button disabled readonly type="button" class="btn btn-soft-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
-                                    <i class="bi bi-door-open"></i> Open
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-door-open"></i> Open</a>
-                                    <a class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-door-closed-fill"></i> Close</a>
-                                    <a class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-lock"></i> Lock</a>
-                                </div>
-                            </div>                        
-                        </td>
+                        <td></td>
                         <td class="start_date" data-value="01-${sub_month}"><i class="far fa-calendar"></i> 01-${sub_month}</td>
                         <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}-${sub_month}"><i class="far fa-calendar"></i> ${get_final_date_of_current_month(key_year, key_month)}-${sub_month}</td>           
                     </tr>
@@ -397,28 +386,12 @@ $(document).ready(function () {
                 let data_subs = JSON.parse($(this).find('script').text())
                 let html = ``
                 for (const item of data_subs) {
-                    let dropdown_state = item?.['state']
-                    let dropdown_text = ['Open', 'Close', 'Lock'][item?.['state']]
-                    let dropdown_class = ['bi bi-door-open', 'bi bi-door-closed-fill', 'bi bi-lock'][item?.['state']]
-                    let btn_class = ['btn-soft-primary', 'btn-soft-secondary', 'btn-soft-danger'][item?.['state']]
-
                     html += `<tr class="sub-periods-row">
                                 <td></td>
                                 <td></td>
                                 <td><span class="code badge badge-outline badge-primary">${item?.['code']}</span></td>
                                 <td><span class="name text-primary">${item?.['name']}</span></td> 
-                                <td>
-                                    <div class="btn-group dropdown-sub-group w-50">
-                                        <button type="button" data-value="${dropdown_state}" class="btn-state btn ${btn_class} btn-sm dropdown-toggle" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
-                                            <i class="${dropdown_class}"></i> ${dropdown_text}
-                                        </button>
-                                        <div class="dropdown-menu" data-period-id="${$(this).attr('data-period-id')}" data-id="${item?.['id']}">
-                                            <a data-state="0" class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-door-open"></i> Open</a>
-                                            <a data-state="1" class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-door-closed-fill"></i> Close</a>
-                                            <a data-state="2" class="dropdown-item dropdown-sub-action" href="#"><i class="bi bi-lock"></i> Lock</a>
-                                        </div>
-                                    </div>                      
-                                </td>      
+                                <td></td>      
                                 <td class="start_date text-primary" data-value="${item?.['start_date']}"><i class="far fa-calendar"></i> ${item?.['start_date']}</td>
                                 <td class="end_date text-primary" data-value="${item?.['end_date']}"><i class="far fa-calendar"></i> ${item?.['end_date']}</td>
                                 <td></td>
@@ -428,69 +401,6 @@ $(document).ready(function () {
                 $(this).attr('data-state', 'show')
             }
         }
-    })
-
-    $(document).on("click", '.dropdown-sub-action', function () {
-        Swal.fire({
-            html:
-                '<span class="mt-3"><i class="fas fa-exclamation-triangle"></i></span>' +
-                '<p class="text-secondary">This update may affect inventory activities, still updated?</p>',
-            customClass: {
-                confirmButton: 'btn btn-outline-primary text-primary',
-                cancelButton: 'btn btn-outline-secondary text-secondary',
-                container:'swal2-has-bg',
-                actions:'w-100'
-            },
-            showCancelButton: true,
-            buttonsStyling: false,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) {
-                WindowControl.showLoading();
-                let state = $(this).attr('data-state')
-                $(this).closest('.dropdown-sub-group').find('.btn-state').attr('data-value', state)
-                let frm = $('#form-update-periods-config')
-                let period_id = $(this).closest('.dropdown-menu').attr('data-period-id')
-                let sub_id = $(this).closest('.dropdown-menu').attr('data-id')
-                let notify_des = ''
-                let notify_des_state = ['Opened', 'Closed', 'Locked']
-                notify_des = `This sub period has ${notify_des_state[parseInt(state)]} successfully.`
-
-                let combinesDataUpdSub = combinesDataPeriodsUpdateSub(frm, period_id, sub_id, state);
-                if (combinesDataUpdSub) {
-                    $.fn.callAjax2(combinesDataUpdSub).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                WindowControl.hideLoading();
-                                Swal.fire({
-                                    html:
-                                    `<div class="text-center"><h5 class="text-primary">${notify_des}</h5></div>`,
-                                    customClass: {
-                                        confirmButton: 'btn btn-primary',
-                                    },
-                                    buttonsStyling: false,
-                                })
-                                $(this).closest('.dropdown-sub-group').find('.btn-state').html($(this).html())
-                                let btn_class = ['btn-soft-primary', 'btn-soft-secondary', 'btn-soft-danger'][parseInt(state)]
-                                $(this).closest('.dropdown-sub-group').find('.btn-state').attr('class', `btn-state btn ${btn_class} btn-sm dropdown-toggle`)
-                            }
-                        },
-                        (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            setTimeout(
-                                () => {
-                                    WindowControl.hideLoading();
-                                },
-                                1000
-                            )
-                        }
-                    )
-                }
-            }
-        })
     })
 
     $('#form-create-periods-config').submit(function (event) {

@@ -18,6 +18,20 @@
     <div class="row">
         <div class="col-12 col-lg-4 col-xl-6 col-xxl-7">
             <div class="form-group">
+                <label class="form-label required" for="inp-application">{% trans 'Application' %}</label>
+                <select
+                        id="inp-application"
+                        name="application"
+                        class="select2 form-select"
+                        data-url="{% url 'TenantApplicationListAPI' %}"
+                        data-params='{"allow_mail":true,"pageSize":-1}'
+                        data-method="GET"
+                        data-keyResp="tenant_application_list"
+                        required
+                        disabled
+                ></select>
+            </div>
+            <div class="form-group">
                 <label class="form-label required" for="inp-title">{% trans 'Title' %}</label>
                 <input type="text" class="form-control" id="inp-title" name="title" required disabled/>
             </div>
@@ -45,4 +59,38 @@
             ></textarea>
         </div>
     </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'mailer/mailer.js' %}"></script>
+    <script>
+        $(document).ready(function (){
+            $.fn.callAjax2({
+                url: "{% url 'MailTemplateDetailAPI' pk=pk %}",
+                method: 'GET',
+            }).then(
+                resp => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('mailer')){
+                        let mailerData = data['mailer'];
+                        $('#inp-title').val(mailerData['title']);
+                        $('#inp-remark').val(mailerData['remarks']);
+                        $('#inp-is-active').prop('checked', mailerData['is_active']);
+                        $('#inp-is-default').prop('checked', mailerData['is_default']);
+                        $('#inp-application').initSelect2({
+                            data: [
+                                {
+                                    'id': mailerData['application']['id'],
+                                    'title': mailerData['application']['title'],
+                                    'selected': true
+                                }
+                            ]
+                        })
+                        MailerTinymceControl.init_tinymce_editable($('#inp-contents'), mailerData['contents'], {}, {readonly: 1, toolbar: false, });
+                    }
+                },
+                errs => console.log(errs),
+            )
+        })
+    </script>
 {% endblock %}

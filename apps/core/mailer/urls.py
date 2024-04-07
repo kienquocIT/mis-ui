@@ -8,7 +8,8 @@ from apps.core.mailer.views.base import (
 from apps.core.mailer.views.config import (
     MailTemplatesListView, MailTemplateCreateView, MailTemplateDetailView,
     MailTemplateUpdateView, MailTemplateListAPI, MailTemplateDetailAPI,
-    MailConfigAPI, MailConfigDetailAPI, MailConfigConnectionTest, MailConfigConnectionTestData,
+    MailConfigAPI, MailConfigDetailAPI, MailConfigConnectionTest, MailConfigConnectionTestData, MailFeatureAppListAPI,
+    MailTemplateListByApplicationAPI,
 )
 
 urlpatterns = [
@@ -26,10 +27,17 @@ urlpatterns = [
         name='MailConfigConnectionTestData'
     ),
 
+    path('feature/app/list', MailFeatureAppListAPI.as_view(), name='MailFeatureAppListAPI'),
+    path('feature/list/api', MailTemplateListAPI.as_view(), name='MailTemplateListAPI'),
+    path(
+        'feature/list/<str:application_id>/api', MailTemplateListByApplicationAPI.as_view(),
+        name='MailTemplateListByApplicationAPI'
+    ),
+    path('feature/detail/<str:pk>', MailTemplateDetailView.as_view(), name='MailTemplateDetailView'),
+    path('feature/detail/<str:pk>/api', MailTemplateDetailAPI.as_view(), name='MailTemplateDetailAPI'),
+    path('feature/update/<str:pk>', MailTemplateUpdateView.as_view(), name='MailTemplateUpdateView'),
+
     path('list', MailTemplatesListView.as_view(), name='MailTemplatesListView'),
     path('create', MailTemplateCreateView.as_view(), name='MailTemplateCreateView'),
-    path('api/list', MailTemplateListAPI.as_view(), name='MailTemplateListAPI'),
-    path('api/detail/<str:pk>', MailTemplateDetailAPI.as_view(), name='MailTemplateDetailAPI'),
-    path('detail/<str:pk>', MailTemplateDetailView.as_view(), name='MailTemplateDetailView'),
-    path('update/<str:pk>', MailTemplateUpdateView.as_view(), name='MailTemplateUpdateView'),
+
 ]

@@ -6587,7 +6587,7 @@ msgstr "Số hoá đơn"
 
 #
 msgid "Tax value"
-msgstr "Thuế"
+msgstr "Giá trị thuế"
 
 #
 msgid "Tax number"
@@ -6912,3 +6912,127 @@ msgstr "Số lượng đơn hàng"
 #
 msgid "Revenue average"
 msgstr "Doanh thu trung bình"
+
+#
+msgid "OPENING"
+msgstr "TỒN ĐẦU"
+
+#
+msgid "INPUT"
+msgstr "NHẬP"
+
+#
+msgid "OUTPUT"
+msgstr "XUẤT"
+
+#
+msgid "ENDING"
+msgstr "TỒN CUỐI"
+
+#
+msgid "Show detail"
+msgstr "Xem chi tiết"
+
+#
+msgid "Valuation method"
+msgstr "Phương pháp tính"
+
+#
+msgid "System date"
+msgstr "Ngày hệ thống"
+
+#
+msgid "Trans description"
+msgstr "Mô tả giao dịch"
+
+#
+msgid "Trans code"
+msgstr "Mã giao dịch"
+
+#
+msgid "In quantity"
+msgstr "SL nhập"
+
+#
+msgid "In cost"
+msgstr "Đơn giá nhập"
+
+#
+msgid "In value"
+msgstr "Giá trị nhập kho"
+
+#
+msgid "Out quantity"
+msgstr "SL xuất"
+
+#
+msgid "Out cost"
+msgstr "Đơn giá xuất"
+
+#
+msgid "Out value"
+msgstr "Giá trị xuất kho"
+
+#
+msgid "Reload invoice status"
+msgstr "Đồng bộ trạng thái hoá đơn"
+
+#
+msgid "Buyer name"
+msgstr "Tên người mua hàng"
+
+#
+msgid "Billing address"
+msgstr "Địa chỉ xuất hoá đơn"
+
+#
+msgid "Bank code"
+msgstr "Mã ngân hàng"
+
+#
+msgid "Bank number"
+msgstr "STK ngân hàng"
+
+#
+msgid "Discount rate"
+msgstr "% giảm giá"
+
+#
+msgid "Discount value"
+msgstr "Giá trị giảm giá"
+
+#
+msgid "Total amount"
+msgstr "Tổng giá trị"
+
+#
+msgid "<No invoice number>"
+msgstr "<Chưa có số HĐ>"
+
+#
+msgid "Create invoice"
+msgstr "Tạo HĐ điện tử"
+
+#
+msgid "Update invoice"
+msgstr "Cập nhập HĐ điện tử"
+
+#
+msgid "View invoice"
+msgstr "Xem HĐ điện tử"
+
+#
+msgid "Inventory Report"
+msgstr "Báo cáo tồn kho"
+
+#
+msgid "Cumulative quantity"
+msgstr "Số lượng tích luỹ"
+
+#
+msgid "Cumulative cost"
+msgstr "Đơn giá tích luỹ"
+
+#
+msgid "Cumulative value"
+msgstr "Giá trị tích luỹ"

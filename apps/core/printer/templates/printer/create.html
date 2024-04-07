@@ -146,6 +146,7 @@
                                 }, 'success');
                                 setTimeout(
                                     () => {
+                                        window.onbeforeunload = null;
                                         window.location.href = frm.attr('data-url-redirect');
                                     },
                                     1000

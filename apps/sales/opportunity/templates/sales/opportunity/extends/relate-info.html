@@ -73,8 +73,8 @@
                         <div class="dropdown-divider"></div>
 
                         <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
-                        <a id="create-quotation-shortcut" class="dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
-                        <a id="create-sale-order-shortcut" class="dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
+                        <a id="create-quotation-shortcut" class="dropdown-item relate-app" data-label="quotation.quotation" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
+                        <a id="create-sale-order-shortcut" class="dropdown-item relate-app" data-label="saleorder.saleorder" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
                         <a id="create-advance-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'AdvancePaymentCreate' %}" href="#">{% trans 'Advance Payment' %}</a>
                         <a id="create-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'PaymentCreate' %}" href="#">{% trans 'Payment' %}</a>
                         <a id="create-return-advance-shortcut" class="dropdown-item btn-create-related-feature" data-url="{% url 'ReturnAdvanceCreate' %}" href="#">{% trans 'Return Advance' %}</a>

@@ -37,9 +37,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SWITCH_COMPANY = StringUrl('auth/switch-company')
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
-    user_detail = StringUrl('account/user')
+    USER_DETAIL = StringUrl('account/user/{pk}')
     USER_RESET_PASSWORD = StringUrl('account/user/{pk}/reset-password')
     USER_MAIL_WELCOME = StringUrl('account/user/{pk}/mail-welcome')
+    USER_COMPANIES = StringUrl('account/user/{pk}/companies')
     LANGUAGE_CHANGE = 'auth/language'
 
     #
@@ -93,6 +94,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
+    ACCOUNT_USER_ADMIN_TENANT = StringUrl('account/user-admin-tenant')
 
     # employee
     EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/{pk}/upload-avatar')
@@ -109,6 +111,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
     EMPLOYEE_COMPANY_LIST = StringUrl('hr/employees-company')
+    EMPLOYEE_ADMIN_COMPANY = StringUrl('hr/employee-admin-company')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
@@ -147,9 +150,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRINT_TEMPLATES_USING_DETAIL = StringUrl('printer/using/detail/{pk}')
 
     # mail template
-    MAILER_TEMPLATES_APPS_LIST = StringUrl('mailer/apps')
-    MAILER_LIST = StringUrl('mailer/list')
-    MAILER_DETAIL = StringUrl('mailer/detail/{pk}')
+    MAILER_FEATURE_APP_LIST = StringUrl('mailer/feature/app/list')
+    MAILER_FEATURE_LIST = StringUrl('mailer/feature/list')
+    MAILER_FEATURE_BY_APPLICATION_LIST = StringUrl('mailer/feature/list/{application_id}')
+    MAILER_FEATURE_DETAIL = StringUrl('mailer/feature/detail/{pk}')
     MAILER_SYSTEM_GET = StringUrl('mailer/system/get/{system_code}')
     MAILER_SYSTEM_PARAMS = StringUrl('mailer/system/params/{system_code}')
     MAILER_SYSTEM_DETAIL = StringUrl('mailer/system/detail/{pk}')
@@ -172,6 +176,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     APPLICATION_PROPERTY_OPPORTUNITY_LIST = StringUrl('base/applications-property-opportunity')
 
     TENANT = StringUrl('tenant/userlist')
+
+    # F-Import-Data
+    IMPORT_CORE_ACCOUNT_USER = StringUrl('import-data/core/account/user')
+    IMPORT_HR_GROUP_LEVEL = StringUrl('import-data/hr/group-level')
+    IMPORT_HR_GROUP = StringUrl('import-data/hr/group')
+    IMPORT_HR_ROLE = StringUrl('import-data/hr/role')
+    IMPORT_HR_EMPLOYEE = StringUrl('import-data/hr/employee')
 
     # HR
 
@@ -533,3 +544,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PRODUCTS_FOR_GOODS_RETURN = StringUrl('inventory/get-delivery-products-for-goods-return/{pk}')
     GOODS_RETURN_LIST = StringUrl('inventory/goods-return/list')
     GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')
+
+    INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')

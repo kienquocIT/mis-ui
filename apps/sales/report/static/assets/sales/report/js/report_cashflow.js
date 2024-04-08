@@ -1501,18 +1501,20 @@ $(function () {
                     loadDblMonth();
                     let weeksOfMonth = getWeeksOfMonth(parseInt(month), parseInt(year));
                     for (let data of dataList) {
-                        if (data?.['due_date']) {
-                            let date = data?.['due_date'];
-                            for (let key in weeksOfMonth) {
-                                let startDate = weeksOfMonth[key]?.['start_date'];
-                                let endDate = weeksOfMonth[key]?.['end_date'];
-                                let isInRange = isDateInRange(date, startDate, endDate);
-                                if (isInRange === true) {
-                                    if (dataByWeek.hasOwnProperty(key)) {
-                                        dataByWeek[key]['value_estimate_sale'] += data?.['value_estimate_sale'];
-                                        dataByWeek[key]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                        if (data?.['system_status'] === 3) {  // check system status is finished
+                            if (data?.['due_date']) {
+                                let date = data?.['due_date'];
+                                for (let key in weeksOfMonth) {
+                                    let startDate = weeksOfMonth[key]?.['start_date'];
+                                    let endDate = weeksOfMonth[key]?.['end_date'];
+                                    let isInRange = isDateInRange(date, startDate, endDate);
+                                    if (isInRange === true) {
+                                        if (dataByWeek.hasOwnProperty(key)) {
+                                            dataByWeek[key]['value_estimate_sale'] += data?.['value_estimate_sale'];
+                                            dataByWeek[key]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
@@ -1526,11 +1528,13 @@ $(function () {
                     $eleTable.DataTable().destroy();
                     loadDbl();
                     for (let data of dataList) {
-                        if (data?.['due_date']) {
-                            let monthDueDate = getMonthFromDateStr(data?.['due_date']);
-                            if (dataByMonth.hasOwnProperty(monthDueDate)) {
-                                dataByMonth[monthDueDate]['value_estimate_sale'] += data?.['value_estimate_sale'];
-                                dataByMonth[monthDueDate]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                        if (data?.['system_status'] === 3) {  // check system status is finished
+                            if (data?.['due_date']) {
+                                let monthDueDate = getMonthFromDateStr(data?.['due_date']);
+                                if (dataByMonth.hasOwnProperty(monthDueDate)) {
+                                    dataByMonth[monthDueDate]['value_estimate_sale'] += data?.['value_estimate_sale'];
+                                    dataByMonth[monthDueDate]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                                }
                             }
                         }
                     }

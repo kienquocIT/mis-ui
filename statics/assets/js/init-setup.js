@@ -1760,39 +1760,52 @@ class WFRTControl {
 
     static callAjaxActionWFAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
         let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, runtimeID);
-        WindowControl.showLoading();
-        return $.fn.callAjax2({
-            'url': urlData,
-            'method': 'PUT',
-            'data': dataSubmit,
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data?.['status'] === 200) {
-                $.fn.notifyB({
-                    'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
-                }, 'success');
-                if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+        Swal.fire({
+            title: $.fn.transEle.attr('data-msg-are-u-sure'),
+            text: $.fn.transEle.attr('data-warning-can-not-undo'),
+            icon: "warning",
+            allowOutsideClick: false,
+            showConfirmButton: true,
+            confirmButtonText: $.fn.transEle.attr('data-confirm'),
+            showCancelButton: true,
+            cancelButtonText: $.fn.transEle.attr('data-cancel'),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                WindowControl.showLoading();
+                return $.fn.callAjax2({
+                    'url': urlData,
+                    'method': 'PUT',
+                    'data': dataSubmit,
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['status'] === 200) {
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
+                        }, 'success');
+                        if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+                            setTimeout(() => {
+                                if (!urlRedirect) {
+                                    window.location.reload()
+                                } else {
+                                    window.location.replace(urlRedirect);
+                                }
+                            }, 1000)
+                        }
+                    }
                     setTimeout(() => {
-                        if (!urlRedirect) {
-                            window.location.reload()
-                        } else {
+                        WindowControl.hideLoading();
+                        if (urlRedirect) {
                             window.location.replace(urlRedirect);
                         }
                     }, 1000)
-                }
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                });
             }
-            setTimeout(() => {
-                WindowControl.hideLoading();
-                if (urlRedirect) {
-                    window.location.replace(urlRedirect);
-                }
-            }, 1000)
-        }, (err) => {
-            setTimeout(() => {
-                WindowControl.hideLoading();
-            }, 1000)
-            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-        });
+        })
     }
 
     static callAjaxOpenCRAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
@@ -1915,7 +1928,7 @@ class WFRTControl {
                 }
                 Swal.fire({
                     title: $.fn.transEle.attr('data-msg-are-u-sure'),
-                    text: "You won't be able to revert this!",
+                    text: $.fn.transEle.attr('data-warning-can-not-undo'),
                     icon: "warning",
                     allowOutsideClick: false,
                     showConfirmButton: true,

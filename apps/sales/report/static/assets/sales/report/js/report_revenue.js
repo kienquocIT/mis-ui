@@ -21,6 +21,7 @@ $(function () {
                     data: {
                         "is_initial": false,
                         "group_inherit__is_delete": false,
+                        "sale_order__system_status": 3,
                     },
                     // dataSrc: 'data.report_revenue_list',
                     dataSrc: function (resp) {
@@ -182,6 +183,8 @@ $(function () {
                                             'method': $table.attr('data-method'),
                                             'data': {
                                                 'is_initial': false,
+                                                "group_inherit__is_delete": false,
+                                                "sale_order__system_status": 3,
                                                 'date_approved__gte': startDate,
                                                 'date_approved__lte': endDate,
                                             },
@@ -321,6 +324,7 @@ $(function () {
             let dataParams = {};
             dataParams['is_initial'] = false;
             dataParams['group_inherit__is_delete'] = false;
+            dataParams['sale_order__system_status'] = 3;
             if (boxGroup.val()) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }

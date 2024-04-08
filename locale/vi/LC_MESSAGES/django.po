@@ -7076,3 +7076,7 @@ msgstr "Lưu và áp dụng quy trình"
 #
 msgid "Save change"
 msgstr "Lưu thay đổi"
+
+#
+msgid "You won't be able to undo this action!"
+msgstr "Bạn sẽ không thể hoàn tác hành động này!"

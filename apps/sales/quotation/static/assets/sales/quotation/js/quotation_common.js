@@ -2419,7 +2419,7 @@ class QuotationDataTableHandle {
                                                 data-return-type="number"
                                                 data-zone="${dataZone}"
                                             >
-                                            <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
+                                            <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                         </div>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-500p">
@@ -2446,7 +2446,7 @@ class QuotationDataTableHandle {
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
                                             <input type="text" class="form-control table-row-discount validated-number" value="${row?.['product_discount_value']}" data-zone="${dataZone}">
-                                            <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                                            <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                         </div>
                                     </div>
                                     <input
@@ -2703,7 +2703,7 @@ class QuotationDataTableHandle {
                                                     data-return-type="number"
                                                     data-zone="${dataZone}"
                                                 >
-                                                <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
+                                                <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                             </div>
                                             </div>
                                             <div role="menu" class="dropdown-menu table-row-cost-list w-500p">
@@ -3454,7 +3454,7 @@ class QuotationDataTableHandle {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-ratio validated-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
-                                        <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                                        <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                     </div>
                                 </div>`;
                     }

@@ -310,10 +310,17 @@ class LogController {
                         }
                     } else {
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-soft-success mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-soft-blue mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     }
-                    childLogHTML += ` <span class="text-low-em">${itemLog['msg']}</span></div>`;
+                    let msgMapColor = "";
+                    if (itemLog?.['msg'] === 'Approved') {
+                        msgMapColor = "text-green"
+                    }
+                    if (itemLog?.['msg'] === 'Rejected') {
+                        msgMapColor = "text-red"
+                    }
+                    childLogHTML += ` <span class="text-low-em ${msgMapColor}">${itemLog['msg']}</span></div>`;
                     logHTML.push(childLogHTML);
                 })
                 let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`

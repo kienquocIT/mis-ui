@@ -1590,7 +1590,7 @@ class PODataTableHandle {
                                                 value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
                                             >
-                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></span>
+                                            <span class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></span>
                                         </span>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-460p">
@@ -1728,7 +1728,7 @@ class PODataTableHandle {
                                                 value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
                                             >
-                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></span>
+                                            <span class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></span>
                                         </span>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-460p">
@@ -1817,7 +1817,7 @@ class PODataTableHandle {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-ratio valid-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
-                                        <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                                        <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                     </div>
                                 </div>`;
                     }

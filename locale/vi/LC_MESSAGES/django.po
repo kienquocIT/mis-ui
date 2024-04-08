@@ -7042,7 +7042,7 @@ msgid "Require input data in payment tab (same to purchase order)"
 msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
 
 #
-msgid "Show data have 100% win rate"
+msgid "Show data have win rate is 100%"
 msgstr "Hiển thị dữ liệu có tỷ lệ thắng 100%"
 
 #

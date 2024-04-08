@@ -22,7 +22,7 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                columns: [  // 150,150,150,350,150,100,125,125,250,250,250,100,100,100,100 (2500p)
+                columns: [  // 150,150,150,250,100,100,100,100,300,300,300,125,125,125,125 (2500p)
                     {
                         targets: 0,
                         width: '6%',
@@ -50,14 +50,14 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '14%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['customer']?.['title'] ? row?.['opportunity']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '6%',
+                        width: '4%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
                         }
@@ -75,7 +75,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['open_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['open_date'] ? row?.['opportunity']?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -86,7 +86,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '5%',
+                        width: '4%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['close_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['close_date'] ? row?.['opportunity']?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -97,7 +97,7 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '10%',
+                        width: '12%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span></b>`;
@@ -107,7 +107,7 @@ $(function () {
                     },
                     {
                         targets: 9,
-                        width: '10%',
+                        width: '12%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span></b>`;
@@ -117,7 +117,7 @@ $(function () {
                     },
                     {
                         targets: 10,
-                        width: '10%',
+                        width: '12%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span></b>`;
@@ -127,7 +127,7 @@ $(function () {
                     },
                     {
                         targets: 11,
-                        width: '4%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p></b>`;
@@ -137,7 +137,7 @@ $(function () {
                     },
                     {
                         targets: 12,
-                        width: '4%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p></b>`;
@@ -147,7 +147,7 @@ $(function () {
                     },
                     {
                         targets: 13,
-                        width: '4%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p></b>`;
@@ -157,7 +157,7 @@ $(function () {
                     },
                     {
                         targets: 14,
-                        width: '4%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p></b>`;

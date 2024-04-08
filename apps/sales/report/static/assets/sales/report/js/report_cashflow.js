@@ -29,6 +29,16 @@ $(function () {
         //                 targets: 0,
         //                 width: '3.25%',
         //                 render: (data, type, row) => {
+        //                     if ([2, 3].includes(row?.['cashflow_type'])) {
+        //                         let typeMapIcon = {
+        //                             2: "fas fa-arrow-left text-green mt-1",
+        //                             3: "fas fa-arrow-right text-red mt-1",
+        //                         }
+        //                         return `<div class="d-flex justify-content-end">
+        //                                     <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+        //                                     <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+        //                                 </div>`;
+        //                     }
         //                     return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
         //                 }
         //             },
@@ -622,6 +632,16 @@ $(function () {
         //                 targets: 0,
         //                 width: '7.5%',
         //                 render: (data, type, row) => {
+        //                     if ([2, 3].includes(row?.['cashflow_type'])) {
+        //                         let typeMapIcon = {
+        //                             2: "fas fa-arrow-left text-green mt-1",
+        //                             3: "fas fa-arrow-right text-red mt-1",
+        //                         }
+        //                         return `<div class="d-flex justify-content-end">
+        //                                     <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+        //                                     <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+        //                                 </div>`;
+        //                     }
         //                     return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
         //                 }
         //             },
@@ -861,6 +881,16 @@ $(function () {
                         targets: 0,
                         width: '7%',
                         render: (data, type, row) => {
+                            if ([2, 3].includes(row?.['cashflow_type'])) {
+                                let typeMapIcon = {
+                                    2: "fas fa-arrow-left text-green mt-1",
+                                    3: "fas fa-arrow-right text-red mt-1",
+                                }
+                                return `<div class="d-flex justify-content-end">
+                                            <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+                                            <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+                                        </div>`;
+                            }
                             return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
                         }
                     },
@@ -1307,6 +1337,16 @@ $(function () {
                         targets: 0,
                         width: '15%',
                         render: (data, type, row) => {
+                            if ([2, 3].includes(row?.['cashflow_type'])) {
+                                let typeMapIcon = {
+                                    2: "fas fa-arrow-left text-green mt-1",
+                                    3: "fas fa-arrow-right text-red mt-1",
+                                }
+                                return `<div class="d-flex justify-content-end">
+                                            <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+                                            <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+                                        </div>`;
+                            }
                             return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
                         }
                     },

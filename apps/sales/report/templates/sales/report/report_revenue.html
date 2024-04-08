@@ -100,24 +100,24 @@
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="card border-blue">
                         <div class="card-body">
-                            <h5><span class="mask-money" id="report-revenue-revenue" data-init-money="0"></span></h5>
-                            <span class="text-blue">{% trans 'Revenue' %}</span>
+                            <h5><span class="mask-money text-blue" id="report-revenue-revenue" data-init-money="0"></span></h5>
+                            <span>{% trans 'Revenue' %}</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="card border-yellow">
                         <div class="card-body">
-                            <h5><span class="mask-money" id="report-revenue-gross-profit" data-init-money="0"></span></h5>
-                            <span class="text-yellow">{% trans 'Gross profit' %}</span>
+                            <h5><span class="mask-money text-yellow" id="report-revenue-gross-profit" data-init-money="0"></span></h5>
+                            <span>{% trans 'Gross profit' %}</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="card border-green">
                         <div class="card-body">
-                            <h5><span class="mask-money" id="report-revenue-net-income" data-init-money="0"></span></h5>
-                            <span class="text-green">{% trans 'Net income' %}</span>
+                            <h5><span class="mask-money text-green" id="report-revenue-net-income" data-init-money="0"></span></h5>
+                            <span>{% trans 'Net income' %}</span>
                         </div>
                     </div>
                 </div>
@@ -143,7 +143,7 @@
 
     <table
             id="table_report_revenue_list"
-            class="table nowrap min-w-2000p w-100 mb-5"
+            class="table nowrap min-w-1920p w-100 mb-5"
             data-url="{% url 'ReportRevenueListAPI' %}"
             data-method="get"
     >

@@ -2120,7 +2120,7 @@ class WFRTControl {
         };
         for (let status of statusList) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
-                                <span class="${statusMapColor[status]}"><b>${statusMapText[status]}</b></span>
+                                <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
                                 </div>

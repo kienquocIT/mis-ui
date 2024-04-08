@@ -28,51 +28,67 @@
     {% csrf_token %}
         <div class="row">
             <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="employee_inherit_id">{% trans 'Employee inherit' %}</label>
-                    <select
-                            class="form-select"
-                            id="employee_inherit_id"
-                            data-url="{% url 'EmployeeListAPI' %}"
-                            data-method="GET"
-                            name="employee_inherit_id"
-                            data-keyResp="employee_list"
-                            data-keyText="full_name"
-                    ></select>
+                <div class="row form-group">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <label class="form-label" for="employee_inherit_id">{% trans 'Employee inherit' %}</label>
+                    </div>
+                    <div class="col-12 col-md-9 col-lg-9">
+                        <select
+                                class="form-select"
+                                id="employee_inherit_id"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-method="GET"
+                                name="employee_inherit_id"
+                                data-keyResp="employee_list"
+                                data-keyText="full_name"
+                        ></select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
-                    <select
-                            class="form-select"
-                            id="box-final-acceptance-so"
-                            data-url="{% url "SaleOrderListAPI" %}"
-                            data-method="GET"
-                            name="sale_order"
-                            data-keyResp="sale_order_list"
-                    ></select>
+                <div class="row form-group">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
+                    </div>
+                    <div class="col-12 col-md-9 col-lg-9">
+                        <select
+                                class="form-select"
+                                id="box-final-acceptance-so"
+                                data-url="{% url "SaleOrderListAPI" %}"
+                                data-method="GET"
+                                name="sale_order"
+                                data-keyResp="sale_order_list"
+                        ></select>
+                    </div>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="opportunity_id">{% trans 'Opportunity' %}</label>
-                    <select
-                            class="form-select"
-                            id="opportunity_id"
-                            data-url="{% url 'OpportunityListAPI' %}"
-                            data-method="GET"
-                            name="opportunity_id"
-                            data-keyResp="opportunity_list"
-                    ></select>
+                <div class="row form-group">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <label class="form-label" for="opportunity_id">{% trans 'Opportunity' %}</label>
+                    </div>
+                    <div class="col-12 col-md-9 col-lg-9">
+                        <select
+                                class="form-select"
+                                id="opportunity_id"
+                                data-url="{% url 'OpportunityListAPI' %}"
+                                data-method="GET"
+                                name="opportunity_id"
+                                data-keyResp="opportunity_list"
+                        ></select>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label" for="final-acceptance-date-save">{% trans 'Date' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_save" id="final-acceptance-date-save"
-                                       class="form-control date-picker" autocomplete="off" disabled>
-                                <div class="input-suffix">
-                                    <i class="far fa-calendar"></i>
+                        <div class="row form-group">
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <label class="form-label" for="final-acceptance-date-save">{% trans 'Date' %}</label>
+                            </div>
+                            <div class="col-12 col-md-9 col-lg-9">
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_save" id="final-acceptance-date-save"
+                                           class="form-control date-picker" autocomplete="off" disabled>
+                                    <div class="input-suffix">
+                                        <i class="far fa-calendar"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -94,7 +110,7 @@
         <div class="row">
             <table
                     id="table_final_acceptance_list"
-                    class="table nowrap min-w-2000p w-100 mb-5"
+                    class="table nowrap min-w-1920p w-100 mb-5"
                     data-url="{% url 'FinalAcceptanceListAPI' %}"
                     data-method="get"
             >

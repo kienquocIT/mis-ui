@@ -729,10 +729,6 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
     min-width: 1500px;
 }
 
-.min-w-1680p {
-    min-width: 1680px;
-}
-
 .min-w-1920p {
     min-width: 1920px;
 }

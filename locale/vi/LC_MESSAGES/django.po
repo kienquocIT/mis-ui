@@ -4345,7 +4345,7 @@ msgstr "Yêu cầu"
 
 #
 msgid "Note"
-msgstr "Chú ý"
+msgstr "Ghi chú"
 
 #
 msgid "Purchase Request"

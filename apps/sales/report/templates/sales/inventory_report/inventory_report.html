@@ -13,6 +13,63 @@
             font-size: medium !important;
         }
     </style>
+    <style>
+        .custom-scroll {
+            position: relative;
+            margin: auto;
+        }
+        .first-col-x {
+            min-width: 350px;
+            position: sticky;
+            left: 0;
+        }
+        .second-col-x {
+            min-width: 500px;
+            position: sticky;
+            left: 350px;
+        }
+        thead .first-col {
+            background-color: #0095a4;
+        }
+        thead .second-col {
+            background-color: #0095a4;
+        }
+        tbody .first-col {
+            background-color: #fff;
+        }
+        tbody .second-col {
+            background-color: #fff;
+        }
+        tbody .first-col-x {
+            background-color: #eaeaea;
+        }
+        tbody .second-col-x {
+            background-color: #eaeaea;
+        }
+        .table-wrap {
+            width: 100%;
+            overflow: auto;
+        }
+        .fixed_header {
+            width: 100%;
+            margin: auto;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .table-wrap .fixed_header thead {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        .table-wrap .fixed_header .first-col {
+            position: sticky;
+            left: 0;
+        }
+        .table-wrap .fixed_header .second-col {
+            position: sticky;
+            left: 350px;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
@@ -106,77 +163,81 @@
     </div>
     <div class="row mt-5">
         <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
-            <table class="table nowrap w-100" id="table-inventory-report">
-                <thead>
-                    <tr style="background: #0095a4;">
-                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Code' %}</th>
-                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Name' %}</th>
-                        <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
-                    </tr>
-                    <tr style="background: #0095a4;">
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                    </tr>
-                    <tr style="background: #0095a4;">
-                        <th class="border-1"><span id="opening-total-quantity">0</span></th>
-                        <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
-                        <th class="border-1"><span id="in-total-quantity">0</span></th>
-                        <th class="border-1"><span id="in-total-value" class="mask-money" data-init-money="0"></span></th>
-                        <th class="border-1"><span id="out-total-quantity">0</span></th>
-                        <th class="border-1"><span id="out-total-value" class="mask-money" data-init-money="0"></span></th>
-                        <th class="border-1"><span id="ending-total-quantity">0</span></th>
-                        <th class="border-1"><span id="ending-total-value" class="mask-money" data-init-money="0"></span></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <table hidden class="table nowrap w-100" id="table-inventory-report-detail">
-                <thead>
-                    <tr style="background: #007D88;">
-                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Code' %}</th>
-                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Name' %}</th>
-                        <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
-                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Date' %}</th>
-                        <th class="border-1" rowspan="3" colspan="3">{% trans 'LOT' %}</th>
-                        <th class="border-1" rowspan="3" colspan="3">{% trans 'Expired date' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
-                        <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
-                    </tr>
-                    <tr style="background: #007D88;">
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                        <th class="border-1">{% trans 'Quantity' %}</th>
-                        <th class="border-1">{% trans 'Value' %}</th>
-                    </tr>
-                    <tr style="background: #007D88;">
-                        <th class="border-1"><span id="opening-total-quantity">0</span></th>
-                        <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
-                        <th class="border-1"><span id="in-total-quantity">0</span></th>
-                        <th class="border-1"><span id="in-total-value" class="mask-money" data-init-money="0"></span></th>
-                        <th class="border-1"><span id="out-total-quantity">0</span></th>
-                        <th class="border-1"><span id="out-total-value" class="mask-money" data-init-money="0"></span></th>
-                        <th class="border-1"><span id="ending-total-quantity">0</span></th>
-                        <th class="border-1"><span id="ending-total-value" class="mask-money" data-init-money="0"></span></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="custom-scroll">
+                <div class="table-wrap" style="max-height: 65vh">
+                    <table hidden class="table nowrap w-100 fixed_header" id="table-inventory-report">
+                        <thead class="row-fixed">
+                            <tr style="background: #0095a4;">
+                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Code' %}</th>
+                                <th class="border-1 second-col" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                                <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
+                                <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
+                                <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
+                                <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
+                                <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
+                            </tr>
+                            <tr style="background: #0095a4;">
+                                <th class="border-1">{% trans 'Quantity' %}</th>
+                                <th class="border-1">{% trans 'Value' %}</th>
+                                <th class="border-1">{% trans 'Quantity' %}</th>
+                                <th class="border-1">{% trans 'Value' %}</th>
+                                <th class="border-1">{% trans 'Quantity' %}</th>
+                                <th class="border-1">{% trans 'Value' %}</th>
+                                <th class="border-1">{% trans 'Quantity' %}</th>
+                                <th class="border-1">{% trans 'Value' %}</th>
+                            </tr>
+                            <tr style="background: #0095a4;">
+                                <th class="border-1"><span id="opening-total-quantity">0</span></th>
+                                <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
+                                <th class="border-1"><span id="in-total-quantity">0</span></th>
+                                <th class="border-1"><span id="in-total-value" class="mask-money" data-init-money="0"></span></th>
+                                <th class="border-1"><span id="out-total-quantity">0</span></th>
+                                <th class="border-1"><span id="out-total-value" class="mask-money" data-init-money="0"></span></th>
+                                <th class="border-1"><span id="ending-total-quantity">0</span></th>
+                                <th class="border-1"><span id="ending-total-value" class="mask-money" data-init-money="0"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <table hidden class="table nowrap w-100 fixed_header" id="table-inventory-report-detail">
+                        <thead class="row-fixed">
+                            <tr style="background: #0095a4;">
+                                <th class="border-1 first-col" rowspan="3" colspan="3">{% trans 'Code' %}</th>
+                                <th class="border-1 second-col" rowspan="3" colspan="3">{% trans 'Name' %}</th>
+                                <th class="border-1" rowspan="3" colspan="3">{% trans 'UoM' %}</th>
+                                <th class="border-1" rowspan="3" colspan="3">{% trans 'Date' %}</th>
+                                <th class="border-1" rowspan="3" colspan="3">{% trans 'LOT' %}</th>
+                                <th class="border-1" rowspan="3" colspan="3">{% trans 'Expired date' %}</th>
+                                <th class="border-1" colspan="2">{% trans 'OPENING' %}</th>
+                                <th class="border-1" colspan="2">{% trans 'INPUT' %}</th>
+                                <th class="border-1" colspan="2">{% trans 'OUTPUT' %}</th>
+                                <th class="border-1" colspan="2">{% trans 'ENDING' %}</th>
+                            </tr>
+                            <tr style="background: #0095a4;">
+                                <th class="border-1">{% trans 'Quantity' %}</th>
+                                <th class="border-1">{% trans 'Value' %}</th>
+                                <th class="border-1">{% trans 'Quantity' %}</th>
+                                <th class="border-1">{% trans 'Value' %}</th>
+                                <th class="border-1">{% trans 'Quantity' %}</th>
+                                <th class="border-1">{% trans 'Value' %}</th>
+                                <th class="border-1">{% trans 'Quantity' %}</th>
+                                <th class="border-1">{% trans 'Value' %}</th>
+                            </tr>
+                            <tr style="background: #0095a4;">
+                                <th class="border-1"><span id="opening-total-quantity">0</span></th>
+                                <th class="border-1"><span id="opening-total-value" class="mask-money" data-init-money="0"></span></th>
+                                <th class="border-1"><span id="in-total-quantity">0</span></th>
+                                <th class="border-1"><span id="in-total-value" class="mask-money" data-init-money="0"></span></th>
+                                <th class="border-1"><span id="out-total-quantity">0</span></th>
+                                <th class="border-1"><span id="out-total-value" class="mask-money" data-init-money="0"></span></th>
+                                <th class="border-1"><span id="ending-total-quantity">0</span></th>
+                                <th class="border-1"><span id="ending-total-value" class="mask-money" data-init-money="0"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -50,7 +50,7 @@ $(document).ready(function (){
                         width: "20%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            return `<p>${moment(data.split(' ')[0], "YYYY-MM-DD").format('DD/MM/YYYY')}</p>`
                         }
                     },
                     {
@@ -59,7 +59,7 @@ $(document).ready(function (){
                         width: "20%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            return `<span class="badge badge-secondary">${data}</span>`
                         }
                     },
                 ],

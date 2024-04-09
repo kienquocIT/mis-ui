@@ -1927,7 +1927,7 @@ class WFRTControl {
                 _form.dataUrl = $eleForm.attr('data-url-cr');
                 _form.dataForm['code'] = $eleCode.text();
                 _form.dataForm['system_status'] = 1;
-                _form.dataForm['is_document_change'] = true;
+                _form.dataForm['is_change'] = true;
                 _form.dataForm['document_root_id'] = docID;
                 _form.dataForm['document_change_order'] = 1;
                 if (docChangeOrder) {
@@ -4823,6 +4823,9 @@ class DocumentControl {
     static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit', keyDocID = 'id', keyDocChangeOrder = 'document_change_order') {
         if (typeof detailData === 'object') {
             let [code, is_active, system_status, employee_inherit, doc_id, doc_change_order] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit], detailData?.[keyDocID], detailData?.[keyDocChangeOrder]];
+            if (!doc_change_order) {
+                doc_change_order = "";
+            }
             if (code) {
                 let clsState = 'hidden';
                 if (is_active === true) {

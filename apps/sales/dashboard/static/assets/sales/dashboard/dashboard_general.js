@@ -57,6 +57,11 @@ $(document).ready(function () {
     let period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
     let fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
     let space_month_Setting = period_selected_Setting?.['space_month']
+    const current_period_Ele = $('#current_period')
+    let current_period = {}
+    if (current_period_Ele.text() !== '') {
+        current_period = JSON.parse(current_period_Ele.text())
+    }
 
     moneyRadioEle.on('change', function () {
         UpdateOptionRevenueChart()
@@ -116,6 +121,9 @@ $(document).ready(function () {
     }
 
     function Check_in_period(dateApproved, period_selected_Setting) {
+        if (Object.keys(period_selected_Setting).length === 0) {
+            period_selected_Setting = current_period
+        }
         const month = dateApproved.getMonth() + 1
         const year = dateApproved.getFullYear()
         const space_month = period_selected_Setting?.['space_month']

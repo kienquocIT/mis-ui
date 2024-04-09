@@ -2149,6 +2149,27 @@ class WFRTControl {
         return htmlCustom;
     }
 
+    static setupHTMLWFNonApply() {
+        return `<div class="card card-wth-progress mb-3">
+                    <div class="progress progress-bar-xs">
+                        <div class="progress-bar bg-red w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="card-body">
+                        <i class="fas fa-robot"></i>
+                        <p>${$.fn.transEle.attr('data-canceled-by-owner')}</p>
+                    </div>
+                </div>
+                <div class="card card-wth-progress">
+                    <div class="progress progress-bar-xs">
+                        <div class="progress-bar bg-success w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="card-body">
+                        <i class="fas fa-robot"></i>
+                        <p>${$.fn.transEle.attr('data-finish-wf-non-apply')}</p>
+                    </div>
+                </div>`;
+    }
+
     static setWFRuntimeID(runtime_id) {
         if (runtime_id) {
             // set runtime
@@ -2165,8 +2186,14 @@ class WFRTControl {
                 if ($.fn.hasOwnProperties(data, ['runtime_detail'])) {
                     // khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
                     if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
+                    // Finish with workflow non-apply -> show idxDataRuntimeNotFound
                     if (data['runtime_detail']?.['state'] === 3) $('#idxDataRuntimeNotFound').removeClass('hidden');
-
+                    let eleStatus = $('#systemStatus');
+                    if (eleStatus.attr('data-status') === '4') {  // if rejected after finish with workflow non-apply
+                        $('#idxDataRuntimeNotFound').empty().append(
+                            WFRTControl.setupHTMLWFNonApply()
+                        )
+                    }
                     let actionMySelf = data['runtime_detail']['action_myself'];
                     if (actionMySelf) {
                         let grouAction = $('#idxGroupAction');
@@ -2211,7 +2238,6 @@ class WFRTControl {
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             // active btn change and cancel if current employee is owner, status is finished
-                            let eleStatus = $('#systemStatus');
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
                             if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishDetail();

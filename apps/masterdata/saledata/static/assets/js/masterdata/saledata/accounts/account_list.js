@@ -65,16 +65,16 @@ $(document).ready(function () {
                 },
             },
         ],
-        columns: [  // 50,200,150,100,100,100,200,100,200,300 (1500p)
+        columns: [  // 30,300,240,120,120,120,240,120,240,390 (1920p)
             {
-                width: "3.33%",
+                width: "1.5625%",
                 'render': () => {
                     return ``;
                 },
             },
             {
                 orderable: true,
-                width: "13.33%",
+                width: "15.625%",
                 data: 'name',
                 render: (data, type, row) => {
                     let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row.id);
@@ -82,7 +82,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "10%",
+                width: "12.5%",
                 data: 'account_type',
                 render: (data, type, row) => {
                     let clsBadgeCurrent = -1;
@@ -96,7 +96,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "6.66%",
+                width: "6.25%",
                 data: 'owner',
                 render: (data, type, row) => {
                     if (row.owner.fullname) {
@@ -106,7 +106,28 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "6.66%",
+                width: "12.5%",
+                data: 'revenue_information',
+                render: (data, type, row) => {
+                    return `<span class="mask-money" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
+                },
+            },
+            {
+                width: "6.25%",
+                data: 'revenue_information',
+                render: (data, type, row) => {
+                    return `<span class="text-blue">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
+                },
+            },
+            {
+                width: "12.5%",
+                data: 'revenue_information',
+                render: (data, type, row) => {
+                    return `<span class="mask-money" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>`;
+                },
+            },
+            {
+                width: "6.25%",
                 data: 'phone',
                 render: (data, type, row) => {
                     if (row?.['phone']) {
@@ -121,7 +142,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "6.66%",
+                width: "6.25%",
                 data: 'website',
                 render: (data, type, row) => {
                     if (row?.['website']) {
@@ -131,28 +152,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "13.33%",
-                data: 'revenue_information',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
-                },
-            },
-            {
-                width: "6.66%",
-                data: 'revenue_information',
-                render: (data, type, row) => {
-                    return `<div class="text-center"><span class="text-primary">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span></div>`;
-                },
-            },
-            {
-                width: "13.33%",
-                data: 'revenue_information',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>`;
-                },
-            },
-            {
-                width: "20%",
+                width: "20.3125%",
                 data: 'manager',
                 render: (data, type, row) => {
                     let element = ''

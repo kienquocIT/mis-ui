@@ -1009,8 +1009,8 @@ $(document).ready(function () {
                 $('#meeting-employee-attended-select-box option').remove();
 
                 loadMeetingSaleCodeList();
-                loadMeetingAddress(opportunity_detail_data.customer.shipping_address);
-                loadCustomerMember(opportunity_detail_data.customer.contact_mapped);
+                loadMeetingAddress(opportunity_detail_data?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
+                loadCustomerMember(opportunity_detail_data?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
                 loadEmployeeAttended();
             })
 

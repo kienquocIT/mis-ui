@@ -323,9 +323,9 @@ class POLoadDataHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    if (data.hasOwnProperty('purchase_quotation_list') && Array.isArray(data.purchase_quotation_list)) {
+                    if (data.hasOwnProperty('purchase_quotation_sale_list') && Array.isArray(data.purchase_quotation_sale_list)) {
                         if (Object.keys(checked_data).length !== 0) {
-                            for (let PQ of data.purchase_quotation_list) {
+                            for (let PQ of data.purchase_quotation_sale_list) {
                                 if (checked_data.hasOwnProperty(PQ.id)) {
                                     PQ['is_checked'] = true;
                                     PQ['is_use'] = checked_data[PQ.id]?.['is_use'];
@@ -333,10 +333,11 @@ class POLoadDataHandle {
                             }
                         }
                         tablePurchaseQuotation.DataTable().clear().draw();
-                        tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
+                        tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_sale_list).draw();
                         if (is_remove === true) {
                             POLoadDataHandle.loadDataShowPurchaseQuotation();
                             POLoadDataHandle.loadPriceListByPurchaseQuotation();
+                            POLoadDataHandle.loadAllTablesDisabled();
                         }
                     }
                 }
@@ -871,6 +872,7 @@ class POLoadDataHandle {
         POLoadDataHandle.loadModalPurchaseRequestProductTable(false, data);
         POLoadDataHandle.loadModalPurchaseQuotation(false, data);
         POLoadDataHandle.loadTablesDetailPage(data);
+        POLoadDataHandle.loadAllTablesDisabled();
         POLoadDataHandle.loadTotals(data);
 
         POLoadDataHandle.loadBoxSupplier(data?.['supplier_data']);
@@ -1015,25 +1017,16 @@ class POLoadDataHandle {
             POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
             tableProductRequest.DataTable().rows.add(data?.['purchase_order_products_data']).draw();
             POLoadDataHandle.loadDataRowTable(tableProductRequest);
-            if (form.attr('data-method') === 'GET') {
-                POLoadDataHandle.loadTableDisabled(tableProductRequest);
-            }
         } else {
             POLoadDataHandle.eleDivTablePOProductRequest[0].setAttribute('hidden', 'true');
             POLoadDataHandle.eleDivTablePOProductAdd[0].removeAttribute('hidden');
             tableProductAdd.DataTable().rows.add(data?.['purchase_order_products_data']).draw();
             POLoadDataHandle.loadDataRowTable(tableProductAdd);
-            if (form.attr('data-method') === 'GET') {
-                POLoadDataHandle.loadTableDisabled(tableProductAdd);
-            }
         }
         // payment stage
         tablePaymentStage.DataTable().clear().draw();
         tablePaymentStage.DataTable().rows.add(data?.['purchase_order_payment_stage']).draw();
         POLoadDataHandle.loadTableDropDowns();
-        if (form.attr('data-method') === 'GET') {
-            POLoadDataHandle.loadTableDisabled(tablePaymentStage);
-        }
         tablePaymentStage.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-due-date')) {
@@ -1080,6 +1073,19 @@ class POLoadDataHandle {
             finalRevenueBeforeTaxAdd.value = data?.['total_product_revenue_before_tax'];
         }
     };
+
+    static loadAllTablesDisabled() {
+        let form = $('#frm_purchase_order_create');
+        let tableProductAdd = $('#datable-purchase-order-product-add');
+        let tableProductRequest = $('#datable-purchase-order-product-request');
+        let tablePaymentStage = $('#datable-po-payment-stage');
+        if (form.attr('data-method').toLowerCase() === 'get') {
+            POLoadDataHandle.loadTableDisabled(tableProductAdd);
+            POLoadDataHandle.loadTableDisabled(tableProductRequest);
+            POLoadDataHandle.loadTableDisabled(tablePaymentStage);
+        }
+        return true;
+    }
 
     static loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
@@ -1170,8 +1176,8 @@ class PODataTableHandle {
                 data: {'is_all_ordered': false, 'system_status': 3},
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('purchase_request_list')) {
-                        return resp.data['purchase_request_list'] ? resp.data['purchase_request_list'] : []
+                    if (data && resp.data.hasOwnProperty('purchase_request_sale_list')) {
+                        return resp.data['purchase_request_sale_list'] ? resp.data['purchase_request_sale_list'] : []
                     }
                     throw Error('Call data raise errors.')
                 },

@@ -151,7 +151,7 @@ class programmeHandle {
 
     static callMeeting(calendar, params = null) {
         $.fn.callAjax2({
-            'url': $('#url-factory').attr('data-meet'),
+            'url': $('#url-factory').attr('data-meet') + '?is_cancelled=0',
             'method': 'get',
             'data': params ? params : {'meeting_date': moment().format('YYYY-MM-DD'), 'self_employee': true}
         })

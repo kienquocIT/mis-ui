@@ -7036,3 +7036,15 @@ msgstr "Đơn giá tích luỹ"
 #
 msgid "Cumulative value"
 msgstr "Giá trị tích luỹ"
+
+#
+msgid "Goods return"
+msgstr "Đổi-trả hàng"
+
+#
+msgid "Opening balance"
+msgstr "Tồn đầu kỳ"
+
+#
+msgid "Expired date"
+msgstr "Ngày hết hạn"

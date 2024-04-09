@@ -143,7 +143,7 @@ $(document).ready(function () {
                                 <td class="border-1 second-col-x">
                                     <span data-bs-toggle="tooltip" data-bs-placement="top" title="${item?.['product']?.['description']}" class="text-secondary">${item?.['product']?.['title']}</span>
                                 </td>
-                                <td class="border-1"><span class="text-secondary">Weighted average</span></td>
+                                <td class="border-1"><span class="text-secondary">${trans_script.attr('data-trans-we')}</span></td>
                                 <td class="border-1"></td>
                                 <td hidden></td>
                                 <td hidden></td>
@@ -164,7 +164,7 @@ $(document).ready(function () {
                         for (const stock_activity of item?.['stock_activities']) {
                             if (warehouses_select_Ele.val().length > 0) {
                                 if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {
-                                    let stock_type_label = `<span class="text-secondary">Opening balance</span>`
+                                    let stock_type_label = `<span class="text-secondary">${trans_script.attr('data-trans-ob')}</span>`
                                     cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                     cumulative_value += stock_activity?.['ending_balance_value']
                                     items_detail_report_table_Ele.find('tbody').append(
@@ -195,7 +195,12 @@ $(document).ready(function () {
                                             if (activity?.['trans_title'] === 'Goods return') {
                                                 text_color = 'blue'
                                             }
-                                            let stock_type_label = `<span class="text-${text_color}">${activity?.['trans_title']}</span>`
+                                            let trans_title_sub = {
+                                                'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods return': trans_script.attr('data-trans-grt'),
+                                                'Delivery': trans_script.attr('data-trans-dlvr'),
+                                            }
+                                            let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                             items_detail_report_table_Ele.find('tbody').append(
                                                 `<tr>
                                                     <td class="border-1 first-col"></td>
@@ -219,7 +224,12 @@ $(document).ready(function () {
                                                 </tr>`
                                             )
                                         } else {
-                                            let stock_type_label = `<span class="text-danger">${activity?.['trans_title']}</span>`
+                                            let trans_title_sub = {
+                                                'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods return': trans_script.attr('data-trans-grt'),
+                                                'Delivery': trans_script.attr('data-trans-dlvr'),
+                                            }
+                                            let stock_type_label = `<span class="text-danger">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                             items_detail_report_table_Ele.find('tbody').append(
                                                 `<tr>
                                                     <td class="border-1 first-col"></td>
@@ -247,7 +257,7 @@ $(document).ready(function () {
                                 }
                             }
                             else {
-                                let stock_type_label = `<span class="text-secondary">Opening balance</span>`
+                                let stock_type_label = `<span class="text-secondary">${trans_script.attr('data-trans-ob')}</span>`
                                 cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                 cumulative_value += stock_activity?.['ending_balance_value']
                                 items_detail_report_table_Ele.find('tbody').append(
@@ -278,7 +288,12 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods return') {
                                             text_color = 'blue'
                                         }
-                                        let stock_type_label = `<span class="text-${text_color}">${activity?.['trans_title']}</span>`
+                                        let trans_title_sub = {
+                                            'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods return': trans_script.attr('data-trans-grt'),
+                                            'Delivery': trans_script.attr('data-trans-dlvr'),
+                                        }
+                                        let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                         items_detail_report_table_Ele.find('tbody').append(
                                             `<tr>
                                                 <td class="border-1 first-col"></td>
@@ -302,7 +317,12 @@ $(document).ready(function () {
                                             </tr>`
                                         )
                                     } else {
-                                        let stock_type_label = `<span class="text-danger">${activity?.['trans_title']}</span>`
+                                        let trans_title_sub = {
+                                            'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods return': trans_script.attr('data-trans-grt'),
+                                            'Delivery': trans_script.attr('data-trans-dlvr'),
+                                        }
+                                        let stock_type_label = `<span class="text-danger">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                         items_detail_report_table_Ele.find('tbody').append(
                                             `<tr>
                                                 <td class="border-1 first-col"></td>

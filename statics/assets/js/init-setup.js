@@ -306,7 +306,7 @@ class LogController {
                     if (itemLog['is_system'] === true) {
                         childLogHTML += `<span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span>`;
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-soft-light mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-soft-blue mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     } else {
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
@@ -314,10 +314,14 @@ class LogController {
                         }
                     }
                     let msgMapColor = "";
-                    if (itemLog?.['msg'] === 'Approved') {
+                    let arrayDone = ["finish", "approved"];
+                    let arrayCancel = ["canceled", "rejected"];
+                    let isDone = arrayDone.some(item => itemLog?.['msg'].toLowerCase().includes(item));
+                    let isCancel = arrayCancel.some(item => itemLog?.['msg'].toLowerCase().includes(item));
+                    if (isDone === true) {
                         msgMapColor = "text-green"
                     }
-                    if (itemLog?.['msg'] === 'Rejected') {
+                    if (isCancel === true) {
                         msgMapColor = "text-red"
                     }
                     childLogHTML += ` <span class="text-low-em ${msgMapColor}">${itemLog['msg']}</span></div>`;

@@ -4626,8 +4626,8 @@ msgid "Must select one warehouse"
 msgstr "Phải chọn một kho"
 
 #
-msgid "Quantity import must be less than equal remain quantity"
-msgstr "Số lượng nhập kho phải nhỏ hơn hoặc bằng số lượng chưa nhập"
+msgid "Exceeded remaining quantity"
+msgstr "Vượt quá số lượng còn lại"
 
 #
 msgid "Goods receipt"

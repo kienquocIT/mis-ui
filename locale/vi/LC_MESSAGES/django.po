@@ -7050,6 +7050,18 @@ msgid "Expired date"
 msgstr "Ngày hết hạn"
 
 #
+msgid "Create business trip"
+msgstr "Tạo chuyến công tác"
+
+#
+msgid "Schedule a meeting"
+msgstr "Lên lịch cuộc họp"
+
+#
+msgid "Create leave"
+msgstr "Tạo nghỉ phép"
+
+#
 msgid "Require input data in payment tab (same to purchase order)"
 msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
 

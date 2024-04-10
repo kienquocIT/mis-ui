@@ -548,3 +548,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')
 
     INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
+    INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')

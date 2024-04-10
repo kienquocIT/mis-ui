@@ -237,7 +237,6 @@ $(document).ready(function () {
                 'name': $(this).find('.name').text(),
                 'start_date': changeDateFormat($(this).find('.start_date').attr('data-value')),
                 'end_date': changeDateFormat($(this).find('.end_date').attr('data-value')),
-                'state': 0,
             })
         })
 

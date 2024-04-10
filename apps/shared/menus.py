@@ -217,6 +217,16 @@ class MenusCoreConfigurations:
             ),
         ]
     )
+    INVENTORY_DATA_CONFIG = MenuCommon(
+        name='Inventory data config', code='menu_inventory_data_config', view_name='#',
+        icon='<i class="fa-solid fa-person-shelter"></i>',
+        child=[
+            MenuCommon(
+                name='Inventory interact', code='menu_inventory_interact_config', view_name='InventoryInteractConfigList',
+                icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
+            ),
+        ]
+    )
 
 
 class MenusCRM:
@@ -710,6 +720,7 @@ class SpaceItem:
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
+                MenusCoreConfigurations.INVENTORY_DATA_CONFIG
             ],
         )
     }

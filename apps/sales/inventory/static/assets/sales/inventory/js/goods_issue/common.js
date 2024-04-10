@@ -5,19 +5,19 @@ class GoodsIssueLoadPage {
     load() {
         $('[name="date_issue"]').daterangepicker({
             singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            drops: 'down',
-            minYear: 2000,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
             locale: {
-                format: 'YYYY-MM-DD'
+                format: 'DD/MM/YYYY'
             },
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            // drops: 'up',
+            autoApply: true,
         })
 
-        $('#inlineRadio2').on('change', function () {
-            if ($(this).is(':checked')) {
+        $('#box-good-issue-type').on('change', function () {
+            if ($(this).val() === '1') {
                 $('#row-for-liquidation').removeClass('hidden');
                 $('#row-for-ia').addClass('hidden');
                 GoodsIssueLoadPage.loadDtbProductForLiquidation([]);
@@ -26,9 +26,7 @@ class GoodsIssueLoadPage {
                 iaSelectEle.empty();
                 iaSelectEle.closest('.form-group').addClass('hidden');
             }
-        })
-        $('#inlineRadio1').on('change', function () {
-            if ($(this).is(':checked')) {
+            if ($(this).val() === '0') {
                 $('#row-for-liquidation').addClass('hidden');
                 $('#row-for-ia').removeClass('hidden');
                 $('#dtbProductLiquidation').DataTable().clear().draw();
@@ -330,14 +328,14 @@ class GoodsIssueLoadPage {
                 let detail = data?.['goods_issue_detail'];
                 $x.fn.renderCodeBreadcrumb(detail);
                 $('[name="title"]').val(detail.title);
-                $('[name="date_issue"]').val(detail?.['date_issue']);
+                $('[name="date_issue"]').val(moment(detail?.['date_issue'].split(' ')[0]).format('DD/MM/YYYY'));
                 $('[name="system_status"]').val(detail?.['system_status']);
                 $('[name="note"]').val(detail?.['note']);
                 if (detail?.['goods_issue_type'] === 0) {
-                    $('#inlineRadio1').prop('checked', true);
+                    $('#box-good-receipt-type').val(0)
                     GoodsIssueLoadPage.loadInventoryAdjustment(iaSelectEle, detail?.['inventory_adjustment']);
                 } else {
-                    $('#inlineRadio2').prop('checked', true);
+                    $('#box-good-receipt-type').val(1)
                     iaSelectEle.closest('.form-group').addClass('hidden');
                 }
                 if (page_type === 0) {

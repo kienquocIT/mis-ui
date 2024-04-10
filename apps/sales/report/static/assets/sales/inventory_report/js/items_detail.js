@@ -133,18 +133,17 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
-                    console.log(results[0])
                     items_detail_report_table_Ele.find('tbody').html('')
                     for (const item of results[0]) {
                         let cumulative_quantity = 0
                         let cumulative_value = 0
                         items_detail_report_table_Ele.find('tbody').append(
-                            `<tr class="bg-secondary-light-5">
-                                <td class="border-1"><span class="text-secondary">${item?.['product']?.['code']}</span></td>
-                                <td class="border-1">
+                            `<tr style="background-color: #eaeaea">
+                                <td class="border-1 first-col-x"><span class="text-secondary">${item?.['product']?.['code']}</span></td>
+                                <td class="border-1 second-col-x">
                                     <span data-bs-toggle="tooltip" data-bs-placement="top" title="${item?.['product']?.['description']}" class="text-secondary">${item?.['product']?.['title']}</span>
                                 </td>
-                                <td class="border-1"><span class="text-secondary">Weighted average</span></td>
+                                <td class="border-1"><span class="text-secondary">${trans_script.attr('data-trans-we')}</span></td>
                                 <td class="border-1"></td>
                                 <td hidden></td>
                                 <td hidden></td>
@@ -165,13 +164,13 @@ $(document).ready(function () {
                         for (const stock_activity of item?.['stock_activities']) {
                             if (warehouses_select_Ele.val().length > 0) {
                                 if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {
-                                    let stock_type_label = `<span class="text-secondary">Opening balance</span>`
+                                    let stock_type_label = `<span class="text-secondary">${trans_script.attr('data-trans-ob')}</span>`
                                     cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                     cumulative_value += stock_activity?.['ending_balance_value']
                                     items_detail_report_table_Ele.find('tbody').append(
                                         `<tr>
-                                            <td class="border-1"></td>
-                                            <td class="border-1"></td>
+                                            <td class="border-1 first-col"></td>
+                                            <td class="border-1 second-col"></td>
                                             <td class="border-1"></td>
                                             <td class="border-1"><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
                                             <td class="border-1"></td>
@@ -196,11 +195,16 @@ $(document).ready(function () {
                                             if (activity?.['trans_title'] === 'Goods return') {
                                                 text_color = 'blue'
                                             }
-                                            let stock_type_label = `<span class="text-${text_color}">${activity?.['trans_title']}</span>`
+                                            let trans_title_sub = {
+                                                'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods return': trans_script.attr('data-trans-grt'),
+                                                'Delivery': trans_script.attr('data-trans-dlvr'),
+                                            }
+                                            let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                             items_detail_report_table_Ele.find('tbody').append(
                                                 `<tr>
-                                                    <td class="border-1"></td>
-                                                    <td class="border-1"></td>
+                                                    <td class="border-1 first-col"></td>
+                                                    <td class="border-1 second-col"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
@@ -220,11 +224,16 @@ $(document).ready(function () {
                                                 </tr>`
                                             )
                                         } else {
-                                            let stock_type_label = `<span class="text-danger">${activity?.['trans_title']}</span>`
+                                            let trans_title_sub = {
+                                                'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods return': trans_script.attr('data-trans-grt'),
+                                                'Delivery': trans_script.attr('data-trans-dlvr'),
+                                            }
+                                            let stock_type_label = `<span class="text-danger">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                             items_detail_report_table_Ele.find('tbody').append(
                                                 `<tr>
-                                                    <td class="border-1"></td>
-                                                    <td class="border-1"></td>
+                                                    <td class="border-1 first-col"></td>
+                                                    <td class="border-1 second-col"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
@@ -248,13 +257,13 @@ $(document).ready(function () {
                                 }
                             }
                             else {
-                                let stock_type_label = `<span class="text-secondary">Opening balance</span>`
+                                let stock_type_label = `<span class="text-secondary">${trans_script.attr('data-trans-ob')}</span>`
                                 cumulative_quantity += stock_activity?.['ending_balance_quantity']
                                 cumulative_value += stock_activity?.['ending_balance_value']
                                 items_detail_report_table_Ele.find('tbody').append(
                                     `<tr>
-                                        <td class="border-1"></td>
-                                        <td class="border-1"></td>
+                                        <td class="border-1 first-col"></td>
+                                        <td class="border-1 second-col"></td>
                                         <td class="border-1"></td>
                                         <td class="border-1"><span class="badge badge-sm badge-secondary mb-1">${stock_activity?.['warehouse_code']}</span>&nbsp;<span class="text-secondary">${stock_activity?.['warehouse_title']}</span></td>
                                         <td class="border-1"></td>
@@ -279,11 +288,16 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods return') {
                                             text_color = 'blue'
                                         }
-                                        let stock_type_label = `<span class="text-${text_color}">${activity?.['trans_title']}</span>`
+                                        let trans_title_sub = {
+                                            'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods return': trans_script.attr('data-trans-grt'),
+                                            'Delivery': trans_script.attr('data-trans-dlvr'),
+                                        }
+                                        let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                         items_detail_report_table_Ele.find('tbody').append(
                                             `<tr>
-                                                <td class="border-1"></td>
-                                                <td class="border-1"></td>
+                                                <td class="border-1 first-col"></td>
+                                                <td class="border-1 second-col"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
@@ -303,11 +317,16 @@ $(document).ready(function () {
                                             </tr>`
                                         )
                                     } else {
-                                        let stock_type_label = `<span class="text-danger">${activity?.['trans_title']}</span>`
+                                        let trans_title_sub = {
+                                            'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods return': trans_script.attr('data-trans-grt'),
+                                            'Delivery': trans_script.attr('data-trans-dlvr'),
+                                        }
+                                        let stock_type_label = `<span class="text-danger">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                         items_detail_report_table_Ele.find('tbody').append(
                                             `<tr>
-                                                <td class="border-1"></td>
-                                                <td class="border-1"></td>
+                                                <td class="border-1 first-col"></td>
+                                                <td class="border-1 second-col"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>

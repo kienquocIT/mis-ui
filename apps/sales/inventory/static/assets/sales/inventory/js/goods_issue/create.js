@@ -22,6 +22,8 @@ $(document).ready(function () {
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
             let frm_data = frm.dataForm;
+            frm.dataForm['date_issue'] = moment($('[name="date_issue"]').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+
             if (frm.dataForm['goods_issue_type'] === '0') {
                 frm_data = GoodsIssueLoadPage.getDataProductForIA(frm_data);
             } else {

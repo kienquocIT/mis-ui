@@ -1613,13 +1613,14 @@ $(document).ready(function () {
         }
 
         const current_month = new Date().getMonth() + 1
-        const current_quarter = (current_month - space_month_Setting)
+        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
 
         let top_categories_chart_data = []
         for (const item of top_categories_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
             const quarter = GetQuarterFromMonth(month - space_month_Setting)
+            console.log(quarter)
             const filterTimes = topCategoriesTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {
@@ -1870,7 +1871,7 @@ $(document).ready(function () {
         for (const item of top_products_chart_list_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
-            const quarter = Math.floor((month - space_month_Setting) / 3) + 1
+            const quarter = GetQuarterFromMonth(month - space_month_Setting)
             const filterTimes = topProductsTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {

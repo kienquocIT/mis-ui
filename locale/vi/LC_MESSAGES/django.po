@@ -7038,6 +7038,18 @@ msgid "Cumulative value"
 msgstr "Giá trị tích luỹ"
 
 #
+msgid "Goods return"
+msgstr "Đổi-trả hàng"
+
+#
+msgid "Opening balance"
+msgstr "Tồn đầu kỳ"
+
+#
+msgid "Expired date"
+msgstr "Ngày hết hạn"
+
+#
 msgid "Require input data in payment tab (same to purchase order)"
 msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
 

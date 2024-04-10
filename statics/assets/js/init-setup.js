@@ -2156,7 +2156,7 @@ class WFRTControl {
                     </div>
                     <div class="card-body">
                         <i class="fas fa-robot"></i>
-                        <p>${$.fn.transEle.attr('data-canceled-by-owner')}</p>
+                        <p>${$.fn.transEle.attr('data-canceled-by-creator')}</p>
                     </div>
                 </div>
                 <div class="card card-wth-progress">

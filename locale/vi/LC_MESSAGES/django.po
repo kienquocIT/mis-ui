@@ -7080,3 +7080,7 @@ msgstr "Lưu thay đổi"
 #
 msgid "You won't be able to undo this action!"
 msgstr "Bạn sẽ không thể hoàn tác hành động này!"
+
+#
+msgid "Document was canceled by creator"
+msgstr "Phiếu bị hủy bỏ bởi người tạo"

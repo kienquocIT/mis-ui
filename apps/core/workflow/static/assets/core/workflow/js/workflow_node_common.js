@@ -318,13 +318,12 @@ class NodeLoadDataHandle {
                                         </div>
                                     </li>`;
                     }
-                    let table = document.getElementById('table_workflow_zone');
-                    if (!table.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                            let row = table.tBodies[0].rows[i];
-                            let title = row.children[1].children[0].innerHTML;
-                            if (zone_list.includes(i + 1)) {
-                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                    let table = $('#table_workflow_zone');
+                    table.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let title = row.children[1].children[0].innerHTML;
+                        if (zone_list.includes(i + 1)) {
+                            result += `<li class="d-flex align-items-center justify-content-between mb-3">
                                             <div class="d-flex align-items-center">
                                                 <span class="badge badge-soft-success node-zone-title">${title}</span> 
                                             </div>
@@ -332,8 +331,8 @@ class NodeLoadDataHandle {
                                                 <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}" checked>
                                             </div>
                                         </li>`;
-                            } else {
-                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                        } else {
+                            result += `<li class="d-flex align-items-center justify-content-between mb-3">
                                             <div class="d-flex align-items-center">
                                                 <span class="badge badge-soft-success node-zone-title">${title}</span> 
                                             </div>
@@ -341,12 +340,11 @@ class NodeLoadDataHandle {
                                                 <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
                                             </div>
                                         </li>`;
-                            }
                         }
-                        for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
-                            if ($(eleZoneList).empty()) {
-                                $(eleZoneList).append(result);
-                            }
+                    });
+                    for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
+                        if ($(eleZoneList).empty()) {
+                            $(eleZoneList).append(result);
                         }
                     }
                     return true;
@@ -361,12 +359,11 @@ class NodeLoadDataHandle {
                                     <input type="checkbox" class="form-check-input checkbox-node-zone-all">
                                 </div>
                             </li>`;
-            let table = document.getElementById('table_workflow_zone');
-            if (!table.querySelector('.dataTables_empty')) {
-                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                    let row = table.tBodies[0].rows[i];
-                    let title = row.children[1].children[0].innerHTML;
-                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+            let table = $('#table_workflow_zone');
+            table.DataTable().rows().every(function () {
+                let row = this.node();
+                let title = row.children[1].children[0].innerHTML;
+                result += `<li class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="d-flex align-items-center">
                                     <span class="badge badge-soft-success node-zone-title">${title}</span>
                                 </div>
@@ -374,11 +371,10 @@ class NodeLoadDataHandle {
                                     <input type="checkbox" class="form-check-input checkbox-node-zone" data-id="${i + 1}" data-title="${title}">
                                 </div>
                             </li>`;
-                }
-                for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
-                    if ($(eleZoneList).empty()) {
-                        $(eleZoneList).append(result);
-                    }
+            });
+            for (let eleZoneList of row?.querySelectorAll('.node-zone-list')) {
+                if ($(eleZoneList).empty()) {
+                    $(eleZoneList).append(result);
                 }
             }
             return true;
@@ -396,13 +392,12 @@ class NodeLoadDataHandle {
                     for (let eleChecked of row?.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
                         zone_list.push(parseInt($(eleChecked).attr('data-id')));
                     }
-                    let table = document.getElementById('table_workflow_zone');
-                    if (!table.querySelector('.dataTables_empty')) {
-                        for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                            let row = table.tBodies[0].rows[i];
-                            let title = row.children[1].children[0].innerHTML;
-                            if (zone_list.includes(i + 1)) {
-                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                    let table = $('#table_workflow_zone');
+                    table.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let title = row.children[1].children[0].innerHTML;
+                        if (zone_list.includes(i + 1)) {
+                            result += `<li class="d-flex align-items-center justify-content-between mb-3">
                                             <div class="d-flex align-items-center">
                                                 <span class="badge badge-soft-warning node-zone-title">${title}</span> 
                                             </div>
@@ -410,8 +405,8 @@ class NodeLoadDataHandle {
                                                 <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}" checked>
                                             </div>
                                         </li>`;
-                            } else {
-                                result += `<li class="d-flex align-items-center justify-content-between mb-3">
+                        } else {
+                            result += `<li class="d-flex align-items-center justify-content-between mb-3">
                                             <div class="d-flex align-items-center">
                                                 <span class="badge badge-soft-warning node-zone-title">${title}</span>  
                                             </div>
@@ -419,24 +414,22 @@ class NodeLoadDataHandle {
                                                 <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
                                             </div>
                                         </li>`;
-                            }
                         }
-                        for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
-                            if ($(eleZoneList).empty()) {
-                                $(eleZoneList).append(result);
-                            }
+                    });
+                    for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
+                        if ($(eleZoneList).empty()) {
+                            $(eleZoneList).append(result);
                         }
                     }
                     return true;
                 }
             }
         } else { // Case Create New Node
-            let table = document.getElementById('table_workflow_zone');
-            if (!table.querySelector('.dataTables_empty')) {
-                for (let i = 0; i < table.tBodies[0].rows.length; i++) {
-                    let row = table.tBodies[0].rows[i];
-                    let title = row.children[1].children[0].innerHTML;
-                    result += `<li class="d-flex align-items-center justify-content-between mb-3">
+            let table = $('#table_workflow_zone');
+            table.DataTable().rows().every(function () {
+                let row = this.node();
+                let title = row.children[1].children[0].innerHTML;
+                result += `<li class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="d-flex align-items-center">
                                     <span class="badge badge-soft-warning node-zone-title">${title}</span>
                                 </div>
@@ -444,11 +437,10 @@ class NodeLoadDataHandle {
                                     <input type="checkbox" class="form-check-input checkbox-node-zone-hidden" data-id="${i + 1}" data-title="${title}">
                                 </div>
                             </li>`;
-                }
-                for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
-                    if ($(eleZoneList).empty()) {
-                        $(eleZoneList).append(result);
-                    }
+            });
+            for (let eleZoneList of row?.querySelectorAll('.node-zone-hidden-list')) {
+                if ($(eleZoneList).empty()) {
+                    $(eleZoneList).append(result);
                 }
             }
             return true;

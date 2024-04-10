@@ -7108,3 +7108,7 @@ msgstr "Bạn sẽ không thể hoàn tác hành động này!"
 #
 msgid "Document was canceled by creator"
 msgstr "Phiếu bị hủy bỏ bởi người tạo"
+
+#
+msgid "Select save status"
+msgstr "Chọn trạng thái lưu"

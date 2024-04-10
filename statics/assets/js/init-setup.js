@@ -1924,15 +1924,15 @@ class WFRTControl {
         let currentEmployee = $x.fn.getEmployeeCurrentID();
         if (eleDocChange.attr('data-status') === '5' && eleDocChange.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change document after finish
             let $eleForm = $(`#${globeFormMappedZone}`);
-            let docID = eleDocChange.attr('data-doc-id');
+            let docRootID = eleDocChange.attr('data-doc-root-id');
             let docChangeOrder = eleDocChange.attr('data-doc-change-order');
-            if ($eleForm && $eleForm.length > 0 && docID) {
+            if ($eleForm && $eleForm.length > 0 && docRootID) {
                 _form.dataMethod = 'POST';
                 _form.dataUrl = $eleForm.attr('data-url-cr');
                 _form.dataForm['code'] = $eleCode.text();
                 _form.dataForm['system_status'] = 1;
                 _form.dataForm['is_change'] = true;
-                _form.dataForm['document_root_id'] = docID;
+                _form.dataForm['document_root_id'] = docRootID;
                 _form.dataForm['document_change_order'] = 1;
                 if (docChangeOrder) {
                     _form.dataForm['document_change_order'] = parseInt(docChangeOrder) + 1;
@@ -4850,9 +4850,9 @@ class DocumentControl {
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
 
-    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit', keyDocID = 'id', keyDocChangeOrder = 'document_change_order') {
+    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit', keyDocRootID = 'document_root_id', keyDocChangeOrder = 'document_change_order') {
         if (typeof detailData === 'object') {
-            let [code, is_active, system_status, employee_inherit, doc_id, doc_change_order] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit], detailData?.[keyDocID], detailData?.[keyDocChangeOrder]];
+            let [code, is_active, system_status, employee_inherit, document_root_id, doc_change_order] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit], detailData?.[keyDocRootID], detailData?.[keyDocChangeOrder]];
             if (!doc_change_order) {
                 doc_change_order = "";
             }
@@ -4866,7 +4866,7 @@ class DocumentControl {
                 $('#idx-breadcrumb-current-code').html(
                     `
                     <span class="${clsState}"></span>
-                    <span class="badge badge-primary" id="documentCode" data-doc-id="${doc_id}" data-doc-change-order="${doc_change_order}">${code}</span>
+                    <span class="badge badge-primary" id="documentCode" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</span>
                 `
                 ).removeClass('hidden');
             }
@@ -4891,11 +4891,11 @@ class DocumentControl {
                 }
                 if (window.location.href.includes('/update/') && dataStatus === 3) {
                     $('#idx-breadcrumb-current-code').append(
-                        `<span class="badge badge-soft-blue" id="documentCR" data-status="${dataStatus + 2}" data-inherit="${dataInheritID}" data-doc-id="${doc_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
+                        `<span class="badge badge-soft-blue" id="documentCR" data-status="${dataStatus + 2}" data-inherit="${dataInheritID}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
                     ).removeClass('hidden');
                 } else {
                     $('#idx-breadcrumb-current-code').append(
-                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}" data-doc-id="${doc_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
+                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
                 }
             }

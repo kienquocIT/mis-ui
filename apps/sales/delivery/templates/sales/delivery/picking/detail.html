@@ -71,7 +71,7 @@
                             </div>
                             <select class="form-control dropdown-select_two" name="warehouse_id" id="inputWareHouse"
                                     data-keyResp="warehouse_list"
-                                    data-url="{% url 'WareHouseListAPI' %}?interact=1"
+                                    data-url="{% url 'WareHouseListAPI' %}"
                                     data-link-detail="{% url 'WareHouseList' %}?show_detail=1"
                                     data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
                                     disabled
@@ -183,7 +183,7 @@
             type="hidden" id="url-factory"
             data-warehouse-stock="{% url 'WarehouseProductAPI' %}"
             data-product-detail="{% url 'ProductDetail' 1 %}"
-            data-product-warehouse="{% url 'WarehouseGetProductsListAPI' %}?interact=1"
+            data-product-warehouse="{% url 'WarehouseGetProductsListAPI' %}"
     >
 {% endblock %}
 

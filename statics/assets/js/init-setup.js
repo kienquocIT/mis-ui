@@ -316,13 +316,18 @@ class LogController {
                     let msgMapColor = "";
                     let arrayDone = ["finish", "approved"];
                     let arrayCancel = ["canceled", "rejected"];
+                    let arrayUpdate = ["update", "zone"];
                     let isDone = arrayDone.some(item => itemLog?.['msg'].toLowerCase().includes(item));
                     let isCancel = arrayCancel.some(item => itemLog?.['msg'].toLowerCase().includes(item));
+                    let isUpdate = arrayUpdate.some(item => itemLog?.['msg'].toLowerCase().includes(item));
                     if (isDone === true) {
                         msgMapColor = "text-green"
                     }
                     if (isCancel === true) {
                         msgMapColor = "text-red"
+                    }
+                    if (isUpdate === true) {
+                        msgMapColor = "text-yellow"
                     }
                     childLogHTML += ` <span class="text-low-em ${msgMapColor}">${itemLog['msg']}</span></div>`;
                     logHTML.push(childLogHTML);

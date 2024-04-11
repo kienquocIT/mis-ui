@@ -822,6 +822,7 @@ class GRLoadDataHandle {
             if (valuePRNew <= valuePROrderRemain) {
                 GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
             } else {
+                GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = '0';
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
                 return false
             }
@@ -871,6 +872,7 @@ class GRLoadDataHandle {
             if (valuePONew <= valuePOOrderRemain) {
                 GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
             } else {
+                GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = '0';
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
                 return false
             }

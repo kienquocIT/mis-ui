@@ -4626,8 +4626,8 @@ msgid "Must select one warehouse"
 msgstr "Phải chọn một kho"
 
 #
-msgid "Quantity import must be less than equal remain quantity"
-msgstr "Số lượng nhập kho phải nhỏ hơn hoặc bằng số lượng chưa nhập"
+msgid "Exceeded remaining quantity"
+msgstr "Vượt quá số lượng còn lại"
 
 #
 msgid "Goods receipt"
@@ -7108,6 +7108,10 @@ msgstr "Bạn sẽ không thể hoàn tác hành động này!"
 #
 msgid "Document was canceled by creator"
 msgstr "Phiếu bị hủy bỏ bởi người tạo"
+
+#
+msgid "Select save status"
+msgstr "Chọn trạng thái lưu"
 
 #
 msgid "Inventory interact config"

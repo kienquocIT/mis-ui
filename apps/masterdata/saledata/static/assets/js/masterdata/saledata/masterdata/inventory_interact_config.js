@@ -11,6 +11,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(main_table);
         main_table.DataTableDefault(
             {
+                dom: '',
                 rowIdx: true,
                 useDataServer: true,
                 reloadCurrency: true,
@@ -50,15 +51,19 @@ $(document).ready(function () {
                         render: (data, type, row) => {
                             let html = ``
                             for (const item of row?.['warehouse_list']) {
-                                html += `<span class="mb-2 badge badge-secondary">${item?.['code']}</span>&nbsp;<span class="text-secondary">${item?.['title']}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+                                html += `<div class="col-3"><span class="mb-2 badge badge-secondary">${item?.['code']}</span>&nbsp;<span class="text-secondary">${item?.['title']}</span></div>`
                             }
-                            return `${html}`;
+                            return `<div class="row">${html}</div>`;
                         }
                     },
                     {
-                        className: 'wrap-text',
+                        className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            return ``;
+                            return `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover delete-btn" title="Delete" href="#" data-id="${row?.['id']}" data-action="delete">
+                                        <span class="icon-wrap">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </span>
+                                    </a>`;
                         }
                     },
                 ],
@@ -85,13 +90,49 @@ $(document).ready(function () {
     }
     LoadEmp()
 
-    $(document).on("click", '.delete-btn', function () {
-        $(this).closest('tr').remove()
-        let count = 1
-        for (const row of main_table.find('tbody tr')) {
-            $(row).find('.num-row').text(count)
-            count += 1
-        }
+    $(document).on("click", '.delete-btn', function (event) {
+        Swal.fire({
+            html:
+            '<div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div><h5 class="text-danger">Delete Config ?</h5>',
+            customClass: {
+                confirmButton: 'btn btn-outline-secondary text-danger',
+                cancelButton: 'btn btn-outline-secondary text-gray',
+                container:'swal2-has-bg',
+                actions:'w-100'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                $.fn.callAjax2({
+                'url': SetupFormSubmit.getUrlDetailWithID(main_table.attr('data-url-detail'), $(this).attr('data-id')),
+                'method': 'DELETE',
+            })
+                    .then(
+                    (resp)=>{
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        }
+                    },
+                    (errs)=> {
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+            }
+        })
     })
 
     $('#btn-add-row').on('click', function () {

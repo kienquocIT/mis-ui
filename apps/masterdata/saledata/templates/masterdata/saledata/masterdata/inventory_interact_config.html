@@ -20,6 +20,8 @@
             <table class="table nowrap w-100"
                    data-trans-all="{% trans 'All' %}"
                    data-url="{% url 'InventoryInteractConfigListAPI' %}"
+                   data-url-detail="{% url 'InventoryInteractConfigDetailAPI' '0' %}"
+                   data-url-redirect="{% url 'InventoryInteractConfigList' %}"
                    data-method="GET"
                    id="inventory-interact-config-table">
                 <thead>

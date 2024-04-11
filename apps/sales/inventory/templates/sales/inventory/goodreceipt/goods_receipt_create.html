@@ -428,7 +428,7 @@
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
-                                            data-url="{% url 'WareHouseListAPI' %}"
+                                            data-url="{% url 'WareHouseListAPI' %}?interact=1"
                                             data-method="GET"
                                         >
                                             <thead>
@@ -653,7 +653,7 @@
     <input
             type="text"
             id="data-init-warehouse"
-            data-url="{% url "WareHouseListAPI" %}"
+            data-url="{% url "WareHouseListAPI" %}?interact=1"
             data-method="GET"
     >
     <input

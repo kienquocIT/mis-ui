@@ -40,3 +40,13 @@ class InventoryInteractConfigListAPI(APIView):
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_INTERACT_LIST).post(request.data)
         return resp.auto_return()
+
+
+class InventoryInteractConfigDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_INTERACT_DETAIL.fill_key(pk=pk)).delete()
+        return resp.auto_return(key_success='result')

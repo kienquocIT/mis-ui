@@ -392,6 +392,7 @@ class programmeHandle {
     static init(calendar) {
         calendar.render()
         programmeHandle.callMeeting(calendar)
+        programmeHandle.callScheduleMeeting(calendar)
         programmeHandle.renderUpEvt()
 
         function loopCallAPI(_ValMonth){

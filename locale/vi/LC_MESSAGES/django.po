@@ -7108,3 +7108,19 @@ msgstr "Bạn sẽ không thể hoàn tác hành động này!"
 #
 msgid "Document was canceled by creator"
 msgstr "Phiếu bị hủy bỏ bởi người tạo"
+
+#
+msgid "Inventory interact config"
+msgstr "Cấu hình tương tác kho"
+
+#
+msgid "Can interact in these warehouses"
+msgstr "Có thể tương tác với các kho"
+
+#
+msgid "Add new config"
+msgstr "Thêm cấu hình mới"
+
+#
+msgid "Warehouse address"
+msgstr "Địa chỉ kho"

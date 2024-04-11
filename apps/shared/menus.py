@@ -218,14 +218,8 @@ class MenusCoreConfigurations:
         ]
     )
     INVENTORY_DATA_CONFIG = MenuCommon(
-        name='Inventory data config', code='menu_inventory_data_config', view_name='#',
-        icon='<i class="fa-solid fa-person-shelter"></i>',
-        child=[
-            MenuCommon(
-                name='Inventory interact', code='menu_inventory_interact_config', view_name='InventoryInteractConfigList',
-                icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
-            ),
-        ]
+        name='Inventory interact config', code='menu_inventory_interact_config', view_name='InventoryInteractConfigList',
+        icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
     )
 
 

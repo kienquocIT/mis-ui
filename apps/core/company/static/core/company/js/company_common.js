@@ -9,10 +9,10 @@ if (VND_currency_text) {
 
 let company_current_id = $('#company-current-id').attr('data-id')
 let pk = $.fn.getPkDetail();
-if (pk !== company_current_id) {
-    $('#btn-collapse').remove()
-    $('#tabs').remove()
-}
+// if (pk !== company_current_id) {
+//     $('#btn-collapse').remove()
+//     $('#tabs').remove()
+// }
 
 function loadCompanyCities(cityData) {
     companyCityEle.initSelect2({

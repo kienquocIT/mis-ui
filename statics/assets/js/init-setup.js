@@ -4855,9 +4855,9 @@ class DocumentControl {
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
 
-    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit', keyDocRootID = 'document_root_id', keyDocChangeOrder = 'document_change_order') {
+    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit', keyIsChange = 'is_change', keyDocRootID = 'document_root_id', keyDocChangeOrder = 'document_change_order') {
         if (typeof detailData === 'object') {
-            let [code, is_active, system_status, employee_inherit, document_root_id, doc_change_order] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit], detailData?.[keyDocRootID], detailData?.[keyDocChangeOrder]];
+            let [code, is_active, system_status, employee_inherit, is_change, document_root_id, doc_change_order] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit], detailData?.[keyIsChange], detailData?.[keyDocRootID], detailData?.[keyDocChangeOrder]];
             if (!doc_change_order) {
                 doc_change_order = "";
             }
@@ -4871,7 +4871,7 @@ class DocumentControl {
                 $('#idx-breadcrumb-current-code').html(
                     `
                     <span class="${clsState}"></span>
-                    <span class="badge badge-primary" id="documentCode" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</span>
+                    <span class="badge badge-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</span>
                 `
                 ).removeClass('hidden');
             }
@@ -4896,11 +4896,11 @@ class DocumentControl {
                 }
                 if (window.location.href.includes('/update/') && dataStatus === 3) {
                     $('#idx-breadcrumb-current-code').append(
-                        `<span class="badge badge-soft-blue" id="documentCR" data-status="${dataStatus + 2}" data-inherit="${dataInheritID}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
+                        `<span class="badge badge-soft-blue" id="documentCR" data-status="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
                     ).removeClass('hidden');
                 } else {
                     $('#idx-breadcrumb-current-code').append(
-                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
+                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
                 }
             }

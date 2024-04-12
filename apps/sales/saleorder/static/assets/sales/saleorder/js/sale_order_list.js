@@ -184,6 +184,7 @@ $(function () {
                         $(row).addClass('collapse');
                         let classCl = 'change-' + data?.['document_root_id'].replace(/-/g, "");
                         $(row).addClass(classCl);
+                        $(row).css('background-color', '#eef6ff');
                     }
                 },
                 drawCallback: function () {

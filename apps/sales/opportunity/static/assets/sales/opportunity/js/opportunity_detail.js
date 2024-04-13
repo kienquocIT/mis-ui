@@ -65,7 +65,7 @@ $(document).ready(function () {
     $x.fn.showLoadingPage()
     Promise.all([prm_detail, prm_config]).then(
         (results) => {
-ssss            $x.fn.hideLoadingPage();
+            $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
 
             if (opportunity_detail_data?.['is_deal_close'] === true) {

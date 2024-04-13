@@ -434,7 +434,6 @@ class OpportunityLoadDetail {
 
             list_stage.reverse().map(function (item) {
                 ele.prepend(html);
-
                 let ele_first_stage = ele.find('.sub-stage').first();
                 ele_first_stage.attr('data-id', item.id);
                 ele_first_stage.find('.stage-indicator').text(item.indicator);
@@ -448,38 +447,36 @@ class OpportunityLoadDetail {
                     if (is_close_lost || is_deal_close) {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
-                                        <label for="input-close-deal" class="form-label">Close Deal</label>
-                                    </div>`
+                                <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
+                                <label for="input-close-deal" class="form-label">Close Deal</label>
+                            </div>`
                         )
                     } else {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" id="input-close-deal">
-                                        <label for="input-close-deal" class="form-label">Close Deal</label>
-                                    </div>`
+                                <input type="checkbox" class="form-check-input" id="input-close-deal">
+                                <label for="input-close-deal" class="form-label">Close Deal</label>
+                            </div>`
                         )
                     }
                 }
             })
         }
 
-
         if (stages.length !== 0) {
             stages.map(function (item) {
-                    let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
-                    if (ele_stage.hasClass('stage-lost')) {
-                        ele_stage.addClass('bg-red-light-5 stage-selected');
-                    } else if (ele_stage.hasClass('stage-close')) {
-                        let el_close_deal = $('#input-close-deal');
-                        $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
-                        ele_stage.addClass('bg-primary-light-5 stage-selected');
-                        el_close_deal.prop('checked', true);
-                    } else {
-                        ele_stage.addClass('bg-primary-light-5 stage-selected');
-                    }
+                let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
+                if (ele_stage.hasClass('stage-lost')) {
+                    ele_stage.addClass('fw-bolder text-danger bg-red-light-5 stage-selected');
+                } else if (ele_stage.hasClass('stage-close')) {
+                    let el_close_deal = $('#input-close-deal');
+                    $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
+                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 stage-selected');
+                    el_close_deal.prop('checked', true);
+                } else {
+                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 stage-selected');
                 }
-            )
+            })
         }
 
         return {
@@ -1597,6 +1594,9 @@ function autoLoadStage(
             $('#rangeInput').val(obj_stage?.win_rate);
         }
     }
+
+    console.log($('#input-rate').val())
+    alert(1)
 
     return id_stage_current
 }

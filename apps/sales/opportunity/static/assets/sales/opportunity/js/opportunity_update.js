@@ -68,6 +68,10 @@ $(document).ready(function () {
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
 
+            if (opportunity_detail_data?.['is_deal_close'] === true) {
+                $('.page-content input, .page-content select, .page-content .btn').not($('#input-close-deal')).not($('#rangeInput')).prop('disabled', true);
+            }
+
             const config = results[1];
             const config_is_select_stage = config.is_select_stage;
             const config_is_AM_create = config.is_account_manager_create;
@@ -169,17 +173,17 @@ $(document).ready(function () {
             }
 
             loadDetail(opportunity_detail_data).then(function () {
-                autoLoadStage(
-                    true,
-                    false,
-                    list_stage_condition,
-                    list_stage,
-                    condition_sale_oder_approved,
-                    condition_is_quotation_confirm,
-                    condition_sale_oder_delivery_status,
-                    config_is_input_rate,
-                    dict_stage
-                )
+                // autoLoadStage(
+                //     true,
+                //     false,
+                //     list_stage_condition,
+                //     list_stage,
+                //     condition_sale_oder_approved,
+                //     condition_is_quotation_confirm,
+                //     condition_sale_oder_delivery_status,
+                //     config_is_input_rate,
+                //     dict_stage
+                // )
             });
 
             // even in tab product
@@ -1684,17 +1688,17 @@ $(document).ready(function () {
     new SetupFormSubmit(frmDetail).validate({
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
-            autoLoadStage(
-                true,
-                false,
-                list_stage_condition,
-                list_stage,
-                condition_sale_oder_approved,
-                condition_is_quotation_confirm,
-                condition_sale_oder_delivery_status,
-                config_is_input_rate,
-                dict_stage
-            );
+            // autoLoadStage(
+            //     true,
+            //     false,
+            //     list_stage_condition,
+            //     list_stage,
+            //     condition_sale_oder_approved,
+            //     condition_is_quotation_confirm,
+            //     condition_sale_oder_delivery_status,
+            //     config_is_input_rate,
+            //     dict_stage
+            // );
             frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
             $.fn.callAjax2({
                 url: frm.dataUrl,

@@ -65,8 +65,14 @@ $(document).ready(function () {
     $x.fn.showLoadingPage()
     Promise.all([prm_detail, prm_config]).then(
         (results) => {
+            console.log(results[0])
+
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
+
+            if (opportunity_detail_data?.['is_deal_close'] === true) {
+                $('.page-content input, .page-content select, .page-content .btn').not($('#input-close-deal')).not($('#rangeInput')).prop('disabled', true);
+            }
 
             const config = results[1];
             const config_is_select_stage = config.is_select_stage;
@@ -169,17 +175,17 @@ $(document).ready(function () {
             }
 
             loadDetail(opportunity_detail_data).then(function () {
-                autoLoadStage(
-                    true,
-                    false,
-                    list_stage_condition,
-                    list_stage,
-                    condition_sale_oder_approved,
-                    condition_is_quotation_confirm,
-                    condition_sale_oder_delivery_status,
-                    config_is_input_rate,
-                    dict_stage
-                )
+                // autoLoadStage(
+                //     true,
+                //     false,
+                //     list_stage_condition,
+                //     list_stage,
+                //     condition_sale_oder_approved,
+                //     condition_is_quotation_confirm,
+                //     condition_sale_oder_delivery_status,
+                //     config_is_input_rate,
+                //     dict_stage
+                // )
 
                 // Disable all select elements
                 $('#btn-auto-update-stage').prop('hidden', true)

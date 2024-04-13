@@ -442,10 +442,20 @@ $(document).ready(function () {
             })
 
             $('#input-close-date').on('change', function () {
-                let open_date = $('#input-open-date').val();
-                if ($(this).val() < open_date) {
-                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure');
-                    $(this).val(open_date);
+                let open_date = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                let close_date = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                if (close_date < open_date) {
+                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure')
+                    $(this).val('')
+                }
+            })
+
+            $('#input-open-date').on('change', function () {
+                let open_date = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                let close_date = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                if (close_date < open_date) {
+                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure')
+                    $(this).val('')
                 }
             })
 

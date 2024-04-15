@@ -74,3 +74,11 @@
     margin-right: 5px;
     cursor: pointer;
 }
+/*css gantt*/
+.gaw-btn{
+    color: #146ebe;
+    border:dashed 1px #146ebe;
+}
+.gaw-btn:hover{
+    color: #146ebe;
+}

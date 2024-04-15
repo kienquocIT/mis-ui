@@ -86,3 +86,8 @@ LEAVE_ACTION = {
     1: LeaveMsg.LEAVE_ACTION_INS,
     2: LeaveMsg.LEAVE_ACTION_DES,
 }
+
+DEPENDENCIES_TYPE = (
+    (0, _("Start to start")),
+    (1, _("Finish to start"))
+)

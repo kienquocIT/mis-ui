@@ -592,7 +592,7 @@ var Gantt = (function () {
                 // nếu loại start là finish to start thì lấy diểm kết thúc thay vì điềm bắt đầu của task
                 const xs = this.task.dependencies.map((dep) => {
                     let normal = this.gantt.get_bar(dep).$bar.getX();
-                    if (this.task.objData.relation_style === 'FS')
+                    if (this.task.objData.relationships_type === 1)
                         normal = this.gantt.get_bar(dep).$bar.getEndX()
                     return normal
                 });
@@ -795,8 +795,8 @@ var Gantt = (function () {
 
         calculate_path() {
             const dict_temp = this.to_task.task,
-                is_SS = dict_temp.objData.relation_style === "SS", // start to start
-                is_FS = dict_temp.objData.relation_style === "FS"; // finish to start
+                is_SS = dict_temp.objData?.['relationships_type'] === 0, // start to start
+                is_FS = dict_temp.objData?.['relationships_type'] === 1; // finish to start
             let start_x = this.from_task.$bar.getX() + this.from_task.$bar.getWidth() / 2;
             if (is_SS) start_x = this.from_task.$bar.getX() + 1;
             else if (is_FS) start_x = this.from_task.$bar.getEndX() - 1;
@@ -1176,6 +1176,10 @@ var Gantt = (function () {
 
         setup_gantt_dates() {
             this.gantt_start = this.gantt_end = null;
+            if (this.options?.['gantt_start'] && this.options?.['gantt_end']){
+                this.gantt_start = this.options['gantt_start']
+                this.gantt_end = this.options['gantt_end']
+            }
             const taskList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
             for (let task of taskList) {
                 // set global start and end date
@@ -1585,9 +1589,11 @@ var Gantt = (function () {
 
         set_width() {
             const cur_width = this.$svg.getBoundingClientRect().width;
-            const actual_width = this.$svg
-                .querySelector('.grid .grid-row')
-                .getAttribute('width');
+            let actual_width = this.$svg.querySelector('.grid .grid-row')?.getAttribute('width');
+            if (!actual_width){
+                actual_width = this.$svg.querySelector('.grid .grid-header').getAttribute('width');
+                actual_width = parseInt(actual_width)
+            }
             if (cur_width < actual_width) {
                 this.$svg.setAttribute('width', actual_width);
             }
@@ -1877,12 +1883,15 @@ var Gantt = (function () {
          * @memberof Gantt
          */
         get_oldest_starting_date() {
-            const tasksList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
-            return tasksList
-                .map((task) => task._start)
+            let tasksList = this.tasks.filter((task)=> task?.['is_show'] || !task.hasOwnProperty('is_show'))
+            if (tasksList.length){
+                tasksList = tasksList.map((task) => task._start)
                 .reduce((prev_date, cur_date) =>
                     cur_date <= prev_date ? cur_date : prev_date
                 );
+            }
+            else tasksList = this.options?.['gantt_start']
+            return tasksList
         }
 
         /**
@@ -1910,6 +1919,7 @@ var Gantt = (function () {
             * @base_width: cộng tất cả width của danh sách title ( this.options['left_list'] ) khai báo và xét width
             * cho block trái
             * */
+            let htmlBtn = jQuery(`<div class="dropdown"><button class="btn btn-sm gaw-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-plus"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-gaw-group" type="button">${jQuery.fn.gettext('Group')}</button></li><li><button class="dropdown-item btn-gaw-work" type="button">${jQuery.fn.gettext('Work')}</button></li></ul></div>`)
             let div_outerwrap = jQuery('<div class="gantt-left-outerwrap"/>')
             let div_wrapper = jQuery('<div class="gantt-left-container"/>')
             let base_width = 0, is_flag = true;
@@ -1936,16 +1946,17 @@ var Gantt = (function () {
                 is_flag = false
                 div_wrapper.append(row)
             }
-            div_outerwrap.append(div_wrapper)
+            div_outerwrap.append(div_wrapper).append(htmlBtn)
             jQuery('.gantt-left').append(div_outerwrap)
             let grid_height =
                 this.options.header_height +
                 this.options.padding +
                 (this.options.bar_height + this.options.padding) *
                     tasksList.length;
-            grid_height = grid_height + 58 // 58 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
+            grid_height = grid_height + 44 // 58 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
             div_wrapper.css({"min-width": base_width, "height": grid_height})
             jQuery('.gantt-wrap-title').css({"min-width": base_width})
+            this.options.init_create_btn()
         }
     }
 

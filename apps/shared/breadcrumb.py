@@ -335,6 +335,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # PROJECT
     PROJECT_LIST = BreadcrumbChildren(_('Project list'), 'ProjectList')
+    PROJECT_CREATE_PAGE = BreadcrumbChildren(_('Project create'), 'ProjectCreate')
+    PROJECT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    PROJECT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
+
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -858,3 +863,9 @@ class BreadcrumbView:
     IMPORT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.IMPORT_LIST_PAGE]
     IMPORT_LIST_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_LIST]
     IMPORT_CREATE_PAGE = IMPORT_LIST + [BreadcrumbItem.BASTION_CREATE]
+
+    # project
+    PROJECT_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PROJECT_LIST]
+    PROJECT_CREATE_PAGE = PROJECT_LIST + [BreadcrumbItem.PROJECT_CREATE_PAGE]
+    PROJECT_DETAIL_PAGE = PROJECT_LIST + [BreadcrumbItem.PROJECT_DETAIL_PAGE]
+    PROJECT_UPDATE_PAGE = PROJECT_LIST + [BreadcrumbItem.PROJECT_UPDATE_PAGE]

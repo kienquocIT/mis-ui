@@ -52,3 +52,6 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     GRT_INVOICE_UPDATE = _('Goods return update successfully')
     BALANCE_INIT_CREATE = _('Balance initialization create successfully')
     BALANCE_INIT_UPDATE = _('Balance initialization update successfully')
+    PROJECT = _('Project')
+    PROJECT_GROUP = _('Project group')
+    PROJECT_WORK = _('Project work')

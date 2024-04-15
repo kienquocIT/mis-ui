@@ -518,3 +518,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PRODUCTS_FOR_GOODS_RETURN = StringUrl('inventory/get-delivery-products-for-goods-return/{pk}')
     GOODS_RETURN_LIST = StringUrl('inventory/goods-return/list')
     GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')
+
+    # Project
+    PROJECT_LIST = StringUrl('project/list')
+    PROJECT_DETAIL = StringUrl('project/detail/{pk}')
+    PROJECT_GROUP_LIST = StringUrl('project/group/list')
+    PROJECT_WORK_LIST = StringUrl('project/work/list')

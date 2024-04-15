@@ -323,11 +323,11 @@ $(document).ready(function () {
                         OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
                     } else {
                         $('.input-win-deal').not(this).prop('checked', false);
-                        $('.stage-lost').addClass('bg-red-light-5 stage-selected');
+                        $('.stage-lost').addClass('bg-red-light-5 border-red stage-selected');
                         loadWinRate();
                     }
                 } else {
-                    $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
+                    $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
                     loadWinRate();
                 }
             })
@@ -480,13 +480,13 @@ $(document).ready(function () {
                             let stage = $(this).closest('.sub-stage');
                             let index = stage.index();
                             let ele_stage = $('#div-stage .sub-stage');
-                            $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
+                            $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
                             for (let i = 0; i <= ele_stage.length; i++) {
                                 if (i <= index) {
                                     if (!ele_stage.eq(i).hasClass('stage-lost'))
-                                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
                                 } else {
-                                    ele_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
+                                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  stage-selected');
                                 }
                             }
                             loadWinRate();
@@ -509,7 +509,7 @@ $(document).ready(function () {
             $('#check-lost-reason').on('change', function () {
                 let ele_stage_lost = $('.stage-lost')
                 if (!$(this).is(':checked')) {
-                    ele_stage_lost.removeClass('bg-red-light-5 stage-selected');
+                    ele_stage_lost.removeClass('bg-red-light-5 border-red stage-selected');
                     loadWinRate();
                 } else {
                     if (checkOppWonOrDelivery()) {
@@ -517,7 +517,7 @@ $(document).ready(function () {
                         OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
                     } else {
                         $('.input-win-deal').not(this).prop('checked', false);
-                        ele_stage_lost.addClass('bg-red-light-5 stage-selected');
+                        ele_stage_lost.addClass('bg-red-light-5 border-red stage-selected');
                         loadWinRate();
                     }
                 }
@@ -542,10 +542,10 @@ $(document).ready(function () {
 
             $(document).on('change', '#input-close-deal', function () {
                 if ($(this).is(':checked')) {
-                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                 } else {
-                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
                     if ($('#check-agency-role').is(':checked')) {
                         $('#select-box-end-customer').prop('disabled', false);

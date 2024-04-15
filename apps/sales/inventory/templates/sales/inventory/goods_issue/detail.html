@@ -5,7 +5,6 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
-
 {% block pageAction %}
     <a href="{% url 'GoodsIssueUpdate' pk=0 %}" id="btn-edit">
         <button class="btn btn-outline-primary">
@@ -18,7 +17,6 @@
         </button>
     </a>
 {% endblock %}
-
 {% block pageContent %}
     <form id="frmDetail" data-method="POST" data-url="{% url 'GoodsIssueDetailAPI' pk=0 %}"
           data-url-redirect="{% url 'GoodsIssueList' %}">
@@ -26,7 +24,7 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
+                        <label class="form-label required" for="box-good-issue-type">{% trans 'Goods receipt type' %}</label>
                         <div class="input-group">
                             <div class="input-affix-wrapper">
                                 <div class="input-prefix">
@@ -46,9 +44,9 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label required">{% trans 'Date' %}</label>
+                        <label class="form-label required" for="date_issue">{% trans 'Date' %}</label>
                         <div class="input-affix-wrapper">
-                            <input name="date_issue" class="form-control" disabled readonly>
+                            <input id="date_issue" name="date_issue" class="form-control" disabled readonly>
                             <span class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
                                 </span>
@@ -59,21 +57,21 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label required">{% trans 'Title' %}</label>
-                        <input type="text" class="form-control" name="title" disabled readonly>
+                        <label for="title" class="form-label required">{% trans 'Title' %}</label>
+                        <input id="title" type="text" class="form-control" name="title" disabled readonly>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label">{% trans 'Note' %}</label>
-                        <input type="text" class="form-control" name="note" disabled>
+                        <label class="form-label" for="note">{% trans 'Note' %}</label>
+                        <textarea type="text" class="form-control" name="note" id="note" disabled></textarea>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label required">{% trans 'Select inventory adjustment' %}</label>
+                        <label for="box-select-ia" class="form-label required">{% trans 'Select inventory adjustment' %}</label>
                         <select id="box-select-ia"
                                 class="form-select"
                                 name="inventory_adjustment"
@@ -116,13 +114,13 @@
                         data-method="GET">
                     <thead>
                     <tr>
-                        <th>{% trans 'Warehouse' %}</th>
                         <th>{% trans 'Product' %}</th>
                         <th>{% trans 'Description' %}</th>
                         <th>{% trans 'UoM' %}</th>
                         <th>{% trans 'Quantity' %}</th>
-                        <th>{% trans 'Unit cost' %}</th>
-                        <th>{% trans 'Subtotal cost' %}</th>
+                        <th>{% trans 'Warehouse' %}</th>
+                        <th>{% trans 'Unit price' %}</th>
+                        <th>{% trans 'Subtotal price' %}</th>
                     </tr>
                     </thead>
                 </table>

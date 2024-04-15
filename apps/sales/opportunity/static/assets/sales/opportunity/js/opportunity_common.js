@@ -467,14 +467,14 @@ class OpportunityLoadDetail {
             stages.map(function (item) {
                 let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
                 if (ele_stage.hasClass('stage-lost')) {
-                    ele_stage.addClass('fw-bolder text-danger bg-red-light-5 stage-selected');
+                    ele_stage.addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');
                     $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
-                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 stage-selected');
+                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
                     el_close_deal.prop('checked', true);
                 } else {
-                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 stage-selected');
+                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
                 }
             })
         }
@@ -1540,26 +1540,26 @@ function autoLoadStage(
         let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
         let index = ele_stage_current.index();
         if (ele_stage_current.hasClass('stage-lost')) {
-            ele_stage_current.addClass('bg-red-light-5 stage-selected');
-            ele_stage.removeClass('bg-primary-light-5 stage-selected');
+            ele_stage_current.addClass('bg-red-light-5 border-red stage-selected');
+            ele_stage.removeClass('bg-primary-light-5 border-primary  stage-selected');
         }
         else {
             for (let i = 0; i <= ele_stage.length; i++) {
                 if (i <= index) {
                     if (!ele_stage.eq(i).hasClass('stage-lost'))
-                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
                     else {
-                        ele_stage.eq(i).removeClass('bg-red-light-5 stage-selected');
+                        ele_stage.eq(i).removeClass('bg-red-light-5 border-red stage-selected');
                     }
                 } else {
-                    ele_stage.eq(i).removeClass('bg-primary-light-5 bg-red-light-5 stage-selected');
+                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  bg-red-light-5 border-red stage-selected');
                 }
             }
         }
 
         if (ele_close_deal.is(':checked')) {
             ele_stage_current = ele_close_deal.closest('.sub-stage');
-            ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+            ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
             $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
@@ -1568,7 +1568,7 @@ function autoLoadStage(
         }
         else {
             $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
-            ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+            ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
                 $('#input-rate').prop('disabled', true);
@@ -1594,9 +1594,6 @@ function autoLoadStage(
             $('#rangeInput').val(obj_stage?.win_rate);
         }
     }
-
-    console.log($('#input-rate').val())
-    alert(1)
 
     return id_stage_current
 }

@@ -69,6 +69,22 @@ class InventoryAdjustmentDetail(View):
                }, status.HTTP_200_OK
 
 
+class InventoryAdjustmentUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/inventory/inventory_adjustment/inventory_adjustment_update.html',
+        breadcrumb='INVENTORY_ADJUSTMENT_UPDATE_PAGE',
+        menu_active='menu_inventory_activities',
+    )
+    def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
+        return {
+            'warehouses_products_list': resp1.result
+        }, status.HTTP_200_OK
+
+
 class InventoryAdjustmentDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 

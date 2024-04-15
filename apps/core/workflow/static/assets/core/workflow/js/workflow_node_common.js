@@ -319,7 +319,9 @@ class NodeLoadDataHandle {
                                     </li>`;
                     }
                     let table = $('#table_workflow_zone');
+                    let i = 0
                     table.DataTable().rows().every(function () {
+                        i++;
                         let row = this.node();
                         let title = row.children[1].children[0].innerHTML;
                         if (zone_list.includes(i + 1)) {
@@ -360,7 +362,9 @@ class NodeLoadDataHandle {
                                 </div>
                             </li>`;
             let table = $('#table_workflow_zone');
+            let i = 0;
             table.DataTable().rows().every(function () {
+                i++;
                 let row = this.node();
                 let title = row.children[1].children[0].innerHTML;
                 result += `<li class="d-flex align-items-center justify-content-between mb-3">
@@ -393,7 +397,9 @@ class NodeLoadDataHandle {
                         zone_list.push(parseInt($(eleChecked).attr('data-id')));
                     }
                     let table = $('#table_workflow_zone');
+                    let i = 0;
                     table.DataTable().rows().every(function () {
+                        i++;
                         let row = this.node();
                         let title = row.children[1].children[0].innerHTML;
                         if (zone_list.includes(i + 1)) {
@@ -426,7 +432,9 @@ class NodeLoadDataHandle {
             }
         } else { // Case Create New Node
             let table = $('#table_workflow_zone');
+            let i = 0;
             table.DataTable().rows().every(function () {
+                i++;
                 let row = this.node();
                 let title = row.children[1].children[0].innerHTML;
                 result += `<li class="d-flex align-items-center justify-content-between mb-3">

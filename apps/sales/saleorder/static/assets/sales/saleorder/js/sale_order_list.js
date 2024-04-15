@@ -5,6 +5,7 @@ $(function () {
         function loadDbl() {
             let $table = $('#table_sale_order_list')
             let frm = new SetupFormSubmit($table);
+            let changeList = [];
             $table.DataTableDefault({
                 useDataServer: true,
                 ajax: {
@@ -13,6 +14,14 @@ $(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {
+                            // Filter the array and store excluded items
+                            resp.data['sale_order_list'] = resp.data['sale_order_list'].filter(item => {
+                                let condition = item?.['is_change'] === true && item?.['document_root_id'] && item?.['system_status'] !== 3;
+                                if (condition) {
+                                    changeList.push(item);
+                                }
+                                return !condition; // Return true if condition is false (keep the item), false if condition is true (remove the item)
+                            });
                             return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
                         }
                         throw Error('Call data raise errors.')
@@ -179,18 +188,34 @@ $(function () {
                             }
                         )
                     })
-                    // set class collapse to old change version
-                    if (data?.['is_change'] === true && data?.['document_root_id'] && data?.['system_status'] !== 3) {
-                        $(row).addClass('collapse');
-                        let classCl = 'change-' + data?.['document_root_id'].replace(/-/g, "");
-                        $(row).addClass(classCl);
-                        $(row).css('background-color', '#eef6ff');
-                    }
                 },
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
                     //
+                    for (let eleGroup of $table[0].querySelectorAll('.group-change')) {
+                        if ($(eleGroup).is('button') && $(eleGroup).attr('data-bs-toggle') === 'collapse') {
+                            let tableDtb = $table.DataTable();
+                            let rowChange = $(eleGroup)[0].closest('tr');
+                            let targetCls = $(eleGroup).attr('data-bs-target');
+                            if (targetCls) {
+                                if ($table[0].querySelectorAll(`${targetCls}`).length <= 0) {
+                                    for (let data of changeList) {
+                                        let classCl = '.change-' + data?.['document_root_id'].replace(/-/g, "");
+                                        if (classCl === targetCls) {
+                                            let newRow = tableDtb.row.add(data).node();
+                                            $(newRow).addClass(classCl.slice(1));
+                                            $(newRow).addClass('collapse');
+                                            $(newRow).css('background-color', '#eef6ff');
+                                            $(newRow).detach().insertAfter(rowChange);
+                                        }
+                                    }
+                                }
+                            }
+                            // mask money
+                            $.fn.initMaskMoney2();
+                        }
+                    }
                     $table.on('click', '.group-change', function () {
                         $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
                     });

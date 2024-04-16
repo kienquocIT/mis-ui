@@ -520,7 +520,9 @@ $(document).ready(function () {
                     config_is_input_rate,
                     dict_stage
                 );
-                $('.stage-lost').addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                if (is_lost) {
+                    $('.stage-lost').addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                }
                 $.fn.notifyB({description: "Stage has just updated!"}, 'success')
                 $(this).tooltip('hide');
             })

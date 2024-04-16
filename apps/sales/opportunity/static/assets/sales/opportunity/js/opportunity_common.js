@@ -451,6 +451,7 @@ class OpportunityLoadDetail {
                                 <label for="input-close-deal" class="form-label">Close Deal</label>
                             </div>`
                         )
+                        ele_first_stage.find('.dropdown-menu').closest('.sub-stage').addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
                     } else {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
@@ -1183,7 +1184,7 @@ function loadDtbCompetitor(data) {
                     className: 'wrap-text text-center',
                     render: (data) => {
                         if (data) {
-                            return `<div class="form-check"><input checked type="checkbox" class="form-check-input"></div>`
+                            return `<div class="form-check"><input checked type="checkbox" class="form-check-input input-win-deal"></div>`
                         } else {
                             return `<div class="form-check"><input type="checkbox" class="form-check-input input-win-deal"></div>`
                         }
@@ -1312,7 +1313,8 @@ function autoLoadStage(
             'comparison_operator': '≠',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Product Category',
             'comparison_operator': '=',
@@ -1327,7 +1329,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Budget',
             'comparison_operator': '≠',
@@ -1342,7 +1345,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Open Date',
             'comparison_operator': '≠',
@@ -1357,7 +1361,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Close Date',
             'comparison_operator': '≠',
@@ -1372,7 +1377,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Decision maker',
             'comparison_operator': '≠',
@@ -1386,7 +1392,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Product.Line.Detail',
             'comparison_operator': '≠',
@@ -1401,7 +1408,8 @@ function autoLoadStage(
             'comparison_operator': '≠',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Competitor.Win',
             'comparison_operator': '=',
@@ -1416,7 +1424,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Lost By Other Reason',
             'comparison_operator': '≠',
@@ -1430,7 +1439,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Quotation.confirm',
             'comparison_operator': '≠',
@@ -1444,7 +1454,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'SaleOrder.status',
             'comparison_operator': '≠',
@@ -1458,7 +1469,8 @@ function autoLoadStage(
             'comparison_operator': '≠',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'SaleOrder.Delivery.Status',
             'comparison_operator': '=',
@@ -1529,6 +1541,33 @@ function autoLoadStage(
         id_stage_current = id_stage_current_list[0].stage_id
     }
 
+    let closed_lost_filter = list_stage.filter(function (ele) {
+        return ele?.['indicator'] === "Closed Lost"
+    })
+    let closed_lost_config = closed_lost_filter.length > 0 ? closed_lost_filter[0] : null
+    let closed_lost_condition_list = []
+    let is_lost = false
+    if (closed_lost_config) {
+        for (const item of closed_lost_config?.['condition_datas']) {
+            closed_lost_condition_list.push(item?.['condition_property']?.['title'] + item?.['comparison_operator'] + item?.['compare_data'])
+        }
+        if (closed_lost_config?.['logical_operator']) { // or
+            for (let i = 0; i < closed_lost_condition_list.length; i++) {
+                if (list_property_config_string.includes(closed_lost_condition_list[i])) {
+                    is_lost = true;
+                    break;
+                }
+            }
+        }
+        else { // and
+            let bMap = {};
+            list_property_config_string.forEach(item => {
+                bMap[item] = true;
+            });
+            is_lost = closed_lost_condition_list.every(item => bMap[item]);
+        }
+    }
+
     if (!just_check) {
         let stage_selected_ele = $('.stage-selected');
         let input_rate_ele = $('#check-input-rate');
@@ -1595,7 +1634,7 @@ function autoLoadStage(
         }
     }
 
-    return id_stage_current
+    return id_stage_current, is_lost
 }
 
 //common

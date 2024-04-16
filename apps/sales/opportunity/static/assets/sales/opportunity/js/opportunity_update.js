@@ -300,21 +300,21 @@ $(document).ready(function () {
                 OpportunityLoadDetail.addRowCompetitor()
             })
 
-            $(document).on('change', '.input-win-deal', function () {
-                if ($(this).is(':checked')) {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        $('.stage-lost').addClass('bg-red-light-5 border-red stage-selected');
-                        loadWinRate();
-                    }
-                } else {
-                    $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
-                    loadWinRate();
-                }
-            })
+            // $(document).on('change', '.input-win-deal', function () {
+            //     if ($(this).is(':checked')) {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             $('.stage-lost').addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     } else {
+            //         $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     }
+            // })
 
             // event in tab contact role
 
@@ -490,26 +490,26 @@ $(document).ready(function () {
                 }
             }
 
-            $('#check-lost-reason').on('change', function () {
-                let ele_stage_lost = $('.stage-lost')
-                if (!$(this).is(':checked')) {
-                    ele_stage_lost.removeClass('bg-red-light-5 border-red stage-selected');
-                    loadWinRate();
-                } else {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        ele_stage_lost.addClass('bg-red-light-5 border-red stage-selected');
-                        loadWinRate();
-                    }
-                }
-            })
+            // $('#check-lost-reason').on('change', function () {
+            //     let ele_stage_lost = $('.stage-lost')
+            //     if (!$(this).is(':checked')) {
+            //         ele_stage_lost.removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     } else {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             ele_stage_lost.addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     }
+            // })
 
 
             $('#btn-auto-update-stage').on('click', function () {
-                autoLoadStage(
+                let _, is_lost = autoLoadStage(
                     true,
                     false,
                     list_stage_condition,
@@ -520,6 +520,7 @@ $(document).ready(function () {
                     config_is_input_rate,
                     dict_stage
                 );
+                $('.stage-lost').addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
                 $.fn.notifyB({description: "Stage has just updated!"}, 'success')
                 $(this).tooltip('hide');
             })

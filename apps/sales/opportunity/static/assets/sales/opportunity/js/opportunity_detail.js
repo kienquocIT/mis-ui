@@ -316,21 +316,21 @@ $(document).ready(function () {
                 OpportunityLoadDetail.addRowCompetitor()
             })
 
-            $(document).on('change', '.input-win-deal', function () {
-                if ($(this).is(':checked')) {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        $('.stage-lost').addClass('bg-red-light-5 border-red stage-selected');
-                        loadWinRate();
-                    }
-                } else {
-                    $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
-                    loadWinRate();
-                }
-            })
+            // $(document).on('change', '.input-win-deal', function () {
+            //     if ($(this).is(':checked')) {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             $('.stage-lost').addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     } else {
+            //         $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     }
+            // })
 
             // event in tab contact role
 
@@ -506,22 +506,22 @@ $(document).ready(function () {
                 }
             }
 
-            $('#check-lost-reason').on('change', function () {
-                let ele_stage_lost = $('.stage-lost')
-                if (!$(this).is(':checked')) {
-                    ele_stage_lost.removeClass('bg-red-light-5 border-red stage-selected');
-                    loadWinRate();
-                } else {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        ele_stage_lost.addClass('bg-red-light-5 border-red stage-selected');
-                        loadWinRate();
-                    }
-                }
-            })
+            // $('#check-lost-reason').on('change', function () {
+            //     let ele_stage_lost = $('.stage-lost')
+            //     if (!$(this).is(':checked')) {
+            //         ele_stage_lost.removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     } else {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             ele_stage_lost.addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     }
+            // })
 
 
             $('#btn-auto-update-stage').on('click', function () {

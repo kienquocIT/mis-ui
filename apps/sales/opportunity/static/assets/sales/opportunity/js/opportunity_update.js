@@ -522,6 +522,8 @@ $(document).ready(function () {
                 );
                 if (is_lost) {
                     $('.stage-lost').addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                    $('.stage-close').addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
+                    $('#input-close-deal').prop('checked', true)
                 }
                 $.fn.notifyB({description: "Stage has just updated!"}, 'success')
                 $(this).tooltip('hide');

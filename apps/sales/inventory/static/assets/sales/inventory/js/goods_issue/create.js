@@ -12,23 +12,20 @@ $(document).ready(function () {
             title: {
                 required: true,
             },
-            date_issue: true,
-            inventory_adjustment: {
-                required: function () {
-                    return $('#inlineRadio1').is(':checked')
-                }
-            }
+            date_issue: true
         },
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
             let frm_data = frm.dataForm;
             frm.dataForm['date_issue'] = moment($('[name="date_issue"]').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-
+            frm.dataForm['inventory_adjustment'] = $('#box-select-ia').val()
+            frm.dataForm['goods_issue_type'] = $('#box-good-issue-type').val()
             if (frm.dataForm['goods_issue_type'] === '0') {
                 frm_data = GoodsIssueLoadPage.getDataProductForIA(frm_data);
             } else {
                 frm_data = GoodsIssueLoadPage.getDataProductForLiquidation(frm_data);
             }
+            console.log(frm_data)
             $.fn.callAjax2({
                 url: frm.dataUrl,
                 method: frm.dataMethod,

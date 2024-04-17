@@ -216,9 +216,9 @@ $(document).ready(function () {
                                                     <td hidden></td>
                                                     <td class="border-1">${stock_type_label}</td>
                                                     <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
-                                                    <td class="bg-${text_color}-light-5"><span>${activity?.['quantity']}</span></td>
-                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
-                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                    <td class="bg-${text_color}-light-5"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
+                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
                                                     <td></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
@@ -227,14 +227,20 @@ $(document).ready(function () {
                                                     <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                                 </tr>`
                                             )
-                                        } else {
+                                        }
+                                        else {
                                             let trans_title_sub = {
                                                 'Goods receipt': trans_script.attr('data-trans-grc'),
                                                 'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                 'Goods return': trans_script.attr('data-trans-grt'),
                                                 'Delivery': trans_script.attr('data-trans-dlvr'),
+                                                'Goods issue': trans_script.attr('data-trans-gis'),
                                             }
-                                            let stock_type_label = `<span class="text-danger">${trans_title_sub?.[activity?.['trans_title']]}</span>`
+                                            let text_color = 'danger'
+                                            if (activity?.['trans_title'] === 'Goods issue') {
+                                                text_color = 'orange'
+                                            }
+                                            let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                             items_detail_report_table_Ele.find('tbody').append(
                                                 `<tr>
                                                     <td class="border-1 first-col"></td>
@@ -245,13 +251,13 @@ $(document).ready(function () {
                                                     <td hidden></td>
                                                     <td hidden></td>
                                                     <td class="border-1">${stock_type_label}</td>
-                                                    <td class="border-1"><span class="badge badge-soft-danger w-100">${activity?.['trans_code']}</span></td>
+                                                    <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
                                                     <td></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
-                                                    <td class="bg-danger-light-5"><span>${activity?.['quantity']}</span></td>
-                                                    <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
-                                                    <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                    <td class="bg-${text_color}-light-5"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
+                                                    <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
                                                     <td class="border-1"><span>${activity?.['current_quantity']}</span></td>
                                                     <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
                                                     <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
@@ -314,9 +320,9 @@ $(document).ready(function () {
                                                 <td hidden></td>
                                                 <td class="border-1">${stock_type_label}</td>
                                                 <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
-                                                <td class="bg-${text_color}-light-5"><span>${activity?.['quantity']}</span></td>
-                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
-                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                <td class="bg-${text_color}-light-5"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
+                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
                                                 <td></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
@@ -325,14 +331,20 @@ $(document).ready(function () {
                                                 <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>
                                             </tr>`
                                         )
-                                    } else {
+                                    }
+                                    else {
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
                                             'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                             'Goods return': trans_script.attr('data-trans-grt'),
                                             'Delivery': trans_script.attr('data-trans-dlvr'),
+                                            'Goods issue': trans_script.attr('data-trans-gis'),
                                         }
-                                        let stock_type_label = `<span class="text-danger">${trans_title_sub?.[activity?.['trans_title']]}</span>`
+                                        let text_color = 'danger'
+                                        if (activity?.['trans_title'] === 'Goods issue') {
+                                            text_color = 'orange'
+                                        }
+                                        let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                         items_detail_report_table_Ele.find('tbody').append(
                                             `<tr>
                                                 <td class="border-1 first-col"></td>
@@ -343,13 +355,13 @@ $(document).ready(function () {
                                                 <td hidden></td>
                                                 <td hidden></td>
                                                 <td class="border-1">${stock_type_label}</td>
-                                                <td class="border-1"><span class="badge badge-soft-danger w-100">${activity?.['trans_code']}</span></td>
+                                                <td class="border-1"><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
                                                 <td></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
-                                                <td class="bg-danger-light-5"><span>${activity?.['quantity']}</span></td>
-                                                <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['cost']}"></span></td>
-                                                <td class="bg-danger-light-5 border-1"><span class="mask-money" data-init-money="${activity?.['value']}"></span></td>
+                                                <td class="bg-${text_color}-light-5"><span class="text-${text_color}">${activity?.['quantity']}</span></td>
+                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
+                                                <td class="bg-${text_color}-light-5 border-1"><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
                                                 <td class="border-1"><span>${activity?.['current_quantity']}</span></td>
                                                 <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_cost']}"></span></td>
                                                 <td class="border-1"><span class="mask-money" data-init-money="${activity?.['current_value']}"></span></td>

@@ -196,7 +196,6 @@ $(document).ready(function () {
                         let out_sum_value = 0
                         let ending_sum_value = 0
                         for (const warehouse_activities of results[0]) {
-                            console.log(warehouse_activities)
                             if (warehouses_select_Ele.val().length === 0) {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
@@ -231,6 +230,12 @@ $(document).ready(function () {
                                         }
                                         if (activity?.['trans_title'] === 'Delivery') {
                                             bg_out = 'bg-danger-light-5'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods receipt (IA)') {
+                                            bg_in = 'bg-green-light-5'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods issue') {
+                                            bg_out = 'bg-orange-light-5'
                                         }
                                         detail_html += `
                                             <tr>
@@ -293,6 +298,12 @@ $(document).ready(function () {
                                         }
                                         if (activity?.['trans_title'] === 'Delivery') {
                                             bg_out = 'bg-danger-light-5'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods receipt (IA)') {
+                                            bg_in = 'bg-green-light-5'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods issue') {
+                                            bg_out = 'bg-orange-light-5'
                                         }
                                         detail_html += `
                                             <tr>

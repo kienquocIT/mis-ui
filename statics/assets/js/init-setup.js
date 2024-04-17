@@ -27,13 +27,13 @@ class SetupFormSubmit {
                 case 'date':
                     item['value'] = moment(
                         item['value'],
-                        $(this).attr('data-date-format', 'DD-MM-YYYY')
-                    ).format('YYYY-MM-DDD');
+                        $(this).attr('data-date-format') || 'DD-MM-YYYY',
+                    ).format('YYYY-MM-DD');
                     break
                 case 'datetime':
                     item['value'] = moment(
                         item['value'],
-                        $(this).attr('data-date-format', 'DD-MM-YYYY HH:mm:ss')
+                        $(this).attr('data-date-format') || 'DD-MM-YYYY HH:mm:ss',
                     ).format('YYYY-MM-DD HH:mm:ss');
                     break
             }

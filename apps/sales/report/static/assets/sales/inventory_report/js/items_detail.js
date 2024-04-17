@@ -195,8 +195,12 @@ $(document).ready(function () {
                                             if (activity?.['trans_title'] === 'Goods return') {
                                                 text_color = 'blue'
                                             }
+                                            if (activity?.['trans_title'] === 'Goods receipt (IA)') {
+                                                text_color = 'green'
+                                            }
                                             let trans_title_sub = {
                                                 'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                 'Goods return': trans_script.attr('data-trans-grt'),
                                                 'Delivery': trans_script.attr('data-trans-dlvr'),
                                             }
@@ -226,6 +230,7 @@ $(document).ready(function () {
                                         } else {
                                             let trans_title_sub = {
                                                 'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                 'Goods return': trans_script.attr('data-trans-grt'),
                                                 'Delivery': trans_script.attr('data-trans-dlvr'),
                                             }
@@ -288,8 +293,12 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods return') {
                                             text_color = 'blue'
                                         }
+                                        if (activity?.['trans_title'] === 'Goods receipt (IA)') {
+                                            text_color = 'green'
+                                        }
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                             'Goods return': trans_script.attr('data-trans-grt'),
                                             'Delivery': trans_script.attr('data-trans-dlvr'),
                                         }
@@ -319,6 +328,7 @@ $(document).ready(function () {
                                     } else {
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                             'Goods return': trans_script.attr('data-trans-grt'),
                                             'Delivery': trans_script.attr('data-trans-dlvr'),
                                         }

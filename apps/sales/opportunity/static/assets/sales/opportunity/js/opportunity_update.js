@@ -300,21 +300,21 @@ $(document).ready(function () {
                 OpportunityLoadDetail.addRowCompetitor()
             })
 
-            $(document).on('change', '.input-win-deal', function () {
-                if ($(this).is(':checked')) {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        $('.stage-lost').addClass('bg-red-light-5 stage-selected');
-                        loadWinRate();
-                    }
-                } else {
-                    $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
-                    loadWinRate();
-                }
-            })
+            // $(document).on('change', '.input-win-deal', function () {
+            //     if ($(this).is(':checked')) {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             $('.stage-lost').addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     } else {
+            //         $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     }
+            // })
 
             // event in tab contact role
 
@@ -464,13 +464,13 @@ $(document).ready(function () {
                             let stage = $(this).closest('.sub-stage');
                             let index = stage.index();
                             let ele_stage = $('#div-stage .sub-stage');
-                            $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
+                            $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
                             for (let i = 0; i <= ele_stage.length; i++) {
                                 if (i <= index) {
                                     if (!ele_stage.eq(i).hasClass('stage-lost'))
-                                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
                                 } else {
-                                    ele_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
+                                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  stage-selected');
                                 }
                             }
                             loadWinRate();
@@ -490,26 +490,26 @@ $(document).ready(function () {
                 }
             }
 
-            $('#check-lost-reason').on('change', function () {
-                let ele_stage_lost = $('.stage-lost')
-                if (!$(this).is(':checked')) {
-                    ele_stage_lost.removeClass('bg-red-light-5 stage-selected');
-                    loadWinRate();
-                } else {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        ele_stage_lost.addClass('bg-red-light-5 stage-selected');
-                        loadWinRate();
-                    }
-                }
-            })
+            // $('#check-lost-reason').on('change', function () {
+            //     let ele_stage_lost = $('.stage-lost')
+            //     if (!$(this).is(':checked')) {
+            //         ele_stage_lost.removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     } else {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             ele_stage_lost.addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     }
+            // })
 
 
             $('#btn-auto-update-stage').on('click', function () {
-                autoLoadStage(
+                let _, is_lost = autoLoadStage(
                     true,
                     false,
                     list_stage_condition,
@@ -520,16 +520,26 @@ $(document).ready(function () {
                     config_is_input_rate,
                     dict_stage
                 );
+                if (is_lost) {
+                    $('.stage-lost').addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                    $('.stage-close').addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
+                    $('#input-close-deal').prop('checked', true)
+                }
+                else {
+                    $('.stage-lost').removeClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                    $('.stage-close').removeClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
+                    $('#input-close-deal').prop('checked', false)
+                }
                 $.fn.notifyB({description: "Stage has just updated!"}, 'success')
                 $(this).tooltip('hide');
             })
 
             $(document).on('change', '#input-close-deal', function () {
                 if ($(this).is(':checked')) {
-                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                 } else {
-                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
                     if ($('#check-agency-role').is(':checked')) {
                         $('#select-box-end-customer').prop('disabled', false);

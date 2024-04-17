@@ -76,8 +76,11 @@ class GoodsIssueLoadPage {
     static loadInventoryAdjustment(ele, data) {
         ele.initSelect2({
             data: data,
-            callbackTextDisplay: function (item) {
-                return `${item?.['code']} - ${item?.['title']}` || '';
+            templateResult: function(data) {
+                let ele = $('<div class="row col-12"></div>');
+                ele.append(`<div class="col-3"><span class="badge badge-soft-primary">${data.data?.['code']}</span></div>`);
+                ele.append(`<div class="col-9">${data.data?.['title']}</div>`);
+                return ele;
             }
         }).on('change', function () {
             let url = urlEle.data('url-ia-product').format_url_with_uuid($(this).val());
@@ -93,13 +96,14 @@ class GoodsIssueLoadPage {
                             return (obj.book_quantity - obj.count) > 0;
                         });
                         product_list.map(function (item) {
+                            console.log(item)
                             if (data_dict[item.id]) {
                                 item['action_status'] = false
                             }
 
                             if (!item.action_status) {
                                 data_dict[item.id] = item;
-                                item['description'] = '';
+                                item['description'] = item?.['product_mapped']?.['description'];
                                 item['subtotal'] = '';
                                 item['unit_cost'] = '';
                                 tableEle.DataTable().row.add(item).draw();
@@ -157,42 +161,56 @@ class GoodsIssueLoadPage {
         if (!$.fn.DataTable.isDataTable('#dtbProductIA')) {
             let dtb = $('#dtbProductIA');
             dtb.DataTableDefault({
+                dom: '',
                 data: data,
                 reloadCurrency: true,
                 columns: [
                     {
                         data: 'product_mapped',
+                        className: 'wrap-text w-20',
                         render: (data, type, row, meta) => {
-                            return `<span class="col-product" data-id="${row.id}">${data.title}</span>`
+                            return `<span class="badge badge-primary badge-sm mb-1">${data.code}</span><br><span class="text-primary col-product fw-bold" data-id="${row.id}">${data.title}</span>`
                         },
-                    }, {
+                    },
+                    {
                         data: 'description',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control col-remarks" value="${data}">`
+                            return `<textarea style="min-width: 250px" rows="5" disabled readonly class="form-control col-remarks small">${data}</textarea>`
                         },
-                    }, {
+                    },
+                    {
                         data: 'uom_mapped',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             return `<span class="col-uom">${data.title}</span>`;
                         },
-                    }, {
+                    },
+                    {
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<input class="form-control col-quantity" readonly value="${row.book_quantity - row.count}" />`;
+                            return `<input style="min-width: 100px" class="form-control col-quantity" readonly value="${row.book_quantity - row.count}" />`;
                         },
-                    }, {
+                    },
+                    {
                         data: 'warehouse_mapped',
+                        className: 'wrap-text w-15',
                         render: (data, type, row, meta) => {
-                            return `<span class="col-warehouse">${data.title}</span>`
+                            return `<span class="badge badge-secondary badge-sm mb-1">${data.code}</span><br><span class="text-secondary fw-bold col-warehouse">${data.title}</span>`
                         },
-                    }, {
+                    },
+                    {
                         data: 'unit_cost',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<input class="form-control mask-money col-unit-cost" value="${data}"/>`;
+                            return `<input style="min-width: 250px" class="form-control mask-money col-unit-cost" value="${data}"/>`;
                         },
-                    }, {
+                    },
+                    {
                         data: 'subtotal',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<input class="form-control mask-money col-subtotal" value="${data}" readonly/>`;
+                            return `<input style="min-width: 250px" class="form-control mask-money col-subtotal" value="${data}" readonly/>`;
                         },
                     },
                 ],
@@ -326,10 +344,11 @@ class GoodsIssueLoadPage {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let detail = data?.['goods_issue_detail'];
+                $.fn.compareStatusShowPageAction(detail);
                 $x.fn.renderCodeBreadcrumb(detail);
+
                 $('[name="title"]').val(detail.title);
                 $('[name="date_issue"]').val(moment(detail?.['date_issue'].split(' ')[0]).format('DD/MM/YYYY'));
-                $('[name="system_status"]').val(detail?.['system_status']);
                 $('[name="note"]').val(detail?.['note']);
                 if (detail?.['goods_issue_type'] === 0) {
                     $('#box-good-receipt-type').val(0)
@@ -392,43 +411,51 @@ class GoodsIssueLoadPage {
         if (!$.fn.DataTable.isDataTable('#dtbProduct')) {
             let dtb = $('#dtbProduct');
             dtb.DataTableDefault({
+                dom: '',
                 data: data,
                 reloadCurrency: true,
                 columns: [
                     {
-                        data: 'warehouse',
-                        render: (data, type, row, meta) => {
-                            return `<span>${data.title}</span>`
-                        },
-                    }, {
                         data: 'product_warehouse',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            return `<span>${data?.['product_data'].title}</span>`
+                            return `<span class="badge badge-primary badge-sm mb-1">${data?.['product_data'].code}</span><br><span class="text-primary fw-bold">${data?.['product_data'].title}</span>`
                         },
                     }, {
                         data: 'description',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span>${data}</span>`
+                            return `<textarea style="min-width: 250px" rows="5" disabled readonly class="form-control small">${data}</textarea>`
                         },
                     }, {
                         data: 'uom',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             return `<span>${data.title}</span>`
                         },
                     }, {
                         data: 'quantity',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             return `<span>${data}</span>`
                         },
                     }, {
+                        data: 'warehouse',
+                        className: 'wrap-text w-15',
+                        render: (data, type, row, meta) => {
+                            return `<span class="badge badge-secondary badge-sm mb-1">${data.code}</span><br><span class="text-secondary fw-bold">${data.title}</span>`
+                        },
+                    }, {
                         data: 'unit_cost',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money=${data}></span>`
+                            return `<span class="text-primary mask-money" data-init-money=${data}></span>`
                         },
                     }, {
                         data: 'subtotal',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money=${data}></span>`
+                            return `<span class="text-primary mask-money" data-init-money=${data}></span>`
                         },
                     },
                 ],

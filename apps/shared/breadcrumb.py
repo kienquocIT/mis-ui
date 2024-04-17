@@ -163,10 +163,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
 
     # Inventory Adjustment
-    INVENTORY_ADJUSTMENT_LIST_PAGE = BreadcrumbChildren(_('Inventory Adjustment'), 'InventoryAdjustmentList')
-    INVENTORY_ADJUSTMENT_CREATE_PAGE = BreadcrumbChildren(_('Inventory Adjustment create'), 'InventoryAdjustmentCreate')
-    INVENTORY_ADJUSTMENT_EDIT_PAGE = BreadcrumbChildren(_('Inventory Adjustment edit'))
-    INVENTORY_ADJUSTMENT_DETAIL_PAGE = BreadcrumbChildren(_('Inventory Adjustment detail'))
+    INVENTORY_ADJUSTMENT_LIST_PAGE = BreadcrumbChildren(_('Inventory adjustment'), 'InventoryAdjustmentList')
+    INVENTORY_ADJUSTMENT_CREATE_PAGE = BreadcrumbChildren(_('Inventory adjustment create'), 'InventoryAdjustmentCreate')
+    INVENTORY_ADJUSTMENT_EDIT_PAGE = BreadcrumbChildren(_('Inventory adjustment update'))
+    INVENTORY_ADJUSTMENT_DETAIL_PAGE = BreadcrumbChildren(_('Inventory adjustment detail'))
 
     # Transition Data Config
     DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
@@ -257,7 +257,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_TRANSFER_LIST_PAGE = BreadcrumbChildren(_('Goods Transfer'), 'GoodsTransferList')
 
     # Goods issue
-    GOODS_ISSUE_LIST_PAGE = BreadcrumbChildren(_('Goods Issue'), 'GoodsIssueList')
+    GOODS_ISSUE_LIST_PAGE = BreadcrumbChildren(_('Goods issue'), 'GoodsIssueList')
 
     # E-Office
     #  Leave

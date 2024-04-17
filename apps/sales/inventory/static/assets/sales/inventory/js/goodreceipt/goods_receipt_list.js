@@ -40,27 +40,27 @@ $(function () {
                         targets: 2,
                         render: (data, type, row) => {
                             let type_data = [
-                                "badge badge-soft-warning",
                                 "badge badge-soft-success",
-                                "badge badge-soft-info",
+                                "badge badge-soft-blue",
+                                "badge badge-soft-warning",
                             ]
                             let typeTxt = JSON.parse($('#gr_type').text())
-                            return `<div class="row"><span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span></div>`;
+                            return `<div class="row"><span class="${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span></div>`;
                         }
                     },
                     {
                         targets: 3,
                         render: (data, type, row) => {
                             let type_data = [
-                                "badge badge-soft-warning",
                                 "badge badge-soft-success",
-                                "badge badge-soft-info",
+                                "badge badge-soft-blue",
+                                "badge badge-soft-warning",
                             ]
                             let ele = `<span></span>`;
                             if (row?.['goods_receipt_type'] === 0) {
-                                ele = `<div class="row"><span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span></div>`;
+                                ele = `<div class="row"><span class="${type_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span></div>`;
                             } else if (row?.['goods_receipt_type'] === 1) {
-                                ele = `<div class="row"><span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span></div>`;
+                                ele = `<div class="row"><span class="${type_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span></div>`;
                             }
                             return ele;
                         }

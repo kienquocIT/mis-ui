@@ -13,6 +13,19 @@ let get_increase_items_btn = $('#get-increase-items-btn')
 let get_decrease_items_btn = $('#get-decrease-items-btn')
 let LIST_WAREHOUSE_PRODUCT = []
 
+dateInput.daterangepicker({
+    singleDatePicker: true,
+    timepicker: false,
+    showDropdowns: false,
+    minYear: 2023,
+    locale: {
+        format: 'DD/MM/YYYY'
+    },
+    maxYear: parseInt(moment().format('YYYY'), 10),
+    drops: 'up',
+    autoApply: true,
+});
+
 addRowLineDetailBtn.on('click', async function () {
     if (warehouseSelectBox.val().length < 1) {
         $.fn.notifyB({description: 'Please select at least 1 warehouse'}, 'warning');
@@ -109,20 +122,6 @@ selectAllProductBtn.on('click', function () {
     }
 })
 
-function LoadCreatedDate() {
-    dateInput.dateRangePickerDefault({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        minYear: 1901,
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'),10)
-    }).prop('disabled', true).css({'color': 'black'});
-}
-
 function LoadStatus() {
     statusInput.val('Open').prop('disabled', true).css({'color': 'black'});
 }
@@ -154,86 +153,73 @@ function LoadInChargeSelectBox(data) {
 }
 
 function LoadTableSelectProduct(warehouse_list) {
-    tableSelectProduct.DataTable().clear().destroy();
-    tableSelectProduct.DataTableDefault({
-        dom: "<'row miner-group'<'col-sm-12 mt-3'f><'col-sm-10'p>>",
-        scrollY: true,
-        paging: false,
-        useDataServer: true,
-        ajax: {
-            url: $('#frm_inventory_adjustment_create').attr('data-url-warehouse-product-list'),
-            type: 'GET',
-            dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.data['warehouses_products_list']) {
-                            let data_list = [];
-                            let data_dict = {};
-                            for (let i = 0; i < resp.data['warehouses_products_list'].length; i++) {
-                                let warehouse_temp = resp.data['warehouses_products_list'][i];
-                                if (warehouse_list.includes(warehouse_temp['id'])) {
-                                    for (let j = 0; j < warehouse_temp['product_list'].length; j++) {
-                                        let product_temp = warehouse_temp['product_list'];
-                                        let data_temp = {
-                                            'product_warehouse_id': product_temp[j]['id'],
-                                            'warehouse_id': warehouse_temp['id'],
-                                            'warehouse_code': warehouse_temp['code'],
-                                            'warehouse_title': warehouse_temp['title'],
-                                            'warehouse_is_active': warehouse_temp['is_active'],
-                                            'warehouse_remarks': warehouse_temp['remarks'],
-                                            'product_id': product_temp[j]['product']['id'],
-                                            'product_title': product_temp[j]['product']['title'],
-                                            'product_inventory_uom_id': product_temp[j]['inventory_uom']['id'],
-                                            'product_inventory_uom_title': product_temp[j]['inventory_uom']['title'],
-                                            'available_amount': product_temp[j]['available_amount'],
-                                        }
-                                        data_list.push(data_temp)
-                                        data_dict[product_temp[j]['id']] = data_temp;
-                                    }
+    let warehouses_products_list_ajax = $.fn.callAjax2({
+            url: $('#url_script').attr('data-url-warehouse-product-list'),
+            data: {},
+            method: 'GET'
+        }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data?.['warehouses_products_list']) {
+                    let data_list = [];
+                    let data_dict = {};
+                    for (let i = 0; i < data?.['warehouses_products_list'].length; i++) {
+                        let warehouse_temp = data?.['warehouses_products_list'][i];
+                        if (warehouse_list.includes(warehouse_temp['id'])) {
+                            for (let j = 0; j < warehouse_temp['product_list'].length; j++) {
+                                let product_temp = warehouse_temp['product_list'];
+                                let data_temp = {
+                                    'product_warehouse_id': product_temp[j]['id'],
+                                    'warehouse_id': warehouse_temp['id'],
+                                    'warehouse_code': warehouse_temp['code'],
+                                    'warehouse_title': warehouse_temp['title'],
+                                    'warehouse_is_active': warehouse_temp['is_active'],
+                                    'warehouse_remarks': warehouse_temp['remarks'],
+                                    'product_id': product_temp[j]['product']['id'],
+                                    'product_title': product_temp[j]['product']['title'],
+                                    'product_inventory_uom_id': product_temp[j]['inventory_uom']['id'],
+                                    'product_inventory_uom_title': product_temp[j]['inventory_uom']['title'],
+                                    'available_amount': product_temp[j]['available_amount'],
                                 }
+                                data_list.push(data_temp)
+                                data_dict[product_temp[j]['id']] = data_temp;
                             }
-                            LIST_WAREHOUSE_PRODUCT = data_list;
-                            $('#data-product-warehouse').text(JSON.stringify(data_dict));
-                            return data_list;
-                        } else {
-                            return [];
                         }
                     }
+                    LIST_WAREHOUSE_PRODUCT = data_list;
+                    $('#data-product-warehouse').text(JSON.stringify(data_dict));
+                    return data_list;
+                } else {
                     return [];
                 }
-            },
-        columns: [
-                {
-                    render: (data, type, row) => {
-                        return `<span class="form-check">
-                            <input type="checkbox" class="form-check-input selected_product" data-warehouse-id="${row.warehouse_id}" data-product-id="${row.product_id}" data-id="${row.product_warehouse_id}">
-                            <label class="form-check-label"></label>
-                        </span>`;
-                    }
-                },
-                {
-                    data: 'warehouse_code',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary w-80">${row.warehouse_code}</span>`
-                    }
-                },
-                {
-                    data: 'warehouse_title',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span><i class="fas fa-warehouse"></i> ${row.warehouse_title}</span>`
-                    }
-                },
-                {
-                    data: 'product_title',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="text-primary">${row.product_title}</span>`
-                    }
-                }
-            ],
-    });
+            }
+            return [];
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    Promise.all([warehouses_products_list_ajax]).then(
+        (results) => {
+            tableSelectProduct.find('tbody').html('')
+            for (const item of results[0]) {
+                tableSelectProduct.find('tbody').append(`
+                    <tr>
+                        <td>
+                            <span class="form-check">
+                                <input type="checkbox" class="form-check-input selected_product" data-warehouse-id="${item?.['warehouse_id']}" data-product-id="${item?.['product_id']}" data-id="${item?.['product_warehouse_id']}">
+                                <label class="form-check-label"></label>
+                            </span>
+                        </td>
+                        <td><span class="badge badge-soft-primary w-80">${item?.['warehouse_code']}</span></td>
+                        <td><span><i class="fas fa-warehouse"></i> ${item?.['warehouse_title']}</span></td>
+                        <td><span class="text-primary">${item?.['product_title']}</span></td>
+                    </tr>
+                `)
+            }
+        })
 }
 
 function getDataFormCreate() {
@@ -290,6 +276,14 @@ function getDataFormCreate() {
 function getDataFormUpdate() {
     let data = {}
 
+    data['title'] = titleInput.val();
+
+    data['ia_employees_in_charge'] = inChargeSelectBox.val();
+    if (data['ia_employees_in_charge'].length <= 0) {
+        $.fn.notifyB({description: 'Employee in charge must not be NULL'}, 'failure');
+        return false
+    }
+
     let ia_items_data_list = [];
     tableLineDetailTbody.find('tr').each(function () {
         let book_quantity = $(this).find('.quantity-td').text();
@@ -316,7 +310,6 @@ function getDataFormUpdate() {
 
 class InventoryAdjustmentHandle {
     load() {
-        LoadCreatedDate();
         LoadStatus();
         LoadWarehouseSelectBox();
         LoadInChargeSelectBox();
@@ -350,11 +343,13 @@ class InventoryAdjustmentHandle {
     }
 }
 
-function Disable() {
-    $('.form-control').prop('disabled', true).css({color: 'black'});
-    $('.form-select').prop('disabled', true).css({color: 'black'});
-    $('.select2').prop('disabled', true);
-    $('#collapse-area input').prop('disabled', true);
+function Disable(option) {
+    if (option === 'detail') {
+        $('.form-control').prop('disabled', true).css({color: 'black'});
+        $('.form-select').prop('disabled', true).css({color: 'black'});
+        $('.select2').prop('disabled', true);
+        $('#collapse-area input').prop('disabled', true);
+    }
 }
 
 function LoadDetailIA(option) {
@@ -370,12 +365,10 @@ function LoadDetailIA(option) {
                 $x.fn.renderCodeBreadcrumb(data);
 
                 titleInput.val(data.title);
-                dateInput.val(data.date_created.split(' ')[0]);
+                dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
                 LoadStatus();
                 LoadWarehouseSelectBox(data?.['warehouses']);
                 LoadInChargeSelectBox(data?.['employees_in_charge']);
-
-                Disable(option);
 
                 for (let i = 0; i < data?.['inventory_adjustment_item_mapped'].length; i++) {
                     let data_row = data?.['inventory_adjustment_item_mapped'][i];
@@ -425,6 +418,8 @@ function LoadDetailIA(option) {
                 }
 
                 $.fn.initMaskMoney2();
+
+                Disable(option);
             }
         })
 }

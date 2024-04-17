@@ -404,25 +404,13 @@ class MenusPurchase:
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
+        name='Inventory activities', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
                 name='Goods receipt',
                 code='menu_goods_receipt_list',
                 view_name='GoodsReceiptList',
                 icon='<i class="fas fa-file-import"></i>',
-            ),
-            MenuCommon(
-                name='Inventory adjustment',
-                code='menu_inventory_adjustment_list',
-                view_name='InventoryAdjustmentList',
-                icon='<i class="bi bi-sliders"></i>',
-            ),
-            MenuCommon(
-                name='Goods Transfer',
-                code='menu_goods_transfer_list',
-                view_name='GoodsTransferList',
-                icon='<i class="fas fa-exchange-alt"></i>',
             ),
             MenuCommon(
                 name='Goods issue',
@@ -435,6 +423,18 @@ class MenusPurchase:
                 code='menu_goods_return',
                 view_name='GoodsReturnList',
                 icon='<i class="far fa-arrow-alt-circle-left"></i>',
+            ),
+            MenuCommon(
+                name='Inventory adjustment',
+                code='menu_inventory_adjustment_list',
+                view_name='InventoryAdjustmentList',
+                icon='<i class="bi bi-sliders"></i>',
+            ),
+            MenuCommon(
+                name='Goods transfer',
+                code='menu_goods_transfer_list',
+                view_name='GoodsTransferList',
+                icon='<i class="fas fa-exchange-alt"></i>',
             ),
         ],
     )

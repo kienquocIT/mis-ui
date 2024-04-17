@@ -525,6 +525,11 @@ $(document).ready(function () {
                     $('.stage-close').addClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
                     $('#input-close-deal').prop('checked', true)
                 }
+                else {
+                    $('.stage-lost').removeClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                    $('.stage-close').removeClass('fw-bolder text-primary bg-primary-light-5 border-primary stage-selected');
+                    $('#input-close-deal').prop('checked', false)
+                }
                 $.fn.notifyB({description: "Stage has just updated!"}, 'success')
                 $(this).tooltip('hide');
             })

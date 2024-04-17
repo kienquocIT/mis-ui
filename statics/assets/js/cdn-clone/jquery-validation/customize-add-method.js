@@ -7,6 +7,7 @@
         factory(jQuery);
     }
 }(function ($) {
+    // call check another rule prefix data-valid-* when valid was called
     $.validator.unpretentious = function (frm$) {
         let validator = $(frm$).validate();
 
@@ -38,35 +39,73 @@
         })
     }
 
-    $.validator.addMethod("check_phone_vn", function (value, element) {
-        // allow empty
-        if (!$(element).attr('required') && !value) return true;
-
-        // check rule
-        let ruleOfMethod = this.settings.rules?.[$(element).attr('name')] || null;
-        if (typeof ruleOfMethod === 'object' && ruleOfMethod.hasOwnProperty('check_phone_vn')) {
-            let valueOfMethod = ruleOfMethod['check_phone_vn'];
-            let regexStr = valueOfMethod && valueOfMethod !== 'true' ? valueOfMethod : /^((\+84)|0)([35789]|1[2389])([0-9]{8})$/gm;
-            let regex = new RegExp(regexStr);
-            return regex.test(value);
+    function checkBase (value, element, callback){
+        // get rules field
+        let rules = this.settings.rules?.[$(element).attr('name')] || null;
+        if (!value){
+            // allow empty
+            if (!$(element).attr('required')) return true;
+            // check rule
+            if (typeof rules === 'object' && rules.hasOwnProperty('required')) {
+                if (rules['required'] !== true) return true;
+            }
         }
-        // outside case because The rules was removed
-        return true;
-    }, $.validator.messages?.["check_phone_vn"] || "Please enter a valid phone number.");
-
-    $.validator.addMethod("check_date", function (value, element){
-        // allow empty
-        if (!$(element).attr('required') && !value) return true;
-
-        // check rule
-        let ruleOfMethod = this.settings.rules?.[$(element).attr('name')] || null;
-        if (typeof ruleOfMethod === 'object' && ruleOfMethod.hasOwnProperty('check_phone_vn')) {
-            let valueOfMethod = ruleOfMethod['check_phone_vn'];
-            let regexStr = valueOfMethod && valueOfMethod !== 'true' ? valueOfMethod : /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/gm;
-            let regex = new RegExp(regexStr);
-            return regex.test(value);
+        if (callback instanceof Function){
+            return callback.bind(this)(rules);
         }
-        // outside case because The rules was removed
         return true;
-    }, $.validator.messages?.["check_phone_vn"] || "Please enter a valid date.");
+    }
+
+    $.validator.addMethod("phone_vn", function (value, element) {
+        return checkBase.bind(this)(value, element, function (rules){
+            if (rules.hasOwnProperty('phone_vn')){
+                let valueMethod = rules['phone_vn'];
+                let regexStr = valueMethod && valueMethod !== 'true' ? valueMethod : /^((\+84)|0)([35789]|1[2389])([0-9]{8})$/gm;
+                let regex = new RegExp(regexStr);
+                return regex.test(value);
+            }
+            return true;
+        });
+    }, $.validator.messages?.["phone_vn"] || "Please enter a valid phone number.");
+
+    $.validator.addMethod("date", function (value, element){
+        return checkBase.bind(this)(value, element, function (rules){
+            if (rules.hasOwnProperty('date')){
+                // let regexStr = valueMethod && valueMethod !== 'true' ? valueMethod : /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/gm;
+                let valueMethod = rules['date'];
+                let regexDefault = /^(0?[1-9]|[12][0-9]|3[01])[\-](0?[1-9]|1[012])[\-]\d{4}$/gm; // format DD-MM-YYYY
+                let regexStr = valueMethod && valueMethod !== 'true' ? valueMethod : regexDefault; // format DD-MM-YYYY
+                let regex = new RegExp(regexStr);
+                return regex.test(value);
+            }
+            return true;
+        });
+    }, $.validator.messages?.["date"] || "Please enter a valid date.");
+
+    $.validator.addMethod("datetime", function (value, element){
+        return checkBase.bind(this)(value, element, function (rules){
+            if (rules.hasOwnProperty('date')){
+                let regexDefault = /^(0?[1-9]|[12][0-9]|3[01])[\-](0?[1-9]|1[012])[\-]\d{4}\s(0?[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/gm; // format DD-MM-YYYY HH:mm:ss
+                let valueMethod = rules['date'];
+                let regexStr = valueMethod && valueMethod !== 'true' ? valueMethod : regexDefault;
+                let regex = new RegExp(regexStr);
+                return regex.test(value);
+            }
+            return true;
+        });
+    }, $.validator.messages?.["datetime"] || "Please enter a valid date time.");
+
+    $.validator.addMethod("json", function (value, element){
+        return checkBase.bind(this)(value, element, function (rules){
+            if (rules.hasOwnProperty('json')){
+                try {
+                    JSON.parse(value);
+                    return true;
+                } catch (err){
+                    return false;
+                }
+            }
+            return true;
+        });
+    }, $.validator.messages?.["json"] || "Please enter a valid JSON.");
 }));

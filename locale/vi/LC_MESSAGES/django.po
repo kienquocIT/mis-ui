@@ -1440,7 +1440,7 @@ msgstr "1-10 tỷ"
 
 #
 msgid "10-20 billions"
-msgstr "1-20 tỷ"
+msgstr "10-20 tỷ"
 
 #
 msgid "20-50 billions"
@@ -1764,8 +1764,20 @@ msgid "Transaction Type"
 msgstr "Loại giao dịch"
 
 #
-msgid "For"
-msgstr "Cho"
+msgid "Apply for"
+msgstr "Áp dụng cho"
+
+#
+msgid "30-30-40 Split Payment"
+msgstr "Thanh toán 30-30-40"
+
+#
+msgid "Select option"
+msgstr "Lựa chọn"
+
+#
+msgid "Payment in 3 installments"
+msgstr "Thanh toán theo 3 đợt"
 
 #
 msgid "Add new line"

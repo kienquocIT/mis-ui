@@ -81,9 +81,7 @@
                                                     data-method="GET"
                                                     name="tenant_code"
                                             >
-                                                <option disabled value="">
-                                                    {% trans 'Choose...' %}
-                                                </option>
+                                                <option selected value="">{% trans 'Choose...' %}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -531,6 +529,9 @@
                                 hasAppendSubCode = false;
                                 tenantSelEle.val(tenantCode).trigger('change');
                             } else {
+                                tenantSelEle.append(`<option value="${tenantCode}">${tenantCode}</option>`)
+                                tenantSelEle.val(tenantCode);
+
                                 {#redirectToSelectTenant();#}
                                 $.fn.notifyBLogin({
                                     'description': 'The tenant is not found or was disabled! Auto redirect to selection of tenant page.',

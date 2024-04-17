@@ -5,6 +5,7 @@ $(function () {
         function loadDbl() {
             let $table = $('#table_sale_order_list')
             let frm = new SetupFormSubmit($table);
+            let changeList = [];
             $table.DataTableDefault({
                 useDataServer: true,
                 ajax: {
@@ -13,6 +14,14 @@ $(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {
+                            // Filter the array and store excluded items
+                            resp.data['sale_order_list'] = resp.data['sale_order_list'].filter(item => {
+                                let condition = item?.['is_change'] === true && item?.['document_root_id'] && item?.['system_status'] !== 3;
+                                if (condition) {
+                                    changeList.push(item);
+                                }
+                                return !condition; // Return true if condition is false (keep the item), false if condition is true (remove the item)
+                            });
                             return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
                         }
                         throw Error('Call data raise errors.')
@@ -27,7 +36,27 @@ $(function () {
                         width: '6.66%',
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a></div>`
+                            if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] === 3) {
+                                let target = `.change-${row?.['document_root_id'].replace(/-/g, "")}`;
+                                return `<div class="d-flex">
+                                            <div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a></div>
+                                            <small><button 
+                                                type="button" 
+                                                class="btn btn-icon btn-xs group-change" 
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="${target}"
+                                                data-bs-placement="top"
+                                                aria-expanded="false"
+                                                aria-controls="newGroup"
+                                            >
+                                                <span class="icon"><small><i class="fas fa-chevron-right mt-2"></i></small></span>
+                                            </button></small>
+                                        </div>`;
+                            }
+                            if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] !== 3) {
+                                return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-blue">${row?.['code']} <span class="badge-child badge-child-blue">${row?.['document_change_order'] ? row?.['document_change_order'] : 0}</span></span></a></div>`;
+                            }
+                            return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']}</span></a></div>`;
                         }
                     },
                     {
@@ -163,6 +192,33 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    //
+                    for (let eleGroup of $table[0].querySelectorAll('.group-change')) {
+                        if ($(eleGroup).is('button') && $(eleGroup).attr('data-bs-toggle') === 'collapse') {
+                            let tableDtb = $table.DataTable();
+                            let rowChange = $(eleGroup)[0].closest('tr');
+                            let targetCls = $(eleGroup).attr('data-bs-target');
+                            if (targetCls) {
+                                if ($table[0].querySelectorAll(`${targetCls}`).length <= 0) {
+                                    for (let data of changeList) {
+                                        let classCl = '.change-' + data?.['document_root_id'].replace(/-/g, "");
+                                        if (classCl === targetCls) {
+                                            let newRow = tableDtb.row.add(data).node();
+                                            $(newRow).addClass(classCl.slice(1));
+                                            $(newRow).addClass('collapse');
+                                            $(newRow).css('background-color', '#eef6ff');
+                                            $(newRow).detach().insertAfter(rowChange);
+                                        }
+                                    }
+                                }
+                            }
+                            // mask money
+                            $.fn.initMaskMoney2();
+                        }
+                    }
+                    $table.on('click', '.group-change', function () {
+                        $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+                    });
                 },
             });
         }

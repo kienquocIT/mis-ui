@@ -39,6 +39,7 @@ $(document).ready(function () {
               return [];
             },
         },
+        pageLength:50,
         columns: [
             {
                 data: 'title',

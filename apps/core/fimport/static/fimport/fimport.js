@@ -26,17 +26,18 @@ $(document).ready(function () {
             })
         }
 
-        static getHeightAvailableForTable() {
+        getHeightAvailableForTable() {
             let pgWrapper = Number.parseFloat($('.hk-pg-wrapper').css('padding-top').replaceAll('px', ''));
             let simpleBar = Number.parseFloat($('.hk-pg-wrapper .simplebar-content').css('padding-top').replaceAll('px', ''));
             let blogHeader = Number.parseFloat($('.blog-header').css('height').replaceAll('px', ''));
             let btnUtilApp = Number.parseFloat($('#idx-box-data-btn-util-application').css('height').replaceAll('px', ''));
-            let total = window.height - (pgWrapper + simpleBar + blogHeader + btnUtilApp + 190);
+            let headTableHeight = 30 * this.get_class_col(this.columnData, true);
+            let total = window.height - (pgWrapper + simpleBar + blogHeader + btnUtilApp + headTableHeight + 160);
             if (total < 380) return 380;
             return total;
         }
 
-        get_class_col(listColConfig) {
+        get_class_col(listColConfig, isGetLineAmount=false) {
             let colNumber = 0;
             if (typeof listColConfig === 'object') {
                 colNumber = Object.keys(listColConfig).length;
@@ -44,41 +45,77 @@ $(document).ready(function () {
                 colNumber = listColConfig.length;
             }
 
+            let colClass = '';
+            let lineAmount = 1;
             switch (colNumber) {
                 case 0:
                 case 1:
-                    return 'col';
+                    colClass = 'col';
+                    break
                 case 2:
-                    return 'col-6';
+                    colClass = 'col-6';
+                    break
                 case 3:
-                    return 'col-4';
+                    colClass = 'col-4';
+                    break
                 case 5:
                 case 6:
-                    return 'col-2';
+                    colClass = 'col-2';
+                    break
                 case 7:
                 case 8:
-                    return 'col-3';
+                    lineAmount = 2;
+                    colClass = 'col-3';
+                    break
                 case 9:
                 case 10:
                 case 11:
                 case 12:
-                    return 'col-2';
+                    lineAmount = 2;
+                    colClass = 'col-2';
+                    break
                 case 13:
                 case 14:
                 case 15:
                 case 16:
                 case 17:
                 case 18:
+                    lineAmount = 3;
+                    colClass = 'col-2';
+                    break
                 case 19:
                 case 20:
                 case 21:
                 case 22:
                 case 23:
                 case 24:
-                    return 'col-1';
+                    lineAmount = 4;
+                    colClass = 'col-2';
+                    break
+                case 25:
+                case 26:
+                case 27:
+                case 28:
+                case 29:
+                case 30:
+                    lineAmount = 5;
+                    colClass = 'col-2';
+                    break
+                case 31:
+                case 32:
+                case 33:
+                case 34:
+                case 35:
+                case 36:
+                    lineAmount = 6;
+                    colClass = 'col-2';
+                    break
                 default:
-                    return 'col'
+                    colClass = 'col';
+                    break
             }
+
+            return isGetLineAmount === true ? lineAmount : colClass;
         }
 
         generate_col(config, colCls) {
@@ -121,15 +158,52 @@ $(document).ready(function () {
                         let iconPrimary = $(`<i class="fa-solid fa-key ml-1" style="color: green;transform: rotate(-45deg);" data-bs-toggle="tooltip" title="${$.fn.gettext("Foreign key")} - ${item?.['is_foreign_key']}"></i>`);
                         col$.append(iconPrimary);
                     }
+                    if (item?.['is_unique'] === true){
+                        let iconUnique = $(`<i class="fa-regular fa-star ml-1" style="color: #ffc400;" data-bs-toggle="tooltip" title="${$.fn.gettext("Unique")}"></i>`);
+                        col$.append(iconUnique);
+                    }
+                    if ((item?.['is_unique_together'] || []).length > 0){
+                        let iconUnique = $(`<i class="fa-solid fa-star ml-1" style="color: #ff9100;" data-bs-toggle="tooltip" title="${$.fn.gettext("Unique together")}: ${(item?.['is_unique_together'] || []).join(' - ')}"></i>`);
+                        col$.append(iconUnique);
+                    }
+
                     // attribute
                     let txtAttribute = [];
+                    let hadType = false;
+                    if (item?.['type']){
+                        hadType = true;
+                        switch (item?.['type']) {
+                            case 'number':
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${$.fn.gettext('Number')}</small></li>`);
+                                break
+                            case 'string':
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${$.fn.gettext('String')}</small></li>`);
+                                break
+                            case 'array split by commas':
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${$.fn.gettext('Array split by commas')}</small></li>`);
+                                break
+                            case 'json':
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${$.fn.gettext('json')}</small></li>`);
+                                break
+                            case 'phone number vietnam':
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${$.fn.gettext('Phone number Vietnam')}</small></li>`);
+                                break
+                            case 'email':
+                                txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${$.fn.gettext('Email address')}</small></li>`);
+                                break
+                            default:
+                                hadType = false;
+                                break;
+                        }
+
+                    }
                     if (item?.['input_attrs']) {
                         (item?.['input_attrs']?.['args'] || []).map(
                             (item2) => {
                                 switch (item2) {
                                     case "required":
                                         col$.append(`<i class="fa-solid fa-asterisk fa-2xs ml-1" style="color:red;" data-bs-toggle="tooltip" title="${$.fn.gettext('required')}"></i>`)
-                                        txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('required')}</small></li>`)
+                                        // txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('required')}</small></li>`)
                                         break
                                     case "data-unique":
                                         txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('unique')}</small></li>`)
@@ -141,7 +215,8 @@ $(document).ready(function () {
                         for (let item2 in kwargs) {
                             switch (item2) {
                                 case "type":
-                                    txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${kwargs[item2]}</small></li>`)
+                                    if (hadType === false)
+                                        txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('type')}: ${kwargs[item2]}</small></li>`)
                                     break
                                 case "minlength":
                                     txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('minlength')}: ${kwargs[item2]}</small></li>`)
@@ -149,7 +224,7 @@ $(document).ready(function () {
                                 case "maxlength":
                                     txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('maxlength')}: ${kwargs[item2]}</small></li>`)
                                     break
-                                case "data-valid-check-phone-vn":
+                                case "data-valid-phone-vn":
                                     let state = kwargs[item2] === true ? $.fn.gettext('True') : $.fn.gettext('False');
                                     txtAttribute.push(`<li><small class="no-transform">${$.fn.gettext('Phone Number Vietnam')}: ${state}</small></li>`)
                                     break
@@ -244,63 +319,115 @@ $(document).ready(function () {
 
             function generate_form_group(data, config, dataIndex) {
                 let group$ = $(`<div class="form-group position-relative fimport-main-group-input"></div>`);
-                let inp$ = $(`<input class="form-control" value="${data ? data : ''}"/>`);
 
-                let inpName = config?.['input_name'] || null;
-                if (inpName) inp$.attr('name', inpName);
+                let inp$ = null;
+                let dataList$ = null;
+                let select2Config$ = null;
 
-                let inpAttrs = {
-                    'args': !!(config?.['input_attrs'] || null) ? [] : ['disabled', 'readonly'],
-                    'kwargs': {
-                        class: 'form-control-plaintext',
-                    }, ...config?.['input_attrs'] || {},
-                };
-                inp$
-                    .attr('data-index', dataIndex);
-                group$
-                    .attr('data-bs-toggle', 'tooltip')
-                    .attr('title', `${$.fn.gettext('Data field')}: ${config.name || ''}`);
+                const inputType = config?.['type'] || null;
+                const dataList = config?.['data_list'] || [];
+                const selectConfig = config?.['select2_config'] || {};
+                switch (inputType) {
+                    case 'select':
+                        inp$ = $(`<select class="form-select"></select>`);
+                        dataList.map(
+                            (item) => {
+                                let selectedTxt = item[0].toString() === data.toString() ? "selected" : "";
+                                inp$.append(`<option value="${$x.fn.escapeHTML(item[0])}" ${selectedTxt}>${$x.fn.escapeHTML(item[1])}</option>`);
+                            }
+                        )
+                        Object.keys(selectConfig).map(
+                            key => {
+                                switch (key) {
+                                    case 'multiple':
+                                        inp$.prop('multiple', selectConfig[key] === true);
+                                        break
+                                    default:
+                                        inp$.attr(`data-${key}`, selectConfig[key]);
+                                        break
+                                }
+                            }
+                        )
+                        select2Config$ = $(`<script type="application/json" class="fimport-select2-config">${JSON.stringify(selectConfig)}</script>`);
+                        break
+                    default:
+                        // inp$ = $(`<input class="form-control" value="${data ? $x.fn.escapeHTML(data) : ''}"/>`);
+                        inp$ = $(`<input class="form-control" />`);
+                        if (dataList.length > 0){
+                            let idGen = $x.fn.randomStr(32, true);
+                            dataList$ = $(`<datalist id="${idGen}"></datalist>`);
+                            dataList.map(
+                                (item) => {
+                                    dataList$.append(`<option value="${item[0]}">${item[1]}</option>`);
+                                }
+                            )
+                            inp$.attr('list', idGen);
+                        }
+                        break
+                }
 
-                // fill args kwargs to input
-                inpAttrs.args.map((attData) => inp$.prop(attData, true))
-                Object.keys(inpAttrs.kwargs).map((key) => {
-                    inp$.attr(key, inpAttrs.kwargs[key]);
-                })
-                group$.append(inp$);
+                if (inp$ instanceof jQuery && inp$.length > 0){
+                    let inpName = config?.['input_name'] || null;
+                    if (inpName) inp$.attr('name', inpName);
 
-                //
-                let groupBigEdit$ = $(``);
-                if (config?.['allow_edit_big_field'] === true) {
-                    group$.append(
-                        `<button 
+                    let inpAttrs = {
+                        'args': !!(config?.['input_attrs'] || null) ? [] : ['disabled', 'readonly'],
+                        'kwargs': {
+                            class: 'form-control-plaintext',
+                        }, ...config?.['input_attrs'] || {},
+                    };
+                    inp$
+                        .attr('data-index', dataIndex);
+                    group$
+                        .attr('data-bs-toggle', 'tooltip')
+                        .attr('title', `${$.fn.gettext('Data field')}: ${config.name || ''}`);
+
+                    // fill args kwargs to input
+                    inpAttrs.args.map((attData) => inp$.prop(attData, true))
+                    Object.keys(inpAttrs.kwargs).map((key) => {
+                        inp$.attr(key, inpAttrs.kwargs[key]);
+                    })
+                    group$.append(inp$);
+                    if (dataList) group$.append(dataList$);
+                    if (select2Config$) group$.append(select2Config$);
+
+                    //
+                    let groupBigEdit$ = $(``);
+                    if (config?.['allow_edit_big_field'] === true) {
+                        group$.append(
+                            `<button 
                             type="button" 
                             class="btn btn-icon btn-rounded btn-warning btn-xs btnBigInputEdit"
                             data-bs-toggle="tooltip"
                             title="${$.fn.gettext('Edit with big field')}"
                         ><span class="icon"><i class="fa-solid fa-pen"></i></span></button>`
-                    );
+                        );
 
-                    groupBigEdit$ = $(`
+                        groupBigEdit$ = $(`
                         <div 
                             class="form-group position-relative fimport-sub-group-input" style="display: none;"
                             data-bs-toggle="tooltip"
                             title="${$.fn.gettext('Update value to main field and close')}"
                         ></div>
                     `)
-                    groupBigEdit$.append(
-                        `<textarea 
+                        groupBigEdit$.append(
+                            `<textarea 
                             rows="4"
                             class="form-control textareaUpdateInputCell"
                             data-bs-toggle="tooltip" title="${$.fn.gettext('You can resize the input box by clicking and dragging the button at the bottom right corner.')}"
                         ></textarea>`
-                    ).append(
-                        `<button 
+                        ).append(
+                            `<button 
                             type="button" 
                             class="btn btn-icon btn-rounded btn-success btn-xs btnBigInputSave"><span class="icon"><i class="fa-solid fa-check"></i></span>
                         </button>`
-                    );
+                        );
+                    }
+                    return [group$, groupBigEdit$];
+                } else {
+                    console.log('Create input fail with config:', dataIndex, data, config);
                 }
-                return [group$, groupBigEdit$];
+                return [null, null];
             }
 
             return [
@@ -324,7 +451,7 @@ $(document).ready(function () {
                     data: "data",
                     className: 'my-custom-align',
                     render: (data, type, row) => {
-                        return data[0] || '';
+                        return data?.[0] || '';
                     }
                 },
                 {
@@ -431,7 +558,7 @@ $(document).ready(function () {
                 columns: this.get_columns(),
                 data: [],
                 scrollCollapse: true,
-                scrollY: `${RenderData.getHeightAvailableForTable()}px`,
+                scrollY: `${this.getHeightAvailableForTable()}px`,
                 scrollX: true,
                 initComplete: function () {
                     $x.fn.hideLoadingPage();
@@ -564,6 +691,7 @@ $(document).ready(function () {
                     $(row).find('.btnBigInputEdit').off('click').on('click', function () {
                         let btnThis = $(this);
 
+                        // handle event big editor of field
                         let mainGroup = $(this).closest('.fimport-main-group-input');
                         let subGroup = mainGroup.parent().find('.fimport-sub-group-input');
                         if (mainGroup.length > 0 && subGroup.length > 0) {
@@ -595,15 +723,19 @@ $(document).ready(function () {
                         }
                     })
 
+                    // get data support listen, push data, valid
                     if (!$(row).attr('id')) $(row).attr('id', `id-${$x.fn.randomStr(32)}`);
                     $(row).attr('data-url', '#');
                     $(row).attr('data-method', "POST");
-
                     let frm$ = $(row).find('form');
                     let btn$ = $(row).find('button.btnSubmit');
                     let inpCheckAll$ = $(row).find('input[type=checkbox].inp-checkall');
-                    let inp$ = $(row).find('input:not(:disabled):not(:read-only):not(.form-control-plaintext)');
 
+                    // set value for ':input' by data-index
+                    let dataOfRow = data.data || {};
+                    Object.keys(dataOfRow).map(key => frm$.find(`:input[data-index=${key}]`).val(dataOfRow[key]))
+
+                    // button click call on-submit
                     btn$
                         .off('click')
                         .on('click', function () {
@@ -612,6 +744,7 @@ $(document).ready(function () {
                             setTimeout(() => $(this).prop('disabled', false), 1000)
                         });
 
+                    // define trigger 'valid' for row (tr element)
                     $(row).on('valid', function () {
                         if (frm$.valid()) {
                             inpCheckAll$.prop('checked') === true ? addToSelected(data, inpCheckAll$.attr('id')) : removeToSelected(data, inpCheckAll$.attr('id'));
@@ -634,6 +767,7 @@ $(document).ready(function () {
                         }
                     });
 
+                    // setup validate for form
                     new SetupFormSubmit(frm$).validate({
                         rules: clsThis.templateConfig?.['validate'] || {},
                         submitHandler: async function (form, event) {
@@ -641,10 +775,7 @@ $(document).ready(function () {
                         },
                     });
 
-                    inp$
-                        .off('change')
-                        .on('change', () => $(row).trigger('valid'));
-
+                    // on change handle valid this form (all field in form)
                     inpCheckAll$
                         .off('change')
                         .on('change', function () {
@@ -654,7 +785,38 @@ $(document).ready(function () {
                             $(row).trigger('valid');
                         });
 
-                    // valid when callback firing
+                    let inp$ = $(row).find('input:not(:disabled):not(.form-control-plaintext)');
+
+                    // on input handle valid this field (only this field fire 'input' trigger)
+                    inp$
+                        .off('change')
+                        .on('change', function(){
+                            // on change call valid in form
+                            $(row).trigger('valid')
+                        })
+                        .off('input')
+                        .on('input', function (){
+                            // input calling valid in field.
+                            $(this).valid();
+                        });
+
+                    // init select2 for all select in form (get config from script.fimport-select2-config in form-group
+                    let select$ = $(row).find('select:not(:disabled):not(.form-control-plaintext)');
+                    select$.each(function (){
+                        $(this).off('change');
+
+                        let select2Config$ = $(this).closest('.form-group').find('script.fimport-select2-config');
+                        let select2Config = select2Config$.length > 0 ? JSON.parse(select2Config$.text()) : {};
+
+                        if ($(this).hasClass("select2-hidden-accessible")) $(this).select2('destroy');
+                        $(this).initSelect2(select2Config);
+
+                        $(this).on('change', function (){
+                            $(this).valid();
+                        });
+                    })
+
+                    // valid when callback firing after 0.2s
                     setTimeout(() => $(row).trigger('valid'), 200);
                 },
             });

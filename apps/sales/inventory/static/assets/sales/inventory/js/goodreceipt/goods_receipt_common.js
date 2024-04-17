@@ -3199,7 +3199,6 @@ class GRSubmitHandle {
         if (type === '2') {
             _form.dataForm['purchase_order'] = null;
             _form.dataForm['supplier'] = null;
-            _form.dataForm['inventory_adjustment'] = GRLoadDataHandle.IASelectEle.val();
             if (GRLoadDataHandle.IASelectEle.val()) {
                 _form.dataForm['inventory_adjustment_data'] = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, GRLoadDataHandle.IASelectEle.val());
             }

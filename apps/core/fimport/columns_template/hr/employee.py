@@ -2,8 +2,9 @@ __all__ = ['COLUMNS_HR_EMPLOYEE']
 
 from django.utils.translation import gettext_lazy as _
 
-from apps.core.fimport.columns_template.app_name import SHEET_ACCOUNT_USERS
-from apps.core.fimport.columns_template.hr.app_name import SHEET_HR_EMPLOYEE, SHEET_HR_GROUP, SHEET_HR_ROLE
+from apps.core.fimport.columns_template.app_name import (
+    SHEET_ACCOUNT_USERS, SHEET_HR_EMPLOYEE, SHEET_HR_GROUP, SHEET_HR_ROLE,
+)
 from apps.core.fimport.columns_template.tools import ResolveColumnsFImport
 
 COLUMNS_HR_EMPLOYEE = ResolveColumnsFImport(
@@ -94,7 +95,7 @@ COLUMNS_HR_EMPLOYEE = ResolveColumnsFImport(
                 'args': ['required'],
                 'kwargs': {
                     'type': 'tel',
-                    'data-valid-check-phone-vn': True,
+                    'data-valid-phone-vn': True,
                     'maxlength': 25,
                 },
             },
@@ -119,13 +120,14 @@ COLUMNS_HR_EMPLOYEE = ResolveColumnsFImport(
             'type': 'string',
             'remarks': [
                 _('Date joined of employee'),
-                _('Format: dd/mm/YYYY'),
+                _('Format: DD-MM-YYYY'),
             ],
             'input_attrs': {
                 'args': ['required'],
                 'kwargs': {
                     'type': 'text',
-                    'data-valid-check-date': True,
+                    'data-valid-date': True,
+                    'data-date-format': 'DD-MM-YYYY',
                 },
             },
         },
@@ -135,12 +137,13 @@ COLUMNS_HR_EMPLOYEE = ResolveColumnsFImport(
             'type': 'string',
             'remarks': [
                 _('DOB of employee'),
-                _('Format: dd/mm/YYYY'),
+                _('Format: DD-MM-YYYY'),
             ],
             'input_attrs': {
                 'kwargs': {
                     'type': 'text',
-                    'data-valid-check-date': True,
+                    'data-valid-date': True,
+                    'data-date-format': 'DD-MM-YYYY',
                 },
             },
         },

@@ -133,15 +133,17 @@
             {# Bubble #}
             .scrollToTop {
                 position: fixed;
-                bottom: 75px;
-                right: 40px;
+                bottom: 1rem;
+                right: 2rem;
                 display: none;
-                background-color: #298dff;
+                background-color: #379aff;
                 z-index: 9999999;
                 border-radius: 5px;
+                opacity: 0.2;
             }
             .scrollToTop:hover {
                 background-color: #165598;
+                opacity: 1;
             }
         </style>
 
@@ -180,7 +182,7 @@
 <!-- Bubble -->
 <button
         id="bubble-scrollToTop"
-        class="scrollToTop btn btn-md btn-icon btn-rounded"
+        class="scrollToTop btn btn-sm btn-icon btn-rounded"
         data-bs-toggle="tooltip"
         title="{% trans 'Back to top' %}"
 >

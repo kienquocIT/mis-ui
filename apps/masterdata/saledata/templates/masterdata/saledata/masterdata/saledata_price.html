@@ -134,16 +134,22 @@
             <div class="lookup-data" id="section-payment-terms" style="display: none">
                 <table id="datatable-payment-terms" class="table nowrap w-100 mb-5"
                        data-url="{% url "PaymentsTermsListAPI" %}"
-                       data-method="GET" data-redirect="{% url 'PriceMasterDataList' %}#section-payment-terms">
+                       data-method="GET" data-redirect="{% url 'PriceMasterDataList' %}#section-payment-terms"
+                >
                     <thead>
-                    <th class="w-5">#</th>
-                    <th class="w-30">{% trans "Name" %}
-                        <i class="fas fa-info-circle icon-info"
-                           data-bs-toggle="tooltip" data-bs-placement="bottom" title=""
-                           data-bs-original-title="{% trans 'Click on title to move detail page.' %}."></i></th>
-                    <th class="w-30">{% trans "Transaction Type" %}</th>
-                    <th class="w-5"></th>
+                        <th>#</th>
+                        <th>{% trans "Name" %}
+                            <i
+                                    class="fas fa-info-circle icon-info"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title=""
+                                    data-bs-original-title="{% trans 'Click on title to move detail page.' %}."
+                            ></i>
+                        </th>
+                        <th>{% trans 'Code' %}</th>
+                        <th>{% trans "Transaction Type" %}</th>
+                        <th>{% trans 'Action' %}</th>
                     </thead>
+                    <tbody></tbody>
                 </table>
             </div>
 
@@ -152,52 +158,65 @@
                     {% csrf_token %}
                     <input type="hidden" name="payment_terms_id">
                     <div class="row">
-                        <div class="form-group col-6">
-                            <label class="form-label">{% trans "Name" %}<span class="field-required">*</span></label>
-                            <input class="form-control" name="title" placeholder="Input name" type="text" required>
-                        </div>
-                        <div class="form-group col-6">
-                            <label class="form-label">{% trans "For" %}</label>
-                            <select class="form-select" name="apply_for">
-                                <option value="0">{% trans "Sale" %}</option>
-                                <option value="1">{% trans "Purchase" %}</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">{% trans "Description" %}</label>
-                            <textarea class="form-control" name="remark" placeholder="Input text" rows="3"></textarea>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-lg-3 col-xs-12">
-                                <button class="btn btn-flush-success"
-                                        data-bs-toggle="modal" data-bs-target="#modal-add-table"
-                                        type="button">
-                                            <span data-bs-toggle="tooltip"
-                                                  data-bs-placement="bottom"
-                                                  title="{% trans 'Add' %}">
-                                                <span class="icon">
-                                                    <i class="far fa-plus-square"></i>
-                                                </span>
-                                                <span>
-                                                    {% trans 'Add new line' %}
-                                                </span>
-                                            </span>
-                                </button>
+                        <div class="col-sm-12 col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="inp-name">{% trans "Name" %}</label>
+                                <input class="form-control" name="title" id="inp-name" placeholder="{% trans '30-30-40 Split Payment' %}" type="text" required>
                             </div>
                         </div>
+                        <div class=" col-sm-12 col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="inp-code">{% trans "Code" %}</label>
+                                <input
+                                        class="form-control"
+                                        name="code"
+                                        id="inp-code"
+                                        placeholder="TT-30-30-40"
+                                        type="text" required
+                                        minlength="1" maxlength="100"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="inp-apply-for">{% trans "Apply for" %}</label>
+                                <select class="form-select" name="apply_for" required id="inp-apply-for">
+                                    <option value="0">{% trans "Sale" %}</option>
+                                    <option value="1">{% trans "Purchase" %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label" for="inp-remarks">{% trans "Description" %}</label>
+                                <textarea class="form-control" name="remark" placeholder="{% trans 'Payment in 3 installments' %}" rows="3" id="inp-remarks"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-lg-3 col-xs-12">
+                            <button
+                                    class="btn btn-flush-success"
+                                    data-bs-toggle="modal" data-bs-target="#modal-add-table"
+                                    type="button"
+                            >
+                                <span><span class="icon"><i class="far fa-plus-square"></i></span><span>{% trans 'Add new line' %}</span></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
                         <table id="table_terms" class="table nowrap w-100 mb-5">
                             <thead>
-                            <th class="w-5">#</th>
-                            <th class="w-30">{% trans "Value" %}</th>
-                            <th class="w-30">{% trans "Value type" %}</th>
-                            <th class="w-30">{% trans "No of days" %}</th>
-                            <th class="w-30">{% trans "day type" %}</th>
-                            <th class="w-20">{% trans "after" %}</th>
-                            <th class="w-5"></th>
+                            <th>#</th>
+                            <th>{% trans "Value" %}</th>
+                            <th>{% trans "Value type" %}</th>
+                            <th>{% trans "No of days" %}</th>
+                            <th>{% trans "day type" %}</th>
+                            <th>{% trans "after" %}</th>
+                            <th>{% trans 'Action' %}</th>
                             </thead>
                             <tbody></tbody>
                         </table>
-
                     </div>
                 </form>
             </div>
@@ -379,7 +398,7 @@
                             <div class="form-group col-6">
                                 <label class="form-label">{% trans "Unit Type" %}</label>
                                 <select class="form-select" id="select-box-unit-type" name="unit_type" required>
-                                    <option value="" disabled selected hidden>select option..</option>
+                                    <option value="" disabled selected hidden>{% trans 'Select option' %}...</option>
                                     {% for u in data.pay_terms_unit %}
                                         <option value="{{ u.value }}">{{ u.text }}</option>
                                     {% endfor %}
@@ -398,7 +417,7 @@
                             <div class="form-group col-6">
                                 <label class="form-label">{% trans "Day Type" %}</label>
                                 <select class="form-select" id="select-box-day-type" name="day_type" required>
-                                    <option value="" disabled selected hidden>select option..</option>
+                                    <option value="" disabled selected hidden>{% trans 'Select option' %}...</option>
                                     {% for t in data.pay_teams_type %}
                                         <option value="{{ t.value }}">{{ t.text }}</option>
                                     {% endfor %}
@@ -416,7 +435,7 @@
                         <div class="form-group">
                             <label class="form-label">{% trans "After" %}</label>
                             <select id="select-box-after" class="form-select" name="after" required>
-                                <option value="" disabled selected hidden>Select option..</option>
+                                <option value="" disabled selected hidden>{% trans 'Select option' %}...</option>
                                 {% for a in data.pay_teams_after %}
                                     <option value="{{ a.value }}">{{ a.text }}</option>
                                 {% endfor %}

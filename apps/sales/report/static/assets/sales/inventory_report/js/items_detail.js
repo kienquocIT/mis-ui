@@ -195,6 +195,9 @@ $(document).ready(function () {
                                             if (activity?.['trans_title'] === 'Goods return') {
                                                 text_color = 'blue'
                                             }
+                                            if (activity?.['trans_title'] === 'Goods receipt (IA)') {
+                                                text_color = 'orange'
+                                            }
                                             let trans_title_sub = {
                                                 'Goods receipt': trans_script.attr('data-trans-grc'),
                                                 'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
@@ -289,6 +292,9 @@ $(document).ready(function () {
                                         let text_color = 'primary'
                                         if (activity?.['trans_title'] === 'Goods return') {
                                             text_color = 'blue'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods receipt (IA)') {
+                                            text_color = 'orange'
                                         }
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),

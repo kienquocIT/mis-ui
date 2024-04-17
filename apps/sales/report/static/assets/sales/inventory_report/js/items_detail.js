@@ -197,6 +197,7 @@ $(document).ready(function () {
                                             }
                                             let trans_title_sub = {
                                                 'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                 'Goods return': trans_script.attr('data-trans-grt'),
                                                 'Delivery': trans_script.attr('data-trans-dlvr'),
                                             }
@@ -226,6 +227,7 @@ $(document).ready(function () {
                                         } else {
                                             let trans_title_sub = {
                                                 'Goods receipt': trans_script.attr('data-trans-grc'),
+                                                'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                 'Goods return': trans_script.attr('data-trans-grt'),
                                                 'Delivery': trans_script.attr('data-trans-dlvr'),
                                             }
@@ -290,6 +292,7 @@ $(document).ready(function () {
                                         }
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                             'Goods return': trans_script.attr('data-trans-grt'),
                                             'Delivery': trans_script.attr('data-trans-dlvr'),
                                         }
@@ -319,6 +322,7 @@ $(document).ready(function () {
                                     } else {
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                             'Goods return': trans_script.attr('data-trans-grt'),
                                             'Delivery': trans_script.attr('data-trans-dlvr'),
                                         }

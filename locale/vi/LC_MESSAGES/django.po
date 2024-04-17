@@ -4357,7 +4357,7 @@ msgstr "Yêu cầu"
 
 #
 msgid "Note"
-msgstr "Chú ý"
+msgstr "Ghi chú"
 
 #
 msgid "Purchase Request"
@@ -4638,8 +4638,8 @@ msgid "Must select one warehouse"
 msgstr "Phải chọn một kho"
 
 #
-msgid "Quantity import must be less than equal remain quantity"
-msgstr "Số lượng nhập kho phải nhỏ hơn hoặc bằng số lượng chưa nhập"
+msgid "Exceeded remaining quantity"
+msgstr "Vượt quá số lượng còn lại"
 
 #
 msgid "Goods receipt"
@@ -6599,7 +6599,7 @@ msgstr "Số hoá đơn"
 
 #
 msgid "Tax value"
-msgstr "Thuế"
+msgstr "Giá trị thuế"
 
 #
 msgid "Tax number"
@@ -6924,3 +6924,219 @@ msgstr "Số lượng đơn hàng"
 #
 msgid "Revenue average"
 msgstr "Doanh thu trung bình"
+
+#
+msgid "OPENING"
+msgstr "TỒN ĐẦU"
+
+#
+msgid "INPUT"
+msgstr "NHẬP"
+
+#
+msgid "OUTPUT"
+msgstr "XUẤT"
+
+#
+msgid "ENDING"
+msgstr "TỒN CUỐI"
+
+#
+msgid "Show detail"
+msgstr "Xem chi tiết"
+
+#
+msgid "Valuation method"
+msgstr "Phương pháp tính"
+
+#
+msgid "System date"
+msgstr "Ngày hệ thống"
+
+#
+msgid "Trans description"
+msgstr "Mô tả giao dịch"
+
+#
+msgid "Trans code"
+msgstr "Mã giao dịch"
+
+#
+msgid "In quantity"
+msgstr "SL nhập"
+
+#
+msgid "In cost"
+msgstr "Đơn giá nhập"
+
+#
+msgid "In value"
+msgstr "Giá trị nhập kho"
+
+#
+msgid "Out quantity"
+msgstr "SL xuất"
+
+#
+msgid "Out cost"
+msgstr "Đơn giá xuất"
+
+#
+msgid "Out value"
+msgstr "Giá trị xuất kho"
+
+#
+msgid "Reload invoice status"
+msgstr "Đồng bộ trạng thái hoá đơn"
+
+#
+msgid "Buyer name"
+msgstr "Tên người mua hàng"
+
+#
+msgid "Billing address"
+msgstr "Địa chỉ xuất hoá đơn"
+
+#
+msgid "Bank code"
+msgstr "Mã ngân hàng"
+
+#
+msgid "Bank number"
+msgstr "STK ngân hàng"
+
+#
+msgid "Discount rate"
+msgstr "% giảm giá"
+
+#
+msgid "Discount value"
+msgstr "Giá trị giảm giá"
+
+#
+msgid "Total amount"
+msgstr "Tổng giá trị"
+
+#
+msgid "<No invoice number>"
+msgstr "<Chưa có số HĐ>"
+
+#
+msgid "Create invoice"
+msgstr "Tạo HĐ điện tử"
+
+#
+msgid "Update invoice"
+msgstr "Cập nhập HĐ điện tử"
+
+#
+msgid "View invoice"
+msgstr "Xem HĐ điện tử"
+
+#
+msgid "Inventory Report"
+msgstr "Báo cáo tồn kho"
+
+#
+msgid "Cumulative quantity"
+msgstr "Số lượng tích luỹ"
+
+#
+msgid "Cumulative cost"
+msgstr "Đơn giá tích luỹ"
+
+#
+msgid "Cumulative value"
+msgstr "Giá trị tích luỹ"
+
+#
+msgid "Goods return"
+msgstr "Đổi-trả hàng"
+
+#
+msgid "Opening balance"
+msgstr "Tồn đầu kỳ"
+
+#
+msgid "Expired date"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Create business trip"
+msgstr "Tạo chuyến công tác"
+
+#
+msgid "Schedule a meeting"
+msgstr "Lên lịch cuộc họp"
+
+#
+msgid "Create leave"
+msgstr "Tạo nghỉ phép"
+
+#
+msgid "Require input data in payment tab (same to purchase order)"
+msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
+
+#
+msgid "Show data have win rate is 100%"
+msgstr "Hiển thị dữ liệu có tỷ lệ thắng 100%"
+
+#
+msgid "Select document save status"
+msgstr "Chọn trạng thái lưu phiếu"
+
+#
+msgid "Please enter sufficient quantity"
+msgstr "Vui lòng nhập đủ số lượng"
+
+#
+msgid "Cancel document"
+msgstr "Hủy phiếu"
+
+#
+msgid "Total payment must less than or equal to total before tax"
+msgstr "Tổng thanh toán phải nhỏ hơn hoặc bằng tổng giá trị trước thuế"
+
+#
+msgid "Change"
+msgstr "Thay đổi"
+
+#
+msgid "Back"
+msgstr "Quay lại"
+
+#
+msgid "Save and apply workflow"
+msgstr "Lưu và áp dụng quy trình"
+
+#
+msgid "Save change"
+msgstr "Lưu thay đổi"
+
+#
+msgid "You won't be able to undo this action!"
+msgstr "Bạn sẽ không thể hoàn tác hành động này!"
+
+#
+msgid "Document was canceled by creator"
+msgstr "Phiếu bị hủy bỏ bởi người tạo"
+
+#
+msgid "Select save status"
+msgstr "Chọn trạng thái lưu"
+
+#
+msgid "Inventory interact config"
+msgstr "Cấu hình tương tác kho"
+
+#
+msgid "Can interact in these warehouses"
+msgstr "Có thể tương tác với các kho"
+
+#
+msgid "Add new config"
+msgstr "Thêm cấu hình mới"
+
+#
+msgid "Warehouse address"
+msgstr "Địa chỉ kho"

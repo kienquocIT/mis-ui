@@ -334,7 +334,7 @@ $('#add-product-btn').on('click', function () {
     $('#select-wh-return-div').html('')
     for (const item of WH_LIST) {
         $('#select-wh-return-div').append(`
-            <div class="col-4">
+            <div class="col-4 mb-3">
                 <div style="width: 100%; height: 100%;" class="px-3 py-3 bg-gray-light-4 border rounded-5 wh-seletion" data-is-selected="false" data-wh-id="${item?.['id']}" data-wh-code="${item?.['code']}" data-wh-title="${item?.['title']}">
                     <span class="badge badge-soft-primary mb-1">${item?.['code']}</span><br>
                     <span class="text-secondary"><b>${item?.['title']}</b></span>

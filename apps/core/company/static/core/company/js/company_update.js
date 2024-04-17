@@ -20,7 +20,6 @@ $(document).ready(function () {
         dataBodyConfig['default_inventory_value_method'] = $('#default-inventory-value-method').val();
         dataBodyConfig['cost_per_warehouse'] = $('#cost-per-warehouse').is(':checked');
         dataBodyConfig['cost_per_lot_batch'] = $('#cost-per-lot-batch').is(':checked');
-
         if (
             dataBodyConfig['currency_rule'] &&
             (

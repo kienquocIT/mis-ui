@@ -12,6 +12,63 @@
             font-size: medium !important;
         }
     </style>
+    <style>
+        .custom-scroll {
+            position: relative;
+            margin: auto;
+        }
+        .first-col-x {
+            min-width: 200px;
+            position: sticky;
+            left: 0;
+        }
+        .second-col-x {
+            min-width: 500px;
+            position: sticky;
+            left: 200px;
+        }
+        thead .first-col {
+            background-color: rgba(197, 197, 197, var(--bs-bg-opacity)) !important;
+        }
+        thead .second-col {
+            background-color: rgba(197, 197, 197, var(--bs-bg-opacity)) !important;
+        }
+        tbody .first-col {
+            background-color: #fff;
+        }
+        tbody .second-col {
+            background-color: #fff;
+        }
+        tbody .first-col-x {
+            background-color: #eaeaea;
+        }
+        tbody .second-col-x {
+            background-color: #eaeaea;
+        }
+        .table-wrap {
+            width: 100%;
+            overflow: auto;
+        }
+        .fixed_header {
+            width: 100%;
+            margin: auto;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .table-wrap .fixed_header thead {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        .table-wrap .fixed_header .first-col {
+            position: sticky;
+            left: 0;
+        }
+        .table-wrap .fixed_header .second-col {
+            position: sticky;
+            left: 200px;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
@@ -32,6 +89,11 @@
             data-trans-revenue="{% trans 'Revenue' %}"
             data-trans-net-profit="{% trans 'Net income' %}"
             data-trans-gross-profit="{% trans 'Gross profit' %}"
+            data-trans-we="{% trans 'Weighted average' %}"
+            data-trans-ob="{% trans 'Opening balance' %}"
+            data-trans-grc="{% trans 'Goods receipt' %}"
+            data-trans-grt="{% trans 'Goods return' %}"
+            data-trans-dlvr="{% trans 'Delivery' %}"
     ></script>
 
     <script id="url-script"
@@ -78,31 +140,35 @@
     </div>
     <div class="row mt-5">
         <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
-            <table class="table nowrap w-100" id="items_detail_report_table">
-                <thead>
-                <tr class="bg-secondary-light-3">
-                    <th class="border-1">{% trans 'Code' %}</th>
-                    <th class="border-1">{% trans 'Name' %}</th>
-                    <th class="border-1">{% trans 'Valuation method' %}</th>
-                    <th class="border-1">{% trans 'Warehouse' %}</th>
-                    <th class="border-1">{% trans 'System date' %}</th>
-                    <th class="border-1" hidden>{% trans 'Posting date' %}</th>
-                    <th class="border-1" hidden>{% trans 'Document date' %}</th>
-                    <th class="border-1">{% trans 'Trans description' %}</th>
-                    <th class="border-1">{% trans 'Trans code' %}</th>
-                    <th class="border-1">{% trans 'In quantity' %}</th>
-                    <th class="border-1">{% trans 'In cost' %}</th>
-                    <th class="border-1">{% trans 'In value' %}</th>
-                    <th class="border-1">{% trans 'Out quantity' %}</th>
-                    <th class="border-1">{% trans 'Out cost' %}</th>
-                    <th class="border-1">{% trans 'Out value' %}</th>
-                    <th class="border-1">{% trans 'Cumulative quantity' %}</th>
-                    <th class="border-1">{% trans 'Cumulative cost' %}</th>
-                    <th class="border-1">{% trans 'Cumulative value' %}</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="custom-scroll">
+                <div class="table-wrap" style="max-height: 65vh">
+                    <table class="table nowrap w-100 fixed_header" id="items_detail_report_table">
+                        <thead class="row-fixed">
+                            <tr class="bg-secondary-light-3">
+                                <th class="border-1 first-col">{% trans 'Code' %}</th>
+                                <th class="border-1 second-col">{% trans 'Name' %}</th>
+                                <th class="border-1">{% trans 'Valuation method' %}</th>
+                                <th class="border-1">{% trans 'Warehouse' %}</th>
+                                <th class="border-1">{% trans 'System date' %}</th>
+                                <th class="border-1" hidden>{% trans 'Posting date' %}</th>
+                                <th class="border-1" hidden>{% trans 'Document date' %}</th>
+                                <th class="border-1">{% trans 'Trans description' %}</th>
+                                <th class="border-1">{% trans 'Trans code' %}</th>
+                                <th class="border-1">{% trans 'In quantity' %}</th>
+                                <th class="border-1">{% trans 'In cost' %}</th>
+                                <th class="border-1">{% trans 'In value' %}</th>
+                                <th class="border-1">{% trans 'Out quantity' %}</th>
+                                <th class="border-1">{% trans 'Out cost' %}</th>
+                                <th class="border-1">{% trans 'Out value' %}</th>
+                                <th class="border-1">{% trans 'Cumulative quantity' %}</th>
+                                <th class="border-1">{% trans 'Cumulative cost' %}</th>
+                                <th class="border-1">{% trans 'Cumulative value' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

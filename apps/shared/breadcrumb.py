@@ -311,7 +311,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     BALANCE_INIT_PAGE = BreadcrumbChildren(_('Balance initialization'), 'BalanceInitList')
 
-    INVOICE_SIGN_PAGE = BreadcrumbChildren(_('Invoice sign'), 'BalanceInitList')
+    INVOICE_SIGN_PAGE = BreadcrumbChildren(_('Invoice sign'), 'InvoiceSignList')
+
+    INVENTORY_INTERACT_CONFIG = BreadcrumbChildren(_('Inventory interact config'), 'InventoryInteractConfigList')
 
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 
@@ -823,6 +825,8 @@ class BreadcrumbView:
     BALANCE_INIT_PAGE = [BreadcrumbItem.BALANCE_INIT_PAGE]
 
     INVOICE_SIGN_PAGE = [BreadcrumbItem.INVOICE_SIGN_PAGE]
+
+    INVENTORY_INTERACT_CONFIG = [BreadcrumbItem.INVENTORY_INTERACT_CONFIG]
 
     REVENUE_PLAN_CONFIG_PAGE = [BreadcrumbItem.REVENUE_PLAN_CONFIG_PAGE]
 

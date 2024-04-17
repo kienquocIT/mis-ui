@@ -68,6 +68,10 @@ $(document).ready(function () {
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
 
+            if (opportunity_detail_data?.['is_deal_close'] === true) {
+                $('.page-content input, .page-content select, .page-content .btn').not($('#input-close-deal')).not($('#rangeInput')).prop('disabled', true);
+            }
+
             const config = results[1];
             const config_is_select_stage = config.is_select_stage;
             const config_is_AM_create = config.is_account_manager_create;
@@ -169,17 +173,17 @@ $(document).ready(function () {
             }
 
             loadDetail(opportunity_detail_data).then(function () {
-                autoLoadStage(
-                    true,
-                    false,
-                    list_stage_condition,
-                    list_stage,
-                    condition_sale_oder_approved,
-                    condition_is_quotation_confirm,
-                    condition_sale_oder_delivery_status,
-                    config_is_input_rate,
-                    dict_stage
-                )
+                // autoLoadStage(
+                //     true,
+                //     false,
+                //     list_stage_condition,
+                //     list_stage,
+                //     condition_sale_oder_approved,
+                //     condition_is_quotation_confirm,
+                //     condition_sale_oder_delivery_status,
+                //     config_is_input_rate,
+                //     dict_stage
+                // )
 
                 // Disable all select elements
                 $('#btn-auto-update-stage').prop('hidden', true)
@@ -442,10 +446,20 @@ $(document).ready(function () {
             })
 
             $('#input-close-date').on('change', function () {
-                let open_date = $('#input-open-date').val();
-                if ($(this).val() < open_date) {
-                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure');
-                    $(this).val(open_date);
+                let open_date = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                let close_date = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                if (close_date < open_date) {
+                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure')
+                    $(this).val('')
+                }
+            })
+
+            $('#input-open-date').on('change', function () {
+                let open_date = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                let close_date = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                if (close_date < open_date) {
+                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure')
+                    $(this).val('')
                 }
             })
 
@@ -1024,8 +1038,8 @@ $(document).ready(function () {
                 $('#meeting-employee-attended-select-box option').remove();
 
                 loadMeetingSaleCodeList();
-                loadMeetingAddress(opportunity_detail_data.customer.shipping_address);
-                loadCustomerMember(opportunity_detail_data.customer.contact_mapped);
+                loadMeetingAddress(opportunity_detail_data?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
+                loadCustomerMember(opportunity_detail_data?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
                 loadEmployeeAttended();
             })
 

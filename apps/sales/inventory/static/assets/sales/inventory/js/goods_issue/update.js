@@ -19,7 +19,11 @@ $(document).ready(function () {
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
             let frm_data = frm.dataForm;
-            if (frm.dataForm['goods_issue_type'] === '0') {
+            frm.dataForm['date_issue'] = moment($('[name="date_issue"]').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+
+            console.log(frm.dataForm)
+
+            if ($('#box-good-issue-type').val() === '0') {
                 frm_data = GoodsIssueLoadPage.getDataProductForIA(frm_data);
             } else {
                 frm_data = GoodsIssueLoadPage.getDataProductForLiquidation(frm_data);

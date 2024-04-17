@@ -299,7 +299,7 @@ $(document).ready(function () {
         formData.total_amount = parseInt(formData.total_amount)
         if (method === 'post') formData.system_status = 1
 
-        WindowControl.showLoading();
+        // WindowControl.showLoading();
         WFRTControl.callWFSubmitForm(frm);
     }
 

@@ -18,10 +18,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                columns: [  // 250,250,200,250,250,150,250,250,150 (2000p)
+                columns: [  // 180,180,180,270,270,150,300,300,150 (1920p)
                     {
                         targets: 0,
-                        width: '12.5%',
+                        width: '9.375%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
@@ -32,21 +32,21 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '12.5%',
+                        width: '9.375%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '10%',
+                        width: '9.375%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-soft-primary">${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '12.5%',
+                        width: '15.625%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-revenue-plan" data-init-money="${parseFloat(row?.['revenue_plan'])}"></span></b>`;
@@ -56,7 +56,7 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '12.5%',
+                        width: '15.625%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span></b>`;
@@ -66,7 +66,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '7.5%',
+                        width: '4.6875%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><p>${parseFloat(row?.['revenue_ratio'])} %</p></b>`;
@@ -76,7 +76,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '12.5',
+                        width: '15.625%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-profit-plan" data-init-money="${parseFloat(row?.['gross_profit_plan'])}"></span></b>`;
@@ -86,7 +86,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '12.5%',
+                        width: '15.625%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span></b>`;
@@ -96,7 +96,7 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '7.5%',
+                        width: '4.6875%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><p>${parseFloat(row?.['gross_profit_ratio'])} %</p></b>`;

@@ -29,68 +29,60 @@
             <div class="collapse multi-collapse show" id="collapseExample">
                 <div class="row" id="common-information-area">
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="input-prefix">
-                                            <i class="fas fa-file-import text-primary"></i>
+                        <div class="col-12 col-md-5 col-lg-5">
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group" id="good-receipt-type-area">
+                                        <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
+                                        <div class="input-group">
+                                            <div class="input-affix-wrapper">
+                                                <div class="input-prefix">
+                                                    <i class="fas fa-file-import text-primary"></i>
+                                                </div>
+                                                <select
+                                                    class="form-select"
+                                                    id="box-good-receipt-type"
+                                                    data-url=""
+                                                    data-method="GET"
+                                                    data-link-detail=""
+                                                    name="good_receipt_type"
+                                                    data-keyResp=""
+                                                    required
+                                                >
+                                                </select>
+                                            </div>
                                         </div>
-                                        <select
-                                            class="form-select"
-                                            id="box-good-receipt-type"
-                                            data-url=""
-                                            data-method="GET"
-                                            data-link-detail=""
-                                            name="good_receipt_type"
-                                            data-keyResp=""
-                                            required
-                                        >
-                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" name="date-received" id="good-receipt-date-received"
+                                                   class="form-control date-picker" autocomplete="off">
+                                            <div class="input-suffix">
+                                                <i class="far fa-calendar"></i>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <input type="text" name="date_received" id="good-receipt-date-received"
-                                           class="form-control date-picker" autocomplete="off">
-                                    <div class="input-suffix">
-                                        <i class="far fa-calendar"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label required" for="good-receipt-title">{% trans 'Title' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <input
-                                            type="text" class="form-control"
-                                            name="title"
-                                            id="good-receipt-title"
-                                            required
-                                        >
-                                    </div>
-                                </div>
+                                <input
+                                    type="text" class="form-control"
+                                    name="title"
+                                    id="good-receipt-title"
+                                    required
+                                >
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <input
-                                            type="text" class="form-control"
-                                            name="remarks"
-                                            id="good-receipt-note"
-                                        >
+                        <div class="col-12 col-md-5 col-lg-5">
+                            <div class="row">
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="form-group">
+                                        <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
+                                        <textarea class="form-control" rows="5" id="good-receipt-note" name="remarks"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +91,7 @@
                 </div>
                 <div class="row custom-area" id="custom-area-1">
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-5 col-lg-5">
                             <div class="form-group">
                                 <label class="form-label required" for="box-good-receipt-purchase-order">{% trans 'Purchase order' %}</label>
                                 <select
@@ -113,21 +105,6 @@
                                         required
                                 ></select>
                             </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Purchase Request' %}</label>
-                                <div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
-                                        <input type="hidden" id="purchase_requests_data">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label class="form-label required" for="box-good-receipt-supplier">{% trans 'Supplier' %}</label>
                                 <select
@@ -142,11 +119,26 @@
                                 ></select>
                             </div>
                         </div>
+                        <div class="col-12 col-md-5 col-lg-5">
+                            <div class="row">
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Purchase Request' %}</label>
+                                        <div class="input-group">
+                                            <div class="input-affix-wrapper">
+                                                <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
+                                                <input type="hidden" id="purchase_requests_data">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row custom-area" id="custom-area-2" hidden>
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-5 col-lg-5">
                             <div class="form-group">
                                 <label class="form-label required" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}</label>
                                 <select
@@ -166,7 +158,7 @@
                 </div>
                 <div class="row custom-area" id="custom-area-3" hidden>
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-5 col-lg-5">
                             <div class="form-group">
                                 <label class="form-label" for="box-good-receipt-product-order">{% trans 'Product order' %}</label>
                                 <select
@@ -182,7 +174,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-5 col-lg-5">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Production report' %}</label>
                                 <select
@@ -238,7 +230,7 @@
                             <div class="row">
                                 <table
                                     id="datable-good-receipt-line-detail-po"
-                                    class="table nowrap min-w-2000p w-100 mb-5"
+                                    class="table nowrap min-w-1920p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >
@@ -307,7 +299,7 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#productModalCenter"
                                     >
-                                        <span><span>{% trans 'Edit' %} {% trans 'Product' %}</span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span></span>
+                                        <span><span>{% trans 'Edit' %}</span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span></span>
                                     </button>
                                 </div>
                             </div>
@@ -345,7 +337,7 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#productIAModalCenter"
                                     >
-                                        <span><span>{% trans 'Edit' %} {% trans 'Product' %}</span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span></span>
+                                        <span><span>{% trans 'Edit' %}</span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span></span>
                                     </button>
                                 </div>
                             </div>
@@ -378,9 +370,9 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row ml-2"><h6>{% trans 'Product list' %}</h6></div>
+                        <div class="row ml-2"><h6 class="text-primary"><b>{% trans 'Product list' %}</b></h6></div>
                         <div class="row">
-                            <div class="col-5">
+                            <div class="col-6">
                                 <div class="row mb-2">
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                         <table
@@ -392,12 +384,12 @@
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-25">{% trans 'Product' %}</th>
-                                                <th class="w-15">{% trans 'UOM' %}(PO)</th>
-                                                <th class="w-15">{% trans 'Quantity' %}(PO)</th>
-                                                <th class="w-15">{% trans 'Received' %}</th>
+                                                <th class="w-45">{% trans 'Product' %}</th>
+                                                <th class="w-10">{% trans 'UOM' %} (PO)</th>
+                                                <th class="w-10">{% trans 'Quantity' %} (PO)</th>
+                                                <th class="w-10">{% trans 'Received' %}</th>
                                                 <th class="w-10">{% trans 'Remain' %}</th>
-                                                <th class="w-15">{% trans 'This time' %}</th>
+                                                <th class="w-10">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -430,13 +422,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-7">
+                            <div class="col-6">
                                 <div class="row mb-2">
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
-                                            data-url="{% url 'WareHouseListAPI' %}"
+                                            data-url="{% url 'WareHouseListAPI' %}?interact=1"
                                             data-method="GET"
                                         >
                                             <thead>
@@ -524,9 +516,9 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row ml-2"><h6>{% trans 'Product list' %}</h6></div>
+                        <div class="row ml-2"><h6 class="text-primary"><b>{% trans 'Product list' %}</b></h6></div>
                         <div class="row">
-                            <div class="col-5">
+                            <div class="col-6">
                                 <div class="row">
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll">
                                         <table
@@ -538,11 +530,11 @@
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-25">{% trans 'Product' %}</th>
-                                                <th class="w-5">{% trans 'UOM' %}</th>
-                                                <th class="w-20">{% trans 'Quantity' %}</th>
-                                                <th class="w-25">{% trans 'Warehouse' %}</th>
-                                                <th class="w-20">{% trans 'This time' %}</th>
+                                                <th class="w-30">{% trans 'Product' %}</th>
+                                                <th class="w-10">{% trans 'UOM' %}</th>
+                                                <th class="w-10">{% trans 'Quantity' %}</th>
+                                                <th class="w-30">{% trans 'Warehouse' %}</th>
+                                                <th class="w-15">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -551,7 +543,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-7">
+                            <div class="col-6">
                                 <div class="row">
                                     <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-ia-lot-serial" hidden>
                                         <div id="table-good-receipt-ia-lot-area" hidden>
@@ -627,7 +619,7 @@
             id="app-trans-factory"
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
-            data-validate-import="{% trans 'Quantity import must be less than equal remain quantity' %}"
+            data-validate-import="{% trans 'Exceeded remaining quantity' %}"
             data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
             data-select="{% trans 'Select' %}"
             data-lot-exist="{% trans 'Lot number is exist' %}"
@@ -637,6 +629,7 @@
             data-for-po="{% trans 'For purchase order' %}"
             data-for-ia="{% trans 'For inventory adjustment' %}"
             data-for-product="{% trans 'For production' %}"
+            data-ia-quantity-valid="{% trans 'Please enter sufficient quantity' %}"
     >
     <input
             type="text"
@@ -660,7 +653,7 @@
     <input
             type="text"
             id="data-init-warehouse"
-            data-url="{% url "WareHouseListAPI" %}"
+            data-url="{% url "WareHouseListAPI" %}?interact=1"
             data-method="GET"
     >
     <input

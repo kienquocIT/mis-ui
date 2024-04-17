@@ -318,6 +318,12 @@ class QuotationLoadDataHandle {
         ele.initSelect2({
             data: dataDD,
         });
+        // add css to row box select2
+        let row = ele[0].closest('tr');
+        let boxRender = row?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+        if (boxRender) {
+            boxRender.style.maxWidth = '270px';
+        }
     };
 
     static loadBoxQuotationExpenseItem(ele, dataExpenseItem = {}) {
@@ -750,6 +756,11 @@ class QuotationLoadDataHandle {
         $(newRow.querySelector('.table-row-item')).val('').trigger('change');
         QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
         QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
+        // add css to row box select2
+        let boxRender = newRow?.querySelector('.table-row-item-area')?.querySelector('.select2-selection__rendered');
+        if (boxRender) {
+            boxRender.style.maxWidth = '270px';
+        }
         // load again table cost
         QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
@@ -1034,18 +1045,16 @@ class QuotationLoadDataHandle {
                                 if (data.price_list[i].id === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option option-btn-checked text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="row">
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <span class="mr-5">${data.price_list[i].title}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
                                                         </a>`);
                                 } else {
                                     $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                            <div class="row">
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
-                                                                <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                                <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <span class="mr-5">${data.price_list[i].title}</span>
+                                                                <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                             </div>
                                                         </a>`);
                                 }
@@ -1053,10 +1062,9 @@ class QuotationLoadDataHandle {
                         } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mr-5">${data.price_list[i].title}</span></div>
-                                                        <div class="col-12 col-md-5 col-lg-5"><span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-12 col-md-2 col-lg-2"><small class="valid-price"><i>${transJSON[data.price_list[i]?.['price_status']]}</i></small></div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="mr-5">${data.price_list[i].title}</span>
+                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(data.price_list[i].value)}"></span>
                                                     </div>
                                                 </a>`);
                         }
@@ -1090,9 +1098,9 @@ class QuotationLoadDataHandle {
                 if (Array.isArray(data?.['cost_list']) && data?.['cost_list'].length > 0) {
                     for (let costData of data?.['cost_list']) {
                         $(costList).append(`<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['cost'])}">
-                                                <div class="row">
-                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mr-5">${costData?.['warehouse']?.['title']}</span></div>
-                                                    <div class="col-12 col-md-6 col-lg-6"><span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span></div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
+                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['cost'])}"></span>
                                                 </div>
                                             </a>`);
                     }
@@ -1795,11 +1803,11 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if finish or reject then hidden btn edit page
-            if ([2, 3, 4].includes(data?.['system_status'])) {
+            // check if not finish or reject then remove hidden btn edit page
+            if (![2, 3, 4].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {
-                    $btn[0].setAttribute('hidden', 'true');
+                    $btn[0].removeAttribute('hidden');
                 }
             }
             // check if is not finish then hidden btn delivery (Sale Order)
@@ -2206,10 +2214,10 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 50, 300, 300, 150, 200, 350, 200, 150, 250, 50 (2000p)  // 50, 250, 200, 100, 150, 250, 150, 100, 200, 50 (1500p)
+            columns: [  // 25,325,325,150,175,325,150,150,270,25 (1920p)
                 {
                     targets: 0,
-                    width: '2.5%',
+                    width: '1.30208333333%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
@@ -2234,7 +2242,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '15%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2260,7 +2268,7 @@ class QuotationDataTableHandle {
                         }
                         if (itemType === 0) { // PRODUCT
                             return `<div class="row table-row-item-area">
-                                        <div class="col-12">
+                                        <div class="col-12 col-md-12 col-lg-12">
                                             <select 
                                             class="form-select table-row-item" 
                                             data-zone="${dataZone}"
@@ -2310,7 +2318,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2322,13 +2330,13 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
-                                    <p><span class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
+                                    <span class="table-row-description" data-zone="${dataZone}">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span>
                                 </div>`;
                     }
                 },
                 {
                     targets: 3,
-                    width: '7.5%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2373,7 +2381,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '10%',
+                    width: '9.11458333333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2389,7 +2397,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '17.5%',
+                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2411,7 +2419,7 @@ class QuotationDataTableHandle {
                                                 data-return-type="number"
                                                 data-zone="${dataZone}"
                                             >
-                                            <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
+                                            <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                         </div>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-500p">
@@ -2423,7 +2431,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '10%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2438,7 +2446,7 @@ class QuotationDataTableHandle {
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
                                             <input type="text" class="form-control table-row-discount validated-number" value="${row?.['product_discount_value']}" data-zone="${dataZone}">
-                                            <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                                            <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                         </div>
                                     </div>
                                     <input
@@ -2458,7 +2466,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '7.5%',
+                    width: '7.8125%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2528,7 +2536,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '12.5%',
+                    width: '14.0625%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2552,7 +2560,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '2.5%',
+                    width: '1.30208333333%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2604,16 +2612,20 @@ class QuotationDataTableHandle {
                             }
                         }
                         if (itemType === 0) {  // product
-                            return `<select
-                                        class="form-select table-row-item disabled-custom-show"
-                                        data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
-                                        data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                        data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
-                                        data-keyResp="product_sale_list"
-                                        data-zone="${dataZone}"
-                                        disabled
-                                    >
-                                    </select>`;
+                            return `<div class="row table-row-item-area">
+                                        <div class="col-12 col-md-12 col-lg-12">
+                                            <select
+                                                class="form-select table-row-item disabled-custom-show"
+                                                data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
+                                                data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
+                                                data-keyResp="product_sale_list"
+                                                data-zone="${dataZone}"
+                                                disabled
+                                            >
+                                            </select>
+                                        </div>
+                                    </div>`;
                         } else if (itemType === 1) {  // shipping
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
@@ -2691,7 +2703,7 @@ class QuotationDataTableHandle {
                                                     data-return-type="number"
                                                     data-zone="${dataZone}"
                                                 >
-                                                <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-caret-down"></i></div>
+                                                <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
                                             </div>
                                             </div>
                                             <div role="menu" class="dropdown-menu table-row-cost-list w-500p">
@@ -3442,7 +3454,7 @@ class QuotationDataTableHandle {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-ratio validated-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
-                                        <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                                        <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                     </div>
                                 </div>`;
                     }
@@ -5300,15 +5312,6 @@ class QuotationSubmitHandle {
                 _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
-
-        // ****************************
-        // Auto fill data when form calling submit "$('.btn-saving-form')..."
-        // ****************************
-        // system fields
-
-        if (_form.dataMethod.toLowerCase() === 'post') {
-            _form.dataForm['system_status'] = 1;
-        }
     };
 }
 
@@ -5444,5 +5447,32 @@ function validateNumber(ele) {
     value = value.replace("-", "").replace(/^0+(?=\d)/, '');
     // Update value of input
     ele.value = value;
+    return true;
+}
+
+function validatePSValue(ele) {
+    let tablePS = $('#datable-quotation-payment-stage');
+    let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+    if (tableProductWrapper) {
+        let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+        if (elePretax && eleDiscount) {
+            let valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+            let totalBT = 0;
+            tablePS.DataTable().rows().every(function () {
+                let row = this.node();
+                let eleValueBT = row.querySelector('.table-row-value-before-tax');
+                if (eleValueBT) {
+                    totalBT += $(eleValueBT).valCurrency();
+                }
+            });
+            if (totalBT > valueSO) {
+                $(ele).attr('value', String(0));
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                return false
+            }
+        }
+    }
     return true;
 }

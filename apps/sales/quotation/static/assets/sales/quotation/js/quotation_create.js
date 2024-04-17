@@ -207,6 +207,12 @@ $(function () {
                 QuotationLoadDataHandle.loadChangePSValueBTAll();
                 // store data
                 QuotationStoreDataHandle.storeProduct(row);
+                // load reinit if row has product value
+                // if ($(this).hasClass('table-row-item')) {
+                //     if ($(this).val()) {
+                //         QuotationLoadDataHandle.loadReInitDataTableProduct();
+                //     }
+                // }
             }
         });
 
@@ -817,7 +823,7 @@ $(function () {
             QuotationLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-due-date', function () {
+        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 if ($(this).hasClass('table-row-date')) {
                     let row = this.closest('tr');
@@ -842,6 +848,9 @@ $(function () {
                 }
                 if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                     validateNumber(this);
+                }
+                if ($(this).hasClass('table-row-value-before-tax')) {
+                    validatePSValue(this);
                 }
                 if ($(this).hasClass('table-row-due-date')) {
                     let row = this.closest('tr');
@@ -1024,30 +1033,6 @@ $(function () {
                 }
             }
             WFRTControl.callWFSubmitForm(_form);
-
-
-            // WindowControl.showLoading();
-            // $.fn.callAjax2(
-            //     {
-            //         'url': _form.dataUrl,
-            //         'method': _form.dataMethod,
-            //         'data': _form.dataForm,
-            //     }
-            // ).then(
-            //     (resp) => {
-            //         let data = $.fn.switcherResp(resp);
-            //         if (data) {
-            //             $.fn.notifyB({description: data.message}, 'success')
-            //             $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-            //         }
-            //     }, (err) => {
-            //         setTimeout(() => {
-            //             WindowControl.hideLoading();
-            //         }, 1000)
-            //         $.fn.notifyB({description: err.data.errors}, 'failure');
-            //     }
-            // )
-
         }
 
         $('#btn-remove-promotion').on('click', function() {

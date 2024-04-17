@@ -21,6 +21,7 @@ $(function () {
                     data: {
                         "is_initial": false,
                         "group_inherit__is_delete": false,
+                        "sale_order__system_status": 3,
                     },
                     // dataSrc: 'data.report_revenue_list',
                     dataSrc: function (resp) {
@@ -53,31 +54,31 @@ $(function () {
                         placeholder: $transFact.attr('data-filter-customer'),
                     },
                 ],
-                columns: [  // 150,200,150,100,300,350,250,250,250 (2000p)
+                columns: [  // 180,180,180,90,240,240,270,270,270 (1920p)
                     {
                         targets: 0,
-                        width: '7.5%',
+                        width: '9.375%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '9.375%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '7.5%',
+                        width: '9.375%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '5%',
+                        width: '4.6875%',
                         render: (data, type, row) => {
                             if (row?.['date_approved']) {
                                 return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
@@ -88,35 +89,35 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '15%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '17.5%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 6,
-                        width: '12.5%',
+                        width: '14.0625%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 7,
-                        width: '12.5%',
+                        width: '14.0625%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 8,
-                        width: '12.5%',
+                        width: '14.0625%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -182,6 +183,8 @@ $(function () {
                                             'method': $table.attr('data-method'),
                                             'data': {
                                                 'is_initial': false,
+                                                "group_inherit__is_delete": false,
+                                                "sale_order__system_status": 3,
                                                 'date_approved__gte': startDate,
                                                 'date_approved__lte': endDate,
                                             },
@@ -321,6 +324,7 @@ $(function () {
             let dataParams = {};
             dataParams['is_initial'] = false;
             dataParams['group_inherit__is_delete'] = false;
+            dataParams['sale_order__system_status'] = 3;
             if (boxGroup.val()) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }

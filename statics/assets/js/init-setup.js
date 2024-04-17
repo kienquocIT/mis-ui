@@ -329,14 +329,30 @@ class LogController {
                     if (itemLog['is_system'] === true) {
                         childLogHTML += `<span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span>`;
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-soft-light mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-soft-blue mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     } else {
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-soft-success mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-soft-blue mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     }
-                    childLogHTML += ` <span class="text-low-em">${itemLog['msg']}</span></div>`;
+                    let msgMapColor = "";
+                    let arrayDone = ["finish", "approved"];
+                    let arrayCancel = ["canceled", "rejected"];
+                    let arrayUpdate = ["update", "zone"];
+                    let isDone = arrayDone.some(item => itemLog?.['msg'].toLowerCase().includes(item));
+                    let isCancel = arrayCancel.some(item => itemLog?.['msg'].toLowerCase().includes(item));
+                    let isUpdate = arrayUpdate.some(item => itemLog?.['msg'].toLowerCase().includes(item));
+                    if (isDone === true) {
+                        msgMapColor = "text-green"
+                    }
+                    if (isCancel === true) {
+                        msgMapColor = "text-red"
+                    }
+                    if (isUpdate === true) {
+                        msgMapColor = "text-yellow"
+                    }
+                    childLogHTML += ` <span class="text-low-em ${msgMapColor}">${itemLog['msg']}</span></div>`;
                     logHTML.push(childLogHTML);
                 })
                 let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`
@@ -1210,13 +1226,23 @@ class ListeningEventController {
                         `
                     );
 
+                    // Attach click event listener to submit buttons
+                    $(document).find('button[type="submit"], input[type="submit"]').on('click', function () {
+                        DocumentControl.setBtnLastSubmit($(this));
+                    });
+
+                    $(document).find('button[type="submit"], input[type="submit"]').on('click', function () {
+                        DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                    });
+
                     // append input status if not exist
                     if (frmEle.find('input[name="system_status"]').length === 0) frmEle.append(statusInputEle);
                     else statusInputEle = frmEle.find('input[name="system_status"]');
 
                     // on submit push status to form
                     $(frmEle).on('submit', function (event) {
-                        let submitterEle = $(event.originalEvent.submitter);
+                        // let submitterEle = $(event.originalEvent.submitter);
+                        let submitterEle = DocumentControl.getBtnLastSubmit();
                         if (submitterEle && submitterEle.length > 0) {
                             let systemStatus = submitterEle.attr('data-status-submit');
                             let statusCode = statusInputEle.val();
@@ -1658,7 +1684,8 @@ class WFRTControl {
         // True: convert body data with Zone Accept
         let pk = $.fn.getPkDetail();
         let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
-        if ((btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext')
+        let IDRuntime = WFRTControl.getRuntimeWF();
+        if (IDRuntime
             && WFRTControl.getWFRuntimeID() && WFRTControl.getTaskWF() && pk && url.includes(pk) && method.toLowerCase() === 'put') {
             let taskID = WFRTControl.getTaskWF();
             let isEditAllZone = WFRTControl.getIsEditAllZone();
@@ -1683,41 +1710,6 @@ class WFRTControl {
         return reqBodyData;
     }
 
-    // static callActionWF(ele$) {
-    //     // -- wf call action
-    //     let actionSelected = $(ele$).attr('data-value');
-    //     let taskID = $('#idxGroupAction').attr('data-wf-task-id');
-    //     let urlBase = globeTaskDetail;
-    //     if (actionSelected !== undefined && taskID && urlBase) {
-    //         let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
-    //         WindowControl.showLoading();
-    //         return $.fn.callAjax2({
-    //             'url': urlData,
-    //             'method': 'PUT',
-    //             'data': {'action': actionSelected},
-    //         }).then((resp) => {
-    //             let data = $.fn.switcherResp(resp);
-    //             if (data?.['status'] === 200) {
-    //                 $.fn.notifyB({
-    //                     'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
-    //                 }, 'success');
-    //                 if (!($(ele$).attr('data-success-reload') === 'false' || $(ele$).attr('data-success-reload') === false)) {
-    //                     setTimeout(() => {
-    //                         window.location.reload()
-    //                     }, 1000)
-    //                 }
-    //             }
-    //             setTimeout(() => {
-    //                 WindowControl.hideLoading();
-    //             }, 1000)
-    //         }, (errs) => {
-    //             setTimeout(() => {
-    //                 WindowControl.hideLoading();
-    //             }, 500)
-    //         });
-    //     }
-    // }
-
     static callActionWF(ele$) {
         // -- wf call action
         let actionSelected = $(ele$).attr('data-value');
@@ -1726,7 +1718,11 @@ class WFRTControl {
         let urlBase = globeTaskDetail;
         let urlRTAfterBase = globeRuntimeAfterFinishDetail;
         let dataSuccessReload = $(ele$).attr('data-success-reload');
+        let dataCR = $(ele$).attr('data-cr');
         let dataSubmit = {'action': actionSelected};
+        if (dataCR) {
+            dataSubmit['data_cr'] = JSON.parse(dataCR)
+        }
         let urlRedirect = ele$.attr('data-url-redirect');
         if (actionSelected !== undefined && taskID && urlBase) {
             if (actionSelected === '1') {  // Approve: check if next node is out form need select person before submit
@@ -1740,7 +1736,25 @@ class WFRTControl {
             }
         }
         if (actionSelected !== undefined && urlRTAfterBase) {
-            return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);  // Cancel after finished
+            if (actionSelected === '1') {  // open change request page
+                return WFRTControl.callAjaxOpenCRAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);
+            }
+            if (actionSelected === '2') {  // cancel after finished
+                return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);
+            }
+            if (actionSelected === '3') {  // save change request
+                if (dataSubmit.hasOwnProperty('data_cr')) {
+                    return WFRTControl.callAjaxActionWFAfterFinish(urlRTAfterBase, runtimeID, dataSubmit, dataSuccessReload);
+                }
+                return true;
+            }
+            if (actionSelected === '4') {  // cancel change request
+                WindowControl.showLoading();
+                setTimeout(function () {
+                    // Redirect to the previous page
+                    window.history.back();
+                }, 1000);
+            }
         }
     }
 
@@ -1785,6 +1799,56 @@ class WFRTControl {
 
     static callAjaxActionWFAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
         let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, runtimeID);
+        Swal.fire({
+            title: $.fn.transEle.attr('data-msg-are-u-sure'),
+            text: $.fn.transEle.attr('data-warning-can-not-undo'),
+            icon: "warning",
+            allowOutsideClick: false,
+            showConfirmButton: true,
+            confirmButtonText: $.fn.transEle.attr('data-confirm'),
+            showCancelButton: true,
+            cancelButtonText: $.fn.transEle.attr('data-cancel'),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                WindowControl.showLoading();
+                return $.fn.callAjax2({
+                    'url': urlData,
+                    'method': 'PUT',
+                    'data': dataSubmit,
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['status'] === 200) {
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
+                        }, 'success');
+                        if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+                            setTimeout(() => {
+                                if (!urlRedirect) {
+                                    window.location.reload()
+                                } else {
+                                    window.location.replace(urlRedirect);
+                                }
+                            }, 1000)
+                        }
+                    }
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                        if (urlRedirect) {
+                            window.location.replace(urlRedirect);
+                        }
+                    }, 1000)
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                });
+            }
+        })
+    }
+
+    static callAjaxOpenCRAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
+        let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, runtimeID);
         WindowControl.showLoading();
         return $.fn.callAjax2({
             'url': urlData,
@@ -1793,16 +1857,9 @@ class WFRTControl {
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data?.['status'] === 200) {
-                $.fn.notifyB({
-                    'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
-                }, 'success');
                 if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
                     setTimeout(() => {
-                        if (!urlRedirect) {
-                            window.location.reload()
-                        } else {
-                            window.location.replace(urlRedirect);
-                        }
+                        $('#btn-enable-edit').click();
                     }, 1000)
                 }
             }
@@ -1812,13 +1869,11 @@ class WFRTControl {
                     window.location.replace(urlRedirect);
                 }
             }, 1000)
-        }, (errs) => {
+        }, (err) => {
             setTimeout(() => {
                 WindowControl.hideLoading();
-                if (urlRedirect) {
-                    window.location.replace(urlRedirect);
-                }
-            }, 500)
+            }, 1000)
+            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
         });
     }
 
@@ -1890,59 +1945,48 @@ class WFRTControl {
     }
 
     static callWFSubmitForm(_form) {
-        let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
-        if (btnIDLastSubmit === 'idxSaveInZoneWF' || btnIDLastSubmit === 'idxSaveInZoneWFThenNext') {  // check if btn idxSaveInZoneWF then submit not select collab
-            if (_form.dataForm.hasOwnProperty('system_status')) {
+        let IDRuntime = WFRTControl.getRuntimeWF();
+        let collabOutForm = WFRTControl.getCollabOutFormData();
+        let eleDocChange = $('#documentCR');
+        let $eleCode = $('#documentCode');
+        let currentEmployee = $x.fn.getEmployeeCurrentID();
+        if (eleDocChange.attr('data-status') === '5' && eleDocChange.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change document after finish
+            let $eleForm = $(`#${globeFormMappedZone}`);
+            let docRootID = eleDocChange.attr('data-doc-root-id');
+            let docChangeOrder = eleDocChange.attr('data-doc-change-order');
+            if ($eleForm && $eleForm.length > 0 && docRootID) {
+                _form.dataMethod = 'POST';
+                _form.dataUrl = $eleForm.attr('data-url-cr');
+                _form.dataForm['code'] = $eleCode.text();
                 _form.dataForm['system_status'] = 1;
-            }
-            WindowControl.showLoading();
-            $.fn.callAjax2(
-                {
-                    'url': _form.dataUrl,
-                    'method': _form.dataMethod,
-                    'data': _form.dataForm,
+                _form.dataForm['is_change'] = true;
+                _form.dataForm['document_root_id'] = docRootID;
+                _form.dataForm['document_change_order'] = 1;
+                if (docChangeOrder) {
+                    _form.dataForm['document_change_order'] = parseInt(docChangeOrder) + 1;
                 }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && (data['status'] === 201 || data['status'] === 200)) {
-                        if (btnIDLastSubmit === 'idxSaveInZoneWFThenNext') {
-                            let btnWF = document.querySelector('.btn-action-wf');
-                            if (btnWF) {
-                                btnWF.setAttribute('data-url-redirect', _form.dataUrlRedirect);
-                            }
-                            let btnSubmit = $('#idxSaveInZoneWFThenNext');
-                            let dataWFAction = btnSubmit.attr('data-wf-action');
-                            if (btnSubmit && dataWFAction) {
-                                let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
-                                if (eleActionDoneTask.length > 0) {
-                                    DocumentControl.setBtnIDLastSubmit(null);
-                                    $(eleActionDoneTask[0]).attr('data-success-reload', false)
-                                    WFRTControl.callActionWF($(eleActionDoneTask[0]));
-                                }
-                            }
-                        }
-                        $.fn.notifyB({description: data.message}, 'success');
-                        if (btnIDLastSubmit === 'idxSaveInZoneWF') {
-                            setTimeout(() => {
-                                window.location.replace(_form.dataUrlRedirect);
-                            }, 1000);
-                        }
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-msg-are-u-sure'),
+                    text: $.fn.transEle.attr('data-warning-can-not-undo'),
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showConfirmButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    showCancelButton: true,
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        WFRTControl.callAjaxWFCreate(_form);
                     }
-                }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-                }
-            )
+                })
+            }
             return true;
         }
-        let collabOutForm = WFRTControl.getCollabOutFormData();
-        if (collabOutForm && collabOutForm.length > 0) {
+        if (!IDRuntime) {  // create document, run WF by @decorator_run_workflow in API
+            // select save status before select collaborator
             Swal.fire({
-                title: $.fn.transEle.attr('data-select-next-node-collab'),
-                html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                title: $.fn.transEle.attr('data-select-save-status'),
+                html: String(WFRTControl.setupHTMLDraftOrSave()),
                 allowOutsideClick: false,
                 showConfirmButton: true,
                 confirmButtonText: $.fn.transEle.attr('data-confirm'),
@@ -1950,7 +1994,7 @@ class WFRTControl {
                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 didOpen: () => {
                     // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                    let checkboxes = document.querySelectorAll('.checkbox-save-status');
                     checkboxes.forEach((checkbox) => {
                         checkbox.addEventListener('click', function () {
                             let checked = checkbox.checked;
@@ -1963,72 +2007,140 @@ class WFRTControl {
                 }
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                    let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                    let eleChecked = document.querySelector('.checkbox-save-status:checked');
                     if (eleChecked) {
-                        if (_form.dataMethod.toLowerCase() === 'post') {
-                            _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                        }
-                        if (_form.dataMethod.toLowerCase() === 'put') {
-                            if (_form.dataForm.hasOwnProperty('system_status')) {
-                                _form.dataForm['system_status'] = 1;
+                        let saveStatus = eleChecked.getAttribute('data-status');
+                        if (saveStatus) {
+                            _form.dataForm['system_status'] = parseInt(saveStatus);
+                            if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
+                                if (_form.dataForm['system_status'] === 0) {
+                                    WFRTControl.callAjaxWFCreate(_form);
+                                }
+                                if (_form.dataForm['system_status'] === 1) {
+                                    Swal.fire({
+                                        title: $.fn.transEle.attr('data-select-next-node-collab'),
+                                        html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                                        allowOutsideClick: false,
+                                        showConfirmButton: true,
+                                        confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                                        showCancelButton: true,
+                                        cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                                        didOpen: () => {
+                                            // Add event listener after the modal is shown
+                                            let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                                            checkboxes.forEach((checkbox) => {
+                                                checkbox.addEventListener('click', function () {
+                                                    let checked = checkbox.checked;
+                                                    for (let eleCheck of checkboxes) {
+                                                        eleCheck.checked = false;
+                                                    }
+                                                    checkbox.checked = checked;
+                                                });
+                                            });
+                                        }
+                                    }).then((result) => {
+                                        if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                                            let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                                            if (eleChecked) {
+                                                if (_form.dataMethod.toLowerCase() === 'post') {
+                                                    _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                                                }
+                                                if (_form.dataMethod.toLowerCase() === 'put') {
+                                                    if (_form.dataForm.hasOwnProperty('system_status')) {
+                                                        _form.dataForm['system_status'] = 1;
+                                                    }
+                                                }
+                                            } else {
+                                                return "You need to select one person!";
+                                            }
+                                            WFRTControl.callAjaxWFCreate(_form);
+                                        }
+                                    });
+                                }
+                            } else {  // No collaborator -> original submit
+                                WFRTControl.callAjaxWFCreate(_form);
                             }
                         }
                     } else {
-                        return "You need to select one person!";
+                        return "You need to select one!";
                     }
-                    WindowControl.showLoading();
-                    $.fn.callAjax2(
-                        {
-                            'url': _form.dataUrl,
-                            'method': _form.dataMethod,
-                            'data': _form.dataForm,
-                        }
-                    ).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && (data['status'] === 201 || data['status'] === 200)) {
-                                $.fn.notifyB({description: data.message}, 'success');
-                                setTimeout(() => {
-                                    window.location.replace(_form.dataUrlRedirect);
-                                }, 1000);
-                            }
-                        }, (err) => {
-                            setTimeout(() => {
-                                WindowControl.hideLoading();
-                            }, 1000)
-                            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-                        }
-                    )
                 }
             });
-        } else {
-            if (_form.dataForm.hasOwnProperty('system_status')) {
-                _form.dataForm['system_status'] = 1;
+        } else { // update document with zones, already runtime WF
+            _form.dataForm['system_status'] = 1;
+            WFRTControl.callAjaxWFUpdate(_form);
+        }
+    }
+
+    static callAjaxWFCreate(_form) {
+        WindowControl.showLoading();
+        $.fn.callAjax2(
+            {
+                'url': _form.dataUrl,
+                'method': _form.dataMethod,
+                'data': _form.dataForm,
             }
-            WindowControl.showLoading();
-            $.fn.callAjax2(
-                {
-                    'url': _form.dataUrl,
-                    'method': _form.dataMethod,
-                    'data': _form.dataForm,
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    setTimeout(() => {
+                        window.location.replace(_form.dataUrlRedirect);
+                    }, 3000);
                 }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && (data['status'] === 201 || data['status'] === 200)) {
-                        $.fn.notifyB({description: data.message}, 'success');
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
+    }
+
+    static callAjaxWFUpdate(_form) {
+        WindowControl.showLoading();
+        $.fn.callAjax2(
+            {
+                'url': _form.dataUrl,
+                'method': _form.dataMethod,
+                'data': _form.dataForm,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
+                    if (btnIDLastSubmit === 'idxSaveInZoneWFThenNext') {
+                        let btnWF = document.querySelector('.btn-action-wf');
+                        if (btnWF) {
+                            btnWF.setAttribute('data-url-redirect', _form.dataUrlRedirect);
+                        }
+                        let btnSubmit = $('#idxSaveInZoneWFThenNext');
+                        let dataWFAction = btnSubmit.attr('data-wf-action');
+                        if (btnSubmit && dataWFAction) {
+                            let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
+                            if (eleActionDoneTask.length > 0) {
+                                DocumentControl.setBtnIDLastSubmit(null);
+                                $(eleActionDoneTask[0]).attr('data-success-reload', false)
+                                WFRTControl.callActionWF($(eleActionDoneTask[0]));
+                            }
+                        }
+                    }
+                    $.fn.notifyB({description: data.message}, 'success');
+                    if (btnIDLastSubmit === 'idxSaveInZoneWF') {
                         setTimeout(() => {
                             window.location.replace(_form.dataUrlRedirect);
-                        }, 3000);
+                        }, 1000);
                     }
-                }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                 }
-            )
-        }
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
     }
 
     static setupHTMLCollabNextNode(collabOutForm) {
@@ -2047,6 +2159,49 @@ class WFRTControl {
         return htmlCustom;
     }
 
+    static setupHTMLDraftOrSave() {
+        let htmlCustom = ``;
+        let statusList = [0, 1];
+        let statusMapText = {
+            0: $.fn.transEle.attr('data-save-draft'),
+            1: $.fn.transEle.attr('data-save-run-wf'),
+        };
+        let statusMapColor = {
+            0: "text-secondary",
+            1: "text-primary",
+        };
+        for (let status of statusList) {
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-3">
+                                <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
+                                </div>
+                            </div><hr class="bg-teal">`;
+        }
+        return htmlCustom;
+    }
+
+    static setupHTMLWFNonApply() {
+        return `<div class="card card-wth-progress mb-3">
+                    <div class="progress progress-bar-xs">
+                        <div class="progress-bar bg-red w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="card-body">
+                        <i class="fas fa-robot"></i>
+                        <p>${$.fn.transEle.attr('data-canceled-by-creator')}</p>
+                    </div>
+                </div>
+                <div class="card card-wth-progress">
+                    <div class="progress progress-bar-xs">
+                        <div class="progress-bar bg-success w-20" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="card-body">
+                        <i class="fas fa-robot"></i>
+                        <p>${$.fn.transEle.attr('data-finish-wf-non-apply')}</p>
+                    </div>
+                </div>`;
+    }
+
     static setWFRuntimeID(runtime_id) {
         if (runtime_id) {
             // set runtime
@@ -2062,9 +2217,15 @@ class WFRTControl {
                 let data = $.fn.switcherResp(resp);
                 if ($.fn.hasOwnProperties(data, ['runtime_detail'])) {
                     // khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
-                    if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').addClass('hidden')
+                    if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
+                    // Finish with workflow non-apply -> show idxDataRuntimeNotFound
                     if (data['runtime_detail']?.['state'] === 3) $('#idxDataRuntimeNotFound').removeClass('hidden');
-
+                    let eleStatus = $('#systemStatus');
+                    if (eleStatus.attr('data-status') === '4') {  // if rejected after finish with workflow non-apply
+                        $('#idxDataRuntimeNotFound').empty().append(
+                            WFRTControl.setupHTMLWFNonApply()
+                        )
+                    }
                     let actionMySelf = data['runtime_detail']['action_myself'];
                     if (actionMySelf) {
                         let grouAction = $('#idxGroupAction');
@@ -2099,15 +2260,20 @@ class WFRTControl {
                             } else {
                                 WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             }
+                            // active btn save change and back if current employee is owner, status is finished
+                            let eleDocCR = $('#documentCR');
+                            let currentEmployee = $x.fn.getEmployeeCurrentID();
+                            if (eleDocCR.attr('data-status') === '5' && eleDocCR.attr('data-inherit') === currentEmployee) {
+                                WFRTControl.setBtnWFAfterFinishUpdate();
+                            }
                         }
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.activeDataZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
-                            // // active btn cancel if owner & finished
-                            // let eleStatus = $('#systemStatus');
-                            // let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            // if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
-                            //     WFRTControl.setBtnCancel();
-                            // }
+                            // active btn change and cancel if current employee is owner, status is finished
+                            let currentEmployee = $x.fn.getEmployeeCurrentID();
+                            if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
+                                WFRTControl.setBtnWFAfterFinishDetail();
+                            }
                         }
                         // collab out form handler
                         WFRTControl.setCollabOutFormData(actionMySelf['collab_out_form']);
@@ -2186,7 +2352,9 @@ class WFRTControl {
                 let idFormID = globeFormMappedZone;
                 if (idFormID) {
                     DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
+                        DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                    });
 
                     let actionList = WFRTControl.getActionsList();
                     let actionBubble = null;
@@ -2196,7 +2364,9 @@ class WFRTControl {
                         actionBubble = 4;
                     }
                     if (actionBubble) {
-                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
+                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden').on('click', function () {
+                            DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                        });
                     }
                 }
             }
@@ -2372,7 +2542,9 @@ class WFRTControl {
                 let idFormID = globeFormMappedZone;
                 if (idFormID) {
                     DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
+                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
+                        DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                    });
 
                     let actionList = WFRTControl.getActionsList();
                     let actionBubble = null;
@@ -2382,7 +2554,9 @@ class WFRTControl {
                         actionBubble = 4;
                     }
                     if (actionBubble) {
-                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden');
+                        $('#idxSaveInZoneWFThenNext').attr('form', idFormID).attr('data-wf-action', actionBubble).attr('data-actions-list', JSON.stringify(WFRTControl.getActionsList())).removeClass('hidden').on('click', function () {
+                            DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                        });
                     }
                 }
             }
@@ -2443,8 +2617,9 @@ class WFRTControl {
             WFRTControl.setZoneHiddenData(zonesHiddenData);
             WFRTControl.setIsEditAllZoneData(isEditAllZone);
             if (zonesData && Array.isArray(zonesData) && zonesHiddenData && Array.isArray(zonesHiddenData)) {
-                $('#btn-active-edit-zone-wf').removeClass('hidden');
-                $('#btn-active-edit-zone-wf').click();
+                // $('#btn-active-edit-zone-wf').removeClass('hidden');
+                // $('#btn-active-edit-zone-wf').click();
+                WFRTControl.activeZoneInDoc();
             }
         }
     }
@@ -2544,21 +2719,61 @@ class WFRTControl {
         }
     }
 
-    static setBtnCancel() {
+    static setBtnWFAfterFinishDetail() {
         let eleRealAction = $('#idxRealAction');
         let btnCancel = $('#btnCancel');
+        let btnEnableCR = $('#btnEnableCR');
         if (eleRealAction) {
-            if (btnCancel.length <= 0) {
-                $(eleRealAction).append(`<button class="btn btn-outline-danger btn-action-wf" id="btnCancel" data-value="2">
-                                        <span>
-                                            <span>${$.fn.transEle.attr('data-cancel')}</span>
-                                            <span class="icon">
-                                                <i class="fas fa-times"></i>
+            if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
+                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" id="btnEnableCR" data-value="1">
+                                            <span>
+                                                <span>${$.fn.transEle.attr('data-change-request')}</span>
+                                                <span class="icon">
+                                                    <i class="fa-regular fa-pen-to-square"></i>
+                                                </span>
                                             </span>
-                                        </span>
-                                    </button>`);
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-wf-after-finish" id="btnCancel" data-value="2">
+                                            <span>
+                                                <span>${$.fn.transEle.attr('data-cancel')}</span>
+                                                <span class="icon">
+                                                    <i class="fas fa-times"></i>
+                                                </span>
+                                            </span>
+                                        </button>`);
+                // add event
+                eleRealAction.on('click', '.btn-wf-after-finish', function () {
+                    return WFRTControl.callActionWF($(this));
+                });
+            }
+        }
+    }
+
+    static setBtnWFAfterFinishUpdate() {
+        let eleRealAction = $('#idxRealAction');
+        let btnSaveCR = $('#btnSaveCR');
+        let btnCancelCR = $('#btnCancelCR');
+        let formID = globeFormMappedZone;
+        if (eleRealAction && formID) {
+            if (btnSaveCR.length <= 0 && btnCancelCR.length <= 0) {
+                $(eleRealAction).append(`<button class="btn btn-outline-blue btn-wf-after-finish" type="submit" form="${formID}" id="btnSaveCR" data-value="3">
+                                            <span>
+                                                <span>${$.fn.transEle.attr('data-save-change')}</span>
+                                                <span class="icon">
+                                                    <i class="fa-regular fa-floppy-disk"></i>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-wf-after-finish" id="btnCancelCR" data-value="4">
+                                            <span>
+                                                <span>${$.fn.transEle.attr('data-go-back')}</span>
+                                                <span class="icon">
+                                                    <i class="fas fa-arrow-left"></i>
+                                                </span>
+                                            </span>
+                                        </button>`);
                 // Add event
-                btnCancel.on('click', function () {
+                eleRealAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
                 });
             }
@@ -4508,6 +4723,14 @@ class DocumentControl {
         return $('#idxPageContent');
     }
 
+    static getBtnLastSubmit() {
+        return globeEleLastSubmit;
+    }
+
+    static setBtnLastSubmit($ele) {
+        globeEleLastSubmit = $ele;
+    }
+
     static async getCompanyConfig() {
         let dataText = globeDataCompanyConfig;
         if (!dataText || dataText === '') {
@@ -4664,9 +4887,12 @@ class DocumentControl {
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
 
-    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit') {
+    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status', keyInherit = 'employee_inherit', keyIsChange = 'is_change', keyDocRootID = 'document_root_id', keyDocChangeOrder = 'document_change_order') {
         if (typeof detailData === 'object') {
-            let [code, is_active, system_status, employee_inherit] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit]];
+            let [code, is_active, system_status, employee_inherit, is_change, document_root_id, doc_change_order] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus], detailData?.[keyInherit], detailData?.[keyIsChange], detailData?.[keyDocRootID], detailData?.[keyDocChangeOrder]];
+            if (!doc_change_order) {
+                doc_change_order = "";
+            }
             if (code) {
                 let clsState = 'hidden';
                 if (is_active === true) {
@@ -4677,11 +4903,11 @@ class DocumentControl {
                 $('#idx-breadcrumb-current-code').html(
                     `
                     <span class="${clsState}"></span>
-                    <span class="badge badge-primary">${code}</span>
+                    <span class="badge badge-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</span>
                 `
                 ).removeClass('hidden');
             }
-            if (system_status) {
+            if (system_status || system_status === 0) {
                 let draft = $.fn.transEle.attr('data-msg-draft');
                 let created = $.fn.transEle.attr('data-created');
                 let added = $.fn.transEle.attr('data-added');
@@ -4700,9 +4926,15 @@ class DocumentControl {
                     const key = Object.keys(status_class);
                     system_status = key[system_status]
                 }
-                $('#idx-breadcrumb-current-code').append(
-                    `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}">${system_status}</span>`
-                ).removeClass('hidden');
+                if (window.location.href.includes('/update/') && dataStatus === 3) {
+                    $('#idx-breadcrumb-current-code').append(
+                        `<span class="badge badge-soft-blue" id="documentCR" data-status="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
+                    ).removeClass('hidden');
+                } else {
+                    $('#idx-breadcrumb-current-code').append(
+                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
+                    ).removeClass('hidden');
+                }
             }
         }
     }

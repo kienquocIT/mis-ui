@@ -196,7 +196,7 @@ $(document).ready(function () {
                                                 text_color = 'blue'
                                             }
                                             if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                                text_color = 'orange'
+                                                text_color = 'green'
                                             }
                                             let trans_title_sub = {
                                                 'Goods receipt': trans_script.attr('data-trans-grc'),
@@ -294,7 +294,7 @@ $(document).ready(function () {
                                             text_color = 'blue'
                                         }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                            text_color = 'orange'
+                                            text_color = 'green'
                                         }
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),

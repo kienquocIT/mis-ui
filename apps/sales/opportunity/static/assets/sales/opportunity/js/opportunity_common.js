@@ -901,7 +901,7 @@ function loadDtbOpportunityList() {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<p>${row.title}</p>`
+                        return `<p class="fw-bold">${row.title}</p>`
                     }
                 },
                 {
@@ -913,7 +913,7 @@ function loadDtbOpportunityList() {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row?.['sale_person'].full_name}</span>`
+                        return `<span class="badge badge badge-soft-blue ml-2 mt-2">${row?.['sale_person'].full_name}</span>`
                     }
                 },
                 {
@@ -947,7 +947,7 @@ function loadDtbOpportunityList() {
                         stage_current = row.stage.find(function (obj) {
                             return obj.is_current === true;
                         });
-                        return `<span class="badge badge-light">${stage_current.indicator}</span>`
+                        return `<span style="font-style: italic">${stage_current.indicator}</span>`
                     }
                 },
                 // {

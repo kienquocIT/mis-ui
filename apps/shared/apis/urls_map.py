@@ -183,6 +183,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     IMPORT_HR_GROUP = StringUrl('import-data/hr/group')
     IMPORT_HR_ROLE = StringUrl('import-data/hr/role')
     IMPORT_HR_EMPLOYEE = StringUrl('import-data/hr/employee')
+    IMPORT_SALEDATA_CONTACT = StringUrl('import-data/saledata/contact')
+    IMPORT_SALEDATA_ACCOUNT = StringUrl('import-data/saledata/account')
+    IMPORT_SALEDATA_SALUTATION = StringUrl('import-data/saledata/salutation')
+    IMPORT_SALEDATA_CURRENCY = StringUrl('import-data/saledata/currency')
+    IMPORT_SALEDATA_ACCOUNT_GROUP = StringUrl('import-data/saledata/account/group')
+    IMPORT_SALEDATA_ACCOUNT_TYPE = StringUrl('import-data/saledata/account/type')
+    IMPORT_SALEDATA_INDUSTRY = StringUrl('import-data/saledata/industry')
+    IMPORT_SALEDATA_PAYMENT_TERM = StringUrl('import-data/saledata/payment-term')
 
     # HR
 

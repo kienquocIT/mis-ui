@@ -30,9 +30,9 @@ $(document).ready(function (){
                     {
                         data: 'title',
                         targets: 1,
-                        width: "30%",
+                        width: "40%",
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            return `<span class="fw-bold">${data}</span>`
                         }
                     },
                     {
@@ -41,7 +41,7 @@ $(document).ready(function (){
                         width: "20%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            return `<span class="badge badge-blue">${data}</span>`
                         }
                     },
                     {
@@ -56,10 +56,10 @@ $(document).ready(function (){
                     {
                         data: 'system_status',
                         targets: 4,
-                        width: "20%",
+                        width: "10%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<span class="badge badge-secondary">${data}</span>`
+                            return `<span class="badge badge-green">${data}</span>`
                         }
                     },
                 ],

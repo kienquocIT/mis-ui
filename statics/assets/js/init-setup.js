@@ -9,24 +9,43 @@ class SetupFormSubmit {
 
     static serializerObject(formSelected) {
         const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
-        let baseData = formSelected.find(queryExclude).serializeArray().reduce(function (obj, item){
+
+        let obj = {};
+        formSelected.find(queryExclude).find(':input[name]:not(disabled)').each(function (){
+            let item = {
+                'name': $(this).attr('name'),
+                'value': $(this).val(),
+            }
+
+            let dataType = $(this).attr('data-type');
+            switch (dataType) {
+                case 'json':
+                    try {
+                        item['value'] = JSON.parse(item['value']);
+                    } catch (err){}
+                    break
+                case 'date':
+                    item['value'] = moment(
+                        item['value'],
+                        $(this).attr('data-date-format', 'DD-MM-YYYY')
+                    ).format('YYYY-MM-DDD');
+                    break
+                case 'datetime':
+                    item['value'] = moment(
+                        item['value'],
+                        $(this).attr('data-date-format', 'DD-MM-YYYY HH:mm:ss')
+                    ).format('YYYY-MM-DD HH:mm:ss');
+                    break
+            }
+            if ($(this).is('select')) item['value'] = $(this).prop('checked');
+
             if (item.name in obj) {
                 obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
                 obj[item.name].push(item.value);
-            } else {
-                let $input = formSelected.find('[name="' + item.name + '"]');
-                obj[item.name] = $input.is(':checkbox') ? $input.prop('checked') : item.value;
-            }
-            return obj;
-        }, {});
-        // special case 'input[type=checkbox]' has false not include when form serializer!
-        // (because HTML exclude input empty)
-        formSelected.find('input[type=checkbox]' + queryExclude).each(function (){
-            if (!(this.name in baseData)) {
-                baseData[this.name] = $(this).prop('checked');
-            }
+            } else obj[item.name] = item.value;
         })
-        return baseData;
+
+        return obj;
     }
 
     static groupDataFromPrefix(data, prefix) {
@@ -101,7 +120,11 @@ class SetupFormSubmit {
                 //
                 let parentEle = element.parent();
                 let insertAfterEle = parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper') ? parentEle : element;
-                error.insertAfter(insertAfterEle);
+
+                //
+                if (insertAfterEle.siblings('.select2-container').length > 0){
+                  insertAfterEle.parent().append(error);
+                } else error.insertAfter(insertAfterEle);
             },
             onsubmit: false,
             ...configs
@@ -3235,6 +3258,15 @@ class UtilControl {
     static sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    static escapeHTML(txt){
+        return txt
+            .toString()
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
 }
 
 class DTBControl {
@@ -4175,8 +4207,8 @@ class DTBControl {
             setTimeout(() => DocumentControl.buildSelect2(), 0);
         }
         return function (settings) {
-            drawCallback01(settings);
-            drawCallBackDefault(settings);
+            drawCallback01.bind(this)(settings);
+            drawCallBackDefault.bind(this)(settings);
         }
     }
 
@@ -4185,8 +4217,8 @@ class DTBControl {
         };
         let callbackRenderIdx = this.callbackRenderIdx;
         return function (row, data, displayNum, displayIndex, dataIndex) {
-            rowCallbackManual(row, data, dataIndex);
-            callbackRenderIdx(row, data, dataIndex);
+            rowCallbackManual.bind(this)(row, data, dataIndex);
+            callbackRenderIdx.bind(this)(row, data, dataIndex);
         }
     }
 
@@ -6662,6 +6694,7 @@ let $x = {
         flattenObject: UtilControl.flattenObject,
         flattenObjectParams: UtilControl.flattenObjectParams,
         sleep: UtilControl.sleep,
+        escapeHTML: UtilControl.escapeHTML,
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,

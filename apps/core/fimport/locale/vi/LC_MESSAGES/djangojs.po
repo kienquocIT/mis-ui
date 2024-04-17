@@ -66,6 +66,10 @@ msgid "Unique"
 msgstr "Duy nhất"
 
 #
+msgid "Unique together"
+msgstr "Duy nhất cùng nhau"
+
+#
 msgid "Foreign key"
 msgstr "Khóa ngoại"
 
@@ -84,6 +88,26 @@ msgstr "Duy nhất"
 #
 msgid "type"
 msgstr "Kiểu"
+
+#
+msgid "Number"
+msgstr "Số"
+
+#
+msgid "String"
+msgstr "chuỗi"
+
+#
+msgid "Array split by commas"
+msgstr "Mảng được chia thành các phần bằng dấu phẩy"
+
+#
+msgid "Phone number Vietnam"
+msgstr "Số điện thoại Việt Nam"
+
+#
+msgid "Email address"
+msgstr "Địa chỉ thư điện tử"
 
 #
 msgid "minlength"

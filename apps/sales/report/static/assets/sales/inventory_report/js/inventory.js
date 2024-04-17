@@ -196,6 +196,7 @@ $(document).ready(function () {
                         let out_sum_value = 0
                         let ending_sum_value = 0
                         for (const warehouse_activities of results[0]) {
+                            console.log(warehouse_activities)
                             if (warehouses_select_Ele.val().length === 0) {
                                 if (table_inventory_report.find(`tbody .wh-row-${warehouse_activities?.['warehouse']?.['id']}`).length === 0) {
                                     table_inventory_report.find('tbody').append(`
@@ -233,8 +234,8 @@ $(document).ready(function () {
                                         }
                                         detail_html += `
                                             <tr>
-                                                <td class="border-1" colspan="3"><span></span></td>
-                                                <td class="border-1" colspan="3"><span></span></td>
+                                                <td class="border-1 first-col" colspan="3"><span></span></td>
+                                                <td class="border-1 second-col" colspan="3"><span></span></td>
                                                 <td class="border-1" colspan="3"><span></span></td>
                                                 <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
                                                 <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
@@ -295,8 +296,8 @@ $(document).ready(function () {
                                         }
                                         detail_html += `
                                             <tr>
-                                                <td class="border-1" colspan="3"><span></span></td>
-                                                <td class="border-1" colspan="3"><span></span></td>
+                                                <td class="border-1 first-col" colspan="3"><span></span></td>
+                                                <td class="border-1 second-col" colspan="3"><span></span></td>
                                                 <td class="border-1" colspan="3"><span></span></td>
                                                 <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
                                                 <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
@@ -399,8 +400,8 @@ $(document).ready(function () {
                                             }
                                             detail_html += `
                                                 <tr>
-                                                    <td class="border-1" colspan="3"><span></span></td>
-                                                    <td class="border-1" colspan="3"><span></span></td>
+                                                    <td class="border-1 first-col" colspan="3"><span></span></td>
+                                                    <td class="border-1 second-col" colspan="3"><span></span></td>
                                                     <td class="border-1" colspan="3"><span></span></td>
                                                     <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
                                                     <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
@@ -458,8 +459,8 @@ $(document).ready(function () {
                                             }
                                             detail_html += `
                                                 <tr>
-                                                    <td class="border-1" colspan="3"><span></span></td>
-                                                    <td class="border-1" colspan="3"><span></span></td>
+                                                    <td class="border-1 first-col" colspan="3"><span></span></td>
+                                                    <td class="border-1 second-col" colspan="3"><span></span></td>
                                                     <td class="border-1" colspan="3"><span></span></td>
                                                     <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
                                                     <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>

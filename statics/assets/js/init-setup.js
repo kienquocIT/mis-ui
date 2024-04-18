@@ -37,7 +37,7 @@ class SetupFormSubmit {
                     ).format('YYYY-MM-DD HH:mm:ss');
                     break
             }
-            if ($(this).is('select')) item['value'] = $(this).prop('checked');
+            if ($(this).is(':checkbox')) item['value'] = $(this).prop('checked');
 
             if (item.name in obj) {
                 obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];

@@ -317,7 +317,6 @@ $(function () {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
-            console.log(_form.dataForm)
             WFRTControl.callWFSubmitForm(_form);
         });
 

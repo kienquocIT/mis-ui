@@ -781,11 +781,13 @@ $(document).ready(function () {
                         .on('change', function () {
                             if (!$(this).attr('id')) $(this).attr('id', `inp-${$x.fn.randomStr(32)}`);
                             let state = $(this).prop('checked');
-                            state === true ? $(row).addClass('selected') : $(row).removeClass('selected');
-                            $(row).trigger('valid');
+                            if (state === true){
+                                $(row).addClass('selected');
+                                $(row).trigger('valid');
+                            } else $(row).removeClass('selected');
                         });
 
-                    let inp$ = $(row).find('input:not(:disabled):not(.form-control-plaintext)');
+                    let inp$ = $(frm$).find('input:not(:disabled):not(.form-control-plaintext)');
 
                     // on input handle valid this field (only this field fire 'input' trigger)
                     inp$
@@ -801,7 +803,7 @@ $(document).ready(function () {
                         });
 
                     // init select2 for all select in form (get config from script.fimport-select2-config in form-group
-                    let select$ = $(row).find('select:not(:disabled):not(.form-control-plaintext)');
+                    let select$ = $(frm$).find('select:not(:disabled):not(.form-control-plaintext)');
                     select$.each(function (){
                         $(this).off('change');
 

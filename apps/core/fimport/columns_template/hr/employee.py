@@ -126,8 +126,9 @@ COLUMNS_HR_EMPLOYEE = ResolveColumnsFImport(
                 'args': ['required'],
                 'kwargs': {
                     'type': 'text',
-                    'data-valid-date': True,
+                    'data-type': 'date',
                     'data-date-format': 'DD-MM-YYYY',
+                    'data-valid-date': True,
                 },
             },
         },
@@ -142,6 +143,7 @@ COLUMNS_HR_EMPLOYEE = ResolveColumnsFImport(
             'input_attrs': {
                 'kwargs': {
                     'type': 'text',
+                    'data-type': 'date',
                     'data-valid-date': True,
                     'data-date-format': 'DD-MM-YYYY',
                 },

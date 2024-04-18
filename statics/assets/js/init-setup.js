@@ -27,17 +27,17 @@ class SetupFormSubmit {
                 case 'date':
                     item['value'] = moment(
                         item['value'],
-                        $(this).attr('data-date-format', 'DD-MM-YYYY')
-                    ).format('YYYY-MM-DDD');
+                        $(this).attr('data-date-format') || 'DD-MM-YYYY',
+                    ).format('YYYY-MM-DD');
                     break
                 case 'datetime':
                     item['value'] = moment(
                         item['value'],
-                        $(this).attr('data-date-format', 'DD-MM-YYYY HH:mm:ss')
+                        $(this).attr('data-date-format') || 'DD-MM-YYYY HH:mm:ss',
                     ).format('YYYY-MM-DD HH:mm:ss');
                     break
             }
-            if ($(this).is('select')) item['value'] = $(this).prop('checked');
+            if ($(this).is(':checkbox')) item['value'] = $(this).prop('checked');
 
             if (item.name in obj) {
                 obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];

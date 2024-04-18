@@ -130,6 +130,23 @@ $(function () {
             }
         });
 
+        GRDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
+            let row = this.closest('tr');
+            row.querySelector('.table-row-import').value = '0';
+            if (this.checked === true) {
+                GRDataTableHandle.tableLot.DataTable().clear().draw();
+                GRDataTableHandle.tableSerial.DataTable().clear().draw();
+                btnAddLot[0].setAttribute('disabled', 'true');
+                btnAddSerial[0].setAttribute('disabled', 'true');
+                row.querySelector('.table-row-import').removeAttribute('disabled');
+            } else {
+                btnAddLot[0].removeAttribute('disabled');
+                btnAddSerial[0].removeAttribute('disabled');
+                row.querySelector('.table-row-import').setAttribute('disabled', 'true');
+            }
+            GRStoreDataHandle.storeDataAll();
+        });
+
         btnAddLot.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAddRowLot();
@@ -137,26 +154,6 @@ $(function () {
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
                 return false
             }
-        });
-
-        GRLoadDataHandle.btnCheckLotLater.on('click', function () {
-            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
-                GRLoadDataHandle.quantityLotLater.val('0');
-                if (this.checked === true) {
-                    GRLoadDataHandle.quantityLotLater[0].removeAttribute('disabled');
-                    btnAddLot[0].setAttribute('disabled', 'true');
-                } else {
-                    GRLoadDataHandle.quantityLotLater[0].setAttribute('disabled', 'true');
-                    btnAddLot[0].removeAttribute('disabled');
-                }
-            } else {
-                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
-                return false
-            }
-        });
-
-        GRLoadDataHandle.quantityLotLater.on('change', function () {
-            GRLoadDataHandle.loadQuantityImport();
         });
 
         GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
@@ -202,26 +199,6 @@ $(function () {
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
                 return false
             }
-        });
-
-        GRLoadDataHandle.btnCheckSerialLater.on('click', function () {
-            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
-                GRLoadDataHandle.quantitySerialLater.val('0');
-                if (this.checked === true) {
-                    GRLoadDataHandle.quantitySerialLater[0].removeAttribute('disabled');
-                    btnAddSerial[0].setAttribute('disabled', 'true');
-                } else {
-                    GRLoadDataHandle.quantitySerialLater[0].setAttribute('disabled', 'true');
-                    btnAddSerial[0].removeAttribute('disabled');
-                }
-            } else {
-                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
-                return false
-            }
-        });
-
-        GRLoadDataHandle.quantitySerialLater.on('change', function () {
-            GRLoadDataHandle.loadQuantityImport();
         });
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {

@@ -435,8 +435,8 @@
                                             <tr>
                                                 <th class="w-5"></th>
                                                 <th class="w-20">{% trans 'Warehouse Code' %}</th>
-                                                <th class="w-30">{% trans 'Warehouse Name' %}</th>
-                                                <th class="w-20">{% trans 'Note' %}</th>
+                                                <th class="w-40">{% trans 'Warehouse Name' %}</th>
+                                                <th class="w-10">{% trans 'Lot/serial later' %}</th>
                                                 <th class="w-20">{% trans 'Quantity' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
                                             </tr>
@@ -470,13 +470,6 @@
                                             <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-lot">
                                                 <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
-                                            <div class="form-check mt-5 mb-2">
-                                                <input type="checkbox" class="form-check-input" id="checkbox-input-later-lot">
-                                                <label class="form-check-label" for="checkbox-input-later-lot">{% trans 'Input data later' %}</label>
-                                            </div>
-                                            <div class="form-group w-20">
-                                                <input type="text" class="form-control" placeholder="{% trans 'Quantity' %}" id="quantity-input-later-lot" disabled>
-                                            </div>
                                         </div>
                                         <div id="table-good-receipt-manage-serial-area" hidden>
                                             <table
@@ -502,13 +495,6 @@
                                             <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-serial">
                                                 <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
-                                            <div class="form-check mt-5 mb-2">
-                                                <input type="checkbox" class="form-check-input" id="checkbox-input-later-serial">
-                                                <label class="form-check-label" for="checkbox-input-later-serial">{% trans 'Enter quantity first and add information later' %}</label>
-                                            </div>
-                                            <div class="form-group w-20">
-                                                <input type="text" class="form-control" placeholder="{% trans 'Quantity' %}" id="quantity-input-later-serial" disabled>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

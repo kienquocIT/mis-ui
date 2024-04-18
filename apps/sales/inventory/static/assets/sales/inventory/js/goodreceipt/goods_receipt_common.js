@@ -6,10 +6,6 @@ class GRLoadDataHandle {
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
-    static btnCheckLotLater = $('#checkbox-input-later-lot');
-    static quantityLotLater = $('#quantity-input-later-lot');
-    static btnCheckSerialLater = $('#checkbox-input-later-serial');
-    static quantitySerialLater = $('#quantity-input-later-serial');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
 
@@ -756,10 +752,6 @@ class GRLoadDataHandle {
             }
             GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
         }
-        if (GRLoadDataHandle.btnCheckLotLater[0].checked === true) {
-            let valueWHNew = parseFloat(GRLoadDataHandle.quantityLotLater.val());
-            GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
-        }
         if (!GRDataTableHandle.tableSerial[0].querySelector('.dataTables_empty')) {
             let valueWHNew = 0;
             for (let eleSerialNumber of GRDataTableHandle.tableSerial[0].querySelectorAll('.table-row-serial-number')) {
@@ -767,10 +759,6 @@ class GRLoadDataHandle {
                     valueWHNew++;
                 }
             }
-            GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
-        }
-        if (GRLoadDataHandle.btnCheckSerialLater[0].checked === true) {
-            let valueWHNew = parseFloat(GRLoadDataHandle.quantitySerialLater.val());
             GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
         }
         let valuePRNew = 0;
@@ -1479,7 +1467,9 @@ class GRDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-note">${row?.['remark'] ? row?.['remark'] : ''}</span>`;
+                        return `<div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional">
+                                </div>`;
                     }
                 },
                 {
@@ -2305,12 +2295,14 @@ class GRStoreDataHandle {
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
+                let isAdditional = row.querySelector('.table-row-checkbox-additional').checked;
                 let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     if (quantityImport > 0) {
                         let dataRow = JSON.parse(dataRowRaw);
                         dataRow['warehouse'] = dataRow?.['id'];
                         dataRow['quantity_import'] = quantityImport;
+                        dataRow['is_additional'] = isAdditional;
                         quantityImportTotal += quantityImport;
                         PRProductID = dataRow?.['purchase_request_product_id'];
                         POProductID = dataRow?.['purchase_order_product_id'];

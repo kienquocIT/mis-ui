@@ -71,6 +71,7 @@ $(function () {
         });
 
         btnEdit.on('click', function () {
+            GRLoadDataHandle.loadClearModalAreas();
             GRLoadDataHandle.loadModalProduct();
         });
 
@@ -138,6 +139,26 @@ $(function () {
             }
         });
 
+        GRLoadDataHandle.btnCheckLotLater.on('click', function () {
+            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
+                GRLoadDataHandle.quantityLotLater.val('0');
+                if (this.checked === true) {
+                    GRLoadDataHandle.quantityLotLater[0].removeAttribute('disabled');
+                    btnAddLot[0].setAttribute('disabled', 'true');
+                } else {
+                    GRLoadDataHandle.quantityLotLater[0].setAttribute('disabled', 'true');
+                    btnAddLot[0].removeAttribute('disabled');
+                }
+            } else {
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
+                return false
+            }
+        });
+
+        GRLoadDataHandle.quantityLotLater.on('change', function () {
+            GRLoadDataHandle.loadQuantityImport();
+        });
+
         GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
             let row = this.closest('tr');
             GRLoadDataHandle.loadUnCheckLotDDItem(row);
@@ -181,6 +202,26 @@ $(function () {
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
                 return false
             }
+        });
+
+        GRLoadDataHandle.btnCheckSerialLater.on('click', function () {
+            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
+                GRLoadDataHandle.quantitySerialLater.val('0');
+                if (this.checked === true) {
+                    GRLoadDataHandle.quantitySerialLater[0].removeAttribute('disabled');
+                    btnAddSerial[0].setAttribute('disabled', 'true');
+                } else {
+                    GRLoadDataHandle.quantitySerialLater[0].setAttribute('disabled', 'true');
+                    btnAddSerial[0].removeAttribute('disabled');
+                }
+            } else {
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
+                return false
+            }
+        });
+
+        GRLoadDataHandle.quantitySerialLater.on('change', function () {
+            GRLoadDataHandle.loadQuantityImport();
         });
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {

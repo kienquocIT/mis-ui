@@ -408,12 +408,12 @@
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-20">PR</th>
-                                                <th class="w-15">{% trans 'UOM' %}</th>
-                                                <th class="w-15">{% trans 'Quantity' %}</th>
-                                                <th class="w-15">{% trans 'Received' %}</th>
-                                                <th class="w-15">{% trans 'Remain' %}</th>
-                                                <th class="w-15">{% trans 'This time' %}</th>
+                                                <th class="w-45">PR</th>
+                                                <th class="w-10">{% trans 'UOM' %}</th>
+                                                <th class="w-10">{% trans 'Quantity' %}</th>
+                                                <th class="w-10">{% trans 'Received' %}</th>
+                                                <th class="w-10">{% trans 'Remain' %}</th>
+                                                <th class="w-10">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -434,8 +434,8 @@
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-20">{% trans 'Code' %} WH</th>
-                                                <th class="w-30">{% trans 'Name' %} WH</th>
+                                                <th class="w-20">{% trans 'Warehouse Code' %}</th>
+                                                <th class="w-30">{% trans 'Warehouse Name' %}</th>
                                                 <th class="w-20">{% trans 'Note' %}</th>
                                                 <th class="w-20">{% trans 'Quantity' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
@@ -467,12 +467,17 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-lot">
-                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-lot">
+                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
+                                            <div class="form-check mt-5 mb-2">
+                                                <input type="checkbox" class="form-check-input" id="checkbox-input-later-lot">
+                                                <label class="form-check-label" for="checkbox-input-later-lot">{% trans 'Input data later' %}</label>
+                                            </div>
+                                            <div class="form-group w-20">
+                                                <input type="text" class="form-control" placeholder="{% trans 'Quantity' %}" id="quantity-input-later-lot" disabled>
+                                            </div>
                                         </div>
-
                                         <div id="table-good-receipt-manage-serial-area" hidden>
                                             <table
                                                 id="datable-good-receipt-manage-serial"
@@ -494,10 +499,16 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-serial">
-                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-serial">
+                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
+                                            <div class="form-check mt-5 mb-2">
+                                                <input type="checkbox" class="form-check-input" id="checkbox-input-later-serial">
+                                                <label class="form-check-label" for="checkbox-input-later-serial">{% trans 'Enter quantity first and add information later' %}</label>
+                                            </div>
+                                            <div class="form-group w-20">
+                                                <input type="text" class="form-control" placeholder="{% trans 'Quantity' %}" id="quantity-input-later-serial" disabled>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -566,7 +577,7 @@
                                                 </tbody>
                                             </table>
 
-                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-lot">
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-ia-lot">
                                                 <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
                                         </div>
@@ -593,7 +604,7 @@
                                                 </tbody>
                                             </table>
 
-                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-serial">
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-ia-serial">
                                                 <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
                                         </div>

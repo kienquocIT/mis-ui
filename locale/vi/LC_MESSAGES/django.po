@@ -5960,7 +5960,8 @@ msgstr "Nhập hàng một phần"
 
 #
 msgid "Received"
-msgstr "Đã nhập hàng"
+msgstr "Đã nhập"
+
 #
 msgid "From Price List in left side"
 msgstr "Chọn theo danh sách giá bên trái"

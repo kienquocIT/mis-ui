@@ -59,10 +59,10 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'date_created',
+                        data: 'system_status',
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-green">${row.system_status}</span>`
+                            return `<span class="badge-primary badge">${data}</span>`
                         }
                     },
                 ],

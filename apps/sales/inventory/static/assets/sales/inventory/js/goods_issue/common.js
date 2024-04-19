@@ -486,6 +486,7 @@ class GoodsIssueLoadPage {
     }
 
     static getDataProductForIA(dataForm) {
+        let flag = true;
         let rows = $('#dtbProductIA tbody tr');
         let dict_product = JSON.parse($('#data-ia-product').text());
         let list_product = [];
@@ -502,21 +503,35 @@ class GoodsIssueLoadPage {
                 'subtotal': $(this).find('.col-subtotal').valCurrency(),
             }
             if ($(this).find('.select-detail').attr('data-manage-type') === '2') { // sn
-                data['sn_changes'] = $(this).find('.select-detail').find('.data-sn-selected').text() ? JSON.parse(
-                    $(this).find('.select-detail').find('.data-sn-selected').text()
-                ) : []
+                if ($(this).find('.select-detail').find('.data-sn-selected').text()) {
+                    data['sn_changes'] = JSON.parse(
+                        $(this).find('.select-detail').find('.data-sn-selected').text()
+                    )
+                }
+                else {
+                    $.fn.notifyB({description: "Serial data can not NULL"}, 'warning');
+                    flag = false;
+                }
                 data['lot_changes'] = []
             }
             if ($(this).find('.select-detail').attr('data-manage-type') === '1') { // lot
-                data['lot_changes'] = $(this).find('.select-detail').find('.data-lot-selected').text() ? JSON.parse(
-                    $(this).find('.select-detail').find('.data-lot-selected').text()
-                )['data_lot'] : []
+                if ($(this).find('.select-detail').find('.data-lot-selected').text()) {
+                    data['lot_changes'] = JSON.parse(
+                        $(this).find('.select-detail').find('.data-lot-selected').text()
+                    )['data_lot']
+                }
+                else {
+                    $.fn.notifyB({description: "Lot data can not NULL"}, 'warning');
+                    flag = false;
+                }
                 data['sn_changes'] = []
             }
             list_product.push(data);
         })
         dataForm['goods_issue_datas'] = list_product;
-        return dataForm
+        if (flag) {
+            return dataForm
+        }
     }
 
     static getDataProductForLiquidation(dataForm) {

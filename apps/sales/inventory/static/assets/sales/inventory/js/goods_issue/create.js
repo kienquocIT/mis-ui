@@ -30,7 +30,7 @@ $(document).ready(function () {
                     return
                 }
             } else {
-                let frm_data = GoodsIssueLoadPage.getDataProductForLiquidation(frm_data);
+                frm_data = GoodsIssueLoadPage.getDataProductForLiquidation(frm_data);
             }
             WindowControl.showLoading();
             $.fn.callAjax2({

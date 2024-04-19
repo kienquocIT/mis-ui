@@ -988,6 +988,7 @@ $(document).ready(function () {
                     if (jsonData.length > 0) {
                         const dataHead = jsonData[0];
                         const configHead = clsThis.clsRenderData.templateConfig.columns;
+                        console.log(dataHead, configHead.length)
                         if (dataHead.length === configHead.length) {
                             // update starting and ending records
                             clsThis.update_max_start_end(jsonData.length - 2);

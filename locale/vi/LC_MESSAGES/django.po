@@ -1311,6 +1311,10 @@ msgid "Account Type"
 msgstr "Loại tài khoản"
 
 #
+msgid "Account Type Selection"
+msgstr "Cá nhân/ Tổ chức"
+
+#
 msgid "individual"
 msgstr "Cá nhân"
 

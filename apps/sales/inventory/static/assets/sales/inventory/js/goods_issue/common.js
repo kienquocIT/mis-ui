@@ -115,26 +115,28 @@ class GoodsIssueLoadPage {
                 Promise.all([select_detail_table_sn_ajax]).then(
                     (results) => {
                         for (const item of results[0]) {
-                            let checked = ''
-                            if (row_selected.includes(item?.['id'])) {
-                                checked = 'checked'
+                            if (item?.['is_delete'] === false) {
+                                let checked = ''
+                                if (row_selected.includes(item?.['id'])) {
+                                    checked = 'checked'
+                                }
+                                select_detail_table_sn.find('tbody').append(`
+                                    <tr>
+                                        <td>${item?.['vendor_serial_number'] ? item?.['vendor_serial_number'] : ''}</td>
+                                        <td>${item?.['serial_number'] ? item?.['serial_number'] : ''}</td>
+                                        <td>${item?.['expire_date'] ? moment(item?.['expire_date'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                        <td>${item?.['manufacture_date'] ? moment(item?.['manufacture_date'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                        <td>${item?.['warranty_start'] ? moment(item?.['warranty_start'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                        <td>${item?.['warranty_end'] ? moment(item?.['warranty_end'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" ${disabled} ${checked} data-sn-id="${item?.['id']}" class="select-detail-check-sn">
+                                                <label class="form-check-label"></label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `)
                             }
-                            select_detail_table_sn.find('tbody').append(`
-                                <tr>
-                                    <td>${item?.['vendor_serial_number'] ? item?.['vendor_serial_number'] : ''}</td>
-                                    <td>${item?.['serial_number'] ? item?.['serial_number'] : ''}</td>
-                                    <td>${item?.['expire_date'] ? moment(item?.['expire_date'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
-                                    <td>${item?.['manufacture_date'] ? moment(item?.['manufacture_date'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
-                                    <td>${item?.['warranty_start'] ? moment(item?.['warranty_start'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
-                                    <td>${item?.['warranty_end'] ? moment(item?.['warranty_end'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
-                                    <td>
-                                        <div class="form-check">
-                                            <input type="checkbox" ${disabled} ${checked} data-sn-id="${item?.['id']}" class="select-detail-check-sn">
-                                            <label class="form-check-label"></label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            `)
                         }
                     })
             }

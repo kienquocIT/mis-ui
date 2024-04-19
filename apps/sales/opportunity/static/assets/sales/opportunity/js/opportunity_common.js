@@ -444,7 +444,7 @@ class OpportunityLoadDetail {
                 if (item?.['is_deal_closed']) {
                     ele_first_stage.addClass('stage-close')
                     ele_first_stage.find('.dropdown-menu').empty();
-                    if (is_close_lost || is_deal_close) {
+                    if (is_deal_close) {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
                                 <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
@@ -1567,6 +1567,7 @@ function autoLoadStage(
             is_lost = closed_lost_condition_list.every(item => bMap[item]);
         }
     }
+    console.log(closed_lost_condition_list)
 
     if (!just_check) {
         let stage_selected_ele = $('.stage-selected');

@@ -6,6 +6,8 @@ class GRLoadDataHandle {
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
+    static btnAddLot = $('#btn-add-manage-lot');
+    static btnAddSerial = $('#btn-add-manage-serial');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
 
@@ -357,6 +359,7 @@ class GRLoadDataHandle {
     };
 
     static loadCheckWH(ele) {
+        let $form = $('#frm_good_receipt_create');
         let row = ele.closest('tr');
         let is_checked = false;
         if (ele.checked === true) {
@@ -376,6 +379,17 @@ class GRLoadDataHandle {
             $(row).css('background-color', '#ebfcf5');
         } else {
             $(row).css('background-color', '');
+        }
+        if ($form.attr('data-method').toLowerCase() !== 'get') {
+            let eleAdditional = row.querySelector('.table-row-checkbox-additional');
+            let eleImport = row.querySelector('.table-row-import');
+            if (eleAdditional && eleImport) {
+                if (eleAdditional.checked === true) {
+                    eleImport.removeAttribute('disabled');
+                } else {
+                    eleImport.setAttribute('disabled', 'true');
+                }
+            }
         }
     };
 
@@ -429,15 +443,16 @@ class GRLoadDataHandle {
                                 item['uom'] = dataStore?.['uom_order_actual'];
                             }
                             if (dataStore?.['warehouse_data']) {
-                                for (let dataPRWH of dataStore?.['warehouse_data']) {
-                                    if (dataPRWH?.['id'] === item?.['id']) {
-                                        item['quantity_import'] = dataPRWH?.['quantity_import'] ? dataPRWH?.['quantity_import'] : 0;
-                                        if (dataPRWH?.['lot_data']) {
-                                            item['lot_data'] = dataPRWH?.['lot_data'];
+                                for (let dataWH of dataStore?.['warehouse_data']) {
+                                    if (dataWH?.['id'] === item?.['id']) {
+                                        item['quantity_import'] = dataWH?.['quantity_import'] ? dataWH?.['quantity_import'] : 0;
+                                        if (dataWH?.['lot_data']) {
+                                            item['lot_data'] = dataWH?.['lot_data'];
                                         }
-                                        if (dataPRWH?.['serial_data']) {
-                                            item['serial_data'] = dataPRWH?.['serial_data'];
+                                        if (dataWH?.['serial_data']) {
+                                            item['serial_data'] = dataWH?.['serial_data'];
                                         }
+                                        item['is_additional'] = dataWH?.['is_additional'];
                                     }
                                 }
                             }
@@ -456,11 +471,17 @@ class GRLoadDataHandle {
         let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (dataPOProductCheckedRaw) {
             let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
-            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
-                GRLoadDataHandle.loadAreaLotSerial(true, false);
-            }
-            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {
-                GRLoadDataHandle.loadAreaLotSerial(false, true);
+            if ([1, 2].includes(dataPOProductChecked?.['product']?.['general_traceability_method'])) {
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
+                    GRLoadDataHandle.loadAreaLotSerial(true, false);
+                }
+                if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {
+                    GRLoadDataHandle.loadAreaLotSerial(false, true);
+                }
+            } else {
+                for (let eleCheckAdditional of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox-additional')) {
+                    eleCheckAdditional.setAttribute('disabled', 'true');
+                }
             }
         }
     };
@@ -480,10 +501,24 @@ class GRLoadDataHandle {
     };
 
     static loadNewRowsLotOrNewRowsSerial() {
+        let $form = $('#frm_good_receipt_create');
         let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (dataPOProductCheckedRaw) {
             let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
             if ([1, 2].includes(dataPOProductChecked?.['product']?.['general_traceability_method'])) {
+                if ($form.attr('data-method').toLowerCase() !== 'get') {
+                    let boxWHChecked = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked');
+                    if (boxWHChecked) {
+                        let isAdditional = boxWHChecked.closest('tr').querySelector('.table-row-checkbox-additional').checked;
+                        if (isAdditional === true) {
+                            GRLoadDataHandle.btnAddLot[0].setAttribute('disabled', 'true');
+                            GRLoadDataHandle.btnAddSerial[0].setAttribute('disabled', 'true');
+                        } else {
+                            GRLoadDataHandle.btnAddLot[0].removeAttribute('disabled');
+                            GRLoadDataHandle.btnAddSerial[0].removeAttribute('disabled');
+                        }
+                    }
+                }
                 for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
                     eleImport.setAttribute('disabled', 'true');
                 }
@@ -542,6 +577,7 @@ class GRLoadDataHandle {
     };
 
     static loadNewRowsLot() {
+        let $form = $('#frm_good_receipt_create');
         let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
@@ -551,6 +587,9 @@ class GRLoadDataHandle {
                     GRLoadDataHandle.loadDDLot(newRow.querySelector('.dropdown-menu-lot'), lot_data?.['lot']);
                     GRLoadDataHandle.loadLotSerialDatePickerExist(newRow);
                 }
+            }
+            if ($form.attr('data-method').toLowerCase() === 'get') {
+                GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLot);
             }
         }
     };
@@ -662,6 +701,7 @@ class GRLoadDataHandle {
     }
 
     static loadNewRowsSerial() {
+        let $form = $('#frm_good_receipt_create');
         let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
@@ -674,6 +714,9 @@ class GRLoadDataHandle {
                 let row = this.node();
                 GRLoadDataHandle.loadLotSerialDatePickerExist(row);
             })
+            if ($form.attr('data-method').toLowerCase() === 'get') {
+                GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableSerial);
+            }
         }
     };
 
@@ -1089,9 +1132,33 @@ class GRLoadDataHandle {
     };
 
     static loadClearModalAreas() {
+        for (let eleCheck of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
+            eleCheck.checked = false;
+        }
         $('#scroll-table-pr')[0].setAttribute('hidden', 'true');
         $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
         GRDataTableHandle.tableWH.DataTable().clear().draw();
+    };
+
+    static loadCheckIsAdditional(ele) {
+        let $form = $('#frm_good_receipt_create');
+        if ($form.attr('data-method').toLowerCase() !== 'get') {
+            let row = ele.closest('tr');
+            row.querySelector('.table-row-import').value = '0';
+            if (ele.checked === true) {
+                GRDataTableHandle.tableLot.DataTable().clear().draw();
+                GRDataTableHandle.tableSerial.DataTable().clear().draw();
+                GRLoadDataHandle.btnAddLot[0].setAttribute('disabled', 'true');
+                GRLoadDataHandle.btnAddSerial[0].setAttribute('disabled', 'true');
+                row.querySelector('.table-row-import').removeAttribute('disabled');
+            } else {
+                GRLoadDataHandle.btnAddLot[0].removeAttribute('disabled');
+                GRLoadDataHandle.btnAddSerial[0].removeAttribute('disabled');
+                row.querySelector('.table-row-import').setAttribute('disabled', 'true');
+            }
+            GRStoreDataHandle.storeDataAll();
+        }
+        return true;
     };
 
 
@@ -1263,6 +1330,30 @@ class GRLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.del-row')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-lot-number')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-import')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-vendor-serial-number')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-serial-number')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-expire-date')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-manufacture-date')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-warranty-start')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-warranty-end')) {
             ele.setAttribute('disabled', 'true');
         }
     };
@@ -1467,8 +1558,12 @@ class GRDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
+                        let checked = ``;
+                        if (row?.['is_additional'] === true) {
+                            checked = `checked`;
+                        }
                         return `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional">
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" ${checked}>
                                 </div>`;
                     }
                 },
@@ -2975,6 +3070,7 @@ class GRSubmitHandle {
                 'quantity_import',
                 'lot_data',
                 'serial_data',
+                'is_additional',
             ]
             filterFieldList(field_list, warehouse);
             for (let lot of warehouse?.['lot_data'] ? warehouse?.['lot_data'] : []) {

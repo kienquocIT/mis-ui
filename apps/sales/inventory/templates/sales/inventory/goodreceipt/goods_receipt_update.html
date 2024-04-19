@@ -434,7 +434,7 @@
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
-                                            data-url="{% url 'WareHouseListAPI' %}"
+                                            data-url="{% url 'WareHouseListAPI' %}?interact=1"
                                             data-method="GET"
                                         >
                                             <thead>
@@ -442,7 +442,7 @@
                                                 <th class="w-5"></th>
                                                 <th class="w-20">{% trans 'Warehouse Code' %}</th>
                                                 <th class="w-30">{% trans 'Warehouse Name' %}</th>
-                                                <th class="w-20">{% trans 'Note' %}</th>
+                                                <th class="w-20">{% trans 'Later additional' %}</th>
                                                 <th class="w-20">{% trans 'Quantity' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
                                             </tr>
@@ -473,7 +473,6 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-
                                             <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-lot">
                                                 <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
@@ -500,7 +499,6 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-
                                             <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-serial">
                                                 <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>

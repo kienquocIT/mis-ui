@@ -298,6 +298,19 @@
                                     </tfoot>
                                 </table>
                             </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary"
+                                        id="btn-edit-product-good-receipt"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#productModalCenter"
+                                    >
+                                        <span><span>{% trans 'Detail' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-align-left"></i></span></span></span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="row custom-line-detail" id="custom-line-detail-2" hidden>
                             <div class="row">
@@ -390,12 +403,12 @@
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-20">PR</th>
-                                                <th class="w-15">{% trans 'UOM' %}</th>
-                                                <th class="w-15">{% trans 'Quantity' %}</th>
-                                                <th class="w-15">{% trans 'Received' %}</th>
-                                                <th class="w-15">{% trans 'Remain' %}</th>
-                                                <th class="w-15">{% trans 'This time' %}</th>
+                                                <th class="w-45">PR</th>
+                                                <th class="w-10">{% trans 'UOM' %}</th>
+                                                <th class="w-10">{% trans 'Quantity' %}</th>
+                                                <th class="w-10">{% trans 'Received' %}</th>
+                                                <th class="w-10">{% trans 'Remain' %}</th>
+                                                <th class="w-10">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -416,9 +429,9 @@
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-20">{% trans 'Code' %} WH</th>
-                                                <th class="w-30">{% trans 'Name' %} WH</th>
-                                                <th class="w-20">{% trans 'Note' %}</th>
+                                                <th class="w-20">{% trans 'Warehouse Code' %}</th>
+                                                <th class="w-30">{% trans 'Warehouse Name' %}</th>
+                                                <th class="w-20">{% trans 'Later additional' %}</th>
                                                 <th class="w-20">{% trans 'Quantity' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
                                             </tr>
@@ -641,5 +654,6 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_common.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_create.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_detail.js' %}"></script>
 {% endblock %}

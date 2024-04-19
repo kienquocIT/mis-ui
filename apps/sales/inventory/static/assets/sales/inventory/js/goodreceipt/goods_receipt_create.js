@@ -7,8 +7,6 @@ $(function () {
         let btnEdit = $('#btn-edit-product-good-receipt');
         let btnAdd = $('#btn-add-product-good-receipt');
         let btnConfirmAdd = $('#btn-confirm-add-product');
-        let btnAddLot = $('#btn-add-manage-lot');
-        let btnAddSerial = $('#btn-add-manage-serial');
         // Elements Case IA
         let btnIAConfirmAdd = $('#btn-confirm-add-ia-product');
         let btnIAEdit = $('#btn-edit-ia-product-good-receipt');
@@ -63,11 +61,6 @@ $(function () {
         GRLoadDataHandle.POSelectEle.on('change', function () {
             GRLoadDataHandle.loadChangePO($(this));
             btnEdit.click();
-        });
-
-        // Action on change dropdown supplier
-        GRLoadDataHandle.supplierSelectEle.on('change', function () {
-            // GRLoadDataHandle.loadMoreInformation($(this));
         });
 
         btnEdit.on('click', function () {
@@ -131,23 +124,10 @@ $(function () {
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
-            let row = this.closest('tr');
-            row.querySelector('.table-row-import').value = '0';
-            if (this.checked === true) {
-                GRDataTableHandle.tableLot.DataTable().clear().draw();
-                GRDataTableHandle.tableSerial.DataTable().clear().draw();
-                btnAddLot[0].setAttribute('disabled', 'true');
-                btnAddSerial[0].setAttribute('disabled', 'true');
-                row.querySelector('.table-row-import').removeAttribute('disabled');
-            } else {
-                btnAddLot[0].removeAttribute('disabled');
-                btnAddSerial[0].removeAttribute('disabled');
-                row.querySelector('.table-row-import').setAttribute('disabled', 'true');
-            }
-            GRStoreDataHandle.storeDataAll();
+            GRLoadDataHandle.loadCheckIsAdditional(this);
         });
 
-        btnAddLot.on('click', function () {
+        GRLoadDataHandle.btnAddLot.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAddRowLot();
             } else {
@@ -192,7 +172,7 @@ $(function () {
             GRLoadDataHandle.loadDataIfChangeDateLotRow(row);
         });
 
-        btnAddSerial.on('click', function () {
+        GRLoadDataHandle.btnAddSerial.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAddRowSerial();
             } else {

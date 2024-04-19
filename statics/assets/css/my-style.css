@@ -949,19 +949,20 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
 
 .badge-child {
     position: absolute;
-    top: -10px; /* adjust as needed for vertical positioning */
-    right: -10px; /* adjust as needed for horizontal positioning */
-    min-width: 20px; /* size of the circle */
-    height: 20px; /* size of the circle */
-    border-radius: 50%; /* to make it a circle */
-    font-size: 75%; /* adjust as needed for the font size of the text inside the circle */
-    line-height: 18px; /* to vertically center the text */
+    top: -10px;
+    right: -10px;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 82%;
+    line-height: 18px;
     padding: 0 .2rem;
     border: 2px solid #fff;
+    font-weight: bold;
 }
 
 .badge-child.badge-child-blue {
-    background-color: #298dff; /* background color of the circle */
-    color: #fff; /* text color of the circle */
+    background-color: #298dff;
+    color: #fff;
 }
 /* -- Badge parent */

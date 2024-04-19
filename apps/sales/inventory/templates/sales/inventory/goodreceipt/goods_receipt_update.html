@@ -334,7 +334,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="row">
+                            <div class="row mt-2">
                                 <div class="col-12 col-md-6 col-lg-6">
                                     <button
                                         type="button"
@@ -414,12 +414,12 @@
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-20">PR</th>
-                                                <th class="w-15">{% trans 'UOM' %}</th>
-                                                <th class="w-15">{% trans 'Quantity' %}</th>
-                                                <th class="w-15">{% trans 'Received' %}</th>
-                                                <th class="w-15">{% trans 'Remain' %}</th>
-                                                <th class="w-15">{% trans 'This time' %}</th>
+                                                <th class="w-45">PR</th>
+                                                <th class="w-10">{% trans 'UOM' %}</th>
+                                                <th class="w-10">{% trans 'Quantity' %}</th>
+                                                <th class="w-10">{% trans 'Received' %}</th>
+                                                <th class="w-10">{% trans 'Remain' %}</th>
+                                                <th class="w-10">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -434,15 +434,15 @@
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
-                                            data-url="{% url 'WareHouseListAPI' %}"
+                                            data-url="{% url 'WareHouseListAPI' %}?interact=1"
                                             data-method="GET"
                                         >
                                             <thead>
                                             <tr>
                                                 <th class="w-5"></th>
-                                                <th class="w-20">{% trans 'Code' %} WH</th>
-                                                <th class="w-30">{% trans 'Name' %} WH</th>
-                                                <th class="w-20">{% trans 'Note' %}</th>
+                                                <th class="w-20">{% trans 'Warehouse Code' %}</th>
+                                                <th class="w-40">{% trans 'Warehouse Name' %}</th>
+                                                <th class="w-10">{% trans 'Later additional' %}</th>
                                                 <th class="w-20">{% trans 'Quantity' %}</th>
                                                 <th class="w-5">{% trans 'UOM' %}</th>
                                             </tr>
@@ -473,9 +473,8 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-lot">
-                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-lot">
+                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
                                         </div>
 
@@ -500,9 +499,8 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-serial">
-                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-serial">
+                                                <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
                                         </div>
                                     </div>
@@ -537,10 +535,11 @@
                                             <tr>
                                                 <th class="w-5"></th>
                                                 <th class="w-30">{% trans 'Product' %}</th>
-                                                <th class="w-10">{% trans 'UOM' %}</th>
-                                                <th class="w-10">{% trans 'Quantity' %}</th>
                                                 <th class="w-30">{% trans 'Warehouse' %}</th>
-                                                <th class="w-15">{% trans 'This time' %}</th>
+                                                <th class="w-5">{% trans 'Quantity' %}</th>
+                                                <th class="w-5">{% trans 'UOM' %}</th>
+                                                <th class="w-5">{% trans 'Later additional' %}</th>
+                                                <th class="w-20">{% trans 'This time' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -572,7 +571,7 @@
                                                 </tbody>
                                             </table>
 
-                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-lot">
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-ia-lot">
                                                 <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
                                         </div>
@@ -599,7 +598,7 @@
                                                 </tbody>
                                             </table>
 
-                                            <button type="button" class="btn btn-outline-primary" id="btn-add-ia-serial">
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-ia-serial">
                                                 <span><span>{% trans 'Add new' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                             </button>
                                         </div>

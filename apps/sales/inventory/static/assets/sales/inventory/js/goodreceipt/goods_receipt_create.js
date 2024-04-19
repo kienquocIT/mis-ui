@@ -7,14 +7,9 @@ $(function () {
         let btnEdit = $('#btn-edit-product-good-receipt');
         let btnAdd = $('#btn-add-product-good-receipt');
         let btnConfirmAdd = $('#btn-confirm-add-product');
-        let btnAddLot = $('#btn-add-manage-lot');
-        let btnAddSerial = $('#btn-add-manage-serial');
         // Elements Case IA
         let btnIAConfirmAdd = $('#btn-confirm-add-ia-product');
         let btnIAEdit = $('#btn-edit-ia-product-good-receipt');
-        let btnAddIALot = $('#btn-add-ia-lot');
-        let btnAddIASerial = $('#btn-add-ia-serial');
-
 
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
@@ -65,12 +60,8 @@ $(function () {
             btnEdit.click();
         });
 
-        // Action on change dropdown supplier
-        GRLoadDataHandle.supplierSelectEle.on('change', function () {
-            // GRLoadDataHandle.loadMoreInformation($(this));
-        });
-
         btnEdit.on('click', function () {
+            GRLoadDataHandle.loadClearModalAreas();
             GRLoadDataHandle.loadModalProduct();
         });
 
@@ -129,7 +120,11 @@ $(function () {
             }
         });
 
-        btnAddLot.on('click', function () {
+        GRDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
+            GRLoadDataHandle.loadCheckIsAdditional(this);
+        });
+
+        GRLoadDataHandle.btnAddLot.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAddRowLot();
             } else {
@@ -174,7 +169,7 @@ $(function () {
             GRLoadDataHandle.loadDataIfChangeDateLotRow(row);
         });
 
-        btnAddSerial.on('click', function () {
+        GRLoadDataHandle.btnAddSerial.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAddRowSerial();
             } else {
@@ -204,13 +199,11 @@ $(function () {
         });
 
         $('#productModalCenter').on('change', '.validated-number', function () {
-            let value = this.value;
-            // Replace non-digit characters with an empty string
-            value = value.replace(/[^0-9.]/g, '');
-            // Remove unnecessary zeros from the integer part
-            value = value.replace("-", "").replace(/^0+(?=\d)/, '');
-            // Update value of input
-            this.value = value;
+            GRValidateHandle.validateNumber(this);
+        });
+
+        $('#productIAModalCenter').on('change', '.validated-number', function () {
+            GRValidateHandle.validateNumber(this);
         });
 
         // IA BEGIN
@@ -232,7 +225,11 @@ $(function () {
             GRLoadDataHandle.loadCheckIAProduct(this);
         });
 
-        btnAddIASerial.on('click', function () {
+        GRDataTableHandle.tableIAProduct.on('click', '.table-row-checkbox-additional', function () {
+            GRLoadDataHandle.loadCheckIAIsAdditional(this);
+        });
+
+        GRLoadDataHandle.btnAddIASerial.on('click', function () {
             GRLoadDataHandle.loadAddRowIASerial();
         });
 
@@ -242,7 +239,7 @@ $(function () {
             GRValidateHandle.validateIASerialNumberExistRow(this);
         });
 
-        btnAddIALot.on('click', function () {
+        GRLoadDataHandle.btnAddIALot.on('click', function () {
             GRLoadDataHandle.loadAddRowIALot();
         });
 

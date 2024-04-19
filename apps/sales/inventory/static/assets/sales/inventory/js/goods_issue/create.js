@@ -15,6 +15,7 @@ $(document).ready(function () {
             date_issue: true
         },
         submitHandler: function (form) {
+            WindowControl.showLoading();
             let frm = new SetupFormSubmit($(form));
             let frm_data = frm.dataForm;
             frm.dataForm['date_issue'] = moment($('[name="date_issue"]').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
@@ -25,7 +26,6 @@ $(document).ready(function () {
             } else {
                 frm_data = GoodsIssueLoadPage.getDataProductForLiquidation(frm_data);
             }
-            console.log(frm_data)
             $.fn.callAjax2({
                 url: frm.dataUrl,
                 method: frm.dataMethod,
@@ -34,10 +34,19 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(() => {
+                            window.location.replace(frm.dataUrlRedirect);
+                            location.reload.bind(location);
+                        }, 1000);
                     }
                 }, (errs) => {
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )

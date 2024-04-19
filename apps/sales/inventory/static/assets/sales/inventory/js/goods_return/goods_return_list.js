@@ -70,10 +70,10 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'status',
+                        data: 'system_status',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="badge-success badge">Done</span>`
+                            return `<span class="badge-primary badge">${data}</span>`
                         }
                     },
                 ],

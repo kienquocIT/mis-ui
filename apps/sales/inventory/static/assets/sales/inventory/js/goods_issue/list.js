@@ -59,7 +59,7 @@ $(document).ready(function (){
                         width: "10%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<span class="badge badge-green">${data}</span>`
+                            return `<span class="badge badge-primary">${data}</span>`
                         }
                     },
                 ],

@@ -1,5 +1,12 @@
 let urlEle = $('#url-factory');
 let transEle = $('#trans-factory');
+let NOW_BTN = null
+let select_detail_table_sn = $('#select-detail-table-sn')
+let select_detail_table_sn_done = $('#select-detail-table-sn-done')
+let select_detail_table_lot = $('#select-detail-table-lot')
+let select_detail_table_lot_done = $('#select-detail-table-lot-done')
+let amount_balance = $('#amount-balance')
+let IS_DETAIL = false
 
 class GoodsIssueLoadPage {
     load() {
@@ -71,6 +78,170 @@ class GoodsIssueLoadPage {
         $(document).on('change', '.col-unit-cost', function () {
             GoodsIssueLoadPage.generateSubtotal($(this));
         })
+
+        $(document).on('click', '.select-detail', function () {
+            NOW_BTN = $(this)
+            let disabled = ''
+            if (IS_DETAIL) {
+                disabled = 'disabled readonly'
+            }
+            if (NOW_BTN.attr('data-manage-type') === '2') { // sn
+                select_detail_table_sn.prop('hidden', false)
+                select_detail_table_sn_done.prop('hidden', false)
+                select_detail_table_lot.prop('hidden', true)
+                select_detail_table_lot_done.prop('hidden', true)
+
+                amount_balance.text(` ${$(this).closest('tr').find('.col-quantity').attr('value')} `)
+                let row_selected = NOW_BTN.attr('data-is-done') === '1' ? JSON.parse(NOW_BTN.find('.data-sn-selected').text()) : []
+                select_detail_table_sn.find('tbody').html('')
+
+                let select_detail_table_sn_ajax = $.fn.callAjax2({
+                    url: select_detail_table_sn.attr('data-sn-url') + `?product_warehouse__product_id=${$(this).attr('data-product-mapped-id')}&&product_warehouse__warehouse_id=${$(this).attr('data-warehouse-mapped-id')}`,
+                    data: {},
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_serial_list')) {
+                            return data?.['warehouse_serial_list'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([select_detail_table_sn_ajax]).then(
+                    (results) => {
+                        for (const item of results[0]) {
+                            let checked = ''
+                            if (row_selected.includes(item?.['id'])) {
+                                checked = 'checked'
+                            }
+                            select_detail_table_sn.find('tbody').append(`
+                                <tr>
+                                    <td>${item?.['vendor_serial_number'] ? item?.['vendor_serial_number'] : ''}</td>
+                                    <td>${item?.['serial_number'] ? item?.['serial_number'] : ''}</td>
+                                    <td>${item?.['expire_date'] ? moment(item?.['expire_date'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                    <td>${item?.['manufacture_date'] ? moment(item?.['manufacture_date'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                    <td>${item?.['warranty_start'] ? moment(item?.['warranty_start'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                    <td>${item?.['warranty_end'] ? moment(item?.['warranty_end'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                    <td>
+                                        <div class="form-check">
+                                            <input type="checkbox" ${disabled} ${checked} data-sn-id="${item?.['id']}" class="select-detail-check-sn">
+                                            <label class="form-check-label"></label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `)
+                        }
+                    })
+            }
+            else if (NOW_BTN.attr('data-manage-type') === '1') { // lot
+                select_detail_table_sn.prop('hidden', true)
+                select_detail_table_sn_done.prop('hidden', true)
+                select_detail_table_lot.prop('hidden', false)
+                select_detail_table_lot_done.prop('hidden', false)
+
+                amount_balance.text(` ${$(this).closest('tr').find('.col-quantity').attr('value')} `)
+                let data_lot = NOW_BTN.attr('data-is-done') === '1' ? JSON.parse(NOW_BTN.find('.data-lot-selected').text()) : {}
+                select_detail_table_lot.find('tbody').html('')
+                let select_detail_table_lot_ajax = $.fn.callAjax2({
+                    url: select_detail_table_lot.attr('data-lot-url') + `?product_warehouse__product_id=${$(this).attr('data-product-mapped-id')}&&product_warehouse__warehouse_id=${$(this).attr('data-warehouse-mapped-id')}`,
+                    data: {},
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_lot_list')) {
+                            return data?.['warehouse_lot_list'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([select_detail_table_lot_ajax]).then(
+                    (results) => {
+                        for (const item of results[0]) {
+                            let quantity = item?.['quantity_import'] ? item?.['quantity_import'] : 0
+                            let old_quantity = item?.['quantity_import'] ? item?.['quantity_import'] : 0
+                            if (data_lot.length > 0) {
+                                let get_quantity = data_lot.filter(function (obj) {
+                                    return obj?.['lot_id'] === item?.['id']
+                                })
+                                if (get_quantity.length > 0) {
+                                    quantity = get_quantity[0]?.['quantity']
+                                    old_quantity = get_quantity[0]?.['old_quantity']
+                                }
+                            }
+
+                            select_detail_table_lot.find('tbody').append(`
+                                <tr>
+                                    <td>${item?.['lot_number'] ? item?.['lot_number'] : ''}</td>
+                                    <td><input disabled readonly class="form-control old_quantity" value="${old_quantity}"></td>
+                                    <td>${item?.['expire_date'] ? moment(item?.['expire_date'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                    <td>${item?.['manufacture_date'] ? moment(item?.['manufacture_date'].split(' ')[0]).format('DD/MM/YYYY') : ''}</td>
+                                    <td><input ${disabled} type="number" data-lot-id="${item?.['id']}" value="${quantity}" class="form-control select-detail-check-lot"></td>
+                                </tr>
+                            `)
+                        }
+                    })
+            }
+        })
+
+        $(document).on('change', '.select-detail-check-lot', function () {
+            if ($(this).val() > $(this).closest('tr').find('.old_quantity').val()) {
+                $.fn.notifyB({description: `Reality quantity must be <= system quantity`}, 'failure')
+            }
+        })
+
+        $('#select-detail-table-sn-done').on('click', function () {
+            let select_detail_table = $('#select-detail-table-sn')
+            let selected_sn_list = []
+            select_detail_table.find('tbody tr .select-detail-check-sn').each(function () {
+                if ($(this).prop('checked')) {
+                    selected_sn_list.push($(this).attr('data-sn-id'))
+                }
+            })
+            if (selected_sn_list.length !== parseInt(amount_balance.text())) {
+                $.fn.notifyB({description: `Serial row(s) selected must be ${amount_balance.text()}`}, 'failure')
+            }
+            else {
+                NOW_BTN.find('.data-sn-selected').text(JSON.stringify(selected_sn_list))
+                $('#select-detail-modal').modal('hide')
+                NOW_BTN.attr('data-is-done', '1')
+                NOW_BTN.closest('tr').addClass('bg-primary-light-5')
+            }
+        })
+
+        $('#select-detail-table-lot-done').on('click', function () {
+            let select_detail_table = $('#select-detail-table-lot')
+            let sum_old_quantity = 0
+            let sum_reality_quantity = 0
+            let data_lot = []
+            select_detail_table.find('tbody tr').each(function () {
+                data_lot.push({
+                    'lot_id': $(this).find('.select-detail-check-lot').attr('data-lot-id'),
+                    'old_quantity': $(this).find('.old_quantity').val() ? parseInt($(this).find('.old_quantity').val()) : 0,
+                    'quantity': $(this).find('.select-detail-check-lot').val() ? parseInt($(this).find('.select-detail-check-lot').val()) : parseInt($(this).find('.old_quantity').val())
+                })
+                sum_old_quantity += $(this).find('.old_quantity').val() ? parseInt($(this).find('.old_quantity').val()) : 0
+                sum_reality_quantity += $(this).find('.select-detail-check-lot').val() ? parseInt($(this).find('.select-detail-check-lot').val()) : parseInt($(this).find('.old_quantity').val())
+            })
+            if (sum_old_quantity - sum_reality_quantity !== parseInt(amount_balance.text())) {
+                $.fn.notifyB({description: `Sum reality quantity must be ${amount_balance.text()}`}, 'failure')
+            }
+            else {
+                NOW_BTN.find('.data-lot-selected').text(JSON.stringify(data_lot))
+                $('#select-detail-modal').modal('hide')
+                NOW_BTN.attr('data-is-done', '1')
+                NOW_BTN.closest('tr').addClass('bg-primary-light-5')
+            }
+        })
     }
 
     static loadInventoryAdjustment(ele, data) {
@@ -96,7 +267,6 @@ class GoodsIssueLoadPage {
                             return (obj.book_quantity - obj.count) > 0;
                         });
                         product_list.map(function (item) {
-                            console.log(item)
                             if (data_dict[item.id]) {
                                 item['action_status'] = false
                             }
@@ -169,19 +339,19 @@ class GoodsIssueLoadPage {
                         data: 'product_mapped',
                         className: 'wrap-text w-20',
                         render: (data, type, row, meta) => {
-                            return `<span class="badge badge-primary badge-sm mb-1">${data.code}</span><br><span class="text-primary col-product fw-bold" data-id="${row.id}">${data.title}</span>`
+                            return `<span class="badge badge-primary badge-sm mb-1">${data.code}</span>&nbsp;<span class="text-primary col-product" data-id="${row.id}">${data.title}</span>`
                         },
                     },
                     {
                         data: 'description',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<textarea style="min-width: 250px" rows="5" disabled readonly class="form-control col-remarks small">${data}</textarea>`
+                            return `<textarea style="min-width: 250px" rows="2" disabled readonly class="form-control col-remarks small">${data}</textarea>`
                         },
                     },
                     {
                         data: 'uom_mapped',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text w-5',
                         render: (data, type, row) => {
                             return `<span class="col-uom">${data.title}</span>`;
                         },
@@ -189,14 +359,14 @@ class GoodsIssueLoadPage {
                     {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<input style="min-width: 100px" class="form-control col-quantity" readonly value="${row.book_quantity - row.count}" />`;
+                            return `<input style="min-width: 100px" class="form-control col-quantity" readonly value="${row.book_quantity - row.count}">`;
                         },
                     },
                     {
                         data: 'warehouse_mapped',
-                        className: 'wrap-text w-15',
+                        className: 'wrap-text w-10',
                         render: (data, type, row, meta) => {
-                            return `<span class="badge badge-secondary badge-sm mb-1">${data.code}</span><br><span class="text-secondary fw-bold col-warehouse">${data.title}</span>`
+                            return `<span class="badge badge-secondary badge-sm mb-1">${data.code}</span>&nbsp;<span class="text-secondary col-warehouse">${data.title}</span>`
                         },
                     },
                     {
@@ -211,6 +381,29 @@ class GoodsIssueLoadPage {
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return `<input style="min-width: 250px" class="form-control mask-money col-subtotal" value="${data}" readonly/>`;
+                        },
+                    },
+                    {
+                        data: '',
+                        className: 'wrap-text w-10 text-center',
+                        render: (data, type, row) => {
+                            if (row?.['product_mapped']?.['general_traceability_method'] !== 0) {
+                                return `<button type="button"
+                                            data-manage-type="${row?.['product_mapped']?.['general_traceability_method']}"
+                                            data-is-done="0"
+                                            data-product-mapped-id="${row?.['product_mapped']?.['id']}"
+                                            data-warehouse-mapped-id="${row?.['warehouse_mapped']?.['id']}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#select-detail-modal"
+                                            class="select-detail btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs">
+                                        <script class="data-sn-selected"></script>
+                                        <script class="data-lot-selected"></script>
+                                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                                    </button>`;
+                            }
+                            else {
+                                return ``
+                            }
                         },
                     },
                 ],
@@ -306,6 +499,18 @@ class GoodsIssueLoadPage {
                 'unit_cost': $(this).find('.col-unit-cost').valCurrency(),
                 'subtotal': $(this).find('.col-subtotal').valCurrency(),
             }
+            if ($(this).find('.select-detail').attr('data-manage-type') === '2') { // sn
+                data['sn_changes'] = $(this).find('.select-detail').find('.data-sn-selected').text() ? JSON.parse(
+                    $(this).find('.select-detail').find('.data-sn-selected').text()
+                ) : []
+                data['lot_changes'] = []
+            }
+            if ($(this).find('.select-detail').attr('data-manage-type') === '1') { // lot
+                data['lot_changes'] = $(this).find('.select-detail').find('.data-lot-selected').text() ? JSON.parse(
+                    $(this).find('.select-detail').find('.data-lot-selected').text()
+                )['data_lot'] : []
+                data['sn_changes'] = []
+            }
             list_product.push(data);
         })
         dataForm['goods_issue_datas'] = list_product;
@@ -343,6 +548,7 @@ class GoodsIssueLoadPage {
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                IS_DETAIL = true;
                 let detail = data?.['goods_issue_detail'];
                 $.fn.compareStatusShowPageAction(detail);
                 $x.fn.renderCodeBreadcrumb(detail);
@@ -419,31 +625,31 @@ class GoodsIssueLoadPage {
                         data: 'product_warehouse',
                         className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-primary badge-sm mb-1">${data?.['product_data'].code}</span><br><span class="text-primary fw-bold">${data?.['product_data'].title}</span>`
+                            return `<span class="badge badge-primary badge-sm mb-1">${data?.['product_mapped'].code}</span>&nbsp;<span class="text-primary">${data?.['product_mapped'].title}</span>`
                         },
                     }, {
-                        data: 'description',
+                        data: 'product_warehouse',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<textarea style="min-width: 250px" rows="5" disabled readonly class="form-control small">${data}</textarea>`
+                            return `<textarea style="min-width: 250px" rows="2" disabled readonly class="form-control small">${data?.['product_mapped'].description}</textarea>`
                         },
                     }, {
-                        data: 'uom',
-                        className: 'wrap-text w-10',
+                        data: 'product_warehouse',
+                        className: 'wrap-text w-5',
                         render: (data, type, row) => {
-                            return `<span>${data.title}</span>`
+                            return `<span>${data?.['uom_mapped'].title}</span>`
                         },
                     }, {
                         data: 'quantity',
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span>${data}</span>`
+                            return `<input style="min-width: 100px" class="form-control col-quantity" readonly value="${data}">`
                         },
                     }, {
-                        data: 'warehouse',
-                        className: 'wrap-text w-15',
+                        data: 'product_warehouse',
+                        className: 'wrap-text w-10',
                         render: (data, type, row, meta) => {
-                            return `<span class="badge badge-secondary badge-sm mb-1">${data.code}</span><br><span class="text-secondary fw-bold">${data.title}</span>`
+                            return `<span class="badge badge-secondary badge-sm mb-1">${data?.['warehouse_mapped'].code}</span>&nbsp;<span class="text-secondary">${data?.['warehouse_mapped'].title}</span>`
                         },
                     }, {
                         data: 'unit_cost',
@@ -456,6 +662,28 @@ class GoodsIssueLoadPage {
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return `<span class="text-primary mask-money" data-init-money=${data}></span>`
+                        },
+                    }, {
+                        data: 'product_warehouse',
+                        className: 'wrap-text w-10',
+                        render: (data, type, row) => {
+                            if (data?.['product_mapped']?.['general_traceability_method'] !== 0) {
+                                return `<button type="button"
+                                            data-manage-type="${data?.['product_mapped']?.['general_traceability_method']}"
+                                            data-is-done="1"
+                                            data-product-mapped-id="${data?.['product_mapped']?.['id']}"
+                                            data-warehouse-mapped-id="${data?.['warehouse_mapped']?.['id']}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#select-detail-modal"
+                                            class="select-detail btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs">
+                                        <script class="data-sn-selected">${row?.['sn_data'].length > 0 ? JSON.stringify(row?.['sn_data']) : ''}</script>
+                                        <script class="data-lot-selected">${row?.['lot_data'].length > 0 ? JSON.stringify(row?.['lot_data']) : ''}</script>
+                                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                                    </button>`;
+                            }
+                            else {
+                                return ``
+                            }
                         },
                     },
                 ],

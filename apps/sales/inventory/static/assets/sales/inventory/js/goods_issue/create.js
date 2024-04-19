@@ -32,6 +32,7 @@ $(document).ready(function () {
             } else {
                 frm_data = GoodsIssueLoadPage.getDataProductForLiquidation(frm_data);
             }
+            console.log(frm.dataForm)
             WindowControl.showLoading();
             $.fn.callAjax2({
                 url: frm.dataUrl,

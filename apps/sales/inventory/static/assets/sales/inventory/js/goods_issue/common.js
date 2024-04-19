@@ -518,7 +518,7 @@ class GoodsIssueLoadPage {
                 if ($(this).find('.select-detail').find('.data-lot-selected').text()) {
                     data['lot_changes'] = JSON.parse(
                         $(this).find('.select-detail').find('.data-lot-selected').text()
-                    )['data_lot']
+                    )
                 }
                 else {
                     $.fn.notifyB({description: "Lot data can not NULL"}, 'warning');

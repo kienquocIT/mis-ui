@@ -1567,7 +1567,6 @@ function autoLoadStage(
             is_lost = closed_lost_condition_list.every(item => bMap[item]);
         }
     }
-    console.log(closed_lost_condition_list)
 
     if (!just_check) {
         let stage_selected_ele = $('.stage-selected');

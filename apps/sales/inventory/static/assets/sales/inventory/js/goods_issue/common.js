@@ -115,7 +115,7 @@ class GoodsIssueLoadPage {
                 Promise.all([select_detail_table_sn_ajax]).then(
                     (results) => {
                         for (const item of results[0]) {
-                            if (item?.['is_delete'] === false) {
+                            if (item?.['is_delete'] === false || row_selected.includes(item?.['id'])) {
                                 let checked = ''
                                 if (row_selected.includes(item?.['id'])) {
                                     checked = 'checked'

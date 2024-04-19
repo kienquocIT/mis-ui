@@ -7173,3 +7173,31 @@ msgstr "Loại xuất hàng"
 #
 msgid "Select inventory adjustment"
 msgstr "Chọn phiếu kiểm kê kho"
+
+#
+msgid "Later additional"
+msgstr "Bổ sung sau"
+
+#
+msgid "Vendor serial no."
+msgstr "Số seri của NCC"
+
+#
+msgid "Serial no."
+msgstr "Số seri"
+
+#
+msgid "Mfr date"
+msgstr "Ngày sản xuất"
+
+#
+msgid "Warranty start"
+msgstr "Bảo hành từ"
+
+#
+msgid "Warranty end"
+msgstr "Bảo hành đến"
+
+#
+msgid "UOM"
+msgstr "Đơn vị"

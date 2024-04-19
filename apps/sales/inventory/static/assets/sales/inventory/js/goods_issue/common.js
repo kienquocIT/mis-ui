@@ -532,6 +532,9 @@ class GoodsIssueLoadPage {
         if (flag) {
             return dataForm
         }
+        else {
+            return false;
+        }
     }
 
     static getDataProductForLiquidation(dataForm) {

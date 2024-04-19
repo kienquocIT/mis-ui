@@ -199,13 +199,11 @@ $(function () {
         });
 
         $('#productModalCenter').on('change', '.validated-number', function () {
-            let value = this.value;
-            // Replace non-digit characters with an empty string
-            value = value.replace(/[^0-9.]/g, '');
-            // Remove unnecessary zeros from the integer part
-            value = value.replace("-", "").replace(/^0+(?=\d)/, '');
-            // Update value of input
-            this.value = value;
+            GRValidateHandle.validateNumber(this);
+        });
+
+        $('#productIAModalCenter').on('change', '.validated-number', function () {
+            GRValidateHandle.validateNumber(this);
         });
 
         // IA BEGIN

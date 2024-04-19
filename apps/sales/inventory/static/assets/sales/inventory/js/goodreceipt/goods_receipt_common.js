@@ -1283,6 +1283,7 @@ class GRLoadDataHandle {
                 if (dataGRProduct?.['product']?.['id'] === dataIAProduct?.['product']?.['id']) {
                     for (let dataWH of dataGRProduct?.['warehouse_data']) {
                         if (dataWH?.['warehouse']?.['id'] === dataIAProduct?.['warehouse']?.['id']) {
+                            dataIAProduct['is_additional'] = dataWH?.['is_additional'];
                             if (dataIAProduct?.['product']?.['general_traceability_method'] === 0) {
 
                             }
@@ -2957,6 +2958,16 @@ class GRValidateHandle {
         return true;
     };
 
+    static validateNumber(ele) {
+        let value = ele.value;
+        // Replace non-digit characters with an empty string
+        value = value.replace(/[^0-9.]/g, '');
+        // Remove unnecessary zeros from the integer part
+        value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+        // Update value of input
+        ele.value = value;
+    };
+
 }
 
 // Submit Form
@@ -3246,6 +3257,7 @@ class GRSubmitHandle {
                                     }
                                     rowData['warehouse_data'] = [{
                                         'warehouse': dataInfo?.['id'],
+                                        'is_additional': dataRow?.['is_additional'],
                                         'lot_data': lot_data,
                                     }]
                                 }
@@ -3256,6 +3268,7 @@ class GRSubmitHandle {
                                     }
                                     rowData['warehouse_data'] = [{
                                         'warehouse': dataInfo?.['id'],
+                                        'is_additional': dataRow?.['is_additional'],
                                         'serial_data': serial_data,
                                     }]
                                 }

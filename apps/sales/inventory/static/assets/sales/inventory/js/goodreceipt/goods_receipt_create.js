@@ -10,9 +10,6 @@ $(function () {
         // Elements Case IA
         let btnIAConfirmAdd = $('#btn-confirm-add-ia-product');
         let btnIAEdit = $('#btn-edit-ia-product-good-receipt');
-        let btnAddIALot = $('#btn-add-ia-lot');
-        let btnAddIASerial = $('#btn-add-ia-serial');
-
 
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
@@ -230,7 +227,11 @@ $(function () {
             GRLoadDataHandle.loadCheckIAProduct(this);
         });
 
-        btnAddIASerial.on('click', function () {
+        GRDataTableHandle.tableIAProduct.on('click', '.table-row-checkbox-additional', function () {
+            GRLoadDataHandle.loadCheckIAIsAdditional(this);
+        });
+
+        GRLoadDataHandle.btnAddIASerial.on('click', function () {
             GRLoadDataHandle.loadAddRowIASerial();
         });
 
@@ -240,7 +241,7 @@ $(function () {
             GRValidateHandle.validateIASerialNumberExistRow(this);
         });
 
-        btnAddIALot.on('click', function () {
+        GRLoadDataHandle.btnAddIALot.on('click', function () {
             GRLoadDataHandle.loadAddRowIALot();
         });
 

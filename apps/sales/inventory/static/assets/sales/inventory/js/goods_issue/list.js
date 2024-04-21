@@ -24,7 +24,7 @@ $(document).ready(function (){
                         width: "10%",
                         render: (data, type, row) => {
                             let urlDetail = urlEle.data('url-detail').format_url_with_uuid(row.id);
-                            return `<a href="${urlDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
+                            return `<a href="${urlDetail}"><span class="badge badge-soft-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
                         }
                     },
                     {

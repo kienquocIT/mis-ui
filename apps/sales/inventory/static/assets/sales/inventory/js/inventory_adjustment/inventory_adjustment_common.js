@@ -86,10 +86,10 @@ $(document).on('input', '.count-input', function () {
         $(this).closest('tr').find('.selected_for_actions').attr('disabled', false);
         if (difference < 0) {
         difference = '(' + difference * -1 + ')';
-        action_type = '<span class="text-danger">Decreasing <i class="bi bi-arrow-down"></i></span>';
+        action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
     }
         if (difference > 0) {
-            action_type = '<span class="text-primary">Increasing <i class="bi bi-arrow-up"></i></span>';
+            action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
         }
     }
     $(this).val(parseFloat($(this).val() ? $(this).val() : 0));
@@ -122,8 +122,8 @@ selectAllProductBtn.on('click', function () {
     }
 })
 
-function LoadStatus() {
-    statusInput.val('Open').prop('disabled', true).css({'color': 'black'});
+function LoadStatus(data) {
+    statusInput.val(data).prop('disabled', true).prop('readonly', true);
 }
 
 function LoadWarehouseSelectBox(data) {
@@ -288,18 +288,12 @@ function getDataFormUpdate() {
     tableLineDetailTbody.find('tr').each(function () {
         let book_quantity = $(this).find('.quantity-td').text();
         let count = $(this).find('.count-input').val();
-        let action_status = 0;
         let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
         ia_items_data_list.push({
-            'product_warehouse_id': $(this).find('.product_id_td').attr('data-product-warehouse-id'),
-            'product_mapped_id': $(this).find('.product_id_td').attr('data-id'),
-            'warehouse_mapped_id': $(this).find('.warehouse_id_td').attr('data-id'),
-            'uom_mapped_id': $(this).find('.uom_id_td').attr('data-id'),
-            'book_quantity': book_quantity,
+            'id': $(this).find('.product_id_td').attr('data-item-id'),
             'count': count,
             'action_type': action_type,
             'select_for_action': $(this).find('.selected_for_actions').is(':checked'),
-            'action_status': action_status
         })
     });
 
@@ -345,9 +339,15 @@ class InventoryAdjustmentHandle {
 
 function Disable(option) {
     if (option === 'detail') {
-        $('.form-control').prop('disabled', true).css({color: 'black'});
-        $('.form-select').prop('disabled', true).css({color: 'black'});
+        $('.form-control').prop('disabled', true).prop('readonly', true);
+        $('.form-select').prop('disabled', true).prop('readonly', true);
         $('.select2').prop('disabled', true);
+        $('#collapse-area input').prop('disabled', true);
+    }
+    if (option === 'update') {
+        $('#collapse-area .form-control').prop('disabled', true).prop('readonly', true);
+        $('#collapse-area .form-select').prop('disabled', true).prop('readonly', true);
+        $('#collapse-area .select2').prop('disabled', true);
         $('#collapse-area input').prop('disabled', true);
     }
 }
@@ -366,7 +366,7 @@ function LoadDetailIA(option) {
 
                 titleInput.val(data.title);
                 dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));
-                LoadStatus();
+                LoadStatus(data.state);
                 LoadWarehouseSelectBox(data?.['warehouses']);
                 LoadInChargeSelectBox(data?.['employees_in_charge']);
 
@@ -380,39 +380,39 @@ function LoadDetailIA(option) {
                     }
                     let done = '';
                     if (data_row?.['action_status']) {
-                        done = 'Done';
+                        done = '<i class="fas fa-check"></i>';
                     }
                     let difference = parseFloat(data_row?.['count']) - parseFloat(data_row?.['book_quantity']);
                     let action_type = '';
                     let disabled_select = '';
-                    if (difference === 0) {
-                        disabled_select = 'disabled';
+                    if (data_row?.['action_status']) {
+                        disabled_select = 'disabled readonly';
                     }
-                    else {
+                    if (difference !== 0) {
                         if (difference < 0) {
                             difference = '(' + difference * -1 + ')';
-                            action_type = '<span class="text-danger">Decreasing <i class="bi bi-arrow-down"></i></span>';
+                            action_type = '<span class="text-danger"><i class="bi bi-arrow-down"></i></span>';
                         }
                         if (difference > 0) {
-                        action_type = '<span class="text-primary">Increasing <i class="bi bi-arrow-up"></i></span>';
-                    }
+                            action_type = '<span class="text-primary"><i class="bi bi-arrow-up"></i></span>';
+                        }
                     }
                     tableLineDetailTbody.append(`
                         <tr class="${class_ctn}">
-                            <td data-product-warehouse-id="${data_row?.['product_warehouse_mapped'].id}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
+                            <td data-item-id="${data_row?.['id']}" data-product-warehouse-id="${data_row?.['product_warehouse_mapped'].id}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
                             <td data-id="${data_row?.['warehouse_mapped'].id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${data_row?.['warehouse_mapped'].title}</td>
                             <td data-id="${data_row?.['uom_mapped'].id}" class="uom_id_td">${data_row?.['uom_mapped'].title}</td>
                             <td class="quantity-td">${data_row?.['book_quantity']}</td>
-                            <td><input class="form-control count-input" type="text" placeholder="Number" value="${data_row?.['count']}"></td>
-                            <td class="difference_td">${difference}</td>
-                            <td>
+                            <td><input ${disabled_select} class="form-control count-input" type="text" placeholder="Number" value="${data_row?.['count']}"></td>
+                            <td class="text-center difference_td">${difference}</td>
+                            <td class="text-center">
                                 <span class="form-check">
                                     <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>
                                     <label class="form-check-label"></label>
                                 </span>
                             </td>
-                            <td class="action_type_td">${action_type}</td>
-                            <td>${done}</td>
+                            <td class="text-center action_type_td">${action_type}</td>
+                            <td class="text-center text-success">${done}</td>
                         </tr>
                     `)
                 }

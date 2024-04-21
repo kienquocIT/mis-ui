@@ -210,7 +210,6 @@ $(function () {
         GRLoadDataHandle.IASelectEle.on('change', function () {
             if ($(this).val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, $(this).val());
-                console.log(dataSelected)
                 for (let dataIAProduct of dataSelected?.['inventory_adjustment_product']) {
                     if (dataIAProduct?.['product']?.['general_traceability_method'] !== 0) {
                         dataIAProduct['quantity_import'] = 0;

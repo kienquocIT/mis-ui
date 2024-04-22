@@ -82,6 +82,7 @@ class GoodsIssueDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_ISSUE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
+
 class GoodsIssueUpdate(View):
     permission_classes = [IsAuthenticated]
 

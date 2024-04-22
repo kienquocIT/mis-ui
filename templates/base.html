@@ -133,15 +133,17 @@
             {# Bubble #}
             .scrollToTop {
                 position: fixed;
-                bottom: 75px;
-                right: 40px;
+                bottom: 1rem;
+                right: 2rem;
                 display: none;
-                background-color: #298dff;
+                background-color: #379aff;
                 z-index: 9999999;
                 border-radius: 5px;
+                opacity: 0.2;
             }
             .scrollToTop:hover {
                 background-color: #165598;
+                opacity: 1;
             }
         </style>
 
@@ -180,7 +182,7 @@
 <!-- Bubble -->
 <button
         id="bubble-scrollToTop"
-        class="scrollToTop btn btn-md btn-icon btn-rounded"
+        class="scrollToTop btn btn-sm btn-icon btn-rounded"
         data-bs-toggle="tooltip"
         title="{% trans 'Back to top' %}"
 >
@@ -501,6 +503,7 @@
         // workflow
         const globeTaskDetail = "{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}";
         const globeFormMappedZone = "{% if data.form_id %}{{ data.form_id }}{% endif %}";
+        const globeRuntimeAfterFinishDetail = "{% url 'FlowRuntimeAfterFinishDetailAPI' pk=1 %}";
 
         // msg
         const globeResourceLoadFailed = "{% trans 'Failed to load resource' %}.";
@@ -532,7 +535,7 @@
 
     <script src="{% static 'assets/js/init.js' %}"></script>
     {% if base.language == 'vi' %}
-        <script src="{% static 'assets/js/cdn-clone/select2/i18n/vi.js' %}"></script>
+        <script src="{% static 'assets/js/cdn-clone/select2/i18n/vi-1.js' %}"></script>
         <script src="{% static 'assets/js/cdn-clone/jquery-validation/localization/message_vi.js' %}"></script>
     {% else %}
         <script src="{% static 'assets/js/cdn-clone/select2/i18n/en.js' %}"></script>
@@ -624,6 +627,129 @@
                 const outsideFrame = $('.hk-pg-wrapper').css('padding-top');
                 $(this).css('margin-top', outsideFrame).css('height', `calc(100vh - ${outsideFrame})`);
             })
+
+            //
+            $('button[type=submit]').on('click', function (){
+                let frmID = $(this).attr('form');
+                if (frmID) {
+                    $(this).prop('disabled', true);
+                    setTimeout( () => $(this).prop('disabled', false), 1000);
+                    $('#' + frmID).trigger('submit');
+                } else {
+                    let formOutSide = $(this).closest('form');
+                    if (formOutSide.length > 0){
+                        $(this).prop('disabled', true);
+                        setTimeout( () => $(this).prop('disabled', false), 1000);
+                        formOutSide.trigger('submit');
+                    }
+                }
+            })
+            $('button:not([type])').on('click', function (){
+                let formOutSide = $(this).closest('form');
+                if (formOutSide.length > 0){
+                    $(this).prop('disabled', true);
+                    setTimeout( () => $(this).prop('disabled', false), 1000);
+                    formOutSide.trigger('submit');
+                }
+            })
+
+            // warning not link employee | not company
+            let eleDataBase = $('#data-current-base');
+            if (eleDataBase.length > 0){
+                let hasCompanyList = eleDataBase.attr('data-has-company-list') === 'true';
+                let hasCurrentCompany = eleDataBase.attr('data-has-current-company') === 'true';
+                let hasCurrentEmployee = eleDataBase.attr('data-has-current-employee') === 'true';
+                let urlAdminTenant = eleDataBase.attr('data-url-admin-tenant');
+                let urlAdminCompany = eleDataBase.attr('data-url-admin-company');
+
+                if (!hasCompanyList) {
+                    let msgTmp = $.fn.gettext("You do not belong to any company in the organization. Please contact the organization administrator to update the company information for you in the Tenant Administration section.");
+                    $.fn.callAjax2({
+                        url: urlAdminTenant,
+                        method: 'GET',
+                    }).then(
+                        resp => {
+                            let data = $.fn.switcherResp(resp);
+                            if (typeof data == 'object' && data.hasOwnProperty('user_admin_tenant')){
+                                let userData = data['user_admin_tenant'];
+                                if (Array.isArray(userData)){
+                                    let htmlTmp = `<p class="mb-1 mr-1">${$.fn.gettext('Admin')}:</p>`;
+                                    userData.map(
+                                        (item) => {
+                                            htmlTmp += `<span class="badge no-transform badge-primary mb-1 mr-1">${item?.['full_name'] || ''} - ${item?.['email'] || ''}</span>`
+                                        }
+                                    )
+                                    return htmlTmp;
+                                }
+                            }
+                            return '';
+                        },
+                        errs => '',
+                    ).then(
+                        msg => Swal.fire({
+                            title: $.fn.gettext("Some apps will be working wrong"),
+                            html: `<p>${msgTmp}</p><br/>${msg}`,
+                            icon: 'warning',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Ok',
+                            showDenyButton: false,
+                            denyButtonText: $.fn.transEle.attr('data-cancel'),
+                        })
+                    )
+                }
+                else if (!hasCurrentCompany) {
+                    let msgTmp = $.fn.gettext("Please update the company information in the Current Company Switch section for your account.");
+                    Swal.fire({
+                        title: $.fn.gettext("Some apps will be working wrong"),
+                        html: `<p>${msgTmp}</p>`,
+                        icon: 'warning',
+                        showConfirmButton: true,
+                        confirmButtonText: $.fn.gettext("Goto switch current company"),
+                        showDenyButton: false,
+                        denyButtonText: $.fn.transEle.attr('data-cancel'),
+                    }).then((result)=>{
+                        if (result.isConfirmed) {
+                            $('#btnChangeCurrentCompany').trigger('click');
+                        }
+                    })
+                }
+                else if(!hasCurrentEmployee) {
+                    let msgTmp = $.fn.gettext("The account is not linked to an employee. Please contact the company administrator to update the employee information for the account.");
+                    $.fn.callAjax2({
+                        url: urlAdminCompany,
+                        method: "GET",
+                    }).then(
+                        resp => {
+                            let data = $.fn.switcherResp(resp);
+                            if (typeof data === 'object' && data.hasOwnProperty('employee_admin_company')) {
+                                let empData = data['employee_admin_company'];
+                                if (Array.isArray(empData)){
+                                    let htmlTmp = `<p class="mb-1 mr-1">${$.fn.gettext('Admin')}:</p>`;
+                                    empData.map(
+                                        item => {
+                                            htmlTmp += `<span class="badge no-transform badge-primary mb-1 mr-1">${item?.['full_name'] || ''} - ${item?.['email'] || ''}</span>`
+                                        },
+                                    )
+                                    return htmlTmp;
+                                }
+                            }
+                            return '';
+                        },
+                        errs => '',
+                    ).then(
+                        msg => Swal.fire({
+                            title: $.fn.gettext("Some apps will be working wrong"),
+                            html: `<p>${msgTmp}</p><br/>${msg}`,
+                            icon: 'warning',
+                            showConfirmButton: true,
+                            confirmButtonText: "Ok",
+                        })
+                    )
+
+
+                }
+                else {}
+            }
         })
 
         function onLoadDropdownInfoInherit(eleInfo, eleInfoData, selectedData) {

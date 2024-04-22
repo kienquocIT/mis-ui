@@ -247,7 +247,8 @@
             //hide and show columns
             render_filter_columns: function (element) {
                 let row = $('<div class="col-xs-12 filter_bar"></div>')
-                let dropdown = $('<div class="dropdown filter_column"><button class="btn btn-outline-primary dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown"><i class="fa-solid fa-filter"></i></button></div>')
+                let dropdown = $(`<div class="dropdown filter_column"><button class="btn btn-primary dropdown-toggle btn-sm" aria-expanded="false" data-bs-toggle="dropdown" title="${$.fn.gettext('Filter')}"><i class="fa-solid fa-filter"></i></button></div>`)
+                dropdown.find('button').tooltip({'placement': 'top'})
                 let ul = $('<ul class="dropdown-menu"></ul>')
                 settings.columns.forEach(x => {
                     let li = $('<li class="dropdown-item-marker" role="menuitem"></li>')
@@ -287,8 +288,9 @@
 
                 });
 
-                let button_loadMore = $('<button class="btn btn-outline-primary" type="button" id="gantt_load-more_btn">' +
-                    `<i class="fa-solid fa-download"></i><span>${$.fn.gettext("Load more")}</span></button>`)
+                let button_loadMore = $(`<button class="btn btn-primary btn-sm" type="button" id="gantt_load-more_btn" title="${$.fn.gettext('Load more')}">` +
+                    `<i class="fa-solid fa-download"></i><span>${$.fn.gettext("Load more")}</span></button>`);
+                button_loadMore.tooltip({'placement': 'top'})
                 button_loadMore.on('click', function(e){
                     $(this).prop('disabled', true)
                     settings.clickLoadMore(e)
@@ -306,8 +308,12 @@
                 var $rightPanel = core.rightPanel(element, $leftPanel);
                 var pLeft, hPos;
 
-                if (settings.isShowSetting) content.append($filterPanel)
-                content.append($leftPanel).append($rightPanel).append(core.navigation(element));
+                if (settings.isShowSetting){
+                    $filterPanel.append(core.navigation(element))
+                    content.append($filterPanel)
+                }
+                // content.append($leftPanel).append($rightPanel).append(core.navigation(element));
+                content.append($leftPanel).append($rightPanel);
 
                 var $dataPanel = $rightPanel.find(".dataPanel");
 
@@ -887,26 +893,27 @@
                     ganttNavigate = $('<div class="navigate" />')
                         .append($('<div class="nav-slider" />')
                             .append($('<div class="nav-slider-left" />')
-                                .append($('<button type="button" class="nav-link nav-page-back"/>')
-                                    .html('&uarr;')
+                                .append($(`<button type="button" class="btn btn-primary btn-sm nav-page-back" title="${$.fn.gettext("Prev")}"/>`)
+                                    .html('<svg fill="#000000" width="20px" height="20px" viewBox="0 0 0.6 0.6" id="up" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color"><path id="primary" d="m0.492 0.233 -0.175 -0.175a0.025 0.025 0 0 0 -0.036 0l-0.175 0.175a0.025 0.025 0 0 0 0.036 0.036L0.275 0.135V0.525a0.025 0.025 0 0 0 0.05 0V0.135l0.133 0.133a0.025 0.025 0 0 0 0.036 0 0.025 0.025 0 0 0 0 -0.036" style="fill: rgb(255, 255, 255);"/></svg>')
                                     .click(function () {
                                         core.navigatePage(element, -1);
-                                    }))
+                                    })
+                                    .tooltip({placement: 'top'}))
                                 .append($('<div class="page-number"/>')
                                         .append($('<span/>')
                                             .html(element.pageNum + 1 + ' / ' + element.pageCount)))
-                                .append($('<button type="button" class="nav-link nav-page-next"/>')
-                                    .html('&darr;')
+                                .append($(`<button type="button" class="btn btn-primary btn-sm nav-page-next" title="${$.fn.gettext("Next")}"/>`)
+                                    .html('<svg fill="#000000" width="20px" height="20px" viewBox="0 0 0.6 0.6" id="down" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color"><path id="primary" d="M0.493 0.332a0.025 0.025 0 0 0 -0.035 0L0.325 0.465V0.075a0.025 0.025 0 0 0 -0.05 0v0.39l-0.132 -0.133a0.025 0.025 0 0 0 -0.035 0.035l0.175 0.175a0.025 0.025 0 0 0 0.035 0l0.175 -0.175a0.025 0.025 0 0 0 0 -0.035" style="fill: rgb(255,255,255);"/></svg>')
                                     .click(function () {
                                         core.navigatePage(element, 1);
-                                    }))
-                                .append($('<button type="button" class="nav-link nav-now"/>')
-                                    .html('&#9679;')
+                                    }).tooltip({placement: 'top'}))
+                                .append($(`<button type="button" class="btn btn-primary btn-sm nav-now" title="${$.fn.gettext("Today")}"/>`)
+                                    .html('<i class="fa-regular fa-clock"></i>')
                                     .click(function () {
                                         core.navigateTo(element, 'now');
-                                    }))
-                                .append($('<button type="button" class="nav-link nav-prev-week"/>')
-                                    .html('&lt;&lt;')
+                                    }).tooltip({placement: 'top'}))
+                                .append($(`<button type="button" class="btn btn-primary btn-sm nav-prev-week" title="${$.fn.gettext("Jump prev")}"/>`)
+                                    .html('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20px" height="20px"><polyline style="fill:none;stroke:#ffffff;stroke-width:2;stroke-miterlimit:10;" points="16.6,26.5 6.1,16 16.6,5.5 "/><polyline style="fill:none;stroke:#ffffff;stroke-width:2;stroke-miterlimit:10;" points="23.6,26.5 13.1,16 23.6,5.5 "/></svg>')
                                     .click(function () {
                                         if (settings.scale === 'hours') {
                                             core.navigateTo(element, tools.getCellSize() * 8);
@@ -917,9 +924,9 @@
                                         } else if (settings.scale === 'months') {
                                             core.navigateTo(element, tools.getCellSize() * 6);
                                         }
-                                    }))
-                                .append($('<button type="button" class="nav-link nav-prev-day"/>')
-                                    .html('&lt;')
+                                    }).tooltip({placement: 'top'}))
+                                .append($(`<button type="button" class="btn btn-primary btn-sm nav-prev-day" title="${$.fn.gettext("Slider prev")}"/>`)
+                                    .html('<svg fill="#ffffff" width="20px" height="20px" viewBox="-1.963 0 12.8 12.8" xmlns="http://www.w3.org/2000/svg"><title>left</title><path d="m6.425 1.6 0.85 0.85L3.2 6.55l4.075 4.1 -0.85 0.85 -4.9 -4.95z"/></svg>')
                                     .click(function () {
                                         if (settings.scale === 'hours') {
                                             core.navigateTo(element, tools.getCellSize() * 4);
@@ -930,7 +937,7 @@
                                         } else if (settings.scale === 'months') {
                                             core.navigateTo(element, tools.getCellSize() * 3);
                                         }
-                                    })))
+                                    }).tooltip({placement: 'top'})))
                             .append($('<div class="nav-slider-content" />')
                                     .append($('<div class="nav-slider-bar" />')
                                             .append($('<a class="nav-slider-button" />')
@@ -948,8 +955,8 @@
                                             )
                                         )
                             .append($('<div class="nav-slider-right" />')
-                                .append($('<button type="button" class="nav-link nav-next-day"/>')
-                                    .html('&gt;')
+                                .append($(`<button type="button" class="btn btn-primary btn-sm nav-next-day" title="${$.fn.gettext("Slider next")}"/>`)
+                                    .html('<svg fill="#ffffff" width="20px" height="20px" viewBox="-1.925 0 12.8 12.8" xmlns="http://www.w3.org/2000/svg"><title>right</title><path d="m2.45 11.5 -0.85 -0.85 4.075 -4.1L1.6 2.45l0.85 -0.85 4.9 4.95z"/></svg>')
                                     .click(function () {
                                         if (settings.scale === 'hours') {
                                             core.navigateTo(element, tools.getCellSize() * -4);
@@ -960,9 +967,9 @@
                                         } else if (settings.scale === 'months') {
                                             core.navigateTo(element, tools.getCellSize() * -3);
                                         }
-                                    }))
-                            .append($('<button type="button" class="nav-link nav-next-week"/>')
-                                    .html('&gt;&gt;')
+                                    }).tooltip({placement: 'top'}))
+                            .append($(`<button type="button" class="btn btn-primary btn-sm nav-next-week" title="${$.fn.gettext("Jump next")}"/>`)
+                                    .html('<svg  xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 32 32" width="20px" height="20px"><polyline style="fill:none;stroke:#ffffff;stroke-width:2;stroke-miterlimit:10;" points="15.4,5.5 25.9,16 15.4,26.5 "/><polyline style="fill:none;stroke:#ffffff;stroke-width:2;stroke-miterlimit:10;" points="8.4,5.5 18.9,16 8.4,26.5 "/></svg>')
                                     .click(function () {
                                         if (settings.scale === 'hours') {
                                             core.navigateTo(element, tools.getCellSize() * -8);
@@ -973,17 +980,17 @@
                                         } else if (settings.scale === 'months') {
                                             core.navigateTo(element, tools.getCellSize() * -6);
                                         }
-                                    }))
-                                .append($('<button type="button" class="nav-link nav-zoomIn"/>')
-                                    .html('&#43;')
+                                    }).tooltip({placement: 'top'}))
+                                .append($(`<button type="button" class="btn btn-primary btn-sm nav-zoomIn" title="${$.fn.gettext("Zoom in")}"/>`)
+                                    .html('<svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 1.3 1.3" enable-background="new 0 0 52 52" xml:space="preserve"><g><path d="M0.775 0.475h-0.15v-0.15c0 -0.015 -0.01 -0.025 -0.025 -0.025h-0.1c-0.015 0 -0.025 0.01 -0.025 0.025v0.15h-0.15c-0.015 0 -0.025 0.01 -0.025 0.025v0.1c0 0.015 0.01 0.025 0.025 0.025h0.15v0.15c0 0.015 0.01 0.025 0.025 0.025h0.1c0.015 0 0.025 -0.01 0.025 -0.025v-0.15h0.15c0.015 0 0.025 -0.01 0.025 -0.025v-0.1c0 -0.015 -0.01 -0.025 -0.025 -0.025"/></g><path d="M1.24 1.13 0.953 0.845C1.012 0.763 1.05 0.66 1.05 0.55c0 -0.275 -0.225 -0.5 -0.5 -0.5S0.05 0.275 0.05 0.55s0.225 0.5 0.5 0.5c0.11 0 0.213 -0.038 0.295 -0.098l0.288 0.288c0.015 0.015 0.038 0.015 0.053 0l0.053 -0.053c0.015 -0.015 0.015 -0.04 0.003 -0.057M0.55 0.9c-0.193 0 -0.35 -0.158 -0.35 -0.35S0.358 0.2 0.55 0.2s0.35 0.158 0.35 0.35 -0.158 0.35 -0.35 0.35"/></svg>')
                                     .click(function () {
                                         core.zoomInOut(element, -1);
-                                    }))
-                                .append($('<button type="button" class="nav-link nav-zoomOut"/>')
-                                    .html('&#45;')
+                                    }).tooltip({placement: 'top'}))
+                                .append($(`<button type="button" class="btn btn-primary btn-sm nav-zoomOut" title="${$.fn.gettext("Zoom out")}"/>`)
+                                    .html('<svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 1.3 1.3" enable-background="new 0 0 52 52" xml:space="preserve"><g><path d="M0.475 0.625h0.3c0.015 0 0.025 -0.01 0.025 -0.025v-0.1c0 -0.015 -0.01 -0.025 -0.025 -0.025H0.475"/></g><g><path d="M0.475 0.475h-0.15c-0.015 0 -0.025 0.01 -0.025 0.025v0.1c0 0.015 0.01 0.025 0.025 0.025h0.15"/></g><path d="M1.24 1.133 0.953 0.845C1.012 0.763 1.05 0.66 1.05 0.55c0 -0.275 -0.225 -0.5 -0.5 -0.5S0.05 0.275 0.05 0.55s0.225 0.5 0.5 0.5c0.11 0 0.213 -0.038 0.295 -0.098l0.288 0.288c0.015 0.015 0.038 0.015 0.053 0l0.053 -0.053c0.015 -0.015 0.015 -0.04 0.003 -0.055M0.55 0.9c-0.193 0 -0.35 -0.158 -0.35 -0.35S0.358 0.2 0.55 0.2s0.35 0.158 0.35 0.35 -0.158 0.35 -0.35 0.35"/></svg>')
                                     .click(function () {
                                         core.zoomInOut(element, 1);
-                                    }))
+                                    }).tooltip({placement: 'top'}))
                                     )
                                 );
                     $(document).mouseup(function () {
@@ -1128,6 +1135,8 @@
                         return "";
                     }
                 };
+                let wrapBar = $('<div class="panel-wrap-bar"/>');
+                let wrapBarContent = $('<div class="panel-content-bar"/>');
                 // Loop through the values of each data element and set a row
                 let dataListVisible = element.data.filter((item) => item?.is_visible || !item.hasOwnProperty('is_visible'))
                 $.each(dataListVisible, function (i, entry) {
@@ -1161,7 +1170,7 @@
                                   width: dp + '%'
                                 });
 
-                                datapanel.append(_bar);
+                                wrapBarContent.append(_bar);
                                 break;
 
                             // **Weekly data**
@@ -1169,7 +1178,6 @@
                                 dFrom = tools.dateDeserialize(day.from);
                                 dTo = tools.dateDeserialize(day.to);
                                 from = $(element).find("#" + dFrom.getWeekId());
-                                console.log(from)
                                 cFrom = from.data("offset");
                                 to = $(element).find("#" + dTo.getWeekId());
                                 cTo = to.data("offset");
@@ -1187,7 +1195,8 @@
                                   width: dp + '%'
                                 });
 
-                                datapanel.append(_bar);
+                                // datapanel.append(_bar);
+                                wrapBarContent.append(_bar);
                                 break;
 
                             // **Monthly data**
@@ -1225,7 +1234,7 @@
                                   width: dp + '%'
                                 });
 
-                                datapanel.append(_bar);
+                                wrapBar.append(_bar);
                                 break;
 
                             // **Days**
@@ -1247,7 +1256,7 @@
                                   left: Math.floor(cFrom),
                                   width: dp + '%'
                                 });
-                                datapanel.append(_bar);
+                                wrapBarContent.append(_bar);
                             }
 
                             var $l = _bar.find(".fn-label");
@@ -1259,6 +1268,8 @@
 
                     }
                 });
+                wrapBar.append(wrapBarContent);
+                datapanel.append(wrapBar);
             },
             // **Navigation**
             navigateTo: function (element, val) {
@@ -1397,7 +1408,7 @@
 
             // Move chart via mousewheel
             wheelScroll: function (element, e) {
-                let delta = e.detail ? e.detail * (-15) : e.originalEvent.wheelDelta / 120 * 15;
+                let delta = e.detail ? e.detail * (-100) : e.originalEvent.wheelDelta / 120 * 100;
                 core.scrollPanel(element, delta);
                 clearTimeout(element.scrollNavigation.repositionDelay);
                 element.scrollNavigation.repositionDelay = setTimeout(core.repositionLabel, 50, element);
@@ -1640,7 +1651,6 @@
 
                 return ret;
             },
-
 
             // Return an array of Date objects between a range of months
             // between `from` and `to`

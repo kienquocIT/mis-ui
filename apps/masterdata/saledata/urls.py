@@ -40,6 +40,11 @@ from apps.masterdata.saledata.views.warehouse import (
 )
 from apps.masterdata.saledata.views.meeting_config import MeetingConfigList, MeetingRoomListAPI, \
     MeetingRoomDetailAPI, MeetingZoomConfigListAPI, MeetingZoomConfigDetailAPI
+from apps.masterdata.saledata.views.invoice_sign import InvoiceSignList, InvoiceSignListAPI
+from apps.masterdata.saledata.views.inventory_interact_config import (
+    InventoryInteractConfigList, InventoryInteractConfigListAPI, InventoryInteractConfigDetailAPI
+)
+
 
 urlpatterns = [
     path('masterdata/contact', ContactMasterDataList.as_view(), name='ContactMasterDataList'),
@@ -298,4 +303,15 @@ urlpatterns += [
         'balance_init/api', BalanceInitListAPI.as_view(),
         name='BalanceInitListAPI'
     ),
+]
+
+urlpatterns += [
+    path('invoice_sign', InvoiceSignList.as_view(), name='InvoiceSignList'),
+    path('invoice_sign/api', InvoiceSignListAPI.as_view(), name='InvoiceSignListAPI'),
+]
+
+urlpatterns += [
+    path('inventory-import-config', InventoryInteractConfigList.as_view(), name='InventoryInteractConfigList'),
+    path('inventory-import-config/api', InventoryInteractConfigListAPI.as_view(), name='InventoryInteractConfigListAPI'),
+    path('inventory-import-config/api/<str:pk>', InventoryInteractConfigDetailAPI.as_view(), name='InventoryInteractConfigDetailAPI'),
 ]

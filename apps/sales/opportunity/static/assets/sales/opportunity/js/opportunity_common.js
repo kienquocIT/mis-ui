@@ -355,28 +355,28 @@ class OpportunityLoadDetail {
         // config input date
         $('input[name="open_date"]').daterangepicker({
             singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            drops: 'auto',
-            minYear: 2000,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
             locale: {
-                format: 'YYYY-MM-DD'
+                format: 'DD/MM/YYYY'
             },
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            drops: 'up',
+            autoApply: true,
         });
 
         $('input[name="close_date"]').daterangepicker({
             singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            drops: 'auto',
-            minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
             locale: {
-                format: 'YYYY-MM-DD'
+                format: 'DD/MM/YYYY'
             },
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY'), 10) + 100
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            drops: 'up',
+            autoApply: true,
         });
     }
 
@@ -397,10 +397,14 @@ class OpportunityLoadDetail {
             $('#check-input-rate').prop('checked', false);
 
         if (opportunity_detail?.['open_date'])
-            $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
+            $('#input-open-date').val(
+                moment(opportunity_detail?.['open_date'].split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY")
+            );
 
         if (opportunity_detail?.['close_date'])
-            $('#input-close-date').val(opportunity_detail?.['close_date'].split(' ')[0]);
+            $('#input-close-date').val(
+                moment(opportunity_detail?.['close_date'].split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY")
+            );
         else {
             $('#input-close-date').val('');
         }
@@ -430,7 +434,6 @@ class OpportunityLoadDetail {
 
             list_stage.reverse().map(function (item) {
                 ele.prepend(html);
-
                 let ele_first_stage = ele.find('.sub-stage').first();
                 ele_first_stage.attr('data-id', item.id);
                 ele_first_stage.find('.stage-indicator').text(item.indicator);
@@ -441,41 +444,40 @@ class OpportunityLoadDetail {
                 if (item?.['is_deal_closed']) {
                     ele_first_stage.addClass('stage-close')
                     ele_first_stage.find('.dropdown-menu').empty();
-                    if (is_close_lost || is_deal_close) {
+                    if (is_deal_close) {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
-                                        <label for="input-close-deal" class="form-label">Close Deal</label>
-                                    </div>`
+                                <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
+                                <label for="input-close-deal" class="form-label">Close Deal</label>
+                            </div>`
                         )
+                        ele_first_stage.find('.dropdown-menu').closest('.sub-stage').addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
                     } else {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" id="input-close-deal">
-                                        <label for="input-close-deal" class="form-label">Close Deal</label>
-                                    </div>`
+                                <input type="checkbox" class="form-check-input" id="input-close-deal">
+                                <label for="input-close-deal" class="form-label">Close Deal</label>
+                            </div>`
                         )
                     }
                 }
             })
         }
 
-
         if (stages.length !== 0) {
             stages.map(function (item) {
-                    let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
-                    if (ele_stage.hasClass('stage-lost')) {
-                        ele_stage.addClass('bg-red-light-5 stage-selected');
-                    } else if (ele_stage.hasClass('stage-close')) {
-                        let el_close_deal = $('#input-close-deal');
-                        $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
-                        ele_stage.addClass('bg-primary-light-5 stage-selected');
-                        el_close_deal.prop('checked', true);
-                    } else {
-                        ele_stage.addClass('bg-primary-light-5 stage-selected');
-                    }
+                let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
+                if (ele_stage.hasClass('stage-lost')) {
+                    ele_stage.addClass('fw-bolder text-danger bg-red-light-5 border-red stage-selected');
+                } else if (ele_stage.hasClass('stage-close')) {
+                    let el_close_deal = $('#input-close-deal');
+                    $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
+                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
+                    el_close_deal.prop('checked', true);
+                } else {
+                    ele_stage.addClass('fw-bolder text-primary bg-primary-light-5 border-primary  stage-selected');
                 }
-            )
+            })
         }
 
         return {
@@ -690,6 +692,9 @@ class OpportunityLoadDetail {
         ele_budget.attr('value') !== undefined ? data_form['budget_value'] = ele_budget.attr('value') : undefined;
         ele_decision_maker.data('id') !== undefined ? data_form['decision_maker'] = ele_decision_maker.data('id') : undefined;
 
+        data_form['open_date'] = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+        data_form['close_date'] = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+
         ele_product_category.val() !== undefined ? data_form['product_category'] = ele_product_category.val() : undefined;
         ele_decision_factor.val() !== undefined ? data_form['customer_decision_factor'] = ele_decision_factor.val() : undefined;
 
@@ -896,7 +901,7 @@ function loadDtbOpportunityList() {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<p>${row.title}</p>`
+                        return `<p class="fw-bold">${row.title}</p>`
                     }
                 },
                 {
@@ -908,7 +913,7 @@ function loadDtbOpportunityList() {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row?.['sale_person'].full_name}</span>`
+                        return `<span class="badge badge badge-soft-blue ml-2 mt-2">${row?.['sale_person'].full_name}</span>`
                     }
                 },
                 {
@@ -942,7 +947,7 @@ function loadDtbOpportunityList() {
                         stage_current = row.stage.find(function (obj) {
                             return obj.is_current === true;
                         });
-                        return `<span class="badge badge-light">${stage_current.indicator}</span>`
+                        return `<span style="font-style: italic">${stage_current.indicator}</span>`
                     }
                 },
                 // {
@@ -1179,7 +1184,7 @@ function loadDtbCompetitor(data) {
                     className: 'wrap-text text-center',
                     render: (data) => {
                         if (data) {
-                            return `<div class="form-check"><input checked type="checkbox" class="form-check-input"></div>`
+                            return `<div class="form-check"><input checked type="checkbox" class="form-check-input input-win-deal"></div>`
                         } else {
                             return `<div class="form-check"><input type="checkbox" class="form-check-input input-win-deal"></div>`
                         }
@@ -1308,7 +1313,8 @@ function autoLoadStage(
             'comparison_operator': '≠',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Product Category',
             'comparison_operator': '=',
@@ -1323,7 +1329,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Budget',
             'comparison_operator': '≠',
@@ -1338,7 +1345,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Open Date',
             'comparison_operator': '≠',
@@ -1353,7 +1361,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Close Date',
             'comparison_operator': '≠',
@@ -1368,7 +1377,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Decision maker',
             'comparison_operator': '≠',
@@ -1382,7 +1392,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Product.Line.Detail',
             'comparison_operator': '≠',
@@ -1397,7 +1408,8 @@ function autoLoadStage(
             'comparison_operator': '≠',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Competitor.Win',
             'comparison_operator': '=',
@@ -1412,7 +1424,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Lost By Other Reason',
             'comparison_operator': '≠',
@@ -1426,7 +1439,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'Quotation.confirm',
             'comparison_operator': '≠',
@@ -1440,7 +1454,8 @@ function autoLoadStage(
             'comparison_operator': '=',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'SaleOrder.status',
             'comparison_operator': '≠',
@@ -1454,7 +1469,8 @@ function autoLoadStage(
             'comparison_operator': '≠',
             'compare_data': '0',
         })
-    } else {
+    }
+    else {
         list_property_config.push({
             'property': 'SaleOrder.Delivery.Status',
             'comparison_operator': '=',
@@ -1525,6 +1541,33 @@ function autoLoadStage(
         id_stage_current = id_stage_current_list[0].stage_id
     }
 
+    let closed_lost_filter = list_stage.filter(function (ele) {
+        return ele?.['indicator'] === "Closed Lost"
+    })
+    let closed_lost_config = closed_lost_filter.length > 0 ? closed_lost_filter[0] : null
+    let closed_lost_condition_list = []
+    let is_lost = false
+    if (closed_lost_config) {
+        for (const item of closed_lost_config?.['condition_datas']) {
+            closed_lost_condition_list.push(item?.['condition_property']?.['title'] + item?.['comparison_operator'] + item?.['compare_data'])
+        }
+        if (closed_lost_config?.['logical_operator']) { // or
+            for (let i = 0; i < closed_lost_condition_list.length; i++) {
+                if (list_property_config_string.includes(closed_lost_condition_list[i])) {
+                    is_lost = true;
+                    break;
+                }
+            }
+        }
+        else { // and
+            let bMap = {};
+            list_property_config_string.forEach(item => {
+                bMap[item] = true;
+            });
+            is_lost = closed_lost_condition_list.every(item => bMap[item]);
+        }
+    }
+
     if (!just_check) {
         let stage_selected_ele = $('.stage-selected');
         let input_rate_ele = $('#check-input-rate');
@@ -1536,26 +1579,26 @@ function autoLoadStage(
         let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
         let index = ele_stage_current.index();
         if (ele_stage_current.hasClass('stage-lost')) {
-            ele_stage_current.addClass('bg-red-light-5 stage-selected');
-            ele_stage.removeClass('bg-primary-light-5 stage-selected');
+            ele_stage_current.addClass('bg-red-light-5 border-red stage-selected');
+            ele_stage.removeClass('bg-primary-light-5 border-primary  stage-selected');
         }
         else {
             for (let i = 0; i <= ele_stage.length; i++) {
                 if (i <= index) {
                     if (!ele_stage.eq(i).hasClass('stage-lost'))
-                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
                     else {
-                        ele_stage.eq(i).removeClass('bg-red-light-5 stage-selected');
+                        ele_stage.eq(i).removeClass('bg-red-light-5 border-red stage-selected');
                     }
                 } else {
-                    ele_stage.eq(i).removeClass('bg-primary-light-5 bg-red-light-5 stage-selected');
+                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  bg-red-light-5 border-red stage-selected');
                 }
             }
         }
 
         if (ele_close_deal.is(':checked')) {
             ele_stage_current = ele_close_deal.closest('.sub-stage');
-            ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+            ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
             $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
@@ -1564,7 +1607,7 @@ function autoLoadStage(
         }
         else {
             $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
-            ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+            ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
                 $('#input-rate').prop('disabled', true);
@@ -1591,7 +1634,7 @@ function autoLoadStage(
         }
     }
 
-    return id_stage_current
+    return id_stage_current, is_lost
 }
 
 //common
@@ -1638,8 +1681,16 @@ function sortStage(list_stage) {
     return list_result
 }
 
-$('#estimated-gross-profit-percent').on('change', function () {
-    let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
-    $('#estimated-gross-profit-value').attr('value', value)
-    $.fn.initMaskMoney2()
+$('#estimated-gross-profit-percent').on('input', function () {
+    if ($(this).val()) {
+        $(this).val(parseFloat($(this).val()))
+        let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
+        $('#estimated-gross-profit-value').attr('value', value)
+        $.fn.initMaskMoney2()
+    }
+    else {
+        $(this).val(0)
+        $('#estimated-gross-profit-value').attr('value', 0)
+        $.fn.initMaskMoney2()
+    }
 })

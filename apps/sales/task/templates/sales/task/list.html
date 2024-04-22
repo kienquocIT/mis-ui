@@ -5,9 +5,10 @@
     <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/perfect-scrollbar.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'assets/sales/task/css/gantt-css.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'assets/sales/task/css/task.css' %}" rel="stylesheet" type="text/css"/>
+
     <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/sales/task/css/task.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/sales/task/css/gantt-css.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}
@@ -32,8 +33,8 @@
 {% block pageContent %}
     <!-- filter task -->
     <div class="leave-filter-wrap">
-
-        <button class="btn btn-primary mb-4">
+        <!-- btn mobile -->
+        <button class="btn btn-primary mb-4 sp-btn">
             <span>
                 <span class="icon">
                     <i class="fa-solid fa-filter"></i>
@@ -41,13 +42,24 @@
                 <span>{% trans 'Filter' %}</span>
             </span>
         </button>
-        <div class="form-group-filter">
-            <span class="col text-decoration-underline text-uppercase"><span>{% trans 'Filter by' %}</span>:</span>
+        <!-- btn desktop -->
+        <button class="btn btn-primary mb-4 desktop-btn">
+            <span>
+                <span class="icon">
+                    <i class="fa-solid fa-gear"></i>
+                </span>
+                <span>{% trans 'Filter' %}</span>
+            </span>
+        </button>
+        <div class="form-group-filter" style="display: none">
+            <span class="col text-decoration-underline text-uppercase">
+                <span>{% trans 'Filter by' %}</span>:
+            </span>
             <span class="col clear-all-btn">
                 <span class="text-uppercase font-2 p-1">
                 {% trans 'Clear all' %} x</span></span>
             <label class="filter-label" for="filter_opportunity_id">
-                {% trans 'Opp/Project list' %}
+                {% trans 'Opportunity list' %}
             </label>
             <div class="max-w-280">
                 <select
@@ -84,7 +96,6 @@
                 ></select>
             </div>
         </div>
-        <hr class="bg-black">
     </div>
 
     <!-- Navigation task list/kanban-->

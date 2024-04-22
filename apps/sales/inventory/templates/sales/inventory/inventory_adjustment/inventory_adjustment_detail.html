@@ -1,20 +1,22 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Inventory Adjustment Detail' %}{% endblock %}
+{% block title %}{% trans 'Inventory adjustment detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button id="update-ia" class="btn btn-outline-primary" type="submit" form="frm_inventory_adjustment_detail">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'InventoryAdjustmentUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <form data-method="PUT" data-url-redirect="{% url "InventoryAdjustmentDetail" pk=0 %}"
@@ -88,39 +90,39 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab_block_line_detail" style="position: relative; overflow: auto; width: 100%;">
-                        <div class="row mb-3">
-                            <div class="col-12 col-md-12 col-lg-12 text-right">
-                                <div class="btn-group dropdown">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        {% trans 'Actions' %}
-                                    </button>
-                                    <div class="dropdown-menu dropdown-bordered">
-                                        <a class="dropdown-item" id="get-increase-items-btn" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" id="get-decrease-items-btn" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
-                                    </div>
-                                </div>
+                    <div class="tab-pane fade show active" id="tab_block_line_detail">
+                        <div class="row">
+                            <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                                <table data-url="{% url "WareHouseListAPI" %}"
+                                       data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
+                                       data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+                                       data-method="GET"
+                                       class="table nowrap w-100" id="table-line-detail">
+                                    <thead>
+                                    <th>{% trans 'Product name' %}</th>
+                                    <th>{% trans 'Warehouse' %}</th>
+                                    <th>{% trans 'Unit Of Measure' %}</th>
+                                    <th>{% trans 'Booked quantity' %}</th>
+                                    <th class="required">{% trans 'Counted quantity' %}</th>
+                                    <th>{% trans 'Difference' %}</th>
+                                    <th>{% trans 'Select for actions' %}</th>
+                                    <th>{% trans 'Action type' %}</th>
+                                    <th>{% trans 'Action status' %}</th>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
-                        <table data-url="{% url "WareHouseListAPI" %}"
-                               data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
-                               data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
-                               data-method="GET"
-                               class="table nowrap w-100" id="table-line-detail">
-                            <thead>
-                            <th>{% trans 'Product name' %}</th>
-                            <th>{% trans 'Warehouse' %}</th>
-                            <th>{% trans 'Unit Of Measure' %}</th>
-                            <th>{% trans 'Booked quantity' %}</th>
-                            <th class="required">{% trans 'Counted quantity' %}</th>
-                            <th>{% trans 'Difference' %}</th>
-                            <th>{% trans 'Select for actions' %}</th>
-                            <th>{% trans 'Action type' %}</th>
-                            <th>{% trans 'Action status' %}</th>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                        <div class="btn-group dropdown">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Actions' %}
+                            </button>
+                            <div class="dropdown-menu dropdown-bordered">
+                                <a class="dropdown-item" id="get-increase-items-btn" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" id="get-decrease-items-btn" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab_block_attachment">
                         <div class="row">
@@ -132,36 +134,35 @@
                 </div>
             </div>
         </div>
+    </form>
 
-        <div class="offcanvas offcanvas-end mt-9 w-50" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
-            <div class="offcanvas-header row">
-                <div class="col-9"><h5 id="offcanvasRightLabel">{% trans 'Select products from warehouses' %}</h5></div>
-                <div class="col-2"><button id="btn-select-product" type="button" class="btn btn-primary w-100" data-bs-dismiss="offcanvas">{% trans 'Select' %}</button></div>
-                <div class="col-1 text-right"><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
-            </div>
-            <div class="offcanvas-body">
-                <div style="overflow: auto; height: 70vh; overflow-x: hidden">
-                    <table class="table nowrap w-100" id="table-select-products">
-                        <thead>
-                        <th class="w-10">
-                            <span class="form-check">
-                                <input type="checkbox" class="form-check-input" id="selected_all_product">
-                                <label class="form-check-label"></label>
-                            </span>
-                        </th>
-                        <th class="w-20">{% trans 'Code' %}</th>
-                        <th class="w-30">{% trans 'Warehouse' %}</th>
-                        <th class="w-40">{% trans 'Product' %}</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
+    <div class="offcanvas offcanvas-end mt-9 w-50" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas-header row">
+            <div class="col-9"><h5 id="offcanvasRightLabel">{% trans 'Select products from warehouses' %}</h5></div>
+            <div class="col-2"><button id="btn-select-product" type="button" class="btn btn-primary w-100" data-bs-dismiss="offcanvas">{% trans 'Select' %}</button></div>
+            <div class="col-1 text-right"><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
+        </div>
+        <div class="offcanvas-body">
+            <div style="overflow: auto; height: 70vh; overflow-x: hidden">
+                <table class="table nowrap w-100" id="table-select-products">
+                    <thead>
+                    <th class="w-10">
+                        <span class="form-check">
+                            <input type="checkbox" class="form-check-input" id="selected_all_product">
+                            <label class="form-check-label"></label>
+                        </span>
+                    </th>
+                    <th class="w-20">{% trans 'Code' %}</th>
+                    <th class="w-30">{% trans 'Warehouse' %}</th>
+                    <th class="w-40">{% trans 'Product' %}</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
-    </form>
+    </div>
 {% endblock %}
 {% block jsFooter %}
-
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>

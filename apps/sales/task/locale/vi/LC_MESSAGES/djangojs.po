@@ -20,3 +20,35 @@ msgstr ""
 #
 msgid "Load more"
 msgstr "Xem thêm"
+
+#
+msgid "Prev"
+msgstr "Trang trước"
+
+#
+msgid "Next"
+msgstr "Trang tiếp"
+
+#
+msgid "Jump prev"
+msgstr "Lùi nhanh"
+
+#
+msgid "Slider prev"
+msgstr "Lùi"
+
+#
+msgid "Jump next"
+msgstr "Tiến nhanh"
+
+#
+msgid "Slider next"
+msgstr "Tiến"
+
+#
+msgid "Zoom in"
+msgstr "Phóng to"
+
+#
+msgid "Zoom out"
+msgstr "Thu nhỏ"

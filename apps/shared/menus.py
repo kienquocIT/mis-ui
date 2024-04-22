@@ -192,6 +192,11 @@ class MenusCoreConfigurations:
                 name='Revenue plan config', code='id_menu_master_data_revenue_plan_config', view_name='RevenuePlanConfigList',
                 icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
+            MenuCommon(
+                name='Invoice form config', code='menu_invoice_sign',
+                view_name='InvoiceSignList',
+                icon='<i class="fas fa-signature"></i>',
+            ),
         ]
     )
     TEMPLATES_DATA_CONFIG = MenuCommon(
@@ -211,6 +216,10 @@ class MenusCoreConfigurations:
                 icon='<i class="fa-solid fa-file-import"></i>'
             ),
         ]
+    )
+    INVENTORY_DATA_CONFIG = MenuCommon(
+        name='Inventory interact config', code='menu_inventory_interact_config', view_name='InventoryInteractConfigList',
+        icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
     )
 
 
@@ -395,25 +404,13 @@ class MenusPurchase:
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
+        name='Inventory activities', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
                 name='Goods receipt',
                 code='menu_goods_receipt_list',
                 view_name='GoodsReceiptList',
                 icon='<i class="fas fa-file-import"></i>',
-            ),
-            MenuCommon(
-                name='Inventory adjustment',
-                code='menu_inventory_adjustment_list',
-                view_name='InventoryAdjustmentList',
-                icon='<i class="bi bi-sliders"></i>',
-            ),
-            MenuCommon(
-                name='Goods Transfer',
-                code='menu_goods_transfer_list',
-                view_name='GoodsTransferList',
-                icon='<i class="fas fa-exchange-alt"></i>',
             ),
             MenuCommon(
                 name='Goods issue',
@@ -426,6 +423,18 @@ class MenusPurchase:
                 code='menu_goods_return',
                 view_name='GoodsReturnList',
                 icon='<i class="far fa-arrow-alt-circle-left"></i>',
+            ),
+            MenuCommon(
+                name='Inventory adjustment',
+                code='menu_inventory_adjustment_list',
+                view_name='InventoryAdjustmentList',
+                icon='<i class="bi bi-sliders"></i>',
+            ),
+            MenuCommon(
+                name='Goods transfer',
+                code='menu_goods_transfer_list',
+                view_name='GoodsTransferList',
+                icon='<i class="fas fa-exchange-alt"></i>',
             ),
         ],
     )
@@ -724,6 +733,7 @@ class SpaceItem:
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
+                MenusCoreConfigurations.INVENTORY_DATA_CONFIG
             ],
         )
     }

@@ -3,42 +3,82 @@ $(function () {
 
         let boxGroup = $('#box-report-revenue-group');
         let boxEmployee = $('#box-report-revenue-employee');
+        let boxStart = $('#report-revenue-date-from');
+        let boxEnd = $('#report-revenue-date-to');
         let btnView = $('#btn-view');
         let eleRevenue = $('#report-revenue-revenue');
         let eleGrossProfit = $('#report-revenue-gross-profit');
         let eleNetIncome = $('#report-revenue-net-income');
         let $table = $('#table_report_revenue_list');
+        let $urlFact = $('#app-url-factory');
+        let $transFact = $('#app-trans-factory');
+        let eleFiscalYear = $('#data-fiscal-year');
 
         function loadDbl(data) {
             $table.DataTableDefault({
+                ajax: {
+                    url: $table.attr('data-url'),
+                    data: {
+                        "is_initial": false,
+                        "group_inherit__is_delete": false,
+                        "sale_order__system_status": 3,
+                    },
+                    // dataSrc: 'data.report_revenue_list',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let dataResult = resp.data['report_revenue_list'] ? resp.data['report_revenue_list'] : [];
+                            storeLoadInitByDataFiscalYear();
+                            return dataResult;
+                        }
+                        return [];
+                    },
+                },
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                columns: [  // 150,200,150,100,250,400,250,250,250 (2000p)
+                pageLength: 50,
+                cusFilter: [
+                    {
+                        dataUrl: $urlFact.attr('data-filter_so'),
+                        keyResp: 'sale_order_list',
+                        keyText: 'title',
+                        keyParam: "sale_order_id",
+                        placeholder: $transFact.attr('data-filter-so'),
+                    },
+                    {
+                        dataUrl: $urlFact.attr('data-filter_customer'),
+                        keyResp: 'account_sale_list',
+                        keyText: 'name',
+                        keyParam: "sale_order__customer_id",
+                        placeholder: $transFact.attr('data-filter-customer'),
+                    },
+                ],
+                columns: [  // 180,180,180,90,240,240,270,270,270 (1920p)
                     {
                         targets: 0,
-                        width: '7.5%',
+                        width: '9.375%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary">${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '9.375%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '7.5%',
+                        width: '9.375%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '5%',
+                        width: '4.6875%',
                         render: (data, type, row) => {
                             if (row?.['date_approved']) {
                                 return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
@@ -56,28 +96,28 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '20%',
+                        width: '12.5%',
                         render: (data, type, row) => {
                             return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 6,
-                        width: '12.5%',
+                        width: '14.0625%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 7,
-                        width: '12.5%',
+                        width: '14.0625%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 8,
-                        width: '12.5%',
+                        width: '14.0625%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -86,6 +126,7 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    loadTotal();
                 },
             });
         }
@@ -115,6 +156,86 @@ $(function () {
         }
         loadDbl();
 
+        function storeLoadInitByDataFiscalYear() {
+            $.fn.callAjax2({
+                    'url': eleFiscalYear.attr('data-url'),
+                    'method': eleFiscalYear.attr('data-method'),
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
+                            eleFiscalYear.val(JSON.stringify(data.periods_list));
+                            let currentYear = new Date().getFullYear();
+                            for (let period of data.periods_list) {
+                                if (period?.['fiscal_year'] === currentYear) {
+                                    let {startDate, endDate} = getYearRange(period?.['start_date']);
+                                    // set init val date range
+                                    let startDateObj = new Date(startDate);
+                                    let endDateObj = new Date(endDate);
+                                    let formattedStartDate = `${padWithZero(startDateObj.getDate())}/${padWithZero(startDateObj.getMonth() + 1)}/${startDateObj.getFullYear()}`;
+                                    let formattedEndDate = `${padWithZero(endDateObj.getDate())}/${padWithZero(endDateObj.getMonth() + 1)}/${endDateObj.getFullYear()}`;
+                                    boxStart.val(formattedStartDate);
+                                    boxEnd.val(formattedEndDate);
+                                    $.fn.callAjax2({
+                                            'url': $table.attr('data-url'),
+                                            'method': $table.attr('data-method'),
+                                            'data': {
+                                                'is_initial': false,
+                                                "group_inherit__is_delete": false,
+                                                "sale_order__system_status": 3,
+                                                'date_approved__gte': startDate,
+                                                'date_approved__lte': endDate,
+                                            },
+                                            isLoading: true,
+                                        }
+                                    ).then(
+                                        (resp) => {
+                                            let data = $.fn.switcherResp(resp);
+                                            if (data) {
+                                                if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
+                                                    $table.DataTable().clear().draw();
+                                                    $table.DataTable().rows.add(data.report_revenue_list).draw();
+                                                    loadTotal();
+                                                }
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+        }
+
+        function padWithZero(num) {
+            return num < 10 ? '0' + num : num;
+        }
+
+        function getYearRange(startDate) {
+            let endDate = getFiscalYearEndDate(startDate);
+            let datesFormat = formatStartEndDate(startDate, endDate);
+            return {startDate: datesFormat?.['startDate'], endDate: datesFormat?.['endDate']};
+        }
+
+        function getFiscalYearEndDate(startDate) {
+            let endDateFY = '';
+            if (startDate) {
+                let startDateFY = new Date(startDate);
+                endDateFY = new Date(startDateFY);
+                // Add 12 months to the start date
+                endDateFY.setMonth(startDateFY.getMonth() + 12);
+                // Subtract 1 day to get the last day of the fiscal year
+                endDateFY.setDate(endDateFY.getDate() - 1);
+                // Format the end date as 'YYYY-MM-DD'
+                endDateFY = endDateFY.toISOString().slice(0, 10);
+                return endDateFY;
+            }
+            return endDateFY;
+        }
+
         function formatStartEndDate(startDate, endDate) {
             if (startDate && endDate) {
                 startDate = startDate + ' 00:00:00';
@@ -122,6 +243,22 @@ $(function () {
                 return {startDate, endDate};
             }
             return {startDate: '', endDate: ''};
+        }
+
+        function formatStartDate(startDate) {
+            if (startDate) {
+                startDate = startDate + ' 00:00:00';
+                return startDate;
+            }
+            return '';
+        }
+
+        function formatEndDate(endDate) {
+            if (endDate) {
+                endDate = endDate + ' 23:59:59';
+                return endDate;
+            }
+            return '';
         }
 
         function loadBoxEmployee() {
@@ -137,7 +274,7 @@ $(function () {
         }
 
         $('#btn-collapse').click(function () {
-            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
         // load init
@@ -149,16 +286,24 @@ $(function () {
 
         initData();
 
-        // run datetimepicker
-        $('input[type=text].date-picker').daterangepicker({
-            minYear: 1901,
-            timePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: 'DD/MM/YYYY'
-            }
-        });
-        $('input[type=text].date-picker').val(null).trigger('change');
+        // init date picker
+        $('.date-picker').each(function () {
+            $(this).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                autoApply: true,
+                autoUpdateInput: false,
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            });
+            $(this).val('').trigger('change');
+        })
 
         // mask money
         $.fn.initMaskMoney2();
@@ -177,20 +322,22 @@ $(function () {
 
         btnView.on('click', function () {
             let dataParams = {};
+            dataParams['is_initial'] = false;
+            dataParams['group_inherit__is_delete'] = false;
+            dataParams['sale_order__system_status'] = 3;
             if (boxGroup.val()) {
-                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
+                dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
-            let date = $('#report-revenue-date-approved').val();
-            if (date) {
-                let dateStrings = date.split(' - ');
-                let dateStart = moment(dateStrings[0], 'DD/MM/YYYY').format('YYYY-MM-DD');
-                let dateEnd = moment(dateStrings[1], 'DD/MM/YYYY').format('YYYY-MM-DD');
-                let datesFormat = formatStartEndDate(dateStart, dateEnd);
-                dataParams['date_approved__gte'] = datesFormat?.['startDate'];
-                dataParams['date_approved__lte'] = datesFormat?.['endDate'];
+            if (boxStart.val()) {
+                let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                dataParams['date_approved__gte'] = formatStartDate(dateStart);
+            }
+            if (boxEnd.val()) {
+                let dateEnd = moment(boxEnd.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                dataParams['date_approved__lte'] = formatEndDate(dateEnd);
             }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),

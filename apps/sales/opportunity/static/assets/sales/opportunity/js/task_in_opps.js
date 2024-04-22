@@ -15,6 +15,7 @@ function resetFormTask() {
     $('[name="parent_n"]').remove();
     window.editor.setData('')
     $('.create-task').attr('disabled', false)
+    $('.btn-log_work').removeClass('.disabled')
 }
 
 function isValidString(inputString) {
@@ -23,8 +24,7 @@ function isValidString(inputString) {
 }
 
 function logWorkSubmit() {
-
-    $('#save-logtime').off().on('click', function () {
+    $('#save-logtime').on('click', function () {
         const startDate = $('#startDateLogTime').val()
         const endDate = $('#endDateLogTime').val()
         const est = $('#EstLogtime').val()
@@ -237,7 +237,7 @@ class Task_in_opps {
         })
 
         // run date picker
-        $('.date-picker',$form).each(function(){
+        $('.date-picker', $form).each(function(){
             $(this).daterangepicker({
                 minYear: 2023,
                 singleDatePicker: true,
@@ -284,7 +284,6 @@ class Task_in_opps {
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
                     let todoItem = data[sttElm.attr('data-keyResp')][0]
-
                     sttElm.attr('data-onload', JSON.stringify({...todoItem, selected: true}))
                     sttElm.initSelect2()
                 })
@@ -292,9 +291,6 @@ class Task_in_opps {
         // run init label function
         let formLabel = new labelHandle()
         formLabel.init()
-
-
-
         // auto load opp if in page opp
         const $selectElm = $('#opportunity_id')
         let data = {}
@@ -307,7 +303,8 @@ class Task_in_opps {
         $selectElm.initSelect2()
 
         // click to log-work
-        $('.btn-log_work').off().on('click', () => {
+        $('.btn-log_work').on('click', function() {
+            if ($(this).hasClass('disabled')) return;
             $('#logWorkModal').modal('show')
             $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
             logWorkSubmit()

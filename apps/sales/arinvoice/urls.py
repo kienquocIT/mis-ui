@@ -2,7 +2,7 @@ from django.urls import path
 from apps.sales.arinvoice.views import (
     ARInvoiceList, ARInvoiceCreate, ARInvoiceDetail, ARInvoiceUpdate,
     ARInvoiceListAPI, ARInvoiceDetailAPI,
-    DeliveryListForARInvoiceAPI
+    DeliveryListForARInvoiceAPI, EZInvoiceDetail
 )
 
 urlpatterns = [
@@ -14,4 +14,6 @@ urlpatterns = [
     path('ar-invoice/api/<str:pk>', ARInvoiceDetailAPI.as_view(), name='ARInvoiceDetailAPI'),
 ] + [
     path('deliveries/api', DeliveryListForARInvoiceAPI.as_view(), name='DeliveryListForARInvoiceAPI'),
+] + [
+    path('ez-invoice-detail/<str:pk>', EZInvoiceDetail.as_view(), name='EZInvoiceDetail'),
 ]

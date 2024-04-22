@@ -68,6 +68,16 @@ class UserResetPassword(APIView):
         return {}, status.HTTP_404_NOT_FOUND
 
 
+class UserMailWelcome(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, pk, **kwargs):
+        if TypeCheck.check_uuid(pk):
+            url = ApiURL.USER_MAIL_WELCOME.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).put(data={})
+            return resp.auto_return(key_success='mail_welcome')
+        return {}, status.HTTP_404_NOT_FOUND
+
+
 class UserListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -86,17 +96,19 @@ class UserDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.user_detail + '/' + pk).get()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='user')
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.user_detail + '/' + pk).put(request.data)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.user_detail + '/' + pk).delete(request.data)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_DETAIL.fill_key(pk=pk)).delete(
+            request.data
+        )
         return resp.auto_return()
 
 
@@ -107,3 +119,17 @@ class UserTenantOverviewListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.ACCOUNT_USER_TENANT).get()
         return resp.auto_return(key_success='user_list')
+
+
+class UserAdminTenant(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.ACCOUNT_USER_ADMIN_TENANT).get()
+        return resp.auto_return(key_success='user_admin_tenant')
+
+
+class UserCompaniesAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.USER_COMPANIES.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='company_list')

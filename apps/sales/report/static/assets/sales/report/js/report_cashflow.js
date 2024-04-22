@@ -12,7 +12,7 @@ $(function () {
         let eleMonthArea = $('#area-month');
         let $table = $('#table_report_cashflow_year_list');
         let $tableMonth = $('#table_report_cashflow_month_list');
-        let dataMonth = JSON.parse($('#filter_month').text());
+        let initDataMonth = JSON.parse($('#filter_month').text());
         let eleTrans = $('#app-trans-factory');
 
         // year (by months)
@@ -29,6 +29,16 @@ $(function () {
         //                 targets: 0,
         //                 width: '3.25%',
         //                 render: (data, type, row) => {
+        //                     if ([2, 3].includes(row?.['cashflow_type'])) {
+        //                         let typeMapIcon = {
+        //                             2: "fas fa-arrow-left text-green mt-1",
+        //                             3: "fas fa-arrow-right text-red mt-1",
+        //                         }
+        //                         return `<div class="d-flex justify-content-end">
+        //                                     <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+        //                                     <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+        //                                 </div>`;
+        //                     }
         //                     return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
         //                 }
         //             },
@@ -37,6 +47,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 1;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(1).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -78,6 +94,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 2;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(2).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -119,6 +141,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 3;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(3).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -160,6 +188,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 4;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(4).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -201,6 +235,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 5;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(5).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -242,6 +282,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 6;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(6).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -283,6 +329,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 7;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(7).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -324,6 +376,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 8;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(8).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -365,6 +423,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 9;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(9).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -406,6 +470,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 10;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(10).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -447,6 +517,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 11;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(11).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -488,6 +564,12 @@ $(function () {
         //                 width: '8.06%',
         //                 render: (data, type, row) => {
         //                     let month = 12;
+        //                     // Get the TH element of column then set real month
+        //                     let table = $table.DataTable();
+        //                     let thElement = $(table.column(12).header());
+        //                     if (thElement[0].getAttribute('data-month')) {
+        //                         month = parseInt(thElement[0].getAttribute('data-month'));
+        //                     }
         //                     let valueEstimate = 0;
         //                     if (row?.['data_by_month']) {
         //                         let dataMonth = row?.['data_by_month'];
@@ -528,6 +610,8 @@ $(function () {
         //         drawCallback: function () {
         //             // mask money
         //             $.fn.initMaskMoney2();
+        //             // change TH by months
+        //             changeTHTableYearByMonths();
         //         },
         //     });
         // }
@@ -548,6 +632,16 @@ $(function () {
         //                 targets: 0,
         //                 width: '7.5%',
         //                 render: (data, type, row) => {
+        //                     if ([2, 3].includes(row?.['cashflow_type'])) {
+        //                         let typeMapIcon = {
+        //                             2: "fas fa-arrow-left text-green mt-1",
+        //                             3: "fas fa-arrow-right text-red mt-1",
+        //                         }
+        //                         return `<div class="d-flex justify-content-end">
+        //                                     <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+        //                                     <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+        //                                 </div>`;
+        //                     }
         //                     return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
         //                 }
         //             },
@@ -570,19 +664,11 @@ $(function () {
         //                         }
         //                     }
         //                     if (row?.['cashflow_type'] !== 0) {
-        //                         if (row?.['cashflow_type'] !== 1) {
-        //                            return `<div class="row">
+        //                         return `<div class="row">
         //                                     <div class="col-4"><span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span></div>
         //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
         //                                     <div class="col-4"><span class="mask-money" data-init-money="${0}"></span></div>
         //                                 </div>`;
-        //                         } else {
-        //                             return `<div class="row">
-        //                                     <div class="col-4"><div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div></div>
-        //                                     <div class="col-4 mt-2"><span class="mask-money table-row-value-actual" data-init-money="${0}" data-month="${month}"></span></div>
-        //                                     <div class="col-4 mt-2"><span class="mask-money table-row-value-variance" data-init-money="${0}" data-month="${month}"></span></div>
-        //                                 </div>`;
-        //                         }
         //                     } else {
         //                         return `<div class="row">
         //                                     <div class="col-4">${eleTrans.attr('data-estimate')}</div>
@@ -760,8 +846,8 @@ $(function () {
         //         drawCallback: function () {
         //             // mask money
         //             $.fn.initMaskMoney2();
-        //             // change Td by weeks
-        //             changeTDTableMonthByWeeks();
+        //             // change TH by weeks
+        //             changeTHTableMonthByWeeks();
         //         },
         //     });
         // }
@@ -795,6 +881,16 @@ $(function () {
                         targets: 0,
                         width: '7%',
                         render: (data, type, row) => {
+                            if ([2, 3].includes(row?.['cashflow_type'])) {
+                                let typeMapIcon = {
+                                    2: "fas fa-arrow-left text-green mt-1",
+                                    3: "fas fa-arrow-right text-red mt-1",
+                                }
+                                return `<div class="d-flex justify-content-end">
+                                            <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+                                            <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+                                        </div>`;
+                            }
                             return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
                         }
                     },
@@ -803,6 +899,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 1;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(1).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -832,6 +934,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 2;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(2).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -861,6 +969,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 3;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(3).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -890,6 +1004,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 4;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(4).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -919,6 +1039,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 5;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(5).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -948,6 +1074,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 6;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(6).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -977,6 +1109,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 7;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(7).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -1006,6 +1144,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 8;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(8).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -1035,6 +1179,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 9;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(9).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -1064,6 +1214,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 10;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(10).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -1093,6 +1249,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 11;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(11).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -1122,6 +1284,12 @@ $(function () {
                         width: '7.75%',
                         render: (data, type, row) => {
                             let month = 12;
+                            // Get the TH element of column then set real month
+                            let table = $table.DataTable();
+                            let thElement = $(table.column(12).header());
+                            if (thElement[0].getAttribute('data-month')) {
+                                month = parseInt(thElement[0].getAttribute('data-month'));
+                            }
                             let valueEstimate = 0;
                             if (row?.['data_by_month']) {
                                 let dataMonth = row?.['data_by_month'];
@@ -1150,12 +1318,11 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    // change TH by months
+                    changeTHTableYearByMonths();
                 },
             });
         }
-
-        loadDbl();
-
 
         function loadDblMonth(data) {
             $tableMonth.DataTableDefault({
@@ -1170,6 +1337,16 @@ $(function () {
                         targets: 0,
                         width: '15%',
                         render: (data, type, row) => {
+                            if ([2, 3].includes(row?.['cashflow_type'])) {
+                                let typeMapIcon = {
+                                    2: "fas fa-arrow-left text-green mt-1",
+                                    3: "fas fa-arrow-right text-red mt-1",
+                                }
+                                return `<div class="d-flex justify-content-end">
+                                            <p class="table-row-type mr-2" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>
+                                            <small><i class="${typeMapIcon[row?.['cashflow_type']]}"></i></small>
+                                        </div>`;
+                            }
                             return `<p class="table-row-type" data-type="${row?.['cashflow_type']}">${row?.['type_title'] ? row?.['type_title'] : ''}</p>`;
                         }
                     },
@@ -1192,11 +1369,7 @@ $(function () {
                                 }
                             }
                             if (row?.['cashflow_type'] !== 0) {
-                                if (row?.['cashflow_type'] !== 1) {
-                                   return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
-                                } else {
-                                    return `<div class="row"><input type="text" class="form-control mask-money table-row-value-estimate" data-month="${month}" value="${0}" data-return-type="number"></div>`;
-                                }
+                                return `<span class="mask-money table-row-value-estimate" data-init-money="${valueEstimate}" data-month="${month}"></span>`;
                             } else {
                                 return `<div class="row">${eleTrans.attr('data-estimate')}</div>`;
                             }
@@ -1322,8 +1495,8 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
-                    // change Td by weeks
-                    changeTDTableMonthByWeeks();
+                    // change TH by weeks
+                    changeTHTableMonthByWeeks();
                 },
             });
         }
@@ -1368,18 +1541,20 @@ $(function () {
                     loadDblMonth();
                     let weeksOfMonth = getWeeksOfMonth(parseInt(month), parseInt(year));
                     for (let data of dataList) {
-                        if (data?.['due_date']) {
-                            let date = data?.['due_date'];
-                            for (let key in weeksOfMonth) {
-                                let startDate = weeksOfMonth[key]?.['start_date'];
-                                let endDate = weeksOfMonth[key]?.['end_date'];
-                                let isInRange = isDateInRange(date, startDate, endDate);
-                                if (isInRange === true) {
-                                    if (dataByWeek.hasOwnProperty(key)) {
-                                        dataByWeek[key]['value_estimate_sale'] += data?.['value_estimate_sale'];
-                                        dataByWeek[key]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                        if (data?.['system_status'] === 3) {  // check system status is finished
+                            if (data?.['due_date']) {
+                                let date = data?.['due_date'];
+                                for (let key in weeksOfMonth) {
+                                    let startDate = weeksOfMonth[key]?.['start_date'];
+                                    let endDate = weeksOfMonth[key]?.['end_date'];
+                                    let isInRange = isDateInRange(date, startDate, endDate);
+                                    if (isInRange === true) {
+                                        if (dataByWeek.hasOwnProperty(key)) {
+                                            dataByWeek[key]['value_estimate_sale'] += data?.['value_estimate_sale'];
+                                            dataByWeek[key]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
@@ -1393,11 +1568,13 @@ $(function () {
                     $eleTable.DataTable().destroy();
                     loadDbl();
                     for (let data of dataList) {
-                        if (data?.['due_date']) {
-                            let monthDueDate = getMonthFromDateStr(data?.['due_date']);
-                            if (dataByMonth.hasOwnProperty(monthDueDate)) {
-                                dataByMonth[monthDueDate]['value_estimate_sale'] += data?.['value_estimate_sale'];
-                                dataByMonth[monthDueDate]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                        if (data?.['system_status'] === 3) {  // check system status is finished
+                            if (data?.['due_date']) {
+                                let monthDueDate = getMonthFromDateStr(data?.['due_date']);
+                                if (dataByMonth.hasOwnProperty(monthDueDate)) {
+                                    dataByMonth[monthDueDate]['value_estimate_sale'] += data?.['value_estimate_sale'];
+                                    dataByMonth[monthDueDate]['value_estimate_cost'] += data?.['value_estimate_cost'];
+                                }
                             }
                         }
                     }
@@ -1405,7 +1582,6 @@ $(function () {
                         dataByMonth[keyMonth]['value_estimate_net'] = parseFloat(dataByMonth[keyMonth]['value_estimate_sale']) - parseFloat(dataByMonth[keyMonth]['value_estimate_cost']);
                     }
                 }
-
             }
             let dataOperation = {
                 'cashflow_type': 0,
@@ -1445,27 +1621,52 @@ $(function () {
             // custom total row
             if ($eleTable.DataTable().data().count() !== 0) {
                 let firstRow = $eleTable.DataTable().row(0).node();
-                $(firstRow).css('background-color', '#ebf5f5');
-                $(firstRow).css('color', '#007D88');
+                $(firstRow).css({
+                    'background-color': '#ebf5f5',
+                    'color': '#007D88',
+                    'font-weight': 'bold',
+                });
                 for (let eleType of $eleTable[0].querySelectorAll('.table-row-type')) {
                     let row = eleType.closest('td');
-                    $(row).css('background-color', '#ebf5f5');
-                    $(row).css('color', '#007D88');
+                    $(row).css({
+                        'background-color': '#ebf5f5',
+                        'color': '#007D88',
+                        'font-weight': 'bold',
+                    });
                     if (eleType.getAttribute('data-type')) {
-                        if ([4, 5].includes(parseInt(eleType.getAttribute('data-type')))) {
+                        if ([2, 3, 4].includes(parseInt(eleType.getAttribute('data-type')))) {
                             $(row).css('text-align', 'right');
                         }
                     }
                 }
             }
-
             // init money
             $.fn.initMaskMoney2();
 
             let eleTypeBegin = $eleTable[0].querySelector('.table-row-type[data-type="1"]');
             if (eleTypeBegin) {
-                let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="1"]`);
-                $(eleEstimateBegin).change();
+                for (let eleEstimateBegin of eleTypeBegin.closest('tr').querySelectorAll('.table-row-value-estimate')) {
+                    if (eleEstimateBegin.tagName.toLowerCase() === 'input') {
+                        if ($eleTable[0].id === 'table_report_cashflow_year_list') {
+                            let eleStoreYear = $('#data-store-year');
+                            if (eleStoreYear && eleStoreYear.length > 0) {
+                                if (eleStoreYear.val() && year) {
+                                    let dataStoreYear = JSON.parse(eleStoreYear.val());
+                                    let dataYear = dataStoreYear?.[year];
+                                    if (dataYear) {
+                                        $(eleEstimateBegin).attr('value', String(dataYear));
+                                    }
+                                }
+                            }
+                        }
+                        $(eleEstimateBegin).change();
+                        break;
+                    }
+                }
+            }
+            // auto calculate weeks by month
+            if (month) {
+                autoCalculateWeeksByMonth();
             }
             return true;
         }
@@ -1485,6 +1686,8 @@ $(function () {
                             loadBoxMonth();
                             let currentYear = new Date().getFullYear();
                             boxYear.val(currentYear).trigger('change');
+                            loadDbl();
+
                             btnView.click();
                         }
                     }
@@ -1674,6 +1877,24 @@ $(function () {
             return date >= startDate && date <= endDate;
         }
 
+        function getAllMonthsOfFiscalYear(year) {
+            let {startDate, endDate} = getYearRange(year);
+            let startDateFM = new Date(startDate);
+            let endDateFM = new Date(endDate);
+            let result = [];
+            let currentDate = new Date(startDateFM);
+            // Loop until currentDate is less than or equal to endDate
+            while (currentDate <= endDateFM) {
+                result.push({
+                    month: currentDate.getMonth() + 1, // Adding 1 because getMonth() returns zero-based month index
+                    year: currentDate.getFullYear()
+                });
+                // Move currentDate to the next month
+                currentDate.setMonth(currentDate.getMonth() + 1);
+            }
+            return result;
+        }
+
         // LOAD BOXS DROPDOWN
         function loadBoxEmployee() {
             boxEmployee.empty();
@@ -1730,7 +1951,7 @@ $(function () {
             for (let monthYear of dataMonths) {
                 data.push({
                     'id': monthYear?.['month'],
-                    'title': dataMonth[monthYear?.['month'] - 1][1],
+                    'title': initDataMonth[monthYear?.['month'] - 1][1],
                     'month': monthYear?.['month'],
                     'year': monthYear?.['year'],
                 })
@@ -1751,6 +1972,10 @@ $(function () {
                 },
             });
         }
+
+        $('#btn-collapse').click(function () {
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
 
         // load init
         function initData() {
@@ -1808,55 +2033,139 @@ $(function () {
         });
 
         $table.on('change', '.table-row-value-estimate', function () {
-            let startValue = $(this).valCurrency();
-            let startMonth = parseInt(this.getAttribute('data-month'));
-            calculateIfChangeBeginning($table, startValue, startMonth);
-
-            for (let month = (startMonth + 1); month <= 12; month++) {
-                let eleTypeBegin = $table[0].querySelector('.table-row-type[data-type="1"]');
-                if (eleTypeBegin) {
-                    let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
-                    if (eleEstimateBegin.getAttribute('data-init-money')) {
-                        let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
-                        calculateIfChangeBeginning($table, value, month);
+            let year = boxYear.val();
+            let eleStoreYear = $('#data-store-year');
+            let eleStoreMonth = $('#data-store-month');
+            let dataStoreMonth = {};
+            if (year) {
+                let listMonths = getAllMonthsOfFiscalYear(parseInt(year));
+                let startValue = $(this).valCurrency();
+                // store data year
+                if (eleStoreYear && eleStoreYear.length > 0) {
+                    let dataStoreYear = {};
+                    if (eleStoreYear.val()) {
+                        dataStoreYear = JSON.parse(eleStoreYear.val());
+                    }
+                    dataStoreYear[year] = startValue;
+                    eleStoreYear.val(JSON.stringify(dataStoreYear));
+                }
+                let startMonth = parseInt(this.getAttribute('data-month'));
+                let startMonthNext = startMonth + 1;
+                if (startMonth === 12) {
+                    startMonthNext = 1;
+                }
+                // calculate first month
+                if (startMonth <= 12 && startMonthNext <= 12) {
+                    let resultCal = calculateIfChangeBeginning($table, startValue, startMonth, startMonthNext);
+                    // store data first month
+                    for (let cal of resultCal) {
+                        dataStoreMonth[cal?.['month']] = cal?.['value'];
                     }
                 }
+                // calculate all next months
+                for (let data of listMonths) {
+                    let month = data?.['month'];
+                    let monthNext = month + 1;
+                    if (month === 12) {
+                        monthNext = 1;
+                    }
+                    if (month !== startMonth) {
+                        let eleTypeBegin = $table[0].querySelector('.table-row-type[data-type="1"]');
+                        if (eleTypeBegin) {
+                            let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
+                            if (eleEstimateBegin) {
+                                if (eleEstimateBegin.getAttribute('data-init-money')) {
+                                    let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
+                                    if (month <= 12 && monthNext <= 12) {
+                                        let resultCal = calculateIfChangeBeginning($table, value, month, monthNext);
+                                        // store data first month
+                                        for (let cal of resultCal) {
+                                            dataStoreMonth[cal?.['month']] = cal?.['value'];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // store all data
+            if (eleStoreMonth && eleStoreMonth.length > 0) {
+                eleStoreMonth.val(JSON.stringify(dataStoreMonth));
             }
             return true;
         });
 
         $tableMonth.on('change', '.table-row-value-estimate', function () {
             let startValue = $(this).valCurrency();
-            let startMonth = parseInt(this.getAttribute('data-month'));
-            calculateIfChangeBeginning($tableMonth, startValue, startMonth);
-
-            for (let month = (startMonth + 1); month <= 5; month++) {
+            let startQuarter = parseInt(this.getAttribute('data-month'));
+            let startQuarterNext = startQuarter + 1;
+            if (startQuarter <= 5 && startQuarterNext <= 5) {
+                calculateIfChangeBeginning($tableMonth, startValue, startQuarter, startQuarterNext);
+            }
+            for (let quarter = (startQuarter + 1); quarter <= 5; quarter++) {
+                let quarterNext = quarter + 1;
                 let eleTypeBegin = $tableMonth[0].querySelector('.table-row-type[data-type="1"]');
                 if (eleTypeBegin) {
-                    let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
+                    let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${quarter}"]`);
                     if (eleEstimateBegin.getAttribute('data-init-money')) {
                         let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
-                        calculateIfChangeBeginning($tableMonth, value, month);
+                        if (quarter <= 5 && quarterNext <= 5) {
+                            calculateIfChangeBeginning($tableMonth, value, quarter, quarterNext);
+                        }
                     }
                 }
             }
             return true;
         });
 
-        function calculateIfChangeBeginning($eleTable, value, month) {
+        function autoCalculateWeeksByMonth() {
+            let month = boxMonth.val();
+            let eleStoreMonth = $('#data-store-month');
+            let eleValueEstimateFirst = $tableMonth[0].querySelector('.table-row-value-estimate[data-month="1"]');
+            if (month && eleStoreMonth && eleStoreMonth.length > 0 && eleValueEstimateFirst) {
+                if (eleStoreMonth.val()) {
+                    let dataStore = JSON.parse(eleStoreMonth.val());
+                    let startValue = dataStore?.[month];
+                    $(eleValueEstimateFirst).attr('data-init-money', String(startValue));
+                    let startQuarter = parseInt(eleValueEstimateFirst.getAttribute('data-month'));
+                    let startQuarterNext = startQuarter + 1;
+                    if (startQuarter <= 5 && startQuarterNext <= 6) {
+                        calculateIfChangeBeginning($tableMonth, startValue, startQuarter, startQuarterNext);
+                    }
+                    for (let quarter = (startQuarter + 1); quarter <= 5; quarter++) {
+                        let quarterNext = quarter + 1;
+                        let eleTypeBegin = $tableMonth[0].querySelector('.table-row-type[data-type="1"]');
+                        if (eleTypeBegin) {
+                            let eleEstimateBegin = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${quarter}"]`);
+                            if (eleEstimateBegin.getAttribute('data-init-money')) {
+                                let value = parseFloat(eleEstimateBegin.getAttribute('data-init-money'));
+                                if (quarter <= 5 && quarterNext <= 6) {
+                                    calculateIfChangeBeginning($tableMonth, value, quarter, quarterNext);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        function calculateIfChangeBeginning($eleTable, value, month, nextMonth) {
             let eleTypeNet = $eleTable[0].querySelector('.table-row-type[data-type="4"]');
             let eleTypeEnd = $eleTable[0].querySelector('.table-row-type[data-type="5"]');
+            let endValue = 0;
             if (eleTypeNet && eleTypeEnd) {
                 let eleEstimateNet = eleTypeNet.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
                 let eleEstimateEnd = eleTypeEnd.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month}"]`);
                 if (eleEstimateNet && eleEstimateEnd) {
                     if (eleEstimateNet.getAttribute('data-init-money')) {
-                        let endValue = parseFloat(value) + parseFloat(eleEstimateNet.getAttribute('data-init-money'));
+                        endValue = parseFloat(value) + parseFloat(eleEstimateNet.getAttribute('data-init-money'));
                         $(eleEstimateEnd).attr('data-init-money', String(endValue));
                         // set next beginning value
                         let eleTypeBegin = $eleTable[0].querySelector('.table-row-type[data-type="1"]');
                         if (eleTypeBegin) {
-                            let eleEstimateBeginNext = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${month + 1}"]`);
+                            let eleEstimateBeginNext = eleTypeBegin.closest('tr').querySelector(`.table-row-value-estimate[data-month="${nextMonth}"]`);
                             if (eleEstimateBeginNext) {
                                 $(eleEstimateBeginNext).attr('data-init-money', String(endValue));
                             }
@@ -1866,10 +2175,13 @@ $(function () {
             }
             // init money
             $.fn.initMaskMoney2();
-            return true;
+            return [
+                {'month': month, 'value': parseFloat(value)},
+                {'month': nextMonth, 'value': endValue}
+            ];
         }
 
-        function changeTDTableMonthByWeeks() {
+        function changeTHTableMonthByWeeks() {
             let year = boxYear.val();
             let month = boxMonth.val();
             if (year && month) {
@@ -1889,10 +2201,32 @@ $(function () {
             return true
         }
 
+        function changeTHTableYearByMonths() {
+            let year = boxYear.val();
+            if (year) {
+                let listMonths = getAllMonthsOfFiscalYear(parseInt(year));
+                if ($table[0].closest('.dataTables_scroll')) {
+                    let tableMonthHd = $table[0].closest('.dataTables_scroll').querySelector('.dataTables_scrollHead');
+                    if (tableMonthHd) {
+                        let listHead = tableMonthHd?.querySelectorAll('.header-custom');
+                        if (listMonths.length === 12 && listHead.length === 12) {
+                            for (let i = 0; i < listHead.length; i++) {
+                                listHead[i].innerHTML = '';
+                                listHead[i].innerHTML = initDataMonth[listMonths[i]?.['month'] - 1][1] + ' (' + String(listMonths[i]?.['year']) + ')';
+                                listHead[i].setAttribute('data-month', listMonths[i]?.['month']);
+                            }
+                        }
+
+                    }
+                }
+            }
+            return true
+        }
+
         btnView.on('click', function () {
             let dataParams = {};
             if (boxGroup.val()) {
-                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
+                dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');

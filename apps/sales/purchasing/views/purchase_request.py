@@ -148,3 +148,15 @@ class PurchaseRequestUpdate(View):
         return {
                    'input_mapping_properties': input_mapping_properties, 'form_id': 'form-create-pr'
                }, status.HTTP_200_OK
+
+
+# PR list use for other apps
+class PurchaseRequestSaleListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_SALE_LIST).get(data)
+        return resp.auto_return(key_success='purchase_request_sale_list')

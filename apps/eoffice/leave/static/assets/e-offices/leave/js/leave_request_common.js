@@ -252,6 +252,7 @@ class detailTab {
                 // run date picker after render row
                 $('.date-picker', row).daterangepicker({
                     singleDatePicker: true,
+                    autoApply: true,
                     timepicker: false,
                     showDropdowns: false,
                     minYear: 2023,
@@ -482,7 +483,7 @@ $(document).on('Employee.Loaded', function () {
 });
 
 function submitHandleFunc() {
-    WindowControl.showLoading();
+    // WindowControl.showLoading();
     const frm = new SetupFormSubmit($FormElm);
     let formData = frm.dataForm;
     if (frm.dataMethod.toLowerCase() === 'post') formData.system_status = 1

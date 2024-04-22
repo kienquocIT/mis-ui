@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import requests
@@ -7,6 +8,9 @@ from django.http import HttpResponse, StreamingHttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from requests.exceptions import ConnectionError, SSLError, Timeout
+
+from apps.shared import RandomGenerate
+from apps.shared.apis.api import APIUtil
 
 
 class MediaProxyView(APIView):
@@ -19,7 +23,9 @@ class MediaProxyView(APIView):
         'text/html': 'application/json',
     }
     return_raw = True
-    TIMEOUT = settings.MEDIA_TIMEOUT or 10
+    TIMEOUT = settings.MEDIA_TIMEOUT or 5  # total time  = connect + read
+
+    # TIMEOUT = (settings.MEDIA_TIMEOUT or 2, settings.MEDIA_TIMEOUT or 3)
 
     def get_proxy_host(self):
         return self.proxy_host
@@ -50,7 +56,7 @@ class MediaProxyView(APIView):
             'Content-Type': request.META.get('CONTENT_TYPE', self.DEFAULT_CONTENT_TYPE),
         }
 
-    def get_headers(self, request):
+    def get_headers(self, request, push_auth: bool = True):
         # import re
         # regex = re.compile('^HTTP_')
         # request_headers = dict((regex.sub('', header), value) for (header, value) in request.META.items() if
@@ -62,12 +68,21 @@ class MediaProxyView(APIView):
         for old, new in accept_maps.items():
             headers['Accept'] = headers['Accept'].replace(old, new)
 
+        if push_auth and hasattr(request, 'user') and request.user and getattr(request.user, 'access_token', None):
+            headers.update(APIUtil.key_authenticated(access_token=request.user.access_token))
+
         return headers
 
     def create_response_raw(self, response):
+        expires_string = (datetime.datetime.now() + datetime.timedelta(minutes=5)).strftime('%a, %d %b %Y %H:%M:%S GMT')
         return StreamingHttpResponse(
             streaming_content=response.iter_content(chunk_size=4096),
-            content_type=response.headers.get('content-type')
+            content_type=response.headers.get('content-type'),
+            headers={
+                'Cache-Control': 'public, max-age=300',  # 5 minutes
+                'Expires': expires_string,
+                'ETag': RandomGenerate.get_string(length=32),
+            },
         )
 
     def create_response(self, response):

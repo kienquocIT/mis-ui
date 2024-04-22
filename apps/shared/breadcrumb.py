@@ -2,6 +2,7 @@
 from operator import itemgetter
 from django.urls import reverse, NoReverseMatch
 from django.utils.translation import gettext_lazy as _
+from unidecode import unidecode
 
 
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
@@ -162,10 +163,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
 
     # Inventory Adjustment
-    INVENTORY_ADJUSTMENT_LIST_PAGE = BreadcrumbChildren(_('Inventory Adjustment'), 'InventoryAdjustmentList')
-    INVENTORY_ADJUSTMENT_CREATE_PAGE = BreadcrumbChildren(_('Inventory Adjustment create'), 'InventoryAdjustmentCreate')
-    INVENTORY_ADJUSTMENT_EDIT_PAGE = BreadcrumbChildren(_('Inventory Adjustment edit'))
-    INVENTORY_ADJUSTMENT_DETAIL_PAGE = BreadcrumbChildren(_('Inventory Adjustment detail'))
+    INVENTORY_ADJUSTMENT_LIST_PAGE = BreadcrumbChildren(_('Inventory adjustment'), 'InventoryAdjustmentList')
+    INVENTORY_ADJUSTMENT_CREATE_PAGE = BreadcrumbChildren(_('Inventory adjustment create'), 'InventoryAdjustmentCreate')
+    INVENTORY_ADJUSTMENT_EDIT_PAGE = BreadcrumbChildren(_('Inventory adjustment update'))
+    INVENTORY_ADJUSTMENT_DETAIL_PAGE = BreadcrumbChildren(_('Inventory adjustment detail'))
 
     # Transition Data Config
     DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
@@ -256,7 +257,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_TRANSFER_LIST_PAGE = BreadcrumbChildren(_('Goods Transfer'), 'GoodsTransferList')
 
     # Goods issue
-    GOODS_ISSUE_LIST_PAGE = BreadcrumbChildren(_('Goods Issue'), 'GoodsIssueList')
+    GOODS_ISSUE_LIST_PAGE = BreadcrumbChildren(_('Goods issue'), 'GoodsIssueList')
 
     # E-Office
     #  Leave
@@ -310,6 +311,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     BALANCE_INIT_PAGE = BreadcrumbChildren(_('Balance initialization'), 'BalanceInitList')
 
+    INVOICE_SIGN_PAGE = BreadcrumbChildren(_('Invoice sign'), 'InvoiceSignList')
+
+    INVENTORY_INTERACT_CONFIG = BreadcrumbChildren(_('Inventory interact config'), 'InventoryInteractConfigList')
+
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 
     REVENUE_PLAN_LIST_PAGE = BreadcrumbChildren(_('Revenue plan list'), 'RevenuePlanList')
@@ -344,18 +349,21 @@ class BreadcrumbView:
     """menu vertical item view"""
 
     @staticmethod
-    def get_list_view():
+    def get_list_view(search_txt=''):
         arr = []
         for att in dir(BreadcrumbItem()):
             if not att.startswith('__'):
                 child = getattr(BreadcrumbItem, att)
                 if child.url:
-                    arr.append(
-                        {
-                            'view_name': child.url,
-                            'title': child.title,
-                        }
-                    )
+                    search_txt = unidecode(search_txt.lower())
+                    main_txt = unidecode(child.title.lower())
+                    if search_txt in main_txt:
+                        arr.append(
+                            {
+                                'view_name': child.url,
+                                'title': child.title,
+                            }
+                        )
         arr = sorted(arr, key=itemgetter('title'))
         return arr
 
@@ -821,6 +829,10 @@ class BreadcrumbView:
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
 
     BALANCE_INIT_PAGE = [BreadcrumbItem.BALANCE_INIT_PAGE]
+
+    INVOICE_SIGN_PAGE = [BreadcrumbItem.INVOICE_SIGN_PAGE]
+
+    INVENTORY_INTERACT_CONFIG = [BreadcrumbItem.INVENTORY_INTERACT_CONFIG]
 
     REVENUE_PLAN_CONFIG_PAGE = [BreadcrumbItem.REVENUE_PLAN_CONFIG_PAGE]
 

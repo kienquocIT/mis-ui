@@ -22,6 +22,10 @@ msgid "Choose the Excel file data"
 msgstr "Chọn tệp tin dữ liệu Excel"
 
 #
+msgid "Import template file of all feature"
+msgstr "Tệp nhập dữ liệu của tất cả tính năng"
+
+#
 msgid "Click here to download template file"
 msgstr "Nhấn vào đây để tải xuống tệp mẫu"
 
@@ -52,3 +56,263 @@ msgstr "Trang danh sách"
 #
 msgid "Create page"
 msgstr "Trang tạo mới"
+
+#
+msgid "Order Numbering"
+msgstr "Số thứ tự"
+
+#
+msgid "Members"
+msgstr "Thành viên"
+
+#
+msgid "Name of roles"
+msgstr "Tên của vai trò"
+
+#
+msgid "Abbreviation of roles"
+msgstr "Tên viết tắt của vai trò"
+
+#
+msgid "Members of roles. Array ID split by commas."
+msgstr "Thành viên thuộc vai trò. Mảng định danh kết nối bởi dấu phẩy."
+
+#
+msgid "Sheet name"
+msgstr "Tên trang tính"
+
+#
+msgid "It is a unique identifier string for users within the organization."
+msgstr "Nó là một chuỗi định danh duy nhất cho người dùng trong tổ chức."
+
+#
+msgid "The string includes lowercase and uppercase letters, numbers, hyphens, and underscores."
+msgstr "Chuỗi bao gồm chữ thường và chữ hoa, số, dấu gạch ngang và dấu gạch dưới."
+
+#
+msgid "Must meet 2 of the following conditions"
+msgstr "Phải đáp ứng 2 trong các điều kiện sau"
+
+#
+msgid "Contains at least 1 lowercase letter"
+msgstr "Chứa ít nhất 1 chữ cái viết thường"
+
+#
+msgid "Contains at least 1 uppercase letter"
+msgstr "Chứa ít nhất 1 chữ hoa"
+
+#
+msgid "Contains at least 1 number"
+msgstr "Chứa ít nhất 1 số"
+
+#
+msgid "Contains at least 1 special character"
+msgstr "Chứa ít nhất 1 ký tự đặc biệt"
+
+#
+msgid "Remarks of first manager"
+msgstr "Mô tả về quản lý chính"
+
+#
+msgid "Remarks of second manager"
+msgstr "Mô tả về quản lý phụ"
+
+#
+msgid "First name"
+msgstr "Tên"
+
+#
+msgid "Last name"
+msgstr "Họ"
+
+#
+msgid "Password"
+msgstr "Mật khẩu"
+
+#
+msgid "First manager remarks"
+msgstr "Mô tả quản lý chính"
+
+#
+msgid "Second manager remarks"
+msgstr "Mô tả quản lý phụ"
+
+#
+msgid "Phone number"
+msgstr "Số điện thoại"
+
+#
+msgid "Level"
+msgstr "Cấp bậc"
+
+#
+msgid "Code"
+msgstr "Mã"
+
+#
+msgid "Parent"
+msgstr "Cấp trên/Cha"
+
+#
+msgid "Code of employee"
+msgstr "Mã của nhân viên"
+
+#
+msgid "First name of employee"
+msgstr "Tên của nhân viên"
+
+#
+msgid "Last name of employee"
+msgstr "Họ của nhân viên"
+
+#
+msgid "Email of employee"
+msgstr "Thư điện tử của nhân viên"
+
+#
+msgid "Phone of employee"
+msgstr "Số điện thoại của nhân viên"
+
+#
+msgid "User link to employee"
+msgstr "Người dùng liên kết với nhân viên"
+
+#
+msgid "Date joined"
+msgstr "Ngày tham gia"
+
+#
+msgid "Date joined of employee"
+msgstr "Ngày tham gia của nhân viên"
+
+#
+msgid "DOB of employee"
+msgstr "Ngày sinh của nhân viên"
+
+#
+msgid "Format: DD-MM-YYYY"
+msgstr "Định dạnh ngày-tháng-năm (DD-MM-YYYY)"
+
+#
+msgid "Group of employee"
+msgstr "Nhóm/Phòng ban của nhân viên"
+
+#
+msgid "Role of employee"
+msgstr "Vai trò của nhân viên"
+
+#
+msgid "Code of groups"
+msgstr "Mã của nhóm"
+
+#
+msgid "Name of groups"
+msgstr "Tên của nhóm"
+
+#
+msgid "Level of groups"
+msgstr "Cấp bậc của nhóm"
+
+#
+msgid "Parent of groups"
+msgstr "Cấp trên/Thành phần cha của nhóm"
+
+#
+msgid "Members of groups"
+msgstr "Thành viên của nhóm"
+
+#
+msgid "First manager of groups"
+msgstr "Quản lý trưởng của nhóm"
+
+#
+msgid "First manager title of groups"
+msgstr "Tiêu đề quản lý trưởng của nhóm"
+
+#
+msgid "Second manager of groups"
+msgstr "Quản lý phó của nhóm"
+
+#
+msgid "Second manager title of groups"
+msgstr "Tiêu đề quản lý phó của nhóm"
+
+#
+msgid "Remarks of groups"
+msgstr "Mô tả về nhóm"
+
+#
+msgid "The array code split by commas"
+msgstr "Danh sách mã cách nhau bằng dấu phẩy"
+
+#
+msgid "Currency Base Code"
+msgstr "Mã tiền tệ tỷ giá"
+
+#
+msgid "Currency code system for synchronizing exchange rates from VCB"
+msgstr "Hệ thống mã tiền tệ đồng bộ tỷ giá từ VCB"
+
+#
+msgid "Selected from 0 (Sale) and 1 (Purchase)"
+msgstr "Chọn từ 0 (Bán hàng) và 1 (Mua hàng)"
+
+#
+msgid "Is a list of data organized in an array"
+msgstr "Là danh sách dữ liệu được sắp xếp theo mảng"
+
+#
+msgid "Each element in the array being a configuration array as follows: [Type, Value, Date Type, Number of Days, Activation Condition]"
+msgstr "Với từng phần tử trong mảng được cấu tạo từ một mảng cấu hình như sau: [Type, Value, Date Type, Number of Days, Activation Condition]"
+
+#
+msgid "Type: The unit used for measuring the value, selected from 0 (Percentage), 1 (Quantity) and 2 (Balance)"
+msgstr "Type: Đơn vị sử dụng để tính Giá trị, chọn từ 0 (Phần trăm), 1 (Số lượng) và 2 (Cân bằng)"
+
+#
+msgid "Value: Numerical data in the unit of measurement specified by the type"
+msgstr "Giá trị: Dữ liệu số theo đơn vị đo được chỉ định bởi Type"
+
+#
+msgid "Date Type: The type of date used for precise calculation regarding the number of days, selected from 1 (Workday) and 2 (Calendar day)"
+msgstr "Date Type: Loại ngày dùng để tính toán chính xác số ngày, được chọn từ 1 (Ngày làm việc) và 2 (Ngày dương lịch)"
+
+#
+msgid "Number of Days: Integer data representing the number of days for the formula, adhering to the day count of the Date Type"
+msgstr "Number of Days: Dữ liệu số nguyên biểu thị số ngày của công thức, tuân theo số ngày của Date Type"
+
+#
+msgid "Activation Condition: The time milestone when the event will be triggered, chosen from: 1 (Contract Signing Date), 2 (Delivery Date), 3 (Invoice Date), 4 (Approval Date), 5 (End of Billing Month), and 6 (Order Date)"
+msgstr "Activation Condition: Mốc thời gian kích hoạt sự kiện, được chọn từ: 1 (Ngày ký hợp đồng), 2 (Ngày giao hàng), 3 (Ngày lập hóa đơn), 4 (Ngày phê duyệt), 5 (Cuối tháng thanh toán) và 6 (Ngày đặt hàng)"
+
+#
+msgid "Annual Revenue, chosen from: 1 (1-10 billions), 2 (10-20 billions), 3 (20-50 billions), 4 (50-200 billions), 5 (200-1000 billions), 6 (> 1000 billions)"
+msgstr "Doanh thu hằng năm, chọn từ: 1 (1-10 tỷ), 2 (10-20 tỷ), 3 (20-50 tỷ), 4 (50-200 tỷ), 5 (200-1000 tỷ), 6 (> 1000 tỷ)"
+
+#
+msgid "Total employee, chosen from: 1 (< 20 people), 2 (20-50 people), 3 (50-200 people), 4 (200-500 people), 5 (> 500 people)"
+msgstr "Tổng số nhân viên, chọn từ: 1 (< 20 người), 2 (20-50 người), 3 (50-200 người), 4 (200-500 người), 5 (> 500 người)"
+
+#
+msgid "Code of parent"
+msgstr "Mã của cấp trên/thành phần cha"
+
+#
+msgid "List of configurations associated with contacts"
+msgstr "Danh sách cấu hình liên kết với Liên hệ"
+
+#
+msgid "The structure of each item in the list as follows: [Contact code, Default]"
+msgstr "Cấu trúc của từng mục trong danh sách như sau: [Mã Liên hệ, Là mặc định]"
+
+#
+msgid "Contact code: is the code of the contact function at #saledata.contact"
+msgstr "Mã liên hệ: là mã trong chức năng liên hệ, tại trang tính #saledata.contact"
+
+#
+msgid "Is default: Only 1 contact is default with 0 being false, 1 being true"
+msgstr "Là mặc định: Chỉ 1 liên hệ là mặc định với 0 là sai, 1 là đúng"
+
+#
+msgid "Example: [[\"001\", 1],[\"002\", 0]]"
+msgstr "Ví dụ: [[\"001\", 1],[\"002\", 0]]"

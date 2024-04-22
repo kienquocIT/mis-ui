@@ -567,7 +567,9 @@ class APInvoiceHandle {
                 frm.dataForm['data_item_list'].push({
                     'item_index': $(this).find('td:first-child').text(),
                     'product_id': $(this).find('.product-id').attr('data-id'),
+                    'product_title': $(this).find('.product-id').text(),
                     'product_uom_id': $(this).find('.uom-id').attr('data-id'),
+                    'product_uom_title': $(this).find('.uom-id').text(),
                     'product_quantity': $(this).find('.quantity_import').text(),
                     'product_unit_price': $(this).find('.product_unit_price').attr('value'),
                     'product_tax_value': $(this).find('.product_taxes').attr('data-init-money'),

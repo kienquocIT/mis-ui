@@ -30,9 +30,9 @@ $(document).ready(function (){
                     {
                         data: 'title',
                         targets: 1,
-                        width: "30%",
+                        width: "40%",
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            return `<span class="fw-bold">${data}</span>`
                         }
                     },
                     {
@@ -41,7 +41,7 @@ $(document).ready(function (){
                         width: "20%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            return `<span class="badge badge-blue">${data}</span>`
                         }
                     },
                     {
@@ -50,16 +50,16 @@ $(document).ready(function (){
                         width: "20%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            return `<p>${moment(data.split(' ')[0], "YYYY-MM-DD").format('DD/MM/YYYY')}</p>`
                         }
                     },
                     {
                         data: 'system_status',
                         targets: 4,
-                        width: "20%",
+                        width: "10%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            return `<span class="badge badge-primary">${data}</span>`
                         }
                     },
                 ],

@@ -37,8 +37,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SWITCH_COMPANY = StringUrl('auth/switch-company')
     tenants = StringUrl('provisioning/tenants')
     user_list = StringUrl('account/users')
-    user_detail = StringUrl('account/user')
-    USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
+    USER_DETAIL = StringUrl('account/user/{pk}')
+    USER_RESET_PASSWORD = StringUrl('account/user/{pk}/reset-password')
+    USER_MAIL_WELCOME = StringUrl('account/user/{pk}/mail-welcome')
+    USER_COMPANIES = StringUrl('account/user/{pk}/companies')
     LANGUAGE_CHANGE = 'auth/language'
 
     #
@@ -92,6 +94,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
     ACCOUNT_USER_TENANT = StringUrl('account/user-tenant')
+    ACCOUNT_USER_ADMIN_TENANT = StringUrl('account/user-admin-tenant')
 
     # employee
     EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/{pk}/upload-avatar')
@@ -108,6 +111,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
     EMPLOYEE_COMPANY_LIST = StringUrl('hr/employees-company')
+    EMPLOYEE_ADMIN_COMPANY = StringUrl('hr/employee-admin-company')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
@@ -145,12 +149,26 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRINT_TEMPLATES_USING = StringUrl('printer/using/default/{application_id}')
     PRINT_TEMPLATES_USING_DETAIL = StringUrl('printer/using/detail/{pk}')
 
+    # mail template
+    MAILER_FEATURE_APP_LIST = StringUrl('mailer/feature/app/list')
+    MAILER_FEATURE_LIST = StringUrl('mailer/feature/list')
+    MAILER_FEATURE_BY_APPLICATION_LIST = StringUrl('mailer/feature/list/{application_id}')
+    MAILER_FEATURE_DETAIL = StringUrl('mailer/feature/detail/{pk}')
+    MAILER_SYSTEM_GET = StringUrl('mailer/system/get/{system_code}')
+    MAILER_SYSTEM_PARAMS = StringUrl('mailer/system/params/{system_code}')
+    MAILER_SYSTEM_DETAIL = StringUrl('mailer/system/detail/{pk}')
+    MAILER_CONFIG_GET = StringUrl('mailer/config/get')
+    MAILER_CONFIG_DETAIL = StringUrl('mailer/config/detail/{pk}')
+    MAILER_CONFIG_DETAIL_CONNECTION_TEST = StringUrl('mailer/config/detail/{pk}/connection/test')
+    MAILER_CONFIG_DETAIL_CONNECTION_TEST_DATA = StringUrl('mailer/config/detail/{pk}/connection/test/data')
+
     # base
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
     APPLICATION_DETAIL = StringUrl('base/application/{pk}')
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
     APPLICATION_PROPERTY_PRINT_LIST = StringUrl('base/tenant-applications-property/print')
+    APPLICATION_PROPERTY_MAIL_LIST = StringUrl('base/tenant-applications-property/mail')
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
     APPLICATION_PERMISSION = StringUrl('base/permissions')
     INDICATOR_PARAM = StringUrl('base/indicator-params')
@@ -158,6 +176,21 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     APPLICATION_PROPERTY_OPPORTUNITY_LIST = StringUrl('base/applications-property-opportunity')
 
     TENANT = StringUrl('tenant/userlist')
+
+    # F-Import-Data
+    IMPORT_CORE_ACCOUNT_USER = StringUrl('import-data/core/account/user')
+    IMPORT_HR_GROUP_LEVEL = StringUrl('import-data/hr/group-level')
+    IMPORT_HR_GROUP = StringUrl('import-data/hr/group')
+    IMPORT_HR_ROLE = StringUrl('import-data/hr/role')
+    IMPORT_HR_EMPLOYEE = StringUrl('import-data/hr/employee')
+    IMPORT_SALEDATA_CONTACT = StringUrl('import-data/saledata/contact')
+    IMPORT_SALEDATA_ACCOUNT = StringUrl('import-data/saledata/account')
+    IMPORT_SALEDATA_SALUTATION = StringUrl('import-data/saledata/salutation')
+    IMPORT_SALEDATA_CURRENCY = StringUrl('import-data/saledata/currency')
+    IMPORT_SALEDATA_ACCOUNT_GROUP = StringUrl('import-data/saledata/account/group')
+    IMPORT_SALEDATA_ACCOUNT_TYPE = StringUrl('import-data/saledata/account/type')
+    IMPORT_SALEDATA_INDUSTRY = StringUrl('import-data/saledata/industry')
+    IMPORT_SALEDATA_PAYMENT_TERM = StringUrl('import-data/saledata/payment-term')
 
     # HR
 
@@ -178,6 +211,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     RUNTIME_DIAGRAM_DETAIL = StringUrl('workflow/diagram/{pk}')
     RUNTIME_TASK_LIST = StringUrl('workflow/tasks')
     RUNTIME_TASK_DETAIL = StringUrl('workflow/task/{pk}')
+    RUNTIME_AFTER_DETAIL = StringUrl('workflow/runtime-after/{pk}')
 
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')
@@ -387,6 +421,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
     PURCHASE_ORDER_PRODUCT_LIST = StringUrl('purchasing/purchase-order-product/list')
     PURCHASE_ORDER_SALE_LIST = StringUrl('purchasing/purchase-order/list-sale')
+    PURCHASE_REQUEST_SALE_LIST = StringUrl('purchasing/purchase-request/list-sale')
+    PURCHASE_QUOTATION_SALE_LIST = StringUrl('purchasing/purchase-quotation/list-sale')
 
     # Purchasing
     PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
@@ -518,6 +554,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PRODUCTS_FOR_GOODS_RETURN = StringUrl('inventory/get-delivery-products-for-goods-return/{pk}')
     GOODS_RETURN_LIST = StringUrl('inventory/goods-return/list')
     GOODS_RETURN_DETAIL = StringUrl('inventory/goods-return/{pk}')
+
+    INVOICE_SIGN_LIST = StringUrl('ar-invoice/sign/list')
+    INVENTORY_INTERACT_LIST = StringUrl('saledata/warehouses/config-interact')
+    INVENTORY_INTERACT_DETAIL = StringUrl('saledata/warehouses/config-interact/{pk}')
 
     # Project
     PROJECT_LIST = StringUrl('project/list')

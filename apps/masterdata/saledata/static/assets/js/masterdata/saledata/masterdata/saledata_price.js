@@ -397,9 +397,9 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($(form));
             let typeSelectEle = $('#select-box-type');
             if (typeSelectEle.val().length > 1) {
-                frm.dataForm['type'] = '2';
+                frm.dataForm['tax_type'] = '2';
             } else {
-                frm.dataForm['type'] = typeSelectEle.val()[0];
+                frm.dataForm['tax_type'] = typeSelectEle.val()[0];
             }
             $.fn.callAjax2({
                 'url': frm.dataUrl,
@@ -658,6 +658,8 @@ $(document).ready(function () {
         // init dataTable
         let $tables = $('#datatable-payment-terms');
         $tables.DataTableDefault({
+            styleDom: 'small',
+            enableVisibleColumns: false,
             ajax: {
                 url: $tables.attr('data-url'),
                 dataSrc: "data.payment_terms_list",
@@ -680,31 +682,38 @@ $(document).ready(function () {
                     loadDetailPage($(this).attr('data-href'))
                 })
             },
+            autoWidth: false,
             columns: [
                 {
-                    targets: 0,
-                    defaultContent: ''
+                    defaultContent: '',
+                    width: '10%',
                 },
                 {
-                    targets: 1,
                     render: (row, type, data) => {
                         let url = $('#url-factory').data('detail').format_url_with_uuid(data.id);
                         return `<p><a href="#" data-href="${url}" 
                             class="text-primary text-decoration-underline row-title">${data.title}</a></p>`
-                    }
+                    },
+                    width: '40%',
                 },
                 {
-                    targets: 2,
+                    data: 'code',
+                    render: (data, type, row) => {
+                        return data;
+                    },
+                    width: '20%',
+                },
+                {
                     render: (row, type, data) => {
                         let DATA_APPLY_FOR = {
                             0: 'Sale',
                             1: 'Purchase'
                         }
                         return `<p>${DATA_APPLY_FOR[data.apply_for]}</p>`
-                    }
+                    },
+                    width: '20%',
                 },
                 {
-                    targets: 3,
                     render: (data, type, row) => {
                         return `<div class="actions-btn">
                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
@@ -716,6 +725,7 @@ $(document).ready(function () {
                                    <i class="fa-regular fa-trash-can"></i></span></a>
                             </div>`;
                     },
+                    width: '10%',
                 }
             ],
         });
@@ -772,7 +782,9 @@ $(document).ready(function () {
     function termsDataTable() {
         // init dataTable
         let $tables = $('#table_terms');
-        $tables.DataTable({
+        $tables.DataTableDefault({
+            styleDom: 'small',
+            enableVisibleColumns: false,
             searching: false,
             ordering: false,
             paginate: false,
@@ -822,17 +834,20 @@ $(document).ready(function () {
                     tableActionRow(row, data, e)
                 })
             },
+            autoWidth: false,
             columns: [
                 {
                     targets: 0,
-                    defaultContent: ''
+                    defaultContent: '',
+                    width: '10%',
                 },
                 {
                     targets: 1,
                     render: (row, type, data) => {
                         let textValue = data.value
                         return `<p><span class="mask-money">${textValue}</span></p>`
-                    }
+                    },
+                    width: '15%',
                 },
                 {
                     targets: 2,
@@ -843,13 +858,15 @@ $(document).ready(function () {
                         else // else row data is number
                             txt = $('option[value="' + row.unit_type + '"]', '[name="unit_type"]').text()
                         return `<p>${txt}</p>`
-                    }
+                    },
+                    width: '10%',
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
                         return `<p>${row.no_of_days}</p>`
-                    }
+                    },
+                    width: '15%',
                 },
                 {
                     targets: 4,
@@ -858,7 +875,8 @@ $(document).ready(function () {
                         if (row.day_type.hasOwnProperty('text')) txt = row.day_type.text
                         else txt = $('option[value="' + row.day_type + '"]', '[name="day_type"]').text()
                         return `<p>${txt}</p>`
-                    }
+                    },
+                    width: '20%',
                 },
                 {
                     targets: 5,
@@ -867,7 +885,8 @@ $(document).ready(function () {
                         if (row.after.hasOwnProperty('text')) txt = row.after.text
                         else txt = $('option[value="' + row.after + '"]', '[name="after"]').text()
                         return `<p>${txt}</p>`
-                    }
+                    },
+                    width: '20%',
                 },
                 {
                     targets: 6,
@@ -898,6 +917,7 @@ $(document).ready(function () {
                                 </a>
                             </div>`;
                     },
+                    width: '10%',
                 }
             ],
         });
@@ -913,6 +933,7 @@ $(document).ready(function () {
                 if (data) {
                     $('#modal-add-table form #is_edited').val('true')
                     $('[name="title"]').val(data.title)
+                    $('[name="code"]').val(data.code)
                     $('[name="apply_for"]').val(data.apply_for).trigger('change')
                     $('[name="remark"]').val(data.remark)
                     $('[name="payment_terms_id"]').val(data.id)
@@ -1063,6 +1084,7 @@ $(document).ready(function () {
                         let data_item = {
                             'id': data.id,
                             'title': data.title,
+                            'code': data.code,
                             'apply_for': data.apply_for
                         }
                         if (formID) {
@@ -1081,6 +1103,7 @@ $(document).ready(function () {
                                         apply_for: parseInt(data_item.apply_for),
                                         id: formID,
                                         title: data_item.title,
+                                        code: data_item.code,
                                         remark: data_item.remark,
                                         term: data_item.term
                                     }

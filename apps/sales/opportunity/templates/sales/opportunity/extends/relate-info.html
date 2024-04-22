@@ -15,7 +15,7 @@
         <div class="row" style="position: relative; overflow: auto; width: 100%;">
             <div class="d-flex" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
             <div id="stage-hidden" class="hidden">
-                <div class="border rounded sub-stage w-100 text-center d-flex justify-content-center py-2 px-2" style="flex-direction: column;">
+                <div class="mb-3 border rounded sub-stage w-100 text-center d-flex justify-content-center py-2 px-2" style="flex-direction: column; min-width: 150px">
                     <p class="stage-indicator"></p>
                     <div class="dropdown dropup pt-3">
                         <a href="#" data-bs-toggle="dropdown">
@@ -73,8 +73,8 @@
                         <div class="dropdown-divider"></div>
 
                         <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
-                        <a id="create-quotation-shortcut" class="dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
-                        <a id="create-sale-order-shortcut" class="dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
+                        <a id="create-quotation-shortcut" class="dropdown-item relate-app" data-label="quotation.quotation" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
+                        <a id="create-sale-order-shortcut" class="dropdown-item relate-app" data-label="saleorder.saleorder" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
                         <a id="create-advance-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'AdvancePaymentCreate' %}" href="#">{% trans 'Advance Payment' %}</a>
                         <a id="create-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'PaymentCreate' %}" href="#">{% trans 'Payment' %}</a>
                         <a id="create-return-advance-shortcut" class="dropdown-item btn-create-related-feature" data-url="{% url 'ReturnAdvanceCreate' %}" href="#">{% trans 'Return Advance' %}</a>

@@ -12,6 +12,11 @@
     />
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        th {
+            color: black !important;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -31,24 +36,25 @@
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100" id="table-periods-config"
-                   data-method="GET" data-url="{% url 'PeriodsConfigListAPI' %}"
-            >
+                   data-method="GET" data-url="{% url 'PeriodsConfigListAPI' %}">
                 <thead>
-                <tr>
-                    <td></td>
-                    <td>{% trans 'Code' %}</td>
-                    <td>{% trans 'Name' %}</td>
-                    <td>{% trans 'Fiscal year' %}</td>
-                    <td>{% trans 'Start date' %}</td>
-                    <td>{% trans 'Action' %}</td>
-                </tr>
+                    <tr>
+                        <td class="w-5"></td>
+                        <td class="w-15">{% trans 'Main period code' %}</td>
+                        <td class="w-15">{% trans 'Sub period code' %}</td>
+                        <td class="w-25">{% trans 'Period name' %}</td>
+                        <td class="w-15">{% trans 'Status' %}</td>
+                        <td class="w-10">{% trans 'From' %}</td>
+                        <td class="w-10">{% trans 'To' %}</td>
+                        <td class="w-5">{% trans 'Action' %}</td>
+                    </tr>
                 </thead>
             </table>
         </div>
     </div>
 
     <div class="modal fade" id="modal-periods-create" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered" style="min-width: 60%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans 'New period' %}</h5>
@@ -63,49 +69,85 @@
                           data-method="POST">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-12 col-lg-6 col-md-6">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
                                     <label for="periods-title" class="required form-label">{% trans 'Name' %}</label>
                                     <input type="text" class="form-control" id="periods-title" placeholder="2024">
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 col-md-6">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
                                     <label for="periods-code" class="required form-label">{% trans 'Code' %}</label>
                                     <input type="text" class="form-control" id="periods-code" placeholder="P2024">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-lg-6 col-md-6">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
                                     <label for="periods-fiscal-year" class="required form-label">{% trans 'Fiscal year' %}</label>
                                     <input type="number" class="form-control" id="periods-fiscal-year" placeholder="2024">
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 col-md-6">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
-                                    <label for="periods-fiscal-month-start" class="required form-label">{% trans 'Start month' %}</label>
-                                    <input type="number" class="form-control" id="periods-fiscal-month-start" placeholder="01">
+                                    <label for="periods-fiscal-month-start" class="required form-label">{% trans 'First month' %}</label>
+                                    <select class="form-select" id="periods-fiscal-month-start">
+                                        <option value="0"></option>
+                                        <option value="1">{% trans 'January' %}</option>
+                                        <option value="2">{% trans 'February' %}</option>
+                                        <option value="3">{% trans 'March' %}</option>
+                                        <option value="4">{% trans 'April' %}</option>
+                                        <option value="5">{% trans 'May' %}</option>
+                                        <option value="6">{% trans 'June' %}</option>
+                                        <option value="7">{% trans 'July' %}</option>
+                                        <option value="8">{% trans 'August' %}</option>
+                                        <option value="9">{% trans 'September' %}</option>
+                                        <option value="10">{% trans 'October' %}</option>
+                                        <option value="11">{% trans 'November' %}</option>
+                                        <option value="12">{% trans 'December' %}</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 col-lg-12 col-md-12">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
                                     <label for="periods-start-date" class="required form-label">{% trans 'Start date' %}</label>
                                     <input type="text" class="form-control" id="periods-start-date" readonly>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-lg-12 col-md-12">
-                                <div class="form-check">
+                            <div class="col-12 col-lg-3 col-md-3">
+                                <div class="form-group">
+                                    <label for="sub-periods-select" class="required form-label">{% trans 'Sub periods' %}</label>
+                                    <select class="form-select" id="sub-periods-select">
+                                        <option value="0">{% trans 'Month' %}</option>
+                                        <option value="1" hidden>{% trans 'Quarter' %}</option>
+                                        <option value="2" hidden>{% trans 'Year' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-check mt-2">
                                     <input class="form-check-input" id="software_using_time_check" type="checkbox">
                                     <label class="form-check-label" for="software_using_time_check">{% trans 'Set time of starting using software in this period.' %}</label>
                                 </div>
-                                <select class="form-select" id="software_using_time_select" disabled></select>
-                                <span class="text-muted">{% trans 'Required' %} {% trans 'Fiscal year' %} & {% trans 'Start month' %}</span>
+                                <select class="form-select is-invalid" id="software_using_time_select" disabled></select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table class="table nowrap w-100" id="generate-period-table">
+                                    <thead class="bg-primary-light-3">
+                                        <tr>
+                                            <th class="w-15">{% trans 'Main period code' %}</th>
+                                            <th class="w-15">{% trans 'Sub period code' %}</th>
+                                            <th class="w-20">{% trans 'Period name' %}</th>
+                                            <th class="w-20">{% trans 'Status' %}</th>
+                                            <th class="w-15">{% trans 'From' %}</th>
+                                            <th class="w-15">{% trans 'To' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </form>
@@ -119,7 +161,7 @@
     </div>
 
     <div class="modal fade" id="modal-periods-update" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered" style="min-width: 60%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans 'Update period' %}</h5>
@@ -134,49 +176,68 @@
                           data-method="PUT">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-12 col-lg-6 col-md-6">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
                                     <label for="periods-title-update" class="required form-label">{% trans 'Name' %}</label>
                                     <input type="text" class="form-control" id="periods-title-update" placeholder="2024">
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 col-md-6">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
                                     <label for="periods-code-update" class="required form-label">{% trans 'Code' %}</label>
                                     <input type="text" class="form-control" id="periods-code-update" placeholder="P2024">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-lg-6 col-md-6">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
                                     <label for="periods-fiscal-year-update" class="required form-label">{% trans 'Fiscal year' %}</label>
                                     <input type="number" class="form-control" id="periods-fiscal-year-update" placeholder="2024" readonly>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 col-md-6">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
-                                    <label for="periods-fiscal-month-start-update" class="required form-label">{% trans 'Start month' %}</label>
-                                    <input type="number" class="form-control" id="periods-fiscal-month-start-update" placeholder="01" readonly>
+                                    <label for="periods-fiscal-month-start-update" class="required form-label">{% trans 'First month' %}</label>
+                                    <select class="form-select" id="periods-fiscal-month-start-update" disabled readonly>
+                                        <option value="0"></option>
+                                        <option value="1">{% trans 'January' %}</option>
+                                        <option value="2">{% trans 'February' %}</option>
+                                        <option value="3">{% trans 'March' %}</option>
+                                        <option value="4">{% trans 'April' %}</option>
+                                        <option value="5">{% trans 'May' %}</option>
+                                        <option value="6">{% trans 'June' %}</option>
+                                        <option value="7">{% trans 'July' %}</option>
+                                        <option value="8">{% trans 'August' %}</option>
+                                        <option value="9">{% trans 'September' %}</option>
+                                        <option value="10">{% trans 'October' %}</option>
+                                        <option value="11">{% trans 'November' %}</option>
+                                        <option value="12">{% trans 'December' %}</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 col-lg-12 col-md-12">
+                            <div class="col-12 col-lg-3 col-md-3">
                                 <div class="form-group">
                                     <label for="periods-start-date-update" class="required form-label">{% trans 'Start date' %}</label>
                                     <input type="text" class="form-control" id="periods-start-date-update" readonly>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-lg-12 col-md-12">
-                                <div class="form-check">
+                            <div class="col-12 col-lg-3 col-md-3">
+                                <div class="form-group">
+                                    <label for="sub-periods-select-update" class="required form-label">{% trans 'Sub periods' %}</label>
+                                    <select class="form-select" id="sub-periods-select-update" disabled readonly>
+                                        <option value="0">{% trans 'Month' %}</option>
+                                        <option value="1" hidden>{% trans 'Quarter' %}</option>
+                                        <option value="2" hidden>{% trans 'Year' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="form-check mt-2">
                                     <input class="form-check-input" id="software_using_time_check_update" type="checkbox">
                                     <label class="form-check-label" for="software_using_time_check_update">{% trans 'Set time of starting using software in this period.' %}</label>
                                 </div>
                                 <select class="form-select" id="software_using_time_select_update" disabled></select>
-                                <span class="text-muted">{% trans 'Required' %} {% trans 'Fiscal year' %} & {% trans 'Start month' %}</span>
                             </div>
                         </div>
                     </form>
@@ -196,4 +257,3 @@
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/periods.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 {% endblock %}
-

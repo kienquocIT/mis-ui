@@ -24,12 +24,10 @@ $(function () {
                     } else {
                         QuotationLoadDataHandle.loadDataTablesAndDropDowns(data, false);
                     }
-
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
                         $('#data-copy-quotation-detail').val(JSON.stringify(data))
                     }
-
                     if ($form.attr('data-method').toLowerCase() === 'put') {
                         // Check config when begin edit
                         let check_config = QuotationCheckConfigHandle.checkConfig(true);
@@ -41,6 +39,12 @@ $(function () {
                         }
                     }
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+                    // get WF initial zones for change
+                    let appCode = 'quotation';
+                    if ($form[0].classList.contains('sale-order')) {
+                        appCode = 'saleorder';
+                    }
+                    WFRTControl.setWFInitialData(appCode, $form.attr('data-method').toLowerCase());
 
                     // delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');

@@ -14,7 +14,8 @@ $(document).ready(function () {
             },
         },
         fullToolbar: true,
-        autoWidth: false,
+        autoWidth: true,
+        scrollX: true,
         cusFilter: [
             {
                 keyParam: "has_manager_custom",
@@ -64,16 +65,16 @@ $(document).ready(function () {
                 },
             },
         ],
-        columns: [
+        columns: [  // 30,300,240,120,120,120,240,120,240,390 (1920p)
             {
-                width: "5%",
+                width: "1.5625%",
                 'render': () => {
                     return ``;
                 },
             },
             {
                 orderable: true,
-                width: "20%",
+                width: "15.625%",
                 data: 'name',
                 render: (data, type, row) => {
                     let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row.id);
@@ -81,7 +82,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "20%",
+                width: "12.5%",
                 data: 'account_type',
                 render: (data, type, row) => {
                     let clsBadgeCurrent = -1;
@@ -95,7 +96,7 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "10%",
+                width: "6.25%",
                 data: 'owner',
                 render: (data, type, row) => {
                     if (row.owner.fullname) {
@@ -105,21 +106,53 @@ $(document).ready(function () {
                 },
             },
             {
-                width: "10%",
+                width: "12.5%",
+                data: 'revenue_information',
+                render: (data, type, row) => {
+                    return `<span class="mask-money" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
+                },
+            },
+            {
+                width: "6.25%",
+                data: 'revenue_information',
+                render: (data, type, row) => {
+                    return `<span class="text-blue">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
+                },
+            },
+            {
+                width: "12.5%",
+                data: 'revenue_information',
+                render: (data, type, row) => {
+                    return `<span class="mask-money" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>`;
+                },
+            },
+            {
+                width: "6.25%",
                 data: 'phone',
                 render: (data, type, row) => {
-                    return `<span>${row?.phone ? row.phone : ''}</span>`
+                    if (row?.['phone']) {
+                        return `<div class="row">
+                                <div class="d-flex justify-content-end">
+                                    <small><i class="fas fa-phone mr-1"></i></small>
+                                    <span>${row?.['phone'] ? row?.['phone'] : ''}</span>
+                                </div>
+                            </div>`;
+                    }
+                    return `<span>--</span>`;
                 },
             },
             {
-                width: "10%",
+                width: "6.25%",
                 data: 'website',
                 render: (data, type, row) => {
-                    return `<span>${row?.['website'] ? row['website'] : ''}</span>`
+                    if (row?.['website']) {
+                        return `<span>${row?.['website'] ? row['website'] : ''}</span>`;
+                    }
+                    return `<span>--</span>`;
                 },
             },
             {
-                width: "25%",
+                width: "20.3125%",
                 data: 'manager',
                 render: (data, type, row) => {
                     let element = ''
@@ -130,6 +163,10 @@ $(document).ready(function () {
                 },
             },
         ],
+        drawCallback: function () {
+            // mask money
+            $.fn.initMaskMoney2();
+        },
     });
 
     let tbl_draft = $('#datatable_account_list_draft');

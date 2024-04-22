@@ -188,25 +188,39 @@ $(function () {
                                 template.remove()
                                 $(`[data-task-id="${subTaskID}"]`).parents('.tasklist-card').remove()
                                 // get current task list and remove
-                                let isIdx, parentIdx
+                                let isIdx, parentIdx, parentID;
                                 for (let [key, value] of dataList.entries()) {
-                                    if (value.id === taskID) parentIdx = key
+                                    if (value.id === taskID){
+                                        parentIdx = key
+                                        parentID = value.id
+                                    }
                                     if (value.id === subTaskID) {
                                         isIdx = key
                                         break
                                     }
                                 }
-                                dataList.splice(isIdx, 1)
-                                if (parentIdx){
-                                    dataList[parentIdx]['child_task_count'] -= 1
-                                    if (dataList[parentIdx]['child_task_count'] < 0)
-                                        dataList[parentIdx]['child_task_count'] = 0
+                                if (isIdx && parentIdx && parentID){
+                                    dataList.splice(isIdx, 1)
+                                    if (parentIdx){
+                                        dataList[parentIdx]['child_task_count'] -= 1
+                                        if (dataList[parentIdx]['child_task_count'] < 0)
+                                            dataList[parentIdx]['child_task_count'] = 0
+                                    }
+                                    // reload count sub task in screen kanban view
+                                    $(`[data-task-id="${taskID}"]`).parents('.tasklist-card').find('.sub_task_count small').text(
+                                        dataList[parentIdx]['child_task_count'])
+                                    // count number task in task status
+                                    countSTT()
                                 }
-                                // reload count sub task in screen
-                                $(`[data-task-id="${taskID}"]`).parents('.tasklist-card').find('.sub_task_count small').text(
-                                    dataList[parentIdx]['child_task_count'])
-                                // count number task in task status
-                                countSTT()
+
+                                // change view gantt
+                                let bk_list = GanttViewTask.bk_taskList;
+                                if (subTaskID in bk_list[taskID].values[0].dataObj['parent_n']){
+                                    delete bk_list[taskID].values[0].dataObj['parent_n'][subTaskID]
+                                }
+                                bk_list[taskID].values[0].dataObj['child_task_count'] -= 1
+                                const afterCvt = GanttViewTask.convertFromDictToArray(bk_list, true)
+                                $('#gantt_reload').data('data', afterCvt).trigger('click')
                             }
                         })
                     })
@@ -227,6 +241,9 @@ $(function () {
 
                     // list view handle new task create
                     listViewTask.addNewData(list, strData)
+
+                    // update gantt
+                    GanttViewTask.afterUpdate(strData, true)
 
                 } else if (elmUpdate.length) {
                     // parse data
@@ -260,6 +277,9 @@ $(function () {
                         kanban.addNewTask(strData)
                     }
                     listViewTask.updateTask(list, strData, idxTaskUpdate)
+
+                    // update gantt
+                    GanttViewTask.afterUpdate(strData)
                 }
             })
         }
@@ -698,6 +718,11 @@ $(function () {
                 "id": $(el).find('.card-title').attr('data-task-id'),
                 "task_status": $(target).attr('id').split('taskID-')[1],
             }
+            const config = JSON.parse($('#task_config').text());
+            let isCompleted = config.list_status.filter((item)=> {
+                if (item.id === dataSttUpdate.task_status)
+                    return item.is_finish
+            })
             $.fn.callAjax2({
                 'url': $urlFact.attr('data-change-stt'),
                 'method': 'PUT',
@@ -712,12 +737,40 @@ $(function () {
                                 const taskTargetID = $(target).attr('id').split('sub-')[1]
                                 const taskEl = $(`[data-task-id="${taskID}"]`, '#tasklist_wrap').closest('.tasklist-card')
                                 // nếu kéo task từ sub -> lấy task ẩn của task chính kéo sang cột tương ứng
+                                 if (isCompleted && isCompleted?.[0]?.['is_finish'])
+                                     taskEl.find('.card-ticket span').text('100')
                                 $(taskEl).appendTo($(`#${taskTargetID}`))
-                            } else {
+                            }
+                            else {
                                 const taskTargetID = $(target).attr('id')
                                 const taskEl = $(`[data-task-id="${taskID}"]`, '#sub-tasklist_wrap').closest('.tasklist-card')
+                                if (isCompleted && isCompleted?.[0]?.['is_finish'])
+                                    taskEl.find('.card-ticket span').text('100')
                                 $(taskEl).appendTo($(`#sub-${taskTargetID}`))
                             }
+                            if (isCompleted && isCompleted?.[0]?.['is_finish'])
+                                $(el).closest('.tasklist-card').find('.card-ticket span').text('100')
+                            const config = JSON.parse($('#task_config').text());
+                            let task_changed = {};
+                            for (const item of config.list_status) {
+                                if (item.id === dataSttUpdate.task_status){
+                                    task_changed = item
+                                    break;
+                                }
+                            }
+
+                            let k_list = kanbanTask.getTaskList;
+                            for (let item of k_list){
+                                if (item.id === dataSttUpdate.id){
+                                    if (isCompleted && isCompleted?.[0]?.['is_finish'])
+                                        item.percent_completed = 100
+                                    item.task_status = {...task_changed, 'title': task_changed.name}
+                                    break;
+                                }
+                            }
+                            // update data kanban
+                            kanbanTask.setTaskList = k_list
+                            listTask.setTaskList = k_list
                             countSTT()
                         } else {
                             drake.cancel(el)
@@ -875,7 +928,7 @@ $(function () {
                     $('[data-drawer-target="#drawer_task_create"]').trigger('click')
                 allData[index].edited = true
                 cls.setTaskList = allData
-                if (typeof infoOld === 'number')  // case click task khác mà chưa đóng task cũ
+                if (typeof infoOld === 'number') // case click task khác mà chưa đóng task cũ
                     tbl.DataTable().cell(infoOld, 6).data(false).draw(false)
                 tbl.DataTable().cell(index, 6).data(true).draw(false)
                 listViewTask.appendDataToForm(cls, $formElm, data.id)
@@ -1079,12 +1132,10 @@ $(function () {
                 // convert data thành dictionary với parent_n là danh sách task con
                 for (let item of data){
                     let from = new Date(item.start_date)
-                    from.setHours(0);
-                    from.setMinutes(0);
+                    from.setHours(0,0,0,0);
                     from.setDate(from.getDate() + 1)
                     let to = new Date(item.end_date)
-                    to.setHours(0);
-                    to.setMinutes(0);
+                    to.setHours(0,0,0,0);
                     to.setDate(to.getDate() + 1);
                     // kt có cấp cha và danh sách cấp con không rỗng
                     if ('parent_n' in item && Object.keys(item['parent_n']).length){
@@ -1092,22 +1143,26 @@ $(function () {
                             if (!('parent_n' in bk_list[item.parent_n.id])) bk_list[item.parent_n.id]['parent_n'] = []
                             bk_list[item.parent_n.id]['parent_n'][item.id] = {
                                 desc: item.title,
+                                show_expand: item?.['show_expand'] ? item.show_expand: false,
                                 values: [{
-                                    label: item.title,
                                     from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
                                     to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
-                                    desc: item.remark,
                                     customClass: "ganttGreen",
                                     dataObj: {...item, customBg: taskClr[item.task_status.id]}
                                 }]
                             }
+                            if (item?.['is_visible'] === false)
+                                bk_list[item.parent_n.id]['parent_n'][item.id]['is_visible'] = false
+                            if (item?.['is_expand'])
+                                bk_list[item.parent_n.id]['parent_n'][item.id]['is_expand'] = item['is_expand']
+
                         }
                     }
                     else {
                         // ko có cấp cha
                         bk_list[item.id] = {
                             name: item.title,
-                            desc: item.remark,
+                            show_expand: item?.['show_expand'] ? item.show_expand : false,
                             values: [{
                                 from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
                                 to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
@@ -1115,6 +1170,10 @@ $(function () {
                                 dataObj: {...item, customBg: taskClr[item.task_status.id]}
                             }]
                         }
+                        if (item?.['is_visible'] === false)
+                            bk_list[item.id]['is_visible'] = false
+                        if (item?.['is_expand'])
+                            bk_list[item.id]['is_expand'] = item['is_expand']
                     }
                 }
             }
@@ -1169,6 +1228,9 @@ $(function () {
                     }
                     initCommon.initTableLogWork(data?.['task_log_work'])
                     initCommon.renderSubtask(data.id, GanttViewTask.taskList, data?.['sub_task_list'])
+
+                    if (Object.keys(data.parent_n).length <= 0) $('.create-subtask').removeClass('hidden')
+                    else $('.create-subtask').addClass('hidden')
                 });
         }
 
@@ -1200,11 +1262,8 @@ $(function () {
                                 is_visible: true,
                                 desc: item.title,
                                 values: [{
-                                    label: item.title,
                                     from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
                                     to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
-                                    desc: item.remark,
-                                    customClass: "ganttGreen",
                                     dataObj: {...item, customBg: taskClr[item.task_status.id]}
                                 }]
                             }
@@ -1251,10 +1310,36 @@ $(function () {
                     })
             }
         }
+
         static onCallback(){
-            const callDataInfo = $('.gantt_table').data('api_info')
+            const $ganttElm = $('.gantt_table'), $fltBar = $('.filter_bar'), $leftC = $('.left-container'),
+            $panelElm = $('.rightPanel .dataPanel');
+            const currentHeight = $panelElm.css("height");
+            const callDataInfo = $ganttElm.data('api_info')
+            const rightPanelHeight = $('.leftPanel .row.spacer').outerHeight()
             $('#gantt_load-more_btn').prop("disabled", callDataInfo.page_next === 0)
+            // calc window screen và limit height cho khung gantt
+            let _gantt_distance = $(document).height() - $ganttElm.offset().top
+            const afterCalc = Math.round(_gantt_distance - $fltBar.outerHeight() - rightPanelHeight - 54)
+            // 54 là tổng padding và margin của các div bao ngoài
+            $leftC.css({"height": afterCalc})
+
+            const rightHeight = Math.round(_gantt_distance - $fltBar.outerHeight() - 54)
+            $panelElm.css({"height": rightHeight})
+            $('.panel-content-bar').css({
+                "height": currentHeight.replace("px", ''),
+                "top": parseInt(`-${rightPanelHeight}`)
+            })
+
+            // handle scroll down
+            $leftC.scroll(function(){
+                $('.panel-content-bar').css({
+                    "top": parseInt(`-${rightPanelHeight + $(this).scrollTop()}`)
+                })
+            });
         }
+
+
 
         static renderGantt(){
             const $transElm = $('#trans-factory')
@@ -1312,6 +1397,43 @@ $(function () {
             })
         }
 
+        static afterUpdate(data, is_new=false){
+            let dictList;
+            if (is_new){
+                let temp = []
+                temp.push(data)
+                dictList = GanttViewTask.saveTaskList(temp)
+            }
+            else{
+                let oldData = GanttViewTask.bk_taskList[data.id]
+                if (oldData.desc === undefined) oldData.name = data.title
+                else oldData.desc = data.title
+                let from = new Date(data.start_date)
+                    from.setHours(0, 0, 0, 0);
+                    from.setDate(from.getDate() + 1)
+                    let to = new Date(data.end_date)
+                    to.setHours(0, 0, 0, 0);
+                    to.setDate(to.getDate() + 1);
+                let new_value = {}
+                for (let item in oldData.values[0].dataObj){
+                    if (data.hasOwnProperty(item))
+                        new_value[item] = data[item]
+                    if (item === 'opportunity')
+                        new_value['opportunity'] = data['opportunity_data']
+                    if (item === 'child_task_count')
+                        new_value['child_task_count'] = oldData.values[0].dataObj[item]
+                }
+                oldData.values = [{
+                    from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                    to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                    dataObj: new_value
+                }]
+                dictList = GanttViewTask.saveTaskList(oldData)
+            }
+            const arrayList = GanttViewTask.convertFromDictToArray(dictList, true)
+            $('#gantt_reload').data('data', arrayList).trigger('click')
+        }
+
         static initGantt() {
             let firstCall = GanttViewTask.CallData()
             firstCall.then(
@@ -1326,8 +1448,7 @@ $(function () {
                         GanttViewTask.renderGantt()
                     }
             })
-            if (!$('.gantt').length)
-                $('.gantt_table').append('<div class="gantt"></div>')
+            if (!$('.gantt').length) $('.gantt_table').append('<div class="gantt"></div>');
             $('.tab-gantt[data-bs-toggle="tab"]').on('show.bs.tab', function (e) {
                 $('#gantt_reload').data('data', GanttViewTask.taskList).trigger('click')
             });
@@ -1378,8 +1499,12 @@ $(function () {
     })
 
     // button filter on click show hide dropdown filter
-    $('.leave-filter-wrap button').off().on('click', function () {
+    $('.leave-filter-wrap button.sp-btn').off().on('click', function () {
         $('.leave-filter-wrap .form-group-filter').slideToggle()
+    })
+    $('.leave-filter-wrap button.desktop-btn').off().on('click', function () {
+        // $(this).parents('.leave-filter-wrap').toggleClass('desktop-show')
+        $('.form-group-filter').slideToggle()
     })
 
     // load more button

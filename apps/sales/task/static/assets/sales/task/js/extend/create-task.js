@@ -336,7 +336,10 @@ $(function () {
                 const taskSttData = {
                     'id': task_status.id,
                     'title': task_status.text,
+                    'is_finish': task_status.is_finish
                 }
+                if (task_status.is_finish) formData.percent_completed = 100
+                formData.percent_completed = parseInt(formData.percent_completed)
 
                 if (!isValidString(formData.estimate)){
                     $.fn.notifyB({description: $('#form_valid').attr('data-estimate-error')}, 'failure')
@@ -364,9 +367,11 @@ $(function () {
                 })
 
                 if (!formData.opportunity) delete formData.opportunity
+                let opportunity_data = {}
                 if ($oppElm.val()){
                     formData.opportunity = $oppElm.val()
                     formData.opportunity_id = $oppElm.val()
+                    opportunity_data = $oppElm.select2('data')[0]['data']
                 }
 
                 const $attElm = $('[name="attach"]').val()
@@ -394,7 +399,7 @@ $(function () {
                                 if (!data?.id && data?.status === 200) {
                                     elm = $('<input type="hidden" id="updateTaskData"/>');
                                     formData.code = $('#inputTextCode').val();
-                                    formData.assign_to = assign_toData
+                                    formData.employee_inherit = assign_toData
                                     formData.task_status = taskSttData
                                     formData.employee_created = {
                                         "id": $assignerElm.attr('value'),
@@ -402,6 +407,7 @@ $(function () {
                                         "first_name": $assignerElm.attr('data-name').split('. ')[1],
                                         "last_name": $assignerElm.attr('data-name').split('. ')[0],
                                     }
+                                    formData.opportunity_data = opportunity_data
                                 }
                                 // case create
                                 if (data?.id) formData = data

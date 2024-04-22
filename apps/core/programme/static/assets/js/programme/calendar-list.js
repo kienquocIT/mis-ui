@@ -20,7 +20,8 @@ class programmeHandle {
             let list = {
                 1: {'txt': 'warning', 'field': 'meeting_date', 'format': 'DD/MM/YYYY'},
                 2: {'txt': 'violet', 'field': 'date_f', 'format': 'DD/MM/YYYY'},
-                3: {'txt': 'primary', 'field': 'date_from', 'format': 'DD/MM/YYYY'}
+                3: {'txt': 'primary', 'field': 'date_from', 'format': 'DD/MM/YYYY'},
+                4: {'txt': 'blue', 'field': 'date_from', 'format': 'DD/MM/YYYY'}
             }
             let itemList = ''
             for (let item in data) {
@@ -58,6 +59,7 @@ class programmeHandle {
         let $trans = $('#trans-factory')
         moment.locale('en')
         if (data.calendar_type === 1) { // this case meeting
+            console.log(data)
             afterPrepare.title = data.subject
             afterPrepare.date = String.format(
                 "{0} - {1}",
@@ -91,7 +93,7 @@ class programmeHandle {
                 afterPrepare.member += tempHTML.prop('outerHTML')
             }
         }
-        else { // this case leave
+        else if (data.calendar_type === 3) { // this case leave
             afterPrepare.date = String.format("{0} - {1}",
                 moment(data.date_from, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY'),
                 moment(data.date_to, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY')
@@ -105,12 +107,51 @@ class programmeHandle {
             tempHTML.find('.chip-text').text(data.employee_inherit.full_name)
             afterPrepare.member += tempHTML.prop('outerHTML')
         }
+        else { // this schedule meeting
+            afterPrepare.title = data.title
+            let start_time = data.meeting_start_date + ' ' + data.meeting_start_time
+            let end_time = programmeHandle.addMinutesToDatetime(start_time, data.meeting_duration)
+            afterPrepare.date = String.format(
+                "{0} - {1}",
+                moment(start_time, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY'),
+                moment(end_time, 'YYYY-MM-DD hh:mm:ss').format('MMM DD,YYYY')
+            )
+            afterPrepare.time = String.format(
+                "{0} - {1}",
+                moment(start_time.split(' ')[1], 'hh:mm:ss.ssssss').format('hh:mm A'),
+                moment(end_time.split(' ')[1], 'hh:mm:ss.ssssss').format('hh:mm A')
+            )
+            if (data?.['room_info']) {
+                afterPrepare.location = String.format("{0}, {1}", data?.['room_info']?.['location'], data?.['room_info']?.['title'])
+            }
+            else {
+                afterPrepare.location = String.format("{0}, {1}", 'Online', 'Zoom meeting')
+            }
+            afterPrepare.type = $trans.attr('data-schedule-meet')
+            for (let item of data.employee_attended_list) {
+                let tempHTML = $($('.temp-chip').html())
+                tempHTML.find('.chip-text').text(item.full_name)
+                afterPrepare.member += tempHTML.prop('outerHTML')
+            }
+            for (let item of data.customer_member_list) {
+                let tempHTML = $($('.temp-chip').html())
+                tempHTML.find('.chip-text').text(item.full_name)
+                afterPrepare.member += tempHTML.prop('outerHTML')
+            }
+            afterPrepare.des = data.meeting_content
+        }
         return afterPrepare
+    }
+
+    static addMinutesToDatetime(dateTimeString, minutesToAdd) {
+        const dateObj = new Date(dateTimeString);
+        let mili = dateObj.getTime() + minutesToAdd * 60 * 1000
+        return moment(mili).format('YYYY-MM-DD HH:mm:ss')
     }
 
     static callMeeting(calendar, params = null) {
         $.fn.callAjax2({
-            'url': $('#url-factory').attr('data-meet'),
+            'url': $('#url-factory').attr('data-meet') + '?is_cancelled=0',
             'method': 'get',
             'data': params ? params : {'meeting_date': moment().format('YYYY-MM-DD'), 'self_employee': true}
         })
@@ -119,6 +160,7 @@ class programmeHandle {
                     let nextDay = {}
                     let dataReceived = []
                     for (let item of data) {
+                        console.log(item)
                         item.calendar_type = 1
                         let temp = {
                             backgroundColor: '#FFC400',
@@ -132,6 +174,56 @@ class programmeHandle {
                         let isClass = programmeHandle.checkMargin({
                             d_from: item.meeting_date,
                             d_to: item.meeting_date,
+                            time_from: true,
+                            time_to: true
+                        })
+                        if (isClass) temp.className = isClass
+                        // ước tính thời gian hơn 8h sẽ là all day
+                        if (moment(temp.start).isAfter(moment(nextDay?.start))) nextDay = temp
+                        let milis = moment(temp.end).diff(moment(temp.start))
+                        if (moment.duration(milis).asHours() >= 8) temp.allDay = true
+                        // kiểm tra item trong dataReceived có bị trùng ko nếu ko thì add vào event của calendar
+                        if (!dataReceived.includes(item.id)){
+                            let isHasID = calendar.getEvents().filter((objValue) => objValue.extendedProps.source.id === item.id)
+                            if (!isHasID.length) calendar.addEvent(temp)
+                            dataReceived.push(item.id)
+                        }
+                    }
+                    if (!programmeHandle.UpData?.[1] && Object.keys(nextDay).length > 0)
+                        programmeHandle.UpData[1] = nextDay
+                    calendar.render()
+                    $('.tit-upcoming-evt').trigger('Upcoming-Event:Trigger')
+                },
+                (errs) => {console.log('calendar-list_123 ', errs)}
+            )
+    }
+
+    static callScheduleMeeting(calendar, params = null) {
+        $.fn.callAjax2({
+            'url': $('#url-factory').attr('data-schedule-meeting'),
+            'method': 'get',
+            'data': params ? params : {'meeting_start_date': moment().format('YYYY-MM-DD'), 'self_employee': true}
+        })
+            .then(function (req) {
+                    let data = $.fn.switcherResp(req)['meeting_schedule_list']
+                    let nextDay = {}
+                    let dataReceived = []
+                    for (let item of data) {
+                        item.calendar_type = 4
+                        let start_time = item.meeting_start_date + ' ' + item.meeting_start_time
+                        let end_time = programmeHandle.addMinutesToDatetime(start_time, item.meeting_duration)
+                        let temp = {
+                            backgroundColor: '#4885e1',
+                            borderColor: '#4885e1',
+                            title: item.title,
+                            start: moment(start_time, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD hh:mm:ss'),
+                            end: moment(end_time, 'YYYY-MM-DD hh:mm:ss').format('YYYY-MM-DD hh:mm:ss'),
+                            source: item
+                        }
+
+                        let isClass = programmeHandle.checkMargin({
+                            d_from: start_time.split(' ')[0],
+                            d_to: end_time.split(' ')[0],
                             time_from: true,
                             time_to: true
                         })
@@ -215,11 +307,12 @@ class programmeHandle {
                     let nextDay = {}
                     for (let item of data) {
                         item.calendar_type = 3
-                        let endD = item.date_to
+                        const dateStart = programmeHandle.checkHour(item, true)
+                        const dateEnd = programmeHandle.checkHour(item, false)
                         let temp = {
                             title: item.title,
-                            start: item.date_from,
-                            end: item.date_to,
+                            start: dateStart,
+                            end: dateEnd,
                             allDay: item.date_from !== item.date_to,
                             source: item,
                         }
@@ -229,7 +322,7 @@ class programmeHandle {
                             time_from: item.morning_shift_f,
                             time_to: item.morning_shift_t
                         })
-                        if (item.date_from !== endD) isClass += 'hasDiff'
+                        if (item.date_from !== item.date_to) isClass += 'hasDiff'
                         if (isClass) temp.className = isClass
                         if (!nextDay?.start && moment(temp.start).isAfter(moment())) nextDay = temp
                         else if (moment(temp.start).isAfter(moment(nextDay.start))) nextDay = temp
@@ -246,9 +339,60 @@ class programmeHandle {
             )
     }
 
+    static checkHour(item, is_from){
+        let date_from = item.date_from,
+            date_to = item.date_to,
+            shift_f = item.morning_shift_f,
+            shift_t = item.morning_shift_t,
+            same_date = item.date_from === item.date_to;
+
+        let hourDate = is_from ? date_from : date_to;
+        const numstart = new Date(hourDate).getDay()
+        hourDate += " ";
+        if (same_date){ // cùng ngày
+            if (is_from){ // từ ngày date_from
+                    if (shift_f === shift_t && shift_f === false)
+                        hourDate +=  window.work_shift?.[numstart]['aft']['from'] || '12:00:00';
+                    else
+                        hourDate += window.work_shift?.[numstart]['mor']['from'] || '00:00:00';
+            }
+            else{ // đến ngày date_to
+                if (shift_f === shift_t && shift_t === true)
+                    hourDate += window.work_shift?.[numstart]['mor']['to'] || '11:59:59';
+                else
+                    hourDate += window.work_shift?.[numstart]['aft']['to'] || '23:59:59';
+            }
+        }
+        else{ // khác ngày
+             if (shift_f === shift_t && shift_f === true)
+                 if (is_from)
+                     hourDate += window.work_shift?.[numstart]['mor']['from'] || '00:00:00'
+                 else
+                     hourDate += window.work_shift?.[numstart]['mor']['to'] || '11:59:59'
+             else if (shift_f === shift_t && shift_f === false)
+                 if (is_from)
+                     hourDate += window.work_shift?.[numstart]['aft']['from'] || '12:00:00'
+                 else
+                     hourDate += window.work_shift?.[numstart]['aft']['to'] || '23:59:59'
+             else if (shift_f && !shift_t)
+                 if (is_from)
+                     hourDate += window.work_shift?.[numstart]['mor']['from'] || '00:00:00'
+                 else
+                     hourDate += window.work_shift?.[numstart]['aft']['to'] || '23:59:59'
+             else
+                 if (is_from)
+                     hourDate += window.work_shift?.[numstart]['aft']['from'] || '12:00:00'
+                 else
+                     hourDate += window.work_shift?.[numstart]['mor']['to'] || '11:59:59'
+
+        }
+        return hourDate
+    }
+
     static init(calendar) {
         calendar.render()
         programmeHandle.callMeeting(calendar)
+        programmeHandle.callScheduleMeeting(calendar)
         programmeHandle.renderUpEvt()
 
         function loopCallAPI(_ValMonth){
@@ -263,6 +407,13 @@ class programmeHandle {
                     if (_listEmp && _listEmp.length) params.employee_in_list = _listEmp.join(',')
                     if (!_listGroup && !_listEmp) params.self_employee = true
                     programmeHandle.callMeeting(calendar, params)
+                }
+                else if (_thisVal === 'schedule-meeting'){
+                    params.meeting_start_date = _ValMonth
+                    if (_listGroup) params.employee_inherit__group = _listGroup
+                    if (_listEmp && _listEmp.length) params.employee_in_list = _listEmp.join(',')
+                    if (!_listGroup && !_listEmp) params.self_employee = true
+                    programmeHandle.callScheduleMeeting(calendar, params)
                 }
                 else if (_thisVal === 'business'){
                     params.business_date = _ValMonth
@@ -287,11 +438,16 @@ class programmeHandle {
                 "border": "none",
                 "box-shadow": "0 8px 10px rgba(0, 0, 0, 0.1)"
             }).addClass('drawer-toggle');
-            let sltData = programmeHandle.prepareData(window.targetEvent.extendedProps.source)
+            let source = window.targetEvent.extendedProps.source;
+            if (source.calendar_type === 3){
+                source.date_from = window.targetEvent.start
+                source.date_to = window.targetEvent.end
+            }
+            let sltData = programmeHandle.prepareData(source)
             let $elmPopup = $('.calendar-drawer')
             $elmPopup.find('.event-name').text(sltData.title);
             $elmPopup.find('.date_txt').text(sltData?.date);
-            $elmPopup.find('.time_txt').text(sltData?.time);
+            $elmPopup.find('.time_txt').text(sltData?.time || '--');
             $elmPopup.find('.loca_txt').text(sltData?.location);
             $elmPopup.find('.type_txt').text(sltData?.type);
             $elmPopup.find('.member_txt').html(sltData?.member);
@@ -302,7 +458,13 @@ class programmeHandle {
         // click next btn
         $(document).on("click", ".calendarapp-wrap .fc-next-button", function () {
             // check opt filter, check display date current
+            const crtStart = calendar.view.currentStart,
+                crtEnd = calendar.view.currentEnd;
             let DStart = moment(calendar.view.currentStart);
+            if (moment(crtStart).format('YYYY-MM') !== moment(crtEnd).format('YYYY-MM') &&
+                $.inArray(calendar.view.type, ["dayGridMonth", "timeGridWeek"]) === -1)
+                DStart = moment(crtEnd)
+
 
             // logic: nếu tháng next có trong danh sách thì ko call API,
             if (window.DateListCallable.includes(DStart.format('YYYY-MM'))) return true
@@ -323,7 +485,6 @@ class programmeHandle {
             // loop in app has checked
             loopCallAPI(DStart.format('YYYY-MM-DD'))
         });
-
 
         $('.categories-wrap input').on('change', function () {
             programmeHandle.triggerCallAPI(calendar)
@@ -351,6 +512,13 @@ class programmeHandle {
                     if (group) params.employee_inherit__group = group
                     params.meeting_date = moment().format('YYYY-MM-DD')
                     programmeHandle.callMeeting(calendar, params);
+                    break;
+                case 'schedule-meeting':
+                    if (emp.length > 0) params.employee_in_list = emp.join(',')
+                    else params.self_employee = true
+                    if (group) params.employee_inherit__group = group
+                    params.meeting_start_date = moment().format('YYYY-MM-DD')
+                    programmeHandle.callScheduleMeeting(calendar, params);
                     break;
                 case 'business':
                     if (emp.length > 0) params.employee_inherit_list = emp.join(',')
@@ -419,6 +587,47 @@ $(document).ready(function () {
             meridiem: 'short'
         },
     });
+
+    let work_shift = JSON.parse($('#ws_data').text())
+    work_shift = work_shift['working_days']
+    window.work_shift = Object.keys(work_shift).map((item) =>{
+        let value = work_shift[item];
+
+        // morning from
+        let mf = value.mor.from
+        if (mf.split(' ')[1] === 'AM')
+            mf = `0${parseInt(mf.split(' ')[0].split(':')[0])}:${mf.split(' ')[0].split(':')[1]}:00`
+        else if (mf.split(' ')[1] === 'PM')
+            mf = `${parseInt(mf.split(' ')[0].split(':')[0]) + 12}:${mf.split(' ')[0].split(':')[1]}:00`
+
+        // morning to
+        let mt = value.mor.to
+        if (mt.split(' ')[1] === 'AM')
+            mt = `${parseInt(mt.split(' ')[0].split(':')[0])}:${mt.split(' ')[0].split(':')[1]}:00`
+        else if (mt.split(' ')[1] === 'PM')
+            mt = `${parseInt(mt.split(' ')[0].split(':')[0]) + 12}:${mt.split(' ')[0].split(':')[1]}:00`
+
+        // afternoon from
+        let af = value.aft.from
+        if (af.split(' ')[1] === 'AM')
+            af = `0${parseInt(af.split(' ')[0].split(':')[0])}:${af.split(' ')[0].split(':')[1]}:00`
+        else if (af.split(' ')[1] === 'PM')
+            af = `${parseInt(af.split(' ')[0].split(':')[0]) + 12}:${af.split(' ')[0].split(':')[1]}:00`
+
+        // afternoon to
+        let at = value.aft.to
+        if (at.split(' ')[1] === 'AM')
+            at = `0${parseInt(at.split(' ')[0].split(':')[0])}:${at.split(' ')[0].split(':')[1]}:00`
+        else if (at.split(' ')[1] === 'PM')
+            at = `${parseInt(at.split(' ')[0].split(':')[0]) + 12}:${at.split(' ')[0].split(':')[1]}:00`
+
+        value = {
+            mor: {from: mf, to: mt},
+            aft: {from: af, to: at}
+        }
+        return value
+    })
+
     programmeHandle.init(calendar);
     // tạo DateListCallable tháng hiện tại
     const newDate = moment().format('YYYY-MM')

@@ -10,7 +10,7 @@ from apps.core.workflow.views.runtime import (
     FlowRuntimeDetailAPI,
     FlowRuntimeListAPI, FlowRuntimeDiagramDetailAPI,
     FlowRuntimeTaskListAPI, FlowRuntimeTaskDetailAPI,
-    FlowRuntimeMeListAPI,
+    FlowRuntimeMeListAPI, FlowRuntimeAfterFinishDetailAPI,
 )
 
 urlpatterns = [
@@ -37,4 +37,5 @@ urlpatterns = [
     path('runtimes/me', FlowRuntimeMeListAPI.as_view(), name='FlowRuntimeMeListAPI'),
     path('runtimes/<str:flow_id>', FlowRuntimeListAPI.as_view(), name='FlowRuntimeListAPI'),
     path('runtime/<str:pk>', FlowRuntimeDetailAPI.as_view(), name='FlowRuntimeDetailAPI'),
+    path('runtime-after/<str:pk>', FlowRuntimeAfterFinishDetailAPI.as_view(), name='FlowRuntimeAfterFinishDetailAPI'),
 ]

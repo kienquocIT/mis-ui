@@ -35,17 +35,24 @@ $(function () {
             POLoadDataHandle.loadInitProduct();
         }
 
-        // run datetimepicker
-        $('input[type=text].date-picker').daterangepicker({
-            minYear: 1901,
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: 'DD/MM/YYYY hh:mm A'
-            }
-        });
-        $('#purchase-order-date-delivered').val(null).trigger('change');
+        // init date picker
+        $('.date-picker').each(function () {
+            $(this).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                autoApply: true,
+                autoUpdateInput: false,
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            });
+            $(this).val('').trigger('change');
+        })
 
 
 // EVENTS
@@ -62,32 +69,10 @@ $(function () {
                 POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadBoxContact();
             }
-            // reset PQ
-            let $tableProductPR = $('#datable-purchase-order-product-request');
-            let $tableProductAdd = $('#datable-purchase-order-product-add');
-            let $tablePQ = $('#datable-purchase-quotation');
-            $tablePQ.DataTable().clear().draw();
-            if ($tableProductPR.DataTable().rows().count() !== 0 || $tableProductAdd.DataTable().rows().count() !== 0) {
-                POLoadDataHandle.loadModalPurchaseQuotation();
+            POLoadDataHandle.loadResetPQAndPriceList();
+            if (POLoadDataHandle.PRDataEle.val()) {
+                POLoadDataHandle.loadTableProductByPurchaseRequest();
             }
-            let $elePQ = $('#purchase-order-purchase-quotation');
-            $elePQ.empty();
-            POLoadDataHandle.PQDataEle.val('');
-            // clear prices by PQ
-            let $table = $tableProductAdd;
-            if (POLoadDataHandle.PRDataEle.val()) { // PO PR products
-                $table = $tableProductPR;
-            }
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                let elePrice = row.querySelector('.table-row-price');
-                let elePriceList = row.querySelector('.table-row-price-list');
-                elePrice.removeAttribute('disabled');
-                $(elePrice).attr('value', String(0));
-                $(elePriceList).empty();
-                $.fn.initMaskMoney2();
-                POCalculateHandle.calculateMain($table, row);
-            });
         });
 
         // Purchase request modal
@@ -190,8 +175,8 @@ $(function () {
         });
 
         // Action on click button collapse
-        $('#info-collapse').click(function () {
-            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+        $('#btn-collapse').click(function () {
+            $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
         // Action on click button add product
@@ -277,7 +262,10 @@ $(function () {
         });
 
         tablePaymentStage.on('change', '.table-row-value-before-tax, .table-row-tax', function () {
-           POCalculateHandle.calculateValueAfterTax(this.closest('tr'));
+            if ($(this).hasClass('table-row-value-before-tax')) {
+                POValidateHandle.validatePOPSValue(this);
+            }
+            POCalculateHandle.calculateValueAfterTax(this.closest('tr'));
         });
 
         tablePaymentStage.on('click', '.del-row', function () {
@@ -306,7 +294,9 @@ $(function () {
                 'purchase_quotations_data',
                 'purchase_request_products_data',
                 'supplier',
+                'supplier_data',
                 'contact',
+                'contact_data',
                 'delivered_date',
                 'status_delivered',
                 // purchase order tabs
@@ -327,27 +317,7 @@ $(function () {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
-            WindowControl.showLoading();
-            $.fn.callAjax2(
-                {
-                    'url': _form.dataUrl,
-                    'method': _form.dataMethod,
-                    'data': _form.dataForm,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: data.message}, 'success')
-                        $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-                    }
-                }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err.data.errors}, 'failure');
-                }
-            )
+            WFRTControl.callWFSubmitForm(_form);
         });
 
 

@@ -20,7 +20,7 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
-                columnDefs: [],
+                pageLength:50,
                 columns: [
                     {
                         targets: 0,

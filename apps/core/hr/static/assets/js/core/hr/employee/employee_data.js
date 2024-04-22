@@ -22,13 +22,16 @@ $(function () {
         callbackGetLinkBlank: function (rowData) {
             return rowData.id ? urlDetail.replace('__pk__', rowData.id) : null;
         },
+        autoWidth: false,
         columns: [
             {
+                width: '5%',
                 'render': (data, type, row, meta) => {
                     return '';
                 }
             },
             {
+                width: '10%',
                 'data': 'code',
                 render: (data, type, row, meta) => {
                     let urlEmployeeDetail = urlDetail.replace('__pk__', row.id);
@@ -36,6 +39,7 @@ $(function () {
                 }
             },
             {
+                width: '15%',
                 'data': 'full_name',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof row.full_name === 'string') {
@@ -64,6 +68,7 @@ $(function () {
                 }
             },
             {
+                width: '10%',
                 data: 'group',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('group') && typeof row.group === "object") {
@@ -75,6 +80,7 @@ $(function () {
                 }
             },
             {
+                width: '30%',
                 data: 'role',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('role') && Array.isArray(row.role)) {
@@ -86,6 +92,7 @@ $(function () {
                 }
             },
             {
+                width: '10%',
                 data: 'date_joined',
                 'render': (data, type, row, meta) => {
                     return $x.fn.displayRelativeTime(data, {
@@ -94,6 +101,7 @@ $(function () {
                 }
             },
             {
+                width: '5%',
                 'className': 'action-center',
                 data: 'is_active',
                 'render': (data, type, row, meta) => {
@@ -108,6 +116,7 @@ $(function () {
                 }
             },
             {
+                width: '5%',
                 data: 'is_admin_company',
                 render: (data, type, row, meta) => {
                     return `
@@ -118,6 +127,7 @@ $(function () {
                 }
             },
             {
+                width: '15%',
                 'className': 'action-center',
                 'render': (data, type, row, meta) => {
                     let urlDetail = "/hr/employee/" + row.id

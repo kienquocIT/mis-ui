@@ -1,3 +1,9 @@
+/* Button */
+.no-transform {
+    text-transform: unset!important;
+}
+/* -- Button */
+
 /* */
 .company_switch_item:hover {
     background-color: #f1f1f1;
@@ -140,6 +146,39 @@ div.inline {
 }
 
 /*data table css */
+
+/* width */
+.dataTables_scrollBody::-webkit-scrollbar ~ .dataTables_scrollHead .table {
+    padding-right: 10px;
+}
+.dataTables_scrollBody::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+/* Track */
+.dataTables_scrollBody::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #f1f1f1;
+  border-radius: 0;
+}
+
+/* Handle */
+.dataTables_scrollBody::-webkit-scrollbar-thumb {
+  background: #eaeaea;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
+  background: #cfcfcf;
+}
+
+div.dataTables_wrapper .dataTables_scrollHeadInner  {
+    width: 100% !important;
+}
+
+div.dataTables_wrapper .dataTables_scrollBody table {
+    margin-bottom: 3px !important;
+}
 
 .dataTables_paginate .paginate_button i {
     font-size: 1.2rem;
@@ -690,12 +729,16 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
     min-width: 1500px;
 }
 
+.min-w-1920p {
+    min-width: 1920px;
+}
+
 .min-w-2000p {
     min-width: 2000px;
 }
 
-.min-w-2500p {
-    min-width: 2500px;
+.min-w-2560p {
+    min-width: 2560px;
 }
 
 .min-w-4000p {
@@ -856,3 +899,70 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     color: #bfcbd0;
 }
 /* -- Workflow */
+
+/* Button */
+.btn-outline-blue {
+    border: 1px solid #298dff;
+    color: #298dff;
+    background-color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-outline-blue:hover {
+    background-color: #298dff;
+    color: white;
+}
+/* -- Button */
+
+/* Badge */
+.badge.badge-soft-blue {
+    background: #eef6ff;
+    color: #298dff;
+}
+/* -- Badge */
+
+/* Badge parent */
+.badge-parent {
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: .2rem .625rem;
+    font-size: 75%;
+    min-width: 25px;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+    display: inline-block;
+    text-align: center;
+    text-transform: capitalize;
+    position: relative; /* make the parent element relative for absolute positioning */
+    white-space: nowrap;
+}
+
+.badge-parent.badge-parent-primary {
+    background: #007D88;
+    color: #fff;
+}
+
+.badge-parent.badge-parent-blue {
+    background: #298dff;
+    color: #fff;
+}
+
+.badge-child {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 82%;
+    line-height: 18px;
+    padding: 0 .2rem;
+    border: 2px solid #fff;
+    font-weight: bold;
+}
+
+.badge-child.badge-child-blue {
+    background-color: #298dff;
+    color: #fff;
+}
+/* -- Badge parent */

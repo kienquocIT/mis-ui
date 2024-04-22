@@ -28,9 +28,15 @@
     z-index: 1054;
 }
 
+@media screen and (max-width: 600px) {
+    #welcome-canvas {
+        display: none;
+    }
+}
+
 #welcome-canvas {
     position: absolute;
-    z-index: 1054;
+    z-index: 1053;
     top: 0;
     left: 0;
     width: inherit;
@@ -44,7 +50,7 @@
 #welcome-close {
     display: none;
     position: absolute;
-    z-index: 99998;
+    z-index: 1054;
     top: -10px;
     right: -10px;
     height: 30px;

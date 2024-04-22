@@ -57,6 +57,11 @@ $(function () {
             _form.dataForm['node'] = nodeData;
 
             // convert associate to json
+            _form.dataForm['associate'] = "";
+            let $eleAssociate = $('#node-associate');
+            if ($eleAssociate.val()) {
+                _form.dataForm['associate'] = $eleAssociate.val();
+            }
             let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
             if (associate_temp) {
                 let associate_data_submit = [];
@@ -197,6 +202,11 @@ $(function () {
             let row = this.closest('tr');
             let $table = $(this.closest('.table-in-workflow-employee'));
             deleteWFNodeRowTable(row, $table);
+        });
+
+        NodeDataTableHandle.tableNode.on('click', '.del-row', function () {
+            let row = this.closest('tr');
+            deleteWFNodeRowTable(row, NodeDataTableHandle.tableNode);
         });
 
 

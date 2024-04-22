@@ -68,6 +68,10 @@ $(document).ready(function () {
             $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
 
+            if (opportunity_detail_data?.['is_deal_close'] === true) {
+                $('.page-content input, .page-content select, .page-content .btn').not($('#input-close-deal')).not($('#rangeInput')).prop('disabled', true);
+            }
+
             const config = results[1];
             const config_is_select_stage = config.is_select_stage;
             const config_is_AM_create = config.is_account_manager_create;
@@ -161,21 +165,25 @@ $(document).ready(function () {
                         condition_is_quotation_confirm = true;
                     }
                 }
+                // store data detail
+                $('#data-detail').val(JSON.stringify(opportunity_detail));
+                // check permission app relate
+                checkPermissionAppRelated();
                 $.fn.initMaskMoney2();
             }
 
             loadDetail(opportunity_detail_data).then(function () {
-                autoLoadStage(
-                    true,
-                    false,
-                    list_stage_condition,
-                    list_stage,
-                    condition_sale_oder_approved,
-                    condition_is_quotation_confirm,
-                    condition_sale_oder_delivery_status,
-                    config_is_input_rate,
-                    dict_stage
-                )
+                // autoLoadStage(
+                //     true,
+                //     false,
+                //     list_stage_condition,
+                //     list_stage,
+                //     condition_sale_oder_approved,
+                //     condition_is_quotation_confirm,
+                //     condition_sale_oder_delivery_status,
+                //     config_is_input_rate,
+                //     dict_stage
+                // )
 
                 // Disable all select elements
                 $('#btn-auto-update-stage').prop('hidden', true)
@@ -308,21 +316,21 @@ $(document).ready(function () {
                 OpportunityLoadDetail.addRowCompetitor()
             })
 
-            $(document).on('change', '.input-win-deal', function () {
-                if ($(this).is(':checked')) {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        $('.stage-lost').addClass('bg-red-light-5 stage-selected');
-                        loadWinRate();
-                    }
-                } else {
-                    $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
-                    loadWinRate();
-                }
-            })
+            // $(document).on('change', '.input-win-deal', function () {
+            //     if ($(this).is(':checked')) {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             $('.stage-lost').addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     } else {
+            //         $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     }
+            // })
 
             // event in tab contact role
 
@@ -438,10 +446,20 @@ $(document).ready(function () {
             })
 
             $('#input-close-date').on('change', function () {
-                let open_date = $('#input-open-date').val();
-                if ($(this).val() < open_date) {
-                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure');
-                    $(this).val(open_date);
+                let open_date = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                let close_date = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                if (close_date < open_date) {
+                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure')
+                    $(this).val('')
+                }
+            })
+
+            $('#input-open-date').on('change', function () {
+                let open_date = moment($('#input-open-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                let close_date = moment($('#input-close-date').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+                if (close_date < open_date) {
+                    $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure')
+                    $(this).val('')
                 }
             })
 
@@ -462,13 +480,13 @@ $(document).ready(function () {
                             let stage = $(this).closest('.sub-stage');
                             let index = stage.index();
                             let ele_stage = $('#div-stage .sub-stage');
-                            $('.stage-lost').removeClass('bg-red-light-5 stage-selected');
+                            $('.stage-lost').removeClass('bg-red-light-5 border-red stage-selected');
                             for (let i = 0; i <= ele_stage.length; i++) {
                                 if (i <= index) {
                                     if (!ele_stage.eq(i).hasClass('stage-lost'))
-                                        ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
+                                        ele_stage.eq(i).addClass('bg-primary-light-5 border-primary  stage-selected');
                                 } else {
-                                    ele_stage.eq(i).removeClass('bg-primary-light-5 stage-selected');
+                                    ele_stage.eq(i).removeClass('bg-primary-light-5 border-primary  stage-selected');
                                 }
                             }
                             loadWinRate();
@@ -488,22 +506,22 @@ $(document).ready(function () {
                 }
             }
 
-            $('#check-lost-reason').on('change', function () {
-                let ele_stage_lost = $('.stage-lost')
-                if (!$(this).is(':checked')) {
-                    ele_stage_lost.removeClass('bg-red-light-5 stage-selected');
-                    loadWinRate();
-                } else {
-                    if (checkOppWonOrDelivery()) {
-                        $(this).prop('checked', false);
-                        OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                    } else {
-                        $('.input-win-deal').not(this).prop('checked', false);
-                        ele_stage_lost.addClass('bg-red-light-5 stage-selected');
-                        loadWinRate();
-                    }
-                }
-            })
+            // $('#check-lost-reason').on('change', function () {
+            //     let ele_stage_lost = $('.stage-lost')
+            //     if (!$(this).is(':checked')) {
+            //         ele_stage_lost.removeClass('bg-red-light-5 border-red stage-selected');
+            //         loadWinRate();
+            //     } else {
+            //         if (checkOppWonOrDelivery()) {
+            //             $(this).prop('checked', false);
+            //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
+            //         } else {
+            //             $('.input-win-deal').not(this).prop('checked', false);
+            //             ele_stage_lost.addClass('bg-red-light-5 border-red stage-selected');
+            //             loadWinRate();
+            //         }
+            //     }
+            // })
 
 
             $('#btn-auto-update-stage').on('click', function () {
@@ -524,10 +542,10 @@ $(document).ready(function () {
 
             $(document).on('change', '#input-close-deal', function () {
                 if ($(this).is(':checked')) {
-                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+                    $(this).closest('.sub-stage').addClass('bg-primary-light-5 border-primary  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                 } else {
-                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+                    $(this).closest('.sub-stage').removeClass('bg-primary-light-5 border-primary  stage-selected');
                     $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
                     if ($('#check-agency-role').is(':checked')) {
                         $('#select-box-end-customer').prop('disabled', false);
@@ -648,15 +666,15 @@ $(document).ready(function () {
 
             date_input.daterangepicker({
                 singleDatePicker: true,
-                timePicker: true,
-                showDropdowns: true,
-                drops: 'up',
-                minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
                 locale: {
-                    format: 'YYYY-MM-DD'
+                    format: 'DD/MM/YYYY'
                 },
-                "cancelClass": "btn-secondary",
-                maxYear: parseInt(moment().format('YYYY'), 10) + 100
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
 
             function combinesData_CallLog(frmEle) {
@@ -666,7 +684,7 @@ $(document).ready(function () {
                 frm.dataForm['opportunity'] = call_log_Opp_slb.val();
                 frm.dataForm['customer'] = customer_slb.val();
                 frm.dataForm['contact'] = contact_slb.val();
-                frm.dataForm['call_date'] = date_input.val();
+                frm.dataForm['call_date'] = moment(date_input.val(), "DD/MM/YYYY").format('YYYY-MM-DD');
                 frm.dataForm['input_result'] = $('#result-text-area').val();
                 if ($('#repeat-activity').is(':checked')) {
                     frm.dataForm['repeat'] = 1;
@@ -732,7 +750,7 @@ $(document).ready(function () {
                         $('#detail-contact-select-box option').remove();
                         $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
 
-                        $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
+                        $('#detail-date-input').val(moment(call_log_obj.call_date.split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY"));
                         $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
                         $('#detail-result-text-area').val(call_log_obj.input_result);
 
@@ -987,17 +1005,16 @@ $(document).ready(function () {
 
             meeting_date_input.daterangepicker({
                 singleDatePicker: true,
-                timePicker: true,
-                showDropdowns: true,
-                drops: 'down',
-                minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
                 locale: {
-                    format: 'YYYY-MM-DD'
+                    format: 'DD/MM/YYYY'
                 },
-                "cancelClass": "btn-secondary",
-                maxYear: parseInt(moment().format('YYYY'), 10) + 100
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                drops: 'up',
+                autoApply: true,
             });
-            meeting_date_input.val('');
 
             $('#meeting-address-input-btn').on('click', function () {
                 $('#meeting-address-select-div').prop('hidden', true);
@@ -1021,8 +1038,8 @@ $(document).ready(function () {
                 $('#meeting-employee-attended-select-box option').remove();
 
                 loadMeetingSaleCodeList();
-                loadMeetingAddress(opportunity_detail_data.customer.shipping_address);
-                loadCustomerMember(opportunity_detail_data.customer.contact_mapped);
+                loadMeetingAddress(opportunity_detail_data?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
+                loadCustomerMember(opportunity_detail_data?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
                 loadEmployeeAttended();
             })
 
@@ -1051,7 +1068,7 @@ $(document).ready(function () {
 
                 frm.dataForm['subject'] = $('#meeting-subject-input').val();
                 frm.dataForm['opportunity'] = $('#meeting-sale-code-select-box option:selected').val();
-                frm.dataForm['meeting_date'] = meeting_date_input.val();
+                frm.dataForm['meeting_date'] = moment(meeting_date_input.val(), "DD/MM/YYYY").format('YYYY-MM-DD');
                 if ($('#meeting-address-select-div').is(':hidden')) {
                     frm.dataForm['meeting_address'] = $('#meeting-address-input').val();
                 }
@@ -1161,8 +1178,9 @@ $(document).ready(function () {
                         }
                         detail_meeting_customer_member_slb.prop('disabled', true);
 
-                        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]).prop('readonly', true);
-                        moment.locale('en')
+                        $('#detail-meeting-date-input').val(
+                            moment(meeting_obj.meeting_date.split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY")
+                        ).prop('readonly', true);
                         $('#detail-meeting #meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
                         $('#detail-meeting #meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
 
@@ -1329,6 +1347,7 @@ $(document).ready(function () {
                                 )
                                 $('#inputTextEstimate').val(data.estimate)
                                 $('#selectPriority').val(data.priority).trigger('change')
+                                $('.btn-log_work').addClass('disabled')
                                 // render label
                                 let htmlElm = $('.label-mark')
                                 htmlElm.html('')
@@ -1364,12 +1383,19 @@ $(document).ready(function () {
                     'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
                     'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
                 }
-                let activityMapApp = {
+                let appMapTrans = {
                     'quotation.quotation': transEle.attr('data-trans-quotation'),
                     'saleorder.saleorder': transEle.attr('data-trans-sale-order'),
                     'cashoutflow.advancepayment': transEle.attr('data-trans-advance'),
                     'cashoutflow.payment': transEle.attr('data-trans-payment'),
                     'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
+                }
+                let appMapBadge = {
+                    'quotation.quotation': "badge-soft-primary",
+                    'saleorder.saleorder': "badge-soft-success",
+                    'cashoutflow.advancepayment': "badge-soft-pink",
+                    'cashoutflow.payment': "badge-soft-violet",
+                    'cashoutflow.returnadvance': "badge-soft-purple",
                 }
                 let typeMapActivity = {
                     1: transEle.attr('data-trans-task'),
@@ -1422,16 +1448,20 @@ $(document).ready(function () {
                                         }
 
                                         return `<div class="d-flex justify-content-start">
-                                            <span class="badge badge-soft-primary mr-2">${activityMapApp[row?.['app_code']]}</span>
+                                            <span class="badge ${appMapBadge[row?.['app_code']]} mr-2">${appMapTrans[row?.['app_code']]}</span>
                                             ${status}
                                         </div>`;
                                     }
                                 } else {
-                                    let status = ''
+                                    let status = '';
+                                    let badgeType = 'badge-soft-smoke';
                                     if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
                                         status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
                                     }
-                                    return `<span class="badge badge-soft-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                                    if (Object.keys(row?.['task']).length > 0) {
+                                        badgeType = 'badge-soft-sky';
+                                    }
+                                    return `<span class="badge ${badgeType}">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                                 }
                                 return `<p></p>`;
                             }
@@ -1491,6 +1521,51 @@ $(document).ready(function () {
 
             loadDblActivityLogs();
 
+            function checkPermissionAppRelated() {
+                let $dataDetail = $('#data-detail');
+                let appRelateList = $('#dropdown-menu-relate-app')[0].querySelectorAll('.relate-app');
+                if ($dataDetail.val() && appRelateList.length > 0) {
+                    let detail = JSON.parse($dataDetail.val());
+                    let appMapPerm = {
+                        'quotation.quotation': 'quotation.quotation.create',
+                        'saleorder.saleorder': 'saleorder.saleorder.create',
+                    };
+                    for (let eleApp of appRelateList) {
+                        if ($(eleApp).attr('data-label')) {
+                            let label = $(eleApp).attr('data-label');
+                            $.fn.callAjax2({
+                                    'url': $('#script-url').attr('data-url-opp-list'),
+                                    'method': 'GET',
+                                    'data': {'list_from_app': appMapPerm[label]},
+                                }
+                            ).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data) {
+                                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                            if (data.opportunity_list.length > 0) {
+                                                let countCheck = 0;
+                                                for (let opp of data.opportunity_list) {
+                                                    countCheck++;
+                                                    if (opp?.['id'] === detail?.['id']) {
+                                                        break;
+                                                    }
+                                                    if (countCheck >= data.opportunity_list.length) {
+                                                        eleApp.classList.add('disabled');
+                                                    }
+                                                }
+                                            } else {
+                                                eleApp.classList.add('disabled');
+                                            }
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
             // for task
             Task_in_opps.init(opportunity_detail_data, loadDblActivityLogs)
 
@@ -1515,8 +1590,46 @@ $(document).ready(function () {
 
             // event on click to create relate apps from opportunity
             $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
-                let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
-                window.open(url, '_blank');
+                // check permission before redirect
+                let $dataDetail = $('#data-detail');
+                if ($(this).attr('data-label') && $dataDetail.val()) {
+                    let detail = JSON.parse($dataDetail.val());
+                    let label = $(this).attr('data-label');
+                    let appMapPerm = {
+                        'quotation.quotation': 'quotation.quotation.create',
+                        'saleorder.saleorder': 'saleorder.saleorder.create',
+                    };
+                    $.fn.callAjax2({
+                            'url': $('#script-url').attr('data-url-opp-list'),
+                            'method': 'GET',
+                            'data': {'list_from_app': appMapPerm[label]},
+                            isLoading: true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                    let countCheck = 0;
+                                    for (let opp of data.opportunity_list) {
+                                        countCheck++;
+                                        if (opp?.['id'] === detail?.['id']) {
+                                            let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
+                                            window.open(url, '_blank');
+                                            return true;
+                                        }
+                                        if (countCheck >= data.opportunity_list.length) {
+                                            $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
+                                            return false
+                                        }
+                                    }
+                                    $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
+                                    return false
+                                }
+                            }
+                        }
+                    )
+                }
             })
 
             $('#btn-create-related-feature').on('click', function () {

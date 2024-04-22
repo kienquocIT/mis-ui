@@ -523,4 +523,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROJECT_LIST = StringUrl('project/list')
     PROJECT_DETAIL = StringUrl('project/detail/{pk}')
     PROJECT_GROUP_LIST = StringUrl('project/group/list')
+    PROJECT_GROUP_DETAIL = StringUrl('project/group/detail')
     PROJECT_WORK_LIST = StringUrl('project/work/list')
+    PROJECT_WORK_DETAIL = StringUrl('project/work/detail')

@@ -11,7 +11,7 @@ $(document).ready(function(){
             format: 'DD/MM/YYYY'
         },
         maxYear: parseInt(moment().format('YYYY'), 10),
-    });
+    }).val("").trigger('change');
 
     // run select
     $('#selectEmployeeInherit, #select_project_owner').each(function(){

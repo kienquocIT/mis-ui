@@ -82,3 +82,7 @@
 .gaw-btn:hover{
     color: #146ebe;
 }
+.grid-row-title:hover span:not(.expand-btn){
+    text-decoration:underline;
+    cursor: pointer;
+}

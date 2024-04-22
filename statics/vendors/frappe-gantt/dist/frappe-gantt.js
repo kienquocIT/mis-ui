@@ -1129,6 +1129,7 @@ var Gantt = (function () {
 
         load_more(data){
             // clone old task list
+            jQuery('.gantt-left .gantt-left-outerwrap').remove()
             let temp = jQuery.extend([], this.tasks)
             // render new task list
             this.setup_tasks(data)
@@ -1939,10 +1940,25 @@ var Gantt = (function () {
                         })
                     }
                     if (item.child_of_group && value.code === 'title') item_html.addClass('pd-30')
-                    item_html.append(item.objData[value.code]).css({"width": value.width})
+                    if (value.code === 'title'){
+                        item_html.append(`<span>${item['name']}</span>`).addClass('grid-row-title')
+                        const _this = this;
+                        item_html.on('click', function(){
+                            // event click load detail
+                            if (item.is_group)
+                                _this.options.init_edit_btn_g(item.id)
+                            else _this.options.init_edit_btn_w(item.id)
+                        })
+                    }
+                    else if (value.code === 'start' || value.code === 'end')
+                        item_html.append(moment(item[value.code], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    else
+                        item_html.append(item[value.code])
+                    item_html.css({"width": value.width})
                     row.append(item_html)
-
                 }
+                if (item.hasOwnProperty('child_group_id'))
+                    row.attr('data-group', item.child_group_id)
                 is_flag = false
                 div_wrapper.append(row)
             }

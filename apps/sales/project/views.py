@@ -1,6 +1,6 @@
 __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI', 'ProjectDetail', 'ProjectDetailAPI',
            'ProjectEdit', 'ProjectEditAPI', 'ProjectCreateGroupAPI', 'ProjectGroupListAPI', 'ProjectWorkCreateAPI',
-           'ProjectWorkListAPI']
+           'ProjectWorkListAPI', 'ProjectGroupDetailAPI', 'ProjectWorkDetailAPI']
 
 from django.views import View
 from rest_framework import status
@@ -145,6 +145,39 @@ class ProjectGroupListAPI(APIView):
         return resp.auto_return(key_success='pj_group_list')
 
 
+class ProjectGroupDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_DETAIL.push_id(pk)).get(params)
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_DETAIL.push_id(pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT_GROUP} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_GROUP_DETAIL.fill_key(pk=pk)).delete()
+        return resp.auto_return(key_success='result')
+
+
 class ProjectWorkCreateAPI(APIView):
     @mask_view(
         login_require=True,
@@ -169,3 +202,36 @@ class ProjectWorkListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_LIST).get()
         return resp.auto_return(key_success='pj_work_list')
+
+
+class ProjectWorkDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_DETAIL.push_id(pk)).get(params)
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_DETAIL.push_id(pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT_WORK} {BaseMsg.UPDATE} {BaseMsg.SUCCESSFULLY}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_WORK_DETAIL.push_id(pk)).delete()
+        return resp.auto_return(key_success='result')

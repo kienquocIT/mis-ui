@@ -2,7 +2,7 @@ from django.urls import path
 
 from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAPI, ProjectListAPI, ProjectDetail, \
     ProjectDetailAPI, ProjectEdit, ProjectEditAPI, ProjectCreateGroupAPI, ProjectWorkCreateAPI, ProjectGroupListAPI, \
-    ProjectWorkListAPI
+    ProjectWorkListAPI, ProjectGroupDetailAPI, ProjectWorkDetailAPI
 
 urlpatterns = [
     # project
@@ -17,8 +17,10 @@ urlpatterns = [
     # project group
     path('group/list-api', ProjectGroupListAPI.as_view(), name='ProjectGroupListAPI'),
     path('group/create-api', ProjectCreateGroupAPI.as_view(), name='ProjectCreateGroupAPI'),
+    path('group/detail-api/<str:pk>', ProjectGroupDetailAPI.as_view(), name='ProjectGroupDetailAPI'),
     # project work
     path('work/list-api', ProjectWorkListAPI.as_view(), name='ProjectWorkListAPI'),
     path('work/create-api', ProjectWorkCreateAPI.as_view(), name='ProjectWorkCreateAPI'),
+    path('work/detail-api/<str:pk>', ProjectWorkDetailAPI.as_view(), name='ProjectWorkDetailAPI'),
 
 ]

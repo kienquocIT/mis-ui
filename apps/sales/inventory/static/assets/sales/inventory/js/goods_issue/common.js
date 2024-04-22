@@ -279,6 +279,11 @@ class GoodsIssueLoadPage {
                                 item['subtotal'] = '';
                                 item['unit_cost'] = '';
                                 tableEle.DataTable().row.add(item).draw();
+                                tableEle.find('tbody tr').each(function () {
+                                    if ($(this).find('.col-product').attr('data-manage-type') === '0') {
+                                        $(this).addClass('bg-primary-light-5')
+                                    }
+                                })
                             }
                         })
                         $('#data-ia-product').text(JSON.stringify(data_dict));
@@ -341,7 +346,7 @@ class GoodsIssueLoadPage {
                         data: 'product_mapped',
                         className: 'wrap-text w-20',
                         render: (data, type, row, meta) => {
-                            return `<span class="badge badge-primary badge-sm mb-1">${data.code}</span>&nbsp;<span class="text-primary col-product" data-id="${row.id}">${data.title}</span>`
+                            return `<span class="badge badge-primary badge-sm mb-1">${data.code}</span>&nbsp;<span class="text-primary col-product" data-manage-type="${row?.['product_mapped']?.['general_traceability_method']}" data-id="${row.id}">${data.title}</span>`
                         },
                     },
                     {
@@ -685,7 +690,7 @@ class GoodsIssueLoadPage {
                         },
                     }, {
                         data: 'product_warehouse',
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text w-10 text-center',
                         render: (data, type, row) => {
                             if (data?.['product_mapped']?.['general_traceability_method'] !== 0) {
                                 return `<button type="button"
@@ -707,6 +712,9 @@ class GoodsIssueLoadPage {
                         },
                     },
                 ],
+                initComplete: function () {
+                    $('#dtbProduct').find('tbody tr').attr('class', 'bg-primary-light-5')
+                }
             });
         }
     }

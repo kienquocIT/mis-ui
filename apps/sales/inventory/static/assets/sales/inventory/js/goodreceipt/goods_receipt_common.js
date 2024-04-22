@@ -3196,6 +3196,7 @@ class GRSubmitHandle {
                 let dataRowRaw = row?.querySelector('.table-row-order')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
+                    rowData['inventory_adjustment_item'] = dataRow.id
                     let eleProduct = row.querySelector('.table-row-item');
                     if (eleProduct) { // PRODUCT
                         let dataInfo = {}

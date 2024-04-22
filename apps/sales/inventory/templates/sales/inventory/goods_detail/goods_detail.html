@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Goods detail' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .custom-scroll {
+            position: relative;
+            margin: auto;
+        }
+        .table-wrap {
+            width: 100%;
+            overflow: auto;
+        }
+        .fixed_header {
+            width: 100%;
+            margin: auto;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .table-wrap .fixed_header thead {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+{#    <button class="btn btn-outline-primary" type="submit" form="frm_good_receipt_create">#}
+{#        <span>#}
+{#            <span>{% trans 'Save' %}</span>#}
+{#            <span class="icon">#}
+{#                <i class="fa-regular fa-floppy-disk"></i>#}
+{#            </span>#}
+{#        </span>#}
+{#    </button>#}
+{% endblock %}
+{% block pageContent %}
+    <form id="goods-detail-main-form"
+          data-method="GET"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label for="prd-category" class="form-label">{% trans 'Product category' %}</label>
+                    <select class="form-select select2 select-multiple"
+                            multiple
+                            id="prd-category"
+                            data-method="GET"
+                            data-url="{% url 'ProductCategoryListAPI' %}"
+                    ></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label for="prd" class="form-label">{% trans 'Product' %}</label>
+                    <select class="form-select select2 select-multiple"
+                            multiple
+                            id="prd"
+                            data-method="GET"
+                            data-url="{% url 'ProductListAPI' %}"
+                    ></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label for="wh" class="form-label">{% trans 'Warehouse' %}</label>
+                    <select class="form-select select2 select-multiple"
+                            multiple
+                            id="wh"
+                            data-method="GET"
+                            data-url="{% url 'WareHouseListAPI' %}"
+                    ></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="status" class="form-label">{% trans 'LOT/Serial status' %}</label>
+                    <select class="form-select select2" id="status">
+                        <option value="0">{% trans 'Done' %}</option>
+                        <option value="1">{% trans 'Not yet' %}</option>
+                        <option value="2">{% trans 'None' %}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="custom-scroll">
+                    <div class="table-wrap" style="max-height: 65vh">
+                        <table class="table nowrap w-100 fixed_header"
+                               data-method="GET"
+                               data-url="{% url 'GoodsDetailAPI' %}"
+                               id="goods-detail-main-table"
+                        >
+                            <thead class="row-fixed bg-secondary-light-4">
+                                <tr>
+                                    <th>{% trans 'Product' %}</th>
+                                    <th>{% trans 'Receipt code' %}</th>
+                                    <th>{% trans 'Date' %}</th>
+                                    <th>{% trans 'PIC' %}</th>
+                                    <th>{% trans 'Warehouse' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'Serial' %}</th>
+                                    <th>{% trans 'Lot' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/inventory/js/goods_detail/goods_detail.js' %}"></script>
+{% endblock %}

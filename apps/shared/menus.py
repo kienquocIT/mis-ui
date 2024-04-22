@@ -413,6 +413,12 @@ class MenusPurchase:
                 icon='<i class="fas fa-file-import"></i>',
             ),
             MenuCommon(
+                name='Goods detail',
+                code='menu_goods_detail_list',
+                view_name='GoodsDetail',
+                icon='<i class="fas fa-info-circle"></i>',
+            ),
+            MenuCommon(
                 name='Goods issue',
                 code='menu_goods_issue_list',
                 view_name='GoodsIssueList',

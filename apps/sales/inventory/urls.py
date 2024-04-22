@@ -9,7 +9,8 @@ from apps.sales.inventory.views import (
     InventoryAdjustmentOtherListAPI, GoodsIssueList, GoodsIssueCreate, GoodsIssueDetail, GoodsIssueListAPI,
     GoodsIssueDetailAPI, InventoryAdjustmentProductListAPI, GoodsIssueUpdate,
     GoodsReturnList, GoodsReturnCreate, GoodsReturnDetail, GoodsReturnUpdate, SaleOrderListAPIForGoodsReturn,
-    DeliveryListForGoodsReturnAPI, DeliveryProductsForGoodsReturnAPI, GoodsReturnListAPI, GoodsReturnDetailAPI
+    DeliveryListForGoodsReturnAPI, DeliveryProductsForGoodsReturnAPI, GoodsReturnListAPI, GoodsReturnDetailAPI,
+    GoodsDetail, GoodsDetailAPI
 )
 from apps.sales.inventory.views.goods_transfer import GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate, \
     GoodsTransferListAPI, GoodsTransferDetailAPI
@@ -64,4 +65,10 @@ urlpatterns += [
     path('sale-orders-for-goods-return/list', SaleOrderListAPIForGoodsReturn.as_view(), name='SaleOrderListAPIForGoodsReturn'),
     path('deliveries/api', DeliveryListForGoodsReturnAPI.as_view(), name='DeliveryListForGoodsReturnAPI'),
     path('delivery-products/api/<str:pk>', DeliveryProductsForGoodsReturnAPI.as_view(), name='DeliveryProductsForGoodsReturnAPI'),
+]
+
+# goods detail
+urlpatterns += [
+    path('goods-detail', GoodsDetail.as_view(), name='GoodsDetail'),
+    path('goods-detail/api', GoodsDetailAPI.as_view(), name='GoodsDetailAPI')
 ]

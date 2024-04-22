@@ -416,7 +416,7 @@ class MenusPurchase:
                 name='Goods detail',
                 code='menu_goods_detail_list',
                 view_name='GoodsDetail',
-                icon='<i class="fas fa-info-circle"></i>',
+                icon='<i class="bi bi-info-square"></i>',
             ),
             MenuCommon(
                 name='Goods issue',

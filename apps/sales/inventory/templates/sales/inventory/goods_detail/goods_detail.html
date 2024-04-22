@@ -45,7 +45,7 @@
         <div class="row">
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
-                    <label for="prd-category" class="form-label">{% trans 'Product category' %}</label>
+                    <label for="prd-category" class="form-label">{% trans 'Product category' %} <span class="small">({% trans 'Default all' %})</span></label>
                     <select class="form-select select2 select-multiple"
                             multiple
                             id="prd-category"
@@ -56,7 +56,7 @@
             </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label for="prd" class="form-label">{% trans 'Product' %}</label>
+                    <label for="prd" class="form-label">{% trans 'Product' %} <span class="small">({% trans 'Default all' %})</span></label>
                     <select class="form-select select2 select-multiple"
                             multiple
                             id="prd"
@@ -67,7 +67,7 @@
             </div>
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
-                    <label for="wh" class="form-label">{% trans 'Warehouse' %}</label>
+                    <label for="wh" class="form-label">{% trans 'Warehouse' %} <span class="small">({% trans 'Default all' %})</span></label>
                     <select class="form-select select2 select-multiple"
                             multiple
                             id="wh"
@@ -79,10 +79,9 @@
             <div class="col-12 col-md-2 col-lg-2">
                 <div class="form-group">
                     <label for="status" class="form-label">{% trans 'LOT/Serial status' %}</label>
-                    <select class="form-select select2" id="status">
-                        <option value="0">{% trans 'Done' %}</option>
-                        <option value="1">{% trans 'Not yet' %}</option>
-                        <option value="2">{% trans 'None' %}</option>
+                    <select class="form-select select2 select-multiple" multiple id="status">
+                        <option value="0" selected>{% trans 'Done' %}</option>
+                        <option value="1" selected>{% trans 'Not yet' %}</option>
                     </select>
                 </div>
             </div>
@@ -115,6 +114,96 @@
             </div>
         </div>
     </form>
+
+    <div class="modal fade" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
+        <div class="modal-dialog modal-lg min-w-1920p" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Serial information' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="custom-scroll">
+                                <div class="table-wrap" style="max-height: 60vh">
+                                    <table class="table nowrap w-100 fixed_header" id="table-serial">
+                                        <thead class="row-fixed bg-primary-light-4">
+                                        <tr>
+                                            <th class="w-5"></th>
+                                            <th class="w-10">{% trans 'Vendor serial No.' %}</th>
+                                            <th class="w-15">{% trans 'Serial No.' %}</th>
+                                            <th class="w-15">{% trans 'Expired date' %}</th>
+                                            <th class="w-15">{% trans 'Mfr date' %}</th>
+                                            <th class="w-15">{% trans 'Warranty start' %}</th>
+                                            <th class="w-15">{% trans 'Warranty end' %}</th>
+                                            <th class="w-10"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-lot" tabindex="-1" role="dialog" aria-labelledby="modal-lot" aria-hidden="true">
+        <div class="modal-dialog modal-lg min-w-1500p" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Lot information' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="custom-scroll">
+                                <div class="table-wrap" style="max-height: 60vh">
+                                    <table class="table nowrap w-100 fixed_header" id="table-lot">
+                                        <thead class="row-fixed bg-secondary-light-4">
+                                        <tr>
+                                            <th class="w-5"></th>
+                                            <th class="w-25">{% trans 'Lot number' %}</th>
+                                            <th class="w-20">{% trans 'Quantity import' %}</th>
+                                            <th class="w-20">{% trans 'Expired date' %}</th>
+                                            <th class="w-20">{% trans 'Mfr date' %}</th>
+                                            <th class="w-10"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button class="btn btn-sm btn-outline-primary" type="button" id="add-new-row-lot">
+                                <span>
+                                    <span>{% trans 'Add new row' %}</span>
+                                    <span class="icon"><i class="fas fa-plus"></i></span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block dataHiddenGroup %}
 {% endblock %}

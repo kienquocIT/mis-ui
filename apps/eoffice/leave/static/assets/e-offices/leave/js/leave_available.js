@@ -286,6 +286,7 @@ $(document).ready(function () {
             const frm = new SetupFormSubmit($editForm);
             let frmData = frm.dataForm;
             if (!frmData?.expiration_date) frmData.expiration_date = null
+            else frmData.expiration_date = moment(frmData.expiration_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
             if (!frmData?.employee_inherit) frmData.employee_inherit = $('[name="employee_inherit"]', $editForm).val()
             if (!frmData?.id) frmData.id = $('[name="id"]', $editForm).val()
             frmData.type_arises = 1

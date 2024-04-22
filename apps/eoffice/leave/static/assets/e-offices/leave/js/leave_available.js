@@ -286,6 +286,8 @@ $(document).ready(function () {
             const frm = new SetupFormSubmit($editForm);
             let frmData = frm.dataForm;
             if (!frmData?.expiration_date) frmData.expiration_date = null
+            if (!frmData?.employee_inherit) frmData.employee_inherit = $('[name="employee_inherit"]', $editForm).val()
+            if (!frmData?.id) frmData.id = $('[name="id"]', $editForm).val()
             frmData.type_arises = 1
             $.fn.callAjax2({
                 "url": $urlElm.attr('data-available-list'),

@@ -7221,3 +7221,7 @@ msgstr "Chưa xong"
 #
 msgid "LOT/Serial status"
 msgstr "Trạng thái LOT/Serial"
+
+#
+msgid "Default all"
+msgstr "Mặc định là tất cả"

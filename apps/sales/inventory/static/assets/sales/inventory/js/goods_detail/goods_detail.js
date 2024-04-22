@@ -88,7 +88,7 @@ $(document).ready(function () {
                     data: 'goods_receipt',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-secondary">${data?.['code']}</span>`;
+                        return `<span class="badge badge-soft-secondary gr-code">${data?.['code']}</span>`;
                     }
                 },
                 {
@@ -129,7 +129,10 @@ $(document).ready(function () {
                                         data-bs-toggle="modal"
                                         data-bs-target="#modal-serial"
                                         class="btn-open-modal-serial btn btn-icon btn-rounded btn-flush-primary flush-hover btn-xs"
-                                        data-quantity-import="${row?.['quantity_import']}">
+                                        data-quantity-import="${row?.['quantity_import']}"
+                                        data-product-id="${row?.['product']?.['id']}"
+                                        data-warehouse-id="${row?.['warehouse']?.['id']}"
+                                        >
                                     <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
                                 </button>
                                 <script class="serial_list_data">${JSON.stringify(data)}</script>
@@ -148,7 +151,10 @@ $(document).ready(function () {
                                         data-bs-toggle="modal"
                                         data-bs-target="#modal-lot"
                                         class="btn-open-modal-lot btn btn-icon btn-rounded btn-flush-light flush-hover btn-xs"
-                                        data-quantity-import="${row?.['quantity_import']}">
+                                        data-quantity-import="${row?.['quantity_import']}"
+                                        data-product-id="${row?.['product']?.['id']}"
+                                        data-warehouse-id="${row?.['warehouse']?.['id']}"
+                                        >
                                     <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
                                 </button>
                                 <script class="lot_list_data">${JSON.stringify(data)}</script>
@@ -163,7 +169,7 @@ $(document).ready(function () {
 
     loadMainTable();
 
-    function loadSerialTable(data) {
+    function loadSerialTable(data, product_id, warehouse_id) {
         $table_serial.DataTable().clear().destroy()
         $table_serial.DataTableDefault({
             dom: '',
@@ -186,7 +192,10 @@ $(document).ready(function () {
                         if (row?.['id']) {
                             disabled_readonly = 'disabled readonly'
                         }
-                        return `<input ${disabled_readonly} data-raw="${data ? data : ''}" data-id="${row?.['id']}" class="form-control vendor_serial_number" value="${data ? data : ''}">`;
+                        return `<input ${disabled_readonly}
+                                        data-raw="${data ? data : ''}"
+                                        data-serial-id="${row?.['id']}"
+                                        class="form-control vendor_serial_number" value="${data ? data : ''}">`;
                     }
                 },
                 {
@@ -265,6 +274,8 @@ $(document).ready(function () {
                 $('.date-input').each(function () {
                     LoadDate($(this), $(this).val() === '')
                 })
+                $table_serial.attr('data-product-id', product_id)
+                $table_serial.attr('data-warehouse-id', warehouse_id)
             }
         });
     }
@@ -286,10 +297,12 @@ $(document).ready(function () {
                 }
             )
         }
-        loadSerialTable(table_data)
+        let product_id = $(this).attr('data-product-id')
+        let warehouse_id = $(this).attr('data-warehouse-id')
+        loadSerialTable(table_data, product_id, warehouse_id)
     })
 
-    function loadLotTable(data) {
+    function loadLotTable(data, product_id, warehouse_id) {
         $table_lot.DataTable().clear().destroy()
         $table_lot.DataTableDefault({
             dom: '',
@@ -350,13 +363,17 @@ $(document).ready(function () {
                 $('.date-input').each(function () {
                     LoadDate($(this), $(this).val() === '')
                 })
+                $table_lot.attr('data-product-id', product_id)
+                $table_lot.attr('data-warehouse-id', warehouse_id)
             }
         });
     }
 
     $(document).on("click", '.btn-open-modal-lot', function () {
         let table_data = $(this).closest('td').find('.lot_list_data').text() ? JSON.parse($(this).closest('td').find('.lot_list_data').text()) : []
-        loadLotTable(table_data)
+        let product_id = $(this).attr('data-product-id')
+        let warehouse_id = $(this).attr('data-warehouse-id')
+        loadLotTable(table_data, product_id, warehouse_id)
     })
 
     function LoadDate(ele, is_null=false) {
@@ -387,5 +404,17 @@ $(document).ready(function () {
             $(this).val($(this).attr('data-raw')).removeClass('is-valid').prop('disabled', true).prop('readonly', true);
         });
         $(this).prop('hidden', true);
+    });
+
+    $(document).on("mouseenter", '#goods-detail-main-table tr', function () {
+        let this_gr_code = $(this).find('.gr-code').text()
+        $main_table.find('.gr-code').each(function() {
+            if ($(this).text() === this_gr_code) {
+                $(this).attr('class', 'badge badge-secondary gr-code')
+            }
+            else {
+                $(this).attr('class', 'badge badge-soft-secondary gr-code')
+            }
+        });
     });
 })

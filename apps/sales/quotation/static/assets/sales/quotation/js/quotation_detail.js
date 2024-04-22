@@ -39,6 +39,13 @@ $(function () {
                         }
                     }
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+                    // get WF initial zones for change
+                    let appCode = 'quotation';
+                    if ($form[0].classList.contains('sale-order')) {
+                        appCode = 'saleorder';
+                    }
+                    WFRTControl.setWFInitialData(appCode, $form.attr('data-method').toLowerCase());
+
                     // delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');
                     else $('#btnDeliverySaleOrder').addClass('hidden');

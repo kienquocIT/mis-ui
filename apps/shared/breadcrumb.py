@@ -251,10 +251,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_UPDATE_PAGE = BreadcrumbChildren(_('Goods receipt update'))
 
     # Goods detail
-    GOODS_DETAIL_LIST_PAGE = BreadcrumbChildren(_('Goods detail'), 'GoodsDetailList')
-    GOODS_DETAIL_CREATE_PAGE = BreadcrumbChildren(_('Goods detail create'), 'GoodsDetailCreate')
-    GOODS_DETAIL_DETAIL_PAGE = BreadcrumbChildren(_('Goods detail detail'))
-    GOODS_DETAIL_UPDATE_PAGE = BreadcrumbChildren(_('Goods detail update'))
+    GOODS_DETAIL_PAGE = BreadcrumbChildren(_('Goods detail'), 'GoodsDetail')
 
     # Purchase request config
     PURCHASE_REQUEST_CONFIG_PAGE = BreadcrumbChildren(_('Purchase Request'), 'PurchaseRequestConfig')
@@ -744,10 +741,7 @@ class BreadcrumbView:
     GOODS_RECEIPT_UPDATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Goods detail
-    GOODS_DETAIL_LIST_PAGE = [BreadcrumbItem.GOODS_DETAIL_LIST_PAGE]
-    GOODS_DETAIL_CREATE_PAGE = GOODS_DETAIL_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
-    GOODS_DETAIL_DETAIL_PAGE = GOODS_DETAIL_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-    GOODS_DETAIL_UPDATE_PAGE = GOODS_DETAIL_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    GOODS_DETAIL_PAGE = [BreadcrumbItem.GOODS_DETAIL_PAGE]
 
     # e-office Leave
     LEAVE_CONFIG_PAGE = [

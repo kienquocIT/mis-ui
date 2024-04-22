@@ -70,13 +70,11 @@ $(function () {
         $('.daterangepicker').remove();
 
         // get WF initial zones
-        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
-            if (!formSubmit[0].classList.contains('sale-order')) {
-                WFRTControl.setWFInitialData('quotation');
-            } else {
-                WFRTControl.setWFInitialData('saleorder');
-            }
+        let appCode = 'quotation';
+        if (formSubmit[0].classList.contains('sale-order')) {
+            appCode = 'saleorder';
         }
+        WFRTControl.setWFInitialData(appCode, formSubmit.attr('data-method').toLowerCase());
 
 
 // Action on change dropdown opportunity

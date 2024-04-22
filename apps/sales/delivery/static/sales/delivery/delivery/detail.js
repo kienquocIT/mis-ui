@@ -1001,12 +1001,12 @@ $(async function () {
 
                 if (res.estimated_delivery_date) {
                     const deliveryDate = moment(res.estimated_delivery_date, 'YYYY-MM-DD hh:mm:ss').format(
-                        'DD/MM/YYYY hh:mm A')
+                        'DD/MM/YYYY')
                     $('#inputDeliveryDate').val(deliveryDate)
                 }
                 if (res.actual_delivery_date) {
                     const actualDate = moment(res.actual_delivery_date, 'YYYY-MM-DD hh:mm:ss').format(
-                        'DD/MM/YYYY hh:mm A')
+                        'DD/MM/YYYY')
                     $('#inputActualDate').val(actualDate)
                 }
                 if (res.customer_data) {
@@ -1083,7 +1083,6 @@ $(async function () {
             e.preventDefault();
             const $storedData = JSON.parse($('#request-data').text())
             let _form = new SetupFormSubmit($form);
-            const csr = $("[name=csrfmiddlewaretoken]").val();
             let putData = {}
             if (_form.dataForm['estimated_delivery_date'])
                 putData['estimated_delivery_date'] = moment(
@@ -1177,16 +1176,16 @@ $(async function () {
 
     // run datetimepicker
     $('input[type=text].date-picker').daterangepicker({
-        minYear: 1901,
         singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        // "cancelClass": "btn-secondary",
-        // maxYear: parseInt(moment().format('YYYY'), 10)
+        timepicker: false,
+        showDropdowns: false,
+        minYear: 2023,
         locale: {
-            format: 'DD/MM/YYYY hh:mm A'
-        }
-    })
+            format: 'DD/MM/YYYY'
+        },
+        maxYear: parseInt(moment().format('YYYY'), 10),
+        autoApply: true,
+    });
     $('#inputDeliveryDate').val(null).trigger('change')
     $('#inputActualDate').val(null).trigger('change')
 

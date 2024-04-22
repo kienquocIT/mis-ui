@@ -1975,7 +1975,7 @@ class WFRTControl {
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        WFRTControl.checkSubmitCollabNextNode(_form);
+                        WFRTControl.submitCheckCollabNextNode(_form);
                     }
                 })
             }
@@ -2011,7 +2011,7 @@ class WFRTControl {
                         let saveStatus = eleChecked.getAttribute('data-status');
                         if (saveStatus) {
                             _form.dataForm['system_status'] = parseInt(saveStatus);
-                            WFRTControl.checkSubmitCollabNextNode(_form);
+                            WFRTControl.submitCheckCollabNextNode(_form);
                         }
                     } else {
                         return "You need to select one!";
@@ -2095,7 +2095,7 @@ class WFRTControl {
         )
     }
 
-    static checkSubmitCollabNextNode(_form) {
+    static submitCheckCollabNextNode(_form) {
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
             if (_form.dataForm['system_status'] === 0) {
@@ -2290,19 +2290,19 @@ class WFRTControl {
 
     static setWFInitialData(app_code, data_method) {
         if (app_code && data_method) {
-            let isValid = false;
+            let isCheck = false;
             if (data_method.toLowerCase() === 'post') {
-                isValid = true;
+                isCheck = true;
             }
             if (data_method.toLowerCase() === 'put') {
                 let eleCR = $('#documentCR');
                 if (eleCR) {
                     if (eleCR.attr('data-status') === '5') {
-                        isValid = true;
+                        isCheck = true;
                     }
                 }
             }
-            if (isValid === true) {
+            if (isCheck === true) {
                 let btn = $('#btnLogShow');
                 btn.removeClass('hidden');
                 let url = btn.attr('data-url-current-wf');

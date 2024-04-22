@@ -7213,3 +7213,11 @@ msgstr "Số IA"
 #
 msgid "Goods detail"
 msgstr "Chi tiết hàng"
+
+#
+msgid "Not yet"
+msgstr "Chưa xong"
+
+#
+msgid "LOT/Serial status"
+msgstr "Trạng thái LOT/Serial"

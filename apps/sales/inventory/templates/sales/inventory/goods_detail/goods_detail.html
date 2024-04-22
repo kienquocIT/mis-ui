@@ -16,10 +16,43 @@
         </span>
     </button>
 {% endblock %}
-
 {% block pageContent %}
+    <form id="goods-detail-main-form"
+          data-method="GET"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label for="prd-category" class="form-label">{% trans 'Product category' %}</label>
+                    <select class="form-select select2 select-multiple" multiple id="prd-category"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label for="prd" class="form-label">{% trans 'Product' %}</label>
+                    <select class="form-select select2 select-multiple" multiple id="prd"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label for="wh" class="form-label">{% trans 'Warehouse' %}</label>
+                    <select class="form-select select2 select-multiple" multiple id="wh"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label for="status" class="form-label">{% trans 'LOT/Serial status' %}</label>
+                    <select class="form-select select2" id="status">
+                        <option value="0">{% trans 'Done' %}</option>
+                        <option value="1">{% trans 'Not yet' %}</option>
+                        <option value="2">{% trans 'None' %}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock %}
-
 {% block dataHiddenGroup %}
 {% endblock %}
 {% block jsFooter %}

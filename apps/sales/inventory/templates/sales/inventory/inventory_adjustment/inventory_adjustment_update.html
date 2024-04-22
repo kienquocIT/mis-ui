@@ -1,24 +1,26 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Inventory adjustment detail' %}{% endblock %}
+{% block title %}{% trans 'Inventory adjustment update' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'InventoryAdjustmentUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
+    <button id="update-ia" class="btn btn-outline-primary" type="submit" form="frm_inventory_adjustment_detail">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
+    <script id="url_script"
+            data-url-warehouse-product-list="{% url 'WareHouseListForInventoryAdjustmentAPI' %}"
+    ></script>
+
     <form data-method="PUT" data-url-redirect="{% url "InventoryAdjustmentDetail" pk=0 %}"
           data-url-list="{% url 'InventoryAdjustmentListAPI' %}"
           data-url-detail="{% url 'InventoryAdjustmentDetailAPI' pk=0 %}"
@@ -37,7 +39,7 @@
                         <label for="warehouse-select-box" class="form-label required">{% trans 'Warehouse' %}</label>
                         <select class="form-select select2 select-multiple"
                                 data-url="{% url 'WareHouseListAPI' %}"
-                                data-method="GET"
+                                data-method="GET" disabled readonly
                                 id="warehouse-select-box" multiple>
                         </select>
                     </div>
@@ -47,7 +49,7 @@
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
                                 <label for="date" class="form-label required">{% trans 'Date' %}</label>
-                                <input type="text" class="form-control" id="date">
+                                <input type="text" class="form-control" id="date" disabled readonly>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
@@ -168,5 +170,5 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_common.js' %}"></script>
-    <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_update.js' %}"></script>
 {% endblock %}

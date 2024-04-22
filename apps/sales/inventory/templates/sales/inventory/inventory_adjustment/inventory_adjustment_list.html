@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Inventory Adjustment List' %}{% endblock %}
+{% block title %}{% trans 'Inventory adjustment list' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
@@ -17,25 +17,28 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <div>
-        <table id="inventory_adjustment_list" class="table nowrap w-100 mb-5" data-method="GET"
-               data-url="{% url 'InventoryAdjustmentListAPI' %}"
-               data-url-detail="{% url 'InventoryAdjustmentDetail' '0' %}"
-        >
-            <thead>
-            <th></th>
-            <th>{% trans "Code" %}</th>
-            <th>{% trans "Title" %}
-                <i class="fas fa-info-circle icon-info"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="bottom"
-                   title="{% trans 'Press row here to open detail page.' %}">
-                </i>
-            </th>
-            <th>{% trans "Warehouses" %}</th>
-            <th>{% trans "Date" %}</th>
-            </thead>
-        </table>
+    <div class="row">
+        <div class="col-12">
+            <table id="inventory_adjustment_list" class="table nowrap w-100 mb-5" data-method="GET"
+                   data-url="{% url 'InventoryAdjustmentListAPI' %}"
+                   data-url-detail="{% url 'InventoryAdjustmentDetail' '0' %}"
+            >
+                <thead>
+                <th></th>
+                <th>{% trans "Code" %}
+                    <i class="fas fa-info-circle icon-info"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom"
+                       title="{% trans 'Press row here to open detail page.' %}">
+                    </i>
+                </th>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Warehouses" %}</th>
+                <th>{% trans "Date" %}</th>
+                <th>{% trans "Status" %}</th>
+                </thead>
+            </table>
+        </div>
     </div>
 {% endblock %}
 {% block jsFooter %}

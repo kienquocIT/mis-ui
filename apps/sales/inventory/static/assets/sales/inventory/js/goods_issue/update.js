@@ -9,7 +9,6 @@ $(document).ready(function () {
             title: {
                 required: true,
             },
-            date_issue: true,
             inventory_adjustment: {
                 required: function () {
                     return $('#inlineRadio1').is(':checked')

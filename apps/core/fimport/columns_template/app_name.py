@@ -1,2 +1,15 @@
-from .account.app_name import *
-from .hr.app_name import *
+SHEET_ACCOUNT_USERS = '#account.users'
+
+SHEET_HR_EMPLOYEE = '#hr.employees'
+SHEET_HR_ROLE = '#hr.roles'
+SHEET_HR_GROUP_LEVEL = '#hr.groups.level'
+SHEET_HR_GROUP = '#hr.groups'
+
+SHEET_SALEDATA_ACCOUNT = '#saledata.account'
+SHEET_SALEDATA_CONTACT = '#saledata.contact'
+SHEET_SALEDATA_SALUTATION = '#saledata.salutation'
+SHEET_SALEDATA_CURRENCY = '#saledata.currency'
+SHEET_SALEDATA_ACCOUNT_GROUP = '#saledata.account.group'
+SHEET_SALEDATA_ACCOUNT_TYPE = '#saledata.account.type'
+SHEET_SALEDATA_INDUSTRY = '#saledata.industry'
+SHEET_SALEDATA_PAYMENT_TERM = '#saledata.payment-term'

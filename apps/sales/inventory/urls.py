@@ -3,8 +3,9 @@ from django.urls import path
 from apps.sales.inventory.views import (
     GoodsReceiptList, GoodsReceiptCreate, GoodsReceiptListAPI,
     GoodsReceiptDetailAPI, GoodsReceiptDetail, GoodsReceiptUpdate,
-    InventoryAdjustmentList, InventoryAdjustmentCreate, InventoryAdjustmentListAPI,
-    InventoryAdjustmentListAPI, InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail,
+    InventoryAdjustmentList, InventoryAdjustmentCreate,
+    InventoryAdjustmentUpdate, InventoryAdjustmentListAPI,
+    InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail,
     InventoryAdjustmentOtherListAPI, GoodsIssueList, GoodsIssueCreate, GoodsIssueDetail, GoodsIssueListAPI,
     GoodsIssueDetailAPI, InventoryAdjustmentProductListAPI, GoodsIssueUpdate,
     GoodsReturnList, GoodsReturnCreate, GoodsReturnDetail, GoodsReturnUpdate, SaleOrderListAPIForGoodsReturn,
@@ -23,23 +24,14 @@ urlpatterns = [
     path('goods-receipt/update/<str:pk>', GoodsReceiptUpdate.as_view(), name='GoodsReceiptUpdate'),
     # inventory adjustment
     path('inventory-adjustment/list', InventoryAdjustmentList.as_view(), name='InventoryAdjustmentList'),
-    path('inventory-adjustment/api/list', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
-    path(
-        'inventory-adjustment/api/list-other',
-        InventoryAdjustmentOtherListAPI.as_view(),
-        name='InventoryAdjustmentOtherListAPI'
-    ),
     path('inventory-adjustment/create', InventoryAdjustmentCreate.as_view(), name='InventoryAdjustmentCreate'),
+    path('inventory-adjustment/detail/<str:pk>', InventoryAdjustmentDetail.as_view(), name='InventoryAdjustmentDetail'),
+    path('inventory-adjustment/update/<str:pk>', InventoryAdjustmentUpdate.as_view(), name='InventoryAdjustmentUpdate'),
+    path('inventory-adjustment/api/list', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
+    path('inventory-adjustment/api/list-other', InventoryAdjustmentOtherListAPI.as_view(), name='InventoryAdjustmentOtherListAPI'),
     path('inventory-adjustment/api', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
-    path('inventory-adjustment/<str:pk>', InventoryAdjustmentDetail.as_view(), name='InventoryAdjustmentDetail'),
-    path(
-        'inventory-adjustment/api/<str:pk>', InventoryAdjustmentDetailAPI.as_view(), name='InventoryAdjustmentDetailAPI'
-    ),
-    path(
-        'inventory-adjustment/product/list/api/<str:ia_id>',
-        InventoryAdjustmentProductListAPI.as_view(),
-        name='InventoryAdjustmentProductListAPI'
-    ),
+    path('inventory-adjustment/api/<str:pk>', InventoryAdjustmentDetailAPI.as_view(), name='InventoryAdjustmentDetailAPI'),
+    path('inventory-adjustment/product/list/api/<str:ia_id>', InventoryAdjustmentProductListAPI.as_view(), name='InventoryAdjustmentProductListAPI'),
 ]
 
 # goods transfer

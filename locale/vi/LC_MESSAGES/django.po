@@ -1311,6 +1311,10 @@ msgid "Account Type"
 msgstr "Loại tài khoản"
 
 #
+msgid "Account Type Selection"
+msgstr "Cá nhân/ Tổ chức"
+
+#
 msgid "individual"
 msgstr "Cá nhân"
 
@@ -1440,7 +1444,7 @@ msgstr "1-10 tỷ"
 
 #
 msgid "10-20 billions"
-msgstr "1-20 tỷ"
+msgstr "10-20 tỷ"
 
 #
 msgid "20-50 billions"
@@ -1595,8 +1599,8 @@ msgid "Province"
 msgstr "Tỉnh"
 
 #
-msgid "Inventory"
-msgstr "Kho - giao hàng"
+msgid "Inventory activities"
+msgstr "Hoạt động kho hàng"
 
 #
 msgid "Sale"
@@ -1764,8 +1768,20 @@ msgid "Transaction Type"
 msgstr "Loại giao dịch"
 
 #
-msgid "For"
-msgstr "Cho"
+msgid "Apply for"
+msgstr "Áp dụng cho"
+
+#
+msgid "30-30-40 Split Payment"
+msgstr "Thanh toán 30-30-40"
+
+#
+msgid "Select option"
+msgstr "Lựa chọn"
+
+#
+msgid "Payment in 3 installments"
+msgstr "Thanh toán theo 3 đợt"
 
 #
 msgid "Add new line"
@@ -4615,11 +4631,11 @@ msgstr "Cập nhật đơn mua hàng thành công"
 
 #
 msgid "Goods receipt create successfully"
-msgstr "Tạo đơn nhập kho thành công"
+msgstr "Tạo đơn nhập hàng thành công"
 
 #
 msgid "Goods receipt update successfully"
-msgstr "Cập nhật đơn nhập kho thành công"
+msgstr "Cập nhật đơn nhập hàng thành công"
 
 #
 msgid "Must select one warehouse"
@@ -4631,7 +4647,7 @@ msgstr "Vượt quá số lượng còn lại"
 
 #
 msgid "Goods receipt"
-msgstr "Nhập kho"
+msgstr "Nhập hàng"
 
 #
 msgid "Search"
@@ -5776,7 +5792,7 @@ msgstr "Điều chỉnh tồn kho"
 
 #
 msgid "Goods receipt type"
-msgstr "Loại nhập kho"
+msgstr "Loại nhập hàng"
 
 #
 msgid "For purchase order"
@@ -5944,11 +5960,12 @@ msgstr "Đã giao"
 
 #
 msgid "Partially received"
-msgstr "Nhập kho một phần"
+msgstr "Nhập hàng một phần"
 
 #
 msgid "Received"
-msgstr "Đã nhập kho"
+msgstr "Đã nhập"
+
 #
 msgid "From Price List in left side"
 msgstr "Chọn theo danh sách giá bên trái"
@@ -6959,7 +6976,7 @@ msgstr "Đơn giá nhập"
 
 #
 msgid "In value"
-msgstr "Giá trị nhập kho"
+msgstr "Giá trị nhập"
 
 #
 msgid "Out quantity"
@@ -6971,7 +6988,7 @@ msgstr "Đơn giá xuất"
 
 #
 msgid "Out value"
-msgstr "Giá trị xuất kho"
+msgstr "Giá trị xuất"
 
 #
 msgid "Reload invoice status"
@@ -7039,7 +7056,7 @@ msgstr "Giá trị tích luỹ"
 
 #
 msgid "Goods return"
-msgstr "Đổi-trả hàng"
+msgstr "Đổi - trả hàng"
 
 #
 msgid "Opening balance"
@@ -7128,3 +7145,67 @@ msgstr "Thêm cấu hình mới"
 #
 msgid "Warehouse address"
 msgstr "Địa chỉ kho"
+
+#
+msgid "Goods issue"
+msgstr "Xuất hàng"
+
+#
+msgid "Goods transfer"
+msgstr "Điều chuyển hàng hoá"
+
+#
+msgid "Inventory adjustment create"
+msgstr "Tạo phiếu Điều chỉnh tồn kho"
+
+#
+msgid "Inventory adjustment detail"
+msgstr "Chi tiết phiếu Điều chỉnh tồn kho"
+
+#
+msgid "Inventory adjustment update"
+msgstr "Cập nhập phiếu Điều chỉnh tồn kho"
+
+#
+msgid "Inventory adjustment list"
+msgstr "Danh sách phiếu Điều chỉnh tồn kho"
+
+#
+msgid "Goods issue type"
+msgstr "Loại xuất hàng"
+
+#
+msgid "Select inventory adjustment"
+msgstr "Chọn phiếu kiểm kê kho"
+
+#
+msgid "Add information later"
+msgstr "Thêm thông tin sau"
+
+#
+msgid "Vendor serial no."
+msgstr "Số seri của NCC"
+
+#
+msgid "Serial no."
+msgstr "Số seri"
+
+#
+msgid "Mfr date"
+msgstr "Ngày sản xuất"
+
+#
+msgid "Warranty start"
+msgstr "Bảo hành từ"
+
+#
+msgid "Warranty end"
+msgstr "Bảo hành đến"
+
+#
+msgid "UOM"
+msgstr "Đơn vị"
+
+#
+msgid "IA number"
+msgstr "Số IA"

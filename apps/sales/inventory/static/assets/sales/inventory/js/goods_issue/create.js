@@ -12,23 +12,28 @@ $(document).ready(function () {
             title: {
                 required: true,
             },
-            date_issue: true,
-            inventory_adjustment: {
-                required: function () {
-                    return $('#inlineRadio1').is(':checked')
-                }
-            }
+            date_issue: true
         },
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
             let frm_data = frm.dataForm;
             frm.dataForm['date_issue'] = moment($('[name="date_issue"]').val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-
+            frm.dataForm['inventory_adjustment'] = $('#box-select-ia').val()
+            frm.dataForm['goods_issue_type'] = $('#box-good-issue-type').val()
             if (frm.dataForm['goods_issue_type'] === '0') {
-                frm_data = GoodsIssueLoadPage.getDataProductForIA(frm_data);
+                let frm_data_temp = GoodsIssueLoadPage.getDataProductForIA(frm_data);
+                if (frm_data_temp) {
+                    frm_data = frm_data_temp
+                }
+                else {
+                    $.fn.notifyB({description: 'Missing detail information. Click to Select detail.'}, 'failure');
+                    return
+                }
             } else {
                 frm_data = GoodsIssueLoadPage.getDataProductForLiquidation(frm_data);
             }
+            console.log(frm.dataForm)
+            WindowControl.showLoading();
             $.fn.callAjax2({
                 url: frm.dataUrl,
                 method: frm.dataMethod,
@@ -37,10 +42,19 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(() => {
+                            window.location.replace(frm.dataUrlRedirect);
+                            location.reload.bind(location);
+                        }, 1000);
                     }
                 }, (errs) => {
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )

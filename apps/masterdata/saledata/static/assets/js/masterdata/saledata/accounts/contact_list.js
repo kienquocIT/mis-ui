@@ -19,7 +19,14 @@ $(document).ready(function () {
                 'render': (data, type, row, meta) => {
                     return ``;
                 }
-            }, {
+            },
+            {
+                'data': 'code',
+                render: (data, type, row) => {
+                    return data || '';
+                },
+            },
+            {
                 'data': 'full_name',
                 render: (data, type, row, meta) => {
                     let urlDetail = baseUrlDetail.replace("__pk__", row?.['id']);

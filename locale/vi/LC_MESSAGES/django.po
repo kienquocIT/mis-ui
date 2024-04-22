@@ -7209,3 +7209,7 @@ msgstr "Đơn vị"
 #
 msgid "IA number"
 msgstr "Số IA"
+
+#
+msgid "Goods detail"
+msgstr "Chi tiết hàng"

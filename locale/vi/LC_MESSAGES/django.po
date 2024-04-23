@@ -7223,5 +7223,13 @@ msgid "LOT/Serial status"
 msgstr "Trạng thái LOT/Serial"
 
 #
+msgid "Inventory"
+msgstr "Hàng tồn kho"
+
+#
+msgid "Unit cost"
+msgstr "Giá vốn"
+
+#
 msgid "Default all"
 msgstr "Mặc định là tất cả"

@@ -1946,7 +1946,6 @@ class WFRTControl {
 
     static callWFSubmitForm(_form) {
         let IDRuntime = WFRTControl.getRuntimeWF();
-        let collabOutForm = WFRTControl.getCollabOutFormData();
         let eleDocChange = $('#documentCR');
         let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
@@ -1976,7 +1975,7 @@ class WFRTControl {
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        WFRTControl.callAjaxWFCreate(_form);
+                        WFRTControl.submitCheckCollabNextNode(_form);
                     }
                 })
             }
@@ -2012,54 +2011,7 @@ class WFRTControl {
                         let saveStatus = eleChecked.getAttribute('data-status');
                         if (saveStatus) {
                             _form.dataForm['system_status'] = parseInt(saveStatus);
-                            if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
-                                if (_form.dataForm['system_status'] === 0) {
-                                    WFRTControl.callAjaxWFCreate(_form);
-                                }
-                                if (_form.dataForm['system_status'] === 1) {
-                                    Swal.fire({
-                                        title: $.fn.transEle.attr('data-select-next-node-collab'),
-                                        html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
-                                        allowOutsideClick: false,
-                                        showConfirmButton: true,
-                                        confirmButtonText: $.fn.transEle.attr('data-confirm'),
-                                        showCancelButton: true,
-                                        cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                                        didOpen: () => {
-                                            // Add event listener after the modal is shown
-                                            let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-                                            checkboxes.forEach((checkbox) => {
-                                                checkbox.addEventListener('click', function () {
-                                                    let checked = checkbox.checked;
-                                                    for (let eleCheck of checkboxes) {
-                                                        eleCheck.checked = false;
-                                                    }
-                                                    checkbox.checked = checked;
-                                                });
-                                            });
-                                        }
-                                    }).then((result) => {
-                                        if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                                            let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
-                                            if (eleChecked) {
-                                                if (_form.dataMethod.toLowerCase() === 'post') {
-                                                    _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                                                }
-                                                if (_form.dataMethod.toLowerCase() === 'put') {
-                                                    if (_form.dataForm.hasOwnProperty('system_status')) {
-                                                        _form.dataForm['system_status'] = 1;
-                                                    }
-                                                }
-                                            } else {
-                                                return "You need to select one person!";
-                                            }
-                                            WFRTControl.callAjaxWFCreate(_form);
-                                        }
-                                    });
-                                }
-                            } else {  // No collaborator -> original submit
-                                WFRTControl.callAjaxWFCreate(_form);
-                            }
+                            WFRTControl.submitCheckCollabNextNode(_form);
                         }
                     } else {
                         return "You need to select one!";
@@ -2141,6 +2093,58 @@ class WFRTControl {
                 $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
             }
         )
+    }
+
+    static submitCheckCollabNextNode(_form) {
+        let collabOutForm = WFRTControl.getCollabOutFormData();
+        if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
+            if (_form.dataForm['system_status'] === 0) {
+                WFRTControl.callAjaxWFCreate(_form);
+            }
+            if ([1, 3].includes(_form.dataForm['system_status'])) {
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-select-next-node-collab'),
+                    html: String(WFRTControl.setupHTMLCollabNextNode(collabOutForm)),
+                    allowOutsideClick: false,
+                    showConfirmButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    showCancelButton: true,
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    didOpen: () => {
+                        // Add event listener after the modal is shown
+                        let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                        checkboxes.forEach((checkbox) => {
+                            checkbox.addEventListener('click', function () {
+                                let checked = checkbox.checked;
+                                for (let eleCheck of checkboxes) {
+                                    eleCheck.checked = false;
+                                }
+                                checkbox.checked = checked;
+                            });
+                        });
+                    }
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                        let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                        if (eleChecked) {
+                            if (_form.dataMethod.toLowerCase() === 'post') {
+                                _form.dataForm['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                            }
+                            if (_form.dataMethod.toLowerCase() === 'put') {
+                                if (_form.dataForm.hasOwnProperty('system_status')) {
+                                    _form.dataForm['system_status'] = 1;
+                                }
+                            }
+                        } else {
+                            return "You need to select one person!";
+                        }
+                        WFRTControl.callAjaxWFCreate(_form);
+                    }
+                });
+            }
+        } else {  // No collaborator -> original submit
+            WFRTControl.callAjaxWFCreate(_form);
+        }
     }
 
     static setupHTMLCollabNextNode(collabOutForm) {
@@ -2284,30 +2288,46 @@ class WFRTControl {
         globeWFRuntimeID = runtime_id;
     }
 
-    static setWFInitialData(app_code) {
-        if (app_code) {
-            let btn = $('#btnLogShow');
-            btn.removeClass('hidden');
-            let url = btn.attr('data-url-current-wf');
-            $.fn.callAjax2({
-                'url': url,
-                'method': 'GET',
-                'data': {'code': app_code},
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
-                    let WFconfig = data?.['app_list'][0];
-                    if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (0)
-                        let workflow_current = WFconfig?.['workflow_currently'];
-                        if (workflow_current) {
-                            // zones handler
-                            WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
-                            // collab out form handler
-                            WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
-                        }
+    static setWFInitialData(app_code, data_method) {
+        if (app_code && data_method) {
+            let isCheck = false;
+            if (data_method.toLowerCase() === 'post') {
+                isCheck = true;
+            }
+            if (data_method.toLowerCase() === 'put') {
+                let eleCR = $('#documentCR');
+                if (eleCR) {
+                    if (eleCR.attr('data-status') === '5') {
+                        isCheck = true;
                     }
                 }
-            })
+            }
+            if (isCheck === true) {
+                let btn = $('#btnLogShow');
+                btn.removeClass('hidden');
+                let url = btn.attr('data-url-current-wf');
+                $.fn.callAjax2({
+                    'url': url,
+                    'method': 'GET',
+                    'data': {'code': app_code},
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
+                        let WFconfig = data?.['app_list'][0];
+                        if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (0)
+                            let workflow_current = WFconfig?.['workflow_currently'];
+                            if (workflow_current) {
+                                // zones handler
+                                if (window.location.href.includes('/create/')) {
+                                    WFRTControl.activeButtonOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                                }
+                                // collab out form handler
+                                WFRTControl.setCollabOutFormData(workflow_current['collab_out_form']);
+                            }
+                        }
+                    }
+                })
+            }
         }
     }
 
@@ -2617,8 +2637,6 @@ class WFRTControl {
             WFRTControl.setZoneHiddenData(zonesHiddenData);
             WFRTControl.setIsEditAllZoneData(isEditAllZone);
             if (zonesData && Array.isArray(zonesData) && zonesHiddenData && Array.isArray(zonesHiddenData)) {
-                // $('#btn-active-edit-zone-wf').removeClass('hidden');
-                // $('#btn-active-edit-zone-wf').click();
                 WFRTControl.activeZoneInDoc();
             }
         }

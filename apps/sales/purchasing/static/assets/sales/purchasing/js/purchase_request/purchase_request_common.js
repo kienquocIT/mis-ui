@@ -109,8 +109,12 @@ class PurchaseRequestLoadPage {
             callbackDataResp(resp, keyResp) {
                 let list_result = [];
                 resp.data[keyResp].map(function (item) {
-                    if (!list_product_selected.includes(item.id)) {
-                        list_result.push(item)
+                    if (item.hasOwnProperty('product_choice') && Array.isArray(item?.['product_choice'])) {
+                        if (item?.['product_choice'].includes(2)) {  // has choice allow purchase
+                            if (!list_product_selected.includes(item.id)) {
+                                list_result.push(item)
+                            }
+                        }
                     }
                 })
                 return list_result
@@ -558,15 +562,19 @@ class PurchaseRequestAction {
         if (dict_so.hasOwnProperty(id)) {
             let so_product_datas = dict_so[id]?.['product_data'];
             so_product_datas.map(function (item) {
-                let self_product = dict_self_product[item.id];
-                let remain = self_product ? item?.['remain_for_purchase_request'] + self_product.quantity : item?.['remain_for_purchase_request']
-                let data_temp = {
-                    'id': item.id,
-                    'title': item.product.title,
-                    'quantity': item.product_quantity,
-                    'remain': remain,
+                if (item?.['product'].hasOwnProperty('product_choice') && Array.isArray(item?.['product']?.['product_choice'])) {
+                    if (item?.['product']?.['product_choice'].includes(2)) {  // has choice allow purchase
+                        let self_product = dict_self_product[item.id];
+                        let remain = self_product ? item?.['remain_for_purchase_request'] + self_product.quantity : item?.['remain_for_purchase_request']
+                        let data_temp = {
+                            'id': item.id,
+                            'title': item.product.title,
+                            'quantity': item.product_quantity,
+                            'remain': remain,
+                        }
+                        table.row.add(data_temp).draw().node();
+                    }
                 }
-                table.row.add(data_temp).draw().node();
             })
         } else {
             if (id !== undefined) {
@@ -583,17 +591,21 @@ class PurchaseRequestAction {
 
                             let so_product_datas = data?.['so_product_list']?.['product_data'];
                             so_product_datas.map(function (item) {
-                                dict_so_product[item.id] = item;
-                                $('#data-sale-order-product').text(JSON.stringify(dict_so_product));
-                                let self_product = dict_self_product[item.id];
-                                let remain = self_product ? item?.['remain_for_purchase_request'] + self_product.quantity : item?.['remain_for_purchase_request']
-                                let data_temp = {
-                                    'id': item.id,
-                                    'title': item.product.title,
-                                    'quantity': item.product_quantity,
-                                    'remain': remain,
+                                if (item?.['product'].hasOwnProperty('product_choice') && Array.isArray(item?.['product']?.['product_choice'])) {
+                                    if (item?.['product']?.['product_choice'].includes(2)) {  // has choice allow purchase
+                                        dict_so_product[item.id] = item;
+                                        $('#data-sale-order-product').text(JSON.stringify(dict_so_product));
+                                        let self_product = dict_self_product[item.id];
+                                        let remain = self_product ? item?.['remain_for_purchase_request'] + self_product.quantity : item?.['remain_for_purchase_request']
+                                        let data_temp = {
+                                            'id': item.id,
+                                            'title': item.product.title,
+                                            'quantity': item.product_quantity,
+                                            'remain': remain,
+                                        }
+                                        table.row.add(data_temp).draw().node();
+                                    }
                                 }
-                                table.row.add(data_temp).draw().node();
                             })
                         }
                     }

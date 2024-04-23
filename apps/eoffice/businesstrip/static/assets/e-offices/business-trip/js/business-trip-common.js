@@ -238,6 +238,7 @@ $(document).ready(function () {
             timepicker: false,
             showDropdowns: false,
             minYear: 2023,
+            autoApply: true,
             locale: {
                 format: 'DD/MM/YYYY'
             },

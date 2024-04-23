@@ -8,6 +8,7 @@ $(document).ready(function () {
     const $table_lot = $('#table-lot')
     const $trans_script = $('#trans-url')
     const $add_new_row_lot = $('#add-new-row-lot')
+    const $filter_btn = $('#filter-btn')
 
     function loadProductCategory(data) {
         $prd_category.initSelect2({
@@ -60,7 +61,8 @@ $(document).ready(function () {
 
     loadWarehouse()
 
-    function loadMainTable() {
+    function loadMainTable(category_list=[], product_list=[], warehouse_list=[], status_list=[]) {
+        $main_table.DataTable().clear().destroy()
         $main_table.DataTableDefault({
             dom: '',
             rowIdx: true,
@@ -77,6 +79,24 @@ $(document).ready(function () {
                         for (const item of resp.data['goods_detail_list'] ? resp.data['goods_detail_list'] : []) {
                             result = result.concat(item?.['product_data'])
                         }
+
+                        // filter 1: filter by category
+                        if (category_list.length > 0) {
+                            result = result.filter(item => category_list.includes(item?.['product']?.['category']));
+                        }
+                        // filter 2: filter by product
+                        if (product_list.length > 0) {
+                            result = result.filter(item => product_list.includes(item?.['product']?.['id']));
+                        }
+                        // filter 3: filter by warehouse
+                        if (warehouse_list.length > 0) {
+                            result = result.filter(item => warehouse_list.includes(item?.['warehouse']?.['id']));
+                        }
+                        // filter 4: filter by status
+                        if (status_list.length > 0) {
+                            result = result.filter(item => status_list.includes(item?.['status'].toString()));
+                        }
+
                         return result;
                     }
                     return [];
@@ -137,8 +157,8 @@ $(document).ready(function () {
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         if (row?.['product']?.['type'] === 2) {
-                            let status = data.length === row?.['quantity_import'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')
-                            let color = data.length === row?.['quantity_import'] ? 'badge badge-soft-success w-70' : 'badge badge-soft-warning w-70'
+                            let status = row?.['status'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')
+                            let color = row?.['status'] ? 'badge badge-soft-success w-70' : 'badge badge-soft-warning w-70'
                             return `
                                 <span class="${color} row-status">${status}</span>
                                 <button type="button"
@@ -163,12 +183,8 @@ $(document).ready(function () {
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         if (row?.['product']?.['type'] === 1) {
-                            let sum_quantity_import = 0
-                            for (const lot of data) {
-                                sum_quantity_import += parseFloat(lot?.['quantity_import'])
-                            }
-                            let status = sum_quantity_import === row?.['quantity_import'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')
-                            let color = sum_quantity_import === row?.['quantity_import'] ? 'badge badge-soft-success w-70' : 'badge badge-soft-warning w-70'
+                            let status = row?.['status'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')
+                            let color = row?.['status'] ? 'badge badge-soft-success w-70' : 'badge badge-soft-warning w-70'
                             return `
                                 <span class="${color} row-status">${status}</span>
                                 <button type="button"
@@ -179,6 +195,7 @@ $(document).ready(function () {
                                         data-product-id="${row?.['product']?.['id']}"
                                         data-warehouse-id="${row?.['warehouse']?.['id']}"
                                         data-goods-receipt-id="${row?.['goods_receipt']?.['id']}"
+                                        data-status="${row?.['status']}"
                                         >
                                     <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
                                 </button>
@@ -192,7 +209,7 @@ $(document).ready(function () {
         });
     }
 
-    loadMainTable();
+    loadMainTable([], [], [], $status.val());
 
     function loadSerialTable(data, product_id, warehouse_id, goods_receipt_id) {
         $table_serial.DataTable().clear().destroy()
@@ -332,7 +349,7 @@ $(document).ready(function () {
         loadSerialTable(table_data, product_id, warehouse_id, goods_receipt_id)
     })
 
-    function loadLotTable(data, product_id, warehouse_id, goods_receipt_id, goods_receipt_quantity) {
+    function loadLotTable(data, product_id, warehouse_id, goods_receipt_id, goods_receipt_quantity, status) {
         $table_lot.DataTable().clear().destroy()
         $table_lot.DataTableDefault({
             dom: '',
@@ -397,11 +414,7 @@ $(document).ready(function () {
                 $table_lot.attr('data-warehouse-id', warehouse_id)
                 $table_lot.attr('data-goods-receipt-id', goods_receipt_id)
                 $table_lot.attr('data-goods-receipt-quantity', goods_receipt_quantity)
-                let sum_quantity_import = 0
-                for (const lot of data) {
-                    sum_quantity_import += parseFloat(lot?.['quantity_import'])
-                }
-                $add_new_row_lot.closest('div').prop('hidden', sum_quantity_import >= goods_receipt_quantity)
+                $add_new_row_lot.closest('div').prop('hidden', status)
             }
         });
     }
@@ -412,7 +425,8 @@ $(document).ready(function () {
         let warehouse_id = $(this).attr('data-warehouse-id')
         let goods_receipt_id = $(this).attr('data-goods-receipt-id')
         let goods_receipt_quantity = $(this).attr('data-quantity-import')
-        loadLotTable(table_data, product_id, warehouse_id, goods_receipt_id, goods_receipt_quantity)
+        let status = $(this).attr('data-status')
+        loadLotTable(table_data, product_id, warehouse_id, goods_receipt_id, goods_receipt_quantity, status)
     })
 
     function LoadDate(ele, is_null=false) {
@@ -603,5 +617,13 @@ $(document).ready(function () {
                     }
                 )
         }
+    })
+
+    $filter_btn.on('click', function () {
+        let category_list = $prd_category.val()
+        let product_list = $prd.val()
+        let warehouse_list = $wh.val()
+        let status_list = $status.val()
+        loadMainTable(category_list, product_list, warehouse_list, status_list)
     })
 })

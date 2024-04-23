@@ -414,7 +414,7 @@ $(document).ready(function () {
                 $table_lot.attr('data-warehouse-id', warehouse_id)
                 $table_lot.attr('data-goods-receipt-id', goods_receipt_id)
                 $table_lot.attr('data-goods-receipt-quantity', goods_receipt_quantity)
-                $add_new_row_lot.closest('div').prop('hidden', status)
+                $add_new_row_lot.closest('div').prop('hidden', parseInt(status))
             }
         });
     }

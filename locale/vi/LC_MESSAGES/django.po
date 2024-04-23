@@ -7233,3 +7233,7 @@ msgstr "Giá vốn"
 #
 msgid "Default all"
 msgstr "Mặc định là tất cả"
+
+#
+msgid "is not in stock"
+msgstr "không còn trong kho"

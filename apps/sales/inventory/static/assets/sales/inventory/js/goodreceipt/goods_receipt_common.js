@@ -82,7 +82,7 @@ class GRLoadDataHandle {
         let ele = GRLoadDataHandle.IASelectEle;
         ele.initSelect2({
             data: dataIA,
-            'dataParams': {'goods_receipt_ia__isnull': true},
+            'dataParams': {'state': false},
             disabled: !(ele.attr('data-url')),
         });
     };
@@ -3204,7 +3204,7 @@ class GRSubmitHandle {
                 let dataRowRaw = row?.querySelector('.table-row-order')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
-                    rowData['inventory_adjustment_item'] = dataRow.id
+                    rowData['ia_item'] = dataRow?.['id'];
                     let eleProduct = row.querySelector('.table-row-item');
                     if (eleProduct) { // PRODUCT
                         let dataInfo = {}

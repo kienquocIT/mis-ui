@@ -40,7 +40,11 @@
 {% block pageContent %}
     <script id="trans-url"
             data-trans-all="{% trans 'Default all' %}"
+            data-trans-delivered="{% trans 'is not in stock' %}"
+            data-trans-done="{% trans 'Done' %}"
+            data-trans-not-yet="{% trans 'Not yet' %}"
     ></script>
+
     <form id="goods-detail-main-form"
           data-method="GET"
     >
@@ -49,7 +53,7 @@
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
                     <label for="prd-category" class="form-label">{% trans 'Product category' %}</label>
-                    <select class="form-select select2 select-multiple"
+                    <select disabled class="form-select select2 select-multiple"
                             multiple
                             id="prd-category"
                             data-method="GET"
@@ -60,7 +64,7 @@
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label for="prd" class="form-label">{% trans 'Product' %}</label>
-                    <select class="form-select select2 select-multiple"
+                    <select disabled class="form-select select2 select-multiple"
                             multiple
                             id="prd"
                             data-method="GET"
@@ -71,7 +75,7 @@
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
                     <label for="wh" class="form-label">{% trans 'Warehouse' %}</label>
-                    <select class="form-select select2 select-multiple"
+                    <select disabled class="form-select select2 select-multiple"
                             multiple
                             id="wh"
                             data-method="GET"
@@ -82,7 +86,7 @@
             <div class="col-12 col-md-2 col-lg-2">
                 <div class="form-group">
                     <label for="status" class="form-label">{% trans 'LOT/Serial status' %}</label>
-                    <select class="form-select select2 select-multiple" multiple id="status">
+                    <select disabled class="form-select select2 select-multiple" multiple id="status">
                         <option value="0" selected>{% trans 'Done' %}</option>
                         <option value="1" selected>{% trans 'Not yet' %}</option>
                     </select>
@@ -100,14 +104,15 @@
                         >
                             <thead class="row-fixed bg-secondary-light-4">
                                 <tr>
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'Receipt code' %}</th>
-                                    <th>{% trans 'Date' %}</th>
-                                    <th>{% trans 'PIC' %}</th>
-                                    <th>{% trans 'Warehouse' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    <th>{% trans 'Serial' %}</th>
-                                    <th>{% trans 'Lot' %}</th>
+                                    <th class="w-5"></th>
+                                    <th class="w-20">{% trans 'Product' %}</th>
+                                    <th class="w-10">{% trans 'Receipt code' %}</th>
+                                    <th class="w-10">{% trans 'Date' %}</th>
+                                    <th class="w-10">{% trans 'PIC' %}</th>
+                                    <th class="w-15">{% trans 'Warehouse' %}</th>
+                                    <th class="w-10">{% trans 'Quantity' %}</th>
+                                    <th class="w-10">{% trans 'Serial' %}</th>
+                                    <th class="w-10">{% trans 'Lot' %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -138,7 +143,7 @@
                                 <div class="custom-scroll">
                                     <div class="table-wrap" style="max-height: 60vh">
                                         <table class="table nowrap w-100 fixed_header" id="table-serial">
-                                            <thead class="row-fixed bg-primary-light-4">
+                                            <thead class="row-fixed bg-secondary-light-4">
                                             <tr>
                                                 <th class="w-5"></th>
                                                 <th class="w-10">{% trans 'Vendor serial No.' %}</th>
@@ -176,39 +181,45 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="custom-scroll">
-                                <div class="table-wrap" style="max-height: 60vh">
-                                    <table class="table nowrap w-100 fixed_header" id="table-lot">
-                                        <thead class="row-fixed bg-secondary-light-4">
-                                        <tr>
-                                            <th class="w-5"></th>
-                                            <th class="w-25">{% trans 'Lot number' %}</th>
-                                            <th class="w-20">{% trans 'Quantity import' %}</th>
-                                            <th class="w-20">{% trans 'Expired date' %}</th>
-                                            <th class="w-20">{% trans 'Mfr date' %}</th>
-                                            <th class="w-10"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
+                    <form id="form-lot" data-method="POST"
+                          data-url="{% url 'GoodsDetailAPI' %}"
+                          data-url-redirect="{% url 'GoodsDetail' %}"
+                    >
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="custom-scroll">
+                                    <div class="table-wrap" style="max-height: 60vh">
+                                        <table class="table nowrap w-100 fixed_header" id="table-lot">
+                                            <thead class="row-fixed bg-secondary-light-4">
+                                            <tr>
+                                                <th class="w-5"></th>
+                                                <th class="w-25">{% trans 'Lot number' %}</th>
+                                                <th class="w-20">{% trans 'Quantity import' %}</th>
+                                                <th class="w-20">{% trans 'Expired date' %}</th>
+                                                <th class="w-20">{% trans 'Mfr date' %}</th>
+                                                <th class="w-10"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="col-12 mt-3">
+                                <button class="btn btn-sm btn-outline-primary" type="button" id="add-new-row-lot">
+                                    <span>
+                                        <span>{% trans 'Add new row' %}</span>
+                                        <span class="icon"><i class="fas fa-plus"></i></span>
+                                    </span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-12 mt-3">
-                            <button class="btn btn-sm btn-outline-primary" type="button" id="add-new-row-lot">
-                                <span>
-                                    <span>{% trans 'Add new row' %}</span>
-                                    <span class="icon"><i class="fas fa-plus"></i></span>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button type="submit" form="form-lot" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>

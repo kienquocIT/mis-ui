@@ -108,9 +108,9 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.value) {
                 $.fn.callAjax2({
-                'url': SetupFormSubmit.getUrlDetailWithID(main_table.attr('data-url-detail'), $(this).attr('data-id')),
-                'method': 'DELETE',
-            })
+                    'url': SetupFormSubmit.getUrlDetailWithID(main_table.attr('data-url-detail'), $(this).attr('data-id')),
+                    'method': 'DELETE',
+                })
                     .then(
                     (resp)=>{
                         let data = $.fn.switcherResp(resp);

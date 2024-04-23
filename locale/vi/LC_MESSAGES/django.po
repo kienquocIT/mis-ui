@@ -3846,8 +3846,8 @@ msgid "Only the Account Manager of a Customer is allowed to create an Opportunit
 msgstr "Chỉ quản lý của khách hàng mới được tạo cơ hội kinh doanh cho khách hàng đó  "
 
 #
-msgid "Lost by other reason"
-msgstr "Thất bại bởi lý do khác"
+msgid "Lost"
+msgstr "Thất bại"
 
 #
 msgid "Configuration does not allow selecting stage"

@@ -34,5 +34,5 @@ class GoodsDetailAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_DETAIL_LIST).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.UPDATE_GOODS_DETAIL_DATA_LIST).post(request.data)
         return resp.auto_return(status_success=status.HTTP_201_CREATED)

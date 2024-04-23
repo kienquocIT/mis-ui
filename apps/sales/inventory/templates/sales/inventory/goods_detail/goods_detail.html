@@ -38,6 +38,9 @@
 {#    </button>#}
 {% endblock %}
 {% block pageContent %}
+    <script id="trans-url"
+            data-trans-all="{% trans 'Default all' %}"
+    ></script>
     <form id="goods-detail-main-form"
           data-method="GET"
     >
@@ -45,7 +48,7 @@
         <div class="row">
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
-                    <label for="prd-category" class="form-label">{% trans 'Product category' %} <span class="small">({% trans 'Default all' %})</span></label>
+                    <label for="prd-category" class="form-label">{% trans 'Product category' %}</label>
                     <select class="form-select select2 select-multiple"
                             multiple
                             id="prd-category"
@@ -56,7 +59,7 @@
             </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label for="prd" class="form-label">{% trans 'Product' %} <span class="small">({% trans 'Default all' %})</span></label>
+                    <label for="prd" class="form-label">{% trans 'Product' %}</label>
                     <select class="form-select select2 select-multiple"
                             multiple
                             id="prd"
@@ -67,7 +70,7 @@
             </div>
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
-                    <label for="wh" class="form-label">{% trans 'Warehouse' %} <span class="small">({% trans 'Default all' %})</span></label>
+                    <label for="wh" class="form-label">{% trans 'Warehouse' %}</label>
                     <select class="form-select select2 select-multiple"
                             multiple
                             id="wh"
@@ -125,33 +128,39 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="custom-scroll">
-                                <div class="table-wrap" style="max-height: 60vh">
-                                    <table class="table nowrap w-100 fixed_header" id="table-serial">
-                                        <thead class="row-fixed bg-primary-light-4">
-                                        <tr>
-                                            <th class="w-5"></th>
-                                            <th class="w-10">{% trans 'Vendor serial No.' %}</th>
-                                            <th class="w-15">{% trans 'Serial No.' %}</th>
-                                            <th class="w-15">{% trans 'Expired date' %}</th>
-                                            <th class="w-15">{% trans 'Mfr date' %}</th>
-                                            <th class="w-15">{% trans 'Warranty start' %}</th>
-                                            <th class="w-15">{% trans 'Warranty end' %}</th>
-                                            <th class="w-10"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
+                    <form id="form-serial" data-method="POST"
+                          data-url="{% url 'GoodsDetailAPI' %}"
+                          data-url-redirect="{% url 'GoodsDetail' %}"
+                    >
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="custom-scroll">
+                                    <div class="table-wrap" style="max-height: 60vh">
+                                        <table class="table nowrap w-100 fixed_header" id="table-serial">
+                                            <thead class="row-fixed bg-primary-light-4">
+                                            <tr>
+                                                <th class="w-5"></th>
+                                                <th class="w-10">{% trans 'Vendor serial No.' %}</th>
+                                                <th class="w-15">{% trans 'Serial No.' %}</th>
+                                                <th class="w-15">{% trans 'Expired date' %}</th>
+                                                <th class="w-15">{% trans 'Mfr date' %}</th>
+                                                <th class="w-15">{% trans 'Warranty start' %}</th>
+                                                <th class="w-15">{% trans 'Warranty end' %}</th>
+                                                <th class="w-10"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button type="submit" form="form-serial" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>

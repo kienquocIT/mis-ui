@@ -294,6 +294,21 @@ $(document).ready(function () {
                 OpportunityLoadDetail.getTotalPrice();
             })
 
+            $(document).on('change', '.input-win-deal', function () {
+                let flag = false
+                $('.input-win-deal').each(function () {
+                    if ($(this).prop('checked')) {
+                        flag = true
+                    }
+                })
+                if (flag) {
+                    $('#check-lost-reason').prop('checked', true).prop('disabled', true)
+                }
+                else {
+                    $('#check-lost-reason').prop('checked', false).prop('disabled', false)
+                }
+            })
+
             // event in tab competitor
 
             $('#btn-add-competitor').on('click', function () {

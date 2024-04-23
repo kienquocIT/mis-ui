@@ -6,9 +6,11 @@ $(document).ready(function () {
     const $status = $('#status')
     const $table_serial = $('#table-serial')
     const $table_lot = $('#table-lot')
+    const $trans_script = $('#trans-url')
 
     function loadProductCategory(data) {
         $prd_category.initSelect2({
+            placeholder: $trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: $prd_category.attr('data-url'),
@@ -25,6 +27,7 @@ $(document).ready(function () {
 
     function loadProduct(data) {
         $prd.initSelect2({
+            placeholder: $trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: $prd.attr('data-url'),
@@ -41,6 +44,7 @@ $(document).ready(function () {
 
     function loadWarehouse(data) {
         $wh.initSelect2({
+            placeholder: $trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: $wh.attr('data-url'),
@@ -417,4 +421,58 @@ $(document).ready(function () {
             }
         });
     });
+
+    function combinesDataSerial(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle))
+        frm.dataForm['product_id'] = frmEle.find('#table-serial').attr('data-product-id')
+        frm.dataForm['warehouse_id'] = frmEle.find('#table-serial').attr('data-warehouse-id')
+        frm.dataForm['serial_data'] = []
+        $table_serial.find('tbody tr').each(function () {
+            frm.dataForm['serial_data'].push({
+                "serial_id": $(this).find('.vendor_serial_number').attr('data-serial-id') !== "null" ? $(this).find('.vendor_serial_number').attr('data-serial-id') : null,
+                "vendor_serial_number": $(this).find('.vendor_serial_number').val(),
+                "serial_number": $(this).find('.vendor_serial_number').val(),
+                "expire_date": $(this).find('.vendor_serial_number').val(),
+                "manufacture_date": $(this).find('.vendor_serial_number').val(),
+                "warranty_start": $(this).find('.vendor_serial_number').val(),
+                "warranty_end": $(this).find('.vendor_serial_number').val(),
+            })
+        })
+        return {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
+    }
+
+    $('#form-serial').submit(function (event) {
+        event.preventDefault();
+        let combinesData = combinesDataSerial($(this));
+        if (combinesData) {
+            WindowControl.showLoading();
+            $.fn.callAjax2(combinesData)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(() => {
+                                window.location.replace($(this).attr('data-url-redirect'));
+                                location.reload.bind(location);
+                            }, 1000);
+                        }
+                    },
+                    (errs) => {
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+        }
+    })
 })

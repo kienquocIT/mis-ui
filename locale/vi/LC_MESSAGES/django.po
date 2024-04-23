@@ -7221,3 +7221,11 @@ msgstr "Chưa xong"
 #
 msgid "LOT/Serial status"
 msgstr "Trạng thái LOT/Serial"
+
+#
+msgid "Inventory"
+msgstr "Hàng tồn kho"
+
+#
+msgid "Unit cost"
+msgstr "Giá vốn"

@@ -397,7 +397,11 @@ $(document).ready(function () {
                 $table_lot.attr('data-warehouse-id', warehouse_id)
                 $table_lot.attr('data-goods-receipt-id', goods_receipt_id)
                 $table_lot.attr('data-goods-receipt-quantity', goods_receipt_quantity)
-                $add_new_row_lot.closest('div').prop('hidden', data.length > 0)
+                let sum_quantity_import = 0
+                for (const lot of data) {
+                    sum_quantity_import += parseFloat(lot?.['quantity_import'])
+                }
+                $add_new_row_lot.closest('div').prop('hidden', sum_quantity_import >= goods_receipt_quantity)
             }
         });
     }
@@ -558,7 +562,7 @@ $(document).ready(function () {
             frm.dataForm['lot_data'].push({
                 "lot_id": $(this).find('.lot_number').attr('data-lot-id') !== "null" ? $(this).find('.lot_number').attr('data-lot-id') : null,
                 "lot_number": $(this).find('.lot_number').val(),
-                "quantity_import": $(this).find('.quantity_import').val(),
+                "quantity_import": $(this).find('.quantity_import').val() ? $(this).find('.quantity_import').val() : $(this).find('.quantity_import').text(),
                 "expire_date": $(this).find('.expire_date').val() ? moment($(this).find('.expire_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null,
                 "manufacture_date": $(this).find('.manufacture_date').val() ? moment($(this).find('.manufacture_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
             })

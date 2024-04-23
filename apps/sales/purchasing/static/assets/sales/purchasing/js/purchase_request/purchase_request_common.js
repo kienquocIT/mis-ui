@@ -109,8 +109,12 @@ class PurchaseRequestLoadPage {
             callbackDataResp(resp, keyResp) {
                 let list_result = [];
                 resp.data[keyResp].map(function (item) {
-                    if (!list_product_selected.includes(item.id)) {
-                        list_result.push(item)
+                    if (item.hasOwnProperty('product_choice') && Array.isArray(item?.['product_choice'])) {
+                        if (item?.['product_choice'].includes(2)) {  // has choice allow purchase
+                            if (!list_product_selected.includes(item.id)) {
+                                list_result.push(item)
+                            }
+                        }
                     }
                 })
                 return list_result

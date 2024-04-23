@@ -249,11 +249,19 @@ class GRLoadDataHandle {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('purchase_order_product_list') && Array.isArray(data.purchase_order_product_list)) {
+                                let dataValid = [];
+                                for (let dataPOPro of data.purchase_order_product_list) {
+                                    if (dataPOPro?.['product'].hasOwnProperty('product_choice') && Array.isArray(dataPOPro?.['product']?.['product_choice'])) {
+                                        if (dataPOPro?.['product']?.['product_choice'].includes(1)) {  // has choice allow inventory
+                                            dataValid.push(dataPOPro);
+                                        }
+                                    }
+                                }
                                 if (is_detail === true) {
                                     let data_detail = JSON.parse($('#data-detail-page').val());
                                     if (GRLoadDataHandle.POSelectEle.val()) {
                                         for (let data_product of data_detail?.['goods_receipt_product']) {
-                                            for (let dataPOProduct of data.purchase_order_product_list) {
+                                            for (let dataPOProduct of dataValid) {
                                                 if (dataPOProduct?.['id'] === data_product?.['purchase_order_product_id']) {
                                                     dataPOProduct['quantity_import'] = data_product?.['quantity_import'];
                                                     // If PO have PR
@@ -282,9 +290,9 @@ class GRLoadDataHandle {
                                         }
                                     }
                                 }
-                                GRLoadDataHandle.initPOProductEle.val(JSON.stringify(data.purchase_order_product_list));
+                                GRLoadDataHandle.initPOProductEle.val(JSON.stringify(dataValid));
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                                GRDataTableHandle.tablePOProduct.DataTable().rows.add(data.purchase_order_product_list).draw();
+                                GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataValid).draw();
                             }
                         }
                     }

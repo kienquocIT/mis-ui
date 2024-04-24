@@ -154,13 +154,13 @@ $(document).ready(function () {
                     {
                         className: 'from',
                         render: (data, type, row) => {
-                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${row?.['subs'][0]?.['start_date']}</span>`
+                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][0]?.['start_date']).format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
                         className: 'to',
                         render: (data, type, row) => {
-                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${row?.['subs'][row?.['subs'].length-1]?.['end_date']}</span>`
+                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][row?.['subs'].length-1]?.['end_date']).format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
@@ -330,7 +330,7 @@ $(document).ready(function () {
             let first_month = $(software_using_time_select.find('option')[1]).text()
             let last_month = $(software_using_time_select.find('option')[12]).text()
 
-            let from_value = `01-${first_month}`
+            let from_value = `01/${first_month}`
             let to_value = `${get_final_date_of_current_month(last_month.split('-')[1], last_month.split('-')[0])}-${last_month}`
 
             generate_period_table.find('thead').append(`
@@ -356,11 +356,11 @@ $(document).ready(function () {
                 generate_period_table.find('tbody').append(`
                     <tr class="sub-periods-row">
                         <td></td>
-                        <td><span class="code badge badge-soft-primary">${period_code_Ele.val()}-${key_sub}${key_month}-${key_year}</span></td>
-                        <td><span class="name text-primary">${period_code_Ele.val()}-${key_sub}${key_month}-${key_year}</span></td>
+                        <td><span class="code badge badge-soft-primary">${period_code_Ele.val()}/${key_sub}${key_month}/${key_year}</span></td>
+                        <td><span class="name text-primary">${period_code_Ele.val()}/${key_sub}${key_month}/${key_year}</span></td>
                         <td></td>
-                        <td class="start_date" data-value="01-${sub_month}"><i class="far fa-calendar"></i> 01-${sub_month}</td>
-                        <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}-${sub_month}"><i class="far fa-calendar"></i> ${get_final_date_of_current_month(key_year, key_month)}-${sub_month}</td>           
+                        <td class="start_date" data-value="01-${sub_month}"><i class="far fa-calendar"></i> 01/${sub_month.replace('-', '/')}</td>
+                        <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}/${sub_month.replace('-', '/')}"><i class="far fa-calendar"></i> ${get_final_date_of_current_month(key_year, key_month)}/${sub_month.replace('-', '/')}</td>           
                     </tr>
                 `)
             }
@@ -391,8 +391,8 @@ $(document).ready(function () {
                                 <td><span class="code badge badge-outline badge-primary">${item?.['code']}</span></td>
                                 <td><span class="name text-primary">${item?.['name']}</span></td> 
                                 <td></td>      
-                                <td class="start_date text-primary" data-value="${item?.['start_date']}"><i class="far fa-calendar"></i> ${item?.['start_date']}</td>
-                                <td class="end_date text-primary" data-value="${item?.['end_date']}"><i class="far fa-calendar"></i> ${item?.['end_date']}</td>
+                                <td class="start_date text-primary" data-value="${item?.['start_date']}"><i class="far fa-calendar"></i> ${moment(item?.['start_date']).format('DD/MM/YYYY')}</td>
+                                <td class="end_date text-primary" data-value="${item?.['end_date']}"><i class="far fa-calendar"></i> ${moment(item?.['end_date']).format('DD/MM/YYYY')}</td>
                                 <td></td>
                             </tr>`
                 }

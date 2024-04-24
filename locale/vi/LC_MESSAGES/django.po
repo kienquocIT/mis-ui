@@ -7237,3 +7237,19 @@ msgstr "Mặc định là tất cả"
 #
 msgid "is not in stock"
 msgstr "không còn trong kho"
+
+#
+msgid "Posting periods"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Main period code"
+msgstr "Mã kỳ chính"
+
+#
+msgid "Sub period code"
+msgstr "Mã kỳ phụ"
+
+#
+msgid "Period name"
+msgstr "Tên kỳ"

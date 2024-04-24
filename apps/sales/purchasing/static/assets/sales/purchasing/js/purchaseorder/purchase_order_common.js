@@ -848,7 +848,18 @@ class POLoadDataHandle {
             row.removeAttribute('title');
         }
         return true;
-    }
+    };
+
+    static loadCssToDtb(tableID) {
+        let tableIDWrapper = tableID + '_wrapper';
+        let tableWrapper = document.getElementById(tableIDWrapper);
+        if (tableWrapper) {
+            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+            if (headerToolbar) {
+                headerToolbar.classList.add('hidden');
+            }
+        }
+    };
 
     // LOAD DETAIL
     static loadDetailPage(data) {
@@ -1227,6 +1238,10 @@ class PODataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to Dtb
+                POLoadDataHandle.loadCssToDtb('datable-purchase-request');
+            },
         });
     };
 
@@ -1234,7 +1249,6 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-request-product');
         $table.DataTableDefault({
             data: data ? data : [],
-            // searching: false,
             paging: false,
             info: false,
             columns: [
@@ -1352,6 +1366,10 @@ class PODataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to Dtb
+                POLoadDataHandle.loadCssToDtb('datable-purchase-request-product');
+            },
         });
     };
 
@@ -1424,6 +1442,10 @@ class PODataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to Dtb
+                POLoadDataHandle.loadCssToDtb('datable-purchase-request-product-merge');
+            },
         });
     };
 

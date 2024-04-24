@@ -447,7 +447,11 @@ $(document).ready(function () {
     }
 
     $(document).on("click", '.btn-edit', function () {
-        $(this).closest('tbody').find('tr input').prop('disabled', true).prop('readonly', true)
+        $(this).closest('tbody').find('tr').each(function () {
+            if ($(this).find('input:first-child').attr('data-lot-id') || $(this).find('input:first-child').attr('data-serial-id')) {
+                $(this).closest('tr input').prop('disabled', true).prop('readonly', true)
+            }
+        })
         $(this).closest('tr').find('input').prop('disabled', false).prop('readonly', false).addClass('is-valid')
         $(this).closest('td').find('.btn-rollback').prop('hidden', false)
     })

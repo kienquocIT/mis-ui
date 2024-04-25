@@ -13,15 +13,14 @@ $(function () {
         function loadDbl(data) {
             $table.DataTableDefault({
                 data: data ? data : [],
-                searching: false,
                 info: false,
                 paging: false,
                 autoWidth: true,
                 scrollX: true,
-                columns: [  // 300,150,270,270,270,270,90,300 (1920p)
+                columns: [  // 270,120,270,270,270,270,120,330 (1920p)
                     {
                         targets: 0,
-                        width: '15.625%',
+                        width: '14.0625%',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_indicator'] === true) {
@@ -37,7 +36,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '7.8125%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             let code = '';
                             if (row?.['is_sale_order'] === true) {
@@ -74,7 +73,7 @@ $(function () {
                         width: '14.0625%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
-                                return `<b><span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span></b>`;
+                                return `<span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span>`;
                             } else {
                                 return `<p></p>`;
                             }
@@ -100,10 +99,10 @@ $(function () {
                                                 >
                                             </div>`;
                                     } else { // not editable
-                                        return `<b><span class="mask-money table-row-actual-value" data-init-money="${actualVal}"></span></b>`;
+                                        return `<span class="mask-money table-row-actual-value" data-init-money="${actualVal}"></span>`;
                                     }
                                 } else {
-                                    return `<b><span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span></b>`;
+                                    return `<span class="mask-money table-row-actual-value" data-init-money="${parseFloat(row?.['actual_value'])}"></span>`;
                                 }
                             } else { // NOT INDICATOR ROWS
                                 if (row?.['indicator']?.['is_acceptance_editable'] === true) {
@@ -126,7 +125,7 @@ $(function () {
                         width: '14.0625%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
-                                return `<b><span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span></b>`;
+                                return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
                             } else {
                                 return `<p></p>`;
                             }
@@ -134,10 +133,11 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '4.6875%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             if (row?.['is_indicator'] === true) {
-                                return `<p class="table-row-rate-value" data-value="${row?.['rate_value']}">${row?.['rate_value']} %</p>`;
+                                let rate = parseInt(row?.['rate_value'].toFixed(1));
+                                return `<p class="table-row-rate-value" data-value="${rate}">${rate} %</p>`;
                             } else {
                                 return `<p></p>`;
                             }
@@ -145,7 +145,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '15.625%',
+                        width: '17.1875%',
                         render: (data, type, row) => {
                             return `<input class="form-control" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
                         }
@@ -154,10 +154,23 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    // add css to Dtb
+                    loadCssToDtb('table_final_acceptance_list');
                 },
             });
         }
         loadDbl();
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
+        }
 
         function loadFinalAcceptance() {
             $.fn.callAjax2({
@@ -359,7 +372,7 @@ $(function () {
                         }
                         if (parseFloat(revenueActualVal) > 0) {
                             eleRate.innerHTML = '';
-                            rateValue = ((parseFloat(newActualValue) / parseFloat(revenueActualVal)) * 100).toFixed(1);
+                            rateValue = parseInt(((parseFloat(newActualValue) / parseFloat(revenueActualVal)) * 100).toFixed(1));
                             eleRate.innerHTML = String(rateValue) + ' %';
                         }
                     }
@@ -372,11 +385,11 @@ $(function () {
                             if (indiActualEle.hasAttribute('data-init-money')) {
                                 let indiActualVal = indiActualEle.getAttribute('data-init-money');
                                 indiRateEle.innerHTML = '';
-                                indiRateEle.innerHTML = String(((parseFloat(indiActualVal) / parseFloat(newActualValue)) * 100).toFixed(1)) + ' %';
+                                indiRateEle.innerHTML = String(parseInt(((parseFloat(indiActualVal) / parseFloat(newActualValue)) * 100).toFixed(1))) + ' %';
                             } else {
                                 let indiActualVal = $(indiActualEle).valCurrency();
                                 indiRateEle.innerHTML = '';
-                                indiRateEle.innerHTML = String(((parseFloat(indiActualVal) / parseFloat(newActualValue)) * 100).toFixed(1)) + ' %';
+                                indiRateEle.innerHTML = String(parseInt(((parseFloat(indiActualVal) / parseFloat(newActualValue)) * 100).toFixed(1))) + ' %';
                             }
                         }
                     }

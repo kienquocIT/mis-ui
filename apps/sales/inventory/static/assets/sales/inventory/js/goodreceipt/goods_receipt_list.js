@@ -96,7 +96,7 @@ $(function () {
                                 isChange = `<a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a><div class="dropdown-divider"></div>`;
                             }
                             return `<div class="dropdown">
-                                    <button class="btn btn-icon btn-rounded btn-soft-light btn-sm" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
+                                    <button class="btn btn-icon btn-rounded btn-soft-light btn-xs" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         ${isChange}
                                     </div>

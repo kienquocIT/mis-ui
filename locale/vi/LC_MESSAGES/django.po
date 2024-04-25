@@ -5952,7 +5952,7 @@ msgstr "Đã giao"
 
 #
 msgid "Partially received"
-msgstr "Nhập hàng một phần"
+msgstr "Nhập một phần"
 
 #
 msgid "Received"

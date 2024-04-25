@@ -2064,14 +2064,6 @@ msgid "Open a new tab with detail page"
 msgstr "Mở một tab mới với trang chi tiết"
 
 #
-msgid "wait for delivery"
-msgstr "Chờ giao hàng"
-
-#
-msgid "wait for receipt"
-msgstr "Đợi nhận hàng"
-
-#
 msgid "Title"
 msgstr "Tiêu đề"
 
@@ -2821,7 +2813,7 @@ msgstr "Ngày ký hợp đồng"
 
 #
 msgid "Delivery date"
-msgstr "Ngày giao hàng"
+msgstr "Ngày giao"
 
 #
 msgid "Invoice date"
@@ -4588,7 +4580,7 @@ msgstr "Ngày giao hàng"
 
 #
 msgid "Delivered status"
-msgstr "Trạng thái giao hàng"
+msgstr "Trạng thái giao"
 
 #
 msgid "Select items from purchase request"
@@ -4727,7 +4719,7 @@ msgstr "Số seri phải khác nhau"
 
 #
 msgid "Quantity delivery must less than equal quantity picked"
-msgstr "Số lượng giao hàng không vượt quá số lượng lấy hàng"
+msgstr "Số lượng giao không vượt quá số lượng lấy"
 
 #
 msgid "Only for view"
@@ -5948,7 +5940,7 @@ msgstr "Hoạt động"
 
 #
 msgid "Delivering"
-msgstr "Đang giao hàng"
+msgstr "Đang giao"
 
 #
 msgid "Partially delivered"
@@ -7229,6 +7221,22 @@ msgstr "Hàng tồn kho"
 #
 msgid "Unit cost"
 msgstr "Giá vốn"
+
+#
+msgid "Wait for delivery"
+msgstr "Đợi giao"
+
+#
+msgid "Wait for receipt"
+msgstr "Đợi nhập"
+
+#
+msgid "PR code"
+msgstr "Mã PR"
+
+#
+msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
+msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị"
 
 #
 msgid "Default all"

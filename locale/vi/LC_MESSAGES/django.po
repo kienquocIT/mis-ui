@@ -7253,3 +7253,7 @@ msgstr "Mã kỳ phụ"
 #
 msgid "Period name"
 msgstr "Tên kỳ"
+
+#
+msgid "Individual"
+msgstr "Cá nhân"

@@ -27,19 +27,19 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-{#    <a href="{% url 'GoodsIssueUpdate' pk=0 %}" id="btn-edit">#}
-{#        <button class="btn btn-outline-primary">#}
-{#            <span>#}
-{#                <span>{% trans 'Edit' %}</span>#}
-{#                <span class="icon">#}
-{#                    <i class="fa-regular fa-pen-to-square"></i>#}
-{#                </span>#}
-{#            </span>#}
-{#        </button>#}
-{#    </a>#}
+    <a href="{% url 'GoodsIssueUpdate' pk=pk %}" id="btn-edit">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmDetail" data-method="POST" data-url="{% url 'GoodsIssueDetailAPI' pk=0 %}"
+    <form id="frmDetail" data-method="POST" data-url="{% url 'GoodsIssueDetailAPI' pk=pk %}"
           data-url-redirect="{% url 'GoodsIssueList' %}">
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
@@ -129,7 +129,7 @@
                 <div class="tab-content mt-3">
                     <div class="tab-pane fade show active" id="tab-line-detail">
                         <table
-                                id="dtbProduct"
+                                id="dtbProductIA"
                                 class="table nowrap w-100"
                                 data-url="{% url 'WarehouseGetProductsListAPI' %}"
                                 data-method="GET">
@@ -209,6 +209,8 @@
             </div>
         </div>
     </div>
+
+    <script type="application/json" id="data-ia-product">{}</script>
 {% endblock %}
 {% block dataHiddenGroup %}
     <input id="url-factory"

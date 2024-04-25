@@ -146,33 +146,6 @@
                                 </thead>
                             </table>
                         </div>
-                        <div id="row-for-liquidation" class="hidden">
-                            <table
-                                    id="dtbProductLiquidation"
-                                    class="table nowrap w-100"
-                                    data-url="{% url 'WarehouseGetProductsListAPI' %}"
-                                    data-method="GET">
-                                <thead>
-                                <tr>
-                                    <th>{% trans 'Warehouse' %}</th>
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'Description' %}</th>
-                                    <th>{% trans 'UoM' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    <th>{% trans 'Unit cost' %}</th>
-                                    <th>{% trans 'Subtotal cost' %}</th>
-                                </tr>
-                                </thead>
-                            </table>
-                            <button
-                                    type="button"
-                                    class="btn btn-link btn-animated"
-                                    id="btnAddProduct"
-                            >
-                            <span><span class="icon"><span class="feather-icon"><i
-                                    class="far fa-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
-                            </button>
-                        </div>
                     </div>
                     <div class="tab-pane fade" id="tab-attachment"></div>
                 </div>

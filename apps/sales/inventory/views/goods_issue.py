@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck
+from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, InputMappingProperties
 
 
 class GoodsIssueList(View):
@@ -94,4 +94,7 @@ class GoodsIssueUpdate(View):
         perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_DETAIL, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_ISSUE
+        return {
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'frmUpdate'
+        }, status.HTTP_200_OK

@@ -9,6 +9,7 @@ $(document).ready(function () {
     const $trans_script = $('#trans-url')
     const $add_new_row_lot = $('#add-new-row-lot')
     const $filter_btn = $('#filter-btn')
+    const $see_current_btn = $('#see-current')
 
     function loadProductCategory(data) {
         $prd_category.initSelect2({
@@ -375,7 +376,7 @@ $(document).ready(function () {
                     data: 'quantity_import',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="quantity_import">${data ? data : ''}</span>`;
+                        return `<span class="quantity_import">${row?.['raw_quantity_import']}</span>&nbsp;<span hidden class="current">(current: ${data ? data : 0})</span>`;
                     }
                 },
                 {
@@ -629,5 +630,16 @@ $(document).ready(function () {
         let warehouse_list = $wh.val()
         let status_list = $status.val()
         loadMainTable(category_list, product_list, warehouse_list, status_list)
+    })
+
+    $see_current_btn.on('click', function () {
+        if ($see_current_btn.html() === '<i class="bi bi-eye"></i>') {
+            $see_current_btn.html('<i class="bi bi-eye-slash"></i>')
+            $('.current').prop('hidden', true)
+        }
+        else {
+            $see_current_btn.html('<i class="bi bi-eye"></i>')
+            $('.current').prop('hidden', false)
+        }
     })
 })

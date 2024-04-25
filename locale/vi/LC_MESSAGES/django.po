@@ -7289,3 +7289,11 @@ msgstr "hiện tại"
 #
 msgid "show current quantity"
 msgstr "xem số lượng hiện tại"
+
+#
+msgid "Select out warehouse"
+msgstr "Chọn kho xuất"
+
+#
+msgid "Select target warehouse"
+msgstr "Chọn kho đích"

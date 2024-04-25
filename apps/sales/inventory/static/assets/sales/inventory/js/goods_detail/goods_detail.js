@@ -376,7 +376,7 @@ $(document).ready(function () {
                     data: 'quantity_import',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="quantity_import">${row?.['raw_quantity_import']}</span>&nbsp;<span hidden class="current">(current: ${data ? data : 0})</span>`;
+                        return `<span class="quantity_import">${row?.['raw_quantity_import']}</span>&nbsp;<span hidden class="current">(${$trans_script.attr('data-trans-curent')}: ${data ? data : 0})</span>`;
                     }
                 },
                 {

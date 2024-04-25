@@ -7265,3 +7265,27 @@ msgstr "Tên kỳ"
 #
 msgid "Individual"
 msgstr "Cá nhân"
+
+#
+msgid "Receipt code"
+msgstr "Mã phiếu nhập"
+
+#
+msgid "Lot information"
+msgstr "Thông tin LOT"
+
+#
+msgid "Serial information"
+msgstr "Thông tin serial"
+
+#
+msgid "Quantity import"
+msgstr "Số lượng nhập"
+
+#
+msgid "current"
+msgstr "hiện tại"
+
+#
+msgid "show current quantity"
+msgstr "xem số lượng hiện tại"

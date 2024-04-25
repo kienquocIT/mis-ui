@@ -43,6 +43,7 @@
             data-trans-delivered="{% trans 'is not in stock' %}"
             data-trans-done="{% trans 'Done' %}"
             data-trans-not-yet="{% trans 'Not yet' %}"
+            data-trans-curent="{% trans 'current' %}"
     ></script>
 
     <form id="goods-detail-main-form"
@@ -207,7 +208,13 @@
                                                 <th class="w-25">{% trans 'Lot number' %}</th>
                                                 <th class="w-20">
                                                     {% trans 'Quantity import' %}
-                                                    &nbsp;<a href="#" class="text-secondary" id="see-current"><i class="bi bi-eye-slash"></i></a>
+                                                    &nbsp;<a href="#"
+                                                        class="text-secondary"
+                                                        id="see-current"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="right"
+                                                        title="{% trans 'show current quantity' %}"
+                                                    ><i class="bi bi-eye-slash"></i></a>
                                                 </th>
                                                 <th class="w-20">{% trans 'Expired date' %}</th>
                                                 <th class="w-20">{% trans 'Mfr date' %}</th>

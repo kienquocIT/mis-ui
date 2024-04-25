@@ -7289,3 +7289,7 @@ msgstr "hiện tại"
 #
 msgid "show current quantity"
 msgstr "xem số lượng hiện tại"
+
+#
+msgid "You need to select one option!"
+msgstr "Bạn cần chọn một tùy chọn!"

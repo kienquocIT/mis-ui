@@ -450,6 +450,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     GOODS_DETAIL_LIST = StringUrl('inventory/goods-detail/list')
     GOODS_DETAIL_DETAIL = StringUrl('inventory/goods-detail/{pk}')
+    UPDATE_GOODS_DETAIL_DATA_LIST = StringUrl('inventory/update-detail-data/list')
+
 
     INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
     INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')

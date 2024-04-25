@@ -3838,8 +3838,8 @@ msgid "Only the Account Manager of a Customer is allowed to create an Opportunit
 msgstr "Chỉ quản lý của khách hàng mới được tạo cơ hội kinh doanh cho khách hàng đó  "
 
 #
-msgid "Lost by other reason"
-msgstr "Thất bại bởi lý do khác"
+msgid "Lost"
+msgstr "Thất bại"
 
 #
 msgid "Configuration does not allow selecting stage"
@@ -7237,3 +7237,55 @@ msgstr "Mã PR"
 #
 msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
 msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị"
+
+#
+msgid "Default all"
+msgstr "Mặc định là tất cả"
+
+#
+msgid "is not in stock"
+msgstr "không còn trong kho"
+
+#
+msgid "Posting periods"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Main period code"
+msgstr "Mã kỳ chính"
+
+#
+msgid "Sub period code"
+msgstr "Mã kỳ phụ"
+
+#
+msgid "Period name"
+msgstr "Tên kỳ"
+
+#
+msgid "Individual"
+msgstr "Cá nhân"
+
+#
+msgid "Receipt code"
+msgstr "Mã phiếu nhập"
+
+#
+msgid "Lot information"
+msgstr "Thông tin LOT"
+
+#
+msgid "Serial information"
+msgstr "Thông tin serial"
+
+#
+msgid "Quantity import"
+msgstr "Số lượng nhập"
+
+#
+msgid "current"
+msgstr "hiện tại"
+
+#
+msgid "show current quantity"
+msgstr "xem số lượng hiện tại"

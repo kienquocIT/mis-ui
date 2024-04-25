@@ -54,15 +54,15 @@ selectProductBtn.on('click', async function () {
                 <td data-id="${selected_product[i].warehouse_id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${selected_product[i].warehouse_title}</td>
                 <td data-id="${selected_product[i].product_inventory_uom_id}" class="uom_id_td">${selected_product[i].product_inventory_uom_title}</td>
                 <td class="quantity-td">${selected_product[i].available_amount}</td>
-                <td><input class="form-control count-input" type="text" placeholder="Number" value="${selected_product[i].available_amount}"></td>
-                <td class="difference_td">0</td>
-                <td>
+                <td><input class="form-control count-input" type="number" placeholder="Number" value="${selected_product[i].available_amount}"></td>
+                <td class="difference_td text-center">0</td>
+                <td class="text-center">
                     <span class="form-check">
                         <input type="checkbox" disabled class="form-check-input selected_for_actions">
                         <label class="form-check-label"></label>
                     </span>
                 </td>
-                <td class="action_type_td"></td>
+                <td class="action_type_td text-center"></td>
                 <td></td>
             </tr>
         `)

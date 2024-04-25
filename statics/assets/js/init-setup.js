@@ -2014,7 +2014,8 @@ class WFRTControl {
                             WFRTControl.submitCheckCollabNextNode(_form);
                         }
                     } else {
-                        return "You need to select one!";
+                        $.fn.notifyB({description: "You need to select one!"}, 'failure');
+                        return false;
                     }
                 }
             });

@@ -4576,7 +4576,7 @@ msgstr "Đơn mua hàng"
 
 #
 msgid "Delivered date"
-msgstr "Ngày giao hàng"
+msgstr "Ngày giao"
 
 #
 msgid "Delivered status"

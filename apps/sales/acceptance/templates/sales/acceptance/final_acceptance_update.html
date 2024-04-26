@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Final acceptance update' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm_final_acceptance_update" id="btn-save" hidden>
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'FinalAcceptanceDetailAPI' 1 %}"
+            data-url-redirect="{% url 'FinalAcceptanceList' %}"
+            data-method="PUT"
+            id="frm_final_acceptance_update"
+            method="post"
+    >
+    {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="row form-group">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <label class="form-label" for="employee_inherit_id">{% trans 'Employee inherit' %}</label>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <select
+                                class="form-select"
+                                id="employee_inherit_id"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-method="GET"
+                                name="employee_inherit_id"
+                                data-keyResp="employee_list"
+                                data-keyText="full_name"
+                        ></select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <label class="form-label" for="box-final-acceptance-so">{% trans 'Sale Order' %}</label>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <select
+                                class="form-select"
+                                id="box-final-acceptance-so"
+                                data-url="{% url "SaleOrderListAPI" %}"
+                                data-method="GET"
+                                name="sale_order"
+                                data-keyResp="sale_order_list"
+                        ></select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="row form-group">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <label class="form-label" for="opportunity_id">{% trans 'Opportunity' %}</label>
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <select
+                                class="form-select"
+                                id="opportunity_id"
+                                data-url="{% url 'OpportunityListAPI' %}"
+                                data-method="GET"
+                                name="opportunity_id"
+                                data-keyResp="opportunity_list"
+                        ></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <div class="row form-group">
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <label class="form-label" for="final-acceptance-date-save">{% trans 'Date' %}</label>
+                            </div>
+                            <div class="col-12 col-md-9 col-lg-9">
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_save" id="final-acceptance-date-save"
+                                           class="form-control date-picker" autocomplete="off" disabled>
+                                    <div class="input-suffix">
+                                        <i class="far fa-calendar"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="d-flex">
+                    <button
+                            type="button"
+                            class="btn btn-outline-primary"
+                            id="btn-refresh-data"
+                    >
+                    <span><span>{% trans 'Refresh' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <table
+                    id="table_final_acceptance_list"
+                    class="table nowrap min-w-1920p w-100 mb-5"
+                    data-url="{% url 'FinalAcceptanceListAPI' %}"
+                    data-method="get"
+            >
+                <thead>
+                <tr>
+                    <th>{% trans 'Indicator' %}</th>
+                    <th>{% trans 'Items code' %}</th>
+                    <th>{% trans 'Items name' %}</th>
+                    <th>{% trans 'Planed value' %}</th>
+                    <th>{% trans 'Actual value' %}</th>
+                    <th>{% trans 'Different value' %}</th>
+                    <th>{% trans 'Rate' %} %</th>
+                    <th>{% trans 'Note' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </form>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-select-so="{% trans 'Please select sale order' %}"
+    >
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/acceptance/js/final_acceptance.js' %}"></script>
+{% endblock %}

@@ -160,7 +160,6 @@ $(function () {
                 },
             });
         }
-        loadDbl();
 
         function loadCssToDtb(tableID) {
             let tableIDWrapper = tableID + '_wrapper';
@@ -510,7 +509,6 @@ $(function () {
                 'allowClear': true,
             });
         }
-        loadOpp();
 
         function loadEmployee(dataEmployee = {}) {
             boxEmployee.empty();
@@ -519,7 +517,6 @@ $(function () {
                 'allowClear': true,
             });
         }
-        loadEmployee();
 
         function loadSO() {
             boxSO.empty();
@@ -535,7 +532,6 @@ $(function () {
                 'allowClear': true,
             });
         }
-        loadSO();
 
         function loadDataByEmployee() {
             loadSO();
@@ -590,6 +586,15 @@ $(function () {
             }
             return true;
         }
+
+        function loadInit() {
+            loadEmployee();
+            loadOpp();
+            loadSO();
+            loadDbl();
+        }
+
+        loadInit();
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({

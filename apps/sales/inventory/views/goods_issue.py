@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, InputMappingProperties, SaleMsg
 
 
 class GoodsIssueList(View):
@@ -29,7 +29,10 @@ class GoodsIssueCreate(View):
         perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_ISSUE
+        return {
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'frmCreate'
+        }, status.HTTP_200_OK
 
 
 class GoodsIssueDetail(View):
@@ -43,7 +46,10 @@ class GoodsIssueDetail(View):
         perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_DETAIL, method='get', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_ISSUE
+        return {
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'frmDetail'
+        }, status.HTTP_200_OK
 
 
 class GoodsIssueListAPI(APIView):
@@ -62,6 +68,7 @@ class GoodsIssueListAPI(APIView):
     )
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_ISSUE_LIST).post(request.data)
+        resp.result['message'] = SaleMsg.GOODS_ISSUE_CREATE
         return resp.auto_return(status_success=status.HTTP_201_CREATED)
 
 
@@ -80,6 +87,7 @@ class GoodsIssueDetailAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_ISSUE_DETAIL.fill_key(pk=pk)).put(request.data)
+        resp.result['message'] = SaleMsg.GOODS_ISSUE_UPDATE
         return resp.auto_return()
 
 

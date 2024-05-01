@@ -1,14 +1,11 @@
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck
+from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, InputMappingProperties, SaleMsg
 
 
 class GoodsTransferList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/inventory/goods_transfer/list.html',
@@ -29,12 +26,13 @@ class GoodsTransferCreate(View):
         perm_check=PermCheck(url=ApiURL.GOODS_TRANSFER_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_TRANSFER
+        return {
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_transfer_create'
+        }, status.HTTP_200_OK
 
 
 class GoodsTransferDetail(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/inventory/goods_transfer/detail.html',
@@ -43,7 +41,25 @@ class GoodsTransferDetail(View):
         perm_check=PermCheck(url=ApiURL.GOODS_TRANSFER_DETAIL, method='get', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_TRANSFER
+        return {
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_transfer_detail'
+        }, status.HTTP_200_OK
+
+
+class GoodsTransferUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/inventory/goods_transfer/update.html',
+        menu_active='menu_goods_transfer_list',
+        breadcrumb='GOODS_TRANSFER_UPDATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.GOODS_TRANSFER_DETAIL, method='get', fill_key=['pk']),
+    )
+    def get(self, request, pk, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_TRANSFER
+        return {
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_transfer_update'
+        }, status.HTTP_200_OK
 
 
 class GoodsTransferListAPI(APIView):
@@ -62,6 +78,7 @@ class GoodsTransferListAPI(APIView):
     )
     def post(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.GOODS_TRANSFER_LIST).post(request.data)
+        resp.result['message'] = SaleMsg.GOODS_TRANSFER_CREATE
         return resp.auto_return(status_success=status.HTTP_201_CREATED)
 
 
@@ -73,3 +90,12 @@ class GoodsTransferDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.GOODS_TRANSFER_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='goods_transfer_detail')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_TRANSFER_DETAIL.fill_key(pk=pk)).put(request.data)
+        resp.result['message'] = SaleMsg.GOODS_TRANSFER_UPDATE
+        return resp.auto_return()

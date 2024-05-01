@@ -3,7 +3,7 @@ $(document).ready(function () {
     let pk = $.fn.getPkDetail();
     let frmUpdate = $('#frmUpdate');
 
-    GoodsIssueLoadPage.loadGoodsIssueDetail(frmUpdate, pk);
+    GoodsIssueLoadPage.loadGoodsIssueDetail(frmUpdate, pk, 'update');
     new SetupFormSubmit(frmUpdate).validate({
         rules: {
             title: {

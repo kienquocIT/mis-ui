@@ -21,7 +21,22 @@
 {% endblock %}
 
 {% block pageContent %}
-
+    <div class="row">
+        <div class="col-12">
+            <table id="goods_transfer_list_table" class="table nowrap w-100 mb-5" data-method="GET"
+                   data-url="{% url 'GoodsTransferListAPI' %}"
+                   data-url-detail="{% url 'GoodsTransferDetail' '0' %}"
+            >
+                <thead>
+                <th></th>
+                <th>{% trans "Code" %}</th>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Transfer date" %}</th>
+                <th>{% trans "Status" %}</th>
+                </thead>
+            </table>
+        </div>
+    </div>
 {% endblock %}
 {% block dataHiddenGroup %}
 {% endblock %}

@@ -13,7 +13,7 @@ from apps.sales.inventory.views import (
     GoodsDetail, GoodsDetailAPI
 )
 from apps.sales.inventory.views.goods_transfer import GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate, \
-    GoodsTransferListAPI, GoodsTransferDetailAPI
+    GoodsTransferListAPI, GoodsTransferDetailAPI, GoodsTransferUpdate
 
 urlpatterns = [
     # good receipt
@@ -40,6 +40,7 @@ urlpatterns += [
     path('goods-transfer/list', GoodsTransferList.as_view(), name='GoodsTransferList'),
     path('goods-transfer/create', GoodsTransferCreate.as_view(), name='GoodsTransferCreate'),
     path('goods-transfer/detail/<str:pk>', GoodsTransferDetail.as_view(), name='GoodsTransferDetail'),
+    path('goods-transfer/update/<str:pk>', GoodsTransferUpdate.as_view(), name='GoodsTransferUpdate'),
     path('goods-transfer/list/api', GoodsTransferListAPI.as_view(), name='GoodsTransferListAPI'),
     path('goods-transfer/detail/api/<str:pk>', GoodsTransferDetailAPI.as_view(), name='GoodsTransferDetailAPI'),
 ]

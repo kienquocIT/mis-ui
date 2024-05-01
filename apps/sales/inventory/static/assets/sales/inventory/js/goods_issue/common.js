@@ -7,6 +7,7 @@ let select_detail_table_lot = $('#select-detail-table-lot')
 let select_detail_table_lot_done = $('#select-detail-table-lot-done')
 let amount_balance = $('#amount-balance')
 let IS_DETAIL = false
+let IS_UPDATE = false
 
 class GoodsIssueLoadPage {
     load() {
@@ -82,7 +83,7 @@ class GoodsIssueLoadPage {
         $(document).on('click', '.select-detail', function () {
             NOW_BTN = $(this)
             let disabled = ''
-            if (IS_DETAIL) {
+            if (IS_DETAIL || IS_UPDATE) {
                 disabled = 'disabled readonly'
             }
             if (NOW_BTN.attr('data-manage-type') === '2') { // sn
@@ -645,7 +646,7 @@ class GoodsIssueLoadPage {
         return dataForm
     }
 
-    static loadGoodsIssueDetail(frmDetail, pk) {
+    static loadGoodsIssueDetail(frmDetail, pk, type='detail') {
         let url = frmDetail.data('url')
         let iaSelectEle = $('#box-select-ia');
         $.fn.callAjax2({
@@ -654,7 +655,8 @@ class GoodsIssueLoadPage {
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                IS_DETAIL = true;
+                IS_DETAIL = type === 'detail';
+                IS_UPDATE = type === 'update';
                 let detail = data?.['goods_issue_detail'];
                 WFRTControl.setWFRuntimeID(detail?.['workflow_runtime_id'])
                 $.fn.compareStatusShowPageAction(detail);
@@ -676,7 +678,6 @@ class GoodsIssueLoadPage {
     }
 
     static loadDtbProductPageDetail(data) {
-        console.log(data)
         if (!$.fn.DataTable.isDataTable('#dtbProductIA')) {
             let dtb = $('#dtbProductIA');
             dtb.DataTableDefault({
@@ -718,7 +719,7 @@ class GoodsIssueLoadPage {
                         data: 'unit_cost',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<input class="col-unit-cost form-control mask-money" value=${data}>`
+                            return `<input ${IS_DETAIL ? 'disabled readonly' : ''} class="col-unit-cost form-control mask-money" value=${data}>`
                         },
                     }, {
                         data: 'subtotal',

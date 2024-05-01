@@ -4576,7 +4576,7 @@ msgstr "Đơn mua hàng"
 
 #
 msgid "Delivered date"
-msgstr "Ngày giao hàng"
+msgstr "Ngày giao"
 
 #
 msgid "Delivered status"
@@ -5952,7 +5952,7 @@ msgstr "Đã giao"
 
 #
 msgid "Partially received"
-msgstr "Nhập hàng một phần"
+msgstr "Nhập một phần"
 
 #
 msgid "Received"
@@ -7289,6 +7289,10 @@ msgstr "hiện tại"
 #
 msgid "show current quantity"
 msgstr "xem số lượng hiện tại"
+
+#
+msgid "You need to select one option!"
+msgstr "Bạn cần chọn một tùy chọn!"
 
 #
 msgid "Select out warehouse"

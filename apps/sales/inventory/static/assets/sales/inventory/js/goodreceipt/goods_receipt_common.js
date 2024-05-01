@@ -2027,6 +2027,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-ia-product');
             },
         });
     };
@@ -2084,6 +2086,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-ia-lot');
             },
         });
     };
@@ -2152,6 +2156,8 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-ia-serial');
             },
         });
     };

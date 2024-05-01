@@ -151,7 +151,7 @@ $(function () {
                                 isDelivery = `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`;
                             }
                             return `<div class="dropdown">
-                                    <button class="btn btn-icon btn-rounded btn-soft-light btn-sm" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
+                                    <button class="btn btn-icon btn-rounded btn-soft-light btn-xs" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         ${isChange}
                                         ${isDelivery}

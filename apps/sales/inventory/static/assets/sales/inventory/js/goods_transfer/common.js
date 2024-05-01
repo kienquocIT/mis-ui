@@ -666,11 +666,12 @@ function LoadDetailGoodsTransfer(option='detail') {
             if (data) {
                 IS_DETAIL_PAGE = option === 'detail'
                 IS_UPDATE_PAGE = option === 'update'
-                WFRTControl.setWFRuntimeID(data['goods_transfer_detail']?.['goods_transfer_detail']);
+
                 data = data['goods_transfer_detail'];
+                console.log(data?.['workflow_runtime_id'])
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
-                console.log(data)
 
                 $('#title').val(data?.['title'])
                 $date.val(moment(data?.['date_transfer'].split(' ')[0]).format('DD/MM/YYYY'))
@@ -832,6 +833,7 @@ class GoodsTransferHandle {
         })
         frm.dataForm['goods_transfer_datas'] = data_line_detail
         if (flag === null) {
+            console.log('ok')
             return frm;
         }
         else {

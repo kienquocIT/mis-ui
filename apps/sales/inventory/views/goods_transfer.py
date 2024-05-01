@@ -10,8 +10,7 @@ class GoodsTransferList(View):
         auth_require=True,
         template='sales/inventory/goods_transfer/list.html',
         menu_active='menu_goods_transfer_list',
-        breadcrumb='GOODS_TRANSFER_LIST_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_TRANSFER_LIST, method='get'),
+        breadcrumb='GOODS_TRANSFER_LIST_PAGE'
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -22,14 +21,10 @@ class GoodsTransferCreate(View):
         auth_require=True,
         template='sales/inventory/goods_transfer/create.html',
         menu_active='menu_goods_transfer_list',
-        breadcrumb='GOODS_TRANSFER_CREATE_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_TRANSFER_LIST, method='post'),
+        breadcrumb='GOODS_TRANSFER_CREATE_PAGE'
     )
     def get(self, request, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_TRANSFER
-        return {
-            'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_transfer_create'
-        }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class GoodsTransferDetail(View):
@@ -37,14 +32,10 @@ class GoodsTransferDetail(View):
         auth_require=True,
         template='sales/inventory/goods_transfer/detail.html',
         menu_active='menu_goods_transfer_list',
-        breadcrumb='GOODS_TRANSFER_DETAIL_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_TRANSFER_DETAIL, method='get', fill_key=['pk']),
+        breadcrumb='GOODS_TRANSFER_DETAIL_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_TRANSFER
-        return {
-            'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_transfer_detail'
-        }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class GoodsTransferUpdate(View):
@@ -52,8 +43,7 @@ class GoodsTransferUpdate(View):
         auth_require=True,
         template='sales/inventory/goods_transfer/update.html',
         menu_active='menu_goods_transfer_list',
-        breadcrumb='GOODS_TRANSFER_UPDATE_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_TRANSFER_DETAIL, method='get', fill_key=['pk']),
+        breadcrumb='GOODS_TRANSFER_UPDATE_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_TRANSFER

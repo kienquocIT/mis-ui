@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, InputMappingProperties, SaleMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties, SaleMsg
 
 
 class GoodsIssueList(View):
@@ -13,8 +13,7 @@ class GoodsIssueList(View):
         auth_require=True,
         template='sales/inventory/goods_issue/list.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_LIST_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_LIST, method='get'),
+        breadcrumb='GOODS_ISSUE_LIST_PAGE'
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -25,14 +24,10 @@ class GoodsIssueCreate(View):
         auth_require=True,
         template='sales/inventory/goods_issue/create.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_CREATE_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_LIST, method='post'),
+        breadcrumb='GOODS_ISSUE_CREATE_PAGE'
     )
     def get(self, request, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_ISSUE
-        return {
-            'input_mapping_properties': input_mapping_properties, 'form_id': 'frmCreate'
-        }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class GoodsIssueDetail(View):
@@ -42,14 +37,10 @@ class GoodsIssueDetail(View):
         auth_require=True,
         template='sales/inventory/goods_issue/detail.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_DETAIL_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_DETAIL, method='get', fill_key=['pk']),
+        breadcrumb='GOODS_ISSUE_DETAIL_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_ISSUE
-        return {
-            'input_mapping_properties': input_mapping_properties, 'form_id': 'frmDetail'
-        }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class GoodsIssueListAPI(APIView):
@@ -98,8 +89,7 @@ class GoodsIssueUpdate(View):
         auth_require=True,
         template='sales/inventory/goods_issue/update.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_UPDATE_PAGE',
-        perm_check=PermCheck(url=ApiURL.GOODS_ISSUE_DETAIL, method='PUT', fill_key=['pk']),
+        breadcrumb='GOODS_ISSUE_UPDATE_PAGE'
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_ISSUE

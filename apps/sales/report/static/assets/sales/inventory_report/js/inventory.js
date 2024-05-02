@@ -237,6 +237,12 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods issue') {
                                             bg_out = 'bg-orange-light-5'
                                         }
+                                        if (activity?.['trans_title'] === 'Goods transfer (in)') {
+                                            bg_in = 'bg-purple-light-5'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (out)') {
+                                            bg_out = 'bg-purple-light-5'
+                                        }
                                         detail_html += `
                                             <tr>
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
@@ -304,6 +310,12 @@ $(document).ready(function () {
                                         }
                                         if (activity?.['trans_title'] === 'Goods issue') {
                                             bg_out = 'bg-orange-light-5'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (in)') {
+                                            bg_in = 'bg-purple-light-5'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (out)') {
+                                            bg_out = 'bg-purple-light-5'
                                         }
                                         detail_html += `
                                             <tr>
@@ -545,6 +557,7 @@ $(document).ready(function () {
                             },
                             500
                         )
+                        MatchTooltip()
                     })
             }
             else {
@@ -783,4 +796,39 @@ $(document).ready(function () {
             }
         }
     })
+
+    function MatchTooltip() {
+        $('#table-inventory-report-detail').find('td').each(function () {
+            if ($(this).attr('class').includes('bg-primary-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', 'Goods receipt')
+            }
+            if ($(this).attr('class').includes('bg-blue-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', 'Goods return')
+            }
+            if ($(this).attr('class').includes('bg-danger-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', 'Delivery')
+            }
+            if ($(this).attr('class').includes('bg-green-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', 'Goods receipt (IA)')
+            }
+            if ($(this).attr('class').includes('bg-orange-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', 'Goods issue')
+            }
+            if ($(this).attr('class').includes('bg-purple-light-5')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', 'Goods transfer')
+            }
+        })
+    }
 })

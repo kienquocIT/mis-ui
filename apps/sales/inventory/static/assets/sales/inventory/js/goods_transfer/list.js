@@ -20,21 +20,22 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        'render': () => {
+                        className: 'wrap-text w-5',
+                        render: () => {
                             return ``;
                         }
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-45',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
@@ -42,16 +43,23 @@ $(document).ready(function () {
                     },
                     {
                         data: 'date_transfer',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
                             return moment(data.split(' ')[0]).format('DD/MM/YYYY')
                         }
                     },
                     {
                         data: 'system_status',
-                        className: 'wrap-text',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-secondary">${data}</span>`
+                            let color = [
+                                'badge-secondary',
+                                'badge-primary',
+                                'badge-indigo',
+                                'badge-success',
+                                'badge-danger'
+                            ]
+                            return `<span class="badge w-100 ${color[row?.['raw_system_status']]}">${data}</span>`
                         }
                     },
                 ],

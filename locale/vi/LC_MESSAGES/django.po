@@ -7293,3 +7293,7 @@ msgstr "xem số lượng hiện tại"
 #
 msgid "You need to select one option!"
 msgstr "Bạn cần chọn một tùy chọn!"
+
+#
+msgid "Lot number"
+msgstr "Số lô"

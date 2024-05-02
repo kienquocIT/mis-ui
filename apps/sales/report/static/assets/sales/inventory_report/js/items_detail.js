@@ -191,18 +191,24 @@ $(document).ready(function () {
                                     )
                                     for (const activity of stock_activity?.['data_stock_activity']) {
                                         if (activity?.['stock_type'] === 1) {
-                                            let text_color = 'primary'
-                                            if (activity?.['trans_title'] === 'Goods return') {
-                                                text_color = 'blue'
+                                            let text_color = ''
+                                            if (activity?.['trans_title'] === 'Goods receipt') {
+                                                text_color = 'primary'
                                             }
                                             if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                                 text_color = 'green'
+                                            }
+                                            if (activity?.['trans_title'] === 'Goods return') {
+                                                text_color = 'blue'
+                                            }
+                                            if (activity?.['trans_title'] === 'Goods transfer (in)') {
+                                                text_color = 'purple'
                                             }
                                             let trans_title_sub = {
                                                 'Goods receipt': trans_script.attr('data-trans-grc'),
                                                 'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                 'Goods return': trans_script.attr('data-trans-grt'),
-                                                'Delivery': trans_script.attr('data-trans-dlvr'),
+                                                'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
                                             }
                                             let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                             items_detail_report_table_Ele.find('tbody').append(
@@ -229,16 +235,20 @@ $(document).ready(function () {
                                             )
                                         }
                                         else {
-                                            let trans_title_sub = {
-                                                'Goods receipt': trans_script.attr('data-trans-grc'),
-                                                'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
-                                                'Goods return': trans_script.attr('data-trans-grt'),
-                                                'Delivery': trans_script.attr('data-trans-dlvr'),
-                                                'Goods issue': trans_script.attr('data-trans-gis'),
+                                            let text_color = ''
+                                            if (activity?.['trans_title'] === 'Delivery') {
+                                                text_color = 'danger'
                                             }
-                                            let text_color = 'danger'
                                             if (activity?.['trans_title'] === 'Goods issue') {
                                                 text_color = 'orange'
+                                            }
+                                            if (activity?.['trans_title'] === 'Goods transfer (out)') {
+                                                text_color = 'purple'
+                                            }
+                                            let trans_title_sub = {
+                                                'Delivery': trans_script.attr('data-trans-dlvr'),
+                                                'Goods issue': trans_script.attr('data-trans-gis'),
+                                                'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
                                             }
                                             let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                             items_detail_report_table_Ele.find('tbody').append(
@@ -295,18 +305,24 @@ $(document).ready(function () {
                                 )
                                 for (const activity of stock_activity?.['data_stock_activity']) {
                                     if (activity?.['stock_type'] === 1) {
-                                        let text_color = 'primary'
-                                        if (activity?.['trans_title'] === 'Goods return') {
-                                            text_color = 'blue'
+                                        let text_color = ''
+                                        if (activity?.['trans_title'] === 'Goods receipt') {
+                                            text_color = 'primary'
                                         }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                             text_color = 'green'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods return') {
+                                            text_color = 'blue'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (in)') {
+                                            text_color = 'purple'
                                         }
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
                                             'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                             'Goods return': trans_script.attr('data-trans-grt'),
-                                            'Delivery': trans_script.attr('data-trans-dlvr'),
+                                            'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
                                         }
                                         let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                         items_detail_report_table_Ele.find('tbody').append(
@@ -333,16 +349,20 @@ $(document).ready(function () {
                                         )
                                     }
                                     else {
-                                        let trans_title_sub = {
-                                            'Goods receipt': trans_script.attr('data-trans-grc'),
-                                            'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
-                                            'Goods return': trans_script.attr('data-trans-grt'),
-                                            'Delivery': trans_script.attr('data-trans-dlvr'),
-                                            'Goods issue': trans_script.attr('data-trans-gis'),
+                                        let text_color = ''
+                                        if (activity?.['trans_title'] === 'Delivery') {
+                                            text_color = 'danger'
                                         }
-                                        let text_color = 'danger'
                                         if (activity?.['trans_title'] === 'Goods issue') {
                                             text_color = 'orange'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (out)') {
+                                            text_color = 'purple'
+                                        }
+                                        let trans_title_sub = {
+                                            'Delivery': trans_script.attr('data-trans-dlvr'),
+                                            'Goods issue': trans_script.attr('data-trans-gis'),
+                                            'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
                                         }
                                         let stock_type_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                         items_detail_report_table_Ele.find('tbody').append(

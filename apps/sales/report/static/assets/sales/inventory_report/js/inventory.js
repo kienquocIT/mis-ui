@@ -238,10 +238,10 @@ $(document).ready(function () {
                                             bg_out = 'bg-orange-light-5'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                            bg_in = 'bg-purple-light-5'
+                                            bg_in = 'bg-purple-light-5 gtf-in'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                            bg_out = 'bg-purple-light-5'
+                                            bg_out = 'bg-purple-light-5 gtf-out'
                                         }
                                         detail_html += `
                                             <tr>
@@ -312,10 +312,10 @@ $(document).ready(function () {
                                             bg_out = 'bg-orange-light-5'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                            bg_in = 'bg-purple-light-5'
+                                            bg_in = 'bg-purple-light-5 gtf-in'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                            bg_out = 'bg-purple-light-5'
+                                            bg_out = 'bg-purple-light-5 gtf-out'
                                         }
                                         detail_html += `
                                             <tr>
@@ -802,32 +802,37 @@ $(document).ready(function () {
             if ($(this).attr('class').includes('bg-primary-light-5')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', 'Goods receipt')
+                $(this).attr('title', trans_script.attr('data-trans-grc'))
             }
             if ($(this).attr('class').includes('bg-blue-light-5')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', 'Goods return')
+                $(this).attr('title', trans_script.attr('data-trans-grt'))
             }
             if ($(this).attr('class').includes('bg-danger-light-5')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', 'Delivery')
+                $(this).attr('title', trans_script.attr('data-trans-dlvr'))
             }
             if ($(this).attr('class').includes('bg-green-light-5')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', 'Goods receipt (IA)')
+                $(this).attr('title', `${trans_script.attr('data-trans-grc')} (IA)`)
             }
             if ($(this).attr('class').includes('bg-orange-light-5')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', 'Goods issue')
+                $(this).attr('title', trans_script.attr('data-trans-gis'))
             }
-            if ($(this).attr('class').includes('bg-purple-light-5')) {
+            if ($(this).attr('class').includes('bg-purple-light-5 gtf-in')) {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
-                $(this).attr('title', 'Goods transfer')
+                $(this).attr('title', `${trans_script.attr('data-trans-gtf')} (IN)`)
+            }
+            if ($(this).attr('class').includes('bg-purple-light-5 gtf-out')) {
+                $(this).attr('data-bs-toggle', 'tooltip')
+                $(this).attr('data-bs-placement', 'top')
+                $(this).attr('title', `${trans_script.attr('data-trans-gtf')} (OUT)`)
             }
         })
     }

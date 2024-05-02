@@ -671,6 +671,7 @@ function Disable() {
     $btn_add_row_line_detail.remove();
     $modal_lot.find('#ok-btn-modal-lot').prop('disabled', true)
     $modal_serial.find('#ok-btn-modal-serial').prop('disabled', true)
+    $tab_line_detail_datatable.find('.btn-delete').prop('disabled', true)
 }
 
 function LoadDetailGoodsTransfer(option='detail') {

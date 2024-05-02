@@ -10,6 +10,7 @@ const $modal_lot = $('#modal-lot')
 let NOW_ROW = null
 let IS_DETAIL_PAGE = false
 let IS_UPDATE_PAGE = false
+let DOC_DONE = false
 
 function LoadDate() {
     $date.daterangepicker({
@@ -468,7 +469,11 @@ function loadSerialTable(data, serial_selected=[]) {
                 }
             },
         ],
-        initComplete: function () {}
+        initComplete: function () {
+            if (DOC_DONE) {
+                $table_serial.find('input').prop('disabled', true).prop('readonly', true)
+            }
+        }
     });
 }
 
@@ -582,7 +587,16 @@ function loadLotTable(data, lot_selected=[]) {
                 }
             },
         ],
-        initComplete: function () {}
+        columnDefs: [
+            {
+                targets: [2], visible: !DOC_DONE
+            }
+        ],
+        initComplete: function () {
+            if (DOC_DONE) {
+                $table_lot.find('input').prop('disabled', true).prop('readonly', true)
+            }
+        }
     });
 }
 
@@ -655,6 +669,8 @@ function Disable() {
     $('.select2').prop('disabled', true);
     $('#collapse-area input').prop('disabled', true);
     $btn_add_row_line_detail.remove();
+    $modal_lot.find('#ok-btn-modal-lot').prop('disabled', true)
+    $modal_serial.find('#ok-btn-modal-serial').prop('disabled', true)
 }
 
 function LoadDetailGoodsTransfer(option='detail') {
@@ -666,9 +682,9 @@ function LoadDetailGoodsTransfer(option='detail') {
             if (data) {
                 IS_DETAIL_PAGE = option === 'detail'
                 IS_UPDATE_PAGE = option === 'update'
+                DOC_DONE = [2, 3].includes(data?.['goods_transfer_detail']?.['system_status'])
 
-                data = data['goods_transfer_detail'];
-                console.log(data?.['workflow_runtime_id'])
+                data = data?.['goods_transfer_detail'];
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
@@ -748,22 +764,24 @@ function LoadDetailGoodsTransfer(option='detail') {
                         ele.closest('tr').find('.btn-select-detail .detail-serial').text(JSON.stringify(selected?.['serial_detail']))
                     }
 
-                    let lot_alert_hidden = row_data?.['lot_is_lost'] && row_data?.['lot_data'].length > 0
-                    let serial_alert_hidden = row_data?.['serial_is_lost'] && row_data?.['sn_data'].length > 0
-                    if (lot_alert_hidden) {
-                        $('#lot-alert').prop('hidden', !lot_alert_hidden)
-                        $('#common-alert').prop('hidden', !lot_alert_hidden)
-                    }
-                    if (serial_alert_hidden) {
-                        $('#serial-alert').prop('hidden', !serial_alert_hidden)
-                        $('#common-alert').prop('hidden', !serial_alert_hidden)
-                    }
+                    if (!DOC_DONE) {
+                        let lot_alert_hidden = row_data?.['lot_is_lost'] && row_data?.['lot_data'].length > 0
+                        let serial_alert_hidden = row_data?.['serial_is_lost'] && row_data?.['sn_data'].length > 0
+                        if (lot_alert_hidden) {
+                            $('#lot-alert').prop('hidden', !lot_alert_hidden)
+                            $('#common-alert').prop('hidden', !lot_alert_hidden)
+                        }
+                        if (serial_alert_hidden) {
+                            $('#serial-alert').prop('hidden', !serial_alert_hidden)
+                            $('#common-alert').prop('hidden', !serial_alert_hidden)
+                        }
 
-                    let old_value = row_html.find('.quantity').val()
-                    lot_alert_hidden === true || serial_alert_hidden === true ? row_html.find('.quantity').addClass('is-invalid').attr('placeholder', old_value).val('') : row_html.find('.quantity').removeClass('is-invalid')
+                        let old_value = row_html.find('.quantity').val()
+                        lot_alert_hidden === true || serial_alert_hidden === true ? row_html.find('.quantity').addClass('is-invalid').attr('placeholder', old_value).val('') : row_html.find('.quantity').removeClass('is-invalid')
+                    }
                 }
 
-                if (IS_DETAIL_PAGE) {
+                if (IS_DETAIL_PAGE || DOC_DONE) {
                     Disable()
                 }
                 $.fn.initMaskMoney2()

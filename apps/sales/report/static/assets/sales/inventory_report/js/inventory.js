@@ -219,7 +219,9 @@ $(document).ready(function () {
                                         </tr>
                                     `)
                                     let detail_html = ``
+                                    let in_quantity_enough = 0
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
+                                        in_quantity_enough += parseFloat(activity?.['in_quantity'])
                                         let bg_in = ''
                                         let bg_out = ''
                                         if (activity?.['trans_title'] === 'Goods receipt') {
@@ -281,6 +283,26 @@ $(document).ready(function () {
                                         </tr>
                                         ${detail_html}
                                     `)
+                                    if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
+                                        table_inventory_report.find('tbody').append(`
+                                            <tr class="no-info">
+                                                <td class="border-1 first-col" colspan="3"></td>
+                                                <td class="border-1 second-col" colspan="3"></td>
+                                                <td class="border-1" colspan="3"></td>
+                                                <td class="border-1" colspan="3">***</td>
+                                                <td class="border-1" colspan="3">***</td>
+                                                <td class="border-1" colspan="3">***</td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1 bg-primary-light-5">***</td>
+                                                <td class="border-1 bg-primary-light-5">***</td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                            </tr>
+                                        `)
+                                    }
 
                                     opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                     in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
@@ -293,7 +315,9 @@ $(document).ready(function () {
                                 }
                                 else {
                                     let detail_html = ``
+                                    let in_quantity_enough = 0
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
+                                        in_quantity_enough += parseFloat(activity?.['in_quantity'])
                                         let bg_in = ''
                                         let bg_out = ''
                                         if (activity?.['trans_title'] === 'Goods receipt') {
@@ -357,6 +381,26 @@ $(document).ready(function () {
                                         </tr>
                                         ${detail_html}
                                     `)
+                                    if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
+                                        table_inventory_report.find('tbody').append(`
+                                            <tr class="no-info">
+                                                <td class="border-1 first-col" colspan="3"></td>
+                                                <td class="border-1 second-col" colspan="3"></td>
+                                                <td class="border-1" colspan="3"></td>
+                                                <td class="border-1" colspan="3">***</td>
+                                                <td class="border-1" colspan="3">***</td>
+                                                <td class="border-1" colspan="3">***</td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1 bg-primary-light-5">***</td>
+                                                <td class="border-1 bg-primary-light-5">***</td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                                <td class="border-1"></td>
+                                            </tr>
+                                        `)
+                                    }
 
                                     current_wh_row.find('.wh-opening-quantity-span').text(parseFloat(current_wh_row.find('.wh-opening-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['opening_balance_quantity'])
                                     current_wh_row.find('.wh-opening-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-opening-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['opening_balance_value'])
@@ -409,7 +453,9 @@ $(document).ready(function () {
                                             </tr>
                                         `)
                                         let detail_html = ``
+                                        let in_quantity_enough = 0
                                         for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
+                                            in_quantity_enough += parseFloat(activity?.['in_quantity'])
                                             let bg_in = ''
                                             let bg_out = ''
                                             if (activity?.['trans_title'] === 'Goods receipt') {
@@ -459,6 +505,26 @@ $(document).ready(function () {
                                             </tr>
                                             ${detail_html}
                                         `)
+                                        if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
+                                            table_inventory_report.find('tbody').append(`
+                                                <tr class="no-info">
+                                                    <td class="border-1 first-col" colspan="3"></td>
+                                                    <td class="border-1 second-col" colspan="3"></td>
+                                                    <td class="border-1" colspan="3"></td>
+                                                    <td class="border-1" colspan="3">***</td>
+                                                    <td class="border-1" colspan="3">***</td>
+                                                    <td class="border-1" colspan="3">***</td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1 bg-primary-light-5">***</td>
+                                                    <td class="border-1 bg-primary-light-5">***</td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                </tr>
+                                            `)
+                                        }
 
                                         opening_sum_quantity += warehouse_activities?.['stock_activities']?.['opening_balance_quantity']
                                         in_sum_quantity += warehouse_activities?.['stock_activities']?.['sum_in_quantity']
@@ -471,7 +537,9 @@ $(document).ready(function () {
                                     }
                                     else {
                                         let detail_html = ``
+                                        let in_quantity_enough = 0
                                         for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
+                                            in_quantity_enough += parseFloat(activity?.['in_quantity'])
                                             let bg_in = ''
                                             let bg_out = ''
                                             if (activity?.['in_quantity'] && activity?.['in_value']) {
@@ -520,6 +588,26 @@ $(document).ready(function () {
                                             </tr>
                                             ${detail_html}
                                         `)
+                                        if (in_quantity_enough < parseFloat(warehouse_activities?.['stock_activities']?.['sum_in_quantity'])) {
+                                            table_inventory_report.find('tbody').append(`
+                                                <tr class="no-info">
+                                                    <td class="border-1 first-col" colspan="3"></td>
+                                                    <td class="border-1 second-col" colspan="3"></td>
+                                                    <td class="border-1" colspan="3"></td>
+                                                    <td class="border-1" colspan="3">***</td>
+                                                    <td class="border-1" colspan="3">***</td>
+                                                    <td class="border-1" colspan="3">***</td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1 bg-primary-light-5">***</td>
+                                                    <td class="border-1 bg-primary-light-5">***</td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                    <td class="border-1"></td>
+                                                </tr>
+                                            `)
+                                        }
 
                                         current_wh_row.find('.wh-opening-quantity-span').text(parseFloat(current_wh_row.find('.wh-opening-quantity-span').text()) + warehouse_activities?.['stock_activities']?.['opening_balance_quantity'])
                                         current_wh_row.find('.wh-opening-value-span').attr('data-init-money', parseFloat(current_wh_row.find('.wh-opening-value-span').attr('data-init-money')) + warehouse_activities?.['stock_activities']?.['opening_balance_value'])
@@ -833,6 +921,14 @@ $(document).ready(function () {
                 $(this).attr('data-bs-toggle', 'tooltip')
                 $(this).attr('data-bs-placement', 'top')
                 $(this).attr('title', `${trans_script.attr('data-trans-gtf')} (OUT)`)
+            }
+        })
+        $('#table-inventory-report-detail').find('.no-info td').each(function () {
+            let td = $(this)
+            if (td.text() === '***') {
+                td.attr('data-bs-toggle', 'tooltip')
+                td.attr('data-bs-placement', 'top')
+                td.attr('title', trans_script.attr('data-trans-no-info'))
             }
         })
     }

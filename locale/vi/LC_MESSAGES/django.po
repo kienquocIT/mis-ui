@@ -7333,3 +7333,7 @@ msgstr "Số lượng khả dụng hiện tại đang < số lượng lấy HO�
 #
 msgid "Inventory data has been changed."
 msgstr "Dữ liệu tồn kho đã bị thay đổi."
+
+#
+msgid "Have not done. Please finish in Goods Detail."
+msgstr "Chưa nhập xong. Hãy hoàn thành trong Chi tiết hàng"

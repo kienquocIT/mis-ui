@@ -114,6 +114,7 @@ function loadProduct(ele, data) {
             ele.closest('tr').find('.uom').text(selected?.['uom']?.['title'])
             ele.closest('tr').find('.quantity').attr('data-quantity-limit', selected?.['stock_amount'])
             ele.closest('tr').find('.btn-select-detail').attr('data-product-type', selected?.['product']?.['general_traceability_method'])
+            ele.closest('tr').find('.unit-price').attr('value', selected?.['unit_cost'])
             if (selected?.['product']?.['general_traceability_method'] === 0) {
                 ele.closest('tr').find('.btn-select-detail').prop('hidden', true)
                 ele.closest('tr').find('.btn-select-detail').attr('data-bs-toggle', '')
@@ -141,11 +142,13 @@ function loadProduct(ele, data) {
         }
         else {
             ele.closest('tr').find('.uom').text('')
+            ele.closest('tr').find('.quantity').val('').prop('disabled', false).prop('readonly', false)
             ele.closest('tr').find('.btn-select-detail').prop('hidden', true)
             ele.closest('tr').find('.btn-select-detail').attr('data-bs-toggle', '')
             ele.closest('tr').find('.btn-select-detail').attr('data-bs-target', '')
-            ele.closest('tr').find('.quantity').val('').prop('disabled', false).prop('readonly', false)
+            ele.closest('tr').find('.unit-price').attr('value', 0)
         }
+        $.fn.initMaskMoney2()
     })
 }
 
@@ -221,7 +224,7 @@ $btn_add_row_line_detail.on('click', function () {
             </div>
         </td>
         <td><select class="to-wh form-select select2"></select></td>
-        <td><input class="unit-price form-control mask-money"></td>
+        <td><input disabled readonly class="unit-price form-control mask-money"></td>
         <td><input disabled readonly class="subtotal-price form-control mask-money"></td>
         <td class="text-center">
             <button type="button" class="btn-delete btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs">
@@ -532,7 +535,7 @@ function loadLotTable(data, lot_selected=[]) {
                             break
                         }
                     }
-                    return `<input type="number" min="0" disabled readonly data-id="${row?.['id']}" value="${quantity_got}" class="form-control quantity_get ${parseFloat(quantity_got) > parseFloat(row?.['quantity_import']) ? 'is-invalid' : ''}">`;
+                    return `<input type="number" min="0" disabled readonly data-id="${row?.['id']}" value="${quantity_got}" class="form-control quantity_get ${parseFloat(quantity_got) > parseFloat(row?.['quantity_import']) && !DOC_DONE ? 'is-invalid' : ''}">`;
                 }
             },
         ] : [
@@ -583,7 +586,7 @@ function loadLotTable(data, lot_selected=[]) {
                             break
                         }
                     }
-                    return `<input type="number" min="0" data-id="${row?.['id']}" value="${quantity_got}" class="form-control quantity_get ${parseFloat(quantity_got) > parseFloat(row?.['quantity_import']) ? 'is-invalid' : ''}">`;
+                    return `<input type="number" min="0" data-id="${row?.['id']}" value="${quantity_got}" class="form-control quantity_get ${parseFloat(quantity_got) > parseFloat(row?.['quantity_import']) && !DOC_DONE ? 'is-invalid' : ''}">`;
                 }
             },
         ],
@@ -852,7 +855,6 @@ class GoodsTransferHandle {
         })
         frm.dataForm['goods_transfer_datas'] = data_line_detail
         if (flag === null) {
-            console.log('ok')
             return frm;
         }
         else {

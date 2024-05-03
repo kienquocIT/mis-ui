@@ -295,18 +295,17 @@ class GoodsIssueLoadPage {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('ia_product_list')) {
                         let product_list = data?.['ia_product_list'].filter(function (obj) {
-                            return (obj.book_quantity - obj.count) > 0;
+                            return obj.action_type === 1;
                         });
                         product_list.map(function (item) {
                             if (data_dict[item.id]) {
                                 item['action_status'] = false
                             }
-
                             if (!item.action_status) {
                                 data_dict[item.id] = item;
                                 item['description'] = item?.['product_mapped']?.['description'];
-                                item['subtotal'] = '';
-                                item['unit_cost'] = '';
+                                item['subtotal'] = parseFloat(item?.['unit_cost']) * (parseFloat(item?.['book_quantity']) - parseFloat(item?.['count']));
+                                item['unit_cost'] = item?.['unit_cost'];
                                 tableEle.DataTable().row.add(item).draw();
                                 tableEle.find('tbody tr').each(function () {
                                     if ($(this).find('.col-product').attr('data-manage-type') === '0') {
@@ -409,7 +408,7 @@ class GoodsIssueLoadPage {
                         data: 'unit_cost',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<input style="min-width: 250px" class="form-control mask-money col-unit-cost" value="${data}"/>`;
+                            return `<input disabled readonly style="min-width: 250px" class="form-control mask-money col-unit-cost" value="${data}"/>`;
                         },
                     },
                     {
@@ -719,7 +718,7 @@ class GoodsIssueLoadPage {
                         data: 'unit_cost',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<input ${IS_DETAIL ? 'disabled readonly' : ''} class="col-unit-cost form-control mask-money" value=${data}>`
+                            return `<input disabled readonly class="col-unit-cost form-control mask-money" value=${data}>`
                         },
                     }, {
                         data: 'subtotal',

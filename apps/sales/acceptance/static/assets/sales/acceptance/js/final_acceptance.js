@@ -9,6 +9,7 @@ $(function () {
         let $table = $('#table_final_acceptance_list');
         let updateIndicatorData = {};
         let $form = $('#frm_final_acceptance_update');
+        let $btnS = $('#btn-save');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -147,7 +148,7 @@ $(function () {
                         targets: 7,
                         width: '17.1875%',
                         render: (data, type, row) => {
-                            return `<input class="form-control" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
+                            return `<input class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}">`;
                         }
                     },
                 ],
@@ -159,7 +160,6 @@ $(function () {
                 },
             });
         }
-        loadDbl();
 
         function loadCssToDtb(tableID) {
             let tableIDWrapper = tableID + '_wrapper';
@@ -336,6 +336,11 @@ $(function () {
                                 for (let changeRow of changeRows) {
                                     calculateIndicatorFormula(changeRow);
                                 }
+                                if ($table.DataTable().rows().count() > 0) {  // has data
+                                    $btnS[0].removeAttribute('hidden');
+                                } else {  // no data
+                                    $btnS[0].setAttribute('hidden', 'true');
+                                }
                             }
                         }
                     }
@@ -400,8 +405,12 @@ $(function () {
                 updateIndicatorData[IDIndicator] = {
                     'actual_value': newActualValue,
                     'different_value': differVal,
-                    'rate_value': rateValue
+                    'rate_value': rateValue,
                 };
+                let eleRemark = row?.querySelector('.table-row-remark');
+                if (eleRemark) {
+                    updateIndicatorData[IDIndicator]['remark'] = eleRemark.value;
+                }
             }
         }
 
@@ -500,7 +509,6 @@ $(function () {
                 'allowClear': true,
             });
         }
-        loadOpp();
 
         function loadEmployee(dataEmployee = {}) {
             boxEmployee.empty();
@@ -509,7 +517,6 @@ $(function () {
                 'allowClear': true,
             });
         }
-        loadEmployee();
 
         function loadSO() {
             boxSO.empty();
@@ -525,7 +532,6 @@ $(function () {
                 'allowClear': true,
             });
         }
-        loadSO();
 
         function loadDataByEmployee() {
             loadSO();
@@ -581,6 +587,15 @@ $(function () {
             return true;
         }
 
+        function loadInit() {
+            loadEmployee();
+            loadOpp();
+            loadSO();
+            loadDbl();
+        }
+
+        loadInit();
+
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
             minYear: 1901,
@@ -623,24 +638,37 @@ $(function () {
             changeActualValue(this);
         });
 
+        $table.on('change', '.table-row-remark', function () {
+            let row = this.closest('tr');
+            let IDIndicator = row?.querySelector('.table-row-indicator')?.getAttribute('data-id');
+            if (updateIndicatorData.hasOwnProperty(IDIndicator)) {
+                updateIndicatorData[IDIndicator]['remark'] = this.value;
+            } else {
+                updateIndicatorData[IDIndicator] = {};
+                updateIndicatorData[IDIndicator]['remark'] = this.value;
+            }
+        });
+
         // SUBMIT FORM
         $form.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit($form);
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(_form.dataUrl, _form.dataMethod, {'final_acceptance_indicator': updateIndicatorData}, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl($form.attr('data-url-redirect'), 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
-                    }
-                )
+            _form.dataForm['final_acceptance_indicator'] = updateIndicatorData;
+            // let csr = $("[name=csrfmiddlewaretoken]").val();
+            // $.fn.callAjax(_form.dataUrl, _form.dataMethod, {'final_acceptance_indicator': updateIndicatorData}, csr)
+            //     .then(
+            //         (resp) => {
+            //             let data = $.fn.switcherResp(resp);
+            //             if (data) {
+            //                 $.fn.notifyB({description: data.message}, 'success')
+            //                 $.fn.redirectUrl($form.attr('data-url-redirect'), 1000);
+            //             }
+            //         },
+            //         (errs) => {
+            //             console.log(errs)
+            //         }
+            //     )
+            WFRTControl.callWFSubmitForm(_form);
         });
 
     });

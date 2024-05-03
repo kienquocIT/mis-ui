@@ -2756,36 +2756,55 @@ class GRValidateHandle {
         let lot_number = ele.value;
         if (lot_number !== '') {
             let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
-            if (dataPOProductCheckedRaw) {
+            let dataWHCheckedRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+            if (dataPOProductCheckedRaw && dataWHCheckedRaw) {
                 let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
-                $.fn.callAjax2({
-                        'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
-                        'method': 'GET',
-                        'data': {
-                            'product_warehouse__product_id': dataPOProductChecked?.['product']?.['id'],
-                            'lot_number': lot_number
-                        },
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
-                                if (data.warehouse_lot_list.length > 0) {
-                                    ele.value = '';
-                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
-                                    if (eleImport) {
-                                        eleImport.value = '0';
+                let dataWHChecked = JSON.parse(dataWHCheckedRaw);
+                if (dataPOProductChecked && dataWHChecked) {
+                    let productID = dataPOProductChecked?.['product']?.['id'];
+                    let whID = dataWHChecked?.['id'];
+                    $.fn.callAjax2({
+                            'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
+                            'method': 'GET',
+                            'data': {'lot_number': lot_number},
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                                    for (let wh_lot of data?.['warehouse_lot_list']) {
+                                        if (wh_lot?.['product_warehouse']) {
+                                            if (wh_lot?.['product_warehouse']?.['product'] && wh_lot?.['product_warehouse']?.['warehouse']) {
+                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] === productID && wh_lot?.['product_warehouse']?.['warehouse']?.['id'] === whID) {
+                                                    ele.value = '';
+                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                                    if (eleImport) {
+                                                        eleImport.value = '0';
+                                                    }
+                                                    GRLoadDataHandle.loadQuantityImport();
+                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                                    return false
+                                                }
+                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] !== productID) {
+                                                    ele.value = '';
+                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                                    if (eleImport) {
+                                                        eleImport.value = '0';
+                                                    }
+                                                    GRLoadDataHandle.loadQuantityImport();
+                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                                    return false
+                                                }
+                                            }
+                                        }
                                     }
-                                    GRLoadDataHandle.loadQuantityImport();
-                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
-                                    return false
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
         return true
@@ -2797,34 +2816,54 @@ class GRValidateHandle {
             let dataIAProductCheckedRaw = GRDataTableHandle.tableIAProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
             if (dataIAProductCheckedRaw) {
                 let dataIAProductChecked = JSON.parse(dataIAProductCheckedRaw);
-                $.fn.callAjax2({
-                        'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
-                        'method': 'GET',
-                        'data': {
-                            'product_warehouse__product_id': dataIAProductChecked?.['product']?.['id'],
-                            'lot_number': lot_number
-                        },
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
-                                if (data.warehouse_lot_list.length > 0) {
-                                    ele.value = '';
-                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
-                                    if (eleImport) {
-                                        eleImport.value = '0';
+                if (dataIAProductChecked) {
+                    let productID = dataIAProductChecked?.['product']?.['id'];
+                    let whID = dataIAProductChecked?.['warehouse']?.['id'];
+                    $.fn.callAjax2({
+                            'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
+                            'method': 'GET',
+                            'data': {
+                                'product_warehouse__product_id': dataIAProductChecked?.['product']?.['id'],
+                                'lot_number': lot_number
+                            },
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                                    for (let wh_lot of data?.['warehouse_lot_list']) {
+                                        if (wh_lot?.['product_warehouse']) {
+                                            if (wh_lot?.['product_warehouse']?.['product'] && wh_lot?.['product_warehouse']?.['warehouse']) {
+                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] === productID && wh_lot?.['product_warehouse']?.['warehouse']?.['id'] === whID) {
+                                                    ele.value = '';
+                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                                    if (eleImport) {
+                                                        eleImport.value = '0';
+                                                    }
+                                                    GRLoadDataHandle.loadIAQuantityImport();
+                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                                    return false
+                                                }
+                                                if (wh_lot?.['product_warehouse']?.['product']?.['id'] !== productID) {
+                                                    ele.value = '';
+                                                    let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                                    if (eleImport) {
+                                                        eleImport.value = '0';
+                                                    }
+                                                    GRLoadDataHandle.loadIAQuantityImport();
+                                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
+                                                    return false
+                                                }
+                                            }
+                                        }
                                     }
-                                    GRLoadDataHandle.loadIAQuantityImport();
-                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
-                                    return false
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
         return true

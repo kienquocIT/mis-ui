@@ -11,26 +11,25 @@
 {% block pageContent %}
     {% csrf_token %}
 
-    <div class="card card-refresh">
-		<div class="refresh-container">
-			<div class="loader-pendulums"></div>
-		</div>
-		<div class="card-header card-header-action h-50p">
-            <span class="badge badge-light">
-                <span>
-                    <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
-                    {% trans 'Filter' %}
-                </span>
-            </span>
-			<div class="card-action-wrap">
-                <button type="button" class="btn btn-primary mr-2" id="btn-view">{% trans 'Apply' %}</button>
-				<a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover"  data-bs-toggle="collapse" href="#collapse_1" aria-expanded="true"><span class="icon"><span class="feather-icon"><i data-feather="chevron-down"></i></span></span></a>
-			</div>
-		</div>
-		<div id="collapse_1" class="collapse show">
-			<div class="card-body">
-				<div class="row">
-                    <div class="col-12 col-md-3 col-lg-3">
+    <div class="row">
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="card card-refresh">
+                <div class="refresh-container">
+                    <div class="loader-pendulums"></div>
+                </div>
+                <div class="card-header card-header-action h-50p">
+                    <span class="badge badge-light">
+                        <span>
+                            <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
+                            {% trans 'Filter' %}
+                        </span>
+                    </span>
+                    <div class="card-action-wrap">
+                        <button type="button" class="btn btn-primary btn-sm" id="btn-view">{% trans 'Apply' %}</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
                         <div class="form-group">
                             <label class="form-label mt-2" for="box-report-general-group">{% trans 'Group' %}</label>
                             <select
@@ -44,8 +43,6 @@
                                     multiple
                             ></select>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label mt-2" for="box-report-general-employee">{% trans 'Employee' %}</label>
                             <select
@@ -59,8 +56,6 @@
                                     multiple
                             ></select>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
                             <label class="form-label mt-2" for="box-report-general-year">{% trans 'Year' %}</label>
                             <select
@@ -71,8 +66,6 @@
                                     name="year"
                             ></select>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
                             <label class="form-label mt-2" for="box-report-general-detail">{% trans 'Detail' %}</label>
                             <select
@@ -85,32 +78,34 @@
                         </div>
                     </div>
                 </div>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9">
+            <table
+                    id="table_report_general_list"
+                    class="table nowrap min-w-1600p w-100 mb-5"
+                    data-url="{% url 'ReportGeneralListAPI' %}"
+                    data-method="get"
+            >
+                <thead>
+                <tr>
+                    <th>{% trans 'Group' %}</th>
+                    <th>{% trans 'Employee name' %}</th>
+                    <th>{% trans 'Employee code' %}</th>
+                    <th>{% trans 'Revenue plan' %}</th>
+                    <th>{% trans 'Revenue' %}</th>
+                    <th>{% trans 'Ratio' %}</th>
+                    <th>{% trans 'Gross profit plan' %}</th>
+                    <th>{% trans 'Gross profit' %}</th>
+                    <th>{% trans 'Ratio' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <table
-            id="table_report_general_list"
-            class="table nowrap min-w-1920p w-100 mb-5"
-            data-url="{% url 'ReportGeneralListAPI' %}"
-            data-method="get"
-    >
-        <thead>
-        <tr>
-            <th>{% trans 'Group' %}</th>
-            <th>{% trans 'Employee name' %}</th>
-            <th>{% trans 'Employee code' %}</th>
-            <th>{% trans 'Revenue plan' %}</th>
-            <th>{% trans 'Revenue' %}</th>
-            <th>{% trans 'Ratio' %}</th>
-            <th>{% trans 'Gross profit plan' %}</th>
-            <th>{% trans 'Gross profit' %}</th>
-            <th>{% trans 'Ratio' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
 {% endblock %}
 {% block dataHiddenGroup %}
     <input

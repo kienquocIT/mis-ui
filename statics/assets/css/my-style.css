@@ -970,13 +970,3 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     color: #fff;
 }
 /* -- Badge parent */
-
-.collapse-left {
-    transition: width 0.5s ease-in-out;
-    overflow: hidden;
-    width: auto; /* Set initial width */
-}
-
-.collapse-left.show {
-    width: 0; /* Set width to 0 when collapsed */
-}

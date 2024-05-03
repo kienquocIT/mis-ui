@@ -1320,6 +1320,8 @@ $(function () {
                     $.fn.initMaskMoney2();
                     // change TH by months
                     changeTHTableYearByMonths();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_cashflow_year_list');
                 },
             });
         }
@@ -1497,11 +1499,24 @@ $(function () {
                     $.fn.initMaskMoney2();
                     // change TH by weeks
                     changeTHTableMonthByWeeks();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_cashflow_month_list');
                 },
             });
         }
 
         loadDblMonth();
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
+        }
 
         function setupDataLoadTable(dataList) {
             let result = [];

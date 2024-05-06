@@ -250,9 +250,9 @@ $(document).ready(function () {
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="border-1 second-col" colspan="3"><span></span></td>
                                                 <td class="border-1" colspan="3"><span></span></td>
-                                                <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
+                                                <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                 <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("YYYY-MM-DD") : ''}</span></td>
+                                                <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1 ${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -330,9 +330,9 @@ $(document).ready(function () {
                                                 <td class="border-1 first-col" colspan="3"><span></span></td>
                                                 <td class="border-1 second-col" colspan="3"><span></span></td>
                                                 <td class="border-1" colspan="3"><span></span></td>
-                                                <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
+                                                <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                 <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("YYYY-MM-DD") : ''}</span></td>
+                                                <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1"></td>
                                                 <td class="border-1 ${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -439,9 +439,9 @@ $(document).ready(function () {
                                                     <td class="border-1 first-col" colspan="3"><span></span></td>
                                                     <td class="border-1 second-col" colspan="3"><span></span></td>
                                                     <td class="border-1" colspan="3"><span></span></td>
-                                                    <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
+                                                    <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                     <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                    <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("YYYY-MM-DD") : ''}</span></td>
+                                                    <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1 ${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>
@@ -504,9 +504,9 @@ $(document).ready(function () {
                                                     <td class="border-1 first-col" colspan="3"><span></span></td>
                                                     <td class="border-1 second-col" colspan="3"><span></span></td>
                                                     <td class="border-1" colspan="3"><span></span></td>
-                                                    <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("YYYY-MM-DD")}</span></td>
+                                                    <td class="border-1" colspan="3"><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
                                                     <td class="border-1" colspan="3"><span>${activity?.['lot_number']}</span></td>
-                                                    <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("YYYY-MM-DD") : ''}</span></td>
+                                                    <td class="border-1" colspan="3"><span>${activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : ''}</span></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1"></td>
                                                     <td class="border-1 ${bg_in}"><span class="in-quantity-span-detail">${activity?.['in_quantity']}</span></td>

@@ -525,7 +525,7 @@ class MenusReport:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     SALE_REPORT = MenuCommon(
-        name='Sale reports', code='menu_sale_reports', view_name='', icon='<i class="fas fa-chart-line"></i>',
+        name='Sale reports', code='menu_sale_reports', view_name='', icon='<i class="fas fa-stream"></i>',
         child=[
             MenuCommon(
                 name='Pipeline report',
@@ -579,6 +579,17 @@ class MenusReport:
                 code='menu_items_detail_report',
                 view_name='ReportInventoryDetailList',
                 icon='<i class="fas fa-cube"></i>',
+            ),
+        ],
+    )
+    PURCHASING_REPORT = MenuCommon(
+        name='Purchasing reports', code='menu_purchasing_reports', view_name='', icon='<i class="fas fa-stream"></i>',
+        child=[
+            MenuCommon(
+                name='Purchase Order Report',
+                code='menu_po_report',
+                view_name='PurchaseOrderReportList',
+                icon='<i class="bi bi-ui-checks"></i>',
             ),
         ],
     )
@@ -695,6 +706,7 @@ class SpaceItem:
                 MenusReport.HOME,
                 MenusReport.SALE_REPORT,
                 MenusReport.INVENTORY_REPORT,
+                MenusReport.PURCHASING_REPORT,
             ],
         ),
         'company-system': SpaceCommon(

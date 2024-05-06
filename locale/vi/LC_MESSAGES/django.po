@@ -7341,3 +7341,11 @@ msgstr "Dữ liệu tồn kho đã bị thay đổi."
 #
 msgid "Have not done. Please finish in Goods Detail."
 msgstr "Chưa nhập xong. Hãy hoàn thành trong Chi tiết hàng"
+
+#
+msgid "Product type"
+msgstr "Loại sản phẩm"
+
+#
+msgid "Purchasing staff"
+msgstr "Nhân viên mua hàng"

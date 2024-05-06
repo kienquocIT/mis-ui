@@ -22,10 +22,10 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                columns: [  // 150,150,150,320,100,100,100,100,290,290,290,130,130,130,130 (2560p)
+                columns: [  // 120,120,120,240,120,120,120,120,192,192,192,60,60,60,60 (1920p)
                     {
                         targets: 0,
-                        width: '5.859375%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 0) {
                                 return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
@@ -36,14 +36,14 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '5.859375%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span></div>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '5.859375%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             return `<div class="row"><span class="badge badge-soft-primary">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span></div>`;
                         }
@@ -57,14 +57,14 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '4%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             return `<p>${row?.['opportunity']?.['stage']?.['indicator'] ? row?.['opportunity']?.['stage']?.['indicator'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '4%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             if ([0, 1, 2].includes(row?.['type_group_by'])) {
                                 return `<p></p>`;
@@ -82,7 +82,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '4%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['open_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['open_date'] ? row?.['opportunity']?.['open_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -93,7 +93,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '4%',
+                        width: '6.25%',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['close_date']) {
                                 return `<p>${moment(row?.['opportunity']?.['close_date'] ? row?.['opportunity']?.['close_date'] : '').format('DD/MM/YYYY')}</p>`;
@@ -104,7 +104,7 @@ $(function () {
                     },
                     {
                         targets: 8,
-                        width: '11.328125%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['opportunity']?.['value'])}"></span></b>`;
@@ -114,7 +114,7 @@ $(function () {
                     },
                     {
                         targets: 9,
-                        width: '11.328125%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-forecast-value" data-init-money="${parseFloat(row?.['opportunity']?.['forecast_value'])}"></span></b>`;
@@ -124,7 +124,7 @@ $(function () {
                     },
                     {
                         targets: 10,
-                        width: '11.328125%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['opportunity']?.['gross_profit'])}"></span></b>`;
@@ -134,7 +134,7 @@ $(function () {
                     },
                     {
                         targets: 11,
-                        width: '5.078125%',
+                        width: '3.125%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['call'] ? row?.['opportunity']?.['call'] : '0'}</p></b>`;
@@ -144,7 +144,7 @@ $(function () {
                     },
                     {
                         targets: 12,
-                        width: '5.078125%',
+                        width: '3.125%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['email'] ? row?.['opportunity']?.['email'] : '0'}</p></b>`;
@@ -154,7 +154,7 @@ $(function () {
                     },
                     {
                         targets: 13,
-                        width: '5.078125%',
+                        width: '3.125%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['meeting'] ? row?.['opportunity']?.['meeting'] : '0'}</p></b>`;
@@ -164,7 +164,7 @@ $(function () {
                     },
                     {
                         targets: 14,
-                        width: '5.078125%',
+                        width: '3.125%',
                         render: (data, type, row) => {
                             if ([1, 2].includes(row?.['type_group_by'])) {
                                 return `<b><p>${row?.['opportunity']?.['document'] ? row?.['opportunity']?.['document'] : '0'}</p></b>`;
@@ -176,10 +176,23 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    // add css to Dtb
+                    loadCssToDtb('table_report_pipeline_list');
                 },
             });
         }
         loadDbl();
+
+        function loadCssToDtb(tableID) {
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
+            }
+        }
 
         function setupDataLoadTable(dataList) {
             let result = [];

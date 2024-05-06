@@ -116,15 +116,15 @@ $(function () {
         loadDbl();
 
         function loadCssToDtb(tableID) {
-        let tableIDWrapper = tableID + '_wrapper';
-        let tableWrapper = document.getElementById(tableIDWrapper);
-        if (tableWrapper) {
-            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
-            if (headerToolbar) {
-                headerToolbar.classList.add('hidden');
+            let tableIDWrapper = tableID + '_wrapper';
+            let tableWrapper = document.getElementById(tableIDWrapper);
+            if (tableWrapper) {
+                let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+                if (headerToolbar) {
+                    headerToolbar.classList.add('hidden');
+                }
             }
         }
-    }
 
         function setupDataLoadTable(dataList) {
             let year = boxYear.val();

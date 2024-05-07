@@ -290,8 +290,7 @@ $(document).ready(function () {
                     let po_row = $(`
                         <tr class="po-row">
                             <td class="border-1 text-primary fw-bold">
-                                <span class="badge badge-primary badge-sm w-100p">${po?.['code']}</span>&nbsp;
-                                ${po?.['title']}
+                                <span class="badge badge-primary w-100">${po?.['code']}</span>
                             </td>
                             <td class="border-1 text-primary fw-bold">${po?.['delivered_date'] ? moment(po?.['delivered_date']).format('DD/MM/YYYY') : ''}</td>
                             <td class="border-1 text-primary fw-bold">${po?.['employee_inherit']?.['fullname']}</td>
@@ -337,7 +336,7 @@ $(document).ready(function () {
                                 <td class="border-1"></td>
                                 <td class="border-1"></td>
                                 <td class="border-1">
-                                    <span class="badge badge-soft-secondary badge-sm w-100p">${product?.['product']?.['code']}</span>&nbsp;&nbsp;${product?.['product']?.['title']}
+                                    ${product?.['product']?.['title']}
                                 </td>
                                 <td class="border-1">${product?.['uom']?.['title']}</td>
                                 <td class="border-1">${product?.['order_quantity']}</td>

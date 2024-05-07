@@ -586,7 +586,7 @@ class MenusReport:
         name='Purchasing reports', code='menu_purchasing_reports', view_name='', icon='<i class="fas fa-stream"></i>',
         child=[
             MenuCommon(
-                name='Purchase Order Report',
+                name='Purchase order report',
                 code='menu_po_report',
                 view_name='PurchaseOrderReportList',
                 icon='<i class="bi bi-ui-checks"></i>',

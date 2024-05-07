@@ -7349,3 +7349,39 @@ msgstr "Loại sản phẩm"
 #
 msgid "Purchasing staff"
 msgstr "Nhân viên mua hàng"
+
+#
+msgid "Purchasing reports"
+msgstr "Báo cáo mua hàng"
+
+#
+msgid "Purchase order report"
+msgstr "Báo cáo theo đơn mua hàng"
+
+#
+msgid "Purchasing Code"
+msgstr "Mã phiếu mua hàng"
+
+#
+msgid "Order quantity"
+msgstr "Số lượng đặt hàng"
+
+#
+msgid "Received quantity"
+msgstr "SL đã nhận"
+
+#
+msgid "Remaining quantity"
+msgstr "SL còn lại"
+
+#
+msgid "Order value"
+msgstr "GT đơn hàng"
+
+#
+msgid "Received value"
+msgstr "GT đơn hàng đã nhận"
+
+#
+msgid "Remaining value"
+msgstr "GT đơn hàng còn lại"

@@ -436,10 +436,8 @@ $(document).ready(function () {
         if ($prd_category.val().length > 0) {
             let filtered_data = []
             for (const item of input_data) {
-                for (const prd_type of $prd_category.val()) {
-                    if ($prd_category.val().includes(item?.['product']?.['product_category'])) {
-                        filtered_data.push(item)
-                    }
+                if ($prd_category.val().includes(item?.['product']?.['product_category'])) {
+                    filtered_data.push(item)
                 }
             }
             return filtered_data
@@ -451,10 +449,8 @@ $(document).ready(function () {
         if ($prd_type.val().length > 0) {
             let filtered_data = []
             for (const item of input_data) {
-                for (const prd_type of $prd_type.val()) {
-                    if (item?.['product']?.['product_type'].includes(prd_type)) {
-                        filtered_data.push(item)
-                    }
+                if (item?.['product']?.['product_type'].filter(val => $prd_type.val().includes(val)).length > 0) {
+                    filtered_data.push(item)
                 }
             }
             return filtered_data

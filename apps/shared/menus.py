@@ -269,6 +269,10 @@ class MenusCRM:
         name='Quotation', code='menu_quotation_list', view_name='QuotationList',
         icon='<i class="fas fa-file-invoice-dollar"></i>',
     )
+    AR_INVOICE = MenuCommon(
+        name='AR Invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
+        icon='<i class="bi bi-receipt"></i>',
+    )
     SALE_ORDER = MenuCommon(
         name='Sale Order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
@@ -279,27 +283,6 @@ class MenusCRM:
     )
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
-    )
-    INVENTORY = MenuCommon(
-        name='Inventory', code='menu_inventory', view_name='#', icon='<i class="fas fa-clipboard-list"></i>',
-        child=[
-            MenuCommon(
-                name='WareHouse', code='menu_warehouse_list', view_name='WareHouseList',
-                icon='<i class="fas fa-warehouse"></i>',
-            ),
-            # MenuCommon(
-            #     name='Good receipt', code='menu_good_receipt_list', view_name='GoodReceiptList',
-            #     icon='<i class="bi bi-receipt"></i>',
-            # ),
-            MenuCommon(
-                name='Picking', code='menu_order_picking_list', view_name='OrderPickingList',
-                icon='<i class="fas fa-box"></i>',
-            ),
-            MenuCommon(
-                name='Delivery', code='menu_order_delivery_list', view_name='OrderDeliveryList',
-                icon='<i class="fas fa-truck-pickup"></i>',
-            ),
-        ],
     )
     PRICING = MenuCommon(
         name='Pricing', code='menu_pricing', view_name='', icon='<i class="bi bi-tags-fill"></i>',
@@ -358,10 +341,6 @@ class MenusCRM:
 
         ],
     )
-    AR_INVOICE = MenuCommon(
-        name='AR Invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
-        icon='<i class="bi bi-receipt"></i>',
-    )
     TASK = MenuCommon(
         name='Task', code='menu_opportunity_task', view_name='OpportunityTaskList',
         icon='<i class="fa-solid fa-list-check"></i>',
@@ -400,12 +379,34 @@ class MenusPurchase:
                 name='Purchase order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
                 icon='<i class="fas fa-file-contract"></i>',
             ),
+            MenuCommon(
+                name='AP Invoice', code='id_menu_ap_invoice', view_name='APInvoiceList',
+                icon='<i class="fas fa-file-invoice"></i>',
+            )
         ],
+    )
+
+
+class MenusInventory:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
 
     INVENTORY = MenuCommon(
         name='Inventory activities', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
         child=[
+            MenuCommon(
+                name='WareHouses', code='menu_warehouse_list', view_name='WareHouseList',
+                icon='<i class="fas fa-warehouse"></i>',
+            ),
+            MenuCommon(
+                name='Picking', code='menu_order_picking_list', view_name='OrderPickingList',
+                icon='<i class="fas fa-box"></i>',
+            ),
+            MenuCommon(
+                name='Delivery', code='menu_order_delivery_list', view_name='OrderDeliveryList',
+                icon='<i class="fas fa-truck-pickup"></i>',
+            ),
             MenuCommon(
                 name='Goods receipt',
                 code='menu_goods_receipt_list',
@@ -431,23 +432,18 @@ class MenusPurchase:
                 icon='<i class="far fa-arrow-alt-circle-left"></i>',
             ),
             MenuCommon(
-                name='Inventory adjustment',
-                code='menu_inventory_adjustment_list',
-                view_name='InventoryAdjustmentList',
-                icon='<i class="bi bi-sliders"></i>',
-            ),
-            MenuCommon(
                 name='Goods transfer',
                 code='menu_goods_transfer_list',
                 view_name='GoodsTransferList',
                 icon='<i class="fas fa-exchange-alt"></i>',
             ),
+            MenuCommon(
+                name='Inventory adjustment',
+                code='menu_inventory_adjustment_list',
+                view_name='InventoryAdjustmentList',
+                icon='<i class="bi bi-sliders"></i>',
+            ),
         ],
-    )
-
-    AP_INVOICE = MenuCommon(
-        name='AP Invoice', code='id_menu_ap_invoice', view_name='APInvoiceList',
-        icon='<i class="fas fa-file-invoice"></i>',
     )
 
 
@@ -651,7 +647,7 @@ class SpaceItem:
                 MenusCRM.SALE_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.PRODUCT,
-                MenusCRM.INVENTORY,
+                # MenusCRM.INVENTORY,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,
@@ -660,14 +656,21 @@ class SpaceItem:
             ],
         ),
         'purchase': SpaceCommon(
-            'Purchase',
+            'Purchasing',
             'purchase',
             icon='<i class="fas fa-cash-register"></i>',
             menus=[
                 MenusPurchase.HOME,
                 MenusPurchase.PURCHASE,
-                MenusPurchase.INVENTORY,
-                MenusPurchase.AP_INVOICE
+            ],
+        ),
+        'inventory': SpaceCommon(
+            'Inventory',
+            'inventory',
+            icon='<i class="fas fa-warehouse"></i>',
+            menus=[
+                MenusPurchase.HOME,
+                MenusInventory.INVENTORY,
             ],
         ),
         'hrm': SpaceCommon(
@@ -755,6 +758,7 @@ class SpaceGroup:
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
             SpaceItem.mapping['purchase'],
+            SpaceItem.mapping['inventory'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['e-office'],
             SpaceItem.mapping['dms'],

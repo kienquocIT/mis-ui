@@ -7385,3 +7385,7 @@ msgstr "GT đơn hàng đã nhận"
 #
 msgid "Remaining value"
 msgstr "GT đơn hàng còn lại"
+
+#
+msgid "WareHouses"
+msgstr "Các kho hàng"

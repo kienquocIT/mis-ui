@@ -1208,6 +1208,10 @@ class GRLoadDataHandle {
         }
     };
 
+    static loadCostPrice() {
+
+    }
+
     // LOAD DETAIL
     static loadDetailPage(data) {
         let formSubmit = $('#frm_good_receipt_create');
@@ -2256,7 +2260,7 @@ class GRDataTableHandle {
                                     <input 
                                         type="text" 
                                         class="form-control mask-money table-row-price" 
-                                        value="${row?.['product_unit_price']}"
+                                        value="${row?.['product_cost_price']}"
                                         data-return-type="number"
                                     >
                                     </div>`;

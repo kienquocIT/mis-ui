@@ -1,14 +1,11 @@
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 
 
 class GoodsReturnList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/inventory/goods_return/goods_return_list.html',
@@ -20,8 +17,6 @@ class GoodsReturnList(View):
 
 
 class GoodsReturnListAPI(APIView):
-    permission_classes = [IsAuthenticated] # noqa
-
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -59,8 +54,6 @@ class GoodsReturnCreate(View):
 
 
 class GoodsReturnDetail(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/inventory/goods_return/goods_return_detail.html',
@@ -72,21 +65,24 @@ class GoodsReturnDetail(View):
 
 
 class GoodsReturnUpdate(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
-        template='sales/inventory/goods_return/goods_return_detail.html',
+        template='sales/inventory/goods_return/goods_return_update.html',
         breadcrumb='GOODS_RETURN_UPDATE_PAGE',
         menu_active='menu_goods_return',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST + f"?interact=1").get()
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RETURN
+        return {
+            'data': {
+                'warehouse_list': resp1.result,
+            },
+            'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_goods_return_update'
+        }, status.HTTP_200_OK
 
 
 class GoodsReturnDetailAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         is_api=True,

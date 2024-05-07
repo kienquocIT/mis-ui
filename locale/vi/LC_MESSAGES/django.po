@@ -7397,3 +7397,7 @@ msgstr "Hoá đơn bán hàng"
 #
 msgid "AP Invoice"
 msgstr "Hoá đơn mua hàng"
+
+#
+msgid "Return to"
+msgstr "Trả về kho"

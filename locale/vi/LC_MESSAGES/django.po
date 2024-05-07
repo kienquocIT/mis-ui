@@ -7393,3 +7393,7 @@ msgstr "Các kho hàng"
 #
 msgid "AR Invoice"
 msgstr "Hoá đơn bán hàng"
+
+#
+msgid "AP Invoice"
+msgstr "Hoá đơn mua hàng"

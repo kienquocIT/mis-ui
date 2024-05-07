@@ -225,19 +225,17 @@ class MenusCoreConfigurations:
 
 class MenusCRM:
     HOME = MenuCommon(
-        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+        name='Home', code='id_menu_home_page', view_name='HomeView',
+        icon='<i class="fas fa-home"></i>',
     )
     DASHBOARD = MenuCommon(
-        name='Dashboard', code='id_menu_dashboard', view_name='#', icon='<i class="fas fa-chart-bar"></i>',
+        name='Dashboard', code='id_menu_dashboard', view_name='#',
+        icon='<i class="fas fa-chart-bar"></i>',
         child=[
             MenuCommon(
                 name='General', code='id_menu_dashboard_general', view_name='DashboardGeneralList',
                 icon='<i class="far fa-eye"></i>',
             ),
-            # MenuCommon(
-            #     name='Picking', code='menu_order_picking_list', view_name='OrderPickingList',
-            #     icon='<i class="fas fa-box"></i>',
-            # ),
             MenuCommon(
                 name='Pipeline', code='id_menu_dashboard_pipeline', view_name='DashboardPipelineList',
                 icon='<i class="fas fa-stream"></i>',
@@ -245,7 +243,8 @@ class MenusCRM:
         ],
     )
     REVENUE_PLAN = MenuCommon(
-        name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList', icon='<i class="fas fa-hand-holding-usd"></i>',
+        name='Revenue plan', code='menu_revenue_plan_list', view_name='RevenuePlanList',
+        icon='<i class="fas fa-hand-holding-usd"></i>',
     )
     CALENDAR = MenuCommon(
         name='Calendar', code='menu_calendar', view_name='ProgrammeList',
@@ -256,10 +255,8 @@ class MenusCRM:
         icon='<i class="bi bi-journal-bookmark-fill"></i>',
     )
     ACCOUNT = MenuCommon(
-        name='Account', code='id_menu_account', view_name='AccountList', icon='<i class="bi bi-person-rolodex"></i>',
-    )
-    LEAD = MenuCommon(
-        name='Lead', code='', view_name='', icon='<i class="fa-solid fa-users-viewfinder"></i>',
+        name='Account', code='id_menu_account', view_name='AccountList',
+        icon='<i class="bi bi-person-rolodex"></i>',
     )
     OPPORTUNITY = MenuCommon(
         name='Opportunity', code='menu_opportunity_list', view_name='OpportunityList',
@@ -282,10 +279,12 @@ class MenusCRM:
         icon='<i class="fas fa-file-alt"></i>',
     )
     PRODUCT = MenuCommon(
-        name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
+        name='Product', code='id_menu_product_list', view_name='ProductList',
+        icon='<i class="bi bi-archive-fill"></i>',
     )
     PRICING = MenuCommon(
-        name='Pricing', code='menu_pricing', view_name='', icon='<i class="bi bi-tags-fill"></i>',
+        name='Pricing', code='menu_pricing', view_name='',
+        icon='<i class="bi bi-tags-fill"></i>',
         child=[
             MenuCommon(
                 name='Price List', code='id_menu_pricing_list', view_name='PriceList',
@@ -302,7 +301,8 @@ class MenusCRM:
         ]
     )
     CASH_OUTFLOW = MenuCommon(
-        name='Cash Outflow', code='menu_cash_outflow', view_name='', icon='<i class="bi bi-currency-exchange"></i>',
+        name='Cashflow', code='menu_cash_outflow', view_name='',
+        icon='<i class="bi bi-currency-exchange"></i>',
         child=[
             MenuCommon(
                 name='Advance Payment', code='id_menu_advance_payment', view_name='AdvancePaymentList',
@@ -319,7 +319,8 @@ class MenusCRM:
         ],
     )
     SALE_ACTIVITIES = MenuCommon(
-        name='Sale Activities', code='menu_sale_activities', view_name='', icon='<i class="bi bi-ui-checks-grid"></i>',
+        name='Sale Activities', code='menu_sale_activities', view_name='',
+        icon='<i class="bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
                 name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
@@ -344,8 +345,7 @@ class MenusCRM:
     TASK = MenuCommon(
         name='Task', code='menu_opportunity_task', view_name='OpportunityTaskList',
         icon='<i class="fa-solid fa-list-check"></i>',
-        child=[
-        ],
+        child=[],
     )
 
 
@@ -641,18 +641,16 @@ class SpaceItem:
                 MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,
-                # MenusCRM.LEAD,
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
+                MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.PRODUCT,
-                # MenusCRM.INVENTORY,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
-                MenusCRM.AR_INVOICE
             ],
         ),
         'purchase': SpaceCommon(

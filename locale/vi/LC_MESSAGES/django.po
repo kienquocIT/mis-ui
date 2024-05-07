@@ -3138,7 +3138,7 @@ msgid "WareHouse List"
 msgstr "Danh sách kho"
 
 #
-msgid "Cash Outflow"
+msgid "Cashflow"
 msgstr "Dòng tiền"
 
 #
@@ -7389,3 +7389,7 @@ msgstr "GT đơn hàng còn lại"
 #
 msgid "WareHouses"
 msgstr "Các kho hàng"
+
+#
+msgid "AR Invoice"
+msgstr "Hoá đơn bán hàng"

@@ -106,73 +106,88 @@
     ></script>
 
     <div class="row">
-        <div class="col-12 col-lg-2 col-md-2">
-            <div class="form-group">
-                <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                <select class="form-select select2 select-multiple" id="warehouses_select" multiple
-                        data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-3 col-md-3">
-            <div class="form-group">
-                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
-                <select class="form-select select2 select-multiple" id="items_select" multiple
-                        data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-3 col-md-3">
-            <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
-                        <select class="form-select select2" id="period-select"
-                                data-url="{% url 'PeriodsConfigListAPI' %}"
-                                data-method="GET"
-                        ></select>
-                    </div>
+        <div class="col-12">
+            <button type="button"
+                    id="btn-collapse"
+                    class="btn btn-primary w-100"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#filter_area"
+                    aria-expanded="false"
+                    aria-controls="filter_area"
+            >
+                <div class="row">
+                    <div class="col-6 text-left"><i class="bi bi-funnel"></i>&nbsp;{% trans 'Filter' %}</div>
+                    <div class="col-6 text-right" id="btn-title" data-trans-show="{% trans 'Show' %}" data-trans-hide="{% trans 'Hide' %}">{% trans 'Show' %}</div>
                 </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
-                        <select id="period-month" class="form-select"></select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-2 col-md-2">
-            <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                            <input type="number" min="1" max="31" id="period-day-from" class="form-control">
-                        </span>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                            <input type="number" min="1" max="31" id="period-day-to" class="form-control">
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-2 col-md-2">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="show-detail-cb">
-                <label class="form-check-label" for="show-detail-cb">{% trans 'Show detail' %}</label>
-            </div>
-            <button type="button" class="btn btn-gradient-primary mt-2" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
+            </button>
         </div>
     </div>
-    <div class="row mt-5">
+    <div class="row">
+        <div class="collapse show" id="filter_area">
+            <div class="card card-body">
+                <div class="row">
+                    <div class="col-12 col-lg-3 col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                            <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                                    data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3 col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                            <select class="form-select select2 select-multiple" id="items_select" multiple
+                                    data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-2 col-md-6">
+                        <div class="form-group">
+                            <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
+                            <select class="form-select select2" id="period-select"
+                                    data-url="{% url 'PeriodsConfigListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-2 col-md-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
+                            <select id="period-month" class="form-select"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-1 col-md-4">
+                        <div class="form-group">
+                                    <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                        <input type="number" min="1" max="31" id="period-day-from" class="form-control">
+                                    </span>
+                                </div>
+                    </div>
+                    <div class="col-12 col-lg-1 col-md-4">
+                        <div class="form-group">
+                            <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                <input type="number" min="1" max="31" id="period-day-to" class="form-control">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="show-detail-cb">
+                            <label class="form-check-label" for="show-detail-cb">{% trans 'Show detail' %}</label>
+                        </div>
+                        <button type="button" class="btn btn-gradient-primary mt-2" id="btn-view"><span><span>{% trans 'View' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-eye"></i></span></span></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 mb-3">
         <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
             <div class="custom-scroll">
-                <div class="table-wrap" style="max-height: 65vh">
+                <div class="table-wrap" style="max-height: 80vh">
                     <table hidden class="table nowrap w-100 fixed_header" id="table-inventory-report">
                         <thead class="row-fixed">
                             <tr style="background: #0095a4;">

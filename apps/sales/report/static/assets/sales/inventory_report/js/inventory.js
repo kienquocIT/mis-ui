@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    const $btn_title = $('#btn-title')
     const current_period_Ele = $('#current_period')
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
@@ -153,6 +154,19 @@ $(document).ready(function () {
     }
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
+    $('#btn-collapse').on('click', function () {
+        if ($btn_title.text() === $btn_title.attr('data-trans-show')) {
+            $btn_title.text($btn_title.attr('data-trans-hide'))
+            $(this).removeClass('btn-primary')
+            $(this).addClass('btn-soft-primary')
+        }
+        else {
+            $btn_title.text($btn_title.attr('data-trans-show'))
+            $(this).addClass('btn-primary')
+            $(this).removeClass('btn-soft-primary')
+        }
+    })
+
     $('#btn-view').on('click', function () {
         $('table thead').find('span').text('0')
         $('table thead').find('span').attr('data-init-money', 0)
@@ -186,6 +200,7 @@ $(document).ready(function () {
 
                 Promise.all([inventory_detail_list_ajax]).then(
                     (results) => {
+                        $('#btn-collapse').trigger('click')
                         table_inventory_report.find('tbody').html('')
                         let opening_sum_quantity = 0
                         let in_sum_quantity = 0
@@ -616,6 +631,7 @@ $(document).ready(function () {
 
                 Promise.all([inventory_detail_list_ajax]).then(
                     (results) => {
+                        $('#btn-collapse').trigger('click')
                         table_inventory_report.find('tbody').html('')
                         let opening_sum_quantity = 0
                         let in_sum_quantity = 0
@@ -819,6 +835,7 @@ $(document).ready(function () {
             }
         }
     })
+    $('#btn-view').trigger('click')
 
     function MatchTooltip() {
         $('#table-inventory-report-detail').find('td').each(function () {

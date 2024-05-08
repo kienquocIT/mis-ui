@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    const $btn_title = $('#btn-title')
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
     const items_detail_report_table_Ele = $('#items_detail_report_table')
@@ -107,6 +108,19 @@ $(document).ready(function () {
     }
     LoadWarehouseSelectBox(warehouses_select_Ele)
 
+    $('#btn-collapse').on('click', function () {
+        if ($btn_title.text() === $btn_title.attr('data-trans-show')) {
+            $btn_title.text($btn_title.attr('data-trans-hide'))
+            $(this).removeClass('btn-primary')
+            $(this).addClass('btn-soft-primary')
+        }
+        else {
+            $btn_title.text($btn_title.attr('data-trans-show'))
+            $(this).addClass('btn-primary')
+            $(this).removeClass('btn-soft-primary')
+        }
+    })
+
     $('#btn-view').on('click', function () {
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
@@ -133,6 +147,7 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
+                    $('#btn-collapse').trigger('click')
                     items_detail_report_table_Ele.find('tbody').html('')
                     for (const item of results[0]) {
                         let cumulative_quantity = 0
@@ -408,4 +423,5 @@ $(document).ready(function () {
             $.fn.notifyB({"description": 'No sub period selected.', "timeout": 3500}, 'warning')
         }
     })
+    $('#btn-view').trigger('click')
 })

@@ -10,7 +10,7 @@ $(document).ready(function () {
     const $prd_category = $('#prd-category')
     const $sale_order = $('#sale-order')
     const $prd = $('#prd')
-    const btn_title = $('#btn-title')
+    const $btn_title = $('#btn-title')
     const $table_po_report = $('#table-po-report')
 
     const $current_period_Ele = $('#current_period')
@@ -22,13 +22,13 @@ $(document).ready(function () {
     }
 
     $('#btn-collapse').on('click', function () {
-        if (btn_title.text() === btn_title.attr('data-trans-show')) {
-            btn_title.text(btn_title.attr('data-trans-hide'))
+        if ($btn_title.text() === $btn_title.attr('data-trans-show')) {
+            $btn_title.text($btn_title.attr('data-trans-hide'))
             $(this).removeClass('btn-primary')
             $(this).addClass('btn-soft-primary')
         }
         else {
-            btn_title.text(btn_title.attr('data-trans-show'))
+            $btn_title.text($btn_title.attr('data-trans-show'))
             $(this).addClass('btn-primary')
             $(this).removeClass('btn-soft-primary')
         }
@@ -376,6 +376,7 @@ $(document).ready(function () {
                 )
             })
     })
+    $('#btn-view').trigger('click')
 
     function filter_by_supplier(input_data) {
         if ($supplier.val().length > 0) {

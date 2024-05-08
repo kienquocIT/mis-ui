@@ -692,6 +692,7 @@
             type="text"
             id="data-detail"
     >
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

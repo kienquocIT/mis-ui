@@ -1800,51 +1800,74 @@ class WFRTControl {
     static callAjaxActionWFAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
         let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, runtimeID);
         Swal.fire({
-            title: $.fn.transEle.attr('data-msg-are-u-sure'),
-            text: $.fn.transEle.attr('data-warning-can-not-undo'),
-            icon: "warning",
+            input: "textarea",
+            inputLabel: $.fn.transEle.attr('data-reason-cancel'),
+            inputPlaceholder: $.fn.transEle.attr('data-reason-type-here'),
+            inputAttributes: {
+                "aria-label": $.fn.transEle.attr('data-reason-type-here'),
+                "maxlength": "255" // Set the maximum length attribute
+            },
             allowOutsideClick: false,
             showConfirmButton: true,
             confirmButtonText: $.fn.transEle.attr('data-confirm'),
             showCancelButton: true,
             cancelButtonText: $.fn.transEle.attr('data-cancel'),
+            inputValidator: (value) => {
+                if (value.length > 255) {
+                    return 'Maximum length exceeded (255 characters)';
+                }
+            },
         }).then((result) => {
-            if (result.isConfirmed) {
-                WindowControl.showLoading();
-                return $.fn.callAjax2({
-                    'url': urlData,
-                    'method': 'PUT',
-                    'data': dataSubmit,
-                }).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data?.['status'] === 200) {
-                        $.fn.notifyB({
-                            'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
-                        }, 'success');
-                        if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+            if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                dataSubmit['remark'] = result.value;
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-msg-are-u-sure'),
+                    text: $.fn.transEle.attr('data-warning-can-not-undo'),
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showConfirmButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    showCancelButton: true,
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        WindowControl.showLoading();
+                        return $.fn.callAjax2({
+                            'url': urlData,
+                            'method': 'PUT',
+                            'data': dataSubmit,
+                        }).then((resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data?.['status'] === 200) {
+                                $.fn.notifyB({
+                                    'description': $.fn.transEle.attr('data-action-wf') + ': ' + $.fn.transEle.attr('data-success'),
+                                }, 'success');
+                                if (!(dataSuccessReload === 'false' || dataSuccessReload === false)) {
+                                    setTimeout(() => {
+                                        if (!urlRedirect) {
+                                            window.location.reload()
+                                        } else {
+                                            window.location.replace(urlRedirect);
+                                        }
+                                    }, 1000)
+                                }
+                            }
                             setTimeout(() => {
-                                if (!urlRedirect) {
-                                    window.location.reload()
-                                } else {
+                                WindowControl.hideLoading();
+                                if (urlRedirect) {
                                     window.location.replace(urlRedirect);
                                 }
                             }, 1000)
-                        }
+                        }, (err) => {
+                            setTimeout(() => {
+                                WindowControl.hideLoading();
+                            }, 1000)
+                            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                        });
                     }
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                        if (urlRedirect) {
-                            window.location.replace(urlRedirect);
-                        }
-                    }, 1000)
-                }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-                });
+                })
             }
-        })
+        });
     }
 
     static callAjaxOpenCRAfterFinish(urlBase, runtimeID, dataSubmit, dataSuccessReload, urlRedirect = null) {
@@ -1880,10 +1903,10 @@ class WFRTControl {
     static callActionReturn(urlBase, taskID, dataSubmit, dataSuccessReload) {
         Swal.fire({
             input: "textarea",
-            inputLabel: $.fn.transEle.attr('data-returned-content'),
-            inputPlaceholder: $.fn.transEle.attr('data-type-content'),
+            inputLabel: $.fn.transEle.attr('data-reason-return'),
+            inputPlaceholder: $.fn.transEle.attr('data-reason-type-here'),
             inputAttributes: {
-                "aria-label": "Type your message here",
+                "aria-label": $.fn.transEle.attr('data-reason-type-here'),
                 "maxlength": "255" // Set the maximum length attribute
             },
             allowOutsideClick: false,

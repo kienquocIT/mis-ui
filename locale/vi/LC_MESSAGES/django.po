@@ -6215,8 +6215,8 @@ msgid "Returned content"
 msgstr "Nội dung trả về"
 
 #
-msgid "Type your content here..."
-msgstr "Nhập nội dung của bạn vào đây..."
+msgid "Type your reason here..."
+msgstr "Nhập lý do của bạn tại đây..."
 
 #
 msgid "This image encountered an error during loading or does not exist."
@@ -7297,3 +7297,23 @@ msgstr "Bạn cần chọn một tùy chọn!"
 #
 msgid "Lot number"
 msgstr "Số lô"
+
+#
+msgid "Reason for return"
+msgstr "Lý do trả về"
+
+#
+msgid "Reason for cancel"
+msgstr "Lý do hủy phiếu"
+
+#
+msgid "View by"
+msgstr "Xem theo"
+
+#
+msgid "Date applied"
+msgstr "Ngày áp dụng"
+
+#
+msgid "Wait complete"
+msgstr "Đợi hoàn tất"
